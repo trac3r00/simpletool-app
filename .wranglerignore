@@ -1,0 +1,7 @@
+*
+.*
+
+!.wranglerignore
+!wrangler.toml
+!src/**
+!dist/**

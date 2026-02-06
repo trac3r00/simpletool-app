@@ -4,6 +4,9 @@ node_modules/
 # Local scratch / accidental checkouts
 package/
 
+# Notes / local docs (not part of deploy)
+feedback.md
+
 # Cloudflare / Wrangler
 .wrangler/
 .dev.vars
