@@ -1,6 +1,9 @@
 # Dependencies
 node_modules/
 
+# Local scratch / accidental checkouts
+package/
+
 # Cloudflare / Wrangler
 .wrangler/
 .dev.vars
