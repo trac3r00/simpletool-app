@@ -66,7 +66,7 @@ function renderUnitConverterPage() {
             </div>
             <div>
               <label for="to-value" class="sr-only">Converted value</label>
-              <input type="number" id="to-value" placeholder="0" readonly class="w-full px-4 py-3 bg-surface-50 dark:bg-surface-900 border border-surface-300 dark:border-surface-700 rounded-lg text-surface-900 dark:text-surface-50 text-lg font-mono cursor-not-allowed" />
+              <input type="number" id="to-value" role="status" placeholder="0" readonly class="w-full px-4 py-3 bg-surface-50 dark:bg-surface-900 border border-surface-300 dark:border-surface-700 rounded-lg text-surface-900 dark:text-surface-50 text-lg font-mono cursor-not-allowed" />
             </div>
           </div>
         </div>

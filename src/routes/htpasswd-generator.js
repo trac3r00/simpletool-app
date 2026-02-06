@@ -106,7 +106,7 @@ function renderHtpasswdPage() {
                 <button id="download-entry" class="px-3 py-2 rounded-xl border border-surface-200 dark:border-surface-700 text-sm text-surface-700 dark:text-surface-200" disabled><span data-i18n="tools.htpasswd-generator.ui.button5">Download</span></button>
               </div>
             </div>
-            <pre id="entry-output" class="min-h-[80px] bg-surface-900 text-surface-100 p-4 rounded-2xl overflow-x-auto text-sm">No entry yet.</pre>
+            <pre id="entry-output" role="status" class="min-h-[80px] bg-surface-900 text-surface-100 p-4 rounded-2xl overflow-x-auto text-sm">No entry yet.</pre>
           </div>
 
           <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-3xl shadow-xl p-6">

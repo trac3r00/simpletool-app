@@ -77,7 +77,7 @@ function renderColorConverterPage() {
                     <span class="material-symbols-rounded text-sm" data-i18n="tools.color-converter.ui.desc5">content_copy</span>
                   </button>
                 </div>
-                <div id="hex-value" class="text-base font-mono font-bold text-surface-900 dark:text-white break-all">#3b82f6</div>
+                <div id="hex-value" role="status" class="text-base font-mono font-bold text-surface-900 dark:text-white break-all">#3b82f6</div>
               </div>
 
               <div class="card p-4">

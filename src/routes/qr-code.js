@@ -105,6 +105,8 @@ function renderQRCodePage() {
                 </div>
               </div>
 
+              <div id="qr-error-msg" role="alert" class="hidden p-3 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-200 border border-red-200 dark:border-red-800 text-sm"></div>
+
               <button id="generate-qr" class="btn btn-primary" data-tooltip="Generate QR code from the input text or URL" w-full py-4 text-lg">
                 <span data-i18n="tools.qr-code.ui.button0">Generate QR Code</span>
               </button>
@@ -295,7 +297,11 @@ function renderQRCodePage() {
       generateButton.addEventListener('click', async () => {
         const data = document.getElementById('qr-data').value.trim();
         if (!data) {
-          alert('Please enter text or URL to encode');
+          const errMsg = document.getElementById('qr-error-msg');
+          if (errMsg) {
+            errMsg.textContent = 'Please enter text or URL to encode.';
+            errMsg.classList.remove('hidden');
+          }
           return;
         }
 
@@ -309,6 +315,8 @@ function renderQRCodePage() {
         generateButton.innerHTML = 'Generating...';
 
         try {
+          const errMsg = document.getElementById('qr-error-msg');
+          if (errMsg) errMsg.classList.add('hidden');
           const result = await generateQRCode(data, size, errorCorrection, fg, bg, canvas);
           currentSVGMarkup = result.svg;
           currentQRDataURL = result.pngDataUrl;
@@ -321,8 +329,11 @@ function renderQRCodePage() {
           document.getElementById('download-qr-png').disabled = false;
           document.getElementById('download-qr-svg').disabled = false;
         } catch (error) {
-          alert('Error generating QR code: ' + error.message);
-          console.error('QR Error:', error);
+          const errMsg = document.getElementById('qr-error-msg');
+          if (errMsg) {
+            errMsg.textContent = 'Error generating QR code: ' + error.message;
+            errMsg.classList.remove('hidden');
+          }
           currentQRDataURL = null;
           currentSVGMarkup = null;
         } finally {
