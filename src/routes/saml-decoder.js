@@ -70,7 +70,7 @@ function renderSamlDecoderPage() {
             <button id="decode-btn" data-tooltip="Decode and parse the SAML message" class="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-purple-600 hover:bg-purple-700 text-white font-semibold transition">Decode response<span aria-hidden="true">→</span></button>
             <button id="sample-btn" type="button" class="px-4 py-3 rounded-2xl border border-surface-300 dark:border-surface-600 text-surface-700 dark:text-surface-200 font-semibold hover:border-purple-500 dark:hover:border-purple-400 transition"><span data-i18n="tools.saml-decoder.ui.button1">Load sample</span></button>
           </div>
-          <div id="saml-error" class="hidden rounded-2xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 text-sm text-red-700 dark:text-red-200 px-4 py-3">Parsing error</div>
+          <div id="saml-error" role="alert" class="hidden rounded-2xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 text-sm text-red-700 dark:text-red-200 px-4 py-3">Parsing error</div>
         </div>
 
         <div class="space-y-6">

@@ -1,7 +1,10 @@
 import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
 
-export async function handleLogViewerRoutes(request) {
+export async function handleLogViewerRoutes(request, url) {
+  if (url.pathname !== '/log-viewer' && url.pathname !== '/log-viewer/') return null;
+  if (request.method !== 'GET') return null;
+
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       ${createToolHeader(

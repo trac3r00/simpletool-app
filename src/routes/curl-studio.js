@@ -1,7 +1,10 @@
 import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet } from '../utils/common-ui.js';
 
-export async function handleCurlStudioRoutes(request) {
+export async function handleCurlStudioRoutes(request, url) {
+  if (url.pathname !== '/curl-studio' && url.pathname !== '/curl-studio/') return null;
+  if (request.method !== 'GET') return null;
+
   const title = 'Curl Studio';
   const description = 'Parse curl commands into structured data and generate curl commands from inputs locally.';
 

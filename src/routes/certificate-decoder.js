@@ -37,7 +37,7 @@ function renderCertificateDecoderPage() {
   );
 
   const content = `
-    <script src="/vendor/forge.min.js" integrity="sha384-AY35SzUqTEbHeatsFBL5+XH43bGFE6ZBOjzeMFAUL/VYI89s6haYOPgPfYxCuhS5" crossorigin="anonymous"></script>
+    <script src="/vendor/forge.min.js" integrity="sha384-xHPi7wmhLGnxH9OUWvRRdUiqfT3b6SJShD/WWXkabW5wIlCxk2UyJezPvffKACOD" crossorigin="anonymous"></script>
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="space-y-8">
@@ -61,7 +61,7 @@ function renderCertificateDecoderPage() {
             </div>
           </div>
 
-          <div id="error-banner" class="hidden mt-4 p-4 rounded-lg bg-red-50 text-red-900 border border-red-200 dark:bg-red-900/20 dark:text-red-200 dark:border-red-800 text-sm"></div>
+          <div id="error-banner" role="alert" class="hidden mt-4 p-4 rounded-lg bg-red-50 text-red-900 border border-red-200 dark:bg-red-900/20 dark:text-red-200 dark:border-red-800 text-sm"></div>
           
           <div id="status-badge" class="hidden mt-6 flex items-center gap-4 p-4 rounded-lg border-2 transition-all">
             <div id="status-icon" class="text-3xl"></div>

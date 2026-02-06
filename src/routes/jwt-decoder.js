@@ -43,7 +43,7 @@ function renderJWTDecoderPage() {
         ${toolHeader}
 
         <!-- Status Badge -->
-        <div id="status-badge" class="mb-6 hidden">
+        <div id="status-badge" role="status" class="mb-6 hidden">
           <div class="p-4 rounded-lg border-2 transition-all">
             <div class="flex items-center gap-3">
               <div id="status-icon" class="text-2xl"></div>

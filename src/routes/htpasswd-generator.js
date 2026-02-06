@@ -106,7 +106,7 @@ function renderHtpasswdPage() {
                 <button id="download-entry" class="px-3 py-2 rounded-xl border border-surface-200 dark:border-surface-700 text-sm text-surface-700 dark:text-surface-200" disabled><span data-i18n="tools.htpasswd-generator.ui.button5">Download</span></button>
               </div>
             </div>
-            <pre id="entry-output" class="min-h-[80px] bg-surface-900 text-surface-100 p-4 rounded-2xl overflow-x-auto text-sm">No entry yet.</pre>
+            <pre id="entry-output" role="status" class="min-h-[80px] bg-surface-900 text-surface-100 p-4 rounded-2xl overflow-x-auto text-sm">No entry yet.</pre>
           </div>
 
           <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-3xl shadow-xl p-6">
@@ -134,7 +134,7 @@ function renderHtpasswdPage() {
     </main>
 
     <script src="/vendor/bcrypt.min.js" integrity="sha384-qGFE4FIJLgCFuYs3nzg39XpCtvT5AZUhaBdjB3e1+vpKQa03AkyWOyBSFb9OcQ/g" crossorigin="anonymous"></script>
-    <script src="/vendor/md5.min.js" integrity="sha384-F0j98TCJcD9D2MLRq8QYONEYfgs+t6PZhSBeWX5hveT8h7vY0ykuYP1EUPr9ijq5" crossorigin="anonymous"></script>
+    <script src="/vendor/md5.min.js" integrity="sha384-JmVtRz6RWiXnA14QbIOJzPuU3MidULOpBP66deeLLyyoF4Tr/gZlbkHkL6vTthxH" crossorigin="anonymous"></script>
     <script>
       (function() {
         const usernameInput = document.getElementById('username-input');

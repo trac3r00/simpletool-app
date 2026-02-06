@@ -2839,7 +2839,7 @@ function renderUniversalDecoderPage() {
           if (!trimmed) return false;
           let count = 0;
           for (let i = 0; i + 3 < trimmed.length; i++) {
-            if (trimmed[i] !== '\\') continue;
+            if (trimmed[i] !== '\\\\') continue;
             const c1 = trimmed.charCodeAt(i + 1);
             const c2 = trimmed.charCodeAt(i + 2);
             const c3 = trimmed.charCodeAt(i + 3);

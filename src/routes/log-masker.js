@@ -1,7 +1,10 @@
 import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
 
-export async function handleLogMaskerRoutes(request) {
+export async function handleLogMaskerRoutes(request, url) {
+  if (url.pathname !== '/log-masker' && url.pathname !== '/log-masker/') return null;
+  if (request.method !== 'GET') return null;
+
   const title = 'Log Masker';
   const description = 'Redact PII and sensitive data from logs locally. Emails, IPs, and custom patterns are masked in your browser.';
 
