@@ -630,7 +630,18 @@ function renderEmailAnalyzerPage() {
           const a = document.createElement('a');
           a.className = 'font-mono text-sm text-primary-700 dark:text-primary-300 hover:underline break-words';
           a.textContent = safeTrim(maskPii ? maskEmailAddress(u) : u, 200);
-          a.href = u;
+          try {
+            const parsed = new URL(u);
+            if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+              a.href = u;
+            } else {
+              a.removeAttribute('href');
+              a.title = 'Blocked: non-HTTP protocol';
+              a.className += ' line-through opacity-60 cursor-not-allowed';
+            }
+          } catch (_e) {
+            a.removeAttribute('href');
+          }
           a.target = '_blank';
           a.rel = 'noopener noreferrer';
           left.appendChild(a);

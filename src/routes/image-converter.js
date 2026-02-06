@@ -5,7 +5,7 @@
  * All processing happens client-side using Canvas API
  */
 
-import { createPageTemplate, createToolHeader, getDownloadFileScript } from '../utils/common-ui.js';
+import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
 import { respondHTML } from '../utils/respond.js';
 
 /**
@@ -169,11 +169,14 @@ function renderImageConverterPage() {
             </div>
           </div>
 
-          <!-- Convert Button -->
-          <button id="convert-btn" disabled data-tooltip="Convert image to the selected format and size"
-            class="w-full py-4 px-6 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
-            <span data-i18n="tools.image-converter.ui.button0">🔄 Convert & Resize Image</span>
-          </button>
+           <!-- Error Banner -->
+           <div id="img-error" role="alert" class="hidden w-full rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 text-sm text-red-700 dark:text-red-200 px-4 py-3"></div>
+
+           <!-- Convert Button -->
+           <button id="convert-btn" disabled data-tooltip="Convert image to the selected format and size"
+             class="w-full py-4 px-6 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+             <span data-i18n="tools.image-converter.ui.button0">🔄 Convert & Resize Image</span>
+           </button>
         </div>
 
         <!-- Right Column: Preview & Download -->
@@ -282,6 +285,18 @@ function renderImageConverterPage() {
       const scaleSlider = document.getElementById('scale-slider');
       const scaleValue = document.getElementById('scale-value');
 
+      // Error banner helper
+      function showImgError(msg) {
+        const el = document.getElementById('img-error');
+        if (msg) {
+          el.textContent = msg;
+          el.classList.remove('hidden');
+        } else {
+          el.textContent = '';
+          el.classList.add('hidden');
+        }
+      }
+
       // Format Selection
       document.querySelectorAll('.format-option').forEach(option => {
         option.addEventListener('click', () => {
@@ -350,22 +365,25 @@ function renderImageConverterPage() {
         }
       });
 
-      // Handle File Selection
-      // Handle File Selection
-      function handleFileSelect(file) {
-        if (!file) return;
+       // Handle File Selection
+       // Handle File Selection
+       function handleFileSelect(file) {
+         if (!file) return;
 
-        // Large file warning (> 10MB)
-        if (file.size > 10 * 1024 * 1024) {
-          const proceed = confirm(\`This file is large (\${(file.size / 1024 / 1024).toFixed(1)} MB). Processing might slow down your browser. Do you want to continue?\`);
-          if (!proceed) return;
-        }
+         // Clear any previous errors
+         showImgError('');
 
-        try {
-          if (!file.type.startsWith('image/')) {
-            alert('Please upload a valid image file.');
-            return;
-          }
+         // Large file warning (> 10MB)
+         if (file.size > 10 * 1024 * 1024) {
+           const proceed = confirm(\`This file is large (\${(file.size / 1024 / 1024).toFixed(1)} MB). Processing might slow down your browser. Do you want to continue?\`);
+           if (!proceed) return;
+         }
+
+         try {
+           if (!file.type.startsWith('image/')) {
+             showImgError('Please upload a valid image file.');
+             return;
+           }
 
           originalFile = file;
 
@@ -392,19 +410,19 @@ function renderImageConverterPage() {
               document.getElementById('max-width').value = img.width;
               document.getElementById('max-height').value = img.height;
             };
-            img.onerror = () => {
-              alert('Failed to load image. The file might be corrupted.');
-            };
+             img.onerror = () => {
+               showImgError('Failed to load image. The file might be corrupted.');
+             };
             img.src = e.target.result;
           };
-          reader.onerror = () => {
-            alert('Error reading file.');
-          };
+           reader.onerror = () => {
+             showImgError('Error reading file.');
+           };
           reader.readAsDataURL(file);
-        } catch (error) {
-          alert('An error occurred: ' + error.message);
-          console.error(error);
-        }
+         } catch (error) {
+           showImgError('An error occurred: ' + error.message);
+           console.error(error);
+         }
       }
 
       // Convert Button
@@ -469,12 +487,12 @@ function renderImageConverterPage() {
         const quality = (selectedFormat === 'jpeg' || selectedFormat === 'webp') ?
                        parseInt(qualitySlider.value) / 100 : undefined;
 
-        convertedCanvas.toBlob((blob) => {
-          // Check if blob is null (unsupported format like GIF)
-          if (!blob) {
-            alert(\`Error: \${selectedFormat.toUpperCase()} format is not supported by your browser. Please try PNG, JPG, or WebP instead.\`);
-            return;
-          }
+         convertedCanvas.toBlob((blob) => {
+           // Check if blob is null (unsupported format like GIF)
+           if (!blob) {
+             showImgError(selectedFormat.toUpperCase() + ' format is not supported by your browser. Please try PNG, JPG, or WebP instead.');
+             return;
+           }
 
           // Show converted image
           convertedCanvas.classList.remove('hidden');

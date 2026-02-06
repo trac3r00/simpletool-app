@@ -655,7 +655,7 @@ function renderMarkdownPreviewPage() {
             '<head>',
             '  <meta charset="UTF-8">',
             '  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
-            '  <title>' + title + '</title>',
+            '  <title>' + title.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</title>',
             '  <style>',
             '    body { font-family: system-ui, -apple-system, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 2rem; color: #111827; }',
             '    pre { background: #f4f4f5; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; }',

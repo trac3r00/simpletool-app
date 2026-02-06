@@ -1,7 +1,10 @@
 import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet } from '../utils/common-ui.js';
 
-export async function handleMermaidStudioRoutes(request) {
+export async function handleMermaidStudioRoutes(request, url) {
+  if (url.pathname !== '/mermaid-studio' && url.pathname !== '/mermaid-studio/') return null;
+  if (request.method !== 'GET') return null;
+
   const title = 'Mermaid Studio';
   const description = 'Live Mermaid.js diagram previewer. Create flowcharts, sequence diagrams, and gantt charts with ease.';
 
@@ -85,7 +88,7 @@ export async function handleMermaidStudioRoutes(request) {
       mermaid.initialize({
         startOnLoad: false,
         theme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default',
-        securityLevel: 'loose'
+        securityLevel: 'strict'
       });
 
       const input = document.getElementById('mermaid-input');
@@ -95,23 +98,31 @@ export async function handleMermaidStudioRoutes(request) {
 
       let timeout = null;
 
-      async function renderDiagram() {
-        const code = input.value.trim();
-        if (!code) {
-          renderArea.innerHTML = '<div class="text-surface-400 italic">Enter code to preview</div>';
-          return;
-        }
+       async function renderDiagram() {
+         const code = input.value.trim();
+         if (!code) {
+           renderArea.innerHTML = '<div class="text-surface-400 italic">Enter code to preview</div>';
+           return;
+         }
 
-        try {
-          // Clear previous content
-          renderArea.innerHTML = '<div class="mermaid">' + code + '</div>';
-          await mermaid.run({
-            nodes: [renderArea.querySelector('.mermaid')]
-          });
-        } catch (e) {
-          renderArea.innerHTML = '<div class="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-4 rounded-lg text-sm font-mono whitespace-pre-wrap">Syntax Error: ' + e.message + '</div>';
-        }
-      }
+         try {
+           // Clear previous content
+           renderArea.innerHTML = '';
+           const mermaidDiv = document.createElement('div');
+           mermaidDiv.className = 'mermaid';
+           mermaidDiv.textContent = code;
+           renderArea.appendChild(mermaidDiv);
+           await mermaid.run({
+             nodes: [renderArea.querySelector('.mermaid')]
+           });
+         } catch (e) {
+           renderArea.innerHTML = '';
+           const errDiv = document.createElement('div');
+           errDiv.className = 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-4 rounded-lg text-sm font-mono whitespace-pre-wrap';
+           errDiv.textContent = 'Syntax Error: ' + e.message;
+           renderArea.appendChild(errDiv);
+         }
+       }
 
       input.addEventListener('input', () => {
         clearTimeout(timeout);
