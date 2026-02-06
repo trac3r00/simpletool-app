@@ -101,6 +101,8 @@ function renderPasswordGeneratorPage() {
               </label>
             </div>
 
+            <div id="pw-error" role="alert" class="hidden rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 text-sm text-red-700 dark:text-red-200 px-4 py-3"></div>
+
             <button id="generate-password" class="btn btn-primary w-full py-4 text-lg">
               <span data-i18n="tools.password-generator.ui.button0">Generate Password</span>
             </button>
@@ -276,6 +278,8 @@ function renderPasswordGeneratorPage() {
               <input type="range" id="alias-tag-length" min="2" max="16" value="6" class="w-full h-2 bg-surface-200 dark:bg-surface-700 rounded-lg appearance-none cursor-pointer accent-primary-600">
             </div>
 
+            <div id="alias-error" role="alert" class="hidden rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 text-sm text-red-700 dark:text-red-200 px-4 py-3"></div>
+
             <button id="generate-alias" class="btn btn-primary w-full py-4 text-lg">
               <span data-i18n="tools.password-generator.ui.button4">Generate Plus Alias</span>
             </button>
@@ -393,16 +397,18 @@ function renderPasswordGeneratorPage() {
         if (useNumbers) charsets.push('0123456789');
         if (useSymbols) charsets.push('!@#$%^&*()_+-=[]{}|;:,.<>?');
 
-        if (charsets.length === 0) {
-          alert('Please select at least one character type!');
-          return;
-        }
+         if (charsets.length === 0) {
+           document.getElementById('pw-error').textContent = 'Please select at least one character type.';
+           document.getElementById('pw-error').classList.remove('hidden');
+           return;
+         }
 
-        // Ensure minimum length
-        if (length < charsets.length) {
-          alert('Password length too short for selected options.');
-          return;
-        }
+         // Ensure minimum length
+         if (length < charsets.length) {
+           document.getElementById('pw-error').textContent = 'Password length too short for selected options.';
+           document.getElementById('pw-error').classList.remove('hidden');
+           return;
+         }
 
         // Combine all charsets
         const allChars = charsets.join('');
@@ -428,11 +434,12 @@ function renderPasswordGeneratorPage() {
           [passwordArray[i], passwordArray[j]] = [passwordArray[j], passwordArray[i]];
         }
 
-        const password = passwordArray.join('');
+         const password = passwordArray.join('');
 
-        // Display result
-        document.getElementById('password-output').textContent = password;
-        document.getElementById('password-result').classList.remove('hidden');
+         // Display result
+         document.getElementById('pw-error').classList.add('hidden');
+         document.getElementById('password-output').textContent = password;
+         document.getElementById('password-result').classList.remove('hidden');
 
         // Calculate strength
         const entropy = password.length * Math.log2(allChars.length);
@@ -667,23 +674,26 @@ function renderPasswordGeneratorPage() {
         aliasTagLengthValue.textContent = e.target.value;
       });
 
-      // Plus alias generation
-      document.getElementById('generate-alias')?.addEventListener('click', () => {
-        const baseEmail = document.getElementById('alias-base-email').value;
-        if (!baseEmail || !baseEmail.includes('@')) {
-          alert('Please enter a valid base email address');
-          return;
-        }
+       // Plus alias generation
+       document.getElementById('generate-alias')?.addEventListener('click', () => {
+         const baseEmail = document.getElementById('alias-base-email').value;
+         if (!baseEmail || !baseEmail.includes('@')) {
+           document.getElementById('alias-error').textContent = 'Please enter a valid base email address.';
+           document.getElementById('alias-error').classList.remove('hidden');
+           return;
+         }
 
-        try {
-          const tagLength = parseInt(aliasTagLengthSlider.value);
-          const email = generatePlusAddress(baseEmail, tagLength);
+         try {
+           const tagLength = parseInt(aliasTagLengthSlider.value);
+           const email = generatePlusAddress(baseEmail, tagLength);
 
-          document.getElementById('alias-output').textContent = email;
-          document.getElementById('alias-result').classList.remove('hidden');
-        } catch (error) {
-          alert(error.message);
-        }
+           document.getElementById('alias-error').classList.add('hidden');
+           document.getElementById('alias-output').textContent = email;
+           document.getElementById('alias-result').classList.remove('hidden');
+         } catch (error) {
+           document.getElementById('alias-error').textContent = error.message;
+           document.getElementById('alias-error').classList.remove('hidden');
+         }
       });
 
       // Copy alias

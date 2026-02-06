@@ -107,14 +107,14 @@ function renderSSHKeyGeneratorPage() {
                 <span class="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
                 Generating...
               </span>
-            </button>
-           </div>
+             </button>
+          </div>
 
-           <!-- Error Banner -->
-           <div id="keygen-error" role="alert" class="hidden rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 text-sm text-red-700 dark:text-red-200 px-4 py-3"></div>
+          <!-- Error Banner -->
+          <div id="keygen-error" role="alert" class="hidden rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 text-sm text-red-700 dark:text-red-200 px-4 py-3"></div>
 
-           <!-- Results -->
-           <div id="results" class="hidden space-y-6">
+          <!-- Results -->
+          <div id="results" class="hidden space-y-6">
             
             <!-- Public Key -->
             <div>
@@ -228,18 +228,18 @@ chmod 600 ~/.ssh/authorized_keys</pre>
           resultsEl.classList.remove('hidden');
           // Smooth scroll to results on mobile
           if (window.innerWidth < 1024) {
-             resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }
-         } catch (error) {
-           const errEl = document.getElementById('keygen-error');
-           errEl.textContent = 'Error generating key pair: ' + error.message;
-           errEl.classList.remove('hidden');
-           console.error(error);
-         } finally {
-           generateBtn.disabled = false;
-           btnText.classList.remove('hidden');
-           btnLoading.classList.add('hidden');
-         }
+        } catch (error) {
+          const errEl = document.getElementById('keygen-error');
+          errEl.textContent = 'Error generating key pair: ' + error.message;
+          errEl.classList.remove('hidden');
+          console.error(error);
+        } finally {
+          generateBtn.disabled = false;
+          btnText.classList.remove('hidden');
+          btnLoading.classList.add('hidden');
+        }
       });
 
        async function generateECDSA() {
@@ -326,27 +326,27 @@ chmod 600 ~/.ssh/authorized_keys</pre>
         return 'SHA256:' + hashBase64;
       }
 
-      // Copy/Download Helpers
-      const handleAction = async (btnId, elementId, action) => {
+       // Copy/Download Helpers
+       const handleAction = async (btnId, elementId, action) => {
          const el = document.getElementById(elementId);
          const btn = document.getElementById(btnId);
          const content = el.value;
-         
+
          if (action === 'copy') {
-             if(window.copyToClipboard) {
-                 window.copyToClipboard(content, btn);
-             } else {
-                 await navigator.clipboard.writeText(content);
-                 btn.textContent = _t('tools.ssh-key-generator.js.text0', '✓ Copied');
-                 setTimeout(() => btn.textContent = _t('tools.ssh-key-generator.js.text1', 'Copy'), 2000);
-             }
+           if(window.copyToClipboard) {
+             window.copyToClipboard(content, btn);
+           } else {
+             await navigator.clipboard.writeText(content);
+             btn.textContent = _t('tools.ssh-key-generator.js.text0', '✓ Copied');
+             setTimeout(() => btn.textContent = _t('tools.ssh-key-generator.js.text1', 'Copy'), 2000);
+           }
          } else {
-             const keyType = document.querySelector('input[name="keyType"]:checked').value;
-             let filename = 'id_' + keyType;
-             if (elementId === 'public-key') filename += '.pub';
-             downloadFile(content, filename);
+           const keyType = document.querySelector('input[name="keyType"]:checked').value;
+           let filename = 'id_' + keyType;
+           if (elementId === 'public-key') filename += '.pub';
+           downloadFile(content, filename);
          }
-      };
+       };
 
       document.getElementById('copy-public').addEventListener('click', () => handleAction('copy-public', 'public-key', 'copy'));
       document.getElementById('copy-private').addEventListener('click', () => handleAction('copy-private', 'private-key', 'copy'));

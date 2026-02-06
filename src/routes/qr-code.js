@@ -402,28 +402,35 @@ function renderQRCodePage() {
           const imageData = ctx.getImageData(0, 0, decodeCanvas.width, decodeCanvas.height);
           const code = jsQR(imageData.data, imageData.width, imageData.height);
 
-          if (code) {
-            decodeOutput.textContent = code.data;
-            decodeResult.classList.remove('hidden');
-          } else {
-            alert('No QR code found in the image. Please try another image.');
-          }
+           if (code) {
+             decodeOutput.textContent = code.data;
+             decodeResult.classList.remove('hidden');
+           } else {
+             const errMsg = document.getElementById('qr-error-msg');
+             if (errMsg) {
+               errMsg.textContent = 'No QR code found in the image. Please try another image.';
+               errMsg.classList.remove('hidden');
+             }
+           }
         };
 
         img.src = decodeImage.src;
       });
 
-      // Copy decoded text
-      document.getElementById('copy-decoded').addEventListener('click', async () => {
-        const text = decodeOutput.textContent;
-        
-        if(window.copyToClipboard) {
-            window.copyToClipboard(text, document.getElementById('copy-decoded'));
-        } else {
-            await navigator.clipboard.writeText(text);
-            alert('Copied!');
-        }
-      });
+       // Copy decoded text
+       document.getElementById('copy-decoded').addEventListener('click', async () => {
+         const text = decodeOutput.textContent;
+         
+         if(window.copyToClipboard) {
+             window.copyToClipboard(text, document.getElementById('copy-decoded'));
+         } else {
+             await navigator.clipboard.writeText(text);
+             const btn = document.getElementById('copy-decoded');
+             const orig = btn.textContent;
+             btn.textContent = 'Copied!';
+             setTimeout(() => btn.textContent = orig, 2000);
+         }
+       });
     </script>
   `;
 

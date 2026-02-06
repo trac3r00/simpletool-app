@@ -167,16 +167,16 @@ function renderImageConverterPage() {
                   class="w-full px-4 py-2 border border-surface-300 dark:border-surface-700 rounded-lg bg-white dark:bg-surface-950 text-surface-900 dark:text-surface-50" />
               </div>
             </div>
-          </div>
+           </div>
 
-           <!-- Error Banner -->
-           <div id="img-error" role="alert" class="hidden w-full rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 text-sm text-red-700 dark:text-red-200 px-4 py-3"></div>
+          <!-- Error Banner -->
+          <div id="img-error" role="alert" class="hidden w-full rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 text-sm text-red-700 dark:text-red-200 px-4 py-3"></div>
 
-           <!-- Convert Button -->
-           <button id="convert-btn" disabled data-tooltip="Convert image to the selected format and size"
-             class="w-full py-4 px-6 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
-             <span data-i18n="tools.image-converter.ui.button0">🔄 Convert & Resize Image</span>
-           </button>
+          <!-- Convert Button -->
+          <button id="convert-btn" disabled data-tooltip="Convert image to the selected format and size"
+            class="w-full py-4 px-6 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+            <span data-i18n="tools.image-converter.ui.button0">🔄 Convert & Resize Image</span>
+          </button>
         </div>
 
         <!-- Right Column: Preview & Download -->
@@ -359,31 +359,30 @@ function renderImageConverterPage() {
         }
       });
 
-      fileInput.addEventListener('change', (e) => {
-        if (e.target.files.length > 0) {
-          handleFileSelect(e.target.files[0]);
-        }
-      });
-
-       // Handle File Selection
-       // Handle File Selection
-       function handleFileSelect(file) {
-         if (!file) return;
-
-         // Clear any previous errors
-         showImgError('');
-
-         // Large file warning (> 10MB)
-         if (file.size > 10 * 1024 * 1024) {
-           const proceed = confirm(\`This file is large (\${(file.size / 1024 / 1024).toFixed(1)} MB). Processing might slow down your browser. Do you want to continue?\`);
-           if (!proceed) return;
+       fileInput.addEventListener('change', (e) => {
+         if (e.target.files.length > 0) {
+           handleFileSelect(e.target.files[0]);
          }
+       });
 
-         try {
-           if (!file.type.startsWith('image/')) {
-             showImgError('Please upload a valid image file.');
-             return;
-           }
+      // Handle File Selection
+      function handleFileSelect(file) {
+        if (!file) return;
+
+        // Clear any previous errors
+        showImgError('');
+
+        // Large file warning (> 10MB)
+        if (file.size > 10 * 1024 * 1024) {
+          const proceed = confirm(\`This file is large (\${(file.size / 1024 / 1024).toFixed(1)} MB). Processing might slow down your browser. Do you want to continue?\`);
+          if (!proceed) return;
+        }
+
+        try {
+          if (!file.type.startsWith('image/')) {
+            showImgError('Please upload a valid image file.');
+            return;
+          }
 
           originalFile = file;
 
@@ -410,19 +409,19 @@ function renderImageConverterPage() {
               document.getElementById('max-width').value = img.width;
               document.getElementById('max-height').value = img.height;
             };
-             img.onerror = () => {
-               showImgError('Failed to load image. The file might be corrupted.');
-             };
+            img.onerror = () => {
+              showImgError('Failed to load image. The file might be corrupted.');
+            };
             img.src = e.target.result;
           };
-           reader.onerror = () => {
-             showImgError('Error reading file.');
-           };
+          reader.onerror = () => {
+            showImgError('Error reading file.');
+          };
           reader.readAsDataURL(file);
-         } catch (error) {
-           showImgError('An error occurred: ' + error.message);
-           console.error(error);
-         }
+        } catch (error) {
+          showImgError('An error occurred: ' + error.message);
+          console.error(error);
+        }
       }
 
       // Convert Button
@@ -479,13 +478,13 @@ function renderImageConverterPage() {
         const ctx = convertedCanvas.getContext('2d');
         ctx.drawImage(originalImage, 0, 0, width, height);
 
-        // Convert to selected format
-        const mimeType = selectedFormat === 'jpeg' ? 'image/jpeg' :
-                        selectedFormat === 'webp' ? 'image/webp' :
-                        selectedFormat === 'gif' ? 'image/gif' : 'image/png';
+         // Convert to selected format
+         const mimeType = selectedFormat === 'jpeg' ? 'image/jpeg' :
+                         selectedFormat === 'webp' ? 'image/webp' :
+                         selectedFormat === 'gif' ? 'image/gif' : 'image/png';
 
-        const quality = (selectedFormat === 'jpeg' || selectedFormat === 'webp') ?
-                       parseInt(qualitySlider.value) / 100 : undefined;
+         const quality = (selectedFormat === 'jpeg' || selectedFormat === 'webp') ?
+                        parseInt(qualitySlider.value) / 100 : undefined;
 
          convertedCanvas.toBlob((blob) => {
            // Check if blob is null (unsupported format like GIF)
@@ -494,36 +493,36 @@ function renderImageConverterPage() {
              return;
            }
 
-          // Show converted image
-          convertedCanvas.classList.remove('hidden');
-          convertedPlaceholder.classList.add('hidden');
+           // Show converted image
+           convertedCanvas.classList.remove('hidden');
+           convertedPlaceholder.classList.add('hidden');
 
-          // Display info
-          document.getElementById('converted-format').textContent = selectedFormat.toUpperCase();
-          document.getElementById('converted-size').textContent = formatFileSize(blob.size);
-          document.getElementById('converted-dimensions').textContent = \`\${width} x \${height}px\`;
+           // Display info
+           document.getElementById('converted-format').textContent = selectedFormat.toUpperCase();
+           document.getElementById('converted-size').textContent = formatFileSize(blob.size);
+           document.getElementById('converted-dimensions').textContent = \`\${width} x \${height}px\`;
 
-          // Calculate size reduction
-          const reduction = ((originalFile.size - blob.size) / originalFile.size * 100).toFixed(1);
-          const reductionText = reduction > 0 ?
-            \`Reduced by \${reduction}% (\${formatFileSize(originalFile.size - blob.size)} saved)\` :
-            \`Increased by \${Math.abs(reduction)}%\`;
-          document.getElementById('size-reduction').textContent = reductionText;
+           // Calculate size reduction
+           const reduction = ((originalFile.size - blob.size) / originalFile.size * 100).toFixed(1);
+           const reductionText = reduction > 0 ?
+             \`Reduced by \${reduction}% (\${formatFileSize(originalFile.size - blob.size)} saved)\` :
+             \`Increased by \${Math.abs(reduction)}%\`;
+           document.getElementById('size-reduction').textContent = reductionText;
 
-          convertedInfo.classList.remove('hidden');
-          downloadBtn.disabled = false;
+           convertedInfo.classList.remove('hidden');
+           downloadBtn.disabled = false;
 
-          // Store blob for download
-          downloadBtn.onclick = () => {
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            const extension = selectedFormat === 'jpeg' ? 'jpg' : selectedFormat;
-            a.download = \`converted-image.\${extension}\`;
-            a.click();
-            URL.revokeObjectURL(url);
-          };
-        }, mimeType, quality);
+           // Store blob for download
+           downloadBtn.onclick = () => {
+             const url = URL.createObjectURL(blob);
+             const a = document.createElement('a');
+             a.href = url;
+             const extension = selectedFormat === 'jpeg' ? 'jpg' : selectedFormat;
+             a.download = \`converted-image.\${extension}\`;
+             a.click();
+             URL.revokeObjectURL(url);
+           };
+         }, mimeType, quality);
       }
 
       // Maintain aspect ratio helper
