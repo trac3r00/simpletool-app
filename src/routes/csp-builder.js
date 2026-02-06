@@ -229,7 +229,14 @@ function renderCSPBuilderPage() {
         validateAndRenderWarnings(policy);
       }
 
+      let _updateTimer;
+      const debouncedUpdate = () => {
+        clearTimeout(_updateTimer);
+        _updateTimer = setTimeout(updateOutput, 80);
+      };
+
       function applyBaseline() {
+        clearTimeout(_updateTimer);
         inputs['default-src'].value = "'self'";
         inputs['script-src'].value = "'self' 'nonce-{{nonce}}'";
         inputs['style-src'].value = "'self'";
@@ -246,16 +253,17 @@ function renderCSPBuilderPage() {
 
       els.applyBaseline.addEventListener('click', applyBaseline);
       els.parse.addEventListener('click', () => {
+        clearTimeout(_updateTimer);
         const parsed = parseCsp(els.input.value);
         dirIds.forEach(name => {
           inputs[name].value = parsed[name] || '';
         });
-        // Heuristic: if they pasted report-only header, toggle it
         els.reportOnly.checked = /content-security-policy-report-only:/i.test(String(els.input.value || ''));
         updateOutput();
       });
 
       els.clear.addEventListener('click', () => {
+        clearTimeout(_updateTimer);
         els.input.value = '';
         dirIds.forEach(name => (inputs[name].value = ''));
         els.reportOnly.checked = false;
@@ -265,6 +273,7 @@ function renderCSPBuilderPage() {
       });
 
       els.copy.addEventListener('click', async () => {
+        if (_updateTimer) { clearTimeout(_updateTimer); _updateTimer = null; updateOutput(); }
         const text = els.output.value;
         if (!text.trim()) return;
         try {
@@ -278,9 +287,8 @@ function renderCSPBuilderPage() {
       });
 
       els.reportOnly.addEventListener('change', updateOutput);
-      dirIds.forEach(name => inputs[name].addEventListener('input', updateOutput));
+      dirIds.forEach(name => inputs[name].addEventListener('input', debouncedUpdate));
 
-      // initialize
       updateOutput();
     </script>
   `;

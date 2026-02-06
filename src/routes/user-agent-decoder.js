@@ -84,17 +84,19 @@ function renderUserAgentDecoderPage() {
           </div>
         </div>
 
-        <!-- Action Buttons -->
-        <div class="mb-6 flex gap-3">
-          <button id="parse-btn" class="btn btn-primary" data-tooltip="Analyze and break down the User-Agent components" w-full py-3 text-lg">
-            <span data-i18n="tools.user-agent-decoder.ui.button6">🔍 Parse User-Agent</span>
-          </button>
-          <button id="clear-btn" class="btn btn-ghost px-6 text-lg">
-            <span data-i18n="tools.user-agent-decoder.ui.button7">🗑️ Clear</span>
-          </button>
-        </div>
+         <!-- Action Buttons -->
+         <div class="mb-6 flex gap-3">
+           <button id="parse-btn" class="btn btn-primary" data-tooltip="Analyze and break down the User-Agent components" w-full py-3 text-lg">
+             <span data-i18n="tools.user-agent-decoder.ui.button6">🔍 Parse User-Agent</span>
+           </button>
+           <button id="clear-btn" class="btn btn-ghost px-6 text-lg">
+             <span data-i18n="tools.user-agent-decoder.ui.button7">🗑️ Clear</span>
+           </button>
+         </div>
 
-        <!-- Results -->
+         <div id="ua-error" role="alert" class="hidden mb-6 rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 text-sm text-red-700 dark:text-red-200 px-4 py-3"></div>
+
+         <!-- Results -->
         <div id="results" class="hidden">
           <h2 class="text-2xl font-bold text-surface-900 dark:text-surface-50 mb-4" data-i18n="tools.user-agent-decoder.ui.heading13">Parsed Information</h2>
 
@@ -242,14 +244,16 @@ function renderUserAgentDecoderPage() {
         setTimeout(() => btn.textContent = orig, 2000);
       });
 
-      function parseUserAgent() {
-        const ua = uaInput.value.trim();
-        if (!ua) {
-          alert('Please enter a User-Agent string');
-          return;
-        }
+       function parseUserAgent() {
+         const ua = uaInput.value.trim();
+         if (!ua) {
+           document.getElementById('ua-error').textContent = 'Please enter a User-Agent string.';
+           document.getElementById('ua-error').classList.remove('hidden');
+           return;
+         }
 
-        const parsed = analyzeUserAgent(ua);
+         document.getElementById('ua-error').classList.add('hidden');
+         const parsed = analyzeUserAgent(ua);
 
         // Update UI
         document.getElementById('browser-name').textContent = parsed.browser.name || 'Unknown';

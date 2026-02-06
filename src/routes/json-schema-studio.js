@@ -1,7 +1,10 @@
 import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet } from '../utils/common-ui.js';
 
-export async function handleJsonSchemaStudioRoutes(request) {
+export async function handleJsonSchemaStudioRoutes(request, url) {
+  if (url.pathname !== '/json-schema-studio' && url.pathname !== '/json-schema-studio/') return null;
+  if (request.method !== 'GET') return null;
+
   const title = 'JSON Schema Studio';
   const description = 'Generate a JSON Schema from JSON input automatically. Fast, private, and perfect for API documentation.';
 

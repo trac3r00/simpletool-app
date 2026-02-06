@@ -105,6 +105,8 @@ function renderQRCodePage() {
                 </div>
               </div>
 
+              <div id="qr-error-msg" role="alert" class="hidden p-3 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-200 border border-red-200 dark:border-red-800 text-sm"></div>
+
               <button id="generate-qr" class="btn btn-primary" data-tooltip="Generate QR code from the input text or URL" w-full py-4 text-lg">
                 <span data-i18n="tools.qr-code.ui.button0">Generate QR Code</span>
               </button>
@@ -295,7 +297,11 @@ function renderQRCodePage() {
       generateButton.addEventListener('click', async () => {
         const data = document.getElementById('qr-data').value.trim();
         if (!data) {
-          alert('Please enter text or URL to encode');
+          const errMsg = document.getElementById('qr-error-msg');
+          if (errMsg) {
+            errMsg.textContent = 'Please enter text or URL to encode.';
+            errMsg.classList.remove('hidden');
+          }
           return;
         }
 
@@ -309,6 +315,8 @@ function renderQRCodePage() {
         generateButton.innerHTML = 'Generating...';
 
         try {
+          const errMsg = document.getElementById('qr-error-msg');
+          if (errMsg) errMsg.classList.add('hidden');
           const result = await generateQRCode(data, size, errorCorrection, fg, bg, canvas);
           currentSVGMarkup = result.svg;
           currentQRDataURL = result.pngDataUrl;
@@ -321,8 +329,11 @@ function renderQRCodePage() {
           document.getElementById('download-qr-png').disabled = false;
           document.getElementById('download-qr-svg').disabled = false;
         } catch (error) {
-          alert('Error generating QR code: ' + error.message);
-          console.error('QR Error:', error);
+          const errMsg = document.getElementById('qr-error-msg');
+          if (errMsg) {
+            errMsg.textContent = 'Error generating QR code: ' + error.message;
+            errMsg.classList.remove('hidden');
+          }
           currentQRDataURL = null;
           currentSVGMarkup = null;
         } finally {
@@ -391,28 +402,35 @@ function renderQRCodePage() {
           const imageData = ctx.getImageData(0, 0, decodeCanvas.width, decodeCanvas.height);
           const code = jsQR(imageData.data, imageData.width, imageData.height);
 
-          if (code) {
-            decodeOutput.textContent = code.data;
-            decodeResult.classList.remove('hidden');
-          } else {
-            alert('No QR code found in the image. Please try another image.');
-          }
+           if (code) {
+             decodeOutput.textContent = code.data;
+             decodeResult.classList.remove('hidden');
+           } else {
+             const errMsg = document.getElementById('qr-error-msg');
+             if (errMsg) {
+               errMsg.textContent = 'No QR code found in the image. Please try another image.';
+               errMsg.classList.remove('hidden');
+             }
+           }
         };
 
         img.src = decodeImage.src;
       });
 
-      // Copy decoded text
-      document.getElementById('copy-decoded').addEventListener('click', async () => {
-        const text = decodeOutput.textContent;
-        
-        if(window.copyToClipboard) {
-            window.copyToClipboard(text, document.getElementById('copy-decoded'));
-        } else {
-            await navigator.clipboard.writeText(text);
-            alert('Copied!');
-        }
-      });
+       // Copy decoded text
+       document.getElementById('copy-decoded').addEventListener('click', async () => {
+         const text = decodeOutput.textContent;
+         
+         if(window.copyToClipboard) {
+             window.copyToClipboard(text, document.getElementById('copy-decoded'));
+         } else {
+             await navigator.clipboard.writeText(text);
+             const btn = document.getElementById('copy-decoded');
+             const orig = btn.textContent;
+             btn.textContent = 'Copied!';
+             setTimeout(() => btn.textContent = orig, 2000);
+         }
+       });
     </script>
   `;
 

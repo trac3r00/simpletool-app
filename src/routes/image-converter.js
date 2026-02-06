@@ -5,7 +5,7 @@
  * All processing happens client-side using Canvas API
  */
 
-import { createPageTemplate, createToolHeader, getDownloadFileScript } from '../utils/common-ui.js';
+import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
 import { respondHTML } from '../utils/respond.js';
 
 /**
@@ -167,7 +167,10 @@ function renderImageConverterPage() {
                   class="w-full px-4 py-2 border border-surface-300 dark:border-surface-700 rounded-lg bg-white dark:bg-surface-950 text-surface-900 dark:text-surface-50" />
               </div>
             </div>
-          </div>
+           </div>
+
+          <!-- Error Banner -->
+          <div id="img-error" role="alert" class="hidden w-full rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 text-sm text-red-700 dark:text-red-200 px-4 py-3"></div>
 
           <!-- Convert Button -->
           <button id="convert-btn" disabled data-tooltip="Convert image to the selected format and size"
@@ -282,6 +285,18 @@ function renderImageConverterPage() {
       const scaleSlider = document.getElementById('scale-slider');
       const scaleValue = document.getElementById('scale-value');
 
+      // Error banner helper
+      function showImgError(msg) {
+        const el = document.getElementById('img-error');
+        if (msg) {
+          el.textContent = msg;
+          el.classList.remove('hidden');
+        } else {
+          el.textContent = '';
+          el.classList.add('hidden');
+        }
+      }
+
       // Format Selection
       document.querySelectorAll('.format-option').forEach(option => {
         option.addEventListener('click', () => {
@@ -344,16 +359,18 @@ function renderImageConverterPage() {
         }
       });
 
-      fileInput.addEventListener('change', (e) => {
-        if (e.target.files.length > 0) {
-          handleFileSelect(e.target.files[0]);
-        }
-      });
+       fileInput.addEventListener('change', (e) => {
+         if (e.target.files.length > 0) {
+           handleFileSelect(e.target.files[0]);
+         }
+       });
 
-      // Handle File Selection
       // Handle File Selection
       function handleFileSelect(file) {
         if (!file) return;
+
+        // Clear any previous errors
+        showImgError('');
 
         // Large file warning (> 10MB)
         if (file.size > 10 * 1024 * 1024) {
@@ -363,7 +380,7 @@ function renderImageConverterPage() {
 
         try {
           if (!file.type.startsWith('image/')) {
-            alert('Please upload a valid image file.');
+            showImgError('Please upload a valid image file.');
             return;
           }
 
@@ -393,16 +410,16 @@ function renderImageConverterPage() {
               document.getElementById('max-height').value = img.height;
             };
             img.onerror = () => {
-              alert('Failed to load image. The file might be corrupted.');
+              showImgError('Failed to load image. The file might be corrupted.');
             };
             img.src = e.target.result;
           };
           reader.onerror = () => {
-            alert('Error reading file.');
+            showImgError('Error reading file.');
           };
           reader.readAsDataURL(file);
         } catch (error) {
-          alert('An error occurred: ' + error.message);
+          showImgError('An error occurred: ' + error.message);
           console.error(error);
         }
       }
@@ -461,51 +478,51 @@ function renderImageConverterPage() {
         const ctx = convertedCanvas.getContext('2d');
         ctx.drawImage(originalImage, 0, 0, width, height);
 
-        // Convert to selected format
-        const mimeType = selectedFormat === 'jpeg' ? 'image/jpeg' :
-                        selectedFormat === 'webp' ? 'image/webp' :
-                        selectedFormat === 'gif' ? 'image/gif' : 'image/png';
+         // Convert to selected format
+         const mimeType = selectedFormat === 'jpeg' ? 'image/jpeg' :
+                         selectedFormat === 'webp' ? 'image/webp' :
+                         selectedFormat === 'gif' ? 'image/gif' : 'image/png';
 
-        const quality = (selectedFormat === 'jpeg' || selectedFormat === 'webp') ?
-                       parseInt(qualitySlider.value) / 100 : undefined;
+         const quality = (selectedFormat === 'jpeg' || selectedFormat === 'webp') ?
+                        parseInt(qualitySlider.value) / 100 : undefined;
 
-        convertedCanvas.toBlob((blob) => {
-          // Check if blob is null (unsupported format like GIF)
-          if (!blob) {
-            alert(\`Error: \${selectedFormat.toUpperCase()} format is not supported by your browser. Please try PNG, JPG, or WebP instead.\`);
-            return;
-          }
+         convertedCanvas.toBlob((blob) => {
+           // Check if blob is null (unsupported format like GIF)
+           if (!blob) {
+             showImgError(selectedFormat.toUpperCase() + ' format is not supported by your browser. Please try PNG, JPG, or WebP instead.');
+             return;
+           }
 
-          // Show converted image
-          convertedCanvas.classList.remove('hidden');
-          convertedPlaceholder.classList.add('hidden');
+           // Show converted image
+           convertedCanvas.classList.remove('hidden');
+           convertedPlaceholder.classList.add('hidden');
 
-          // Display info
-          document.getElementById('converted-format').textContent = selectedFormat.toUpperCase();
-          document.getElementById('converted-size').textContent = formatFileSize(blob.size);
-          document.getElementById('converted-dimensions').textContent = \`\${width} x \${height}px\`;
+           // Display info
+           document.getElementById('converted-format').textContent = selectedFormat.toUpperCase();
+           document.getElementById('converted-size').textContent = formatFileSize(blob.size);
+           document.getElementById('converted-dimensions').textContent = \`\${width} x \${height}px\`;
 
-          // Calculate size reduction
-          const reduction = ((originalFile.size - blob.size) / originalFile.size * 100).toFixed(1);
-          const reductionText = reduction > 0 ?
-            \`Reduced by \${reduction}% (\${formatFileSize(originalFile.size - blob.size)} saved)\` :
-            \`Increased by \${Math.abs(reduction)}%\`;
-          document.getElementById('size-reduction').textContent = reductionText;
+           // Calculate size reduction
+           const reduction = ((originalFile.size - blob.size) / originalFile.size * 100).toFixed(1);
+           const reductionText = reduction > 0 ?
+             \`Reduced by \${reduction}% (\${formatFileSize(originalFile.size - blob.size)} saved)\` :
+             \`Increased by \${Math.abs(reduction)}%\`;
+           document.getElementById('size-reduction').textContent = reductionText;
 
-          convertedInfo.classList.remove('hidden');
-          downloadBtn.disabled = false;
+           convertedInfo.classList.remove('hidden');
+           downloadBtn.disabled = false;
 
-          // Store blob for download
-          downloadBtn.onclick = () => {
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            const extension = selectedFormat === 'jpeg' ? 'jpg' : selectedFormat;
-            a.download = \`converted-image.\${extension}\`;
-            a.click();
-            URL.revokeObjectURL(url);
-          };
-        }, mimeType, quality);
+           // Store blob for download
+           downloadBtn.onclick = () => {
+             const url = URL.createObjectURL(blob);
+             const a = document.createElement('a');
+             a.href = url;
+             const extension = selectedFormat === 'jpeg' ? 'jpg' : selectedFormat;
+             a.download = \`converted-image.\${extension}\`;
+             a.click();
+             URL.revokeObjectURL(url);
+           };
+         }, mimeType, quality);
       }
 
       // Maintain aspect ratio helper

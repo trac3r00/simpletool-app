@@ -321,9 +321,17 @@ function renderCSSGradientPage() {
             btn.classList.remove('bg-green-700', 'hover:bg-green-800');
             btn.classList.add('bg-blue-700', 'hover:bg-blue-800');
           }, 2000);
-        } catch (err) {
-          alert('Failed to copy CSS to clipboard');
-        }
+         } catch (err) {
+           const btn = document.getElementById('copy-css-btn');
+           btn.textContent = 'Copy failed';
+           btn.classList.remove('bg-blue-700', 'hover:bg-blue-800');
+           btn.classList.add('bg-red-700', 'hover:bg-red-800');
+           setTimeout(() => {
+             btn.textContent = _t('tools.css-gradient.js.text1', '📋 Copy CSS');
+             btn.classList.remove('bg-red-700', 'hover:bg-red-800');
+             btn.classList.add('bg-blue-700', 'hover:bg-blue-800');
+           }, 2000);
+         }
       });
 
       // Preset Gradients

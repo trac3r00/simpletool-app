@@ -114,6 +114,7 @@ function renderColorConverterPage() {
 
         </div>
 
+        <span id="color-live" role="status" class="sr-only"></span>
       </div>
     </main>
   `
@@ -245,6 +246,9 @@ function renderColorConverterPage() {
         };
       }
 
+      const colorLive = document.getElementById('color-live');
+      let _colorAnnounce;
+
       function updateColors(hex) {
         const rgb = hexToRgb(hex);
         if (!rgb) return;
@@ -257,6 +261,9 @@ function renderColorConverterPage() {
         document.getElementById('rgb-value').textContent = \`rgb(\${rgb.r}, \${rgb.g}, \${rgb.b})\`;
         document.getElementById('hsl-value').textContent = \`hsl(\${hsl.h}, \${hsl.s}%, \${hsl.l}%)\`;
         document.getElementById('hsv-value').textContent = \`hsv(\${hsv.h}, \${hsv.s}%, \${hsv.v}%)\`;
+
+        clearTimeout(_colorAnnounce);
+        _colorAnnounce = setTimeout(() => { colorLive.textContent = hex.toUpperCase(); }, 400);
       }
 
       picker.addEventListener('input', (e) => updateColors(e.target.value));

@@ -556,10 +556,15 @@ function renderHashCalculatorPage() {
           
           updateStatusBadge('completed');
 
-        } catch (error) {
-          document.getElementById('hash-results').innerHTML = '<div class="p-6 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl font-mono text-sm">Error: ' + error.message + '</div>';
-          updateStatusBadge('failed');
-        }
+         } catch (error) {
+           const hashResults = document.getElementById('hash-results');
+           hashResults.innerHTML = '';
+           const errDiv = document.createElement('div');
+           errDiv.className = 'p-6 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl font-mono text-sm';
+           errDiv.textContent = 'Error: ' + error.message;
+           hashResults.appendChild(errDiv);
+           updateStatusBadge('failed');
+         }
       }
       // Event delegation for copy buttons
       document.addEventListener('click', (e) => {
