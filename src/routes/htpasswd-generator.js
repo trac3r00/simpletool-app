@@ -134,7 +134,7 @@ function renderHtpasswdPage() {
     </main>
 
     <script src="/vendor/bcrypt.min.js" integrity="sha384-qGFE4FIJLgCFuYs3nzg39XpCtvT5AZUhaBdjB3e1+vpKQa03AkyWOyBSFb9OcQ/g" crossorigin="anonymous"></script>
-    <script src="/vendor/md5.min.js" integrity="sha384-F0j98TCJcD9D2MLRq8QYONEYfgs+t6PZhSBeWX5hveT8h7vY0ykuYP1EUPr9ijq5" crossorigin="anonymous"></script>
+    <script src="/vendor/md5.min.js" integrity="sha384-JmVtRz6RWiXnA14QbIOJzPuU3MidULOpBP66deeLLyyoF4Tr/gZlbkHkL6vTthxH" crossorigin="anonymous"></script>
     <script>
       (function() {
         const usernameInput = document.getElementById('username-input');

@@ -269,7 +269,7 @@ function renderHashCalculatorPage() {
 
   const script = `
     <script src="/vendor/noble-hashes.min.js"></script>
-    <script src="/vendor/md5.min.js" integrity="sha384-F0j98TCJcD9D2MLRq8QYONEYfgs+t6PZhSBeWX5hveT8h7vY0ykuYP1EUPr9ijq5" crossorigin="anonymous"></script>
+    <script src="/vendor/md5.min.js" integrity="sha384-JmVtRz6RWiXnA14QbIOJzPuU3MidULOpBP66deeLLyyoF4Tr/gZlbkHkL6vTthxH" crossorigin="anonymous"></script>
     <script>
       // Tab Management
       const tabButtons = document.querySelectorAll('.tab-button');

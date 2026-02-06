@@ -298,7 +298,7 @@ function renderMarkdownPreviewPage() {
 
   const scripts = `
     <script src="/vendor/marked.min.js" integrity="sha384-9Md4MlJk24bo2Ifubp0FbKhuES4/iAwyTGMeWpBG4RoHGTKygpEGEpOYhEQxbfa9" crossorigin="anonymous"></script>
-    <script src="/vendor/purify.min.js" integrity="sha384-BjfVFB+DQXdwMb+gLCO2/H8GkAukZu/tIKIpJwtsEIKZB1OxoOHwn0dHsiubTmLN" crossorigin="anonymous"></script>
+    <script src="/vendor/purify.min.js" integrity="sha384-80VlBZnyAwkkqtSfg5NhPyZff6nU4K/qniLBL8Jnm4KDv6jZhLiYtJbhglg/i9ww" crossorigin="anonymous"></script>
     <script src="/vendor/mermaid.min.js" integrity="sha384-enVdc7lTHDGtpROV85t9+VqPC2EyyB0hsRD0MrvQnHUsHmTHIz2D8SPP4EnBkstH" crossorigin="anonymous"></script>
 
     <script>
