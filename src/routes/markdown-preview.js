@@ -118,14 +118,14 @@ function renderMarkdownPreviewPage() {
               <div class="w-px h-full bg-surface-200 dark:bg-surface-800"></div>
             </div>
 
-             <!-- Preview -->
-             <div id="md-preview-pane" class="min-h-0 flex flex-col relative group bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-lg overflow-hidden">
-               <div
-                 id="preview-output"
-                 aria-live="polite"
-                 dir="auto"
-                 class="flex-grow w-full p-6 overflow-y-auto prose dark:prose-invert max-w-none prose-sm sm:prose-base prose-pre:bg-surface-100 dark:prose-pre:bg-surface-950 prose-pre:border prose-pre:border-surface-200 dark:prose-pre:border-surface-800"
-               ></div>
+            <!-- Preview -->
+            <div id="md-preview-pane" class="min-h-0 flex flex-col relative group bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-lg overflow-hidden">
+              <div
+                id="preview-output"
+                aria-live="polite"
+                dir="auto"
+                class="flex-grow w-full p-6 overflow-y-auto prose dark:prose-invert max-w-none prose-sm sm:prose-base prose-pre:bg-surface-100 dark:prose-pre:bg-surface-950 prose-pre:border prose-pre:border-surface-200 dark:prose-pre:border-surface-800"
+              ></div>
               <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                 <span class="text-xs text-surface-400 bg-surface-100 dark:bg-surface-800 px-2 py-1 rounded">Preview</span>
               </div>

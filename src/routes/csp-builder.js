@@ -277,16 +277,15 @@ function renderCSPBuilderPage() {
         }
       });
 
-       els.reportOnly.addEventListener('change', updateOutput);
-       let _updateTimer;
-       const debouncedUpdate = () => {
-         clearTimeout(_updateTimer);
-         _updateTimer = setTimeout(updateOutput, 80);
-       };
-       dirIds.forEach(name => inputs[name].addEventListener('input', debouncedUpdate));
+      els.reportOnly.addEventListener('change', updateOutput);
+      let _updateTimer;
+      const debouncedUpdate = () => {
+        clearTimeout(_updateTimer);
+        _updateTimer = setTimeout(updateOutput, 80);
+      };
+      dirIds.forEach(name => inputs[name].addEventListener('input', debouncedUpdate));
 
-       // initialize
-       updateOutput();
+      updateOutput();
     </script>
   `;
 
