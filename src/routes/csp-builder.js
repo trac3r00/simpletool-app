@@ -273,6 +273,7 @@ function renderCSPBuilderPage() {
       });
 
       els.copy.addEventListener('click', async () => {
+        if (_updateTimer) { clearTimeout(_updateTimer); _updateTimer = null; updateOutput(); }
         const text = els.output.value;
         if (!text.trim()) return;
         try {
