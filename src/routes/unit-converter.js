@@ -202,6 +202,7 @@ function renderUnitConverterPage() {
       const fromValueInput = document.getElementById('from-value');
       const toValueInput = document.getElementById('to-value');
       const toValueLive = document.getElementById('to-value-live');
+      let _liveAnnounce;
       const swapBtn = document.getElementById('swap-btn');
       const formulaDisplay = document.getElementById('formula-display');
 
@@ -308,7 +309,8 @@ function renderUnitConverterPage() {
 
         // Format result (avoid floating point errors)
         toValueInput.value = Number(result.toPrecision(10)).toString();
-        toValueLive.textContent = toValueInput.value;
+        clearTimeout(_liveAnnounce);
+        _liveAnnounce = setTimeout(() => { toValueLive.textContent = toValueInput.value; }, 400);
         formulaDisplay.textContent = formulaText;
       }
 

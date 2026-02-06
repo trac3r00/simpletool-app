@@ -45,7 +45,7 @@ function renderMarkdownPreviewPage() {
             </div>
 
             <div class="hidden sm:flex items-center gap-2 text-sm text-surface-600 dark:text-surface-400">
-              <span id="word-count">0 words</span>
+              <span id="word-count" role="status">0 words</span>
               <span class="text-surface-300 dark:text-surface-700">|</span>
               <span id="char-count">0 chars</span>
             </div>
@@ -122,7 +122,6 @@ function renderMarkdownPreviewPage() {
             <div id="md-preview-pane" class="min-h-0 flex flex-col relative group bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-lg overflow-hidden">
               <div
                 id="preview-output"
-                aria-live="polite"
                 dir="auto"
                 class="flex-grow w-full p-6 overflow-y-auto prose dark:prose-invert max-w-none prose-sm sm:prose-base prose-pre:bg-surface-100 dark:prose-pre:bg-surface-950 prose-pre:border prose-pre:border-surface-200 dark:prose-pre:border-surface-800"
               ></div>

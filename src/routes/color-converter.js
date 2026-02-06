@@ -77,7 +77,7 @@ function renderColorConverterPage() {
                     <span class="material-symbols-rounded text-sm" data-i18n="tools.color-converter.ui.desc5">content_copy</span>
                   </button>
                 </div>
-                <div id="hex-value" role="status" class="text-base font-mono font-bold text-surface-900 dark:text-white break-all">#3b82f6</div>
+                <div id="hex-value" class="text-base font-mono font-bold text-surface-900 dark:text-white break-all">#3b82f6</div>
               </div>
 
               <div class="card p-4">
@@ -114,6 +114,7 @@ function renderColorConverterPage() {
 
         </div>
 
+        <span id="color-live" role="status" class="sr-only"></span>
       </div>
     </main>
   `
@@ -245,6 +246,9 @@ function renderColorConverterPage() {
         };
       }
 
+      const colorLive = document.getElementById('color-live');
+      let _colorAnnounce;
+
       function updateColors(hex) {
         const rgb = hexToRgb(hex);
         if (!rgb) return;
@@ -257,6 +261,9 @@ function renderColorConverterPage() {
         document.getElementById('rgb-value').textContent = \`rgb(\${rgb.r}, \${rgb.g}, \${rgb.b})\`;
         document.getElementById('hsl-value').textContent = \`hsl(\${hsl.h}, \${hsl.s}%, \${hsl.l}%)\`;
         document.getElementById('hsv-value').textContent = \`hsv(\${hsv.h}, \${hsv.s}%, \${hsv.v}%)\`;
+
+        clearTimeout(_colorAnnounce);
+        _colorAnnounce = setTimeout(() => { colorLive.textContent = hex.toUpperCase(); }, 400);
       }
 
       picker.addEventListener('input', (e) => updateColors(e.target.value));
