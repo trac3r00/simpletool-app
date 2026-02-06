@@ -1,0 +1,136 @@
+/**
+ * Text Diff Checker Tool
+ * Compare two texts and show differences
+ */
+
+import { respondHTML, respondJSON } from '../utils/respond.js';
+import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
+
+export async function handleTextDiffRoutes(request, url) {
+  const { pathname } = url;
+  const method = request.method;
+
+  try {
+    if (pathname === '/text-diff' || pathname === '/text-diff/') {
+      if (method === 'GET') {
+        return renderTextDiffPage();
+      }
+    }
+
+    return respondJSON({ error: 'Not found' }, { status: 404 });
+  } catch (error) {
+    console.error('Text Diff Route Error:', error);
+    return respondJSON(
+      { error: 'Internal server error', message: error.message },
+      { status: 500 }
+    );
+  }
+}
+
+function renderTextDiffPage() {
+  const toolHeader = createToolHeader(
+    { emoji: '🔍' },
+    'Text Diff',
+    'Compare two texts side-by-side and highlight differences',
+    [{ text: 'Privacy First', color: 'blue', tooltip: 'All processing happens in your browser — no data is sent to any server.' }],
+    { toolId: 'text-diff' }
+  );
+
+  const content = `
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+
+        ${toolHeader}
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <div class="card p-4">
+            <h2 class="text-lg font-semibold mb-2 text-surface-900 dark:text-surface-50" data-i18n="tools.text-diff.ui.heading3">Original Text</h2>
+            <textarea id="text1" rows="15" data-tooltip="Paste the original text here" class="w-full px-4 py-3 bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-800 rounded-lg font-mono text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow resize-none" placeholder="Enter original text..." data-i18n-placeholder="tools.text-diff.ui.placeholder1"></textarea>
+          </div>
+
+          <div class="card p-4">
+            <h2 class="text-lg font-semibold mb-2 text-surface-900 dark:text-surface-50" data-i18n="tools.text-diff.ui.heading4">Modified Text</h2>
+            <textarea id="text2" rows="15" data-tooltip="Paste the modified text here" class="w-full px-4 py-3 bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-800 rounded-lg font-mono text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow resize-none" placeholder="Enter modified text..." data-i18n-placeholder="tools.text-diff.ui.placeholder2"></textarea>
+          </div>
+        </div>
+
+        <button id="compare-btn" class="btn btn-primary" data-tooltip="Compare the two texts and highlight differences" w-full py-4 text-lg mb-6">
+          <span data-i18n="tools.text-diff.ui.button0">Compare Texts</span>
+        </button>
+
+        <div id="result" class="hidden card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50" data-i18n="tools.text-diff.ui.heading5">Differences</h2>
+            <div class="flex gap-4 text-xs">
+              <span class="flex items-center gap-1"><span class="w-3 h-3 bg-green-100 border border-green-300 rounded-sm"></span> Added</span>
+              <span class="flex items-center gap-1"><span class="w-3 h-3 bg-red-100 border border-red-300 rounded-sm"></span> Removed</span>
+            </div>
+          </div>
+          <div id="diff-output" class="font-mono text-sm whitespace-pre-wrap bg-surface-50 dark:bg-surface-950 p-4 rounded-lg border border-surface-200 dark:border-surface-800 overflow-x-auto"></div>
+        </div>
+      </div>
+    </main>
+  `;
+
+  const script = `
+    <style>
+      .diff-add { background-color: rgba(34, 197, 94, 0.2); color: #14532d; }
+      .dark .diff-add { background-color: rgba(34, 197, 94, 0.2); color: #86efac; }
+      
+      .diff-remove { background-color: rgba(239, 68, 68, 0.2); text-decoration: line-through; color: #7f1d1d; }
+      .dark .diff-remove { background-color: rgba(239, 68, 68, 0.2); color: #fca5a5; }
+    </style>
+    <script>
+      function diff(text1, text2) {
+        const lines1 = text1.split('\\n');
+        const lines2 = text2.split('\\n');
+        const result = [];
+
+        const maxLen = Math.max(lines1.length, lines2.length);
+        for (let i = 0; i < maxLen; i++) {
+          const line1 = lines1[i] || '';
+          const line2 = lines2[i] || '';
+
+          if (line1 === line2) {
+            result.push({ type: 'equal', text: line1 });
+          } else {
+            if (line1) result.push({ type: 'remove', text: line1 });
+            if (line2) result.push({ type: 'add', text: line2 });
+          }
+        }
+        return result;
+      }
+
+      // HTML escape function to prevent XSS
+      function escapeHTML(str) {
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+      }
+
+      document.getElementById('compare-btn').addEventListener('click', () => {
+        const text1 = document.getElementById('text1').value;
+        const text2 = document.getElementById('text2').value;
+
+        const differences = diff(text1, text2);
+        const output = differences.map(d => {
+          const escapedText = escapeHTML(d.text);
+          if (d.type === 'add') return '<div class="diff-add px-1">+ ' + escapedText + '</div>';
+          if (d.type === 'remove') return '<div class="diff-remove px-1">- ' + escapedText + '</div>';
+          return '<div class="px-1 text-surface-600 dark:text-surface-400">  ' + escapedText + '</div>';
+        }).join('');
+
+        document.getElementById('diff-output').innerHTML = output || '<span class="text-surface-400 italic" data-i18n="tools.text-diff.ui.desc6">No differences found (or empty input)</span>';
+        document.getElementById('result').classList.remove('hidden');
+      });
+    </script>
+  `;
+
+  return respondHTML(createPageTemplate({
+    title: 'Text Diff',
+    description: 'Compare two texts side-by-side and highlight differences.',
+    path: '/text-diff',
+    content,
+    scripts: script
+  }));
+}

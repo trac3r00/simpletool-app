@@ -1,0 +1,61 @@
+{
+  "name": "simpletool-app-unified",
+  "version": "2.3.0",
+  "description": "Unified SimpleTool App - All tools in one Cloudflare Worker deployment",
+  "type": "module",
+  "scripts": {
+    "build:css": "BROWSERSLIST_IGNORE_OLD_DATA=1 tailwindcss -i ./styles/input.css -o ./dist/styles.css --minify",
+    "build:ui": "node scripts/build-ui.js",
+    "build:vendor": "node scripts/build-vendor.js",
+    "build": "npm run build:css && npm run build:ui && npm run build:vendor",
+    "dev": "npm run build && wrangler dev",
+    "deploy": "npm run build && wrangler deploy",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed"
+  },
+  "dependencies": {
+    "@noble/hashes": "^2.0.1",
+    "bcryptjs": "^2.4.3",
+    "blueimp-md5": "^2.19.0",
+    "dompurify": "^3.0.8",
+    "js-yaml": "^4.1.0",
+    "jsqr": "^1.4.0",
+    "marked": "^11.1.1",
+    "mermaid": "^10.9.1",
+    "node-forge": "^1.3.1",
+    "pako": "^2.1.0",
+    "qrcode": "^1.5.4",
+    "railroad-diagrams": "^1.0.0",
+    "to-json-schema": "^0.2.5",
+    "toml": "^3.0.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20251111.0",
+    "@playwright/test": "^1.58.0",
+    "@tailwindcss/typography": "^0.5.19",
+    "autoprefixer": "^10.4.16",
+    "baseline-browser-mapping": "^2.9.18",
+    "esbuild": "^0.25.0",
+    "lighthouse": "^13.0.1",
+    "postcss": "^8.4.32",
+    "tailwindcss": "^3.4.0",
+    "vitest": "^4.0.8",
+    "wrangler": "^4.60.0"
+  },
+  "keywords": [
+    "cloudflare-workers",
+    "tools",
+    "password-generator",
+    "caffeniate",
+    "utility"
+  ],
+  "author": "SimpleTool App",
+  "license": "MIT",
+  "browserslist": [
+    "defaults"
+  ]
+}

@@ -1,0 +1,4 @@
+// Update common-ui.js to export getStylesheetLinks
+// This is a dummy write to trigger the tool, but I already did it in the previous step.
+// Wait, I need to check if I updated `json-formatter` yet. I haven't.
+// Let's move to the next thought block.

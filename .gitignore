@@ -1,0 +1,46 @@
+# Dependencies
+node_modules/
+
+# Cloudflare / Wrangler
+.wrangler/
+.dev.vars
+
+# Build outputs
+dist/
+src/utils/bundled-styles.js
+
+# Environment variables
+.env
+.env.local
+.env.production
+.env.development
+
+# Testing
+coverage/
+.nyc_output/
+test-results/
+playwright-report/
+playwright/.cache/
+
+# Generated artifacts / reports
+scripts/i18n-manifest.json
+scripts/lighthouse-report.json
+scripts/simulation-report.json
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# OS & Editor
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+.playwright-mcp/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
