@@ -24,6 +24,10 @@ coverage/
 test-results/
 playwright-report/
 playwright/.cache/
+playwright/.auth/
+.vitest/
+junit*.xml
+reports/
 
 # Generated artifacts / reports
 scripts/i18n-manifest.json
