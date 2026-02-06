@@ -66,7 +66,8 @@ function renderUnitConverterPage() {
             </div>
             <div>
               <label for="to-value" class="sr-only">Converted value</label>
-              <input type="number" id="to-value" role="status" placeholder="0" readonly class="w-full px-4 py-3 bg-surface-50 dark:bg-surface-900 border border-surface-300 dark:border-surface-700 rounded-lg text-surface-900 dark:text-surface-50 text-lg font-mono cursor-not-allowed" />
+              <input type="number" id="to-value" placeholder="0" readonly class="w-full px-4 py-3 bg-surface-50 dark:bg-surface-900 border border-surface-300 dark:border-surface-700 rounded-lg text-surface-900 dark:text-surface-50 text-lg font-mono cursor-not-allowed" />
+              <span id="to-value-live" role="status" class="sr-only"></span>
             </div>
           </div>
         </div>
@@ -200,6 +201,7 @@ function renderUnitConverterPage() {
       const toUnitSelect = document.getElementById('to-unit');
       const fromValueInput = document.getElementById('from-value');
       const toValueInput = document.getElementById('to-value');
+      const toValueLive = document.getElementById('to-value-live');
       const swapBtn = document.getElementById('swap-btn');
       const formulaDisplay = document.getElementById('formula-display');
 
@@ -252,6 +254,7 @@ function renderUnitConverterPage() {
         updateUnits();
         fromValueInput.value = '';
         toValueInput.value = '';
+        toValueLive.textContent = '';
         formulaDisplay.textContent = _t('tools.unit-converter.js.text0', 'Select units to see the conversion formula');
       }
 
@@ -280,6 +283,7 @@ function renderUnitConverterPage() {
 
         if (isNaN(value)) {
           toValueInput.value = '';
+          toValueLive.textContent = '';
           formulaDisplay.textContent = _t('tools.unit-converter.js.text1', 'Enter a valid number');
           return;
         }
@@ -304,6 +308,7 @@ function renderUnitConverterPage() {
 
         // Format result (avoid floating point errors)
         toValueInput.value = Number(result.toPrecision(10)).toString();
+        toValueLive.textContent = toValueInput.value;
         formulaDisplay.textContent = formulaText;
       }
 
