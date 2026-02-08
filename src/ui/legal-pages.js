@@ -354,80 +354,161 @@ export function renderPrivacyPage() {
 
 export function renderAboutPage() {
   const body = `
-    <section class="mb-8">
-      <h2>Our Mission</h2>
-      <p>
-        ${SITE_NAME} provides free, privacy-focused web tools for everyone. We believe that essential security and productivity tools should be:
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold mb-4" data-i18n="tools.about.ui.heading1">Our Mission</h2>
+      <p data-i18n="tools.about.ui.text1">
+        ${SITE_NAME} was founded on a simple yet powerful premise: the most essential digital tools should be accessible to everyone, without compromising their privacy or security. In an era where "free" often means "you are the product," we've taken a different path. Our mission is to provide a comprehensive suite of high-performance web utilities that operate with absolute transparency and zero data retention. We believe that the tools you use to manage your digital life—whether it's generating a secure password, inspecting a SAML response, or minifying code—should be as private as a local application on your own computer.
       </p>
-      <ul>
-        <li><strong>Free:</strong> No subscriptions or paywalls; ads help keep the service running</li>
-        <li><strong>Private:</strong> Client-side processing; we don't store your tool inputs</li>
-        <li><strong>Accessible:</strong> No account required, works on any device</li>
-        <li><strong>Transparent:</strong> Clear documentation and open practices</li>
-      </ul>
-      <p>
-        SimpleTool is independently maintained and ad-supported. It is not a charity or nonprofit service.
+      <p data-i18n="tools.about.ui.text2">
+        We differentiate ourselves by moving the computation from the server to the edge—and ultimately to your own device. While competitors often process your sensitive data (like passwords, logs, or certificates) on their backend servers, SimpleTool ensures that your data never leaves your browser. This "Privacy-by-Design" architecture isn't just a feature; it's our fundamental commitment to our users. By eliminating the need for server-side processing, we remove the single most common point of failure in modern web applications: the centralized database. At SimpleTool, there is no database of your secrets because we never ask for them in the first place.
       </p>
-    </section>
-
-    <section class="mb-8">
-      <h2>Why We Built This</h2>
-      <p>
-        We created ${SITE_NAME} because we believe:
+      <p data-i18n="tools.about.ui.text3">
+        The modern web is plagued by the "Privacy Paradox"—the conflict between our need for convenient digital tools and our desire to keep our personal information secure. Most "free" utility sites are built on a business model of data harvesting, where your inputs are logged, analyzed, and often sold to third-party brokers. SimpleTool breaks this cycle. We've engineered our platform to be a "dark" utility: we don't use session recording, we don't run heatmaps, and we don't track your journey through our tools. We provide the utility you need without the surveillance you don't.
       </p>
-      <ul>
-        <li>Basic security tools shouldn't require an account or payment</li>
-        <li>Privacy should be the default, not an option</li>
-        <li>Simple tools shouldn't come with complex privacy policies</li>
-        <li>Users should never have to trust a service with sensitive data</li>
+      <ul class="mt-6 space-y-3">
+        <li data-i18n="tools.about.ui.text4"><strong>Free Forever:</strong> No subscriptions, paywalls, or "pro" tiers. Ads help keep the lights on.</li>
+        <li data-i18n="tools.about.ui.text5"><strong>Absolute Privacy:</strong> 100% client-side processing; your data never touches our disks.</li>
+        <li data-i18n="tools.about.ui.text6"><strong>Universal Access:</strong> No account required. Works instantly on any modern device.</li>
+        <li data-i18n="tools.about.ui.text7"><strong>Radical Transparency:</strong> We are open about how our tools work and the technologies we use.</li>
       </ul>
     </section>
 
-    <section class="mb-8">
-      <h2>How It Works</h2>
-      <p>
-        All our tools run entirely in your web browser using JavaScript:
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold mb-6" data-i18n="tools.about.ui.heading2">By the Numbers</h2>
+      <div class="not-prose grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
+          <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1" data-i18n="tools.about.ui.stat1">45+</div>
+          <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider" data-i18n="tools.about.ui.stat_desc1">Professional Tools</div>
+        </div>
+        <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
+          <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1" data-i18n="tools.about.ui.stat2">4</div>
+          <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider" data-i18n="tools.about.ui.stat_desc2">Global Languages</div>
+        </div>
+        <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
+          <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1" data-i18n="tools.about.ui.stat3">100%</div>
+          <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider" data-i18n="tools.about.ui.stat_desc3">Client-Side</div>
+        </div>
+        <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
+          <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1" data-i18n="tools.about.ui.stat4">0</div>
+          <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider" data-i18n="tools.about.ui.stat_desc4">Bytes Stored</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold mb-4" data-i18n="tools.about.ui.heading3">Technical Philosophy</h2>
+      <p data-i18n="tools.about.ui.text8">
+        Our technical philosophy is rooted in the "Zero Trust" model. We believe that you shouldn't have to trust us with your data because we've designed our system so that we <em>cannot</em> see it even if we wanted to. By leveraging modern web standards like the Web Crypto API and Cloudflare Workers, we've built a platform that is both incredibly fast and inherently secure. This approach allows us to deliver the power of a full-featured utility suite with the security profile of a local script.
       </p>
-      <ul>
-        <li><strong>Client-Side Processing:</strong> Computations happen on your device, not our servers</li>
-        <li><strong>Secure Randomness:</strong> We use <code class="bg-surface-100 dark:bg-surface-800 px-1 rounded">crypto.getRandomValues()</code> for cryptographic-quality random numbers</li>
-        <li><strong>No Data Transmission:</strong> Generated content never leaves your browser</li>
-        <li><strong>Modern Web Standards:</strong> Built with vanilla JavaScript, no heavy frameworks</li>
+      <p data-i18n="tools.about.ui.text9">
+        The shift toward client-side processing is more than just a performance optimization; it's a paradigm shift in user safety. By executing logic locally, we eliminate the risk of server-side data breaches, man-in-the-middle attacks on tool inputs, and unauthorized data harvesting. Every line of code we write is evaluated through the lens of: "How can we do this without touching the user's data?" We embrace the constraints of the browser environment as a catalyst for innovation, finding creative ways to implement complex logic—like log parsing or image conversion—entirely within the user's local execution context.
+      </p>
+      <p data-i18n="tools.about.ui.text10">
+        We are committed to verifiable security. Unlike black-box server-side tools, our client-side logic is transparent. Technically-minded users can inspect the network traffic to confirm that no sensitive data is being transmitted, and they can audit the JavaScript executing in their browser. We believe that true security comes from architecture, not just promises. By using standardized, browser-native APIs like the Web Crypto API, we ensure that our cryptographic operations are performed using the most secure methods available on your device.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold mb-4" data-i18n="tools.about.ui.heading4">Why Client-Side Matters</h2>
+      <p data-i18n="tools.about.ui.text11">
+        In the traditional web model, you send your data to a server, the server processes it, and sends the result back. This model is inherently risky for sensitive data. If the server is compromised, your data is exposed. If the connection is intercepted, your data is exposed. If the company changes its privacy policy, your data might be sold.
+      </p>
+      <p data-i18n="tools.about.ui.text12">
+        By moving the processing to the client side, SimpleTool eliminates these risks. Your data never leaves your device. The "processing" happens in your browser's memory. This means:
+      </p>
+      <ul class="space-y-2">
+        <li data-i18n="tools.about.ui.text13"><strong>Instant Performance:</strong> No network latency for processing. Large files are hashed or parsed at the speed of your local CPU and RAM.</li>
+        <li data-i18n="tools.about.ui.text14"><strong>Offline Capability:</strong> Once the tool is loaded, it can often continue to work even if you lose your internet connection.</li>
+        <li data-i18n="tools.about.ui.text15"><strong>Absolute Privacy:</strong> Even if our servers were compromised, the attacker would find no record of your passwords, logs, or sensitive documents.</li>
+        <li data-i18n="tools.about.ui.text16"><strong>Reduced Carbon Footprint:</strong> By leveraging the computing power already available on your device, we reduce the need for massive, energy-hungry server farms to do the heavy lifting.</li>
+      </ul>
+      <p class="mt-4" data-i18n="tools.about.ui.text17">
+        This approach aligns with the growing "Local-First" software movement, which prioritizes user ownership of data and the ability for software to function independently of centralized cloud services. We believe that the future of the web is decentralized, where the browser acts as a powerful, private workstation rather than just a thin client for remote servers.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold mb-4" data-i18n="tools.about.ui.heading5">Privacy Commitment</h2>
+      <p data-i18n="tools.about.ui.text18">
+        Privacy is not an afterthought at SimpleTool; it is the foundation upon which every tool is built. Our commitment goes beyond mere compliance with regulations like GDPR and CCPA. We strive for "Privacy Excellence," which means we actively seek out ways to minimize our digital footprint and maximize your anonymity. We believe that privacy is a fundamental human right, and in the digital age, that right must be protected by robust technical architecture, not just legal promises.
+      </p>
+      <p data-i18n="tools.about.ui.text19">
+        Our "Privacy-First" pillars include:
+      </p>
+      <ul class="space-y-2">
+        <li data-i18n="tools.about.ui.text20"><strong>No Tracking:</strong> We do not use first-party analytics, tracking pixels, or session recording tools. Your journey through our site is your own.</li>
+        <li data-i18n="tools.about.ui.text21"><strong>No Accounts:</strong> You are never required to sign up, log in, or provide an email address to use our tools. We don't want to know who you are; we just want to help you get your work done.</li>
+        <li data-i18n="tools.about.ui.text22"><strong>No Persistence:</strong> We do not use persistent browser storage (like IndexedDB or long-lived localStorage) for tool data. When you close the tab, your data is gone from our environment.</li>
+        <li data-i18n="tools.about.ui.text23"><strong>Transparency:</strong> We are open about our architecture and how our tools function. We provide clear explanations of the underlying technologies so that technically-minded users can verify our claims.</li>
+      </ul>
+      <p class="mt-4" data-i18n="tools.about.ui.text24">
+        We recognize that privacy is a dynamic field, and we continuously audit our tools to ensure they meet the highest standards of data protection. Our goal is to provide a "safe harbor" on the internet—a place where you can perform sensitive tasks with the confidence that your privacy is being protected by design, not just by policy.
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold mb-4" data-i18n="tools.about.ui.heading6">Technology Stack</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div>
+          <h3 class="text-lg font-semibold mb-2" data-i18n="tools.about.ui.heading7">Infrastructure</h3>
+          <ul class="space-y-2 text-sm">
+            <li data-i18n="tools.about.ui.text25"><strong>Cloudflare Workers:</strong> Our global edge network that serves content from 300+ cities worldwide, ensuring low latency and high availability without the need for traditional origin servers.</li>
+            <li data-i18n="tools.about.ui.text26"><strong>Web Crypto API:</strong> A native browser API that provides a set of hardware-accelerated cryptographic operations, including hashing, signature verification, and encryption.</li>
+            <li data-i18n="tools.about.ui.text27"><strong>WebAssembly (Wasm):</strong> A binary instruction format that allows us to run high-performance code (written in languages like C++ or Rust) at near-native speed directly in your browser.</li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold mb-2" data-i18n="tools.about.ui.heading8">Frontend</h3>
+          <ul class="space-y-2 text-sm">
+            <li data-i18n="tools.about.ui.text28"><strong>Vanilla JavaScript:</strong> We avoid heavy frameworks like React or Vue to keep our bundle size small and our performance high. Our tools are built with clean, modern ES modules.</li>
+            <li data-i18n="tools.about.ui.text29"><strong>Tailwind CSS:</strong> A utility-first CSS framework that allows us to build a beautiful, responsive, and accessible user interface with minimal custom CSS.</li>
+            <li data-i18n="tools.about.ui.text30"><strong>Modern Web APIs:</strong> We leverage the latest browser capabilities, including the File API for local file handling, the Canvas API for image processing, and the Streams API for efficient data manipulation.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold mb-4" data-i18n="tools.about.ui.heading9">For Enterprises</h2>
+      <p data-i18n="tools.about.ui.text31">
+        ${SITE_NAME} is designed to meet the rigorous security and compliance requirements of modern enterprises. By ensuring that sensitive data never leaves the employee's workstation, we help organizations maintain a strong security posture without sacrificing productivity.
+      </p>
+      <p data-i18n="tools.about.ui.text32">
+        In many corporate environments, using third-party web tools is restricted due to the risk of data exfiltration. SimpleTool solves this problem by providing a "Zero-Exfiltration" environment. Because all processing happens locally, security teams can approve the use of our tools with the confidence that proprietary code, sensitive logs, and internal credentials are never transmitted to our infrastructure.
+      </p>
+      <ul class="space-y-2">
+        <li data-i18n="tools.about.ui.text33"><strong>Compliance-Friendly:</strong> Tool inputs are not stored server-side, simplifying data residency and sovereignty requirements.</li>
+        <li data-i18n="tools.about.ui.text34"><strong>Privacy-by-Design:</strong> Our architecture is designed with SOC 2 principles in mind, focusing on security, availability, and confidentiality.</li>
+        <li data-i18n="tools.about.ui.text35"><strong>GDPR/CCPA Compliant:</strong> No personal data processing occurs on our infrastructure, reducing your organization's compliance burden.</li>
+        <li data-i18n="tools.about.ui.text36"><strong>Zero Trust:</strong> Nothing leaves the user's browser, eliminating the risk of data breaches from our platform.</li>
       </ul>
     </section>
 
     <section class="mb-8">
-      <h2>Technology Stack</h2>
-      <ul>
-        <li><strong>Hosting:</strong> Cloudflare Workers (edge computing)</li>
-        <li><strong>Frontend:</strong> Vanilla JavaScript + Tailwind CSS</li>
-        <li><strong>Encryption:</strong> Web Crypto API</li>
-        <li><strong>Libraries:</strong> QRCode.js, jsQR (for QR operations)</li>
-      </ul>
-    </section>
-
-    <section class="mb-8">
-      <h2>For Enterprises</h2>
-      <p>
-        ${SITE_NAME} is suitable for enterprise use:
+      <h2 class="text-2xl font-bold mb-4" data-i18n="tools.about.ui.heading10">Contact & Support</h2>
+      <p data-i18n="tools.about.ui.text37">
+        We are committed to the continuous improvement of SimpleTool and value the input of our community. Whether you're an individual developer, a student, or part of an enterprise security team, your feedback helps us build better, safer tools for everyone.
       </p>
-      <ul>
-        <li><strong>Compliance-Friendly:</strong> Tool inputs are not stored server-side</li>
-        <li><strong>SOC 2 Aligned:</strong> Privacy-by-design architecture</li>
-        <li><strong>GDPR/CCPA Compliant:</strong> No personal data processing</li>
-        <li><strong>Zero Trust:</strong> Nothing leaves the user's browser</li>
-        <li><strong>Auditable:</strong> Open about how tools work</li>
-      </ul>
-    </section>
-
-    <section class="mb-8">
-      <h2>Contact & Support</h2>
-      <p>
-        Have questions, suggestions, or found a bug?
-      </p>
-      <p>
-        Email us: <a href="mailto:${CONTACT_EMAIL}" class="text-primary-600 dark:text-primary-400 hover:underline">${CONTACT_EMAIL}</a>
-      </p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+        <div class="card p-4 border border-surface-200 dark:border-surface-800">
+          <h3 class="font-bold mb-1" data-i18n="tools.about.ui.heading11">General Support</h3>
+          <p class="text-sm text-surface-600 dark:text-surface-400 mb-2" data-i18n="tools.about.ui.text38">Questions, suggestions, or bug reports.</p>
+          <a href="mailto:${CONTACT_EMAIL}" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">${CONTACT_EMAIL}</a>
+          <p class="text-xs text-surface-500 mt-2" data-i18n="tools.about.ui.text39">Response time: 24-48 hours</p>
+        </div>
+        <div class="card p-4 border border-surface-200 dark:border-surface-800">
+          <h3 class="font-bold mb-1" data-i18n="tools.about.ui.heading12">Security Team</h3>
+          <p class="text-sm text-surface-600 dark:text-surface-400 mb-2" data-i18n="tools.about.ui.text40">Vulnerability reports and security concerns.</p>
+          <a href="mailto:security@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">security@simpletool.app</a>
+          <p class="text-xs text-surface-500 mt-2" data-i18n="tools.about.ui.text41">Response time: Priority</p>
+        </div>
+        <div class="card p-4 border border-surface-200 dark:border-surface-800">
+          <h3 class="font-bold mb-1" data-i18n="tools.about.ui.heading13">Business Inquiries</h3>
+          <p class="text-sm text-surface-600 dark:text-surface-400 mb-2" data-i18n="tools.about.ui.text42">Partnerships, enterprise licensing, or media.</p>
+          <a href="mailto:business@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">business@simpletool.app</a>
+          <p class="text-xs text-surface-500 mt-2" data-i18n="tools.about.ui.text43">Response time: 2-3 business days</p>
+        </div>
+      </div>
     </section>
   `;
 
