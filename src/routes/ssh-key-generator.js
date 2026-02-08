@@ -6,6 +6,8 @@
 
 import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
+import { createRelatedToolsSection } from '../utils/content-ui.js';
 
 export async function handleSSHKeyGeneratorRoutes(request, url) {
   const { pathname } = url;
@@ -36,6 +38,10 @@ function renderSSHKeyGeneratorPage() {
     [{ text: 'Private & Secure', color: 'green', tooltip: 'Keys are generated in the browser via the Web Crypto API and private material never leaves your device.' }],
     { toolId: 'ssh-key-generator' }
   );
+
+  const currentTool = TOOLS.find(t => t.id === 'ssh-key-generator');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -186,6 +192,7 @@ chmod 600 ~/.ssh/authorized_keys</pre>
             <tr><td><code>chmod 600 ~/.ssh/id_*</code></td><td>Set correct permissions</td></tr>
           </table>` }
       ])}
+    ${createRelatedToolsSection(relatedToolsData)}
     </main>
   `;
 

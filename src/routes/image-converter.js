@@ -7,7 +7,8 @@
 
 import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
 import { respondHTML } from '../utils/respond.js';
-import { createEducationalSection } from '../utils/content-ui.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 
 /**
  * Render the Image Converter page
@@ -21,6 +22,8 @@ function renderImageConverterPage() {
     { toolId: 'image-converter' }
   );
 
+  const currentTool = TOOLS.find(t => t.id === 'image-converter');
+  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
   const pageContent = `
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -283,6 +286,7 @@ function renderImageConverterPage() {
         }
       ], 'image-converter')}
     </div>
+    ${createRelatedToolsSection(relatedToolsData)}
   `;
 
 

@@ -1,6 +1,8 @@
 import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
 import { t } from '../utils/i18n.js';
+import { TOOLS } from '../utils/tool-registry.js';
+import { createRelatedToolsSection } from '../utils/content-ui.js';
 
 export async function handleCaffeniateRoutes(request, url) {
   if (url.pathname === '/caffeniate' || url.pathname === '/caffeniate/') {
@@ -17,6 +19,10 @@ function renderCaffeniatePage() {
     [{ text: 'Client-Side Only', tooltip: 'Runs entirely in your browser using Web APIs — your data never leaves your device.' }],
     { toolId: 'caffeniate' }
   );
+
+  const currentTool = TOOLS.find(t => t.id === 'caffeniate');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -68,6 +74,7 @@ function renderCaffeniatePage() {
           </div>
         </div>
       </div>
+    ${createRelatedToolsSection(relatedToolsData)}
     </main>
 
     <script>

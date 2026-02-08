@@ -5,7 +5,8 @@
 
 import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
-import { createEducationalSection } from '../utils/content-ui.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 
 export async function handleCaseConverterRoutes(request, url) {
   const { pathname } = url;
@@ -36,6 +37,10 @@ function renderCaseConverterPage() {
     [{ text: '12+ Styles', color: 'indigo', tooltip: 'Supports over a dozen case styles like camelCase, snake_case, kebab-case, and more.' }],
     { toolId: 'case-converter' }
   );
+
+  const currentTool = TOOLS.find(t => t.id === 'case-converter');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -107,6 +112,7 @@ function renderCaseConverterPage() {
           content: '<ul><li>Be consistent within your project; even if you prefer one style, always follow the existing convention of the codebase you are working on.</li><li>Use descriptive names that convey meaning, rather than just following the case convention (e.g., <code>isUserLoggedIn</code> is better than <code>status</code>).</li><li>When working with APIs, be prepared to convert between cases, as backend systems often use <code>snake_case</code> while frontends prefer <code>camelCase</code>.</li></ul>'
         }
       ], 'case-converter')}
+    ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;
 

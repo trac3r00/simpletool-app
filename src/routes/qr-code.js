@@ -5,7 +5,8 @@
 
 import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
-import { createEducationalSection } from '../utils/content-ui.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 
 export async function handleQRCodeRoutes(request, url) {
   const { pathname } = url;
@@ -37,6 +38,8 @@ function renderQRCodePage() {
     { toolId: 'qr-code' }
   );
 
+  const currentTool = TOOLS.find(t => t.id === 'qr-code');
+  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
   const content = `
     <!-- QR Code Libraries -->
     <script src="/vendor/qrcode.min.js" integrity="sha384-B3w4ObQEXH2D3E8FlVZ+pBTHHTrPFwqbXjfU/95D5ekt8DVTeG+cB6s6nVpsvh3m" crossorigin="anonymous"></script>
@@ -107,7 +110,7 @@ function renderQRCodePage() {
         ], 'qr-code')}
       </div>
     </main>
-
+    ${createRelatedToolsSection(relatedToolsData)}
   `;
 
   const script = `

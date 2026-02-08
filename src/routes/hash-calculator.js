@@ -6,7 +6,8 @@
 
 import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint, createEmptyState } from '../utils/common-ui.js';
-import { createEducationalSection } from '../utils/content-ui.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 
 export async function handleHashCalculatorRoutes(request, url) {
   const { pathname } = url;
@@ -39,6 +40,10 @@ function renderHashCalculatorPage() {
     [{ text: 'SHA-256 Recommended', color: 'green', tooltip: 'SHA-256 hashing is used by default because it is cryptographically strong and browser-native.' }],
     { toolId: 'hash-calculator' }
   );
+
+  const currentTool = TOOLS.find(t => t.id === 'hash-calculator');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -308,6 +313,7 @@ function renderHashCalculatorPage() {
           `
         }
       ], 'hash-calculator')}
+    ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;
 

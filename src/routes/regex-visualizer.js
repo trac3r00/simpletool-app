@@ -1,6 +1,7 @@
 import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
-import { createEducationalSection } from '../utils/content-ui.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 
 export async function handleRegexVisualizerRoutes(request) {
   const requestPath = new URL(request.url).pathname;
@@ -17,6 +18,10 @@ export async function handleRegexVisualizerRoutes(request) {
      { text: 'Code Gen', tooltip: 'Generate ready-to-use snippets showing how to use the pattern in code.' }],
     { toolId: 'regex-visualizer' }
   );
+
+  const currentTool = TOOLS.find(t => t.id === 'regex-visualizer');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -226,6 +231,7 @@ while ((m = regex.exec(str)) !== null) {
           content: '<ul><li>Start simple and build complex patterns incrementally</li><li>Use non-capturing groups (?:) when you do not need to reference the match</li><li>Test edge cases like empty strings and special characters</li><li>Consider regex readability—complex patterns can be documented with comments</li></ul>'
         }
       ], 'regex-visualizer')}
+    ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;
 

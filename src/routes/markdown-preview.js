@@ -1,5 +1,7 @@
 import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet } from '../utils/common-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
+import { createRelatedToolsSection } from '../utils/content-ui.js';
 
 export async function handleMarkdownPreviewRoutes(request, url) {
   const { pathname } = url;
@@ -31,6 +33,10 @@ function renderMarkdownPreviewPage() {
      { text: 'Export', tooltip: 'Export Markdown, HTML, or other formats without leaving the page.' }],
     { toolId: 'markdown-preview' }
   );
+
+  const currentTool = TOOLS.find(t => t.id === 'markdown-preview');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -306,6 +312,7 @@ function renderMarkdownPreviewPage() {
           </table>` },
         { heading: 'Code &amp; Tables', content: '<p>Use triple backticks for code blocks with optional language. Tables use pipes: <code>| Col1 | Col2 |</code> with <code>|---|---|</code> separator.</p>' }
       ])}
+    ${createRelatedToolsSection(relatedToolsData)}
     </main>
   `;
 

@@ -10,7 +10,8 @@
 
 import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
-import { createEducationalSection } from '../utils/content-ui.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 
 export async function handleJwkJwksStudioRoutes(request, url) {
   const { pathname } = url;
@@ -38,6 +39,10 @@ function renderJwkJwksStudioPage() {
     [{ text: 'Client-Side Only', tooltip: 'All processing happens in your browser. Nothing is uploaded.' }],
     { toolId: 'jwk-jwks-studio' }
   );
+
+  const currentTool = TOOLS.find(t => t.id === 'jwk-jwks-studio');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
 
   const content = `
     <script src="/vendor/forge.min.js" integrity="sha384-xHPi7wmhLGnxH9OUWvRRdUiqfT3b6SJShD/WWXkabW5wIlCxk2UyJezPvffKACOD" crossorigin="anonymous"></script>
@@ -224,6 +229,7 @@ function renderJwkJwksStudioPage() {
           `
         }
       ], 'jwk-jwks-studio')}
+    ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;
 

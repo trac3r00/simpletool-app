@@ -5,7 +5,8 @@
 
 import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
-import { createEducationalSection } from '../utils/content-ui.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 
 export async function handleTimestampConverterRoutes(request, url) {
   const { pathname } = url;
@@ -36,6 +37,10 @@ function renderTimestampConverterPage() {
     [{ text: 'ISO 8601', color: 'orange', tooltip: 'Outputs converted timestamps in ISO 8601 format (e.g. 2025-01-30T12:00:00Z).' }],
     { toolId: 'timestamp-converter' }
   );
+
+  const currentTool = TOOLS.find(t => t.id === 'timestamp-converter');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -174,6 +179,7 @@ function renderTimestampConverterPage() {
           content: '<ul><li>When working with JavaScript, remember that <code>Date.now()</code> returns milliseconds, while standard Unix timestamps are in seconds. Divide by 1000 to convert.</li><li>Always use the ISO 8601 format (e.g., 2025-01-30T12:00:00Z) for data exchange between systems to ensure maximum compatibility and readability.</li><li>Be aware of the "Year 2038 problem," where 32-bit signed integers will overflow. Modern systems use 64-bit integers, which solves this for the foreseeable future.</li></ul>'
         }
       ], 'timestamp-converter')}
+    ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;
 

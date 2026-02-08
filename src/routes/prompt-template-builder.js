@@ -6,6 +6,8 @@
 
 import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
+import { createRelatedToolsSection } from '../utils/content-ui.js';
 
 export async function handlePromptTemplateBuilderRoutes(request, url) {
   const { pathname } = url;
@@ -30,6 +32,10 @@ function renderPromptTemplateBuilderPage() {
     ],
     { toolId: 'prompt-template-builder' }
   );
+
+  const currentTool = TOOLS.find(t => t.id === 'prompt-template-builder');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -189,6 +195,7 @@ function renderPromptTemplateBuilderPage() {
           </div>
         </div>
       </div>
+    ${createRelatedToolsSection(relatedToolsData)}
     </main>
   `;
 

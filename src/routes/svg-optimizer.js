@@ -7,7 +7,8 @@
 
 import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
-import { createEducationalSection } from '../utils/content-ui.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 
 export async function handleSVGOptimizerRoutes(request, url) {
   const { pathname } = url;
@@ -32,6 +33,10 @@ function renderSVGOptimizerPage() {
     ],
     { toolId: 'svg-optimizer' }
   );
+
+  const currentTool = TOOLS.find(t => t.id === 'svg-optimizer');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -150,6 +155,7 @@ function renderSVGOptimizerPage() {
           content: '<ul><li>Use the "currentColor" button to convert all explicit fills and strokes to <code>currentColor</code>, making your SVG easily styleable via CSS.</li><li>Always optimize your SVGs before using them in production to ensure they are as small as possible for fast web performance.</li><li>When creating SVGs in design tools, use the "Outline Stroke" and "Simplify Path" features to reduce the complexity of the generated code before optimization.</li></ul>'
         }
       ], 'svg-optimizer')}
+    ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;
 

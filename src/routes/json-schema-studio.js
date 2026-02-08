@@ -1,5 +1,7 @@
 import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet } from '../utils/common-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
+import { createRelatedToolsSection } from '../utils/content-ui.js';
 
 export async function handleJsonSchemaStudioRoutes(request, url) {
   if (url.pathname !== '/json-schema-studio' && url.pathname !== '/json-schema-studio/') return null;
@@ -17,6 +19,10 @@ export async function handleJsonSchemaStudioRoutes(request, url) {
      { text: 'Privacy-First', tooltip: 'All processing happens in your browser — no data is sent to any server.' }],
     { toolId: 'json-schema-studio' }
   );
+
+  const currentTool = TOOLS.find(t => t.id === 'json-schema-studio');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -66,6 +72,7 @@ export async function handleJsonSchemaStudioRoutes(request, url) {
             <tr><td>Array</td><td><code>items</code>, <code>minItems</code>, <code>maxItems</code>, <code>uniqueItems</code></td></tr>
           </table>` }
       ])}
+    ${createRelatedToolsSection(relatedToolsData)}
     </main>
   `;
 

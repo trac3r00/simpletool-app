@@ -5,6 +5,8 @@
 
 import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
+import { createRelatedToolsSection } from '../utils/content-ui.js';
 
 export async function handleUniversalDecoderRoutes(request, url) {
   const { pathname } = url;
@@ -39,6 +41,10 @@ function renderUniversalDecoderPage() {
       ],
     { toolId: 'universal-decoder' }
   );
+
+  const currentTool = TOOLS.find(t => t.id === 'universal-decoder');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -211,6 +217,7 @@ function renderUniversalDecoderPage() {
           </section>
         </div>
       </div>
+    ${createRelatedToolsSection(relatedToolsData)}
     </main>
   `;
 

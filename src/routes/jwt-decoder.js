@@ -1,7 +1,8 @@
 import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint, createEmptyState, getBtnLoadingScript } from '../utils/common-ui.js';
 import { createRichEditorPane, getRichEditorStyles, getRichEditorScript } from '../utils/rich-editor.js';
-import { createEducationalSection } from '../utils/content-ui.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 
 export async function handleJWTDecoderRoutes(request, url) {
   const { pathname } = url;
@@ -32,6 +33,10 @@ function renderJWTDecoderPage() {
     [{ text: 'Privacy First', color: 'indigo', tooltip: 'All processing happens in your browser — no data is sent to any server.' }],
     { toolId: 'jwt-decoder' }
   );
+
+  const currentTool = TOOLS.find(t => t.id === 'jwt-decoder');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -210,6 +215,7 @@ function renderJWTDecoderPage() {
           content: '<ul><li>Use the <strong>"exp"</strong> claim to set a short expiration time for access tokens to minimize the impact of a stolen token.</li><li>Always use <strong>HTTPS</strong> to transmit JWTs to prevent interception via man-in-the-middle attacks.</li><li>If using asymmetric algorithms (like RS256), you can share your public key so other services can verify your tokens without being able to create them.</li><li>Check for the <strong>"nbf"</strong> (Not Before) claim if you want to issue a token that only becomes valid at a specific future time.</li></ul>'
         }
       ], 'jwt-decoder')}
+    ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;
 

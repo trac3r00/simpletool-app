@@ -6,7 +6,8 @@
 import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createEmptyState, getCopyToClipboardScript } from '../utils/common-ui.js';
 import { createRichEditorPane, getRichEditorStyles, getRichEditorScript } from '../utils/rich-editor.js';
-import { createEducationalSection } from '../utils/content-ui.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 
 export async function handleJSONFormatterRoutes(request, url) {
   const { pathname } = url;
@@ -37,6 +38,10 @@ function renderJSONFormatterPage() {
     [{ text: 'Privacy First', color: 'green', tooltip: 'All processing happens in your browser — no data is sent to any server.' }],
     { toolId: 'json-formatter' }
   );
+
+  const currentTool = TOOLS.find(t => t.id === 'json-formatter');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -128,6 +133,7 @@ function renderJSONFormatterPage() {
           content: '<ul><li>Use the "Validate" button if you only want to check for syntax errors without changing the formatting of your input.</li><li>Pay attention to the "Max Depth" statistic to identify overly complex or deeply nested structures that might cause performance issues.</li><li>Always use double quotes for keys and string values, as single quotes are invalid in standard JSON.</li></ul>'
         }
       ], 'json-formatter')}
+    ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;
 

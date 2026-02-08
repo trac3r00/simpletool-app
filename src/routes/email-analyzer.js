@@ -7,7 +7,8 @@
 
 import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
-import { createEducationalSection } from '../utils/content-ui.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 
 export async function handleEmailAnalyzerRoutes(request, url) {
   const { pathname } = url;
@@ -32,6 +33,10 @@ function renderEmailAnalyzerPage() {
     ],
     { toolId: 'email-analyzer' }
   );
+
+  const currentTool = TOOLS.find(t => t.id === 'email-analyzer');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -207,6 +212,7 @@ function renderEmailAnalyzerPage() {
           content: '<ul><li>Always check the <strong>"Authentication-Results"</strong> header first; it provides the definitive outcome of the security checks performed by your mail provider.</li><li>Use the <strong>"Mask PII"</strong> option when sharing reports with others to protect sensitive email addresses and IP information.</li><li>Pay close attention to the <strong>"Reply-To"</strong> header; if it differs from the "From" address, it may be a sign of a Business Email Compromise (BEC) attack.</li><li>Review the <strong>"Routing Hops"</strong> to see the path the email took; an unusually long or complex path through unknown servers can be a sign of relay abuse.</li></ul>'
         }
       ], 'email-analyzer')}
+    ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;
 

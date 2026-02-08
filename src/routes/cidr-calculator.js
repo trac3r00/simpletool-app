@@ -5,7 +5,8 @@
 
 import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
-import { createEducationalSection } from '../utils/content-ui.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 
 export async function handleCIDRCalculatorRoutes(request, url) {
   const { pathname } = url;
@@ -33,6 +34,8 @@ function renderCIDRCalculatorPage() {
     { toolId: 'cidr-calculator' }
   );
 
+  const currentTool = TOOLS.find(t => t.id === 'cidr-calculator');
+  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       
@@ -259,6 +262,7 @@ function renderCIDRCalculatorPage() {
           </table>` }
       ])}
     </main>
+    ${createRelatedToolsSection(relatedToolsData)}
 
     <script>
       (function() {

@@ -6,7 +6,8 @@
  */
 
 import { createPageTemplate, createToolHeader, getCopyToClipboardScript } from '../utils/common-ui.js';
-import { createEducationalSection } from '../utils/content-ui.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 import { respondHTML } from '../utils/respond.js';
 
 /**
@@ -21,6 +22,8 @@ function renderCSSGradientPage() {
     { toolId: 'css-gradient' }
   );
 
+  const currentTool = TOOLS.find(t => t.id === 'css-gradient');
+  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
   const pageContent = `
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -178,6 +181,7 @@ function renderCSSGradientPage() {
         }
       ], 'css-gradient-generator')}
     </div>
+    ${createRelatedToolsSection(relatedToolsData)}
 
     ${getCopyToClipboardScript()}
 

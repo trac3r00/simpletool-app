@@ -1,6 +1,8 @@
 import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, createMobileTabView, getMobileTabScript, createEmptyState } from '../utils/common-ui.js';
 import { createRichEditorPane, getRichEditorStyles, getRichEditorScript } from '../utils/rich-editor.js';
+import { TOOLS } from '../utils/tool-registry.js';
+import { createRelatedToolsSection } from '../utils/content-ui.js';
 
 export async function handleMermaidStudioRoutes(request, url) {
   if (url.pathname !== '/mermaid-studio' && url.pathname !== '/mermaid-studio/') return null;
@@ -18,6 +20,10 @@ export async function handleMermaidStudioRoutes(request, url) {
      { text: 'SVG Export', tooltip: 'Download the rendered diagram as an SVG file for reuse.' }],
     { toolId: 'mermaid-studio' }
   );
+
+  const currentTool = TOOLS.find(t => t.id === 'mermaid-studio');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -75,6 +81,7 @@ export async function handleMermaidStudioRoutes(request, url) {
             <tr><td><code>A==&gt;B</code></td><td>Thick arrow</td></tr>
           </table>` }
       ])}
+    ${createRelatedToolsSection(relatedToolsData)}
     </main>
   `;
 

@@ -1,9 +1,15 @@
 import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
+import { createRelatedToolsSection } from '../utils/content-ui.js';
 
 export async function handleLogViewerRoutes(request, url) {
   if (url.pathname !== '/log-viewer' && url.pathname !== '/log-viewer/') return null;
   if (request.method !== 'GET') return null;
+
+  const currentTool = TOOLS.find(t => t.id === 'log-viewer');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -95,6 +101,7 @@ export async function handleLogViewerRoutes(request, url) {
           </div>
         </div>
       </div>
+    ${createRelatedToolsSection(relatedToolsData)}
     </main>
 
     <style>

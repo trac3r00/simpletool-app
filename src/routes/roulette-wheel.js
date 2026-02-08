@@ -35,12 +35,12 @@ function renderRouletteWheelPage() {
       }
       .rw-wheel-wrap {
         width: min(640px, 100%);
-        min-width: 340px;
+        min-width: 260px;
         aspect-ratio: 1 / 1;
       }
       .rw-canvas {
         image-rendering: auto;
-        touch-action: manipulation;
+        touch-action: pan-x pan-y;
       }
       .rw-result {
         opacity: 0;

@@ -5,7 +5,8 @@
 
 import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
-import { createEducationalSection } from '../utils/content-ui.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 
 export async function handleUUIDGeneratorRoutes(request, url) {
   const { pathname } = url;
@@ -37,6 +38,8 @@ function renderUUIDGeneratorPage() {
     { toolId: 'uuid-generator' }
   );
 
+  const currentTool = TOOLS.find(t => t.id === 'uuid-generator');
+  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
@@ -111,7 +114,7 @@ function renderUUIDGeneratorPage() {
         ], 'uuid-generator')}
       </div>
     </main>
-
+    ${createRelatedToolsSection(relatedToolsData)}
   `;
 
   const script = `

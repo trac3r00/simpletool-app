@@ -1,10 +1,14 @@
 import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, getCopyToClipboardScript, createCheatsheet, infoHint } from '../utils/common-ui.js';
-import { createEducationalSection } from '../utils/content-ui.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 
 export async function handleCronBuilderRoutes(request) {
   const requestPath = new URL(request.url).pathname;
   const canonicalPath = requestPath.replace(/\/$/, '') || '/';
+  const currentTool = TOOLS.find(t => t.id === 'cron-builder');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6 lg:h-[calc(100vh-9rem)] min-h-[800px]">
       ${createToolHeader(
@@ -268,6 +272,7 @@ export async function handleCronBuilderRoutes(request) {
             <tr><td><code>0 9-17 * * 1-5</code></td><td>Hourly 9am–5pm weekdays</td></tr>
           </table>` }
       ])}
+    ${createRelatedToolsSection(relatedToolsData)}
     </main>
 
     <script>

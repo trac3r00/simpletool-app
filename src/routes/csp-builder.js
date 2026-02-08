@@ -7,7 +7,8 @@
 
 import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
-import { createEducationalSection } from '../utils/content-ui.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 
 export async function handleCSPBuilderRoutes(request, url) {
   const { pathname } = url;
@@ -32,6 +33,10 @@ function renderCSPBuilderPage() {
     ],
     { toolId: 'csp-builder' }
   );
+
+  const currentTool = TOOLS.find(t => t.id === 'csp-builder');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -123,6 +128,7 @@ function renderCSPBuilderPage() {
           }
         ])}
       </div>
+    ${createRelatedToolsSection(relatedToolsData)}
     </main>
   `;
 

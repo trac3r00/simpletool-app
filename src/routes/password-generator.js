@@ -5,7 +5,8 @@
 
 import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
-import { createEducationalSection } from '../utils/content-ui.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 
 export async function handlePasswordGeneratorRoutes(request, url) {
   const { pathname } = url;
@@ -48,6 +49,10 @@ function renderPasswordGeneratorPage() {
     [{ text: 'Client-Side Only', color: 'blue', tooltip: 'Runs entirely in your browser using Web APIs — your data never leaves your device.' }],
     { toolId: 'password-generator' }
   );
+
+  const currentTool = TOOLS.find(t => t.id === 'password-generator');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -377,6 +382,7 @@ function renderPasswordGeneratorPage() {
           content: '<ul><li>Use the "Passphrase" mode for accounts you need to type manually; they are easier to remember but still highly secure.</li><li>For maximum security, generate the longest password allowed by the service (often 64 or 128 characters).</li><li>Regularly audit your saved passwords using your password manager\'s built-in security check features.</li><li>Consider using "Plus Aliases" (e.g., user+service@gmail.com) to track which services sell your data or send spam.</li></ul>'
         }
       ], 'password-generator')}
+    ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;
 

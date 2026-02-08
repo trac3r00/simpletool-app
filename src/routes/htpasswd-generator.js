@@ -5,7 +5,8 @@
 
 import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, infoHint } from '../utils/common-ui.js';
-import { createEducationalSection } from '../utils/content-ui.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 
 export async function handleHtpasswdRoutes(request, url) {
   const { pathname } = url;
@@ -21,6 +22,9 @@ export async function handleHtpasswdRoutes(request, url) {
 }
 
 function renderHtpasswdPage() {
+  const currentTool = TOOLS.find(t => t.id === 'htpasswd-generator');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
   const content = `
     <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
        <header class="bg-white/90 dark:bg-surface-900/80 border border-surface-200 dark:border-surface-800 rounded-3xl shadow-xl p-8">
@@ -176,6 +180,7 @@ function renderHtpasswdPage() {
           `
         }
       ], 'htpasswd-generator')}
+    ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;
 

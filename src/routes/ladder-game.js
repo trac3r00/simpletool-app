@@ -69,7 +69,7 @@ function renderLadderGamePage() {
 
           <div class="border border-surface-200 dark:border-surface-800 rounded-xl bg-white dark:bg-surface-950 overflow-hidden">
             <div id="ladder-scroll" class="overflow-x-auto">
-              <div id="ladder-stage" class="p-3 sm:p-4" style="width: 760px;">
+              <div id="ladder-stage" class="p-3 sm:p-4">
                 <div class="grid gap-3" style="grid-template-rows: auto auto auto;">
                   <div id="players-row" class="flex gap-2" aria-label="Players"></div>
 

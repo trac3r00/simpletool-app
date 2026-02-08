@@ -8,7 +8,8 @@
 
 import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
-import { createEducationalSection } from '../utils/content-ui.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 
 export async function handleEnvVarManagerRoutes(request, url) {
   const { pathname } = url;
@@ -33,6 +34,10 @@ function renderEnvVarManagerPage() {
     ],
     { toolId: 'env-var-manager' }
   );
+
+  const currentTool = TOOLS.find(t => t.id === 'env-var-manager');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -175,6 +180,7 @@ function renderEnvVarManagerPage() {
           content: '<ul><li>Use the <strong>"Swap"</strong> button to quickly reverse the comparison direction between Environment A and Environment B.</li><li>Leverage the <strong>"Filter keys"</strong> input to focus on specific groups of variables, such as all keys starting with <code>AWS_</code> or <code>DB_</code>.</li><li>Always include a <code>.env.example</code> file in your repository with dummy values to show other developers which variables are required for the app to run.</li><li>Remember that environment variables are typically strings; if your app needs a boolean or a number, ensure you parse the value correctly in your code.</li></ul>'
         }
       ], 'env-var-manager')}
+    ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;
 

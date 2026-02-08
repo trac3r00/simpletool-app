@@ -1,6 +1,7 @@
 import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, getCopyToClipboardScript } from '../utils/common-ui.js';
-import { createEducationalSection } from '../utils/content-ui.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 
 export async function handleLogMaskerRoutes(request, url) {
   if (url.pathname !== '/log-masker' && url.pathname !== '/log-masker/') return null;
@@ -18,6 +19,10 @@ export async function handleLogMaskerRoutes(request, url) {
      { text: 'Secure', tooltip: 'Masks sensitive fields before displaying results to keep logs private.' }],
     { toolId: 'log-masker' }
   );
+
+  const currentTool = TOOLS.find(t => t.id === 'log-masker');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -89,6 +94,7 @@ export async function handleLogMaskerRoutes(request, url) {
           content: '<ul><li>Use the <strong>"Custom Keywords"</strong> field to redact internal identifiers like API keys, session tokens, or proprietary project names that aren\'t covered by standard patterns.</li><li>Always perform masking <strong>locally</strong> (as this tool does) to ensure sensitive data never touches a third-party server during the scrubbing process.</li><li>If you are correlating logs across multiple systems, consider using a consistent "salt" with a hashing tool instead of simple redaction to maintain traceability.</li><li>Regularly audit your application code to prevent PII from being logged in the first place; "log at the source" is the best defense.</li></ul>'
         }
       ], 'log-masker')}
+    ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;
 

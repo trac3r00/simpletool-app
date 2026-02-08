@@ -6,7 +6,8 @@
 
 import { createPageTemplate, createToolHeader, getCopyToClipboardScript, getDownloadFileScript } from '../utils/common-ui.js';
 import { respondHTML } from '../utils/respond.js';
-import { createEducationalSection } from '../utils/content-ui.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 
 /**
  * Render the Code Minifier page
@@ -20,6 +21,8 @@ function renderCodeMinifierPage() {
     { toolId: 'code-minifier' }
   );
 
+  const currentTool = TOOLS.find(t => t.id === 'code-minifier');
+  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
   const pageContent = `
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -133,6 +136,7 @@ function renderCodeMinifierPage() {
         }
       ], 'code-minifier')}
     </div>
+    ${createRelatedToolsSection(relatedToolsData)}
   `;
 
 

@@ -5,7 +5,8 @@
 
 import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
-import { createEducationalSection } from '../utils/content-ui.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 
 export async function handleCertificateDecoderRoutes(request, url) {
   const { pathname } = url;
@@ -36,6 +37,10 @@ function renderCertificateDecoderPage() {
     [{ text: 'Privacy First', color: 'emerald', tooltip: 'All processing happens in your browser — no data is sent to any server.' }],
     { toolId: 'certificate-decoder' }
   );
+
+  const currentTool = TOOLS.find(t => t.id === 'certificate-decoder');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
 
   const content = `
     <script src="/vendor/forge.min.js" integrity="sha384-xHPi7wmhLGnxH9OUWvRRdUiqfT3b6SJShD/WWXkabW5wIlCxk2UyJezPvffKACOD" crossorigin="anonymous"></script>
@@ -207,6 +212,7 @@ function renderCertificateDecoderPage() {
           `
         }
       ], 'certificate-decoder')}
+    ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;
 

@@ -8,7 +8,8 @@
 import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint, createEmptyState, getBtnLoadingScript } from '../utils/common-ui.js';
 import { createRichEditorPane, getRichEditorStyles, getRichEditorScript } from '../utils/rich-editor.js';
-import { createEducationalSection } from '../utils/content-ui.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 
 export async function handleSQLFormatterRoutes(request, url) {
   const { pathname } = url;
@@ -33,6 +34,10 @@ function renderSQLFormatterPage() {
     ],
     { toolId: 'sql-formatter' }
   );
+
+  const currentTool = TOOLS.find(t => t.id === 'sql-formatter');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -129,6 +134,7 @@ function renderSQLFormatterPage() {
           content: '<ul><li>Use Common Table Expressions (CTEs) with the <code>WITH</code> clause to break down complex queries into smaller, more manageable parts.</li><li>Always use descriptive aliases for tables and columns to make the intent of your query clear to others.</li><li>Use the "Minify" button if you need to compress your SQL into a single line for use in configuration files or command-line tools.</li></ul>'
         }
       ], 'sql-formatter')}
+    ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;
 

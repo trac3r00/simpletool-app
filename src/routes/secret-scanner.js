@@ -7,7 +7,8 @@
 
 import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
-import { createEducationalSection } from '../utils/content-ui.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 
 export async function handleSecretScannerRoutes(request, url) {
   const { pathname } = url;
@@ -32,6 +33,10 @@ function renderSecretScannerPage() {
     ],
     { toolId: 'secret-scanner' }
   );
+
+  const currentTool = TOOLS.find(t => t.id === 'secret-scanner');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -138,6 +143,7 @@ function renderSecretScannerPage() {
           content: '<ul><li>Always rotate your credentials immediately if you discover they have been leaked.</li><li>Use environment variables or secret managers instead of hardcoding secrets in your source code.</li><li>Enable "Include low severity patterns" for a more thorough scan, but be prepared for more false positives.</li></ul>'
         }
       ], 'secret-scanner')}
+    ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;
 

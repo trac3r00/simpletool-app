@@ -17,7 +17,8 @@ export const TOOLS = [
     description: 'Validate, format, and minify JSON data.',
     path: '/json-formatter',
     category: 'formatters',
-    keywords: 'lint, validator, beautify'
+    keywords: 'lint, validator, beautify',
+    relatedTools: ['json-schema-studio', 'yaml-toml-converter', 'jwt-decoder', 'text-diff']
   },
   {
     id: 'jwt-decoder',
@@ -27,7 +28,8 @@ export const TOOLS = [
     path: '/jwt-decoder',
     category: 'security',
     keywords: 'token, auth, base64',
-    tip: 'Decode JWT header, payload, and verify signature — paste any JWT to see its claims'
+    tip: 'Decode JWT header, payload, and verify signature — paste any JWT to see its claims',
+    relatedTools: ['jwk-jwks-studio', 'saml-decoder', 'universal-decoder', 'json-formatter']
   },
   {
     id: 'uuid-generator',
@@ -36,7 +38,8 @@ export const TOOLS = [
     description: 'Generate standard UUIDs (v1, v4).',
     path: '/uuid-generator',
     category: 'generators',
-    keywords: 'guid, identifier, unique'
+    keywords: 'guid, identifier, unique',
+    relatedTools: ['password-generator', 'mock-data-generator', 'hash-calculator']
   },
   {
     id: 'password-generator',
@@ -45,7 +48,8 @@ export const TOOLS = [
     description: 'Create secure, random passwords.',
     path: '/password-generator',
     category: 'security',
-    keywords: 'random, secure, strong'
+    keywords: 'random, secure, strong',
+    relatedTools: ['hash-calculator', 'htpasswd-generator', 'ssh-key-generator', 'secret-scanner']
   },
   {
     id: 'hash-calculator',
@@ -54,7 +58,8 @@ export const TOOLS = [
     description: 'Compute SHA256, MD5, and other hashes.',
     path: '/hash-calculator',
     category: 'security',
-    keywords: 'checksum, crypto, digest'
+    keywords: 'checksum, crypto, digest',
+    relatedTools: ['password-generator', 'htpasswd-generator', 'certificate-decoder', 'secret-scanner']
   },
   {
     id: 'cidr-calculator',
@@ -64,7 +69,8 @@ export const TOOLS = [
     path: '/cidr-calculator',
     category: 'network',
     keywords: 'ip, subnet, mask, network',
-    tip: 'Enter a CIDR like 10.0.0.0/24 to see network range, broadcast address, and available hosts'
+    tip: 'Enter a CIDR like 10.0.0.0/24 to see network range, broadcast address, and available hosts',
+    relatedTools: ['curl-studio', 'user-agent-decoder', 'csp-builder']
   },
   {
     id: 'text-diff',
@@ -73,7 +79,8 @@ export const TOOLS = [
     description: 'Compare two text files for differences.',
     path: '/text-diff',
     category: 'utils',
-    keywords: 'compare, changes, delta'
+    keywords: 'compare, changes, delta',
+    relatedTools: ['json-formatter', 'code-minifier', 'env-var-manager', 'markdown-preview']
   },
   {
     id: 'regex-visualizer',
@@ -83,7 +90,8 @@ export const TOOLS = [
     path: '/regex-visualizer',
     category: 'utils',
     keywords: 'pattern, match, test, railroad',
-    tip: 'See railroad diagrams, token-by-token explanations, and live match highlighting for any regex'
+    tip: 'See railroad diagrams, token-by-token explanations, and live match highlighting for any regex',
+    relatedTools: ['text-diff', 'case-converter', 'log-viewer', 'code-minifier']
   },
   {
     id: 'universal-decoder',
@@ -93,7 +101,8 @@ export const TOOLS = [
     path: '/universal-decoder',
     category: 'formatters',
     keywords: 'base64, hex, url, html',
-    tip: 'Paste encoded text and watch it unwrap layer by layer — Base64 inside URL encoding inside Hex, etc.'
+    tip: 'Paste encoded text and watch it unwrap layer by layer — Base64 inside URL encoding inside Hex, etc.',
+    relatedTools: ['jwt-decoder', 'saml-decoder', 'hash-calculator', 'json-formatter']
   },
   {
     id: 'cron-builder',
@@ -103,7 +112,8 @@ export const TOOLS = [
     path: '/cron-builder',
     category: 'utils',
     keywords: 'schedule, time, expression, crontab',
-    tip: 'Build cron expressions with dropdowns — see plain English descriptions and the next 5 run times'
+    tip: 'Build cron expressions with dropdowns — see plain English descriptions and the next 5 run times',
+    relatedTools: ['timestamp-converter', 'curl-studio', 'token-counter']
   },
   {
     id: 'ssh-key-generator',
@@ -112,7 +122,8 @@ export const TOOLS = [
     description: 'Generate RSA and ECDSA SSH keys.',
     path: '/ssh-key-generator',
     category: 'security',
-    keywords: 'openssh, pem, public key'
+    keywords: 'openssh, pem, public key',
+    relatedTools: ['certificate-decoder', 'password-generator', 'jwk-jwks-studio', 'htpasswd-generator']
   },
   {
     id: 'certificate-decoder',
@@ -122,7 +133,8 @@ export const TOOLS = [
     path: '/certificate-decoder',
     category: 'security',
     keywords: 'ssl, tls, pem, x509',
-    tip: 'Paste a PEM certificate to see issuer, subject, validity dates, SANs, and key details'
+    tip: 'Paste a PEM certificate to see issuer, subject, validity dates, SANs, and key details',
+    relatedTools: ['ssh-key-generator', 'jwk-jwks-studio', 'saml-decoder', 'csp-builder']
   },
   {
     id: 'jwk-jwks-studio',
@@ -133,7 +145,8 @@ export const TOOLS = [
     category: 'security',
     keywords: 'jwk, jwks, jose, oidc, kid, rfc 7638, thumbprint, jwt, rs256, ps256, es256',
     tip: 'Paste a JWK/JWKS or PEM public key to compute a correct kid (thumbprint) and verify JWTs client-side',
-    badge: 'NEW'
+    badge: 'NEW',
+    relatedTools: ['jwt-decoder', 'certificate-decoder', 'ssh-key-generator', 'saml-decoder']
   },
   {
     id: 'saml-decoder',
@@ -143,7 +156,8 @@ export const TOOLS = [
     path: '/saml-decoder',
     category: 'security',
     keywords: 'sso, xml, assertion',
-    tip: 'Decode Base64-encoded SAML requests and responses into readable XML for SSO debugging'
+    tip: 'Decode Base64-encoded SAML requests and responses into readable XML for SSO debugging',
+    relatedTools: ['jwt-decoder', 'certificate-decoder', 'universal-decoder', 'email-analyzer']
   },
   {
     id: 'user-agent-decoder',
@@ -152,7 +166,8 @@ export const TOOLS = [
     description: 'Parse and analyze User-Agent strings.',
     path: '/user-agent-decoder',
     category: 'network',
-    keywords: 'browser, os, device'
+    keywords: 'browser, os, device',
+    relatedTools: ['curl-studio', 'cidr-calculator', 'log-viewer', 'email-analyzer']
   },
   {
     id: 'qr-code',
@@ -161,7 +176,8 @@ export const TOOLS = [
     description: 'Generate QR codes for URLs and text.',
     path: '/qr-code',
     category: 'generators',
-    keywords: '2d, barcode, scan'
+    keywords: '2d, barcode, scan',
+    relatedTools: ['image-converter', 'uuid-generator', 'color-converter']
   },
   {
     id: 'timestamp-converter',
@@ -170,7 +186,8 @@ export const TOOLS = [
     description: 'Convert Unix timestamps to human dates.',
     path: '/timestamp-converter',
     category: 'formatters',
-    keywords: 'epoch, time, date'
+    keywords: 'epoch, time, date',
+    relatedTools: ['cron-builder', 'unit-converter', 'json-formatter']
   },
   {
     id: 'color-converter',
@@ -179,7 +196,8 @@ export const TOOLS = [
     description: 'Convert HEX, RGB, and HSL colors.',
     path: '/color-converter',
     category: 'formatters',
-    keywords: 'picker, palette, css'
+    keywords: 'picker, palette, css',
+    relatedTools: ['css-gradient', 'svg-optimizer', 'image-converter', 'unit-converter']
   },
   {
     id: 'unit-converter',
@@ -188,7 +206,8 @@ export const TOOLS = [
     description: 'Convert length, weight, and more.',
     path: '/unit-converter',
     category: 'formatters',
-    keywords: 'measure, metric, imperial'
+    keywords: 'measure, metric, imperial',
+    relatedTools: ['timestamp-converter', 'color-converter', 'case-converter']
   },
   {
     id: 'yaml-toml-converter',
@@ -197,7 +216,8 @@ export const TOOLS = [
     description: 'Convert between YAML, TOML, and JSON.',
     path: '/yaml-toml-converter',
     category: 'formatters',
-    keywords: 'config, serialization'
+    keywords: 'config, serialization',
+    relatedTools: ['json-formatter', 'json-schema-studio', 'env-var-manager', 'code-minifier']
   },
   {
     id: 'htpasswd-generator',
@@ -207,7 +227,8 @@ export const TOOLS = [
     path: '/htpasswd-generator',
     category: 'security',
     keywords: 'apache, basic auth',
-    tip: 'Create Apache htpasswd entries with bcrypt, SHA-1, or MD5 for HTTP Basic Auth'
+    tip: 'Create Apache htpasswd entries with bcrypt, SHA-1, or MD5 for HTTP Basic Auth',
+    relatedTools: ['password-generator', 'hash-calculator', 'csp-builder', 'ssh-key-generator']
   },
   {
     id: 'mock-data-generator',
@@ -216,7 +237,8 @@ export const TOOLS = [
     description: 'Generate random JSON/CSV data.',
     path: '/mock-data-generator',
     category: 'generators',
-    keywords: 'fake, dummy, seed'
+    keywords: 'fake, dummy, seed',
+    relatedTools: ['json-formatter', 'json-schema-studio', 'uuid-generator', 'sql-formatter']
   },
   {
     id: 'markdown-preview',
@@ -225,7 +247,8 @@ export const TOOLS = [
     description: 'Split-pane Markdown editor with sync scroll and GFM support.',
     path: '/markdown-preview',
     category: 'utils',
-    keywords: 'editor, text, html, gfm'
+    keywords: 'editor, text, html, gfm',
+    relatedTools: ['text-diff', 'mermaid-studio', 'code-minifier', 'case-converter']
   },
   {
     id: 'log-viewer',
@@ -234,7 +257,8 @@ export const TOOLS = [
     description: 'Analyze large log files locally with filtering and visualization.',
     path: '/log-viewer',
     category: 'utils',
-    keywords: 'analyze, search, filter, virtual'
+    keywords: 'analyze, search, filter, virtual',
+    relatedTools: ['log-masker', 'regex-visualizer', 'text-diff', 'email-analyzer']
   },
   {
     id: 'case-converter',
@@ -243,7 +267,8 @@ export const TOOLS = [
     description: 'Convert text case (camel, snake, etc).',
     path: '/case-converter',
     category: 'formatters',
-    keywords: 'string, transform'
+    keywords: 'string, transform',
+    relatedTools: ['regex-visualizer', 'text-diff', 'code-minifier', 'markdown-preview']
   },
   {
     id: 'code-minifier',
@@ -252,7 +277,8 @@ export const TOOLS = [
     description: 'Minify JS, CSS, and HTML code.',
     path: '/code-minifier',
     category: 'formatters',
-    keywords: 'compress, optimize'
+    keywords: 'compress, optimize',
+    relatedTools: ['json-formatter', 'svg-optimizer', 'sql-formatter', 'css-gradient']
   },
   {
     id: 'image-converter',
@@ -261,7 +287,8 @@ export const TOOLS = [
     description: 'Convert and resize images locally.',
     path: '/image-converter',
     category: 'formatters',
-    keywords: 'png, jpg, webp, resize'
+    keywords: 'png, jpg, webp, resize',
+    relatedTools: ['svg-optimizer', 'qr-code', 'color-converter', 'css-gradient']
   },
   {
     id: 'css-gradient',
@@ -270,7 +297,8 @@ export const TOOLS = [
     description: 'Generate CSS gradients visually.',
     path: '/css-gradient',
     category: 'generators',
-    keywords: 'style, design, background'
+    keywords: 'style, design, background',
+    relatedTools: ['color-converter', 'svg-optimizer', 'code-minifier', 'image-converter']
   },
   {
     id: 'curl-studio',
@@ -280,7 +308,8 @@ export const TOOLS = [
     path: '/curl-studio',
     category: 'utils',
     keywords: 'curl, api, request, bash',
-    tip: 'Paste a curl command to edit headers, body, and method visually — or build one from scratch'
+    tip: 'Paste a curl command to edit headers, body, and method visually — or build one from scratch',
+    relatedTools: ['json-formatter', 'user-agent-decoder', 'csp-builder', 'cidr-calculator']
   },
   {
     id: 'log-masker',
@@ -290,7 +319,8 @@ export const TOOLS = [
     path: '/log-masker',
     category: 'security',
     keywords: 'privacy, pii, redact, scrubbing',
-    tip: 'Automatically detect and redact emails, IPs, credit cards, and other PII from log text'
+    tip: 'Automatically detect and redact emails, IPs, credit cards, and other PII from log text',
+    relatedTools: ['log-viewer', 'secret-scanner', 'env-var-manager', 'email-analyzer']
   },
   {
     id: 'mermaid-studio',
@@ -299,7 +329,8 @@ export const TOOLS = [
     description: 'Live Mermaid.js diagram editor.',
     path: '/mermaid-studio',
     category: 'utils',
-    keywords: 'diagram, flowchart, sequence, visualization'
+    keywords: 'diagram, flowchart, sequence, visualization',
+    relatedTools: ['markdown-preview', 'svg-optimizer', 'json-schema-studio', 'mock-data-generator']
   },
   {
     id: 'json-schema-studio',
@@ -308,7 +339,8 @@ export const TOOLS = [
     description: 'Generate JSON Schema from JSON.',
     path: '/json-schema-studio',
     category: 'utils',
-    keywords: 'schema, validation, documentation'
+    keywords: 'schema, validation, documentation',
+    relatedTools: ['json-formatter', 'yaml-toml-converter', 'mock-data-generator', 'sql-formatter']
   },
   {
     id: 'caffeniate',
@@ -317,7 +349,8 @@ export const TOOLS = [
     description: 'Keep your device screen awake using the Wake Lock API.',
     path: '/caffeniate',
     category: 'utils',
-    keywords: 'wake lock, screen, awake, sleep, caffeinate'
+    keywords: 'wake lock, screen, awake, sleep, caffeinate',
+    relatedTools: ['timestamp-converter', 'cron-builder', 'token-counter']
   },
   {
     id: 'email-analyzer',
@@ -326,7 +359,8 @@ export const TOOLS = [
     description: 'Analyze raw emails for SPF/DKIM/DMARC, routing hops, and embedded URLs.',
     path: '/email-analyzer',
     category: 'security',
-    keywords: 'email, headers, dkim, spf, dmarc, phishing, soc'
+    keywords: 'email, headers, dkim, spf, dmarc, phishing, soc',
+    relatedTools: ['saml-decoder', 'log-masker', 'secret-scanner', 'user-agent-decoder']
   },
   {
     id: 'token-counter',
@@ -335,7 +369,8 @@ export const TOOLS = [
     description: 'Estimate tokens for GPT/Claude/Llama and calculate cost with your pricing.',
     path: '/token-counter',
     category: 'utils',
-    keywords: 'llm, tokens, pricing, estimate, cost'
+    keywords: 'llm, tokens, pricing, estimate, cost',
+    relatedTools: ['prompt-template-builder', 'json-formatter', 'code-minifier', 'text-diff']
   },
   {
     id: 'prompt-template-builder',
@@ -344,7 +379,8 @@ export const TOOLS = [
     description: 'Generate reusable prompt templates with placeholders and guardrails.',
     path: '/prompt-template-builder',
     category: 'utils',
-    keywords: 'prompt, template, gpt, claude, llama, system, user'
+    keywords: 'prompt, template, gpt, claude, llama, system, user',
+    relatedTools: ['token-counter', 'markdown-preview', 'json-formatter', 'mock-data-generator']
   },
   {
     id: 'sql-formatter',
@@ -353,7 +389,8 @@ export const TOOLS = [
     description: 'Format SQL and catch common syntax issues (Postgres/MySQL-friendly).',
     path: '/sql-formatter',
     category: 'formatters',
-    keywords: 'sql, postgres, mysql, lint, beautify'
+    keywords: 'sql, postgres, mysql, lint, beautify',
+    relatedTools: ['json-formatter', 'code-minifier', 'mock-data-generator', 'yaml-toml-converter']
   },
   {
     id: 'env-var-manager',
@@ -362,7 +399,8 @@ export const TOOLS = [
     description: 'Diff .env files across environments and mask secrets for sharing.',
     path: '/env-var-manager',
     category: 'security',
-    keywords: 'dotenv, env, config, diff, secret, masking'
+    keywords: 'dotenv, env, config, diff, secret, masking',
+    relatedTools: ['secret-scanner', 'log-masker', 'text-diff', 'yaml-toml-converter']
   },
   {
     id: 'svg-optimizer',
@@ -371,7 +409,8 @@ export const TOOLS = [
     description: 'Sanitize, preview, optimize, and recolor SVG icons.',
     path: '/svg-optimizer',
     category: 'formatters',
-    keywords: 'svg, optimize, minify, icon, fill, stroke, preview'
+    keywords: 'svg, optimize, minify, icon, fill, stroke, preview',
+    relatedTools: ['image-converter', 'color-converter', 'code-minifier', 'css-gradient']
   },
   {
     id: 'csp-builder',
@@ -380,7 +419,8 @@ export const TOOLS = [
     description: 'Interactive Content-Security-Policy builder with directive explanations.',
     path: '/csp-builder',
     category: 'security',
-    keywords: 'csp, content-security-policy, header, nonce, security'
+    keywords: 'csp, content-security-policy, header, nonce, security',
+    relatedTools: ['curl-studio', 'certificate-decoder', 'email-analyzer', 'htpasswd-generator']
   },
   {
     id: 'secret-scanner',
@@ -389,7 +429,8 @@ export const TOOLS = [
     description: 'Detect leaked API keys/tokens/passwords and generate a redacted copy.',
     path: '/secret-scanner',
     category: 'security',
-    keywords: 'api key, token, password, leak, redact, secrets'
+    keywords: 'api key, token, password, leak, redact, secrets',
+    relatedTools: ['log-masker', 'env-var-manager', 'password-generator', 'email-analyzer']
   },
   {
     id: 'ladder-game',
@@ -399,7 +440,8 @@ export const TOOLS = [
     path: '/ladder-game',
     category: 'game',
     keywords: 'ghost leg, random, match, pick, amidakuji, decision',
-    badge: 'NEW'
+    badge: 'NEW',
+    relatedTools: ['roulette-wheel', 'marble-roulette', 'password-generator']
   },
   {
     id: 'roulette-wheel',
@@ -409,7 +451,8 @@ export const TOOLS = [
     path: '/roulette-wheel',
     category: 'game',
     keywords: 'spin, random, picker, wheel, decision, fair, statistics',
-    badge: 'NEW'
+    badge: 'NEW',
+    relatedTools: ['ladder-game', 'marble-roulette', 'mock-data-generator']
   },
   {
     id: 'marble-roulette',
@@ -419,6 +462,7 @@ export const TOOLS = [
     path: '/marble-roulette',
     category: 'game',
     keywords: 'marble, physics, drop, lucky draw, pachinko, galton, random',
-    badge: 'NEW'
+    badge: 'NEW',
+    relatedTools: ['ladder-game', 'roulette-wheel', 'mock-data-generator']
   }
 ];

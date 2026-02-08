@@ -6,7 +6,8 @@
 
 import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
-import { createEducationalSection } from '../utils/content-ui.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 
 export async function handleUserAgentDecoderRoutes(request, url) {
   const { pathname } = url;
@@ -37,6 +38,10 @@ function renderUserAgentDecoderPage() {
     [{ text: 'Log Analysis', color: 'cyan', tooltip: 'Analyze User-Agent strings and related logs entirely in your browser.' }],
     { toolId: 'user-agent-decoder' }
   );
+
+  const currentTool = TOOLS.find(t => t.id === 'user-agent-decoder');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -74,6 +79,7 @@ function renderUserAgentDecoderPage() {
             content: 'Many modern browsers "freeze" or simplify their User-Agent strings to prevent fingerprinting. Always look for the "Version" or "Chrome" tokens for the most accurate version info.'
           }
         ], 'user-agent-decoder')}
+    ${createRelatedToolsSection(relatedToolsData)}
       </div>
     </main>
 

@@ -1,5 +1,7 @@
 import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, getCopyToClipboardScript } from '../utils/common-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
+import { createRelatedToolsSection } from '../utils/content-ui.js';
 
 export async function handleCurlStudioRoutes(request, url) {
   if (url.pathname !== '/curl-studio' && url.pathname !== '/curl-studio/') return null;
@@ -17,6 +19,10 @@ export async function handleCurlStudioRoutes(request, url) {
      { text: 'Privacy-First', tooltip: 'All processing happens in your browser — no data is sent to any server.' }],
     { toolId: 'curl-studio' }
   );
+
+  const currentTool = TOOLS.find(t => t.id === 'curl-studio');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -108,6 +114,7 @@ export async function handleCurlStudioRoutes(request, url) {
             <tr><td><code>--cert file.pem</code></td><td>Client certificate</td></tr>
           </table>` }
       ])}
+    ${createRelatedToolsSection(relatedToolsData)}
     </main>
   `;
 
