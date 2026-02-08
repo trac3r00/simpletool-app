@@ -113,11 +113,11 @@ const handlersById = {
   'prompt-template-builder': handlePromptTemplateBuilderRoutes,
   'sql-formatter': handleSQLFormatterRoutes,
   'env-var-manager': handleEnvVarManagerRoutes,
+  'ladder-game': handleLadderGameRoutes,
+  'roulette-wheel': handleRouletteWheelRoutes,
   'svg-optimizer': handleSVGOptimizerRoutes,
   'csp-builder': handleCSPBuilderRoutes,
   'secret-scanner': handleSecretScannerRoutes,
-  'ladder-game': handleLadderGameRoutes,
-  'roulette-wheel': handleRouletteWheelRoutes,
   'marble-roulette': handleMarbleRouletteRoutes
 };
 

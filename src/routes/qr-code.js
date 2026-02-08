@@ -5,6 +5,7 @@
 
 import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
+import { createEducationalSection } from '../utils/content-ui.js';
 
 export async function handleQRCodeRoutes(request, url) {
   const { pathname } = url;
@@ -84,113 +85,29 @@ function renderQRCodePage() {
                     <option value="Q" data-i18n="tools.qr-code.ui.option15">Quartile (25%)</option>
                     <option value="H" data-i18n="tools.qr-code.ui.option16">High (30%)</option>
                   </select>
-                </div>
-              </div>
-
-              <div class="grid grid-cols-2 gap-4">
-                <div>
-                  <label for="qr-fg-color" class="label"><span data-i18n="tools.qr-code.ui.label6">Foreground</span></label>
-                  <div class="flex gap-2">
-                    <input type="color" id="qr-fg-color" value="#000000" aria-label="Foreground color picker" class="w-10 h-10 rounded cursor-pointer border border-surface-300 dark:border-surface-600 p-0.5">
-                    <input type="text" id="qr-fg-text" value="#000000" aria-label="Foreground color hex value" class="input font-mono text-sm">
-                  </div>
-                </div>
-
-                <div>
-                  <label for="qr-bg-color" class="label"><span data-i18n="tools.qr-code.ui.label7">Background</span></label>
-                  <div class="flex gap-2">
-                    <input type="color" id="qr-bg-color" value="#ffffff" aria-label="Background color picker" class="w-10 h-10 rounded cursor-pointer border border-surface-300 dark:border-surface-600 p-0.5">
-                    <input type="text" id="qr-bg-text" value="#ffffff" aria-label="Background color hex value" class="input font-mono text-sm">
-                  </div>
-                </div>
-              </div>
-
-               <div id="qr-error-msg" role="alert" class="hidden p-3 rounded-lg bg-error-50 dark:bg-error-900/20 text-error-700 dark:text-error-200 border border-error-200 dark:border-error-800 text-sm"></div>
-
-              <button id="generate-qr" class="btn btn-primary w-full py-4 text-lg" data-tooltip="Generate QR code from the input text or URL">
-                <span data-i18n="tools.qr-code.ui.button0">Generate QR Code</span>
-              </button>
-
-              <div class="flex gap-3">
-                <button id="download-qr-png" class="btn btn-secondary flex-1" disabled>
-                  <span data-i18n="tools.qr-code.ui.button1">💾 PNG</span>
-                </button>
-                <button id="download-qr-svg" class="btn btn-secondary flex-1" disabled>
-                  <span data-i18n="tools.qr-code.ui.button2">💾 SVG</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- Right: Preview -->
-            <div>
-              <label class="label"><span data-i18n="tools.qr-code.ui.label8">Preview</span></label>
-              <div id="qr-preview" class="bg-surface-50 dark:bg-surface-950 rounded-xl p-8 text-center border-2 border-surface-200 dark:border-surface-800 min-h-[400px] flex items-center justify-center">
-                <div class="text-surface-400 dark:text-surface-500">
-                  <span class="material-symbols-rounded text-6xl mb-4">qr_code_2</span>
-                  <p class="text-lg font-medium">Enter text to generate</p>
-                </div>
-                <canvas id="qr-canvas" class="hidden mx-auto"></canvas>
-              </div>
-            </div>
-          </div>
         </div>
 
-        <!-- Decode Tab -->
-        <div id="tab-decode" class="tab-content hidden" role="tabpanel" aria-labelledby="tab-trigger-decode">
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <!-- Left: Upload -->
-            <div class="space-y-6">
-              <div>
-                <label for="qr-upload" class="label"><span data-i18n="tools.qr-code.ui.label9">Upload Image</span></label>
-                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-surface-300 dark:border-surface-700 border-dashed rounded-lg hover:border-primary-500 dark:hover:border-primary-500 transition-colors group cursor-pointer relative bg-surface-50 dark:bg-surface-900">
-                  <input id="qr-upload" type="file" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-                  <div class="space-y-1 text-center pointer-events-none">
-                    <span class="material-symbols-rounded text-4xl text-surface-400 group-hover:text-primary-500 transition-colors" data-i18n="tools.qr-code.ui.desc17">upload_file</span>
-                    <div class="flex text-sm text-surface-600 dark:text-surface-400 justify-center">
-                      <span class="font-medium text-primary-600 dark:text-primary-400 group-hover:underline">Upload a file</span>
-                      <p class="pl-1">or drag and drop</p>
-                    </div>
-                    <p class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.qr-code.ui.desc18">PNG, JPG, GIF up to 10MB</p>
-                  </div>
-                </div>
-              </div>
-
-              <button id="decode-qr" class="btn btn-primary w-full py-4 text-lg" disabled>
-                <span data-i18n="tools.qr-code.ui.button3">Decode QR Code</span>
-              </button>
-
-               <div id="qr-decode-result" class="hidden">
-                 <div class="bg-success-50 dark:bg-success-900/20 rounded-xl p-6 border border-success-200 dark:border-success-800">
-                  <div class="flex items-start justify-between gap-4">
-                    <div class="flex-1">
-                      <p class="text-sm text-surface-600 dark:text-surface-400 mb-2" data-i18n="tools.qr-code.ui.desc19">Decoded Text:</p>
-                      <p id="qr-decode-output" class="text-lg font-mono font-bold text-surface-900 dark:text-white break-all"></p>
-                    </div>
-                    <button id="copy-decoded" class="btn btn-secondary flex-shrink-0" aria-label="Copy decoded QR code text to clipboard">
-                       <span class="material-symbols-rounded">content_copy</span>
-                     </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Right: Preview -->
-            <div>
-              <label class="label"><span data-i18n="tools.qr-code.ui.label10">Image Preview</span></label>
-              <div id="decode-preview" class="bg-surface-50 dark:bg-surface-950 rounded-xl p-8 text-center border-2 border-surface-200 dark:border-surface-800 min-h-[400px] flex items-center justify-center overflow-hidden">
-                <div class="text-surface-400 dark:text-surface-500">
-                  <span class="material-symbols-rounded text-6xl mb-4">image_search</span>
-                  <p class="text-lg font-medium">Upload an image to decode</p>
-                </div>
-                <img id="decode-image" class="hidden max-w-full max-h-[350px] rounded-lg object-contain" alt="QR Code to decode">
-                <canvas id="qr-decode-canvas" style="display: none;"></canvas>
-              </div>
-            </div>
-          </div>
-        </div>
-
+        ${createEducationalSection([
+          {
+            title: 'What are QR Codes?',
+            content: 'Quick Response (QR) codes are two-dimensional barcodes that can store various types of data, most commonly URLs. They can be scanned by smartphones and specialized readers to quickly access information or trigger actions.'
+          },
+          {
+            title: 'How to Use This Tool',
+            content: 'Enter the text or URL you want to encode. Adjust the size and error correction level if needed. The QR code updates in real-time and can be downloaded as an image for print or digital use.'
+          },
+          {
+            title: 'Common Use Cases',
+            content: 'Sharing website links, providing Wi-Fi credentials, digital business cards (vCards), event ticketing, and mobile payments or authentication flows.'
+          },
+          {
+            title: 'Pro Tips',
+            content: 'Higher error correction levels (H or Q) allow the QR code to remain scannable even if partially damaged or obscured, which is ideal for physical signage or branding.'
+          }
+        ], 'qr-code')}
       </div>
     </main>
+
   `;
 
   const script = `

@@ -5,6 +5,7 @@
 
 import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
+import { createEducationalSection } from '../utils/content-ui.js';
 
 export async function handleColorConverterRoutes(request, url) {
   const { pathname } = url;
@@ -134,6 +135,26 @@ function renderColorConverterPage() {
         <span id="color-live" role="status" class="sr-only"></span>
       </div>
     </main>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+      ${createEducationalSection([
+        {
+          title: 'Color Models Explained (HEX/RGB/HSL)',
+          content: '<p>Color models are mathematical systems for representing colors. <strong>HEX</strong> (Hexadecimal) is a 6-digit code used in HTML and CSS, representing Red, Green, and Blue components. <strong>RGB</strong> (Red, Green, Blue) uses decimal values from 0 to 255 for each channel, often used in digital imaging.</p><p><strong>HSL</strong> (Hue, Saturation, Lightness) is more intuitive for humans, as it describes color in terms of its base pigment (Hue), intensity (Saturation), and brightness (Lightness). Understanding these models helps in choosing the right format for your design and development needs, ensuring consistency across different platforms and devices.</p>'
+        },
+        {
+          title: 'How to Use This Tool',
+          content: '<ol><li>Use the visual color picker to select a color by dragging the cursor in the saturation/brightness square and the hue slider.</li><li>Alternatively, enter a specific value in the "Manual Input" field (supports #hex, rgb, or hsl formats).</li><li>Observe the "Preview" box to see the selected color in real-time.</li><li>View the converted values in the HEX, RGB, HSL, and HSV cards below.</li><li>Click the "Copy" icon on any card to save that specific format to your clipboard.</li></ol>'
+        },
+        {
+          title: 'Common Use Cases',
+          content: '<ul><li><strong>Web Design:</strong> Convert colors from design tools (often RGB/HSL) to HEX codes for use in CSS stylesheets.</li><li><strong>Brand Consistency:</strong> Ensure your brand colors are accurately represented across different digital formats and media.</li><li><strong>UI Development:</strong> Quickly generate lighter or darker variations of a base color by adjusting the Lightness value in HSL.</li><li><strong>Accessibility Testing:</strong> Use the preview to check if your chosen colors provide enough contrast for readable text and UI elements.</li></ul>'
+        },
+        {
+          title: 'Pro Tips',
+          content: '<ul><li>Use HSL when designing UI components like buttons, as it makes it easy to create hover states by simply adjusting the lightness value.</li><li>When working with transparency in CSS, prefer <code>rgba()</code> or <code>hsla()</code> for better readability and control over the alpha channel.</li><li>Always check for color contrast ratios to ensure your designs are accessible to users with visual impairments.</li></ul>'
+        }
+      ], 'color-converter')}
+    </div>
   `
 
   const script = `

@@ -6,6 +6,7 @@
 
 import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint, createEmptyState } from '../utils/common-ui.js';
+import { createEducationalSection } from '../utils/content-ui.js';
 
 export async function handleHashCalculatorRoutes(request, url) {
   const { pathname } = url;
@@ -264,6 +265,50 @@ function renderHashCalculatorPage() {
         { heading: 'HMAC', content: '<p>HMAC adds a secret key to the hash, creating a keyed hash for message authentication. Use it when you need to verify both integrity and authenticity.</p>' }
       ])}
     </main>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+      ${createEducationalSection([
+        {
+          title: 'What is Hashing?',
+          content: `
+            <p>Cryptographic hashing is a mathematical process that transforms any input data (text or files) into a fixed-size string of characters, typically a hexadecimal number. This "fingerprint" is unique to the input; even a single bit change in the source data will result in a completely different hash, a phenomenon known as the <strong>avalanche effect</strong>.</p>
+            <p>Unlike encryption, hashing is a <strong>one-way function</strong>. You cannot reverse a hash to retrieve the original data. This makes it ideal for verifying data integrity, storing passwords securely (when combined with salts), and identifying files without exposing their contents.</p>
+          `
+        },
+        {
+          title: 'How to Use This Tool',
+          content: `
+            <ol>
+              <li><strong>Select Input Type:</strong> Choose the "Text" tab for strings or the "File" tab for local files.</li>
+              <li><strong>Provide Input:</strong> Paste your text or drag and drop your file into the workspace.</li>
+              <li><strong>Optional HMAC:</strong> Enter a secret key in the HMAC field if you need to generate a keyed hash for authentication.</li>
+              <li><strong>Review Results:</strong> The tool automatically computes multiple hash variants (SHA-256, SHA-512, etc.) in real-time.</li>
+              <li><strong>Verify Integrity:</strong> Use the "Verify" tab to compare a known hash against your input to check for tampering.</li>
+            </ol>
+          `
+        },
+        {
+          title: 'Common Use Cases',
+          content: `
+            <ul>
+              <li><strong>Software Verification:</strong> Checking the SHA-256 checksum of a downloaded installer to ensure it hasn't been corrupted or modified by a third party.</li>
+              <li><strong>Data Integrity:</strong> Generating hashes for database records or configuration files to detect unauthorized changes over time.</li>
+              <li><strong>Password Security:</strong> Understanding how different algorithms (like SHA-512) transform plain text into secure representations.</li>
+              <li><strong>Digital Forensics:</strong> Identifying duplicate files or verifying that evidence has not been altered.</li>
+            </ul>
+          `
+        },
+        {
+          title: 'Pro Tips',
+          content: `
+            <ul>
+              <li><strong>Prefer SHA-256+:</strong> Always use SHA-256 or SHA-512 for security-sensitive tasks. MD5 and SHA-1 are cryptographically broken and should only be used for legacy compatibility.</li>
+              <li><strong>Use HMAC for Authenticity:</strong> If you need to verify both integrity and the identity of the sender, use HMAC with a shared secret key.</li>
+              <li><strong>Check the Source:</strong> When verifying downloads, always obtain the expected hash from a trusted, HTTPS-secured official website.</li>
+            </ul>
+          `
+        }
+      ], 'hash-calculator')}
+    </div>
   `;
 
   const script = `

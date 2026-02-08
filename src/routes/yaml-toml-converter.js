@@ -5,6 +5,7 @@
 
 import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createCheatsheet } from '../utils/common-ui.js';
+import { createEducationalSection } from '../utils/content-ui.js';
 
 export async function handleDataConverterRoutes(request, url) {
   const { pathname } = url;
@@ -114,173 +115,28 @@ function renderDataConverterPage() {
           </table>` }
       ])}
     </main>
-
-    <script src="/vendor/js-yaml.min.js" integrity="sha384-ZeqCzuWczURac3RacSufGD7oSbzeaX7xxnnOr3PTcYTLx4Av0qBj0kBq7AeCtHLA" crossorigin="anonymous"></script>
-    <script src="/vendor/toml.min.js" integrity="sha384-l3mnDxXnicxE1DfJV0YEMFry8osCCiUgFGpvrx/BZR5axHxs39/J2q6i+wpkiv2f" crossorigin="anonymous"></script>
-    <script>
-      (function() {
-        const inputEl = document.getElementById('format-input');
-        const formatSelect = document.getElementById('format-select');
-        const validateBtn = document.getElementById('validate-btn');
-        const convertButtons = document.querySelectorAll('.convert-btn');
-        const copyButtons = document.querySelectorAll('.copy-btn');
-        const detectedFormat = document.getElementById('detected-format');
-        const rootType = document.getElementById('root-type');
-        const keyCount = document.getElementById('key-count');
-        const errorBox = document.getElementById('format-error');
-        const outputs = {
-          json: document.getElementById('json-output'),
-          yaml: document.getElementById('yaml-output'),
-          toml: document.getElementById('toml-output')
-        };
-        const loadSampleBtn = document.getElementById('load-sample');
-
-        let latestData = null;
-
-        validateBtn.addEventListener('click', (event) => {
-          event.preventDefault();
-          try {
-            const result = parseInput();
-            renderMeta(result);
-            showError('');
-          } catch (error) {
-            showError(error.message);
-          }
-        });
-
-        convertButtons.forEach(button => {
-          button.addEventListener('click', (event) => {
-            event.preventDefault();
-            handleConversion(button.dataset.convert);
-          });
-        });
-
-        copyButtons.forEach(button => {
-          button.addEventListener('click', () => {
-            const type = button.dataset.copy;
-            const text = outputs[type].textContent;
-            if (!text || text === 'Await conversion.') return;
-            navigator.clipboard.writeText(text);
-            button.textContent = _t('tools.yaml-toml-converter.js.text0', 'Copied');
-            if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
-            setTimeout(() => button.textContent = _t('tools.yaml-toml-converter.js.text1', 'Copy'), 1500);
-          });
-        });
-
-        loadSampleBtn.addEventListener('click', () => {
-          inputEl.value = 'name: SimpleTool\\nversion: 2\\nfeatures:\\n  - privacy-first\\n  - offline\\nports:\\n  web: 8080\\n  metrics: 9090';
-        });
-
-        function handleConversion(target) {
-          try {
-            const result = parseInput();
-            latestData = result.data;
-            renderMeta(result);
-            renderOutputs(result.data);
-            showError('');
-            updateCopyButtons(true);
-          } catch (error) {
-            showError(error.message);
-            updateCopyButtons(false);
-          }
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+      ${createEducationalSection([
+        {
+          title: 'YAML vs TOML vs JSON Compared',
+          content: '<p><strong>JSON</strong> is the most widely used format for data exchange due to its simplicity and native support in JavaScript. <strong>YAML</strong> (YAML Ain\'t Markup Language) is a human-friendly data serialization standard that uses indentation to represent structure, making it popular for complex configuration files. <strong>TOML</strong> (Tom\'s Obvious, Minimal Language) is designed to be easy to read and write due to its obvious semantics and is often used for project configuration.</p><p>While JSON is strict and compact, YAML and TOML prioritize human readability and ease of manual editing. YAML is powerful but can be complex due to its many features, while TOML aims for a simpler, more predictable structure that maps well to hash tables. Choosing the right format depends on your specific needs for readability, performance, and tooling support.</p>'
+        },
+        {
+          title: 'How to Use This Tool',
+          content: '<ol><li>Paste your configuration data (JSON, YAML, or TOML) into the source text area on the left.</li><li>The tool will automatically detect the source format, or you can select it manually from the dropdown.</li><li>Click the "Validate only" button to check for syntax errors without performing a conversion.</li><li>Click one of the conversion buttons (→ JSON, → YAML, → TOML) to translate your data into that format.</li><li>View the results in the output panels on the right and click "Copy" to save them to your clipboard.</li></ol>'
+        },
+        {
+          title: 'Common Use Cases',
+          content: '<ul><li><strong>Infrastructure as Code:</strong> Convert between JSON and YAML when working with Kubernetes manifests, Docker Compose files, or AWS CloudFormation templates.</li><li><strong>Project Configuration:</strong> Migrate settings between <code>package.json</code> (JSON) and <code>pyproject.toml</code> (TOML) or <code>Cargo.toml</code> (TOML).</li><li><strong>API Prototyping:</strong> Quickly visualize how a complex data structure looks in different formats to decide which is best for your API.</li><li><strong>Legacy Migration:</strong> Translate old configuration files into modern formats while ensuring data integrity and syntax correctness.</li></ul>'
+        },
+        {
+          title: 'Pro Tips',
+          content: '<ul><li>Use YAML for CI/CD pipelines where readability of complex, nested structures is essential for maintainability.</li><li>Prefer TOML for application-level configuration files to provide a clean and obvious interface for end-users who might need to edit them manually.</li><li>When converting from YAML to JSON, be aware of YAML\'s "Norway problem" (where <code>NO</code> can be interpreted as <code>false</code>) and ensure your data types are preserved correctly.</li></ul>'
         }
-
-        function parseInput() {
-          const raw = inputEl.value.trim();
-          if (!raw) {
-            throw new Error('Provide some input first.');
-          }
-          const format = formatSelect.value;
-          if (format === 'json') return { format: 'JSON', data: parseJson(raw) };
-          if (format === 'yaml') return { format: 'YAML', data: parseYaml(raw) };
-          if (format === 'toml') return { format: 'TOML', data: parseToml(raw) };
-          return autoDetect(raw);
-        }
-
-        function parseJson(text) {
-          return JSON.parse(text);
-        }
-
-        function parseYaml(text) {
-          if (!window.jsyaml) throw new Error('js-yaml library did not load.');
-          return window.jsyaml.load(text);
-        }
-
-        function parseToml(text) {
-          if (!window.toml || typeof window.toml.parse !== 'function') {
-            throw new Error('TOML parser failed to load.');
-          }
-          return window.toml.parse(text);
-        }
-
-        function autoDetect(text) {
-          const attempts = [
-            { label: 'JSON', fn: parseJson },
-            { label: 'YAML', fn: parseYaml },
-            { label: 'TOML', fn: parseToml }
-          ];
-          for (const attempt of attempts) {
-            try {
-              return { format: attempt.label, data: attempt.fn(text) };
-            } catch (error) {
-              continue;
-            }
-          }
-          throw new Error('Unable to parse input as JSON, YAML, or TOML.');
-        }
-
-        function renderMeta(result) {
-          detectedFormat.textContent = result.format;
-          rootType.textContent = Array.isArray(result.data) ? 'Array' : typeof result.data;
-          keyCount.textContent = Array.isArray(result.data) ? result.data.length : Object.keys(result.data || {}).length;
-        }
-
-        function renderOutputs(data) {
-          try {
-            outputs.json.textContent = JSON.stringify(data, null, 2);
-          } catch (error) {
-            outputs.json.textContent = '⚠️ Cannot serialize to JSON: ' + error.message;
-          }
-          try {
-            if (window.jsyaml) {
-              outputs.yaml.textContent = window.jsyaml.dump(data, { indent: 2, lineWidth: 120 });
-            } else {
-              outputs.yaml.textContent = _t('tools.yaml-toml-converter.js.text3', 'js-yaml not loaded.');
-            }
-          } catch (error) {
-            outputs.yaml.textContent = '⚠️ YAML conversion failed: ' + error.message;
-          }
-          try {
-            if (window.toml && typeof window.toml.stringify === 'function') {
-              outputs.toml.textContent = window.toml.stringify(data);
-            } else {
-              outputs.toml.textContent = _t('tools.yaml-toml-converter.js.text5', 'TOML stringify not available in this runtime.');
-            }
-          } catch (error) {
-            outputs.toml.textContent = '⚠️ TOML conversion failed: ' + error.message;
-          }
-        }
-
-        function showError(message) {
-          if (!message) {
-            errorBox.classList.add('hidden');
-            return;
-          }
-          errorBox.textContent = message;
-          errorBox.classList.remove('hidden');
-        }
-
-        function updateCopyButtons(enabled) {
-          copyButtons.forEach(button => {
-            button.disabled = !enabled;
-            if (!enabled) {
-              button.textContent = _t('tools.yaml-toml-converter.js.text1', 'Copy');
-            }
-          });
-        }
-      })();
-    </script>
+      ], 'yaml-toml-converter')}
+    </div>
   `;
+
 
   return createPageTemplate({
     title: 'Config Converter',

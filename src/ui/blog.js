@@ -8,74 +8,112 @@ export const BLOG_ARTICLES = [
     title: 'What is JSON? A Developer\'s Complete Guide',
     description: 'A comprehensive guide to JSON structure, data types, when to use JSON vs XML vs YAML, formatting best practices, and common parsing errors.',
     category: 'Development',
-    readingTime: '10 min read',
+    readingTime: '12 min read',
     datePublished: '2026-02-08',
     content: `
-      <p>JSON, or JavaScript Object Notation, has become the ubiquitous language of the modern web. From RESTful APIs to configuration files like <code>package.json</code>, it is the invisible thread that connects disparate systems across the globe. But despite its simplicity, many developers only scratch the surface of what JSON can do—and where it can fail.</p>
+      <p data-i18n="content.blog.what-is-json.p1">JSON, or JavaScript Object Notation, has become the ubiquitous language of the modern web. From RESTful APIs to configuration files like <code>package.json</code>, it is the invisible thread that connects disparate systems across the globe. But despite its simplicity, many developers only scratch the surface of what JSON can do—and where it can fail.</p>
 
-      <h2>The Anatomy of JSON</h2>
-      <p>JSON is built on two universal data structures: a collection of name/value pairs (an object) and an ordered list of values (an array). This simplicity is its greatest strength. Unlike XML, which requires complex parsing and verbose tags, JSON is lightweight and easy for both humans and machines to read.</p>
+      <h2 data-i18n="content.blog.what-is-json.h2_1">The Discovery of JSON</h2>
+      <p data-i18n="content.blog.what-is-json.p2">Unlike many technologies that are "invented" by committee, JSON was "discovered" by Douglas Crockford in the early 2000s. At the time, XML was the dominant format for data exchange, but it was verbose, complex to parse, and often overkill for the needs of web applications. Crockford realized that a subset of JavaScript's object literal syntax could serve as a lightweight, language-independent data format. This realization led to the standardization of JSON, which eventually supplanted XML as the preferred choice for web APIs.</p>
+
+      <div class="bg-primary-50 dark:bg-primary-900/20 p-4 rounded-lg border-l-4 border-primary-500 my-6">
+        <p class="text-sm text-primary-800 dark:text-primary-200" data-i18n="content.blog.what-is-json.callout1"><strong>Pro Tip:</strong> JSON is technically a subset of YAML 1.2, meaning any valid JSON file is also a valid YAML file. This interoperability is one reason why many modern tools support both formats seamlessly.</p>
+      </div>
+
+      <h2 data-i18n="content.blog.what-is-json.h2_2">The Anatomy of JSON</h2>
+      <p data-i18n="content.blog.what-is-json.p3">JSON is built on two universal data structures: a collection of name/value pairs (an object) and an ordered list of values (an array). This simplicity is its greatest strength. Unlike XML, which requires complex parsing and verbose tags, JSON is lightweight and easy for both humans and machines to read.</p>
 
       <pre><code>{
   "name": "SimpleTool",
   "version": "2.3.0",
   "features": ["Privacy", "Speed", "Simplicity"],
-  "active": true
+  "active": true,
+  "metadata": null
 }</code></pre>
 
-      <h2>Data Types in Depth</h2>
-      <p>JSON supports six basic data types:</p>
+      <h2 data-i18n="content.blog.what-is-json.h2_3">Data Types in Depth</h2>
+      <p data-i18n="content.blog.what-is-json.p4">JSON supports six basic data types, each with its own rules and nuances:</p>
       <ul>
-        <li><strong>String:</strong> A sequence of zero or more Unicode characters, wrapped in double quotes. Backslashes are used for escaping.</li>
-        <li><strong>Number:</strong> A signed decimal number that may contain a fractional part or use exponential notation. JSON does not distinguish between integers and floats.</li>
-        <li><strong>Object:</strong> An unordered set of name/value pairs. Each name is followed by a colon, and pairs are separated by commas.</li>
-        <li><strong>Array:</strong> An ordered collection of values. Values are separated by commas and enclosed in square brackets.</li>
-        <li><strong>Boolean:</strong> Either <code>true</code> or <code>false</code>.</li>
-        <li><strong>Null:</strong> An empty value, represented by the keyword <code>null</code>.</li>
+        <li data-i18n="content.blog.what-is-json.li1"><strong>String:</strong> A sequence of zero or more Unicode characters, wrapped in double quotes. Backslashes are used for escaping. Special characters like newlines (<code>\\n</code>) or tabs (<code>\\t</code>) must be escaped.</li>
+        <li data-i18n="content.blog.what-is-json.li2"><strong>Number:</strong> A signed decimal number that may contain a fractional part or use exponential notation. JSON does not distinguish between integers and floats, which can lead to precision issues in languages with strict type systems.</li>
+        <li data-i18n="content.blog.what-is-json.li3"><strong>Object:</strong> An unordered set of name/value pairs. Each name is followed by a colon, and pairs are separated by commas. Objects can be nested to represent complex hierarchies.</li>
+        <li data-i18n="content.blog.what-is-json.li4"><strong>Array:</strong> An ordered collection of values. Values are separated by commas and enclosed in square brackets. Arrays can contain any valid JSON data type, including other arrays or objects.</li>
+        <li data-i18n="content.blog.what-is-json.li5"><strong>Boolean:</strong> Either <code>true</code> or <code>false</code>. These are literal values and should not be wrapped in quotes.</li>
+        <li data-i18n="content.blog.what-is-json.li6"><strong>Null:</strong> An empty value, represented by the keyword <code>null</code>. It is often used to indicate the absence of a value.</li>
       </ul>
 
-      <h2>JSON vs. XML vs. YAML</h2>
-      <p>Choosing the right data format depends on your use case. XML is powerful for document-centric data and supports schemas and namespaces, but its verbosity makes it heavy for web APIs. YAML is highly readable and great for configuration, but its reliance on indentation can lead to subtle bugs. JSON strikes a balance, offering enough structure for complex data while remaining compact enough for high-performance networking.</p>
+      <h2 data-i18n="content.blog.what-is-json.h2_4">JSON vs. XML vs. YAML</h2>
+      <p data-i18n="content.blog.what-is-json.p5">Choosing the right data format depends on your use case. <strong>XML</strong> is powerful for document-centric data and supports schemas and namespaces, but its verbosity makes it heavy for web APIs. <strong>YAML</strong> is highly readable and great for configuration, but its reliance on indentation can lead to subtle bugs, especially in large files. <strong>JSON</strong> strikes a balance, offering enough structure for complex data while remaining compact enough for high-performance networking. It is the "just right" format for most modern applications.</p>
 
-      <h2>Best Practices for Production</h2>
-      <p>When working with JSON in production, follow these guidelines:</p>
+      <h2 data-i18n="content.blog.what-is-json.h2_5">Best Practices for Production</h2>
+      <p data-i18n="content.blog.what-is-json.p6">When working with JSON in production, follow these guidelines to ensure maintainability and performance:</p>
       <ul>
-        <li><strong>Use CamelCase or snake_case consistently:</strong> Pick a convention and stick to it across your entire API.</li>
-        <li><strong>Avoid deep nesting:</strong> Deeply nested objects are harder to parse and maintain. Aim for a flat structure where possible.</li>
-        <li><strong>Validate your schemas:</strong> Use tools like <a href="/json-schema-studio">JSON Schema Studio</a> to ensure your data conforms to expected patterns.</li>
-        <li><strong>Minify for transport:</strong> While pretty-printed JSON is great for debugging, minified JSON saves bandwidth. Use a <a href="/json-formatter">JSON Formatter</a> to switch between the two.</li>
+        <li data-i18n="content.blog.what-is-json.li7"><strong>Use CamelCase or snake_case consistently:</strong> Pick a convention and stick to it across your entire API. Consistency reduces friction for developers consuming your data.</li>
+        <li data-i18n="content.blog.what-is-json.li8"><strong>Avoid deep nesting:</strong> Deeply nested objects are harder to parse and maintain. Aim for a flat structure where possible. If you find yourself nesting more than three or four levels deep, consider refactoring your data model.</li>
+        <li data-i18n="content.blog.what-is-json.li9"><strong>Validate your schemas:</strong> Use tools like <a href="/json-schema-studio">JSON Schema Studio</a> to ensure your data conforms to expected patterns. This prevents "garbage in, garbage out" scenarios.</li>
+        <li data-i18n="content.blog.what-is-json.li10"><strong>Minify for transport:</strong> While pretty-printed JSON is great for debugging, minified JSON saves bandwidth. Use a <a href="/json-formatter">JSON Formatter</a> to switch between the two.</li>
       </ul>
 
-      <h2>Common Parsing Pitfalls</h2>
-      <p>Even experienced developers fall into these traps:</p>
+      <h2 data-i18n="content.blog.what-is-json.h2_6">Common Parsing Pitfalls</h2>
+      <p data-i18n="content.blog.what-is-json.p7">Even experienced developers fall into these traps:</p>
       <ul>
-        <li><strong>Trailing commas:</strong> Unlike JavaScript objects, JSON does not allow trailing commas after the last element in an array or object.</li>
-        <li><strong>Single quotes:</strong> JSON requires double quotes for both keys and string values.</li>
-        <li><strong>Unquoted keys:</strong> All keys must be wrapped in double quotes.</li>
-        <li><strong>Date handling:</strong> JSON has no native Date type. The industry standard is to use ISO 8601 strings (e.g., <code>"2026-02-08T12:00:00Z"</code>).</li>
+        <li data-i18n="content.blog.what-is-json.li11"><strong>Trailing commas:</strong> Unlike JavaScript objects, JSON does not allow trailing commas after the last element in an array or object. This is a frequent cause of syntax errors.</li>
+        <li data-i18n="content.blog.what-is-json.li12"><strong>Single quotes:</strong> JSON requires double quotes for both keys and string values. Single quotes will result in an invalid JSON error.</li>
+        <li data-i18n="content.blog.what-is-json.li13"><strong>Unquoted keys:</strong> All keys must be wrapped in double quotes. This is a common mistake for developers used to JavaScript's more relaxed object syntax.</li>
+        <li data-i18n="content.blog.what-is-json.li14"><strong>Date handling:</strong> JSON has no native Date type. The industry standard is to use ISO 8601 strings (e.g., <code>"2026-02-08T12:00:00Z"</code>). Always parse these strings into Date objects in your application logic.</li>
       </ul>
 
-      <h2>JSON Schema: The Contract for Your Data</h2>
-      <p>As applications grow, keeping track of JSON structures becomes a challenge. This is where JSON Schema comes in. It is a powerful tool for validating the structure of your JSON data, ensuring that it meets specific requirements before your application processes it. By defining a schema, you create a clear contract between your frontend and backend, or between different microservices.</p>
-      <p>A JSON Schema can define required fields, data types, string patterns (using regex), and even minimum or maximum values for numbers. Tools like <a href="/json-schema-studio">JSON Schema Studio</a> allow you to generate these schemas automatically from sample data, saving you hours of manual work and reducing the risk of human error.</p>
+      <h2 data-i18n="content.blog.what-is-json.h2_7">JSON Schema: The Contract for Your Data</h2>
+      <p data-i18n="content.blog.what-is-json.p8">As applications grow, keeping track of JSON structures becomes a challenge. This is where JSON Schema comes in. It is a powerful tool for validating the structure of your JSON data, ensuring that it meets specific requirements before your application processes it. By defining a schema, you create a clear contract between your frontend and backend, or between different microservices.</p>
+      <p data-i18n="content.blog.what-is-json.p9">A JSON Schema can define required fields, data types, string patterns (using regex), and even minimum or maximum values for numbers. Tools like <a href="/json-schema-studio">JSON Schema Studio</a> allow you to generate these schemas automatically from sample data, saving you hours of manual work and reducing the risk of human error. In a microservices architecture, sharing schemas is the best way to ensure that services can communicate reliably.</p>
 
-      <h2>Performance Optimization: Beyond Plain Text</h2>
-      <p>While JSON's text-based nature is great for readability, it can be a bottleneck for high-performance applications or those dealing with massive datasets. In these cases, developers often look toward binary serializations like BSON (used by MongoDB) or MessagePack. These formats maintain the flexibility of JSON but offer faster parsing and smaller payload sizes.</p>
-      <p>However, for most web applications, the overhead of JSON is negligible compared to network latency. Before switching to a binary format, ensure you are using Gzip or Brotli compression on your server, which can reduce JSON payload sizes by up to 80%.</p>
+      <h2 data-i18n="content.blog.what-is-json.h2_8">Performance Optimization: Beyond Plain Text</h2>
+      <p data-i18n="content.blog.what-is-json.p10">While JSON's text-based nature is great for readability, it can be a bottleneck for high-performance applications or those dealing with massive datasets. In these cases, developers often look toward binary serializations like <strong>BSON</strong> (used by MongoDB) or <strong>MessagePack</strong>. These formats maintain the flexibility of JSON but offer faster parsing and smaller payload sizes.</p>
+      <p data-i18n="content.blog.what-is-json.p11">However, for most web applications, the overhead of JSON is negligible compared to network latency. Before switching to a binary format, ensure you are using Gzip or Brotli compression on your server, which can reduce JSON payload sizes by up to 80%. Compression is often more effective than switching to a binary format, as it leverages the repetitive nature of JSON keys.</p>
 
-      <h2>JSON in the Database: The Rise of JSONB</h2>
-      <p>Modern relational databases like PostgreSQL have embraced JSON with open arms. The <code>JSONB</code> data type allows you to store structured JSON data directly in a column while still being able to index and query it with high performance. This "best of both worlds" approach gives you the flexibility of a NoSQL database with the ACID compliance and relational power of a traditional SQL engine.</p>
+      <h2 data-i18n="content.blog.what-is-json.h2_9">JSON in the Database: The Rise of JSONB</h2>
+      <p data-i18n="content.blog.what-is-json.p12">Modern relational databases like PostgreSQL have embraced JSON with open arms. The <code>JSONB</code> data type allows you to store structured JSON data directly in a column while still being able to index and query it with high performance. This "best of both worlds" approach gives you the flexibility of a NoSQL database with the ACID compliance and relational power of a traditional SQL engine. You can even perform complex joins between relational tables and JSON data, making it a versatile tool for modern data modeling.</p>
 
-      <h2>Streaming JSON for Large Datasets</h2>
-      <p>When dealing with gigabytes of data, loading an entire JSON array into memory can crash your application. Streaming JSON parsers (like Oboe.js or Clarinet) allow you to process data piece by piece as it arrives over the network. This is essential for building responsive dashboards or processing large log files without exhausting server resources.</p>
+      <h2 data-i18n="content.blog.what-is-json.h2_10">Streaming JSON for Large Datasets</h2>
+      <p data-i18n="content.blog.what-is-json.p13">When dealing with gigabytes of data, loading an entire JSON array into memory can crash your application. Streaming JSON parsers (like Oboe.js or Clarinet) allow you to process data piece by piece as it arrives over the network. This is essential for building responsive dashboards or processing large log files without exhausting server resources. By processing data in chunks, you can start rendering the UI before the entire payload has been downloaded.</p>
 
-      <h2>Security Considerations</h2>
-      <p>JSON is generally safe, but it\'s not immune to security risks. One common vulnerability is JSON Injection, where an attacker provides malicious input that alters the structure of the JSON being processed. Always sanitize and validate input before including it in a JSON response. Additionally, be wary of <code>eval()</code> when parsing JSON in older JavaScript environments; always use <code>JSON.parse()</code>.</p>
+      <h2 data-i18n="content.blog.what-is-json.h2_11">JSON-LD and the Semantic Web</h2>
+      <p data-i18n="content.blog.what-is-json.p14">JSON-LD (JSON for Linked Data) is a method of encoding Linked Data using JSON. It is used to provide context to your data, making it easier for machines to understand the relationships between different entities. This is particularly important for SEO, as search engines use JSON-LD to power rich snippets and knowledge graphs. By adding a <code>@context</code> and <code>@type</code> to your JSON, you can turn a simple data object into a meaningful piece of the global semantic web.</p>
 
-      <h2>Advanced JSON: JSON5 and HJSON</h2>
-      <p>For configuration files where human readability is paramount, some developers turn to JSON5 or HJSON. These formats allow comments, trailing commas, and unquoted keys. However, they are not standard JSON and require specialized parsers. For interoperability, stick to standard JSON.</p>
+      <h2 data-i18n="content.blog.what-is-json.h2_12">JSON Patch and Merge Patch</h2>
+      <p data-i18n="content.blog.what-is-json.p15">When you need to update a small part of a large JSON document, sending the entire document back to the server is inefficient. <strong>JSON Patch</strong> (RFC 6902) and <strong>JSON Merge Patch</strong> (RFC 7396) provide standardized ways to describe partial updates. JSON Patch uses a list of operations (add, remove, replace), while JSON Merge Patch uses a simplified "diff" approach. Both are essential for building efficient, high-performance APIs that minimize bandwidth usage.</p>
 
-      <p>By mastering these fundamentals, you can build more robust, interoperable systems that stand the test of time. Whether you\'re building a small side project or a massive enterprise API, JSON is a tool you\'ll use every day. Treat it with the respect it deserves, and it will serve you well.</p>
+      <h2 data-i18n="content.blog.what-is-json.h2_13">Security Considerations</h2>
+      <p data-i18n="content.blog.what-is-json.p16">JSON is generally safe, but it's not immune to security risks. One common vulnerability is <strong>JSON Injection</strong>, where an attacker provides malicious input that alters the structure of the JSON being processed. Always sanitize and validate input before including it in a JSON response. Additionally, be wary of <code>eval()</code> when parsing JSON in older JavaScript environments; always use <code>JSON.parse()</code>. Another risk is <strong>JSON Hijacking</strong>, an older vulnerability that targeted the way browsers handled top-level arrays. While modern browsers have mitigated this, it's still best practice to always return an object as your top-level JSON structure.</p>
+
+      <h2 data-i18n="content.blog.what-is-json.h2_14">Advanced JSON: JSON5 and HJSON</h2>
+      <p data-i18n="content.blog.what-is-json.p17">For configuration files where human readability is paramount, some developers turn to <strong>JSON5</strong> or <strong>HJSON</strong>. These formats allow comments, trailing commas, and unquoted keys, making them much friendlier for manual editing. However, they are not standard JSON and require specialized parsers. For interoperability between different systems and languages, it is always best to stick to standard JSON.</p>
+
+      <p data-i18n="content.blog.what-is-json.p18">By mastering these fundamentals, you can build more robust, interoperable systems that stand the test of time. Whether you're building a small side project or a massive enterprise API, JSON is a tool you'll use every day. Treat it with the respect it deserves, and it will serve you well. Remember that the best data format is the one that your team understands and that your tools support natively.</p>
+
+      <div class="mt-10 p-6 bg-surface-50 dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+        <h3 class="text-lg font-semibold mb-4" data-i18n="content.blog.what-is-json.tools_heading">Related Developer Tools</h3>
+        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <li>
+            <a href="/json-formatter" class="flex items-center p-3 rounded-lg hover:bg-white dark:hover:bg-surface-800 transition-colors border border-transparent hover:border-surface-200 dark:hover:border-surface-700">
+              <span class="text-2xl mr-3">📋</span>
+              <div>
+                <div class="font-medium text-surface-900 dark:text-surface-50">JSON Formatter</div>
+                <div class="text-xs text-surface-500 dark:text-surface-400">Validate and beautify JSON</div>
+              </div>
+            </a>
+          </li>
+          <li>
+            <a href="/json-schema-studio" class="flex items-center p-3 rounded-lg hover:bg-white dark:hover:bg-surface-800 transition-colors border border-transparent hover:border-surface-200 dark:hover:border-surface-700">
+              <span class="text-2xl mr-3">📋</span>
+              <div>
+                <div class="font-medium text-surface-900 dark:text-surface-50">JSON Schema Studio</div>
+                <div class="text-xs text-surface-500 dark:text-surface-400">Generate schemas from JSON</div>
+              </div>
+            </a>
+          </li>
+        </ul>
+      </div>
     `
   },
   {
@@ -83,67 +121,93 @@ export const BLOG_ARTICLES = [
     title: 'Password Security in 2026: What Every Developer Should Know',
     description: 'A deep dive into modern password security, entropy, NIST guidelines, and secure hashing algorithms like bcrypt and Argon2.',
     category: 'Security',
-    readingTime: '12 min read',
+    readingTime: '14 min read',
     datePublished: '2026-02-08',
     content: `
-      <p>In 2026, the landscape of password security has shifted dramatically. With the rise of quantum computing threats and increasingly sophisticated phishing attacks, developers must move beyond outdated practices and embrace modern standards for authentication.</p>
+      <p data-i18n="content.blog.password-security-guide.p1">In 2026, the landscape of password security has shifted dramatically. With the rise of quantum computing threats and increasingly sophisticated phishing attacks, developers must move beyond outdated practices and embrace modern standards for authentication. The days of simple complexity rules and forced rotations are over, replaced by a focus on entropy, hardware-backed security, and phishing-resistant protocols.</p>
 
-      <h2>Entropy: Why Length Matters More Than Complexity</h2>
-      <p>For years, we were told that a "strong" password must include uppercase letters, numbers, and special characters. However, modern research shows that entropy—the measure of randomness—is more effectively achieved through length. A 16-character passphrase like <code>correct-horse-battery-staple</code> is significantly harder to crack than a short, complex password like <code>P@ssw0rd!</code>.</p>
+      <h2 data-i18n="content.blog.password-security-guide.h2_1">Entropy: Why Length Matters More Than Complexity</h2>
+      <p data-i18n="content.blog.password-security-guide.p2">For years, we were told that a "strong" password must include uppercase letters, numbers, and special characters. However, modern research shows that <strong>entropy</strong>—the measure of randomness—is more effectively achieved through length. A 16-character passphrase like <code>correct-horse-battery-staple</code> is significantly harder to crack than a short, complex password like <code>P@ssw0rd!</code>. This is because the search space for a long passphrase is exponentially larger, making brute-force attacks computationally infeasible.</p>
 
-      <h2>NIST Guidelines: The New Standard</h2>
-      <p>The National Institute of Standards and Technology (NIST) has updated its guidelines (SP 800-63B) to reflect these findings. Key recommendations include:</p>
+      <div class="bg-primary-50 dark:bg-primary-900/20 p-4 rounded-lg border-l-4 border-primary-500 my-6">
+        <p class="text-sm text-primary-800 dark:text-primary-200" data-i18n="content.blog.password-security-guide.callout1"><strong>Key Concept:</strong> Entropy is calculated as <code>log2(pool_size ^ length)</code>. Increasing the length has a much greater impact on the total entropy than increasing the pool size (complexity).</p>
+      </div>
+
+      <h2 data-i18n="content.blog.password-security-guide.h2_2">NIST Guidelines: The New Standard</h2>
+      <p data-i18n="content.blog.password-security-guide.p3">The National Institute of Standards and Technology (NIST) has updated its guidelines (SP 800-63B) to reflect these findings. Key recommendations for modern applications include:</p>
       <ul>
-        <li><strong>Eliminate forced rotations:</strong> Only require password changes when there is evidence of compromise.</li>
-        <li><strong>Allow long passwords:</strong> Support passwords up to 64 characters or more.</li>
-        <li><strong>Check against breached lists:</strong> Use services like HaveIBeenPwned to prevent users from choosing compromised passwords.</li>
-        <li><strong>Avoid arbitrary complexity rules:</strong> These often lead to predictable patterns that are easy for attackers to guess.</li>
+        <li data-i18n="content.blog.password-security-guide.li1"><strong>Eliminate forced rotations:</strong> Only require password changes when there is evidence of compromise. Forced rotations often lead to users choosing predictable patterns (e.g., <code>Password123</code> becoming <code>Password124</code>).</li>
+        <li data-i18n="content.blog.password-security-guide.li2"><strong>Allow long passwords:</strong> Support passwords up to 64 characters or more. This encourages the use of passphrases.</li>
+        <li data-i18n="content.blog.password-security-guide.li3"><strong>Check against breached lists:</strong> Use services like HaveIBeenPwned to prevent users from choosing passwords that have already appeared in data breaches.</li>
+        <li data-i18n="content.blog.password-security-guide.li4"><strong>Avoid arbitrary complexity rules:</strong> These rules often frustrate users and lead to weak, predictable passwords. Instead, focus on length and randomness.</li>
       </ul>
 
-      <h2>Secure Hashing: bcrypt vs. Argon2</h2>
-      <p>Never store passwords in plain text. Instead, use a slow, salted cryptographic hash function. While <code>bcrypt</code> has been the industry standard for years, <code>Argon2</code> (specifically Argon2id) is now the recommended choice for new applications. It provides superior resistance to GPU and ASIC-based brute-force attacks by allowing you to tune memory, time, and parallelism parameters.</p>
+      <h2 data-i18n="content.blog.password-security-guide.h2_3">Secure Hashing: bcrypt vs. Argon2</h2>
+      <p data-i18n="content.blog.password-security-guide.p4">Never store passwords in plain text. Instead, use a slow, salted cryptographic hash function. While <code>bcrypt</code> has been the industry standard for years, <strong>Argon2</strong> (specifically Argon2id) is now the recommended choice for new applications. It won the Password Hashing Competition and provides superior resistance to GPU and ASIC-based brute-force attacks by allowing you to tune memory, time, and parallelism parameters.</p>
 
       <pre><code>// Example of Argon2id hashing in Node.js
-const argon2 = require(\'argon2\');
-const hash = await argon2.hash(\'user-password\', {
+const argon2 = require('argon2');
+const hash = await argon2.hash('user-password', {
   type: argon2.argon2id,
-  memoryCost: 2 ** 16,
+  memoryCost: 2 ** 16, // 64MB
   timeCost: 3,
   parallelism: 1
 });</code></pre>
 
-      <h2>Salting and Peppering</h2>
-      <p>A salt is a unique, random string added to each password before hashing. This prevents attackers from using precomputed tables (rainbow tables) to crack hashes. A pepper is a secret key stored separately from the database (e.g., in an environment variable) that adds an extra layer of defense if the database is compromised.</p>
+      <h2 data-i18n="content.blog.password-security-guide.h2_4">Salting and Peppering: Defense in Depth</h2>
+      <p data-i18n="content.blog.password-security-guide.p5">A <strong>salt</strong> is a unique, random string added to each password before hashing. This ensures that two users with the same password will have different hashes, preventing attackers from using precomputed tables (rainbow tables) to crack hashes. A <strong>pepper</strong> is a secret key stored separately from the database (e.g., in an environment variable or a Hardware Security Module) that adds an extra layer of defense. If your database is compromised but your pepper remains secret, the hashes are still protected from offline brute-force attacks.</p>
 
-      <h2>Multi-Factor Authentication (MFA): Beyond the Password</h2>
-      <p>In 2026, a password alone is no longer enough for sensitive accounts. Multi-Factor Authentication (MFA) adds a second layer of security that is much harder to bypass. The most common methods include:</p>
+      <h2 data-i18n="content.blog.password-security-guide.h2_5">Multi-Factor Authentication (MFA): Beyond the Password</h2>
+      <p data-i18n="content.blog.password-security-guide.p6">In 2026, a password alone is no longer enough for sensitive accounts. Multi-Factor Authentication (MFA) adds a second layer of security that is much harder to bypass. The most common methods include:</p>
       <ul>
-        <li><strong>TOTP (Time-based One-Time Password):</strong> Apps like Google Authenticator or Authy generate a 6-digit code that changes every 30 seconds. This is a strong, offline-friendly method.</li>
-        <li><strong>WebAuthn / FIDO2:</strong> This is the gold standard for MFA. It uses hardware security keys (like YubiKeys) or platform authenticators (like FaceID or TouchID) to provide cryptographically secure, phishing-resistant authentication.</li>
-        <li><strong>SMS/Email:</strong> While better than nothing, these are the weakest forms of MFA due to the risk of SIM swapping and account takeover.</li>
+        <li data-i18n="content.blog.password-security-guide.li5"><strong>TOTP (Time-based One-Time Password):</strong> Apps like Google Authenticator or Authy generate a 6-digit code that changes every 30 seconds. This is a strong, offline-friendly method that is widely supported.</li>
+        <li data-i18n="content.blog.password-security-guide.li6"><strong>WebAuthn / FIDO2:</strong> This is the gold standard for MFA. It uses hardware security keys (like YubiKeys) or platform authenticators (like FaceID or TouchID) to provide cryptographically secure, phishing-resistant authentication. It eliminates the risk of "man-in-the-middle" attacks by binding the authentication to the specific domain.</li>
+        <li data-i18n="content.blog.password-security-guide.li7"><strong>SMS/Email:</strong> While better than nothing, these are the weakest forms of MFA due to the risk of SIM swapping and account takeover. They should only be used as a last resort.</li>
       </ul>
 
-      <h2>Password Recovery: The Weakest Link</h2>
-      <p>Many secure systems are compromised through their password recovery flow. Avoid sending temporary passwords via email. Instead, send a one-time, time-limited link that allows the user to set a new password. Ensure that this link is invalidated immediately after use and that the user is notified of the change via their primary email address.</p>
+      <h2 data-i18n="content.blog.password-security-guide.h2_6">Password Recovery: The Weakest Link</h2>
+      <p data-i18n="content.blog.password-security-guide.p7">Many secure systems are compromised through their password recovery flow. Avoid sending temporary passwords via email, as email is often unencrypted and easily intercepted. Instead, send a one-time, time-limited link that allows the user to set a new password. Ensure that this link is invalidated immediately after use and that the user is notified of the change via their primary email address. For high-security accounts, consider requiring MFA even for the password reset process.</p>
 
-      <h2>Rate Limiting and Account Lockout</h2>
-      <p>To prevent brute-force and credential stuffing attacks, implement strict rate limiting on your login and password reset endpoints. Instead of locking accounts (which can be used for Denial of Service attacks), consider increasing the delay between login attempts or requiring a CAPTCHA after a certain number of failed tries.</p>
+      <h2 data-i18n="content.blog.password-security-guide.h2_7">Rate Limiting and Account Lockout</h2>
+      <p data-i18n="content.blog.password-security-guide.p8">To prevent brute-force and credential stuffing attacks, implement strict rate limiting on your login and password reset endpoints. Instead of locking accounts (which can be used for Denial of Service attacks), consider increasing the delay between login attempts or requiring a CAPTCHA after a certain number of failed tries. This slows down attackers without preventing legitimate users from accessing their accounts.</p>
 
-      <h2>Security Headers for Authentication</h2>
-      <p>Protect your login pages with modern security headers. Use <code>Content-Security-Policy</code> (CSP) to prevent XSS attacks from stealing credentials, and <code>Strict-Transport-Security</code> (HSTS) to ensure that all authentication traffic is encrypted. Additionally, use the <code>X-Frame-Options: DENY</code> header to prevent clickjacking attacks on your login forms.</p>
+      <h2 data-i18n="content.blog.password-security-guide.h2_8">Security Headers for Authentication</h2>
+      <p data-i18n="content.blog.password-security-guide.p9">Protect your login pages with modern security headers. Use <code>Content-Security-Policy</code> (CSP) to prevent XSS attacks from stealing credentials, and <code>Strict-Transport-Security</code> (HSTS) to ensure that all authentication traffic is encrypted. Additionally, use the <code>X-Frame-Options: DENY</code> header to prevent clickjacking attacks on your login forms. These headers provide a critical layer of defense at the browser level.</p>
 
-      <h2>The Future: Passkeys and Passwordless</h2>
-      <p>While passwords are still prevalent, the industry is moving toward passkeys—a more secure, phishing-resistant alternative based on the FIDO2 standard. Passkeys use public-key cryptography and biometric authentication to eliminate the need for traditional passwords entirely. When a user creates a passkey, their device generates a unique cryptographic key pair. The public key is sent to the server, while the private key stays securely stored on the device's hardware (e.g., Secure Enclave or TPM).</p>
-      <p>For developers, implementing passkeys means integrating with the Web Authentication API (WebAuthn). While the initial setup is more complex than a simple password form, the benefits for user experience and security are immense. Users no longer need to remember complex passwords, and attackers can't steal credentials through phishing because the authentication is tied to the specific domain and device.</p>
+      <h2 data-i18n="content.blog.password-security-guide.h2_9">The Future: Passkeys and Passwordless</h2>
+      <p data-i18n="content.blog.password-security-guide.p10">While passwords are still prevalent, the industry is moving toward <strong>passkeys</strong>—a more secure, phishing-resistant alternative based on the FIDO2 standard. Passkeys use public-key cryptography and biometric authentication to eliminate the need for traditional passwords entirely. They are easier for users to manage and significantly harder for attackers to steal. As a developer, you should start planning for a passwordless future by integrating WebAuthn support into your applications.</p>
 
-      <h2>Security Auditing and Monitoring</h2>
-      <p>Even with the best security practices, you must assume that your system will be targeted. Implement comprehensive logging for all authentication-related events, such as failed login attempts, password changes, and MFA enrollments. Use automated tools to scan your logs for patterns of abuse, such as a sudden spike in failed logins from a single IP address or a series of attempts on multiple accounts (credential stuffing).</p>
-      <p>Regularly audit your security configuration and dependencies. Use tools like <code>npm audit</code> or Snyk to find vulnerabilities in your authentication libraries. Additionally, consider running a bug bounty program to encourage ethical hackers to find and report security flaws in your application before they can be exploited by malicious actors.</p>
+      <h2 data-i18n="content.blog.password-security-guide.h2_10">Credential Stuffing and Breached Password Detection</h2>
+      <p data-i18n="content.blog.password-security-guide.p11">Credential stuffing is a type of cyberattack where stolen account credentials (typically lists of usernames or email addresses and their corresponding passwords) are used to gain unauthorized access to user accounts. To protect your users, you should implement breached password detection. When a user creates or changes their password, check it against a database of known leaked passwords. This ensures that your users aren't using credentials that are already in the hands of attackers.</p>
 
-      <h2>Developer Tools for Security</h2>
-      <p>To help your users create and manage secure credentials, integrate tools like a <a href="/password-generator">Password Generator</a> and an <a href="/htpasswd-generator">Htpasswd Generator</a> into your development workflow. These tools ensure that randomness is generated securely using the Web Crypto API.</p>
+      <h2 data-i18n="content.blog.password-security-guide.h2_11">Developer Tools for Security</h2>
+      <p data-i18n="content.blog.password-security-guide.p12">To help your users create and manage secure credentials, integrate tools like a <a href="/password-generator">Password Generator</a> and an <a href="/htpasswd-generator">Htpasswd Generator</a> into your development workflow. These tools ensure that randomness is generated securely using the Web Crypto API, providing a much higher level of security than simple math-based random functions. By providing these tools to your users, you encourage better security habits across your entire platform.</p>
 
-      <p>Security is not a one-time task but a continuous process. By staying informed about the latest standards and implementing robust authentication mechanisms, you can protect your users and your application from the ever-evolving threat landscape.</p>
+      <p data-i18n="content.blog.password-security-guide.p13">Security is not a one-time task but a continuous process. By staying informed about the latest standards and implementing robust authentication mechanisms, you can protect your users and your application from the ever-evolving threat landscape. Remember that the most secure system is one that assumes compromise is possible and builds multiple layers of defense to mitigate the impact.</p>
+
+      <div class="mt-10 p-6 bg-surface-50 dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+        <h3 class="text-lg font-semibold mb-4" data-i18n="content.blog.password-security-guide.tools_heading">Related Security Tools</h3>
+        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <li>
+            <a href="/password-generator" class="flex items-center p-3 rounded-lg hover:bg-white dark:hover:bg-surface-800 transition-colors border border-transparent hover:border-surface-200 dark:hover:border-surface-700">
+              <span class="text-2xl mr-3">🔐</span>
+              <div>
+                <div class="font-medium text-surface-900 dark:text-surface-50">Password Generator</div>
+                <div class="text-xs text-surface-500 dark:text-surface-400">Create secure random passwords</div>
+              </div>
+            </a>
+          </li>
+          <li>
+            <a href="/htpasswd-generator" class="flex items-center p-3 rounded-lg hover:bg-white dark:hover:bg-surface-800 transition-colors border border-transparent hover:border-surface-200 dark:hover:border-surface-700">
+              <span class="text-2xl mr-3">🔒</span>
+              <div>
+                <div class="font-medium text-surface-900 dark:text-surface-50">Htpasswd Generator</div>
+                <div class="text-xs text-surface-500 dark:text-surface-400">Generate Apache auth entries</div>
+              </div>
+            </a>
+          </li>
+        </ul>
+      </div>
     `
   },
   {
@@ -151,64 +215,92 @@ const hash = await argon2.hash(\'user-password\', {
     title: 'Understanding Cryptographic Hashes: MD5, SHA-256, and Beyond',
     description: 'Learn about one-way functions, hash collisions, and why choosing the right algorithm is critical for data integrity and security.',
     category: 'Security',
-    readingTime: '10 min read',
+    readingTime: '12 min read',
     datePublished: '2026-02-08',
     content: `
-      <p>Cryptographic hash functions are the unsung heroes of digital security. They are used everywhere—from verifying file integrity to securing blockchain transactions and storing passwords. But what exactly is a hash, and why does the choice of algorithm matter so much?</p>
+      <p data-i18n="content.blog.understanding-hashes.p1">Cryptographic hash functions are the unsung heroes of digital security. They are used everywhere—from verifying file integrity to securing blockchain transactions and storing passwords. But what exactly is a hash, and why does the choice of algorithm matter so much? In this guide, we'll explore the fundamental properties of hashes, the history of popular algorithms, and the future of cryptographic integrity.</p>
 
-      <h2>What is a Hash Function?</h2>
-      <p>A hash function is a mathematical algorithm that takes an input of any size and produces a fixed-length string of characters, typically a hexadecimal number. A good cryptographic hash function has several key properties:</p>
+      <h2 data-i18n="content.blog.understanding-hashes.h2_1">What is a Hash Function?</h2>
+      <p data-i18n="content.blog.understanding-hashes.p2">A hash function is a mathematical algorithm that takes an input of any size and produces a fixed-length string of characters, typically a hexadecimal number. A good cryptographic hash function has several key properties that make it suitable for security tasks:</p>
       <ul>
-        <li><strong>Deterministic:</strong> The same input always produces the same output.</li>
-        <li><strong>Fast:</strong> It is computationally efficient to calculate the hash.</li>
-        <li><strong>One-way:</strong> It is practically impossible to reverse the process and find the original input from the hash.</li>
-        <li><strong>Avalanche effect:</strong> A small change in the input produces a significantly different output.</li>
-        <li><strong>Collision-resistant:</strong> It is extremely difficult to find two different inputs that produce the same hash.</li>
+        <li data-i18n="content.blog.understanding-hashes.li1"><strong>Deterministic:</strong> The same input always produces the same output. This is essential for verification.</li>
+        <li data-i18n="content.blog.understanding-hashes.li2"><strong>Fast:</strong> It is computationally efficient to calculate the hash, even for large inputs.</li>
+        <li data-i18n="content.blog.understanding-hashes.li3"><strong>One-way (Pre-image Resistance):</strong> It is practically impossible to reverse the process and find the original input from the hash.</li>
+        <li data-i18n="content.blog.understanding-hashes.li4"><strong>Avalanche effect:</strong> A small change in the input (even a single bit) produces a significantly different output.</li>
+        <li data-i18n="content.blog.understanding-hashes.li5"><strong>Collision-resistant:</strong> It is extremely difficult to find two different inputs that produce the same hash.</li>
       </ul>
 
-      <h2>MD5: The Broken Legend</h2>
-      <p>MD5 (Message Digest 5) was once the most popular hash algorithm in the world. However, it is now considered cryptographically broken. Researchers have demonstrated that it is possible to create two different files with the same MD5 hash (a collision) in a matter of seconds. <strong>Never use MD5 for security-sensitive tasks.</strong> It is still useful for non-security purposes, like checksums for large files where accidental corruption is the only concern.</p>
+      <h2 data-i18n="content.blog.understanding-hashes.h2_2">MD5: The Broken Legend</h2>
+      <p data-i18n="content.blog.understanding-hashes.p3"><strong>MD5 (Message Digest 5)</strong> was once the most popular hash algorithm in the world. However, it is now considered cryptographically broken. Researchers have demonstrated that it is possible to create two different files with the same MD5 hash (a collision) in a matter of seconds. <strong>Never use MD5 for security-sensitive tasks.</strong> It is still useful for non-security purposes, like checksums for large files where accidental corruption is the only concern, but for anything involving trust, it is a liability.</p>
 
-      <h2>SHA-256: The Industry Standard</h2>
-      <p>SHA-256 (Secure Hash Algorithm 256-bit) is part of the SHA-2 family and is currently the workhorse of the internet. It is used in TLS/SSL certificates, Bitcoin, and many other security protocols. With a 256-bit output, the number of possible hashes is astronomical (2^256), making it virtually immune to brute-force attacks with current technology.</p>
+      <h2 data-i18n="content.blog.understanding-hashes.h2_3">SHA-256: The Industry Standard</h2>
+      <p data-i18n="content.blog.understanding-hashes.p4"><strong>SHA-256 (Secure Hash Algorithm 256-bit)</strong> is part of the SHA-2 family and is currently the workhorse of the internet. It is used in TLS/SSL certificates, Bitcoin, and many other security protocols. With a 256-bit output, the number of possible hashes is astronomical (2^256), making it virtually immune to brute-force attacks with current technology. It strikes an excellent balance between security and performance.</p>
 
       <pre><code>// Calculating SHA-256 in the browser using Web Crypto API
 async function getHash(message) {
   const msgUint8 = new TextEncoder().encode(message);
-  const hashBuffer = await crypto.subtle.digest(\'SHA-256\', msgUint8);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, \'0\')).join(\'\');
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }</code></pre>
 
-      <h2>SHA-3: The Next Generation</h2>
-      <p>SHA-3 is the latest member of the Secure Hash Algorithm family. Unlike SHA-2, which is based on the Merkle-Damgård construction, SHA-3 uses a completely different internal structure called a "sponge construction" (Keccak). While SHA-2 remains secure, SHA-3 provides an alternative that would be resistant to attacks that might one day break SHA-2.</p>
+      <h2 data-i18n="content.blog.understanding-hashes.h2_4">SHA-3: The Next Generation</h2>
+      <p data-i18n="content.blog.understanding-hashes.p5"><strong>SHA-3</strong> is the latest member of the Secure Hash Algorithm family. Unlike SHA-2, which is based on the Merkle-Damgård construction, SHA-3 uses a completely different internal structure called a "sponge construction" (Keccak). While SHA-2 remains secure, SHA-3 provides an alternative that would be resistant to attacks that might one day break SHA-2. It is a "defense-in-depth" algorithm that ensures we have a backup if our current standards fail.</p>
 
-      <h2>The Birthday Paradox and Collision Probability</h2>
-      <p>Why do we need such long hashes? The answer lies in the "Birthday Paradox." In a room of just 23 people, there is a 50% chance that two of them share the same birthday. In cryptography, this means that you don't need to check all 2^256 possible SHA-256 hashes to find a collision; you only need to check about 2^128. While 2^128 is still an impossibly large number for today's computers, it explains why shorter hashes like MD5 (2^64 for collisions) were broken so quickly.</p>
+      <h2 data-i18n="content.blog.understanding-hashes.h2_5">The Birthday Paradox and Collision Probability</h2>
+      <p data-i18n="content.blog.understanding-hashes.p6">Why do we need such long hashes? The answer lies in the <strong>Birthday Paradox</strong>. In a room of just 23 people, there is a 50% chance that two of them share the same birthday. In cryptography, this means that you don't need to check all 2^256 possible SHA-256 hashes to find a collision; you only need to check about 2^128. While 2^128 is still an impossibly large number for today's computers, it explains why shorter hashes like MD5 (2^64 for collisions) were broken so quickly. As computing power grows, we must increase hash lengths to stay ahead of the collision curve.</p>
 
-      <h2>Hash-based Data Structures</h2>
-      <p>Hashes aren't just for security; they are also used to build efficient data structures. <strong>Bloom Filters</strong> use multiple hash functions to provide a memory-efficient way to check if an element is in a set (with a small chance of false positives). <strong>Merkle Trees</strong> use a hierarchy of hashes to verify the integrity of large datasets, such as those found in Git repositories or blockchain ledgers.</p>
+      <h2 data-i18n="content.blog.understanding-hashes.h2_6">Hash-based Data Structures: Bloom Filters and Merkle Trees</h2>
+      <p data-i18n="content.blog.understanding-hashes.p7">Hashes aren't just for security; they are also used to build efficient data structures. <strong>Bloom Filters</strong> use multiple hash functions to provide a memory-efficient way to check if an element is in a set (with a small chance of false positives). They are used in databases and network routers to avoid expensive lookups. <strong>Merkle Trees</strong> use a hierarchy of hashes to verify the integrity of large datasets. They are the foundation of Git repositories and blockchain ledgers, allowing for efficient verification of specific pieces of data without needing the entire dataset.</p>
 
-      <h2>Password Hashing vs. Data Hashing</h2>
-      <p>It is a common mistake to use fast data hashes like SHA-256 for storing passwords. Because SHA-256 is designed to be fast, an attacker can try billions of passwords per second. For passwords, you must use "slow" hashes like bcrypt or Argon2, which include a "work factor" that makes each attempt computationally expensive. This protects your users even if your database is leaked.</p>
+      <h2 data-i18n="content.blog.understanding-hashes.h2_7">HMAC: Authenticating Messages</h2>
+      <p data-i18n="content.blog.understanding-hashes.p8">An <strong>HMAC (Hash-based Message Authentication Code)</strong> combines a hash function with a secret key. This allows you to verify both the integrity and the authenticity of a message. If an attacker changes the message, the hash won't match. If they don't have the secret key, they can't generate a valid HMAC. This is a critical tool for securing API requests and ensuring that data hasn't been tampered with in transit.</p>
 
-      <h2>Quantum Resistance and the Future</h2>
-      <p>As quantum computers become more powerful, some cryptographic algorithms will become vulnerable. While symmetric encryption and hash functions are generally more resistant to quantum attacks than asymmetric algorithms (like RSA), we may eventually need to move to even longer hash lengths or new "post-quantum" algorithms to ensure long-term data integrity.</p>
+      <h2 data-i18n="content.blog.understanding-hashes.h2_8">Password Hashing vs. Data Hashing</h2>
+      <p data-i18n="content.blog.understanding-hashes.p9">It is a common mistake to use fast data hashes like SHA-256 for storing passwords. Because SHA-256 is designed to be fast, an attacker can try billions of passwords per second using specialized hardware. For passwords, you must use "slow" hashes like <strong>bcrypt</strong> or <strong>Argon2</strong>, which include a "work factor" that makes each attempt computationally expensive. This protects your users even if your database is leaked, as it makes brute-force attacks prohibitively slow.</p>
 
-      <h2>HMAC: Authenticating Messages</h2>
-      <p>An HMAC (Hash-based Message Authentication Code) combines a hash function with a secret key. This allows you to verify both the integrity and the authenticity of a message. If an attacker changes the message, the hash won\'t match. If they don\'t have the secret key, they can\'t generate a valid HMAC.</p>
+      <h2 data-i18n="content.blog.understanding-hashes.h2_9">Quantum Resistance and the Future</h2>
+      <p data-i18n="content.blog.understanding-hashes.p10">As quantum computers become more powerful, some cryptographic algorithms will become vulnerable. While symmetric encryption and hash functions are generally more resistant to quantum attacks than asymmetric algorithms (like RSA), we may eventually need to move to even longer hash lengths (like SHA-512) or new "post-quantum" algorithms to ensure long-term data integrity. Researchers are already working on hash functions that are specifically designed to be resistant to Grover's algorithm, which can speed up hash collisions on quantum hardware.</p>
 
-      <h2>Practical Applications</h2>
-      <p>Developers use hashes for a variety of tasks:</p>
+      <h2 data-i18n="content.blog.understanding-hashes.h2_10">Salting: Preventing Rainbow Table Attacks</h2>
+      <p data-i18n="content.blog.understanding-hashes.p11">Even with a strong hash function, you must use a <strong>salt</strong> when hashing passwords. A salt is a random string added to the password before hashing. This ensures that identical passwords result in different hashes, making it impossible for attackers to use precomputed "rainbow tables" to look up common passwords. Modern hashing libraries like bcrypt handle salting automatically, but it's important to understand why it's there.</p>
+
+      <h2 data-i18n="content.blog.understanding-hashes.h2_11">Practical Applications for Developers</h2>
+      <p data-i18n="content.blog.understanding-hashes.p12">Developers use hashes for a variety of tasks every day:</p>
       <ul>
-        <li><strong>File Integrity:</strong> Verify that a downloaded file hasn\'t been tampered with.</li>
-        <li><strong>Deduplication:</strong> Identify duplicate files in a storage system.</li>
-        <li><strong>Digital Signatures:</strong> Ensure that a message was sent by a specific person and hasn\'t been altered.</li>
+        <li data-i18n="content.blog.understanding-hashes.li6"><strong>File Integrity:</strong> Verify that a downloaded file hasn't been tampered with or corrupted during transfer.</li>
+        <li data-i18n="content.blog.understanding-hashes.li7"><strong>Deduplication:</strong> Identify duplicate files in a storage system by comparing their hashes instead of their entire contents.</li>
+        <li data-i18n="content.blog.understanding-hashes.li8"><strong>Digital Signatures:</strong> Ensure that a message was sent by a specific person and hasn't been altered, by signing the hash of the message.</li>
+        <li data-i18n="content.blog.understanding-hashes.li9"><strong>Content Addressing:</strong> Systems like IPFS and Git use the hash of a file as its address, ensuring that the address always points to the exact same content.</li>
       </ul>
 
-      <p>To experiment with different algorithms and see how they behave, use a client-side <a href="/hash-calculator">Hash Calculator</a>. This allows you to compute hashes locally without sending your data to a server.</p>
+      <p data-i18n="content.blog.understanding-hashes.p13">To experiment with different algorithms and see how they behave, use a client-side <a href="/hash-calculator">Hash Calculator</a>. This allows you to compute hashes locally without sending your data to a server, ensuring your privacy while you learn. Understanding the nuances of hashing is a fundamental skill for any developer working with data or security.</p>
 
-      <p>Choosing the right hash algorithm is a critical decision for any developer. By understanding the strengths and weaknesses of each, you can build more secure and reliable applications.</p>
+      <p data-i18n="content.blog.understanding-hashes.p14">Choosing the right hash algorithm is a critical decision for any developer. By understanding the strengths and weaknesses of each, you can build more secure and reliable applications. Remember: use SHA-256 or SHA-3 for data integrity, and Argon2 or bcrypt for passwords. Stay informed, and keep your data safe.</p>
+
+      <div class="mt-10 p-6 bg-surface-50 dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+        <h3 class="text-lg font-semibold mb-4" data-i18n="content.blog.understanding-hashes.tools_heading">Related Security Tools</h3>
+        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <li>
+            <a href="/hash-calculator" class="flex items-center p-3 rounded-lg hover:bg-white dark:hover:bg-surface-800 transition-colors border border-transparent hover:border-surface-200 dark:hover:border-surface-700">
+              <span class="text-2xl mr-3">#️⃣</span>
+              <div>
+                <div class="font-medium text-surface-900 dark:text-surface-50">Hash Calculator</div>
+                <div class="text-xs text-surface-500 dark:text-surface-400">Compute SHA256, MD5, and more</div>
+              </div>
+            </a>
+          </li>
+          <li>
+            <a href="/universal-decoder" class="flex items-center p-3 rounded-lg hover:bg-white dark:hover:bg-surface-800 transition-colors border border-transparent hover:border-surface-200 dark:hover:border-surface-700">
+              <span class="text-2xl mr-3">🔮</span>
+              <div>
+                <div class="font-medium text-surface-900 dark:text-surface-50">Layered Decoder</div>
+                <div class="text-xs text-surface-500 dark:text-surface-400">Unwrap layered encodings</div>
+              </div>
+            </a>
+          </li>
+        </ul>
+      </div>
     `
   },
   {
@@ -216,17 +308,17 @@ async function getHash(message) {
     title: 'JWT Tokens Explained: Structure, Security, and Common Pitfalls',
     description: 'Master JSON Web Tokens — from their three-part structure to advanced security considerations and common implementation mistakes.',
     category: 'Security',
-    readingTime: '11 min read',
+    readingTime: '13 min read',
     datePublished: '2026-02-08',
     content: `
-      <p>JSON Web Tokens (JWTs) have revolutionized the way we handle authentication in modern web applications. By providing a compact, self-contained way to transmit information between parties, they enable stateless authentication that scales effortlessly. But with great power comes great responsibility—and many ways to get it wrong.</p>
+      <p data-i18n="content.blog.jwt-explained.p1">JSON Web Tokens (JWTs) have revolutionized the way we handle authentication in modern web applications. By providing a compact, self-contained way to transmit information between parties, they enable stateless authentication that scales effortlessly. But with great power comes great responsibility—and many ways to get it wrong. In this guide, we'll dive deep into the structure of JWTs, explore advanced security strategies, and identify the pitfalls that can leave your application vulnerable.</p>
 
-      <h2>The Three Parts of a JWT</h2>
-      <p>A JWT is a string consisting of three parts separated by dots (<code>.</code>):</p>
+      <h2 data-i18n="content.blog.jwt-explained.h2_1">The Three Parts of a JWT</h2>
+      <p data-i18n="content.blog.jwt-explained.p2">A JWT is a string consisting of three parts separated by dots (<code>.</code>):</p>
       <ol>
-        <li><strong>Header:</strong> Typically contains the type of token (JWT) and the signing algorithm being used (e.g., HS256 or RS256).</li>
-        <li><strong>Payload:</strong> Contains the claims. Claims are statements about an entity (typically, the user) and additional data.</li>
-        <li><strong>Signature:</strong> Used to verify that the sender of the JWT is who it says it is and to ensure that the message wasn\'t changed along the way.</li>
+        <li data-i18n="content.blog.jwt-explained.li1"><strong>Header:</strong> Typically contains the type of token (JWT) and the signing algorithm being used (e.g., HS256 or RS256). It is Base64URL-encoded.</li>
+        <li data-i18n="content.blog.jwt-explained.li2"><strong>Payload:</strong> Contains the claims. Claims are statements about an entity (typically, the user) and additional data. This is also Base64URL-encoded.</li>
+        <li data-i18n="content.blog.jwt-explained.li3"><strong>Signature:</strong> Used to verify that the sender of the JWT is who it says it is and to ensure that the message wasn't changed along the way. It is created by signing the encoded header and payload with a secret key.</li>
       </ol>
 
       <pre><code>// Example of a decoded JWT Payload
@@ -238,53 +330,81 @@ async function getHash(message) {
   "admin": true
 }</code></pre>
 
-      <h2>Registered, Public, and Private Claims</h2>
-      <p>Claims are the heart of the JWT. They are divided into three categories:</p>
+      <h2 data-i18n="content.blog.jwt-explained.h2_2">Registered, Public, and Private Claims</h2>
+      <p data-i18n="content.blog.jwt-explained.p3">Claims are the heart of the JWT. They are divided into three categories:</p>
       <ul>
-        <li><strong>Registered claims:</strong> A set of predefined claims which are not mandatory but recommended (e.g., <code>iss</code> for issuer, <code>exp</code> for expiration time, <code>sub</code> for subject).</li>
-        <li><strong>Public claims:</strong> Can be defined at will by those using JWTs. To avoid collisions, they should be defined in the IANA JSON Web Token Registry or be defined as a URI.</li>
-        <li><strong>Private claims:</strong> Custom claims created to share information between parties that agree on using them.</li>
+        <li data-i18n="content.blog.jwt-explained.li4"><strong>Registered claims:</strong> A set of predefined claims which are not mandatory but recommended (e.g., <code>iss</code> for issuer, <code>exp</code> for expiration time, <code>sub</code> for subject, <code>aud</code> for audience).</li>
+        <li data-i18n="content.blog.jwt-explained.li5"><strong>Public claims:</strong> Can be defined at will by those using JWTs. To avoid collisions, they should be defined in the IANA JSON Web Token Registry or be defined as a URI that contains a collision-resistant namespace.</li>
+        <li data-i18n="content.blog.jwt-explained.li6"><strong>Private claims:</strong> Custom claims created to share information between parties that agree on using them. These are neither registered nor public.</li>
       </ul>
 
-      <h2>JWT vs. Session Cookies: The Great Debate</h2>
-      <p>One of the most common questions in web development is whether to use JWTs or traditional session cookies. Session cookies are stateful; the server stores a session ID in a database or cache. JWTs are stateless; all the information is contained in the token itself. While JWTs scale better for microservices and mobile apps, they are harder to revoke. If a user logs out, you can't easily "delete" a JWT that is already in the wild unless you implement a blacklist.</p>
+      <h2 data-i18n="content.blog.jwt-explained.h2_3">JWT vs. Session Cookies: The Great Debate</h2>
+      <p data-i18n="content.blog.jwt-explained.p4">One of the most common questions in web development is whether to use JWTs or traditional session cookies. <strong>Session cookies</strong> are stateful; the server stores a session ID in a database or cache and checks it on every request. <strong>JWTs</strong> are stateless; all the information is contained in the token itself. While JWTs scale better for microservices and mobile apps (no shared session store needed), they are harder to revoke. If a user logs out, you can't easily "delete" a JWT that is already in the wild unless you implement a revocation strategy.</p>
 
-      <h2>Revocation Strategies</h2>
-      <p>To handle logout and account suspension with JWTs, you have several options:</p>
+      <h2 data-i18n="content.blog.jwt-explained.h2_4">Revocation Strategies: Handling the Stateless Nature</h2>
+      <p data-i18n="content.blog.jwt-explained.p5">To handle logout and account suspension with JWTs, you have several options, each with its own trade-offs:</p>
       <ul>
-        <li><strong>Short TTL (Time To Live):</strong> Keep access tokens very short (e.g., 5-15 minutes) and use refresh tokens to get new ones. This minimizes the window of opportunity for an attacker.</li>
-        <li><strong>Blacklisting:</strong> Store the IDs (<code>jti</code> claim) of revoked tokens in a fast cache like Redis. The server checks this list on every request.</li>
-        <li><strong>Whitelisting:</strong> Only allow tokens that are explicitly stored in your database. This effectively makes JWTs stateful but provides maximum control.</li>
+        <li data-i18n="content.blog.jwt-explained.li7"><strong>Short TTL (Time To Live):</strong> Keep access tokens very short (e.g., 5-15 minutes) and use refresh tokens to get new ones. This minimizes the window of opportunity for an attacker if a token is stolen.</li>
+        <li data-i18n="content.blog.jwt-explained.li8"><strong>Blacklisting:</strong> Store the IDs (<code>jti</code> claim) of revoked tokens in a fast cache like Redis. The server checks this list on every request. This adds a small amount of state but maintains the benefits of JWTs.</li>
+        <li data-i18n="content.blog.jwt-explained.li9"><strong>Whitelisting:</strong> Only allow tokens that are explicitly stored in your database. This effectively makes JWTs stateful but provides maximum control over active sessions.</li>
+        <li data-i18n="content.blog.jwt-explained.li10"><strong>Rotating Secrets:</strong> In extreme cases, you can rotate the signing secret, which immediately invalidates all tokens signed with the old secret.</li>
       </ul>
 
-      <h2>JOSE Header Deep Dive</h2>
-      <p>The header of a JWT is part of the JOSE (JSON Object Signing and Encryption) framework. Beyond <code>alg</code> and <code>typ</code>, it can include fields like <code>kid</code> (Key ID), which tells the recipient which public key to use for verification. This is essential when you are rotating keys. More advanced headers like <code>x5u</code> or <code>x5c</code> can even include links to X.509 certificates for trust verification.</p>
+      <h2 data-i18n="content.blog.jwt-explained.h2_5">JOSE Header Deep Dive</h2>
+      <p data-i18n="content.blog.jwt-explained.p6">The header of a JWT is part of the <strong>JOSE (JSON Object Signing and Encryption)</strong> framework. Beyond <code>alg</code> and <code>typ</code>, it can include fields like <code>kid</code> (Key ID), which tells the recipient which public key to use for verification. This is essential when you are rotating keys. More advanced headers like <code>x5u</code> or <code>x5c</code> can even include links to X.509 certificates for trust verification. Understanding these headers is key to building enterprise-grade authentication systems.</p>
 
-      <h2>JWT in Microservices</h2>
-      <p>In a microservices architecture, JWTs are often used to propagate identity between services. An API Gateway authenticates the user and generates a JWT, which is then passed to downstream services. This allows each service to know who the user is and what they are allowed to do without needing to call a central authentication service for every request.</p>
+      <h2 data-i18n="content.blog.jwt-explained.h2_6">JWT in Microservices: Identity Propagation</h2>
+      <p data-i18n="content.blog.jwt-explained.p7">In a microservices architecture, JWTs are often used to propagate identity between services. An API Gateway authenticates the user and generates a JWT, which is then passed to downstream services in the <code>Authorization</code> header. This allows each service to know who the user is and what they are allowed to do without needing to call a central authentication service for every request. This "identity propagation" is one of the primary reasons for JWT's popularity in cloud-native environments.</p>
 
-      <h2>Security Pitfalls to Avoid</h2>
-      <p>Despite their popularity, JWTs are often implemented insecurely. Here are the most common mistakes:</p>
+      <h2 data-i18n="content.blog.jwt-explained.h2_7">Security Pitfalls to Avoid</h2>
+      <p data-i18n="content.blog.jwt-explained.p8">Despite their popularity, JWTs are often implemented insecurely. Here are the most common mistakes:</p>
       <ul>
-        <li><strong>The "none" algorithm:</strong> Some libraries allow the <code>alg</code> header to be set to <code>none</code>, which bypasses signature verification. Always explicitly whitelist the algorithms you support.</li>
-        <li><strong>Weak secrets:</strong> If you use a symmetric algorithm like HS256, your secret must be long and random. A weak secret can be brute-forced in minutes.</li>
-        <li><strong>Sensitive data in the payload:</strong> JWTs are encoded, not encrypted. Anyone with the token can read the payload. Never store passwords, API keys, or PII in a JWT.</li>
-        <li><strong>Missing expiration:</strong> Always set a short <code>exp</code> claim. A token without an expiration date is a permanent key to your application if stolen.</li>
+        <li data-i18n="content.blog.jwt-explained.li11"><strong>The "none" algorithm:</strong> Some libraries allow the <code>alg</code> header to be set to <code>none</code>, which bypasses signature verification. Always explicitly whitelist the algorithms you support (e.g., only allow RS256).</li>
+        <li data-i18n="content.blog.jwt-explained.li12"><strong>Weak secrets:</strong> If you use a symmetric algorithm like HS256, your secret must be long, random, and kept strictly confidential. A weak secret can be brute-forced in minutes using modern hardware.</li>
+        <li data-i18n="content.blog.jwt-explained.li13"><strong>Sensitive data in the payload:</strong> JWTs are encoded, not encrypted. Anyone with the token can read the payload. Never store passwords, API keys, or PII (Personally Identifiable Information) in a JWT.</li>
+        <li data-i18n="content.blog.jwt-explained.li14"><strong>Missing expiration:</strong> Always set a short <code>exp</code> claim. A token without an expiration date is a permanent key to your application if stolen.</li>
       </ul>
 
-      <h2>Best Practices for Implementation</h2>
-      <p>To use JWTs securely, follow these best practices:</p>
+      <h2 data-i18n="content.blog.jwt-explained.h2_8">Best Practices for Implementation</h2>
+      <p data-i18n="content.blog.jwt-explained.p9">To use JWTs securely, follow these industry-standard best practices:</p>
       <ul>
-        <li><strong>Use asymmetric algorithms:</strong> RS256 or ES256 are generally safer than HS256 because the private key never leaves the authentication server.</li>
-        <li><strong>Implement refresh tokens:</strong> Use short-lived access tokens and longer-lived refresh tokens to minimize the impact of a stolen token.</li>
-        <li><strong>Validate everything:</strong> Check the signature, the expiration, the issuer, and the audience on every request.</li>
-        <li><strong>Use a secure storage:</strong> Store JWTs in <code>HttpOnly</code>, <code>Secure</code> cookies to prevent XSS attacks from stealing them.</li>
+        <li data-i18n="content.blog.jwt-explained.li15"><strong>Use asymmetric algorithms:</strong> RS256 or ES256 are generally safer than HS256 because the private key never leaves the authentication server. Downstream services only need the public key to verify the token.</li>
+        <li data-i18n="content.blog.jwt-explained.li16"><strong>Implement refresh tokens:</strong> Use short-lived access tokens and longer-lived refresh tokens stored in <code>HttpOnly</code> cookies to minimize the impact of a stolen token.</li>
+        <li data-i18n="content.blog.jwt-explained.li17"><strong>Validate everything:</strong> Check the signature, the expiration, the issuer (<code>iss</code>), and the audience (<code>aud</code>) on every request. Don't trust any part of the token until the signature is verified.</li>
+        <li data-i18n="content.blog.jwt-explained.li18"><strong>Use secure storage:</strong> Store JWTs in <code>HttpOnly</code>, <code>Secure</code>, <code>SameSite=Strict</code> cookies to prevent XSS and CSRF attacks from stealing or using them.</li>
       </ul>
 
-      <h2>Inspecting and Debugging JWTs</h2>
-      <p>When developing, you often need to see what\'s inside a token. Use a client-side <a href="/jwt-decoder">JWT Inspector</a> to decode tokens safely. For more advanced scenarios involving public keys, a <a href="/jwk-jwks-studio">JWK/JWKS Studio</a> can help you manage and convert key formats.</p>
+      <h2 data-i18n="content.blog.jwt-explained.h2_9">Inspecting and Debugging JWTs</h2>
+      <p data-i18n="content.blog.jwt-explained.p10">When developing, you often need to see what's inside a token to debug claims or expiration issues. Use a client-side <a href="/jwt-decoder">JWT Inspector</a> to decode tokens safely. Unlike online decoders that might log your tokens, a client-side tool keeps your data in your browser. For more advanced scenarios involving public keys and key rotation, a <a href="/jwk-jwks-studio">JWK/JWKS Studio</a> can help you manage and convert key formats between PEM and JWK.</p>
 
-      <p>JWTs are a powerful tool for modern developers, but they require a deep understanding of security principles to use correctly. By following these guidelines, you can build authentication systems that are both flexible and secure.</p>
+      <h2 data-i18n="content.blog.jwt-explained.h2_10">The Future: JWE and OIDC</h2>
+      <p data-i18n="content.blog.jwt-explained.p11">While standard JWTs are signed (JWS), you can also encrypt them using <strong>JWE (JSON Web Encryption)</strong> if you need to store sensitive data in the payload. Furthermore, <strong>OpenID Connect (OIDC)</strong> builds on top of JWT to provide a standardized identity layer, including a <code>/userinfo</code> endpoint and discovery documents. As you build more complex systems, you'll likely find yourself moving from simple JWTs to full OIDC implementations.</p>
+
+      <p data-i18n="content.blog.jwt-explained.p12">JWTs are a powerful tool for modern developers, but they require a deep understanding of security principles to use correctly. By following these guidelines and using the right tools, you can build authentication systems that are both flexible and secure. Remember: statelessness is a feature, but security is a requirement.</p>
+
+      <div class="mt-10 p-6 bg-surface-50 dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+        <h3 class="text-lg font-semibold mb-4" data-i18n="content.blog.jwt-explained.tools_heading">Related Security Tools</h3>
+        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <li>
+            <a href="/jwt-decoder" class="flex items-center p-3 rounded-lg hover:bg-white dark:hover:bg-surface-800 transition-colors border border-transparent hover:border-surface-200 dark:hover:border-surface-700">
+              <span class="text-2xl mr-3">🔓</span>
+              <div>
+                <div class="font-medium text-surface-900 dark:text-surface-50">JWT Inspector</div>
+                <div class="text-xs text-surface-500 dark:text-surface-400">Decode and inspect JWT claims</div>
+              </div>
+            </a>
+          </li>
+          <li>
+            <a href="/jwk-jwks-studio" class="flex items-center p-3 rounded-lg hover:bg-white dark:hover:bg-surface-800 transition-colors border border-transparent hover:border-surface-200 dark:hover:border-surface-700">
+              <span class="text-2xl mr-3">🧷</span>
+              <div>
+                <div class="font-medium text-surface-900 dark:text-surface-50">JWK/JWKS Studio</div>
+                <div class="text-xs text-surface-500 dark:text-surface-400">Manage and convert JWK keys</div>
+              </div>
+            </a>
+          </li>
+        </ul>
+      </div>
     `
   },
   {
@@ -292,94 +412,96 @@ async function getHash(message) {
     title: 'Regular Expressions Demystified: A Practical Guide',
     description: 'Master the fundamentals of regex with real-world examples, character classes, quantifiers, and 10 common patterns every developer should know.',
     category: 'Development',
-    readingTime: '12 min read',
+    readingTime: '14 min read',
     datePublished: '2026-02-08',
     content: `
-      <p>Regular expressions, or regex, are often viewed as a dark art. To the uninitiated, a pattern like <code>/^(?:[a-z0-9!&dollar;%&\'*+/=?^&#96;{|}~-]+(?:\\.[a-z0-9!&dollar;%&\'*+/=?^&#96;{|}~-]+)*|"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\])&dollar;/i</code> looks like a cat walked across a keyboard. But once you understand the logic, regex becomes one of the most powerful tools in your arsenal.</p>
+      <p data-i18n="content.blog.regex-guide.p1">Regular expressions, or regex, are often viewed as a dark art. To the uninitiated, a pattern like <code>/^(?:[a-z0-9!&dollar;%&\'*+/=?^&#96;{|}~-]+(?:\.[a-z0-9!&dollar;%&\'*+/=?^&#96;{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])&dollar;/i</code> looks like a cat walked across a keyboard. But once you understand the logic, regex becomes one of the most powerful tools in your arsenal for text processing, validation, and data extraction.</p>
 
-      <h2>The Building Blocks of Regex</h2>
-      <p>At its core, a regular expression is a sequence of characters that defines a search pattern. Here are the fundamental components:</p>
+      <h2 data-i18n="content.blog.regex-guide.h2_1">The Building Blocks of Regex</h2>
+      <p data-i18n="content.blog.regex-guide.p2">At its core, a regular expression is a sequence of characters that defines a search pattern. Here are the fundamental components that form the foundation of any regex:</p>
       <ul>
-        <li><strong>Literals:</strong> The simplest regex is just the text you want to match (e.g., <code>/hello/</code>).</li>
-        <li><strong>Metacharacters:</strong> Characters with special meanings, like <code>.</code> (any character), <code>^</code> (start of line), and <code>&dollar;</code> (end of line).</li>
-        <li><strong>Character Classes:</strong> Sets of characters to match, like <code>[a-z]</code> (any lowercase letter) or <code>\\\\d</code> (any digit).</li>
-        <li><strong>Quantifiers:</strong> Specify how many times a character or group should repeat, like <code>*</code> (zero or more), <code>+</code> (one or more), and <code>?</code> (zero or one).</li>
-        <li><strong>Groups:</strong> Parentheses <code>()</code> are used to group parts of a pattern together for quantifiers or capturing.</li>
+        <li data-i18n="content.blog.regex-guide.li1"><strong>Literals:</strong> The simplest regex is just the text you want to match (e.g., <code>/hello/</code> matches the string "hello").</li>
+        <li data-i18n="content.blog.regex-guide.li2"><strong>Metacharacters:</strong> Characters with special meanings, like <code>.</code> (any character except newline), <code>^</code> (start of line), and <code>&dollar;</code> (end of line).</li>
+        <li data-i18n="content.blog.regex-guide.li3"><strong>Character Classes:</strong> Sets of characters to match, like <code>[a-z]</code> (any lowercase letter), <code>\\d</code> (any digit), or <code>\\w</code> (any alphanumeric character plus underscore).</li>
+        <li data-i18n="content.blog.regex-guide.li4"><strong>Quantifiers:</strong> Specify how many times a character or group should repeat, like <code>*</code> (zero or more), <code>+</code> (one or more), and <code>?</code> (zero or one), and <code>{n,m}</code> (between n and m times).</li>
+        <li data-i18n="content.blog.regex-guide.li5"><strong>Groups:</strong> Parentheses <code>()</code> are used to group parts of a pattern together for quantifiers or to "capture" the matched text for later use.</li>
+        <li data-i18n="content.blog.regex-guide.li6"><strong>Anchors:</strong> <code>\\b</code> matches a word boundary, while <code>\\B</code> matches a non-boundary. These are essential for matching whole words.</li>
       </ul>
 
-      <h2>Groups: Parentheses and Beyond</h2>
-      <p>Parentheses <code>()</code> are used to group parts of a pattern together for quantifiers or capturing. But there's more to grouping than meets the eye:</p>
-      <ul>
-        <li><strong>Capturing Groups:</strong> <code>(abc)</code> matches "abc" and remembers the match.</li>
-        <li><strong>Non-capturing Groups:</strong> <code>(?:abc)</code> matches "abc" but doesn't remember it, which is more efficient if you don't need the value later.</li>
-        <li><strong>Named Capture Groups:</strong> <code>(?&lt;name&gt;abc)</code> allows you to access the match by name instead of a number, making your code much more readable.</li>
-      </ul>
-
-      <h2>Regex Engines: DFA vs. NFA</h2>
-      <p>Not all regex engines are created equal. Most modern languages (like JavaScript, Python, and Ruby) use NFA (Nondeterministic Finite Automaton) engines. NFAs are powerful and support features like backreferences and lookarounds, but they are susceptible to performance issues. DFA (Deterministic Finite Automaton) engines are faster and have predictable performance but lack some of the advanced features developers love.</p>
-
-      <h2>Unicode Support</h2>
-      <p>In the global web, your regex must handle more than just ASCII characters. Modern regex engines support Unicode via the <code>u</code> flag. This allows you to match characters by their Unicode property, such as <code>/\\\\p{L}/u</code> to match any letter in any language, or <code>/\\\\p{Emoji}/u</code> to match emojis.</p>
-
-      <h2>Best Practices for Maintainable Regex</h2>
-      <p>Regex can quickly become "write-only" code. To keep your patterns maintainable:</p>
-      <ul>
-        <li><strong>Use comments:</strong> Many languages support "extended" mode (the <code>x</code> flag), which allows you to add whitespace and comments to your patterns.</li>
-        <li><strong>Break it down:</strong> Instead of one giant pattern, combine smaller, well-named regex strings.</li>
-        <li><strong>Test with edge cases:</strong> Always include non-matching and boundary cases in your test suite.</li>
-      </ul>
-
-      <h2>Common Regex Flags</h2>
-      <p>Flags are added to the end of a regex to modify its behavior. The most common ones include:</p>
-      <ul>
-        <li><code>g</code> (Global): Find all matches rather than stopping after the first one.</li>
-        <li><code>i</code> (Ignore Case): Make the match case-insensitive.</li>
-        <li><code>m</code> (Multiline): Treat the start <code>^</code> and end <code>&dollar;</code> anchors as working on each line rather than the whole string.</li>
-        <li><code>s</code> (Dotall): Allow the dot <code>.</code> to match newline characters.</li>
-        <li><code>u</code> (Unicode): Enable full Unicode support.</li>
-        <li><code>y</code> (Sticky): Match only from the exact position indicated by the <code>lastIndex</code> property.</li>
-      </ul>
-
-      <h2>Regex in Different Languages</h2>
-      <p>While the core syntax of regex is standardized, there are subtle differences between "flavors." For example, JavaScript's regex engine is slightly different from Python's <code>re</code> module or PHP's PCRE (Perl Compatible Regular Expressions). Some flavors support features like "atomic grouping" or "recursive patterns" that others do not. Always consult the documentation for your specific language to understand its capabilities and limitations.</p>
-
-      <h2>Practical Tips for Debugging</h2>
-      <p>When a regex isn't working as expected, don't just stare at it. Use a step-by-step approach:</p>
+      <h2 data-i18n="content.blog.regex-guide.h2_2">10 Common Patterns Every Developer Needs</h2>
+      <p data-i18n="content.blog.regex-guide.p3">Mastering these patterns will solve 90% of your daily regex needs. Remember to always test these against your specific data:</p>
       <ol>
-        <li><strong>Simplify:</strong> Remove parts of the pattern until it starts matching, then add them back one by one.</li>
-        <li><strong>Use a Visualizer:</strong> Tools like <a href="/regex-visualizer">Regex Studio</a> can show you exactly how the engine is traversing your pattern.</li>
-        <li><strong>Check Your Anchors:</strong> Ensure you aren't accidentally matching more (or less) than you intended due to missing <code>^</code> or <code>&dollar;</code>.</li>
-        <li><strong>Escape Properly:</strong> Remember that characters like <code>.</code>, <code>*</code>, and <code>+</code> have special meanings and must be escaped with a backslash if you want to match them literally.</li>
+        <li data-i18n="content.blog.regex-guide.li7"><strong>Email:</strong> <code>/^[^\s@]+@[^\s@]+\.[^\s@]+&dollar;/</code> (A simple, practical version for basic validation).</li>
+        <li data-i18n="content.blog.regex-guide.li8"><strong>URL:</strong> <code>/^https?:\/\/[^\s/$.?#].[^\s]*&dollar;/i</code> (Matches most common web addresses).</li>
+        <li data-i18n="content.blog.regex-guide.li9"><strong>IPv4 Address:</strong> <code>/^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)&dollar;/</code>.</li>
+        <li data-i18n="content.blog.regex-guide.li10"><strong>Date (YYYY-MM-DD):</strong> <code>/^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])&dollar;/</code>.</li>
+        <li data-i18n="content.blog.regex-guide.li11"><strong>Phone Number:</strong> <code>/^\+?[\\d\\s-]{10,15}&dollar;/</code> (A flexible pattern for international numbers).</li>
+        <li data-i18n="content.blog.regex-guide.li12"><strong>Hex Color:</strong> <code>/^#?([a-f0-9]{3}|[a-f0-9]{6})&dollar;/i</code>.</li>
+        <li data-i18n="content.blog.regex-guide.li13"><strong>UUID:</strong> <code>/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}&dollar;/i</code>.</li>
+        <li data-i18n="content.blog.regex-guide.li14"><strong>HTML Tag:</strong> <code>/&lt;([a-z1-6]+)([^&gt;]+)*&gt;(.*?)&lt;\\/\\1&gt;/i</code> (Captures the tag name and its content).</li>
+        <li data-i18n="content.blog.regex-guide.li15"><strong>Password Strength:</strong> <code>/^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}&dollar;/</code> (At least one lowercase, one uppercase, one digit, and 8+ characters).</li>
+        <li data-i18n="content.blog.regex-guide.li16"><strong>Whitespace:</strong> <code>/\\s+/</code> (Matches one or more spaces, tabs, or newlines).</li>
       </ol>
 
-      <h2>10 Common Patterns Every Developer Needs</h2>
-      <p>Mastering these patterns will solve 90% of your daily regex needs:</p>
-      <ol>
-        <li><strong>Email:</strong> <code>/^[^\\s@]+@[^\\s@]+\\\\.[^\\s@]+&dollar;/</code> (A simple, practical version).</li>
-        <li><strong>URL:</strong> <code>/^https?:\\/\\/[^\\s/$.?#].[^\\s]*&dollar;/i</code>.</li>
-        <li><strong>IPv4 Address:</strong> <code>/^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)&dollar;/</code>.</li>
-        <li><strong>Date (YYYY-MM-DD):</strong> <code>/^\\\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])&dollar;/</code>.</li>
-        <li><strong>Phone Number:</strong> <code>/^\\+?[\\\\d\\\\s-]{10,15}&dollar;/</code>.</li>
-        <li><strong>Hex Color:</strong> <code>/^#?([a-f0-9]{3}|[a-f0-9]{6})&dollar;/i</code>.</li>
-        <li><strong>UUID:</strong> <code>/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}&dollar;/i</code>.</li>
-        <li><strong>HTML Tag:</strong> <code>/&lt;([a-z1-6]+)([^&gt;]+)*&gt;(.*?)&lt;\\\\/\\\\1&gt;/i</code>.</li>
-        <li><strong>Whitespace:</strong> <code>/\\\\s+/</code>.</li>
-        <li><strong>Non-digits:</strong> <code>/\\\\D/</code>.</li>
-      </ol>
+      <h2 data-i18n="content.blog.regex-guide.h2_3">Greedy vs. Lazy Matching: Controlling the Reach</h2>
+      <p data-i18n="content.blog.regex-guide.p4">By default, quantifiers like <code>*</code> and <code>+</code> are <strong>greedy</strong>—they match as much text as possible. For example, <code>/&lt;.*&gt;/</code> applied to <code>&lt;div&gt;hello&lt;/div&gt;</code> will match the entire string from the first <code>&lt;</code> to the last <code>&gt;</code>. To make it <strong>lazy</strong> (or non-greedy) and match only the first tag, add a <code>?</code>: <code>/&lt;.*?&gt;/</code>. This is a critical distinction when parsing structured text like HTML or JSON.</p>
 
-      <h2>Greedy vs. Lazy Matching</h2>
-      <p>By default, quantifiers like <code>*</code> and <code>+</code> are "greedy"—they match as much text as possible. For example, <code>/&lt;.*&gt;/</code> applied to <code>&lt;div&gt;hello&lt;/div&gt;</code> will match the entire string. To make it "lazy" and match only the first tag, add a <code>?</code>: <code>/&lt;.*?&gt;/</code>.</p>
+      <h2 data-i18n="content.blog.regex-guide.h2_4">Lookaheads and Lookbehinds: Zero-Width Assertions</h2>
+      <p data-i18n="content.blog.regex-guide.p5">These advanced features allow you to match a pattern only if it is (or isn't) followed or preceded by another pattern, without including that other pattern in the match. They are called "zero-width" because they don't consume any characters in the string.</p>
+      <ul>
+        <li data-i18n="content.blog.regex-guide.li17"><strong>Positive Lookahead (<code>(?=...)</code>):</strong> Matches if the pattern is followed by the specified group. Example: <code>/\\d+(?= px)/</code> matches "10" in "10 px".</li>
+        <li data-i18n="content.blog.regex-guide.li18"><strong>Negative Lookahead (<code>(?!...)</code>):</strong> Matches if the pattern is NOT followed by the specified group.</li>
+        <li data-i18n="content.blog.regex-guide.li19"><strong>Positive Lookbehind (<code>(?&lt;=...)</code>):</strong> Matches if the pattern is preceded by the specified group.</li>
+        <li data-i18n="content.blog.regex-guide.li20"><strong>Negative Lookbehind (<code>(?&lt;!...)</code>):</strong> Matches if the pattern is NOT preceded by the specified group.</li>
+      </ul>
 
-      <h2>Lookaheads and Lookbehinds</h2>
-      <p>These advanced features allow you to match a pattern only if it is (or isn\'t) followed or preceded by another pattern, without including that other pattern in the match. For example, <code>/\\\\d+(?= px)/</code> matches digits only if they are followed by " px".</p>
+      <h2 data-i18n="content.blog.regex-guide.h2_5">Performance and Catastrophic Backtracking</h2>
+      <p data-i18n="content.blog.regex-guide.p6">Poorly written regex can lead to <strong>catastrophic backtracking</strong>, where the engine takes an exponential amount of time to fail a match. This often happens with nested quantifiers like <code>/(a+)+b/</code> when applied to a long string of "a"s that doesn't end in "b". This can lead to Regular Expression Denial of Service (ReDoS) attacks. Always test your patterns with long, non-matching strings and avoid nesting quantifiers whenever possible.</p>
 
-      <h2>Performance and Catastrophic Backtracking</h2>
-      <p>Poorly written regex can lead to "catastrophic backtracking," where the engine takes an exponential amount of time to fail a match. This often happens with nested quantifiers like <code>/(a+)+b/</code>. Always test your patterns with long, non-matching strings to ensure they perform well.</p>
+      <h2 data-i18n="content.blog.regex-guide.h2_6">Flags: Modifying Regex Behavior</h2>
+      <p data-i18n="content.blog.regex-guide.p7">Regex behavior can be modified using flags added after the closing slash:</p>
+      <ul>
+        <li data-i18n="content.blog.regex-guide.li21"><code>g</code> (global): Don't stop after the first match; find all matches.</li>
+        <li data-i18n="content.blog.regex-guide.li22"><code>i</code> (case-insensitive): Ignore case when matching.</li>
+        <li data-i18n="content.blog.regex-guide.li23"><code>m</code> (multiline): <code>^</code> and <code>&dollar;</code> match the start and end of lines, not just the whole string.</li>
+        <li data-i18n="content.blog.regex-guide.li24"><code>s</code> (dotAll): <code>.</code> matches newlines as well.</li>
+        <li data-i18n="content.blog.regex-guide.li25"><code>u</code> (unicode): Enable full Unicode support.</li>
+      </ul>
 
-      <h2>Visualizing Your Patterns</h2>
-      <p>Regex can be hard to read. Use a <a href="/regex-visualizer">Regex Studio</a> to see a visual representation of your pattern. This makes it much easier to debug complex logic and explain your patterns to teammates.</p>
+      <h2 data-i18n="content.blog.regex-guide.h2_7">Visualizing and Debugging Your Patterns</h2>
+      <p data-i18n="content.blog.regex-guide.p8">Regex can be incredibly hard to read and debug, especially as patterns grow in complexity. Use a <a href="/regex-visualizer">Regex Studio</a> to see a visual representation (railroad diagram) of your pattern. This makes it much easier to understand the logic flow, identify redundant groups, and explain your patterns to teammates. A good visualizer will also show you token-by-token explanations and live match highlighting, which is essential for rapid prototyping.</p>
 
-      <p>Regular expressions are a superpower. They allow you to perform complex text transformations in a single line of code that would otherwise take dozens of lines of procedural logic. Take the time to learn them, and you\'ll wonder how you ever lived without them.</p>
+      <h2 data-i18n="content.blog.regex-guide.h2_8">Regex in Different Languages</h2>
+      <p data-i18n="content.blog.regex-guide.p9">While the core syntax of regex is standardized, different programming languages use different "engines" (e.g., PCRE, JavaScript, Python's <code>re</code>). Most modern engines are very similar, but there are subtle differences in support for features like lookbehinds or named capture groups. Always check the documentation for your specific language's regex implementation to avoid unexpected behavior.</p>
+
+      <h2 data-i18n="content.blog.regex-guide.h2_9">Practical Text Transformation</h2>
+      <p data-i18n="content.blog.regex-guide.p10">Regex isn't just for finding text; it's also for transforming it. Using "backreferences" (like <code>&dollar;1</code> or <code>\\1</code>), you can rearrange parts of a matched string. For example, you can convert a date from <code>MM/DD/YYYY</code> to <code>YYYY-MM-DD</code> using a single replace operation. This makes regex an invaluable tool for data cleaning and migration tasks.</p>
+
+      <p data-i18n="content.blog.regex-guide.p11">Regular expressions are a superpower. They allow you to perform complex text transformations and validations in a single line of code that would otherwise take dozens of lines of procedural logic. While the learning curve can be steep, the investment pays off every time you need to parse a log file, validate a form, or refactor a codebase. Take the time to learn them, and you'll wonder how you ever lived without them. Remember: with great power comes the responsibility to write readable, performant patterns.</p>
+
+      <div class="mt-10 p-6 bg-surface-50 dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+        <h3 class="text-lg font-semibold mb-4" data-i18n="content.blog.regex-guide.tools_heading">Related Developer Tools</h3>
+        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <li>
+            <a href="/regex-visualizer" class="flex items-center p-3 rounded-lg hover:bg-white dark:hover:bg-surface-800 transition-colors border border-transparent hover:border-surface-200 dark:hover:border-surface-700">
+              <span class="text-2xl mr-3">🧩</span>
+              <div>
+                <div class="font-medium text-surface-900 dark:text-surface-50">Regex Studio</div>
+                <div class="text-xs text-surface-500 dark:text-surface-400">Visualize and test regex</div>
+              </div>
+            </a>
+          </li>
+          <li>
+            <a href="/universal-decoder" class="flex items-center p-3 rounded-lg hover:bg-white dark:hover:bg-surface-800 transition-colors border border-transparent hover:border-surface-200 dark:hover:border-surface-700">
+              <span class="text-2xl mr-3">🔮</span>
+              <div>
+                <div class="font-medium text-surface-900 dark:text-surface-50">Layered Decoder</div>
+                <div class="text-xs text-surface-500 dark:text-surface-400">Unwrap encoded strings</div>
+              </div>
+            </a>
+          </li>
+        </ul>
+      </div>
     `
   },
   {
@@ -906,9 +1028,6 @@ done</code></pre>
 
       <h2 data-i18n="content.blog.csp-implementation-guide.h2_9">Upgrade Insecure Requests</h2>
       <p data-i18n="content.blog.csp-implementation-guide.p10">The <code>upgrade-insecure-requests</code> directive is a simple but powerful tool for migrating a site to HTTPS. It tells the browser to treat all of the site's insecure URLs (those starting with HTTP) as though they have been replaced with secure URLs (those starting with HTTPS). This helps prevent "Mixed Content" warnings and ensures that all traffic is encrypted without having to manually update every link in your database.</p>
-
-      <h2 data-i18n="content.blog.csp-implementation-guide.h2_10">CSP for Single Page Applications (SPAs)</h2>
-      <p data-i18n="content.blog.csp-implementation-guide.p11">Implementing CSP in an SPA (built with React, Vue, or Angular) requires special care. Since these frameworks often use inline styles or dynamic script loading, you may need to use nonces that are passed from the server to the client-side app, or leverage <code>'strict-dynamic'</code>. Additionally, ensure that your <code>connect-src</code> directive includes all the API endpoints your SPA needs to communicate with.</p>
 
       <h2 data-i18n="content.blog.csp-implementation-guide.h2_11">Common Pitfalls</h2>
       <ul>

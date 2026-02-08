@@ -5,6 +5,7 @@
 
 import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
+import { createEducationalSection } from '../utils/content-ui.js';
 
 export async function handleCaseConverterRoutes(request, url) {
   const { pathname } = url;
@@ -87,6 +88,26 @@ function renderCaseConverterPage() {
 
       </div>
     </main>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+      ${createEducationalSection([
+        {
+          title: 'Naming Conventions Explained (camelCase/snake_case/etc)',
+          content: '<p>Naming conventions are sets of rules for choosing the character sequence to be used for identifiers which denote variables, types, functions, and other entities in source code and documentation. <strong>camelCase</strong> (e.g., <code>myVariable</code>) starts with a lowercase letter and capitalizes the first letter of each subsequent word. <strong>snake_case</strong> (e.g., <code>my_variable</code>) uses underscores to separate words.</p><p><strong>PascalCase</strong> (e.g., <code>MyVariable</code>) capitalizes the first letter of every word, while <strong>kebab-case</strong> (e.g., <code>my-variable</code>) uses hyphens to separate words. These conventions are not just about aesthetics; they are critical for code readability, maintainability, and adhering to the idiomatic standards of different programming languages and frameworks.</p>'
+        },
+        {
+          title: 'How to Use This Tool',
+          content: '<ol><li>Type or paste your text into the "Input Text" area at the top of the page.</li><li>The tool will automatically convert your input into over a dozen different case styles in real-time.</li><li>Scroll through the "Conversion Results" grid to find the specific case style you need.</li><li>Click the "Copy" icon next to any result to save it to your clipboard.</li><li>Use the "Clear" button to remove all input and start a new conversion.</li></ol>'
+        },
+        {
+          title: 'Common Use Cases',
+          content: '<ul><li><strong>Refactoring Code:</strong> Quickly convert variable names when migrating code between languages with different standards (e.g., Java\'s camelCase to Python\'s snake_case).</li><li><strong>Web Development:</strong> Transform text into kebab-case for CSS class names or URL slugs to ensure SEO-friendly and valid identifiers.</li><li><strong>Database Design:</strong> Convert application-level camelCase identifiers into snake_case for database table and column names.</li><li><strong>Content Creation:</strong> Use Title Case or Sentence case to quickly format headings and body text for articles or documentation.</li></ul>'
+        },
+        {
+          title: 'Pro Tips',
+          content: '<ul><li>Be consistent within your project; even if you prefer one style, always follow the existing convention of the codebase you are working on.</li><li>Use descriptive names that convey meaning, rather than just following the case convention (e.g., <code>isUserLoggedIn</code> is better than <code>status</code>).</li><li>When working with APIs, be prepared to convert between cases, as backend systems often use <code>snake_case</code> while frontends prefer <code>camelCase</code>.</li></ul>'
+        }
+      ], 'case-converter')}
+    </div>
   `;
 
   const script = `

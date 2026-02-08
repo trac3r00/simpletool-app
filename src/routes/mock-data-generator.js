@@ -5,6 +5,7 @@
 
 import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
+import { createEducationalSection } from '../utils/content-ui.js';
 
 export async function handleMockDataRoutes(request, url) {
   const { pathname } = url;
@@ -137,6 +138,26 @@ function renderMockDataPage() {
           </table>` }
       ])}
     </main>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+      ${createEducationalSection([
+        {
+          title: 'What is Mock Data?',
+          content: '<p>Mock data is synthetic information that mimics real-world data without containing any sensitive or personally identifiable information (PII). It is essential for developers and testers who need realistic datasets to build and validate applications without risking data breaches or violating privacy regulations like GDPR or CCPA. By using mock data, you can simulate various scenarios, from standard user profiles to edge cases, ensuring your software handles all types of input gracefully.</p>'
+        },
+        {
+          title: 'Testing Strategies',
+          content: '<p>Effective testing requires diverse datasets. Use mock data to seed your development databases, perform load testing with thousands of records, or verify UI layouts with varying string lengths. It\'s particularly useful for integration testing where you need predictable responses from external APIs. By generating data locally, you can create consistent test environments that are easy to reset and reproduce, leading to more reliable and faster development cycles.</p>'
+        },
+        {
+          title: 'Data Privacy in Mocks',
+          content: '<p>Privacy is a top priority in modern software development. Using real production data in development or staging environments is a major security risk. Mock data generators solve this by producing "fake" but structurally correct data. Our tool runs entirely in your browser, meaning your configuration and the generated data never leave your device. This "Privacy-First" approach ensures that even the process of creating mock data is secure and compliant with the strictest security standards.</p>'
+        },
+        {
+          title: 'Pro Tips',
+          content: '<ul><li><strong>Consistency:</strong> When generating multiple related datasets, use fixed seeds or patterns to maintain referential integrity between tables.</li><li><strong>Edge Cases:</strong> Don\'t just generate "happy path" data. Include empty strings, very long names, and special characters to test your application\'s robustness.</li><li><strong>Format Switching:</strong> Use the SQL export for quick database seeding and CSV for spreadsheet analysis or bulk imports.</li><li><strong>Automation:</strong> While this tool is manual, the patterns it uses can be integrated into your automated CI/CD pipelines for continuous testing.</li></ul>'
+        }
+      ], 'mock-data-generator')}
+    </div>
 
     <script>
       (function() {

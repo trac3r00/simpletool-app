@@ -1,5 +1,6 @@
 import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
+import { createEducationalSection } from '../utils/content-ui.js';
 
 export async function handleRegexVisualizerRoutes(request) {
   const requestPath = new URL(request.url).pathname;
@@ -206,6 +207,26 @@ while ((m = regex.exec(str)) !== null) {
           </table>` }
       ])}
     </main>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+      ${createEducationalSection([
+        {
+          title: 'What are Regular Expressions?',
+          content: '<p>Regular expressions (regex) are powerful patterns used to match character combinations in strings. They are essential tools for text processing, validation, and data extraction across programming languages.</p><p>Regex patterns consist of literal characters and special metacharacters that define search rules. They are used in form validation, log parsing, search and replace operations, and data cleaning tasks.</p>'
+        },
+        {
+          title: 'How to Use This Tool',
+          content: '<p>Enter your regex pattern in the input field. The tool will automatically generate a railroad diagram visualizing the pattern structure. Add test text to see real-time match highlighting and explanations.</p><p>Use the cheatsheet for quick reference on common patterns and syntax. Generate code snippets for your preferred programming language.</p>'
+        },
+        {
+          title: 'Common Use Cases',
+          content: '<ul><li><strong>Email validation:</strong> Ensure user input matches proper email format before processing</li><li><strong>Log parsing:</strong> Extract timestamps, IP addresses, and error codes from server logs</li><li><strong>Data cleaning:</strong> Remove unwanted characters or format phone numbers consistently</li><li><strong>Search and replace:</strong> Bulk text transformations with pattern matching</li></ul>'
+        },
+        {
+          title: 'Pro Tips',
+          content: '<ul><li>Start simple and build complex patterns incrementally</li><li>Use non-capturing groups (?:) when you do not need to reference the match</li><li>Test edge cases like empty strings and special characters</li><li>Consider regex readability—complex patterns can be documented with comments</li></ul>'
+        }
+      ], 'regex-visualizer')}
+    </div>
   `;
 
   const scripts = `

@@ -8,6 +8,7 @@
 
 import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
+import { createEducationalSection } from '../utils/content-ui.js';
 
 export async function handleEnvVarManagerRoutes(request, url) {
   const { pathname } = url;
@@ -155,6 +156,26 @@ function renderEnvVarManagerPage() {
         ])}
       </div>
     </main>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+      ${createEducationalSection([
+        {
+          title: 'Environment Variables Best Practices',
+          content: '<p>Environment variables are a fundamental part of the "Twelve-Factor App" methodology, which advocates for a strict separation of configuration from code. By using environment variables, you can run the same code in different environments (development, staging, production) simply by changing the configuration values.</p><p>Best practices include using descriptive, uppercase names (e.g., <code>DATABASE_URL</code>), providing default values for non-critical settings, and never hardcoding sensitive information directly into your source control.</p>'
+        },
+        {
+          title: 'Secret Management',
+          content: '<p>Secrets are a special category of environment variables that contain sensitive information like API keys, database passwords, and private certificates. Managing these securely is critical to preventing data breaches. You should use a dedicated secret management service (like AWS Secrets Manager, HashiCorp Vault, or Cloudflare Secrets) for production environments.</p><p>For local development, <code>.env</code> files are commonly used, but they should <strong>never</strong> be committed to your git repository. Always add <code>*.env</code> to your <code>.gitignore</code> file.</p>'
+        },
+        {
+          title: '.env Security',
+          content: '<p>When sharing <code>.env</code> files with teammates for debugging, there is a high risk of accidentally exposing production secrets. Our manager helps mitigate this risk by providing a "Mask sensitive values" feature. It uses heuristics to identify keys like <code>SECRET</code>, <code>TOKEN</code>, or <code>PASSWORD</code> and replaces their values with a masked version (e.g., <code>ab...yz (32)</code>).</p><p>This allows you to compare the structure and non-sensitive values of your environment files without leaking the actual secrets.</p>'
+        },
+        {
+          title: 'Pro Tips',
+          content: '<ul><li>Use the <strong>"Swap"</strong> button to quickly reverse the comparison direction between Environment A and Environment B.</li><li>Leverage the <strong>"Filter keys"</strong> input to focus on specific groups of variables, such as all keys starting with <code>AWS_</code> or <code>DB_</code>.</li><li>Always include a <code>.env.example</code> file in your repository with dummy values to show other developers which variables are required for the app to run.</li><li>Remember that environment variables are typically strings; if your app needs a boolean or a number, ensure you parse the value correctly in your code.</li></ul>'
+        }
+      ], 'env-var-manager')}
+    </div>
   `;
 
   const scripts = String.raw`

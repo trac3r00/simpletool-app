@@ -5,6 +5,7 @@
 
 import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
+import { createEducationalSection } from '../utils/content-ui.js';
 
 export async function handlePasswordGeneratorRoutes(request, url) {
   const { pathname } = url;
@@ -313,7 +314,70 @@ function renderPasswordGeneratorPage() {
         </div>
 
       </div>
+
+      ${createEducationalSection([
+        {
+          title: 'What Makes a Password Secure?',
+          content: `
+            <p>A secure password is your first line of defense against unauthorized access. In the modern era of high-speed computing, "secure" is defined by <strong>entropy</strong>—the measure of randomness and unpredictability in a string. A strong password should be long (at least 16 characters), unique to every account, and composed of a diverse set of character types including uppercase, lowercase, numbers, and symbols.</p>
+            <p>Avoid using personal information like birthdays, pet names, or common dictionary words. Even complex-looking substitutions like "P@ssw0rd123" are easily cracked by modern brute-force tools that use massive dictionaries of common patterns.</p>
+          `
+        },
+        {
+          title: 'How to Use This Tool',
+          content: `
+            <ol>
+              <li><strong>Select your mode:</strong> Choose between Password, Username, Passphrase, or Email Alias depending on your needs.</li>
+              <li><strong>Adjust length:</strong> Use the slider to set the desired length. For passwords, 16+ characters is recommended for high security.</li>
+              <li><strong>Configure options:</strong> Toggle character sets (symbols, numbers, etc.) or styles (readable vs. secure).</li>
+              <li><strong>Generate:</strong> Click the "Generate" button to create your unique credential.</li>
+              <li><strong>Copy:</strong> Use the copy icon to safely move the result to your clipboard or password manager.</li>
+            </ol>
+          `
+        },
+        {
+          title: 'Common Use Cases',
+          content: `
+            <ul>
+              <li><strong>Account Security:</strong> Generating unique, high-entropy passwords for every online service you use.</li>
+              <li><strong>System Administration:</strong> Creating secure temporary passwords for new users or service accounts.</li>
+              <li><strong>Privacy Protection:</strong> Using "Plus Aliases" (e.g., user+service@domain.com) to track which services sell your data or to filter spam.</li>
+              <li><strong>Memorable Security:</strong> Using the Passphrase generator for master passwords that need to be typed manually but remain resistant to cracking.</li>
+            </ul>
+          `
+        },
+        {
+          title: 'Pro Tips',
+          content: `
+            <ul>
+              <li><strong>Use a Password Manager:</strong> Never try to memorize complex passwords. Use this tool to generate them, and store them in a reputable password manager like Bitwarden, 1Password, or KeePassXC.</li>
+              <li><strong>Entropy over Complexity:</strong> Length is often more important than character variety. A 20-character lowercase password is often harder to crack than an 8-character "complex" one.</li>
+              <li><strong>Rotate on Breach:</strong> If a service you use is compromised, use this generator to create a completely new, unrelated password immediately.</li>
+            </ul>
+          `
+        }
+      ], 'password-generator')}
     </main>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+      ${createEducationalSection([
+        {
+          title: 'What Makes a Password Secure?',
+          content: '<p>A secure password is your first line of defense against unauthorized access. In the modern era of high-speed computing, "secure" is defined by <strong>entropy</strong>—the measure of randomness and unpredictability in a string. A strong password should be long (at least 16 characters), unique to every account, and composed of a diverse set of character types including uppercase, lowercase, numbers, and symbols.</p><p>Avoid using personal information like birthdays, pet names, or common dictionary words. Even complex-looking substitutions like "P@ssw0rd123" are easily cracked by modern brute-force tools that use massive dictionaries of common patterns.</p>'
+        },
+        {
+          title: 'Entropy Explained',
+          content: '<p>Entropy is a measure of the randomness and unpredictability of a password, typically expressed in bits. The higher the entropy, the stronger the password. For example, a 10-character password using only lowercase letters has much lower entropy than a 10-character password using a full set of alphanumeric and special characters.</p><p>Our generator calculates entropy in real-time to give you an objective measure of your password\'s strength. A password with over 100 bits of entropy is considered exceptionally strong and resistant to modern cracking techniques.</p>'
+        },
+        {
+          title: 'Best Practices',
+          content: '<ul><li><strong>Never Reuse Passwords:</strong> Use a unique password for every single account. If one service is breached, your other accounts remain safe.</li><li><strong>Use a Password Manager:</strong> Since humans can\'t remember dozens of complex, unique passwords, use a reputable password manager to store them securely.</li><li><strong>Enable MFA:</strong> Multi-Factor Authentication adds a critical second layer of security even if your password is compromised.</li><li><strong>Avoid Personal Info:</strong> Never include names, birthdays, or common words that can be found in a dictionary.</li></ul>'
+        },
+        {
+          title: 'Pro Tips',
+          content: '<ul><li>Use the "Passphrase" mode for accounts you need to type manually; they are easier to remember but still highly secure.</li><li>For maximum security, generate the longest password allowed by the service (often 64 or 128 characters).</li><li>Regularly audit your saved passwords using your password manager\'s built-in security check features.</li><li>Consider using "Plus Aliases" (e.g., user+service@gmail.com) to track which services sell your data or send spam.</li></ul>'
+        }
+      ], 'password-generator')}
+    </div>
   `;
 
   const script = `

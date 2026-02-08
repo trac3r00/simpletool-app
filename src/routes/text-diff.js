@@ -5,6 +5,7 @@
 
 import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
+import { createEducationalSection } from '../utils/content-ui.js';
 
 export async function handleTextDiffRoutes(request, url) {
   const { pathname } = url;
@@ -70,6 +71,26 @@ function renderTextDiffPage() {
         </div>
       </div>
     </main>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+      ${createEducationalSection([
+        {
+          title: 'What is Text Diffing?',
+          content: '<p>Text diffing is the process of comparing two sequences of data (usually text) to identify the differences between them. It highlights what has been added, removed, or modified. This is a fundamental operation in software development, data analysis, and content management, allowing users to track changes over time or compare different versions of a document.</p>'
+        },
+        {
+          title: 'Diff Algorithms',
+          content: '<p>Most text diffing tools use algorithms based on the Longest Common Subsequence (LCS) problem. The goal is to find the longest sequence of elements that appear in both texts in the same relative order. Common implementations include the Myers diff algorithm, which is highly efficient and used by Git, and the Hunt-McIlroy algorithm. These algorithms calculate the minimum number of edits (insertions and deletions) required to transform one text into another.</p>'
+        },
+        {
+          title: 'Use Cases',
+          content: '<ul><li><strong>Code Reviews:</strong> Developers use diffs to see exactly what changed in a pull request.</li><li><strong>Version Control:</strong> Systems like Git store history as a series of diffs to save space.</li><li><strong>Content Auditing:</strong> Writers and editors compare drafts to ensure all requested changes were made.</li><li><strong>Data Validation:</strong> Comparing configuration files or database exports to find discrepancies.</li><li><strong>Legal and Compliance:</strong> Comparing contracts or policy documents to identify subtle wording changes.</li></ul>'
+        },
+        {
+          title: 'Pro Tips',
+          content: '<ul><li><strong>Ignore Whitespace:</strong> Many diff tools have options to ignore changes in indentation or trailing spaces, which can reduce noise when comparing code.</li><li><strong>Context Lines:</strong> When viewing diffs, including a few lines of unchanged text around the differences (context) helps you understand the impact of the changes.</li><li><strong>Word-level vs. Line-level:</strong> While line-level diffs are standard for code, word-level diffs are often more useful for prose and natural language documents.</li><li><strong>Side-by-Side View:</strong> For complex changes, a side-by-side (split) view is often easier to read than a unified (inline) view.</li></ul>'
+        }
+      ], 'text-diff')}
+    </div>
   `;
 
    const script = `

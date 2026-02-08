@@ -5,6 +5,7 @@
 
 import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
+import { createEducationalSection } from '../utils/content-ui.js';
 
 export async function handleCertificateDecoderRoutes(request, url) {
   const { pathname } = url;
@@ -163,6 +164,50 @@ function renderCertificateDecoderPage() {
           </table>` }
       ])}
     </main>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+      ${createEducationalSection([
+        {
+          title: 'What are X.509 Certificates?',
+          content: `
+            <p>X.509 is a standard format for public key certificates, which are digital documents that securely bind a public key to an identity (such as a website, organization, or individual). These certificates are the foundation of the Public Key Infrastructure (PKI) used to secure the internet via HTTPS, as well as for signing emails and software.</p>
+            <p>An X.509 certificate contains the public key, the identity of the certificate holder, and the digital signature of the Certificate Authority (CA) that issued the certificate, proving its authenticity.</p>
+          `
+        },
+        {
+          title: 'How to Use This Tool',
+          content: `
+            <ol>
+              <li><strong>Paste your certificate:</strong> Copy your PEM-encoded certificate (including the BEGIN and END headers) and paste it into the input field.</li>
+              <li><strong>Parse:</strong> Click "Parse Certificate" to extract and analyze the data.</li>
+              <li><strong>Review Summary:</strong> Check the top cards for the Common Name (CN), Issuer, and validity dates.</li>
+              <li><strong>Inspect Details:</strong> Expand the sections below to see the full Subject, Issuer, SANs, and technical extensions.</li>
+              <li><strong>Check Status:</strong> Look at the status badge to see if the certificate is currently valid or expired.</li>
+            </ol>
+          `
+        },
+        {
+          title: 'Common Use Cases',
+          content: `
+            <ul>
+              <li><strong>SSL/TLS Troubleshooting:</strong> Diagnosing why a website is showing a "Not Secure" warning by checking for expiration or hostname mismatches.</li>
+              <li><strong>Security Auditing:</strong> Verifying that a certificate was issued by a trusted CA and uses strong signature algorithms (like SHA-256).</li>
+              <li><strong>Development:</strong> Inspecting self-signed certificates or CSRs (Certificate Signing Requests) during local development.</li>
+              <li><strong>Infrastructure Management:</strong> Checking the Subject Alternative Names (SANs) to ensure all required subdomains are covered by a single certificate.</li>
+            </ul>
+          `
+        },
+        {
+          title: 'Pro Tips',
+          content: `
+            <ul>
+              <li><strong>Check the SANs:</strong> Modern browsers rely on the Subject Alternative Name (SAN) extension rather than the Common Name (CN) for hostname verification. Always ensure your domain is listed in the SANs.</li>
+              <li><strong>Verify the Chain:</strong> If a certificate is valid but still untrusted, it may be missing intermediate certificates. Check the "Issuer" to identify which intermediate CA you need to include on your server.</li>
+              <li><strong>Fingerprints for Pinning:</strong> Use the SHA-256 Fingerprint provided by this tool if you need to implement certificate pinning in mobile applications or high-security APIs.</li>
+            </ul>
+          `
+        }
+      ], 'certificate-decoder')}
+    </div>
   `;
 
   const script = `

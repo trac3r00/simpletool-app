@@ -5,6 +5,7 @@
 
 import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
+import { createEducationalSection } from '../utils/content-ui.js';
 
 export async function handleCIDRCalculatorRoutes(request, url) {
   const { pathname } = url;
@@ -220,6 +221,25 @@ function renderCIDRCalculatorPage() {
           <p id="subnet-summary" class="mt-4 text-sm text-surface-500 dark:text-surface-400" data-i18n="tools.cidr-calculator.ui.desc31">Select a prefix to preview subnets.</p>
         </div>
       </section>
+
+      ${createEducationalSection([
+        {
+          title: 'What is CIDR?',
+          content: 'Classless Inter-Domain Routing (CIDR) is a method for allocating IP addresses and IP routing. It replaced the older system based on classes (A, B, and C) to provide more flexibility and efficiency in address distribution.'
+        },
+        {
+          title: 'How to Use This Tool',
+          content: 'Enter an IP address with a prefix (e.g., 192.168.1.0/24) or use the slider to adjust the prefix length. Click "Run analysis" to see network details, usable host ranges, and binary representations.'
+        },
+        {
+          title: 'Common Use Cases',
+          content: 'Planning network subnets for cloud infrastructure (VPCs), troubleshooting routing issues, calculating host capacity for a given prefix, and converting between CIDR and subnet masks.'
+        },
+        {
+          title: 'Pro Tips',
+          content: 'Remember that in IPv4, the first and last addresses in a subnet are typically reserved for the network ID and broadcast address. In IPv6, subnets are almost always /64 for standard local networks.'
+        }
+      ], 'cidr-calculator')}
 
       ${createCheatsheet('cidr-calculator', 'Subnet Quick Reference', [
         { heading: 'Common Subnets', content: `

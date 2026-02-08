@@ -7,6 +7,7 @@
 
 import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
+import { createEducationalSection } from '../utils/content-ui.js';
 
 export async function handleSecretScannerRoutes(request, url) {
   const { pathname } = url;
@@ -118,6 +119,26 @@ function renderSecretScannerPage() {
         ])}
       </div>
     </main>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+      ${createEducationalSection([
+        {
+          title: 'What are Secret Leaks?',
+          content: '<p>Secret leaks occur when sensitive information like API keys, passwords, or private tokens are accidentally committed to version control or shared in public forums. These leaks can lead to unauthorized access, data breaches, and financial loss. This tool helps identify common secret patterns locally in your browser before you share or commit your code.</p>'
+        },
+        {
+          title: 'How to Use This Tool',
+          content: '<ol><li>Paste your code, configuration, or log files into the input area.</li><li>Click the "Scan" button to analyze the text for potential secrets.</li><li>Review the findings and advice for each detected item.</li><li>Use the "Copy Redacted" button to get a share-safe version of your text with secrets masked.</li></ol>'
+        },
+        {
+          title: 'Common Use Cases',
+          content: '<ul><li><strong>Pre-commit Check:</strong> Scan your code before committing to ensure no secrets are included.</li><li><strong>Log Redaction:</strong> Mask sensitive tokens in logs before sharing them with support or teammates.</li><li><strong>Security Auditing:</strong> Quickly audit configuration files for hardcoded credentials.</li></ul>'
+        },
+        {
+          title: 'Pro Tips',
+          content: '<ul><li>Always rotate your credentials immediately if you discover they have been leaked.</li><li>Use environment variables or secret managers instead of hardcoding secrets in your source code.</li><li>Enable "Include low severity patterns" for a more thorough scan, but be prepared for more false positives.</li></ul>'
+        }
+      ], 'secret-scanner')}
+    </div>
   `;
 
   const scripts = String.raw`

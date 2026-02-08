@@ -7,6 +7,7 @@
 
 import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
+import { createEducationalSection } from '../utils/content-ui.js';
 
 export async function handleEmailAnalyzerRoutes(request, url) {
   const { pathname } = url;
@@ -187,6 +188,26 @@ function renderEmailAnalyzerPage() {
         ])}
       </div>
     </main>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+      ${createEducationalSection([
+        {
+          title: 'Email Authentication Explained',
+          content: '<p>Email authentication is a collection of techniques used to provide verifiable information about the origin of an email message. By validating the sender\'s identity, these protocols help mail servers distinguish between legitimate messages and spoofed or fraudulent ones (like phishing). The three pillars of modern email authentication are SPF, DKIM, and DMARC.</p><p>When an email is received, the receiving server performs these checks and records the results in the email\'s headers, which this tool parses for you.</p>'
+        },
+        {
+          title: 'SPF/DKIM/DMARC',
+          content: '<ul><li><strong>SPF (Sender Policy Framework):</strong> A DNS-based mechanism that lists the IP addresses and domains authorized to send email on behalf of your domain.</li><li><strong>DKIM (DomainKeys Identified Mail):</strong> Adds a digital signature to the email, allowing the receiver to verify that the message was indeed sent by the domain owner and hasn\'t been tampered with in transit.</li><li><strong>DMARC (Domain-based Message Authentication, Reporting, and Conformance):</strong> Ties SPF and DKIM together. It tells the receiver what to do if the authentication fails (e.g., "none," "quarantine," or "reject") and provides a way for receivers to report back to the sender.</li></ul>'
+        },
+        {
+          title: 'Phishing Detection',
+          content: '<p>Phishing emails often use "spoofing" to appear as if they come from a trusted source. Our analyzer looks for common red flags, such as a mismatch between the "From" address (what the user sees) and the "Return-Path" (where the mail actually came from). We also extract and analyze URLs in the email body to identify suspicious links, such as those using Punycode (lookalike domains) or IP addresses instead of hostnames.</p><p>By reviewing the "Findings" section, you can quickly identify these signals and determine if an email is safe to interact with.</p>'
+        },
+        {
+          title: 'Pro Tips',
+          content: '<ul><li>Always check the <strong>"Authentication-Results"</strong> header first; it provides the definitive outcome of the security checks performed by your mail provider.</li><li>Use the <strong>"Mask PII"</strong> option when sharing reports with others to protect sensitive email addresses and IP information.</li><li>Pay close attention to the <strong>"Reply-To"</strong> header; if it differs from the "From" address, it may be a sign of a Business Email Compromise (BEC) attack.</li><li>Review the <strong>"Routing Hops"</strong> to see the path the email took; an unusually long or complex path through unknown servers can be a sign of relay abuse.</li></ul>'
+        }
+      ], 'email-analyzer')}
+    </div>
   `;
 
   const scripts = String.raw`

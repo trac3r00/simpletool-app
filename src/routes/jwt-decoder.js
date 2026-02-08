@@ -1,6 +1,7 @@
 import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint, createEmptyState, getBtnLoadingScript } from '../utils/common-ui.js';
 import { createRichEditorPane, getRichEditorStyles, getRichEditorScript } from '../utils/rich-editor.js';
+import { createEducationalSection } from '../utils/content-ui.js';
 
 export async function handleJWTDecoderRoutes(request, url) {
   const { pathname } = url;
@@ -121,26 +122,52 @@ function renderJWTDecoderPage() {
           </div>
         </div>
 
-        <!-- Info Section -->
-        <div class="mt-8 p-6 bg-surface-50 dark:bg-surface-950 rounded-xl border border-surface-200 dark:border-surface-800">
-          <h2 class="text-lg font-bold text-surface-900 dark:text-surface-50 mb-3 flex items-center gap-2">
-            <span class="material-symbols-rounded">info</span>
-            About JWT
-          </h2>
-          <p class="text-sm text-surface-700 dark:text-surface-300 mb-2" data-i18n="tools.jwt-decoder.ui.desc6">
-            JSON Web Tokens (JWT) are a compact, URL-safe means of representing claims to be transferred between two parties.
-          </p>
-          <ul class="text-sm text-surface-700 dark:text-surface-300 space-y-1 ml-6 list-disc">
-            <li><strong>Header:</strong> Contains the token type and hashing algorithm</li>
-            <li><strong>Payload:</strong> Contains the claims (user data and metadata)</li>
-            <li><strong>Signature:</strong> Ensures the token hasn't been tampered with</li>
-          </ul>
-          <p class="mt-3 text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.jwt-decoder.ui.desc7">
-            🔒 All decoding happens in your browser. Your tokens are never sent to any server.
-          </p>
         </div>
 
       </div>
+
+      ${createEducationalSection([
+        {
+          title: 'What is JWT?',
+          content: `
+            <p>JSON Web Token (JWT) is an open standard (RFC 7519) that defines a compact and self-contained way for securely transmitting information between parties as a JSON object. This information can be verified and trusted because it is digitally signed. JWTs can be signed using a secret (with the HMAC algorithm) or a public/private key pair using RSA or ECDSA.</p>
+            <p>Because of their compact size, JWTs are commonly used in authentication and information exchange scenarios, such as "Bearer" tokens in HTTP Authorization headers.</p>
+          `
+        },
+        {
+          title: 'How to Use This Tool',
+          content: `
+            <ol>
+              <li><strong>Paste your token:</strong> Copy your encoded JWT (header.payload.signature) and paste it into the input field.</li>
+              <li><strong>Automatic Decode:</strong> The tool will automatically detect the token and decode its components in real-time.</li>
+              <li><strong>Inspect Header:</strong> Review the algorithm (alg) and token type (typ) in the Header section.</li>
+              <li><strong>Analyze Payload:</strong> Examine the claims, such as expiration (exp), issuer (iss), and subject (sub) in the Payload section.</li>
+              <li><strong>Verify Claims:</strong> Check the "Claim Analysis" box for human-readable dates and validation status.</li>
+            </ol>
+          `
+        },
+        {
+          title: 'Common Use Cases',
+          content: `
+            <ul>
+              <li><strong>Authentication:</strong> Inspecting ID tokens or access tokens from providers like Auth0, Firebase, or AWS Cognito.</li>
+              <li><strong>Debugging:</strong> Troubleshooting why a token is being rejected by your backend (e.g., checking if it has expired).</li>
+              <li><strong>Security Auditing:</strong> Verifying that sensitive data is not being accidentally exposed in the unencrypted payload.</li>
+              <li><strong>Development:</strong> Quickly viewing the contents of a token during API development without writing custom code.</li>
+            </ul>
+          `
+        },
+        {
+          title: 'Pro Tips',
+          content: `
+            <ul>
+              <li><strong>JWT is not Encrypted:</strong> Remember that standard JWTs are only signed, not encrypted. Anyone with the token can read the payload. <strong>Never store passwords or private keys in a JWT.</strong></li>
+              <li><strong>Check Expiration:</strong> Always verify the <code>exp</code> claim. If a token is expired, it should be rejected by your application.</li>
+              <li><strong>Use HTTPS:</strong> Since JWTs are often used for authentication, they must always be transmitted over secure HTTPS connections to prevent interception.</li>
+            </ul>
+          `
+        }
+      ], 'jwt-decoder')}
 
       ${createCheatsheet('jwt-decoder', 'JWT Quick Reference', [
         { heading: 'Structure', content: '<p><code>header.payload.signature</code> — each part is Base64URL-encoded</p>' },
@@ -164,6 +191,26 @@ function renderJWTDecoderPage() {
           </table>` }
       ])}
     </main>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+      ${createEducationalSection([
+        {
+          title: 'What is JWT?',
+          content: '<p>JSON Web Token (JWT) is an open standard (RFC 7519) that defines a compact and self-contained way for securely transmitting information between parties as a JSON object. This information can be verified and trusted because it is digitally signed. JWTs can be signed using a secret (with the HMAC algorithm) or a public/private key pair using RSA or ECDSA.</p><p>Because of their compact size, JWTs are commonly used in authentication and information exchange scenarios, such as "Bearer" tokens in HTTP Authorization headers.</p>'
+        },
+        {
+          title: 'Token Structure (header.payload.signature)',
+          content: '<p>A JWT typically consists of three parts separated by dots (<code>.</code>):</p><ul><li><strong>Header:</strong> Usually consists of two parts: the type of the token (JWT) and the signing algorithm being used (e.g., HS256 or RS256).</li><li><strong>Payload:</strong> Contains the "claims." Claims are statements about an entity (typically, the user) and additional data. There are three types of claims: registered, public, and private claims.</li><li><strong>Signature:</strong> Created by taking the encoded header, the encoded payload, a secret, and the algorithm specified in the header, and signing that.</li></ul>'
+        },
+        {
+          title: 'Security Considerations',
+          content: '<p>While JWTs are signed to ensure integrity, they are typically NOT encrypted. This means that anyone who has the token can decode the header and payload to read the information inside. <strong>Never store sensitive information like passwords or private keys in a JWT payload.</strong></p><p>Additionally, always verify the <code>exp</code> (expiration) claim to prevent replay attacks, and ensure your server validates the signature using a strong, secret key or the correct public key before trusting the data in the payload.</p>'
+        },
+        {
+          title: 'Pro Tips',
+          content: '<ul><li>Use the <strong>"exp"</strong> claim to set a short expiration time for access tokens to minimize the impact of a stolen token.</li><li>Always use <strong>HTTPS</strong> to transmit JWTs to prevent interception via man-in-the-middle attacks.</li><li>If using asymmetric algorithms (like RS256), you can share your public key so other services can verify your tokens without being able to create them.</li><li>Check for the <strong>"nbf"</strong> (Not Before) claim if you want to issue a token that only becomes valid at a specific future time.</li></ul>'
+        }
+      ], 'jwt-decoder')}
+    </div>
   `;
 
   const script = `

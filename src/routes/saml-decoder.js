@@ -5,6 +5,7 @@
 
 import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createCheatsheet, infoHint } from '../utils/common-ui.js';
+import { createEducationalSection } from '../utils/content-ui.js';
 
 export async function handleSamlDecoderRoutes(request, url) {
   const { pathname } = url;
@@ -152,290 +153,51 @@ function renderSamlDecoderPage() {
           </table>` }
       ])}
     </main>
-
-    <script src="/vendor/pako.min.js" integrity="sha384-rNlaE5fs9dGIjmxWDALQh/RBAaGRYT5ChrzHo6tRfgrZ36iRFAiquP5g41Jsv+0j" crossorigin="anonymous"></script>
-    <script>
-      (function() {
-        const inputEl = document.getElementById('saml-input');
-        const decodeBtn = document.getElementById('decode-btn');
-        const sampleBtn = document.getElementById('sample-btn');
-        const clearBtn = document.getElementById('clear-btn');
-        const inflateToggle = document.getElementById('inflate-toggle');
-        const prettyToggle = document.getElementById('pretty-toggle');
-        const errorBox = document.getElementById('saml-error');
-        const panel = document.getElementById('decoded-panel');
-        const attributeBody = document.getElementById('attribute-body');
-        const copyAttributesBtn = document.getElementById('copy-attributes');
-        const copyXmlBtn = document.getElementById('copy-xml');
-        const copyJsonBtn = document.getElementById('copy-json');
-        const xmlOutput = document.getElementById('xml-output');
-        const jsonOutput = document.getElementById('json-output');
-        const summaryFields = {
-          issuer: document.getElementById('summary-issuer'),
-          subject: document.getElementById('summary-subject'),
-          destination: document.getElementById('summary-destination'),
-          audience: document.getElementById('summary-audience'),
-          signature: document.getElementById('summary-signature'),
-          status: document.getElementById('summary-status')
-        };
-        const validityBadge = document.getElementById('validity-badge');
-        const assertionFields = {
-          id: document.getElementById('assertion-id'),
-          authn: document.getElementById('assertion-authn'),
-          conditions: document.getElementById('assertion-conditions')
-        };
-
-        let latestJson = null;
-        let latestXml = null;
-
-        decodeBtn.addEventListener('click', handleDecode);
-        sampleBtn.addEventListener('click', loadSample);
-        clearBtn.addEventListener('click', () => {
-          inputEl.value = '';
-          panel.classList.add('hidden');
-          errorBox.classList.add('hidden');
-          attributeBody.innerHTML = '<tr><td class="py-2 text-surface-500">Decoded attributes will appear here.</td></tr>';
-          copyAttributesBtn.disabled = true;
-        });
-
-        document.querySelectorAll('.tab-button').forEach(button => {
-          button.addEventListener('click', () => switchTab(button.dataset.panel));
-        });
-
-        copyAttributesBtn.addEventListener('click', () => {
-          if (!latestJson) return;
-          navigator.clipboard.writeText(JSON.stringify(latestJson.attributes, null, 2));
-          copyAttributesBtn.textContent = _t('tools.saml-decoder.js.text0', 'Copied!');
-          if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
-          setTimeout(() => copyAttributesBtn.textContent = _t('tools.saml-decoder.js.text1', 'Copy JSON'), 1500);
-        });
-
-        copyXmlBtn.addEventListener('click', () => {
-          if (!latestXml) return;
-          navigator.clipboard.writeText(latestXml);
-          copyXmlBtn.textContent = _t('tools.saml-decoder.js.text0', 'Copied!');
-          if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
-          setTimeout(() => copyXmlBtn.textContent = _t('tools.saml-decoder.js.text2', 'Copy XML'), 1500);
-        });
-
-        copyJsonBtn.addEventListener('click', () => {
-          if (!latestJson) return;
-          navigator.clipboard.writeText(JSON.stringify(latestJson, null, 2));
-          copyJsonBtn.textContent = _t('tools.saml-decoder.js.text0', 'Copied!');
-          if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
-          setTimeout(() => copyJsonBtn.textContent = _t('tools.saml-decoder.js.text1', 'Copy JSON'), 1500);
-        });
-
-        function handleDecode() {
-          try {
-            const xml = extractXml(inputEl.value.trim(), inflateToggle.checked);
-            const parsed = analyzeXml(xml);
-            latestJson = parsed;
-            latestXml = xml;
-            renderSummary(parsed);
-            renderAttributes(parsed.attributes);
-            renderPanels(parsed, xml);
-            panel.classList.remove('hidden');
-            errorBox.classList.add('hidden');
-            copyAttributesBtn.disabled = parsed.attributes.length === 0;
-          } catch (error) {
-            showError(error.message);
-          }
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+      ${createEducationalSection([
+        {
+          title: 'What is SAML?',
+          content: `
+            <p>Security Assertion Markup Language (SAML) is an XML-based open standard for exchanging authentication and authorization data between parties, in particular, between an Identity Provider (IdP) and a Service Provider (SP). SAML is the backbone of many Enterprise Single Sign-On (SSO) solutions, allowing users to access multiple applications with a single set of credentials.</p>
+            <p>The most common version is SAML 2.0, which uses security tokens containing "assertions" to pass information about a principal (usually a user) between the IdP and the SP.</p>
+          `
+        },
+        {
+          title: 'How to Use This Tool',
+          content: `
+            <ol>
+              <li><strong>Paste your payload:</strong> Copy the Base64-encoded SAMLResponse or raw XML and paste it into the input field.</li>
+              <li><strong>Configure options:</strong> Toggle "Attempt to inflate" if you are decoding a Redirect binding payload (which is often compressed).</li>
+              <li><strong>Decode:</strong> Click "Decode response" to parse the message.</li>
+              <li><strong>Review Summary:</strong> Check the "Quick summary" for the Issuer, Subject, and validity status.</li>
+              <li><strong>Inspect Attributes:</strong> View the decoded user attributes (email, roles, etc.) in the Attributes table.</li>
+              <li><strong>Explore Details:</strong> Use the tabs below to see the Pretty XML, Assertion details, or a JSON representation of the claims.</li>
+            </ol>
+          `
+        },
+        {
+          title: 'Common Use Cases',
+          content: `
+            <ul>
+              <li><strong>SSO Troubleshooting:</strong> Diagnosing why a user cannot log in by checking for expired assertions or audience mismatches.</li>
+              <li><strong>Integration Testing:</strong> Verifying that your Identity Provider is sending the correct attributes required by your application.</li>
+              <li><strong>Security Auditing:</strong> Inspecting the raw XML to ensure that assertions are properly signed and encrypted where necessary.</li>
+              <li><strong>Development:</strong> Quickly viewing the contents of a SAML message during the development of a Service Provider integration.</li>
+            </ul>
+          `
+        },
+        {
+          title: 'Pro Tips',
+          content: `
+            <ul>
+              <li><strong>Redirect vs. POST:</strong> SAML messages sent via HTTP-Redirect are usually deflated (compressed) before being Base64 encoded. If your decode fails, try toggling the "Attempt to inflate" checkbox.</li>
+              <li><strong>Check the Audience:</strong> Ensure the <code>AudienceRestriction</code> matches your SP's Entity ID. This is a common cause of "Invalid SAML" errors.</li>
+              <li><strong>Clock Skew:</strong> If a response is marked as invalid, check the <code>NotBefore</code> and <code>NotOnOrAfter</code> times. Small differences between the IdP and SP clocks can cause valid assertions to be rejected.</li>
+            </ul>
+          `
         }
-
-        function showError(message) {
-          errorBox.textContent = message;
-          errorBox.classList.remove('hidden');
-          panel.classList.add('hidden');
-        }
-
-        function extractXml(raw, allowInflate) {
-          if (!raw) throw new Error('Paste a SAML response first.');
-          if (raw.trim().startsWith('<')) {
-            return raw.trim();
-          }
-
-          let decoded;
-          try {
-            const sanitized = raw.replace(/\\s+/g, '');
-            decoded = atob(sanitized);
-          } catch (error) {
-            throw new Error('Input is not valid Base64 or XML.');
-          }
-
-          if (decoded.trim().startsWith('<')) {
-            return decoded;
-          }
-
-          if (allowInflate && window.pako) {
-            try {
-              const bytes = Uint8Array.from(decoded, (char) => char.charCodeAt(0));
-              const inflated = window.pako.inflateRaw(bytes, { to: 'string' });
-              if (inflated.trim().startsWith('<')) {
-                return inflated;
-              }
-            } catch (error) {
-              console.warn('Inflate failed:', error);
-            }
-          }
-
-          throw new Error('Unable to detect XML payload. Toggle inflate if this is a Redirect binding payload.');
-        }
-
-        function analyzeXml(xml) {
-          const parser = new DOMParser();
-          const doc = parser.parseFromString(xml, 'text/xml');
-          if (doc.getElementsByTagName('parsererror').length) {
-            throw new Error('Malformed XML detected.');
-          }
-
-          const response = doc.getElementsByTagNameNS('*', 'Response')[0];
-          const assertion = doc.getElementsByTagNameNS('*', 'Assertion')[0];
-          const issuer = getText(doc, 'Issuer');
-          const nameId = getText(doc, 'NameID');
-          const destination = response ? response.getAttribute('Destination') : null;
-          const audienceNodes = Array.from(doc.getElementsByTagNameNS('*', 'Audience'));
-          const audiences = audienceNodes.map(node => node.textContent.trim()).filter(Boolean);
-          const attributes = Array.from(doc.getElementsByTagNameNS('*', 'Attribute')).map(mapAttribute);
-          const statusCode = doc.getElementsByTagNameNS('*', 'StatusCode')[0];
-          const status = statusCode ? statusCode.getAttribute('Value') : 'Unknown';
-          const signaturePresent = doc.getElementsByTagNameNS('*', 'Signature').length > 0;
-          const notBefore = getAttribute(assertion, 'Conditions', 'NotBefore');
-          const notOnOrAfter = getAttribute(assertion, 'Conditions', 'NotOnOrAfter');
-          const authnStatement = doc.getElementsByTagNameNS('*', 'AuthnStatement')[0];
-          const authnInstant = authnStatement ? authnStatement.getAttribute('AuthnInstant') : null;
-          const authnContext = getText(doc, 'AuthnContextClassRef');
-
-          return {
-            issuer: issuer || 'Unknown issuer',
-            subject: nameId || '—',
-            destination: destination || '—',
-            audiences,
-            status,
-            signaturePresent,
-            attributes,
-            notBefore,
-            notOnOrAfter,
-            assertionId: assertion ? assertion.getAttribute('ID') : '—',
-            authnInstant,
-            authnContext: authnContext || '—'
-          };
-        }
-
-        function mapAttribute(node) {
-          const name = node.getAttribute('Name') || node.getAttribute('FriendlyName') || 'Unnamed attribute';
-          const values = Array.from(node.getElementsByTagNameNS('*', 'AttributeValue')).map(v => v.textContent.trim());
-          return { name, values };
-        }
-
-        function getText(doc, localName) {
-          const el = doc.getElementsByTagNameNS('*', localName)[0];
-          return el ? el.textContent.trim() : null;
-        }
-
-        function getAttribute(assertion, nodeName, attr) {
-          if (!assertion) return null;
-          const node = assertion.getElementsByTagNameNS('*', nodeName)[0];
-          return node ? node.getAttribute(attr) : null;
-        }
-
-        function renderSummary(data) {
-          summaryFields.issuer.textContent = data.issuer;
-          summaryFields.subject.textContent = data.subject;
-          summaryFields.destination.textContent = data.destination;
-          summaryFields.audience.textContent = data.audiences.length ? data.audiences[0] : '—';
-          summaryFields.signature.textContent = data.signaturePresent ? 'Embedded signature found' : 'No signature element';
-          summaryFields.status.textContent = data.status;
-
-          const validity = describeValidity(data.notBefore, data.notOnOrAfter);
-          validityBadge.textContent = validity.label;
-          validityBadge.className = 'text-xs font-semibold px-3 py-1 rounded-full ' + validity.className;
-        }
-
-         function describeValidity(notBefore, notAfter) {
-           if (!notBefore && !notAfter) {
-             return { label: 'No conditions', className: 'bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-300' };
-           }
-           const now = Date.now();
-           const start = notBefore ? Date.parse(notBefore) : null;
-           const end = notAfter ? Date.parse(notAfter) : null;
-           if (start && now < start) {
-              return { label: 'Not yet valid', className: 'bg-warning-100 dark:bg-warning-900/40 text-warning-800 dark:text-warning-200' };
-           }
-           if (end && now >= end) {
-             return { label: 'Expired', className: 'bg-error-100 dark:bg-error-900/30 text-error-800 dark:text-error-200' };
-           }
-           return { label: 'Currently valid', className: 'bg-success-100 dark:bg-success-900/30 text-success-800 dark:text-success-200' };
-         }
-
-        function renderAttributes(attributes) {
-          if (!attributes.length) {
-            attributeBody.innerHTML = '<tr><td class="py-2 text-surface-500">No AttributeStatement elements were found.</td></tr>';
-            return;
-          }
-          attributeBody.innerHTML = attributes.map(attr => {
-            const value = attr.values.length ? attr.values.join(', ') : '—';
-            return '<tr><td class="py-2 pr-4 font-semibold">' + escapeHtml(attr.name) + '</td><td class="py-2 text-surface-600 dark:text-surface-300">' + escapeHtml(value) + '</td></tr>';
-          }).join('');
-        }
-
-        function renderPanels(data, xml) {
-          const prettyXml = prettyToggle.checked ? formatXml(xml) : xml;
-          xmlOutput.textContent = prettyXml;
-          jsonOutput.textContent = JSON.stringify(data, null, 2);
-          assertionFields.id.textContent = data.assertionId || '—';
-          assertionFields.authn.textContent = data.authnContext || data.authnInstant || '—';
-          assertionFields.conditions.textContent = buildConditionText(data.notBefore, data.notOnOrAfter, data.audiences);
-        }
-
-        function buildConditionText(notBefore, notAfter, audiences) {
-          const parts = [];
-          if (notBefore) parts.push('NotBefore: ' + notBefore);
-          if (notAfter) parts.push('NotOnOrAfter: ' + notAfter);
-          if (audiences && audiences.length) parts.push('AudienceRestriction: ' + audiences.join(', '));
-          return parts.length ? parts.join(' \u2022 ') : '—';
-        }
-
-        function switchTab(panelName) {
-          document.querySelectorAll('.tab-button').forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.panel === panelName);
-          });
-          document.querySelectorAll('.tab-panel').forEach(panel => {
-            panel.classList.toggle('hidden', panel.id !== 'panel-' + panelName);
-          });
-        }
-
-        function formatXml(xml) {
-          try {
-            const PADDING = '  ';
-            const reg = /(>)(<)(\\/*)/g;
-            let formatted = '';
-            let pad = 0;
-            xml = xml.replace(reg, '$1\\n$2$3');
-            xml.split('\\n').forEach((node) => {
-              if (node.match(/^<\\//)) pad -= 1;
-              formatted += PADDING.repeat(Math.max(pad, 0)) + node + '\\n';
-              if (node.match(/^<[^!?][^>]*[^\\/]>/)) pad += 1;
-            });
-            return formatted.trim();
-          } catch (error) {
-            return xml;
-          }
-        }
-
-        function escapeHtml(value) {
-          if (value === null || value === undefined) {
-            return '';
-          }
-          return String(value).replace(/[&<>]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[char]));
-        }
-
-        function loadSample() {
-          const sample = 'PD94bWwgdmVyc2lvbj0iMS4wIj8+PHNhbWxwOlJlc3BvbnNlIElEPSJpZC0xMjMiIERlc3RpbmF0aW9uPSJodHRwczovL2FwcC5leGFtcGxlLmNvbS9hY2MvbG9naW4iIElzc3VlSW5zdGFudD0iMjAyNS0wMS0wMVQxMjowMDowMFoiIHhtbG5zOnNhbWxwPSJ1cm46b2FzaXM6bmFtZXM6dGM6U0FNTDoyLjA6cHJvdG9jb2wiIHhtbG5zOnNhbWw9InVybjpvYXNpczpuYW1lczp0YzpTQU1MOjIuMDphc3NlcnRpb24iPjxzYW1sOklzc3VlciB4bWxucz0idXJuOm9hc2lzOm5hbWVzOnRjOlNBTUw6Mi4wOmFzc2VydGlvbiI+aHR0cHM6Ly9pZHAuZXhhbXBsZS5jb20vPC9zYW1sOklzc3Vlcj48c2FtbDpTdWJqZWN0PjxzYW1sOk5hbWVJRCBGb3JtYXQ9ImVtYWlsQWRkcmVzcyI+dXNlckBleGFtcGxlLmNvbTwvc2FtbDpOYW1lSUQ+PC9zYW1sOlN1YmplY3Q+PHNhbWw6QXR0cmlidXRlU3RhdGVtZW50PjxzYW1sOkF0dHJpYnV0ZSBOYW1lPSJyb2xlIj48c2FtbDpBdHRyaWJ1dGVWYWx1ZT5BZG1pbjwvc2FtbDpBdHRyaWJ1dGVWYWx1ZT48L3NhbWw6QXR0cmlidXRlPjxzYW1sOkF0dHJpYnV0ZSBOYW1lPSJ1c2VybmFtZSI+PHNhbWw6QXR0cmlidXRlVmFsdWU+amRvZTwvc2FtbDpBdHRyaWJ1dGVWYWx1ZT48L3NhbWw6QXR0cmlidXRlPjwvc2FtbDpBdHRyaWJ1dGVTdGF0ZW1lbnQ+PC9zYW1scDpSZXNwb25zZT4=';
-          inputEl.value = sample;
-        }
-      })();
-    </script>
+      ], 'saml-decoder')}
+    </div>
   `;
 
   return createPageTemplate({

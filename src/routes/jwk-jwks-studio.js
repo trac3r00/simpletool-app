@@ -10,6 +10,7 @@
 
 import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
+import { createEducationalSection } from '../utils/content-ui.js';
 
 export async function handleJwkJwksStudioRoutes(request, url) {
   const { pathname } = url;
@@ -181,6 +182,49 @@ function renderJwkJwksStudioPage() {
         ])}
       </div>
     </main>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+      ${createEducationalSection([
+        {
+          title: 'What is JWK/JWKS?',
+          content: `
+            <p>JSON Web Key (JWK) is a JSON-based format for representing cryptographic keys. It is defined in RFC 7517 and is widely used in modern identity protocols like OpenID Connect (OIDC). A JWK Set (JWKS) is simply a JSON object that contains an array of JWKs.</p>
+            <p>JWKS are typically hosted at a public URL (the "jwks_uri") by an Identity Provider (IdP). This allows applications to dynamically retrieve the public keys needed to verify the signatures of JWTs issued by that IdP without having to hardcode keys or certificates.</p>
+          `
+        },
+        {
+          title: 'How to Use This Tool',
+          content: `
+            <ol>
+              <li><strong>Import a Key:</strong> Paste a PEM public key, a single JWK, or a full JWKS into the "Key Input" field and click "Import".</li>
+              <li><strong>Generate Thumbprint:</strong> Click "Thumbprint" to compute the RFC 7638 SHA-256 hash of the key, which is often used as the <code>kid</code> (Key ID).</li>
+              <li><strong>Build a JWKS:</strong> Click "Add to JWKS" to move your imported key into the JWKS Editor. You can manage multiple keys here for rotation.</li>
+              <li><strong>Verify JWT:</strong> Paste a JWT into the verifier section. The tool will use the keys in your JWKS Editor to attempt to verify the signature locally.</li>
+            </ol>
+          `
+        },
+        {
+          title: 'Common Use Cases',
+          content: `
+            <ul>
+              <li><strong>OIDC Configuration:</strong> Generating the correct <code>kid</code> and JWK format for your application's <code>.well-known/jwks.json</code> endpoint.</li>
+              <li><strong>Key Conversion:</strong> Converting legacy PEM public keys into the modern JWK format required by many cloud providers and libraries.</li>
+              <li><strong>Offline Debugging:</strong> Verifying JWT signatures from your local environment without needing to make network requests to an IdP.</li>
+              <li><strong>Security Testing:</strong> Manually building JWKS objects to test how your application handles key rotation or multiple active keys.</li>
+            </ul>
+          `
+        },
+        {
+          title: 'Pro Tips',
+          content: `
+            <ul>
+              <li><strong>Key Rotation:</strong> When rotating keys, keep both the old and new keys in your JWKS for a transition period. This ensures that tokens signed with the old key remain valid until they expire.</li>
+              <li><strong>Use "sig" for Signing:</strong> Always set the <code>use</code> parameter to <code>"sig"</code> for keys intended for signature verification to help clients distinguish them from encryption keys.</li>
+              <li><strong>Deterministic kids:</strong> Using the RFC 7638 thumbprint as your <code>kid</code> ensures that the ID is always consistent for the same key material, regardless of where it is generated.</li>
+            </ul>
+          `
+        }
+      ], 'jwk-jwks-studio')}
+    </div>
   `;
 
   const scripts = `

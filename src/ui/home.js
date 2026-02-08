@@ -239,8 +239,9 @@ function renderCategories(categories) {
      security: 'bg-error-100 text-error-700 dark:bg-error-900/30 dark:text-error-300',
      network: 'bg-success-100 text-success-700 dark:bg-success-900/30 dark:text-success-300',
      generators: 'bg-warning-100 text-warning-700 dark:bg-warning-900/30 dark:text-warning-300',
-     utils: 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300',
-     game: 'bg-error-100 text-error-700 dark:bg-error-900/30 dark:text-error-300'
+      utils: 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300',
+      games: 'bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-300',
+      game: 'bg-error-100 text-error-700 dark:bg-error-900/30 dark:text-error-300'
    };
 
   return Object.entries(categories).map(([key, section]) => `
@@ -288,6 +289,7 @@ function groupToolsByCategory(tools) {
     security: { title: 'Security & Crypto', icon: '🛡️', tools: [] },
     network: { title: 'Network & Web', icon: '🌐', tools: [] },
     generators: { title: 'Generators', icon: '⚡', tools: [] },
+    games: { title: 'Games', icon: '🎮', tools: [] },
     game: { title: 'Games & Fun', icon: '🎮', tools: [] },
     utils: { title: 'Utilities', icon: '🛠️', tools: [] }
   };
@@ -297,6 +299,7 @@ function groupToolsByCategory(tools) {
     else if (tool.category === 'formatters') categories.formatters.tools.push(tool);
     else if (tool.category === 'network') categories.network.tools.push(tool);
     else if (tool.category === 'generators') categories.generators.tools.push(tool);
+    else if (tool.category === 'games') categories.games.tools.push(tool);
     else if (tool.category === 'game') categories.game.tools.push(tool);
     else categories.utils.tools.push(tool);
   });

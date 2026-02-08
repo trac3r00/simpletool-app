@@ -1,5 +1,6 @@
 import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, getCopyToClipboardScript, createCheatsheet, infoHint } from '../utils/common-ui.js';
+import { createEducationalSection } from '../utils/content-ui.js';
 
 export async function handleCronBuilderRoutes(request) {
   const requestPath = new URL(request.url).pathname;
