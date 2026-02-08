@@ -1,5 +1,5 @@
 import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
+import { createPageTemplate, createToolHeader, getCopyToClipboardScript } from '../utils/common-ui.js';
 
 export async function handleLogMaskerRoutes(request, url) {
   if (url.pathname !== '/log-masker' && url.pathname !== '/log-masker/') return null;
@@ -28,7 +28,7 @@ export async function handleLogMaskerRoutes(request, url) {
           <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 p-5">
             <div class="flex justify-between items-center mb-2">
               <label for="log-input" class="block text-sm font-medium text-surface-700 dark:text-surface-300"><span data-i18n="tools.log-masker.ui.label2">Raw Logs</span></label>
-              <button id="mask-btn" data-tooltip="Redact all selected PII patterns from the input" class="px-4 py-1.5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold rounded-lg transition"><span data-i18n="tools.log-masker.ui.button0">Mask Logs</span></button>
+              <button id="mask-btn" data-tooltip="Redact all selected PII patterns from the input" class="btn btn-primary btn-sm"><span data-i18n="tools.log-masker.ui.button0">Mask Logs</span></button>
             </div>
             <textarea id="log-input" rows="15" 
               class="w-full p-3 bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 font-mono text-sm text-surface-900 dark:text-white resize-y"
@@ -61,18 +61,19 @@ export async function handleLogMaskerRoutes(request, url) {
 
         <!-- Output -->
         <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 p-5 flex flex-col">
-          <div class="flex justify-between items-center mb-4">
-            <h2 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.log-masker.ui.heading7">Masked Logs</h2>
-            <button onclick="copyLogs()" class="text-sm text-primary-600 dark:text-primary-400 font-medium hover:underline"><span data-i18n="tools.log-masker.ui.button1">Copy Result</span></button>
-          </div>
+           <div class="flex justify-between items-center mb-4">
+             <h2 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.log-masker.ui.heading7">Masked Logs</h2>
+              <button id="copy-result-btn" type="button" class="btn btn-ghost btn-xs"><span data-i18n="tools.log-masker.ui.button1">Copy Result</span></button>
+           </div>
           <div id="log-output" class="flex-1 bg-surface-900 text-surface-50 p-4 rounded-lg text-sm font-mono whitespace-pre-wrap overflow-y-auto min-h-[400px]">Logs will appear here after masking...</div>
         </div>
       </div>
     </main>
   `;
 
-  const scripts = `
-    <script type="module">
+   const scripts = `
+     ${getCopyToClipboardScript()}
+     <script type="module">
       // Local PII redaction implementation
       function redactPII(text, options = {}) {
         let result = text;
@@ -124,6 +125,7 @@ export async function handleLogMaskerRoutes(request, url) {
       const logInput = document.getElementById('log-input');
       const logOutput = document.getElementById('log-output');
       const maskBtn = document.getElementById('mask-btn');
+      const copyResultBtn = document.getElementById('copy-result-btn');
       
       const maskEmail = document.getElementById('mask-email');
       const maskIp = document.getElementById('mask-ip');
@@ -161,14 +163,10 @@ export async function handleLogMaskerRoutes(request, url) {
         }
       });
 
-      window.copyLogs = () => {
-        const text = logOutput.textContent;
-        navigator.clipboard.writeText(text).then(() => {
-          const originalText = event.target.innerText;
-          event.target.innerText = _t('tools.log-masker.js.text2', 'Copied!');
-          setTimeout(() => event.target.innerText = originalText, 2000);
-        });
-      };
+      copyResultBtn?.addEventListener('click', () => {
+        const text = logOutput.textContent || '';
+        copyToClipboard(text, copyResultBtn);
+      });
     </script>
   `;
 

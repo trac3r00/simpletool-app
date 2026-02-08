@@ -444,6 +444,7 @@ function renderTokenCounterPage() {
           await navigator.clipboard.writeText(lines.join('\n'));
           const old = els.copy.textContent;
           els.copy.textContent = t('text10', '✓ Copied');
+          if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
           setTimeout(() => (els.copy.textContent = old), 1200);
         } catch (e) {
           console.error('Copy failed:', e);

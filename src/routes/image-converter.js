@@ -26,12 +26,12 @@ function renderImageConverterPage() {
       <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
         ${toolHeader}
 
-      <!-- Privacy Notice -->
-      <div class="mb-6 p-4 bg-green-50 dark:bg-green-900/20 rounded-xl border-2 border-green-300 dark:border-green-700">
-        <p class="text-sm text-green-800 dark:text-green-300">
-          🔒 <strong>Privacy-First Design:</strong> Your images never leave your device. All conversion and resizing happens client-side using Canvas API.
-        </p>
-      </div>
+       <!-- Privacy Notice -->
+       <div class="mb-6 p-4 bg-success-50 dark:bg-success-900/20 rounded-xl border-2 border-success-300 dark:border-success-700">
+         <p class="text-sm text-success-800 dark:text-success-300">
+           🔒 <strong>Privacy-First Design:</strong> Your images never leave your device. All conversion and resizing happens client-side using Canvas API.
+         </p>
+       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Left Column: Upload & Settings -->
@@ -54,18 +54,18 @@ function renderImageConverterPage() {
             </div>
 
             <div id="file-info" class="mt-4 hidden">
-              <div class="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                <p class="text-sm text-blue-800 dark:text-blue-300">
-                  <strong>File:</strong> <span id="file-name"></span>
-                </p>
-                <p class="text-sm text-blue-800 dark:text-blue-300">
-                  <strong>Size:</strong> <span id="file-size"></span>
-                </p>
-                <p class="text-sm text-blue-800 dark:text-blue-300">
-                  <strong>Dimensions:</strong> <span id="image-dimensions"></span>
-                </p>
-              </div>
-            </div>
+               <div class="p-3 bg-info-50 dark:bg-info-900/20 rounded-lg">
+                 <p class="text-sm text-info-800 dark:text-info-300">
+                   <strong>File:</strong> <span id="file-name"></span>
+                 </p>
+                 <p class="text-sm text-info-800 dark:text-info-300">
+                   <strong>Size:</strong> <span id="file-size"></span>
+                 </p>
+                 <p class="text-sm text-info-800 dark:text-info-300">
+                   <strong>Dimensions:</strong> <span id="image-dimensions"></span>
+                 </p>
+               </div>
+             </div>
           </div>
 
           <!-- Format Selection -->
@@ -169,14 +169,15 @@ function renderImageConverterPage() {
             </div>
            </div>
 
-          <!-- Error Banner -->
-          <div id="img-error" role="alert" class="hidden w-full rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 text-sm text-red-700 dark:text-red-200 px-4 py-3"></div>
+           <!-- Error Banner -->
+           <div id="img-error" role="alert" class="hidden w-full rounded-xl border border-error-200 dark:border-error-800 bg-error-50 dark:bg-error-900/30 text-sm text-error-700 dark:text-error-200 px-4 py-3"></div>
 
-          <!-- Convert Button -->
-          <button id="convert-btn" disabled data-tooltip="Convert image to the selected format and size"
-            class="w-full py-4 px-6 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
-            <span data-i18n="tools.image-converter.ui.button0">🔄 Convert & Resize Image</span>
-          </button>
+           <!-- Convert Button -->
+           <button id="convert-btn" disabled data-tooltip="Convert image to the selected format and size"
+             class="w-full py-4 px-6 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+             <span id="convert-spinner" class="spinner-sm hidden" style="display:inline-block;vertical-align:middle;margin-right:6px;border-color:rgba(255,255,255,0.3);border-top-color:#fff;"></span>
+             <span data-i18n="tools.image-converter.ui.button0">🔄 Convert & Resize Image</span>
+           </button>
         </div>
 
         <!-- Right Column: Preview & Download -->
@@ -208,23 +209,23 @@ function renderImageConverterPage() {
               <canvas id="converted-canvas" class="preview-image hidden"></canvas>
             </div>
 
-            <!-- Converted Image Info -->
-            <div id="converted-info" class="mt-4 hidden">
-              <div class="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg space-y-1">
-                <p class="text-sm text-green-800 dark:text-green-300">
-                  <strong>Format:</strong> <span id="converted-format"></span>
-                </p>
-                <p class="text-sm text-green-800 dark:text-green-300">
-                  <strong>Size:</strong> <span id="converted-size"></span>
-                </p>
-                <p class="text-sm text-green-800 dark:text-green-300">
-                  <strong>Dimensions:</strong> <span id="converted-dimensions"></span>
-                </p>
-                <p class="text-sm font-semibold text-green-800 dark:text-green-300">
-                  💾 <span id="size-reduction"></span>
-                </p>
-              </div>
-            </div>
+             <!-- Converted Image Info -->
+             <div id="converted-info" class="mt-4 hidden">
+               <div class="p-3 bg-success-50 dark:bg-success-900/20 rounded-lg space-y-1">
+                 <p class="text-sm text-success-800 dark:text-success-300">
+                   <strong>Format:</strong> <span id="converted-format"></span>
+                 </p>
+                 <p class="text-sm text-success-800 dark:text-success-300">
+                   <strong>Size:</strong> <span id="converted-size"></span>
+                 </p>
+                 <p class="text-sm text-success-800 dark:text-success-300">
+                   <strong>Dimensions:</strong> <span id="converted-dimensions"></span>
+                 </p>
+                 <p class="text-sm font-semibold text-success-800 dark:text-success-300">
+                   💾 <span id="size-reduction"></span>
+                 </p>
+               </div>
+             </div>
 
             <!-- Download Button -->
             <button id="download-btn" disabled
@@ -427,10 +428,14 @@ function renderImageConverterPage() {
       // Convert Button
       convertBtn.addEventListener('click', convertImage);
 
-      function convertImage() {
-        if (!originalImage) return;
+       function convertImage() {
+         if (!originalImage) return;
 
-        const mode = resizeMode.value;
+         const convertSpinner = document.getElementById('convert-spinner');
+         convertSpinner.classList.remove('hidden');
+         convertBtn.disabled = true;
+
+         const mode = resizeMode.value;
         let width = originalImage.width;
         let height = originalImage.height;
 
@@ -486,12 +491,16 @@ function renderImageConverterPage() {
          const quality = (selectedFormat === 'jpeg' || selectedFormat === 'webp') ?
                         parseInt(qualitySlider.value) / 100 : undefined;
 
-         convertedCanvas.toBlob((blob) => {
-           // Check if blob is null (unsupported format like GIF)
-           if (!blob) {
-             showImgError(selectedFormat.toUpperCase() + ' format is not supported by your browser. Please try PNG, JPG, or WebP instead.');
-             return;
-           }
+          convertedCanvas.toBlob((blob) => {
+            const convertSpinner = document.getElementById('convert-spinner');
+            convertSpinner.classList.add('hidden');
+            convertBtn.disabled = false;
+
+            // Check if blob is null (unsupported format like GIF)
+            if (!blob) {
+              showImgError(selectedFormat.toUpperCase() + ' format is not supported by your browser. Please try PNG, JPG, or WebP instead.');
+              return;
+            }
 
            // Show converted image
            convertedCanvas.classList.remove('hidden');

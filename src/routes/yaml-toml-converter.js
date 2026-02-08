@@ -25,19 +25,19 @@ function renderDataConverterPage() {
       <header class="bg-white/90 dark:bg-surface-900/80 border border-surface-200 dark:border-surface-800 rounded-3xl shadow-xl p-8">
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
           <div>
-            <p class="text-xs font-semibold uppercase tracking-[0.35em] text-sky-600 dark:text-sky-300 mb-3" data-i18n="tools.yaml-toml-converter.ui.desc9">Data formats</p>
+             <p class="text-xs font-semibold uppercase tracking-[0.35em] text-info-600 dark:text-info-300 mb-3" data-i18n="tools.yaml-toml-converter.ui.desc9">Data formats</p>
             <h1 class="text-4xl sm:text-5xl font-extrabold text-surface-900 dark:text-white mb-4">Config Converter</h1>
             <p class="text-lg text-surface-600 dark:text-surface-300 max-w-3xl" data-i18n="tools.yaml-toml-converter.ui.desc10">Validate and translate configs instantly. Paste once, get well-formed JSON, YAML, and TOML representations without leaking secrets.</p>
           </div>
           <div class="flex flex-col gap-3 text-sm text-surface-600 dark:text-surface-300">
-            <div class="flex items-center gap-3 bg-sky-50 dark:bg-sky-900/20 border border-sky-200 dark:border-sky-800 rounded-2xl px-4 py-3">
+             <div class="flex items-center gap-3 bg-info-50 dark:bg-info-900/20 border border-info-200 dark:border-info-800 rounded-2xl px-4 py-3">
               <span class="text-xl">🧪</span>
               <div>
                 <p class="font-semibold">Schema-less validation</p>
                 <p class="text-surface-500 dark:text-surface-400" data-i18n="tools.yaml-toml-converter.ui.desc11">Instant parse feedback.</p>
               </div>
             </div>
-            <div class="flex items-center gap-3 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-2xl px-4 py-3">
+             <div class="flex items-center gap-3 bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-800 rounded-2xl px-4 py-3">
               <span class="text-xl">🔒</span>
               <div>
                 <p class="font-semibold">Offline friendly</p>
@@ -58,17 +58,17 @@ function renderDataConverterPage() {
               <option value="yaml">YAML</option>
               <option value="toml">TOML</option>
             </select>
-            <button id="load-sample" class="text-xs text-surface-500 hover:text-sky-500"><span data-i18n="tools.yaml-toml-converter.ui.button0">Load sample</span></button>
+             <button id="load-sample" class="btn btn-ghost btn-xs"><span data-i18n="tools.yaml-toml-converter.ui.button0">Load sample</span></button>
           </div>
           <label for="format-input" class="sr-only">Input configuration data</label>
           <textarea id="format-input" class="w-full min-h-[280px] rounded-2xl border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-950 px-4 py-3 font-mono text-sm text-surface-900 dark:text-surface-100" placeholder="Paste JSON, YAML, or TOML..." data-i18n-placeholder="tools.yaml-toml-converter.ui.placeholder7"></textarea>
           <div class="flex flex-wrap gap-3">
-            <button id="validate-btn" class="px-4 py-2 rounded-2xl bg-surface-900 text-white text-sm font-semibold" data-tooltip="Check syntax without converting"><span data-i18n="tools.yaml-toml-converter.ui.button1">Validate only</span></button>
-            <button data-convert="json" class="convert-btn px-4 py-2 rounded-2xl border border-surface-300 dark:border-surface-600 text-sm" data-tooltip="Convert to JSON format"><span data-i18n="tools.yaml-toml-converter.ui.button2">→ JSON</span></button>
-            <button data-convert="yaml" class="convert-btn px-4 py-2 rounded-2xl border border-surface-300 dark:border-surface-600 text-sm" data-tooltip="Convert to YAML format"><span data-i18n="tools.yaml-toml-converter.ui.button3">→ YAML</span></button>
-            <button data-convert="toml" class="convert-btn px-4 py-2 rounded-2xl border border-surface-300 dark:border-surface-600 text-sm" data-tooltip="Convert to TOML format"><span data-i18n="tools.yaml-toml-converter.ui.button4">→ TOML</span></button>
+             <button id="validate-btn" class="btn btn-secondary" data-tooltip="Check syntax without converting"><span data-i18n="tools.yaml-toml-converter.ui.button1">Validate only</span></button>
+             <button data-convert="json" class="convert-btn btn btn-secondary" data-tooltip="Convert to JSON format"><span data-i18n="tools.yaml-toml-converter.ui.button2">→ JSON</span></button>
+             <button data-convert="yaml" class="convert-btn btn btn-secondary" data-tooltip="Convert to YAML format"><span data-i18n="tools.yaml-toml-converter.ui.button3">→ YAML</span></button>
+             <button data-convert="toml" class="convert-btn btn btn-secondary" data-tooltip="Convert to TOML format"><span data-i18n="tools.yaml-toml-converter.ui.button4">→ TOML</span></button>
           </div>
-          <div id="format-error" class="hidden rounded-2xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 text-sm text-red-700 dark:text-red-200 px-4 py-3">Parser error</div>
+           <div id="format-error" class="hidden rounded-2xl border border-error-200 dark:border-error-800 bg-error-50 dark:bg-error-900/30 text-sm text-error-700 dark:text-error-200 px-4 py-3">Parser error</div>
           <div class="text-sm text-surface-500 dark:text-surface-400">Detected: <span id="detected-format" class="font-semibold">—</span> · Root type: <span id="root-type">—</span> · Keys: <span id="key-count">—</span></div>
         </div>
 
@@ -76,21 +76,21 @@ function renderDataConverterPage() {
             <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-3xl shadow-xl p-6">
             <div class="flex items-center justify-between mb-2">
               <h2 class="text-lg font-bold text-surface-900 dark:text-white">JSON</h2>
-              <button data-copy="json" class="copy-btn text-sm text-sky-600 dark:text-sky-300" disabled><span data-i18n="tools.yaml-toml-converter.ui.button5">Copy</span></button>
+               <button data-copy="json" class="copy-btn btn btn-ghost btn-xs" disabled><span data-i18n="tools.yaml-toml-converter.ui.button5">Copy</span></button>
             </div>
             <pre id="json-output" class="bg-surface-900 text-surface-100 rounded-2xl p-4 min-h-[140px] overflow-x-auto text-sm">Await conversion.</pre>
           </div>
           <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-3xl shadow-xl p-6">
             <div class="flex items-center justify-between mb-2">
               <h2 class="text-lg font-bold text-surface-900 dark:text-white">YAML</h2>
-              <button data-copy="yaml" class="copy-btn text-sm text-sky-600 dark:text-sky-300" disabled><span data-i18n="tools.yaml-toml-converter.ui.button5">Copy</span></button>
+               <button data-copy="yaml" class="copy-btn btn btn-ghost btn-xs" disabled><span data-i18n="tools.yaml-toml-converter.ui.button5">Copy</span></button>
             </div>
             <pre id="yaml-output" class="bg-surface-900 text-surface-100 rounded-2xl p-4 min-h-[140px] overflow-x-auto text-sm">Await conversion.</pre>
           </div>
           <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-3xl shadow-xl p-6">
             <div class="flex items-center justify-between mb-2">
               <h2 class="text-lg font-bold text-surface-900 dark:text-white">TOML</h2>
-              <button data-copy="toml" class="copy-btn text-sm text-sky-600 dark:text-sky-300" disabled><span data-i18n="tools.yaml-toml-converter.ui.button5">Copy</span></button>
+               <button data-copy="toml" class="copy-btn btn btn-ghost btn-xs" disabled><span data-i18n="tools.yaml-toml-converter.ui.button5">Copy</span></button>
             </div>
             <pre id="toml-output" class="bg-surface-900 text-surface-100 rounded-2xl p-4 min-h-[140px] overflow-x-auto text-sm">Await conversion.</pre>
           </div>
@@ -162,6 +162,7 @@ function renderDataConverterPage() {
             if (!text || text === 'Await conversion.') return;
             navigator.clipboard.writeText(text);
             button.textContent = _t('tools.yaml-toml-converter.js.text0', 'Copied');
+            if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
             setTimeout(() => button.textContent = _t('tools.yaml-toml-converter.js.text1', 'Copy'), 1500);
           });
         });

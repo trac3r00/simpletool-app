@@ -6,7 +6,8 @@
  */
 
 import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
+import { createPageTemplate, createToolHeader, createCheatsheet, infoHint, createEmptyState, getBtnLoadingScript } from '../utils/common-ui.js';
+import { createRichEditorPane, getRichEditorStyles, getRichEditorScript } from '../utils/rich-editor.js';
 
 export async function handleSQLFormatterRoutes(request, url) {
   const { pathname } = url;
@@ -51,7 +52,7 @@ function renderSQLFormatterPage() {
               <span data-i18n="tools.sql-formatter.ui.label0">Input SQL</span>
               ${infoHint('This tool does not execute SQL. Validation is heuristic (not a full parser).', 'Help', { i18nKey: 'tools.sql-formatter.ui.desc0' })}
             </label>
-            <textarea id="sql-in" rows="18" class="input-mono resize-y" placeholder="SELECT id, email FROM users WHERE created_at &gt; NOW() - INTERVAL '7 days' ORDER BY created_at DESC;" data-i18n-placeholder="tools.sql-formatter.ui.placeholder0"></textarea>
+            ${createRichEditorPane({ id: 'sql-in', mode: 'textarea', rows: 18, placeholder: "SELECT id, email FROM users WHERE created_at > NOW() - INTERVAL '7 days' ORDER BY created_at DESC;" })}
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
@@ -83,7 +84,8 @@ function renderSQLFormatterPage() {
 
           <div class="space-y-2">
             <label class="label" data-i18n="tools.sql-formatter.ui.label4">Output</label>
-            <textarea id="sql-out" rows="18" class="input-mono resize-y bg-surface-50 dark:bg-surface-950" readonly></textarea>
+            ${createEmptyState({ icon: '🗄️', title: 'No output yet', description: 'Paste SQL on the left, then click Format or Validate.', id: 'sql-empty-state' })}
+            ${createRichEditorPane({ id: 'sql-out', mode: 'pre', ariaLabel: 'Formatted SQL output', hidden: true })}
           </div>
         </div>
 
@@ -109,15 +111,19 @@ function renderSQLFormatterPage() {
     </main>
   `;
 
-	      const scripts = String.raw`
+	      const scripts = `<style>${getRichEditorStyles()}</style>` + getRichEditorScript() + getBtnLoadingScript() + String.raw`
 	    <script>
 	      const t = (k, fb) => (window._t ? window._t('tools.sql-formatter.js.' + k, fb) : (fb || k));
 	      const fmtVars = (s, vars) => String(s || '').replace(/\{(\w+)\}/g, (_, k) => (vars && vars[k] !== undefined) ? String(vars[k]) : '');
 
       const $ = (id) => document.getElementById(id);
+
+      const editorIn = new RichEditor('sql-in');
+      editorIn.setHighlighter('sql');
+      const editorOut = new RichEditor('sql-out');
+      editorOut.setHighlighter('sql');
+
       const els = {
-        input: $('sql-in'),
-        output: $('sql-out'),
         format: $('format'),
         validate: $('validate'),
         minify: $('minify'),
@@ -139,22 +145,22 @@ function renderSQLFormatterPage() {
         'WITH'
       ]);
 
-      function setIssues(kind, html) {
-        if (!html) {
-          els.issues.classList.add('hidden');
-          els.issues.innerHTML = '';
-          return;
-        }
-        els.issues.classList.remove('hidden');
-        if (kind === 'error') {
-          els.issues.className = 'rounded-lg p-3 text-sm border bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-200 border-red-200 dark:border-red-800';
-        } else if (kind === 'warn') {
-          els.issues.className = 'rounded-lg p-3 text-sm border bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-200 border-yellow-200 dark:border-yellow-800';
-        } else {
-          els.issues.className = 'rounded-lg p-3 text-sm border bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-200 border-green-200 dark:border-green-800';
-        }
-        els.issues.innerHTML = html;
-      }
+       function setIssues(kind, html) {
+         if (!html) {
+           els.issues.classList.add('hidden');
+           els.issues.innerHTML = '';
+           return;
+         }
+         els.issues.classList.remove('hidden');
+         if (kind === 'error') {
+           els.issues.className = 'rounded-lg p-3 text-sm border bg-error-50 dark:bg-error-900/20 text-error-700 dark:text-error-200 border-error-200 dark:border-error-800';
+         } else if (kind === 'warn') {
+           els.issues.className = 'rounded-lg p-3 text-sm border bg-warning-50 dark:bg-warning-900/20 text-warning-700 dark:text-warning-200 border-warning-200 dark:border-warning-800';
+         } else {
+           els.issues.className = 'rounded-lg p-3 text-sm border bg-success-50 dark:bg-success-900/20 text-success-700 dark:text-success-200 border-success-200 dark:border-success-800';
+         }
+         els.issues.innerHTML = html;
+       }
 
       function tokenize(sql, dialect) {
         const s = String(sql || '');
@@ -592,7 +598,7 @@ function renderSQLFormatterPage() {
       }
 
       function runValidate() {
-        const sql = els.input.value;
+        const sql = editorIn.getValue();
         if (!sql.trim()) {
           setIssues('error', t('text9', 'Paste SQL first.'));
           return;
@@ -601,8 +607,18 @@ function renderSQLFormatterPage() {
         renderIssues(issues);
       }
 
+      function showOutput(text) {
+        var emptyEl = document.getElementById('sql-empty-state');
+        if (emptyEl) emptyEl.classList.add('hidden');
+        editorOut.setValue(text);
+        editorOut.show();
+        var wrap = document.getElementById('re-sql-out-wrap');
+        if (wrap) { wrap.classList.remove('animate-fade-in-up'); void wrap.offsetWidth; wrap.classList.add('animate-fade-in-up'); }
+        els.copy.disabled = !text.trim();
+      }
+
       function runFormat() {
-        const sql = els.input.value;
+        const sql = editorIn.getValue();
         if (!sql.trim()) {
           setIssues('error', t('text9', 'Paste SQL first.'));
           return;
@@ -614,12 +630,11 @@ function renderSQLFormatterPage() {
           kwcase: els.kwcase.value,
           indentSize: Number(els.indent.value) || 2
         });
-        els.output.value = formatted;
-        els.copy.disabled = !formatted.trim();
+        showOutput(formatted);
       }
 
       function runMinify() {
-        const sql = els.input.value;
+        const sql = editorIn.getValue();
         if (!sql.trim()) {
           setIssues('error', t('text9', 'Paste SQL first.'));
           return;
@@ -627,28 +642,30 @@ function renderSQLFormatterPage() {
         const issues = validateSql(sql, els.dialect.value);
         renderIssues(issues);
         const out = minifySql(sql, els.dialect.value);
-        els.output.value = out;
-        els.copy.disabled = !out.trim();
+        showOutput(out);
       }
 
-      els.format.addEventListener('click', runFormat);
-      els.validate.addEventListener('click', runValidate);
-      els.minify.addEventListener('click', runMinify);
+      els.format.addEventListener('click', function() { window.btnLoading(this, runFormat); });
+      els.validate.addEventListener('click', function() { window.btnLoading(this, runValidate); });
+      els.minify.addEventListener('click', function() { window.btnLoading(this, runMinify); });
 
       els.clear.addEventListener('click', () => {
-        els.input.value = '';
-        els.output.value = '';
+        editorIn.clear();
+        editorOut.clear(true);
         els.copy.disabled = true;
         setIssues(null, '');
+        var emptyEl = document.getElementById('sql-empty-state');
+        if (emptyEl) emptyEl.classList.remove('hidden');
       });
 
       els.copy.addEventListener('click', async () => {
-        const text = els.output.value;
+        const text = editorOut.getValue();
         if (!text.trim()) return;
         try {
           await navigator.clipboard.writeText(text);
           const old = els.copy.textContent;
           els.copy.textContent = t('text10', '✓ Copied');
+          if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
           setTimeout(() => (els.copy.textContent = old), 1200);
         } catch (e) {
           console.error('Copy failed:', e);

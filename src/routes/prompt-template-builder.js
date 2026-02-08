@@ -405,6 +405,7 @@ function renderPromptTemplateBuilderPage() {
           await navigator.clipboard.writeText(text);
           const old = btn.textContent;
           btn.textContent = t('text36', '✓ Copied');
+          if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
           setTimeout(() => (btn.textContent = old), 1200);
         } catch (e) {
           console.error('Copy failed:', e);

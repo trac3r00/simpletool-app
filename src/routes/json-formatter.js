@@ -4,7 +4,8 @@
  */
 
 import { respondHTML, respondJSON } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
+import { createPageTemplate, createToolHeader, createEmptyState, getCopyToClipboardScript } from '../utils/common-ui.js';
+import { createRichEditorPane, getRichEditorStyles, getRichEditorScript } from '../utils/rich-editor.js';
 
 export async function handleJSONFormatterRoutes(request, url) {
   const { pathname } = url;
@@ -66,19 +67,19 @@ function renderJSONFormatterPage() {
           <!-- Input -->
           <div class="flex flex-col gap-2">
             <label class="label"><span data-i18n="tools.json-formatter.ui.label5">Input JSON</span></label>
-            <textarea id="json-input" rows="20" 
-              placeholder='{"name": "SimpleTool", "version": "2.0", "tools": ["JSON Formatter", "Password Generator"]}' 
-              class="input-mono resize-none"></textarea>
+            ${createRichEditorPane({ id: 'input', mode: 'textarea', placeholder: '{"name": "SimpleTool", "version": "2.0", "tools": ["JSON Formatter", "Password Generator"]}' })}
           </div>
 
-          <!-- Output -->
-          <div class="flex flex-col gap-2 relative">
-             <div class="flex justify-between items-center">
-                <label class="label"><span data-i18n="tools.json-formatter.ui.label6">Formatted Output</span></label>
-                <span id="status-indicator" class="text-xs font-mono hidden"></span>
-             </div>
-            <textarea id="json-output" rows="20" readonly aria-label="JSON output" class="input-mono resize-none bg-surface-50 dark:bg-surface-950"></textarea>
-          </div>
+           <!-- Output -->
+           <div class="flex flex-col gap-2 relative">
+              <div class="flex justify-between items-center">
+                 <label class="label"><span data-i18n="tools.json-formatter.ui.label6">Formatted Output</span></label>
+                 <span id="status-indicator" class="text-xs font-mono hidden"></span>
+              </div>
+             ${createEmptyState({ icon: '📋', title: 'No output yet', description: 'Paste JSON on the left, then click Format or Minify.', id: 'json-empty-state' })}
+             ${createRichEditorPane({ id: 'output', mode: 'pre', ariaLabel: 'JSON output', hidden: true })}
+             <textarea id="json-output" class="hidden" readonly aria-hidden="true"></textarea>
+           </div>
         </div>
 
         <!-- Status & Stats -->
@@ -109,125 +110,131 @@ function renderJSONFormatterPage() {
     </main>
   `;
 
-  const script = `
-    <script>
-      const inputEl = document.getElementById('json-input');
-      const outputEl = document.getElementById('json-output');
-      const statusEl = document.getElementById('status-message');
-      const statusContent = document.getElementById('status-content');
-      const statsEl = document.getElementById('json-stats');
-      const statusIndicator = document.getElementById('status-indicator');
+   const script = `
+     <style>
+       ${getRichEditorStyles()}
+     </style>
+     ${getCopyToClipboardScript()}
+     ${getRichEditorScript()}
+      <script>
+        var inputEditor = new RichEditor('input');
+        var outputEditor = new RichEditor('output');
+        outputEditor.setHighlighter('json');
 
-      function showStatus(message, type = 'success') {
-        statusEl.classList.remove('hidden');
-        if (type === 'success') {
-            statusContent.className = 'rounded-lg p-3 text-sm font-medium border bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800';
-            statusIndicator.textContent = _t('tools.json-formatter.js.text5', '✓ Valid');
-            statusIndicator.className = 'text-xs font-mono text-green-600 dark:text-green-400';
-        } else {
-            statusContent.className = 'rounded-lg p-3 text-sm font-medium border bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 border-red-200 dark:border-red-800';
-            statusIndicator.textContent = _t('tools.json-formatter.js.text6', '✗ Invalid');
-            statusIndicator.className = 'text-xs font-mono text-red-600 dark:text-red-400';
-        }
-        statusContent.textContent = message;
-        statusIndicator.classList.remove('hidden');
-        
-        // Auto hide success messages, keep errors
-        if (type === 'success') {
-            setTimeout(() => statusEl.classList.add('hidden'), 3000);
-        }
-      }
+        var outputEl = document.getElementById('json-output');
+        var statusEl = document.getElementById('status-message');
+        var statusContent = document.getElementById('status-content');
+        var statsEl = document.getElementById('json-stats');
+        var statusIndicator = document.getElementById('status-indicator');
 
-      function countKeys(obj, depth = 0) {
-        let count = 0;
-        let maxDepth = depth;
-        if (typeof obj === 'object' && obj !== null) {
-          for (const key in obj) {
-            count++;
-            if (typeof obj[key] === 'object' && obj[key] !== null) {
-              const result = countKeys(obj[key], depth + 1);
-              count += result.count;
-              maxDepth = Math.max(maxDepth, result.maxDepth);
-            }
+        function showStatus(message, type) {
+          type = type || 'success';
+          statusEl.classList.remove('hidden');
+          if (type === 'success') {
+              statusContent.className = 'rounded-lg p-3 text-sm font-medium border bg-success-50 dark:bg-success-900/20 text-success-700 dark:text-success-300 border-success-200 dark:border-success-800';
+              statusIndicator.textContent = _t('tools.json-formatter.js.text5', '✓ Valid');
+              statusIndicator.className = 'text-xs font-mono text-success-600 dark:text-success-400';
+          } else {
+              statusContent.className = 'rounded-lg p-3 text-sm font-medium border bg-error-50 dark:bg-error-900/20 text-error-700 dark:text-error-300 border-error-200 dark:border-error-800';
+              statusIndicator.textContent = _t('tools.json-formatter.js.text6', '✗ Invalid');
+              statusIndicator.className = 'text-xs font-mono text-error-600 dark:text-error-400';
+          }
+          statusContent.textContent = message;
+          statusIndicator.classList.remove('hidden');
+
+          if (type === 'success') {
+              setTimeout(function() { statusEl.classList.add('hidden'); }, 3000);
           }
         }
-        return { count, maxDepth };
-      }
 
-      function updateStats(jsonObj, formatted) {
-        const { count, maxDepth } = countKeys(jsonObj);
-        document.getElementById('stat-size').textContent = formatted.length.toLocaleString();
-        document.getElementById('stat-lines').textContent = formatted.split('\\n').length.toLocaleString();
-        document.getElementById('stat-keys').textContent = count.toLocaleString();
-        document.getElementById('stat-depth').textContent = maxDepth;
-        statsEl.classList.remove('hidden');
-      }
-
-      document.getElementById('format-btn').addEventListener('click', () => {
-        try {
-          const input = inputEl.value.trim();
-          if (!input) return showStatus(_t('tools.json-formatter.js.status0', 'Please enter JSON'), 'error');
-          const parsed = JSON.parse(input);
-          const formatted = JSON.stringify(parsed, null, 2);
-          outputEl.value = formatted;
-          updateStats(parsed, formatted);
-          showStatus(_t('tools.json-formatter.js.status1', 'Formatted successfully'), 'success');
-        } catch (error) {
-          showStatus(error.message, 'error');
-          statsEl.classList.add('hidden');
+        function countKeys(obj, depth) {
+          depth = depth || 0;
+          var count = 0;
+          var maxDepth = depth;
+          if (typeof obj === 'object' && obj !== null) {
+            for (var key in obj) {
+              count++;
+              if (typeof obj[key] === 'object' && obj[key] !== null) {
+                var result = countKeys(obj[key], depth + 1);
+                count += result.count;
+                maxDepth = Math.max(maxDepth, result.maxDepth);
+              }
+            }
+          }
+          return { count: count, maxDepth: maxDepth };
         }
-      });
 
-      document.getElementById('minify-btn').addEventListener('click', () => {
-        try {
-          const input = inputEl.value.trim();
-          if (!input) return showStatus(_t('tools.json-formatter.js.status0', 'Please enter JSON'), 'error');
-          const parsed = JSON.parse(input);
-          const minified = JSON.stringify(parsed);
-          outputEl.value = minified;
-          updateStats(parsed, minified);
-          showStatus(_t('tools.json-formatter.js.status2', 'Minified successfully'), 'success');
-        } catch (error) {
-          showStatus(error.message, 'error');
+        function updateStats(jsonObj, formatted) {
+          var result = countKeys(jsonObj);
+          document.getElementById('stat-size').textContent = formatted.length.toLocaleString();
+          document.getElementById('stat-lines').textContent = formatted.split('\\n').length.toLocaleString();
+          document.getElementById('stat-keys').textContent = result.count.toLocaleString();
+          document.getElementById('stat-depth').textContent = result.maxDepth;
+          statsEl.classList.remove('hidden');
         }
-      });
 
-      document.getElementById('validate-btn').addEventListener('click', () => {
-        try {
-          const input = inputEl.value.trim();
-          if (!input) return showStatus(_t('tools.json-formatter.js.status0', 'Please enter JSON'), 'error');
-          const parsed = JSON.parse(input);
-          updateStats(parsed, input);
-          showStatus(_t('tools.json-formatter.js.status3', 'Valid JSON'), 'success');
-        } catch (error) {
-          showStatus(error.message, 'error');
-        }
-      });
+        document.getElementById('format-btn').addEventListener('click', function() {
+           try {
+             var input = inputEditor.getValue().trim();
+             if (!input) return showStatus(_t('tools.json-formatter.js.status0', 'Please enter JSON'), 'error');
+             var parsed = JSON.parse(input);
+             var formatted = JSON.stringify(parsed, null, 2);
+             outputEl.value = formatted;
+             outputEditor.setValue(formatted);
+             document.getElementById('json-empty-state').classList.add('hidden');
+             updateStats(parsed, formatted);
+             showStatus(_t('tools.json-formatter.js.status1', 'Formatted successfully'), 'success');
+           } catch (error) {
+             showStatus(error.message, 'error');
+             statsEl.classList.add('hidden');
+           }
+         });
 
-      document.getElementById('clear-btn').addEventListener('click', () => {
-        inputEl.value = '';
-        outputEl.value = '';
-        statusEl.classList.add('hidden');
-        statsEl.classList.add('hidden');
-        statusIndicator.classList.add('hidden');
-      });
+        document.getElementById('minify-btn').addEventListener('click', function() {
+           try {
+             var input = inputEditor.getValue().trim();
+             if (!input) return showStatus(_t('tools.json-formatter.js.status0', 'Please enter JSON'), 'error');
+             var parsed = JSON.parse(input);
+             var minified = JSON.stringify(parsed);
+             outputEl.value = minified;
+             outputEditor.setValue(minified);
+             document.getElementById('json-empty-state').classList.add('hidden');
+             updateStats(parsed, minified);
+             showStatus(_t('tools.json-formatter.js.status2', 'Minified successfully'), 'success');
+           } catch (error) {
+             showStatus(error.message, 'error');
+           }
+         });
 
-      document.getElementById('copy-btn').addEventListener('click', async () => {
-        const text = outputEl.value;
-        if (!text) return;
-        
-        try {
-          await navigator.clipboard.writeText(text);
-          const btn = document.getElementById('copy-btn');
-          const originalText = btn.textContent;
-          btn.textContent = _t('tools.json-formatter.js.text7', '✓ Copied');
-          setTimeout(() => btn.textContent = originalText, 2000);
-        } catch (err) {
-          showStatus(_t('tools.json-formatter.js.status4', 'Failed to copy'), 'error');
-        }
-      });
-    </script>
-  `;
+        document.getElementById('validate-btn').addEventListener('click', function() {
+          try {
+            var input = inputEditor.getValue().trim();
+            if (!input) return showStatus(_t('tools.json-formatter.js.status0', 'Please enter JSON'), 'error');
+            var parsed = JSON.parse(input);
+            updateStats(parsed, input);
+            showStatus(_t('tools.json-formatter.js.status3', 'Valid JSON'), 'success');
+          } catch (error) {
+            showStatus(error.message, 'error');
+          }
+        });
+
+        document.getElementById('clear-btn').addEventListener('click', function() {
+           inputEditor.clear();
+           outputEl.value = '';
+           outputEditor.clear(true);
+           statusEl.classList.add('hidden');
+           statsEl.classList.add('hidden');
+           statusIndicator.classList.add('hidden');
+           document.getElementById('json-empty-state').classList.remove('hidden');
+         });
+
+         document.getElementById('copy-btn').addEventListener('click', function() {
+           var text = outputEl.value;
+           if (!text) return;
+           copyToClipboard(text, this);
+         });
+      </script>
+   `;
 
   return respondHTML(createPageTemplate({
     title: 'JSON Formatter',

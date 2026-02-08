@@ -252,22 +252,22 @@ function renderEmailAnalyzerPage() {
         'Unsubscribe: http://xn--exmple-qta.net/unsub?u=soc@example.com'
       ].join('\n');
 
-      function setStatus(kind, message) {
-        if (!message) {
-          els.status.classList.add('hidden');
-          els.status.textContent = '';
-          return;
-        }
-        els.status.classList.remove('hidden');
-        if (kind === 'error') {
-          els.status.className = 'rounded-lg p-3 text-sm font-medium border bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-200 border-red-200 dark:border-red-800';
-        } else if (kind === 'warn') {
-          els.status.className = 'rounded-lg p-3 text-sm font-medium border bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-200 border-yellow-200 dark:border-yellow-800';
-        } else {
-          els.status.className = 'rounded-lg p-3 text-sm font-medium border bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-200 border-green-200 dark:border-green-800';
-        }
-        els.status.textContent = message;
-      }
+       function setStatus(kind, message) {
+         if (!message) {
+           els.status.classList.add('hidden');
+           els.status.textContent = '';
+           return;
+         }
+         els.status.classList.remove('hidden');
+         if (kind === 'error') {
+           els.status.className = 'rounded-lg p-3 text-sm font-medium border bg-danger-50 dark:bg-danger-900/20 text-danger-700 dark:text-danger-200 border-danger-200 dark:border-danger-800';
+         } else if (kind === 'warn') {
+           els.status.className = 'rounded-lg p-3 text-sm font-medium border bg-warning-50 dark:bg-warning-900/20 text-warning-700 dark:text-warning-200 border-warning-200 dark:border-warning-800';
+         } else {
+           els.status.className = 'rounded-lg p-3 text-sm font-medium border bg-success-50 dark:bg-success-900/20 text-success-700 dark:text-success-200 border-success-200 dark:border-success-800';
+         }
+         els.status.textContent = message;
+       }
 
       function normalizeNewlines(text) {
         return String(text || '').replace(/\r\n/g, '\n').replace(/\r/g, '\n');
@@ -488,20 +488,20 @@ function renderEmailAnalyzerPage() {
         return { flags, hostname };
       }
 
-      function severityBadge(sev) {
-        if (sev === 'high') return { label: t('text0', 'High'), cls: 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-200 border-red-200 dark:border-red-800' };
-        if (sev === 'medium') return { label: t('text1', 'Medium'), cls: 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-200 border-yellow-200 dark:border-yellow-800' };
-        return { label: t('text2', 'Low'), cls: 'bg-surface-50 dark:bg-surface-950 text-surface-700 dark:text-surface-200 border-surface-200 dark:border-surface-800' };
-      }
+       function severityBadge(sev) {
+         if (sev === 'high') return { label: t('text0', 'High'), cls: 'bg-danger-50 dark:bg-danger-900/20 text-danger-700 dark:text-danger-200 border-danger-200 dark:border-danger-800' };
+         if (sev === 'medium') return { label: t('text1', 'Medium'), cls: 'bg-warning-50 dark:bg-warning-900/20 text-warning-700 dark:text-warning-200 border-warning-200 dark:border-warning-800' };
+         return { label: t('text2', 'Low'), cls: 'bg-surface-50 dark:bg-surface-950 text-surface-700 dark:text-surface-200 border-surface-200 dark:border-surface-800' };
+       }
 
-      function authBadge(result) {
-        const r = String(result || '').toLowerCase();
-        if (r === 'pass') return { text: t('text3', 'pass'), cls: 'text-green-700 dark:text-green-200' };
-        if (r === 'fail') return { text: t('text4', 'fail'), cls: 'text-red-700 dark:text-red-200' };
-        if (r === 'softfail' || r === 'neutral') return { text: r, cls: 'text-yellow-700 dark:text-yellow-200' };
-        if (r) return { text: r, cls: 'text-surface-700 dark:text-surface-200' };
-        return { text: t('text5', 'unknown'), cls: 'text-surface-500 dark:text-surface-400' };
-      }
+       function authBadge(result) {
+         const r = String(result || '').toLowerCase();
+         if (r === 'pass') return { text: t('text3', 'pass'), cls: 'text-success-700 dark:text-success-200' };
+         if (r === 'fail') return { text: t('text4', 'fail'), cls: 'text-danger-700 dark:text-danger-200' };
+         if (r === 'softfail' || r === 'neutral') return { text: r, cls: 'text-warning-700 dark:text-warning-200' };
+         if (r) return { text: r, cls: 'text-surface-700 dark:text-surface-200' };
+         return { text: t('text5', 'unknown'), cls: 'text-surface-500 dark:text-surface-400' };
+       }
 
       function buildFindings(summary) {
         const findings = [];

@@ -183,6 +183,7 @@ function renderCodeMinifierPage() {
           const btn = document.getElementById('copy-output-btn');
           const original = btn.textContent;
           btn.textContent = _t('tools.code-minifier.js.text0', '✓ Copied!');
+          if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
           setTimeout(() => { btn.textContent = original; }, 2000);
         } catch (err) {
           // Show error inline, not via alert
@@ -241,12 +242,12 @@ function renderCodeMinifierPage() {
             const saved = inputBytes - outputBytes;
             const percent = ((saved / inputBytes) * 100).toFixed(1);
             reduction.textContent = \`Reduced by \${percent}% (\${formatBytes(saved)} saved)\`;
-            reduction.className = 'ml-4 font-semibold text-green-600 dark:text-green-400';
-          } else {
-            const added = outputBytes - inputBytes;
-            const percent = ((added / inputBytes) * 100).toFixed(1);
-            reduction.textContent = \`Expanded by \${percent}% (\${formatBytes(added)} added)\`;
-            reduction.className = 'ml-4 font-semibold text-blue-600 dark:text-blue-400';
+             reduction.className = 'ml-4 font-semibold text-success-600 dark:text-success-400';
+           } else {
+             const added = outputBytes - inputBytes;
+             const percent = ((added / inputBytes) * 100).toFixed(1);
+             reduction.textContent = \`Expanded by \${percent}% (\${formatBytes(added)} added)\`;
+             reduction.className = 'ml-4 font-semibold text-info-600 dark:text-info-400';
           }
 
           outputStats.classList.remove('hidden');

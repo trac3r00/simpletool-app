@@ -5,7 +5,7 @@
  */
 
 import { respondHTML, respondJSON } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
+import { createPageTemplate, createToolHeader, createCheatsheet, infoHint, createEmptyState } from '../utils/common-ui.js';
 
 export async function handleHashCalculatorRoutes(request, url) {
   const { pathname } = url;
@@ -43,13 +43,13 @@ function renderHashCalculatorPage() {
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       ${toolHeader}
 
-      <!-- Status Badge -->
-      <div class="mb-6 flex items-center justify-between">
-        <div id="status-badge" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-300 text-sm font-medium">
-          <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-          <span>Ready</span>
-        </div>
-      </div>
+       <!-- Status Badge -->
+       <div class="mb-6 flex items-center justify-between">
+         <div id="status-badge" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-800 text-success-700 dark:text-success-300 text-sm font-medium">
+           <span class="w-2 h-2 rounded-full bg-success-500 animate-pulse"></span>
+           <span>Ready</span>
+         </div>
+       </div>
 
       <!-- Tab Navigation -->
       <div class="mb-8">
@@ -81,7 +81,7 @@ function renderHashCalculatorPage() {
                 <span id="legacy-label" class="text-xs font-semibold text-surface-700 dark:text-surface-300">Enable</span>
               </label>
             </div>
-            <p class="mt-3 text-xs text-red-600 dark:text-red-400">Warning: MD5 and SHA-1 are broken and should only be used for legacy verification.</p>
+            <p class="mt-3 text-xs text-error-600 dark:text-error-400">Warning: MD5 and SHA-1 are broken and should only be used for legacy verification.</p>
           </div>
           <!-- Text Input Content -->
           <div id="content-text" class="tab-content" role="tabpanel">
@@ -112,11 +112,12 @@ function renderHashCalculatorPage() {
               />
             </div>
 
-            <div class="flex gap-3">
-              <button id="text-generate-btn" class="flex-1 py-3 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
-                <span data-i18n="tools.hash-calculator.ui.button3">Generate Hash</span>
-              </button>
-              <button id="text-clear-btn" class="px-6 py-3 border border-surface-200 dark:border-surface-700 text-surface-700 dark:text-surface-300 font-medium rounded-lg text-sm hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors focus:outline-none focus:ring-2 focus:ring-surface-500 focus:ring-offset-2">
+             <div class="flex gap-3">
+               <button id="text-generate-btn" class="btn btn-primary flex-1">
+                 <span id="text-hash-spinner" class="spinner-sm hidden" style="display:inline-block;vertical-align:middle;margin-right:6px;border-color:rgba(255,255,255,0.3);border-top-color:#fff;"></span>
+                 <span data-i18n="tools.hash-calculator.ui.button3">Generate Hash</span>
+               </button>
+              <button id="text-clear-btn" class="btn btn-secondary">
                 <span data-i18n="tools.hash-calculator.ui.button4">Clear</span>
               </button>
             </div>
@@ -124,25 +125,25 @@ function renderHashCalculatorPage() {
 
           <!-- File Upload Content -->
           <div id="content-file" class="tab-content hidden" role="tabpanel">
-            <div id="file-drop-zone" class="bg-white dark:bg-surface-900 rounded-xl border-2 border-dashed border-surface-300 dark:border-surface-700 p-12 text-center cursor-pointer hover:border-primary-500 dark:hover:border-primary-500 hover:bg-surface-50 dark:hover:bg-surface-800 transition-all group">
-              <input type="file" id="file-input" class="hidden">
-              <div class="w-16 h-16 bg-primary-50 dark:bg-primary-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                <span class="material-symbols-rounded text-3xl text-primary-600 dark:text-primary-400">upload_file</span>
-              </div>
+             <div id="file-drop-zone" class="bg-white dark:bg-surface-900 rounded-xl border-2 border-dashed border-surface-300 dark:border-surface-700 p-12 text-center cursor-pointer hover:border-info-500 dark:hover:border-info-500 hover:bg-surface-50 dark:hover:bg-surface-800 transition-all group">
+               <input type="file" id="file-input" class="hidden">
+               <div class="w-16 h-16 bg-info-50 dark:bg-info-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                 <span class="material-symbols-rounded text-3xl text-info-600 dark:text-info-400">upload_file</span>
+               </div>
               <p class="text-lg font-semibold text-surface-900 dark:text-surface-100" data-i18n="tools.hash-calculator.ui.desc17">Drop file here</p>
               <p class="text-sm text-surface-500 dark:text-surface-400 mt-1" data-i18n="tools.hash-calculator.ui.desc18">or click to browse</p>
             </div>
 
-            <div id="file-info" class="hidden bg-primary-50 dark:bg-primary-900/20 rounded-xl border border-primary-200 dark:border-primary-800 p-4">
+             <div id="file-info" class="hidden bg-info-50 dark:bg-info-900/20 rounded-lg border border-info-200 dark:border-info-800 p-4">
               <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                  <span class="material-symbols-rounded text-2xl text-primary-600 dark:text-primary-400">description</span>
+               <div class="flex items-center gap-3">
+                   <span class="material-symbols-rounded text-2xl text-info-600 dark:text-info-400">description</span>
                   <div>
                     <div id="file-name" class="text-sm font-semibold text-surface-900 dark:text-surface-100 truncate max-w-[200px]"></div>
                     <div id="file-size" class="text-xs text-surface-600 dark:text-surface-400"></div>
                   </div>
                 </div>
-                <button id="file-clear" class="text-xs font-semibold text-red-600 dark:text-red-400 hover:underline"><span data-i18n="tools.hash-calculator.ui.button5">Remove</span></button>
+                 <button id="file-clear" class="btn btn-ghost btn-xs text-error-600 dark:text-error-400"><span data-i18n="tools.hash-calculator.ui.button5">Remove</span></button>
               </div>
             </div>
 
@@ -151,14 +152,15 @@ function renderHashCalculatorPage() {
               <input
                 type="password"
                 id="file-hmac"
-                placeholder="Enter secret key..."
+                placeholder="Enter secret key..." data-i18n-placeholder="tools.hash-calculator.ui.placeholder14"
                 class="w-full bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-800 rounded-lg p-3 font-mono text-sm text-surface-900 dark:text-surface-100 placeholder-surface-400 dark:placeholder-surface-600 focus:outline-none focus:ring-2 focus:ring-primary-500"
               />
             </div>
 
-            <button id="file-generate-btn" class="w-full py-4 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2" disabled>
-              <span data-i18n="tools.hash-calculator.ui.button6">Process File</span>
-            </button>
+             <button id="file-generate-btn" class="btn btn-primary w-full" disabled>
+               <span id="file-hash-spinner" class="spinner-sm hidden" style="display:inline-block;vertical-align:middle;margin-right:6px;border-color:rgba(255,255,255,0.3);border-top-color:#fff;"></span>
+               <span data-i18n="tools.hash-calculator.ui.button6">Process File</span>
+             </button>
           </div>
 
           <!-- Verify Content -->
@@ -202,17 +204,17 @@ function renderHashCalculatorPage() {
               <p class="text-sm font-semibold text-surface-700 dark:text-surface-300" data-i18n="tools.hash-calculator.ui.desc20">Select file to verify</p>
             </div>
 
-            <div id="verify-file-info" class="hidden bg-surface-50 dark:bg-surface-800 rounded-xl border border-surface-200 dark:border-surface-700 p-3">
+             <div id="verify-file-info" class="hidden bg-surface-50 dark:bg-surface-800 rounded-lg border border-surface-200 dark:border-surface-700 p-3">
                <div class="flex items-center justify-between text-xs">
                   <div class="min-w-0">
                     <div id="verify-file-name" class="font-mono text-surface-600 dark:text-surface-400 truncate max-w-[150px]"></div>
                     <div id="verify-file-size" class="text-[11px] text-surface-500 dark:text-surface-400"></div>
                   </div>
-                  <button id="verify-file-clear" class="text-red-600 dark:text-red-400 font-semibold hover:underline"><span data-i18n="tools.hash-calculator.ui.button4">Clear</span></button>
+                   <button id="verify-file-clear" class="btn btn-ghost btn-xs text-error-600 dark:text-error-400"><span data-i18n="tools.hash-calculator.ui.button4">Clear</span></button>
                </div>
             </div>
 
-            <button id="verify-btn" class="w-full py-4 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2" disabled>
+            <button id="verify-btn" class="btn btn-primary w-full" disabled>
               <span data-i18n="tools.hash-calculator.ui.button7">Verify Integrity</span>
             </button>
           </div>
@@ -230,27 +232,24 @@ function renderHashCalculatorPage() {
             </div>
 
             <div id="hash-results" class="space-y-4 flex-grow">
-              <div class="flex flex-col items-center justify-center h-64 text-surface-400 dark:text-surface-600">
-                <span class="material-symbols-rounded text-6xl mb-4">analytics</span>
-                <p class="text-sm" data-i18n="tools.hash-calculator.ui.desc21">Awaiting input...</p>
-              </div>
-            </div>
+               ${createEmptyState({ icon: '🔐', title: 'Awaiting input', description: 'Enter text or drop a file to compute hashes.', id: 'hash-empty-state' })}
+             </div>
 
             <div id="verify-result" class="hidden mt-6"></div>
           </div>
         </div>
       </div>
 
-      <!-- Security Notice -->
-      <div class="mt-12 p-6 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 flex gap-4 items-start">
-        <div class="p-2 bg-red-100 dark:bg-red-900/40 rounded-lg">
-          <span class="material-symbols-rounded text-red-600 dark:text-red-400">security</span>
-        </div>
-        <div>
-          <h2 class="text-sm font-semibold text-red-700 dark:text-red-300 mb-1" data-i18n="tools.hash-calculator.ui.heading16">Security Notice</h2>
-          <p class="text-sm text-red-600 dark:text-red-400 leading-relaxed" data-i18n="tools.hash-calculator.ui.desc22">MD5 and SHA-1 are cryptographically broken and disabled by default. You can opt in to legacy hashes for compatibility only. All processing occurs in a sandboxed client-side environment using the Web Crypto API. No data is transmitted to external servers.</p>
-        </div>
-      </div>
+       <!-- Security Notice -->
+       <div class="mt-12 p-6 rounded-xl bg-error-50 dark:bg-error-900/20 border border-error-200 dark:border-error-800 flex gap-4 items-start">
+         <div class="p-2 bg-error-100 dark:bg-error-900/40 rounded-lg">
+           <span class="material-symbols-rounded text-error-600 dark:text-error-400">security</span>
+         </div>
+         <div>
+           <h2 class="text-sm font-semibold text-error-700 dark:text-error-300 mb-1" data-i18n="tools.hash-calculator.ui.heading16">Security Notice</h2>
+           <p class="text-sm text-error-600 dark:text-error-400 leading-relaxed" data-i18n="tools.hash-calculator.ui.desc22">MD5 and SHA-1 are cryptographically broken and disabled by default. You can opt in to legacy hashes for compatibility only. All processing occurs in a sandboxed client-side environment using the Web Crypto API. No data is transmitted to external servers.</p>
+         </div>
+       </div>
 
       ${createCheatsheet('hash-calculator', 'Hash Algorithm Reference', [
         { heading: 'Algorithm Comparison', content: `
@@ -298,13 +297,8 @@ function renderHashCalculatorPage() {
           const targetContent = document.getElementById(targetId);
           targetContent.classList.remove('hidden');
 
-          // Clean up results
-          document.getElementById('hash-results').innerHTML = \`
-            <div class="flex flex-col items-center justify-center h-64 text-surface-400 dark:text-surface-600">
-              <span class="material-symbols-rounded text-6xl mb-4">analytics</span>
-              <p class="text-sm" data-i18n="tools.hash-calculator.ui.desc21">Awaiting input...</p>
-            </div>
-          \`;
+           // Clean up results
+           document.getElementById('hash-results').innerHTML = \`${createEmptyState({ icon: '🔐', title: 'Awaiting input', description: 'Enter text or drop a file to compute hashes.', id: 'hash-empty-state' })}\`;
           document.getElementById('perf-stats').classList.add('hidden');
           updateStatusBadge('ready');
         });
@@ -346,24 +340,24 @@ function renderHashCalculatorPage() {
 
       function updateStatusBadge(status) {
         const badge = document.getElementById('status-badge');
-        const statusConfig = {
-          ready: {
-            text: 'Ready',
-            classes: 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-700 dark:text-green-300'
-          },
-          processing: {
-            text: 'Processing...',
-            classes: 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800 text-yellow-700 dark:text-yellow-300'
-          },
-          completed: {
-            text: 'Completed',
-            classes: 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-700 dark:text-green-300'
-          },
-          failed: {
-            text: 'Failed',
-            classes: 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-700 dark:text-red-300'
-          }
-        };
+       const statusConfig = {
+           ready: {
+             text: 'Ready',
+             classes: 'bg-success-50 dark:bg-success-900/20 border-success-200 dark:border-success-800 text-success-700 dark:text-success-300'
+           },
+           processing: {
+             text: 'Processing...',
+             classes: 'bg-warning-50 dark:bg-warning-900/20 border-warning-200 dark:border-warning-800 text-warning-700 dark:text-warning-300'
+           },
+           completed: {
+             text: 'Completed',
+             classes: 'bg-success-50 dark:bg-success-900/20 border-success-200 dark:border-success-800 text-success-700 dark:text-success-300'
+           },
+           failed: {
+             text: 'Failed',
+             classes: 'bg-error-50 dark:bg-error-900/20 border-error-200 dark:border-error-800 text-error-700 dark:text-error-300'
+           }
+         };
         const config = statusConfig[status] || statusConfig.ready;
         badge.className = 'inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border text-sm font-medium ' + config.classes;
         badge.querySelector('span:last-child').textContent = config.text;
@@ -469,12 +463,12 @@ function renderHashCalculatorPage() {
         throw new Error('Unsupported hash algorithm: ' + algorithm);
       }
 
-      function displayHash(name, hash, color, description) {
-        const colorClasses = {
-          green: 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-700 dark:text-green-300',
-          indigo: 'bg-indigo-50 dark:bg-indigo-900/20 border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300',
-          blue: 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300'
-        }[color] || 'bg-surface-50 dark:bg-surface-900 border-surface-200 dark:border-surface-800 text-surface-900 dark:text-surface-100';
+       function displayHash(name, hash, color, description) {
+         const colorClasses = {
+           green: 'bg-success-50 dark:bg-success-900/20 border-success-200 dark:border-success-800 text-success-700 dark:text-success-300',
+           indigo: 'bg-primary-50 dark:bg-primary-900/20 border-primary-200 dark:border-primary-800 text-primary-700 dark:text-primary-300',
+           blue: 'bg-info-50 dark:bg-info-900/20 border-info-200 dark:border-info-800 text-info-700 dark:text-info-300'
+         }[color] || 'bg-surface-50 dark:bg-surface-900 border-surface-200 dark:border-surface-800 text-surface-900 dark:text-surface-100';
 
         return \`
           <div class="p-5 rounded-xl border \${colorClasses} transition-all hover:shadow-md group">
@@ -485,7 +479,7 @@ function renderHashCalculatorPage() {
                   \${name}
                 </h3>
               </div>
-              <button data-copy-hash="\${hash}" class="copy-hash-btn px-3 py-1.5 bg-white dark:bg-surface-950 border border-current/30 rounded-lg text-xs font-medium hover:bg-current hover:text-white dark:hover:text-black transition-all focus:outline-none focus:ring-2 focus:ring-current">
+              <button data-copy-hash="\${hash}" class="copy-hash-btn btn btn-ghost btn-xs border border-current/30">
                 <span data-i18n="tools.hash-calculator.ui.button8">Copy</span>
               </button>
             </div>
@@ -499,12 +493,22 @@ function renderHashCalculatorPage() {
         \`;
       }
 
-      async function generateAllHashes(data, secret = null) {
-        updateStatusBadge('processing');
+       async function generateAllHashes(data, secret = null) {
+         updateStatusBadge('processing');
 
-        const isText = typeof data === 'string';
-        const startTime = performance.now();
-        const hashes = [];
+         const textHashSpinner = document.getElementById('text-hash-spinner');
+         const fileHashSpinner = document.getElementById('file-hash-spinner');
+         const activeTab = document.querySelector('.tab-button.active')?.getAttribute('aria-controls');
+         
+         if (activeTab === 'content-text') {
+           textHashSpinner.classList.remove('hidden');
+         } else if (activeTab === 'content-file') {
+           fileHashSpinner.classList.remove('hidden');
+         }
+
+         const isText = typeof data === 'string';
+         const startTime = performance.now();
+         const hashes = [];
 
         try {
           const variants = secret
@@ -550,21 +554,25 @@ function renderHashCalculatorPage() {
           const sizeMB = sizeBytes / (1024 * 1024);
           const speed = duration > 0 ? (sizeMB / (duration / 1000)).toFixed(2) : '∞';
 
-          document.getElementById('stat-time').textContent = duration;
-          document.getElementById('stat-speed').textContent = speed;
-          document.getElementById('perf-stats').classList.remove('hidden');
-          
-          updateStatusBadge('completed');
+           document.getElementById('stat-time').textContent = duration;
+           document.getElementById('stat-speed').textContent = speed;
+           document.getElementById('perf-stats').classList.remove('hidden');
+           
+           textHashSpinner.classList.add('hidden');
+           fileHashSpinner.classList.add('hidden');
+           updateStatusBadge('completed');
 
-         } catch (error) {
-           const hashResults = document.getElementById('hash-results');
-           hashResults.innerHTML = '';
-           const errDiv = document.createElement('div');
-           errDiv.className = 'p-6 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl font-mono text-sm';
-           errDiv.textContent = 'Error: ' + error.message;
-           hashResults.appendChild(errDiv);
-           updateStatusBadge('failed');
-         }
+           } catch (error) {
+             const hashResults = document.getElementById('hash-results');
+             hashResults.innerHTML = '';
+             const errDiv = document.createElement('div');
+             errDiv.className = 'p-6 text-error-600 dark:text-error-400 bg-error-50 dark:bg-error-900/20 border border-error-200 dark:border-error-800 rounded-xl font-mono text-sm';
+             errDiv.textContent = 'Error: ' + error.message;
+             hashResults.appendChild(errDiv);
+             textHashSpinner.classList.add('hidden');
+             fileHashSpinner.classList.add('hidden');
+             updateStatusBadge('failed');
+           }
       }
       // Event delegation for copy buttons
       document.addEventListener('click', (e) => {
@@ -575,6 +583,7 @@ function renderHashCalculatorPage() {
              window.copyToClipboard(hash, btn);
           } else {
              navigator.clipboard.writeText(hash);
+             if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
           }
         }
       });
@@ -691,9 +700,9 @@ function renderHashCalculatorPage() {
       function renderVerifyPanel({ title, message, expected, computed, tone }) {
         const verifyResult = document.getElementById('verify-result');
         const panel = document.createElement('div');
-        const toneClass = tone === 'success'
-          ? 'bg-green-50 dark:bg-green-900/20 border-green-500 dark:border-green-700 text-green-700 dark:text-green-300'
-          : 'bg-red-50 dark:bg-red-900/20 border-red-500 dark:border-red-700 text-red-700 dark:text-red-300';
+         const toneClass = tone === 'success'
+            ? 'bg-success-50 dark:bg-success-900/20 border-success-500 dark:border-success-700 text-success-700 dark:text-success-300'
+            : 'bg-error-50 dark:bg-error-900/20 border-error-500 dark:border-error-700 text-error-700 dark:text-error-300';
         panel.className = 'p-6 rounded-xl border-2 ' + toneClass + ' font-mono';
 
         const titleEl = document.createElement('h3');

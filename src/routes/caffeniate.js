@@ -109,14 +109,14 @@ function renderCaffeniatePage() {
         toggleBtn.textContent = btnText;
         toggleBtn.setAttribute('data-i18n', isActive ? 'tools.caffeniate.ui.button1' : 'tools.caffeniate.ui.button0');
 
-        statusPanel.classList.remove('border-primary-400', 'dark:border-primary-600', 'border-yellow-400', 'dark:border-yellow-600', 'border-red-400', 'dark:border-red-600');
-        if (panelState === 'active') {
-          statusPanel.classList.add('border-primary-400', 'dark:border-primary-600');
-        } else if (panelState === 'warn') {
-          statusPanel.classList.add('border-yellow-400', 'dark:border-yellow-600');
-        } else if (panelState === 'error') {
-          statusPanel.classList.add('border-red-400', 'dark:border-red-600');
-        }
+         statusPanel.classList.remove('border-primary-400', 'dark:border-primary-600', 'border-warning-400', 'dark:border-warning-600', 'border-error-400', 'dark:border-error-600');
+         if (panelState === 'active') {
+           statusPanel.classList.add('border-primary-400', 'dark:border-primary-600');
+         } else if (panelState === 'warn') {
+           statusPanel.classList.add('border-warning-400', 'dark:border-warning-600');
+         } else if (panelState === 'error') {
+           statusPanel.classList.add('border-error-400', 'dark:border-error-600');
+         }
       }
 
       function showMode(mode) {

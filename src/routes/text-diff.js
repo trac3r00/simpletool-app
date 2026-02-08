@@ -54,32 +54,33 @@ function renderTextDiffPage() {
           </div>
         </div>
 
-        <button id="compare-btn" class="btn btn-primary" data-tooltip="Compare the two texts and highlight differences" w-full py-4 text-lg mb-6">
+        <button id="compare-btn" class="btn btn-primary w-full py-4 text-lg mb-6" data-tooltip="Compare the two texts and highlight differences">
           <span data-i18n="tools.text-diff.ui.button0">Compare Texts</span>
         </button>
 
         <div id="result" class="hidden card p-6">
-          <div class="flex items-center justify-between mb-4">
-            <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50" data-i18n="tools.text-diff.ui.heading5">Differences</h2>
-            <div class="flex gap-4 text-xs">
-              <span class="flex items-center gap-1"><span class="w-3 h-3 bg-green-100 border border-green-300 rounded-sm"></span> Added</span>
-              <span class="flex items-center gap-1"><span class="w-3 h-3 bg-red-100 border border-red-300 rounded-sm"></span> Removed</span>
-            </div>
-          </div>
+           <div class="flex items-center justify-between mb-4">
+             <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50" data-i18n="tools.text-diff.ui.heading5">Differences</h2>
+             <div class="flex gap-4 text-xs">
+               <span class="flex items-center gap-1"><span class="w-3 h-3 bg-success-100 border border-success-300 rounded-sm"></span> Added</span>
+               <span class="flex items-center gap-1"><span class="w-3 h-3 bg-error-100 border border-error-300 rounded-sm"></span> Removed</span>
+             </div>
+           </div>
           <div id="diff-output" class="font-mono text-sm whitespace-pre-wrap bg-surface-50 dark:bg-surface-950 p-4 rounded-lg border border-surface-200 dark:border-surface-800 overflow-x-auto"></div>
         </div>
       </div>
     </main>
   `;
 
-  const script = `
-    <style>
-      .diff-add { background-color: rgba(34, 197, 94, 0.2); color: #14532d; }
-      .dark .diff-add { background-color: rgba(34, 197, 94, 0.2); color: #86efac; }
-      
-      .diff-remove { background-color: rgba(239, 68, 68, 0.2); text-decoration: line-through; color: #7f1d1d; }
-      .dark .diff-remove { background-color: rgba(239, 68, 68, 0.2); color: #fca5a5; }
-    </style>
+   const script = `
+     <style>
+       .diff-add { background-color: rgba(34, 197, 94, 0.2); color: #14532d; }
+       .dark .diff-add { background-color: rgba(34, 197, 94, 0.2); color: #86efac; }
+       
+       .diff-remove { background-color: rgba(239, 68, 68, 0.2); text-decoration: line-through; color: #7f1d1d; }
+       .dark .diff-remove { background-color: rgba(239, 68, 68, 0.2); color: #fca5a5; }
+     </style>
+     <!-- Note: diff-add/diff-remove use inline styles for precise color control -->
     <script>
       function diff(text1, text2) {
         const lines1 = text1.split('\\n');

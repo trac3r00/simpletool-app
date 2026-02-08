@@ -1,5 +1,6 @@
 import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createCheatsheet } from '../utils/common-ui.js';
+import { createPageTemplate, createToolHeader, createCheatsheet, createMobileTabView, getMobileTabScript, createEmptyState } from '../utils/common-ui.js';
+import { createRichEditorPane, getRichEditorStyles, getRichEditorScript } from '../utils/rich-editor.js';
 
 export async function handleMermaidStudioRoutes(request, url) {
   if (url.pathname !== '/mermaid-studio' && url.pathname !== '/mermaid-studio/') return null;
@@ -22,33 +23,30 @@ export async function handleMermaidStudioRoutes(request, url) {
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       ${header}
 
+      ${createMobileTabView({ leftPaneId: 'editor-pane', rightPaneId: 'preview-pane', leftLabel: '<span data-i18n="tools.mermaid-studio.ui.stat3">Mermaid Code</span>', rightLabel: '<span data-i18n="tools.mermaid-studio.ui.stat4">Preview</span>' })}
+
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 h-[calc(100vh-350px)] min-h-[600px]">
         <!-- Editor -->
-        <div class="lg:col-span-5 flex flex-col bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 overflow-hidden">
+        <div id="editor-pane" class="lg:col-span-5 flex flex-col bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 overflow-hidden">
           <div class="px-4 py-3 border-b border-surface-200 dark:border-surface-800 flex justify-between items-center bg-surface-50 dark:bg-surface-950">
             <span class="text-sm font-semibold text-surface-900 dark:text-white uppercase tracking-wider" data-i18n="tools.mermaid-studio.ui.stat3">Mermaid Code</span>
             <div class="flex gap-2">
-              <button id="sample-btn" data-tooltip="Load a sample diagram to get started" class="text-xs text-primary-600 hover:underline"><span data-i18n="tools.mermaid-studio.ui.button0">Load Sample</span></button>
+              <button id="sample-btn" data-tooltip="Load a sample diagram to get started" class="btn btn-secondary btn-xs"><span data-i18n="tools.mermaid-studio.ui.button0">Load Sample</span></button>
             </div>
           </div>
-          <textarea id="mermaid-input" data-tooltip="Write Mermaid.js diagram syntax here" class="flex-1 w-full p-4 bg-surface-950 text-surface-50 font-mono text-sm resize-none focus:outline-none focus:ring-0" spellcheck="false" placeholder="graph TD\nA[Start] --> B{Is it working?}\nB -- Yes --> C[Great!]\nB -- No --> D[Debug]" data-i18n-placeholder="tools.mermaid-studio.ui.placeholder2">graph TD
-    A[Christmas] -->|Get money| B(Go shopping)
-    B --> C{Let me think}
-    C -->|One| D[Laptop]
-    C -->|Two| E[iPhone]
-    C -->|Three| F[fa:fa-car Car]</textarea>
+          ${createRichEditorPane({ id: 'mermaid-input', mode: 'textarea', rows: 22, placeholder: "graph TD\\nA[Start] --> B{Is it working?}\\nB -- Yes --> C[Great!]\\nB -- No --> D[Debug]", wrapClass: 'flex-1' })}
         </div>
 
         <!-- Preview -->
-        <div class="lg:col-span-7 flex flex-col bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 overflow-hidden">
+        <div id="preview-pane" class="lg:col-span-7 flex flex-col bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 overflow-hidden">
           <div class="px-4 py-3 border-b border-surface-200 dark:border-surface-800 flex justify-between items-center bg-surface-50 dark:bg-surface-950">
             <span class="text-sm font-semibold text-surface-900 dark:text-white uppercase tracking-wider" data-i18n="tools.mermaid-studio.ui.stat4">Preview</span>
             <div class="flex gap-3">
-              <button id="download-svg" data-tooltip="Download the rendered diagram as SVG" class="text-xs text-primary-600 hover:underline"><span data-i18n="tools.mermaid-studio.ui.button1">Download SVG</span></button>
+              <button id="download-svg" data-tooltip="Download the rendered diagram as SVG" class="btn btn-secondary btn-xs"><span data-i18n="tools.mermaid-studio.ui.button1">Download SVG</span></button>
             </div>
           </div>
           <div id="mermaid-render" class="flex-1 p-8 overflow-auto flex items-center justify-center bg-white dark:bg-surface-950">
-            <div class="text-surface-400 italic">Rendering diagram...</div>
+            ${createEmptyState({ icon: '🧜‍♀️', title: 'No diagram yet', description: 'Write Mermaid code on the left to see it rendered here.', id: 'mermaid-empty-state' })}
           </div>
         </div>
       </div>
@@ -81,6 +79,9 @@ export async function handleMermaidStudioRoutes(request, url) {
   `;
 
   const scripts = `
+    <style>${getRichEditorStyles()}</style>
+    ${getRichEditorScript()}
+    ${getMobileTabScript()}
     <script src="/vendor/mermaid.min.js" integrity="sha384-enVdc7lTHDGtpROV85t9+VqPC2EyyB0hsRD0MrvQnHUsHmTHIz2D8SPP4EnBkstH" crossorigin="anonymous"></script>
     <script>
       const mermaid = window.mermaid;
@@ -91,49 +92,62 @@ export async function handleMermaidStudioRoutes(request, url) {
         securityLevel: 'strict'
       });
 
-      const input = document.getElementById('mermaid-input');
+      const editor = new RichEditor('mermaid-input');
+      editor.setHighlighter('mermaid');
+      editor.setValue("graph TD\\n    A[Christmas] -->|Get money| B(Go shopping)\\n    B --> C{Let me think}\\n    C -->|One| D[Laptop]\\n    C -->|Two| E[iPhone]\\n    C -->|Three| F[fa:fa-car Car]");
+
       const renderArea = document.getElementById('mermaid-render');
       const sampleBtn = document.getElementById('sample-btn');
       const downloadBtn = document.getElementById('download-svg');
 
       let timeout = null;
 
+       const emptyState = document.getElementById('mermaid-empty-state');
+
+       function showEmptyState() {
+         if (emptyState) emptyState.classList.remove('hidden');
+         const diagram = renderArea.querySelector('.mermaid');
+         if (diagram) diagram.remove();
+         const err = renderArea.querySelector('.mermaid-error');
+         if (err) err.remove();
+       }
+
        async function renderDiagram() {
-         const code = input.value.trim();
-         if (!code) {
-           renderArea.innerHTML = '<div class="text-surface-400 italic">Enter code to preview</div>';
-           return;
-         }
+         const code = editor.getValue().trim();
+         if (!code) { showEmptyState(); return; }
+
+         if (emptyState) emptyState.classList.add('hidden');
 
          try {
-           // Clear previous content
-           renderArea.innerHTML = '';
+           const prev = renderArea.querySelector('.mermaid');
+           if (prev) prev.remove();
+           const prevErr = renderArea.querySelector('.mermaid-error');
+           if (prevErr) prevErr.remove();
+
            const mermaidDiv = document.createElement('div');
-           mermaidDiv.className = 'mermaid';
+           mermaidDiv.className = 'mermaid animate-fade-in-up';
            mermaidDiv.textContent = code;
            renderArea.appendChild(mermaidDiv);
            await mermaid.run({
              nodes: [renderArea.querySelector('.mermaid')]
            });
          } catch (e) {
-           renderArea.innerHTML = '';
+           const prev = renderArea.querySelector('.mermaid');
+           if (prev) prev.remove();
            const errDiv = document.createElement('div');
-           errDiv.className = 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-4 rounded-lg text-sm font-mono whitespace-pre-wrap';
+           errDiv.className = 'mermaid-error bg-error-50 dark:bg-error-900/20 text-error-600 dark:text-error-400 p-4 rounded-lg text-sm font-mono whitespace-pre-wrap animate-fade-in-up';
            errDiv.textContent = 'Syntax Error: ' + e.message;
            renderArea.appendChild(errDiv);
          }
        }
 
-      input.addEventListener('input', () => {
+      editor.el.addEventListener('input', () => {
         clearTimeout(timeout);
         timeout = setTimeout(renderDiagram, 500);
       });
 
       sampleBtn.addEventListener('click', () => {
-        input.value = \`sequenceDiagram
-    Alice->>John: Hello John, how are you?
-    John-->>Alice: Great!
-    Alice-)John: See you later!\`;
+        editor.setValue('sequenceDiagram\\n    Alice->>John: Hello John, how are you?\\n    John-->>Alice: Great!\\n    Alice-)John: See you later!');
         renderDiagram();
       });
 

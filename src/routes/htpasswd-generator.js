@@ -22,29 +22,29 @@ export async function handleHtpasswdRoutes(request, url) {
 function renderHtpasswdPage() {
   const content = `
     <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
-      <header class="bg-white/90 dark:bg-surface-900/80 border border-surface-200 dark:border-surface-800 rounded-3xl shadow-xl p-8">
-        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
-          <div>
-            <p class="text-xs font-semibold uppercase tracking-[0.35em] text-emerald-600 dark:text-emerald-300 mb-3" data-i18n="tools.htpasswd-generator.ui.desc20">Ops · Infra</p>
+       <header class="bg-white/90 dark:bg-surface-900/80 border border-surface-200 dark:border-surface-800 rounded-3xl shadow-xl p-8">
+         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
+           <div>
+             <p class="text-xs font-semibold uppercase tracking-[0.35em] text-success-600 dark:text-success-300 mb-3" data-i18n="tools.htpasswd-generator.ui.desc20">Ops · Infra</p>
             <h1 class="text-4xl sm:text-5xl font-extrabold text-surface-900 dark:text-white mb-4">Htpasswd Entry Generator</h1>
             <p class="text-lg text-surface-600 dark:text-surface-300 max-w-2xl" data-i18n="tools.htpasswd-generator.ui.desc21">Generate production-ready htpasswd entries using bcrypt (-B), Apache MD5 (-m), SHA1 (-s), or plaintext—completely client-side.</p>
           </div>
-          <div class="grid gap-3 text-sm text-surface-600 dark:text-surface-300">
-            <div class="flex items-center gap-3 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-2xl px-4 py-3">
-              <span class="text-xl">🛡️</span>
-              <div>
-                <p class="font-semibold">Zero trust by design</p>
-                <p class="text-surface-500 dark:text-surface-400" data-i18n="tools.htpasswd-generator.ui.desc22">No network calls.</p>
-              </div>
-            </div>
-            <div class="flex items-center gap-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-2xl px-4 py-3">
-              <span class="text-xl">⚙️</span>
-              <div>
-                <p class="font-semibold">Multiple algorithms</p>
-                <p class="text-surface-500 dark:text-surface-400" data-i18n="tools.htpasswd-generator.ui.desc23">Bcrypt, apr1, SHA, plain.</p>
-              </div>
-            </div>
-          </div>
+           <div class="grid gap-3 text-sm text-surface-600 dark:text-surface-300">
+             <div class="flex items-center gap-3 bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-800 rounded-2xl px-4 py-3">
+               <span class="text-xl">🛡️</span>
+               <div>
+                 <p class="font-semibold">Zero trust by design</p>
+                 <p class="text-surface-500 dark:text-surface-400" data-i18n="tools.htpasswd-generator.ui.desc22">No network calls.</p>
+               </div>
+             </div>
+             <div class="flex items-center gap-3 bg-info-50 dark:bg-info-900/20 border border-info-200 dark:border-info-800 rounded-2xl px-4 py-3">
+               <span class="text-xl">⚙️</span>
+               <div>
+                 <p class="font-semibold">Multiple algorithms</p>
+                 <p class="text-surface-500 dark:text-surface-400" data-i18n="tools.htpasswd-generator.ui.desc23">Bcrypt, apr1, SHA, plain.</p>
+               </div>
+             </div>
+           </div>
         </div>
       </header>
 
@@ -56,13 +56,13 @@ function renderHtpasswdPage() {
           </div>
 
           <div class="space-y-2">
-            <div class="flex items-center justify-between">
-              <label for="password-input" class="text-sm font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide"><span data-i18n="tools.htpasswd-generator.ui.label8">Password</span></label>
+             <div class="flex items-center justify-between">
+               <label for="password-input" class="text-sm font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide"><span data-i18n="tools.htpasswd-generator.ui.label8">Password</span></label>
               <div class="flex gap-2 text-xs text-surface-500 dark:text-surface-400">
-                <button id="toggle-password" type="button" class="hover:text-surface-900 dark:hover:text-white"><span data-i18n="tools.htpasswd-generator.ui.button0">Show</span></button>
-                <button id="generate-password" type="button" class="hover:text-emerald-500"><span data-i18n="tools.htpasswd-generator.ui.button1">Generate strong</span></button>
-              </div>
-            </div>
+                   <button id="toggle-password" type="button" class="btn btn-ghost btn-xs"><span data-i18n="tools.htpasswd-generator.ui.button0">Show</span></button>
+                   <button id="generate-password" type="button" class="btn btn-ghost btn-xs text-primary-600 dark:text-primary-400"><span data-i18n="tools.htpasswd-generator.ui.button1">Generate strong</span></button>
+                 </div>
+             </div>
             <input id="password-input" type="password" data-tooltip="Password to hash for the entry" class="w-full px-4 py-3 rounded-2xl border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-950 text-surface-900 dark:text-surface-100 font-mono" placeholder="•••••••" autocomplete="new-password" />
           </div>
 
@@ -87,14 +87,14 @@ function renderHtpasswdPage() {
           <div id="salt-options" class="space-y-2 hidden">
             <div class="flex justify-between items-center">
                <label for="salt-input" class="text-sm font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide"><span data-i18n="tools.htpasswd-generator.ui.label10">Salt</span> ${infoHint('Salt is 8 chars (./0-9A-Za-z) for apr1 hashes; randomize for uniqueness.')}</label>
-              <button id="random-salt" type="button" class="text-xs text-surface-500 dark:text-surface-400 hover:text-purple-500"><span data-i18n="tools.htpasswd-generator.ui.button2">Randomize</span></button>
+              <button id="random-salt" type="button" class="btn btn-ghost btn-xs"><span data-i18n="tools.htpasswd-generator.ui.button2">Randomize</span></button>
             </div>
             <input id="salt-input" type="text" maxlength="8" class="w-full px-4 py-3 rounded-2xl border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-950 text-surface-900 dark:text-surface-100 font-mono" placeholder="8 chars (./0-9A-Za-z)" data-i18n-placeholder="tools.htpasswd-generator.ui.placeholder12" />
           </div>
 
-          <div id="htpasswd-error" class="hidden rounded-2xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 text-sm text-red-700 dark:text-red-200 px-4 py-3">Error</div>
+           <div id="htpasswd-error" class="hidden rounded-2xl border border-danger-200 dark:border-danger-800 bg-danger-50 dark:bg-danger-900/30 text-sm text-danger-700 dark:text-danger-200 px-4 py-3">Error</div>
 
-          <button id="generate-btn" class="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold transition"><span data-i18n="tools.htpasswd-generator.ui.button3">Generate entry</span></button>
+           <button id="generate-btn" class="btn btn-primary w-full"><span data-i18n="tools.htpasswd-generator.ui.button3">Generate entry</span></button>
         </div>
 
         <div class="space-y-6">
@@ -102,18 +102,18 @@ function renderHtpasswdPage() {
             <div class="flex items-center justify-between mb-3">
               <h2 class="text-lg font-bold text-surface-900 dark:text-white" data-i18n="tools.htpasswd-generator.ui.heading18">Current entry</h2>
               <div class="flex gap-2">
-                <button id="copy-entry" class="px-3 py-2 rounded-xl bg-surface-100 dark:bg-surface-800 text-sm text-surface-700 dark:text-surface-200" disabled><span data-i18n="tools.htpasswd-generator.ui.button4">Copy</span></button>
-                <button id="download-entry" class="px-3 py-2 rounded-xl border border-surface-200 dark:border-surface-700 text-sm text-surface-700 dark:text-surface-200" disabled><span data-i18n="tools.htpasswd-generator.ui.button5">Download</span></button>
+                <button id="copy-entry" class="btn btn-secondary btn-sm" disabled><span data-i18n="tools.htpasswd-generator.ui.button4">Copy</span></button>
+                <button id="download-entry" class="btn btn-secondary btn-sm" disabled><span data-i18n="tools.htpasswd-generator.ui.button5">Download</span></button>
               </div>
             </div>
             <pre id="entry-output" role="status" class="min-h-[80px] bg-surface-900 text-surface-100 p-4 rounded-2xl overflow-x-auto text-sm">No entry yet.</pre>
           </div>
 
           <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-3xl shadow-xl p-6">
-            <div class="flex items-center justify-between mb-3">
-              <h2 class="text-lg font-bold text-surface-900 dark:text-white" data-i18n="tools.htpasswd-generator.ui.heading19">Recent history</h2>
-              <button id="clear-history" class="text-xs text-surface-500 dark:text-surface-400 hover:text-rose-500"><span data-i18n="tools.htpasswd-generator.ui.button6">Clear</span></button>
-            </div>
+             <div class="flex items-center justify-between mb-3">
+               <h2 class="text-lg font-bold text-surface-900 dark:text-white" data-i18n="tools.htpasswd-generator.ui.heading19">Recent history</h2>
+               <button id="clear-history" class="btn btn-ghost btn-xs text-error-600 dark:text-error-400"><span data-i18n="tools.htpasswd-generator.ui.button6">Clear</span></button>
+             </div>
             <div class="overflow-x-auto">
               <table class="min-w-full text-sm">
                 <thead class="text-xs uppercase tracking-widest text-surface-500">
@@ -356,15 +356,16 @@ function renderHtpasswdPage() {
           historyBody.innerHTML = '<tr><td class="py-3 text-surface-500" colspan="3">Nothing generated yet.</td></tr>';
             return;
           }
-          historyBody.innerHTML = history.map((item, index) => {
-            return '<tr><td class="py-2 pr-4 font-semibold">' + escapeHtml(item.username) + '</td><td class="py-2 pr-4">' + item.algorithm.toUpperCase() + '</td><td class="py-2"><button data-history="' + index + '" class="copy-history text-sm text-emerald-600 dark:text-emerald-300"><span data-i18n="tools.htpasswd-generator.ui.button4">Copy</span></button></td></tr>';
-          }).join('');
+           historyBody.innerHTML = history.map((item, index) => {
+             return '<tr><td class="py-2 pr-4 font-semibold">' + escapeHtml(item.username) + '</td><td class="py-2 pr-4">' + item.algorithm.toUpperCase() + '</td><td class="py-2"><button data-history="' + index + '" class="copy-history btn btn-ghost btn-xs text-success-600 dark:text-success-300"><span data-i18n="tools.htpasswd-generator.ui.button4">Copy</span></button></td></tr>';
+           }).join('');
           document.querySelectorAll('.copy-history').forEach(button => {
             button.addEventListener('click', () => {
               const index = Number(button.getAttribute('data-history'));
               const entry = history[index];
               navigator.clipboard.writeText(entry.line);
               button.textContent = _t('tools.htpasswd-generator.js.text0', 'Copied');
+              if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
               setTimeout(() => button.textContent = _t('tools.htpasswd-generator.js.text1', 'Copy'), 1500);
             });
           });
@@ -374,6 +375,7 @@ function renderHtpasswdPage() {
           if (!currentLine) return;
           navigator.clipboard.writeText(currentLine);
           copyBtn.textContent = _t('tools.htpasswd-generator.js.text2', 'Copied!');
+          if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
           setTimeout(() => copyBtn.textContent = _t('tools.htpasswd-generator.js.text1', 'Copy'), 1500);
         }
 

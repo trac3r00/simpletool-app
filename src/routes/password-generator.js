@@ -101,24 +101,36 @@ function renderPasswordGeneratorPage() {
               </label>
             </div>
 
-            <div id="pw-error" role="alert" class="hidden rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 text-sm text-red-700 dark:text-red-200 px-4 py-3"></div>
+             <div id="pw-error" role="alert" class="hidden rounded-lg border border-error-200 dark:border-error-800 bg-error-50 dark:bg-error-900/30 text-sm text-error-700 dark:text-error-200 px-4 py-3"></div>
 
             <button id="generate-password" class="btn btn-primary w-full py-4 text-lg">
               <span data-i18n="tools.password-generator.ui.button0">Generate Password</span>
             </button>
 
-            <div id="password-result" class="hidden">
-              <div class="bg-green-50 dark:bg-green-900/20 rounded-xl p-6 border border-green-200 dark:border-green-800">
+              <div id="password-result" class="hidden">
+                <div class="bg-success-50 dark:bg-success-900/20 rounded-lg p-6 border border-success-200 dark:border-success-800">
                 <div class="flex items-start justify-between gap-4">
                   <div class="flex-1">
                     <p class="text-sm text-surface-600 dark:text-surface-400 mb-2" data-i18n="tools.password-generator.ui.desc28">Your Password:</p>
                     <p id="password-output" class="text-2xl font-mono font-bold text-surface-900 dark:text-white break-all"></p>
                   </div>
-                  <button id="copy-password" class="flex-shrink-0 btn btn-secondary">
-                    <span class="material-symbols-rounded">content_copy</span>
-                  </button>
+                   <button id="copy-password" class="flex-shrink-0 btn btn-secondary" aria-label="Copy password to clipboard">
+                     <span class="material-symbols-rounded">content_copy</span>
+                   </button>
                 </div>
-                <div id="password-strength" class="mt-4 text-sm text-surface-700 dark:text-surface-300 font-medium"></div>
+                <div id="password-strength" class="mt-4">
+                  <!-- Segmented strength bar -->
+                  <div class="flex items-center gap-3">
+                    <div class="flex gap-1 flex-1" id="strength-segments" role="meter" aria-label="Password strength" aria-valuemin="0" aria-valuemax="4" aria-valuenow="0">
+                      <div class="strength-seg h-2 flex-1 rounded-full bg-surface-200 dark:bg-surface-700 transition-all duration-300"></div>
+                      <div class="strength-seg h-2 flex-1 rounded-full bg-surface-200 dark:bg-surface-700 transition-all duration-300"></div>
+                      <div class="strength-seg h-2 flex-1 rounded-full bg-surface-200 dark:bg-surface-700 transition-all duration-300"></div>
+                      <div class="strength-seg h-2 flex-1 rounded-full bg-surface-200 dark:bg-surface-700 transition-all duration-300"></div>
+                    </div>
+                    <span id="strength-label" class="text-sm font-semibold whitespace-nowrap"></span>
+                  </div>
+                  <p id="strength-detail" class="text-xs text-surface-500 dark:text-surface-400 mt-1.5"></p>
+                </div>
               </div>
             </div>
           </div>
@@ -152,16 +164,16 @@ function renderPasswordGeneratorPage() {
               <span data-i18n="tools.password-generator.ui.button1">Generate Username</span>
             </button>
 
-            <div id="username-result" class="hidden">
-              <div class="bg-surface-50 dark:bg-surface-800 rounded-xl p-6 border border-surface-200 dark:border-surface-700">
+             <div id="username-result" class="hidden">
+               <div class="bg-surface-50 dark:bg-surface-800 rounded-lg p-6 border border-surface-200 dark:border-surface-700">
                 <div class="flex items-start justify-between gap-4">
                   <div class="flex-1">
                     <p class="text-sm text-surface-600 dark:text-surface-400 mb-2" data-i18n="tools.password-generator.ui.desc30">Your Username:</p>
                     <p id="username-output" class="text-2xl font-mono font-bold text-surface-900 dark:text-white break-all"></p>
                   </div>
-                  <button id="copy-username" class="flex-shrink-0 btn btn-secondary">
-                    <span class="material-symbols-rounded">content_copy</span>
-                  </button>
+                   <button id="copy-username" class="flex-shrink-0 btn btn-secondary" aria-label="Copy username to clipboard">
+                     <span class="material-symbols-rounded">content_copy</span>
+                   </button>
                 </div>
               </div>
             </div>
@@ -198,16 +210,16 @@ function renderPasswordGeneratorPage() {
               <span data-i18n="tools.password-generator.ui.button2">Generate Passphrase</span>
             </button>
 
-            <div id="passphrase-result" class="hidden">
-              <div class="bg-surface-50 dark:bg-surface-800 rounded-xl p-6 border border-surface-200 dark:border-surface-700">
+             <div id="passphrase-result" class="hidden">
+               <div class="bg-surface-50 dark:bg-surface-800 rounded-lg p-6 border border-surface-200 dark:border-surface-700">
                 <div class="flex items-start justify-between gap-4">
                   <div class="flex-1">
                     <p class="text-sm text-surface-600 dark:text-surface-400 mb-2" data-i18n="tools.password-generator.ui.desc32">Your Passphrase:</p>
                     <p id="passphrase-output" class="text-2xl font-mono font-bold text-surface-900 dark:text-white break-all"></p>
                   </div>
-                  <button id="copy-passphrase" class="flex-shrink-0 btn btn-secondary">
-                    <span class="material-symbols-rounded">content_copy</span>
-                  </button>
+                   <button id="copy-passphrase" class="flex-shrink-0 btn btn-secondary" aria-label="Copy passphrase to clipboard">
+                     <span class="material-symbols-rounded">content_copy</span>
+                   </button>
                 </div>
               </div>
             </div>
@@ -247,19 +259,19 @@ function renderPasswordGeneratorPage() {
               <span data-i18n="tools.password-generator.ui.button3">Generate Catch-all Email</span>
             </button>
 
-            <div id="catchall-result" class="hidden">
-              <div class="bg-surface-50 dark:bg-surface-800 rounded-xl p-6 border border-surface-200 dark:border-surface-700">
-                <div class="flex items-start justify-between gap-4">
-                  <div class="flex-1">
-                    <p class="text-sm text-surface-600 dark:text-surface-400 mb-2" data-i18n="tools.password-generator.ui.desc33">Catch-all Email:</p>
-                    <p id="catchall-output" class="text-xl font-mono font-bold text-surface-900 dark:text-white break-all"></p>
-                  </div>
-                  <button id="copy-catchall" class="flex-shrink-0 btn btn-secondary">
-                    <span class="material-symbols-rounded">content_copy</span>
-                  </button>
-                </div>
-              </div>
-            </div>
+             <div id="catchall-result" class="hidden">
+               <div class="bg-surface-50 dark:bg-surface-800 rounded-lg p-6 border border-surface-200 dark:border-surface-700">
+                 <div class="flex items-start justify-between gap-4">
+                   <div class="flex-1">
+                     <p class="text-sm text-surface-600 dark:text-surface-400 mb-2" data-i18n="tools.password-generator.ui.desc33">Catch-all Email:</p>
+                     <p id="catchall-output" class="text-xl font-mono font-bold text-surface-900 dark:text-white break-all"></p>
+                   </div>
+                    <button id="copy-catchall" class="flex-shrink-0 btn btn-secondary" aria-label="Copy catch-all email to clipboard">
+                      <span class="material-symbols-rounded">content_copy</span>
+                    </button>
+                 </div>
+               </div>
+             </div>
           </div>
 
           <hr class="my-8 border-surface-200 dark:border-surface-700">
@@ -278,25 +290,25 @@ function renderPasswordGeneratorPage() {
               <input type="range" id="alias-tag-length" min="2" max="16" value="6" class="w-full h-2 bg-surface-200 dark:bg-surface-700 rounded-lg appearance-none cursor-pointer accent-primary-600">
             </div>
 
-            <div id="alias-error" role="alert" class="hidden rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 text-sm text-red-700 dark:text-red-200 px-4 py-3"></div>
+             <div id="alias-error" role="alert" class="hidden rounded-lg border border-error-200 dark:border-error-800 bg-error-50 dark:bg-error-900/30 text-sm text-error-700 dark:text-error-200 px-4 py-3"></div>
 
             <button id="generate-alias" class="btn btn-primary w-full py-4 text-lg">
               <span data-i18n="tools.password-generator.ui.button4">Generate Plus Alias</span>
             </button>
 
-            <div id="alias-result" class="hidden">
-              <div class="bg-surface-50 dark:bg-surface-800 rounded-xl p-6 border border-surface-200 dark:border-surface-700">
-                <div class="flex items-start justify-between gap-4">
-                  <div class="flex-1">
-                    <p class="text-sm text-surface-600 dark:text-surface-400 mb-2" data-i18n="tools.password-generator.ui.desc34">Plus Alias:</p>
-                    <p id="alias-output" class="text-xl font-mono font-bold text-surface-900 dark:text-white break-all"></p>
-                  </div>
-                  <button id="copy-alias" class="flex-shrink-0 btn btn-secondary">
-                    <span class="material-symbols-rounded">content_copy</span>
-                  </button>
-                </div>
-              </div>
-            </div>
+             <div id="alias-result" class="hidden">
+               <div class="bg-surface-50 dark:bg-surface-800 rounded-lg p-6 border border-surface-200 dark:border-surface-700">
+                 <div class="flex items-start justify-between gap-4">
+                   <div class="flex-1">
+                     <p class="text-sm text-surface-600 dark:text-surface-400 mb-2" data-i18n="tools.password-generator.ui.desc34">Plus Alias:</p>
+                     <p id="alias-output" class="text-xl font-mono font-bold text-surface-900 dark:text-white break-all"></p>
+                   </div>
+                    <button id="copy-alias" class="flex-shrink-0 btn btn-secondary" aria-label="Copy email alias to clipboard">
+                      <span class="material-symbols-rounded">content_copy</span>
+                    </button>
+                 </div>
+               </div>
+             </div>
           </div>
         </div>
 
@@ -368,6 +380,7 @@ function renderPasswordGeneratorPage() {
              window.copyToClipboard(text, btn);
          } else {
              navigator.clipboard.writeText(text).then(() => {
+                 if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
                  const original = btn.innerHTML;
                  btn.innerHTML = '✓';
                  setTimeout(() => btn.innerHTML = original, 2000);
@@ -405,7 +418,7 @@ function renderPasswordGeneratorPage() {
 
          // Ensure minimum length
          if (length < charsets.length) {
-           document.getElementById('pw-error').textContent = 'Password length too short for selected options.';
+           document.getElementById('pw-error').textContent = _t('tools.password-generator.js.alert2', 'Password length too short for selected options.');
            document.getElementById('pw-error').classList.remove('hidden');
            return;
          }
@@ -441,14 +454,38 @@ function renderPasswordGeneratorPage() {
          document.getElementById('password-output').textContent = password;
          document.getElementById('password-result').classList.remove('hidden');
 
-        // Calculate strength
+        // Calculate strength and drive the segmented meter
         const entropy = password.length * Math.log2(allChars.length);
-        let strengthText = '✅ Good';
-        if (entropy < 40) strengthText = '❌ Weak';
-        else if (entropy < 60) strengthText = '⚠️ Fair';
-        else if (entropy > 100) strengthText = '💪 Strong';
-        
-        document.getElementById('password-strength').textContent = 'Strength: ' + strengthText;
+        const segments = document.querySelectorAll('.strength-seg');
+        const strengthLabel = document.getElementById('strength-label');
+        const strengthDetail = document.getElementById('strength-detail');
+        const segmentsContainer = document.getElementById('strength-segments');
+
+        // Determine level: 0=weak, 1=fair, 2=good, 3=strong
+        let level = 0, label = '', color = '';
+        if (entropy >= 100) {
+          level = 4; label = _t('tools.password-generator.js.status3', 'Strong'); color = '#16a34a';
+        } else if (entropy >= 60) {
+          level = 3; label = _t('tools.password-generator.js.status4', 'Good'); color = '#2563eb';
+        } else if (entropy >= 40) {
+          level = 2; label = _t('tools.password-generator.js.status5', 'Fair'); color = '#d97706';
+        } else {
+          level = 1; label = _t('tools.password-generator.js.status6', 'Weak'); color = '#dc2626';
+        }
+
+        segments.forEach((seg, i) => {
+          if (i < level) {
+            seg.style.backgroundColor = color;
+          } else {
+            seg.style.backgroundColor = '';
+            seg.className = 'strength-seg h-2 flex-1 rounded-full bg-surface-200 dark:bg-surface-700 transition-all duration-300';
+          }
+        });
+
+        segmentsContainer.setAttribute('aria-valuenow', level);
+        strengthLabel.textContent = label;
+        strengthLabel.style.color = color;
+        strengthDetail.textContent = Math.round(entropy) + '-bit entropy \xB7 ' + password.length + ' characters \xB7 ' + allChars.length + ' charset size';
       });
 
       // Copy password

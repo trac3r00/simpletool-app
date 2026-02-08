@@ -61,7 +61,7 @@ function renderCertificateDecoderPage() {
             </div>
           </div>
 
-          <div id="error-banner" role="alert" class="hidden mt-4 p-4 rounded-lg bg-red-50 text-red-900 border border-red-200 dark:bg-red-900/20 dark:text-red-200 dark:border-red-800 text-sm"></div>
+           <div id="error-banner" role="alert" class="hidden mt-4 p-4 rounded-lg bg-error-50 text-error-900 border border-error-200 dark:bg-error-900/20 dark:text-error-200 dark:border-error-800 text-sm"></div>
           
           <div id="status-badge" class="hidden mt-6 flex items-center gap-4 p-4 rounded-lg border-2 transition-all">
             <div id="status-icon" class="text-3xl"></div>
@@ -193,12 +193,12 @@ function renderCertificateDecoderPage() {
         };
 
         const statusBaseClasses = 'flex items-center gap-4 rounded-lg border-2 px-4 py-4 transition-all shadow-sm';
-        const statusThemes = {
-          valid: { classes: 'border-green-200 bg-green-50 text-green-900 dark:border-green-800 dark:bg-green-900/20 dark:text-green-100', icon: '🟢', label: 'Currently Valid' },
-          expired: { classes: 'border-red-200 bg-red-50 text-red-900 dark:border-red-800 dark:bg-red-900/20 dark:text-red-100', icon: '🔴', label: 'Expired' },
-          notYetValid: { classes: 'border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-100', icon: '🟡', label: 'Not Yet Valid' },
-          error: { classes: 'border-red-200 bg-red-50 text-red-900 dark:border-red-800 dark:bg-red-900/20 dark:text-red-100', icon: '⚠️', label: 'Unable to Parse' }
-        };
+           const statusThemes = {
+            valid: { classes: 'border-success-200 bg-success-50 text-success-900 dark:border-success-800 dark:bg-success-900/20 dark:text-success-100', icon: '🟢', label: 'Currently Valid' },
+            expired: { classes: 'border-error-200 bg-error-50 text-error-900 dark:border-error-800 dark:bg-error-900/20 dark:text-error-100', icon: '🔴', label: 'Expired' },
+             notYetValid: { classes: 'border-warning-200 bg-warning-50 text-warning-900 dark:border-warning-800 dark:bg-warning-900/20 dark:text-warning-100', icon: '🟡', label: 'Not Yet Valid' },
+            error: { classes: 'border-error-200 bg-error-50 text-error-900 dark:border-error-800 dark:bg-error-900/20 dark:text-error-100', icon: '⚠️', label: 'Unable to Parse' }
+          };
 
         parseBtn.addEventListener('click', handleParse);
         clearBtn.addEventListener('click', () => {
@@ -247,7 +247,6 @@ function renderCertificateDecoderPage() {
             hideError();
             renderCertificate(cert);
           } catch (err) {
-            console.error('Certificate parse error', err);
             showError('Failed to parse certificate data. The format might be invalid or corrupted.');
           }
         }

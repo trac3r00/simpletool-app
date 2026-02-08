@@ -15,6 +15,7 @@ import { handleMarkdownPreviewRoutes } from './routes/markdown-preview.js';
 import { handleTextDiffRoutes } from './routes/text-diff.js';
 import { handleJWTDecoderRoutes } from './routes/jwt-decoder.js';
 import { handleCertificateDecoderRoutes } from './routes/certificate-decoder.js';
+import { handleJwkJwksStudioRoutes } from './routes/jwk-jwks-studio.js';
 import { handleHashCalculatorRoutes } from './routes/hash-calculator.js';
 import { handleCaseConverterRoutes } from './routes/case-converter.js';
 import { handleLogViewerRoutes } from './routes/log-viewer.js';
@@ -44,6 +45,9 @@ import { handleEnvVarManagerRoutes } from './routes/env-var-manager.js';
 import { handleSVGOptimizerRoutes } from './routes/svg-optimizer.js';
 import { handleCSPBuilderRoutes } from './routes/csp-builder.js';
 import { handleSecretScannerRoutes } from './routes/secret-scanner.js';
+import { handleLadderGameRoutes } from './routes/ladder-game.js';
+import { handleRouletteWheelRoutes } from './routes/roulette-wheel.js';
+import { handleMarbleRouletteRoutes } from './routes/marble-roulette.js';
 import { TOOLS } from './utils/tool-registry.js';
 import {
   renderTermsPage,
@@ -53,6 +57,8 @@ import {
   renderSecurityPage,
   renderCareersPage
 } from './ui/legal-pages.js';
+import { handleBlogRoutes, BLOG_ARTICLES } from './ui/blog.js';
+import { handleFaqRoutes } from './ui/faq.js';
 import {
   getSecurityHeaders,
   shouldRateLimit,
@@ -80,6 +86,7 @@ const handlersById = {
   'text-diff': handleTextDiffRoutes,
   'jwt-decoder': handleJWTDecoderRoutes,
   'certificate-decoder': handleCertificateDecoderRoutes,
+  'jwk-jwks-studio': handleJwkJwksStudioRoutes,
   'hash-calculator': handleHashCalculatorRoutes,
   'case-converter': handleCaseConverterRoutes,
   'log-viewer': handleLogViewerRoutes,
@@ -108,7 +115,10 @@ const handlersById = {
   'env-var-manager': handleEnvVarManagerRoutes,
   'svg-optimizer': handleSVGOptimizerRoutes,
   'csp-builder': handleCSPBuilderRoutes,
-  'secret-scanner': handleSecretScannerRoutes
+  'secret-scanner': handleSecretScannerRoutes,
+  'ladder-game': handleLadderGameRoutes,
+  'roulette-wheel': handleRouletteWheelRoutes,
+  'marble-roulette': handleMarbleRouletteRoutes
 };
 
 async function resolveToolResponse(handler, request, url) {
@@ -188,15 +198,25 @@ function buildSitemapXml(origin) {
     }
   }
 
+  paths.add('/blog');
+  paths.add('/faq');
+  for (const article of BLOG_ARTICLES) {
+    if (article?.slug) {
+      paths.add(`/blog/${article.slug}`);
+    }
+  }
+
   const today = new Date().toISOString().split('T')[0];
+  const contentPaths = new Set(['/blog', '/faq']);
   const legalPaths = new Set(['/terms', '/privacy', '/about', '/contact', '/security', '/careers']);
 
   const urls = Array.from(paths).sort().map((path) => {
     const loc = `${base}${path === '/' ? '' : path}`;
     const isHome = path === '/';
     const isLegal = legalPaths.has(path);
-    const priority = isHome ? '1.0' : isLegal ? '0.3' : '0.8';
-    const changefreq = isHome ? 'daily' : isLegal ? 'yearly' : 'weekly';
+    const isContent = contentPaths.has(path) || path.startsWith('/blog/');
+    const priority = isHome ? '1.0' : isLegal ? '0.3' : isContent ? '0.7' : '0.8';
+    const changefreq = isHome ? 'daily' : isLegal ? 'yearly' : isContent ? 'weekly' : 'weekly';
     return `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`;
   });
 
@@ -496,6 +516,17 @@ export default {
 
       if (path === '/careers' || path === '/careers.html') {
         return renderCareersPage();
+      }
+
+      // Content pages (blog, FAQ)
+      if (path === '/blog' || path === '/blog/' || path.startsWith('/blog/')) {
+        const blogResponse = handleBlogRoutes(request, url);
+        if (blogResponse) return blogResponse;
+      }
+
+      if (path === '/faq' || path === '/faq/') {
+        const faqResponse = handleFaqRoutes(request, url);
+        if (faqResponse) return faqResponse;
       }
 
       // 404 for everything else

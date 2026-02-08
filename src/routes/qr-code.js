@@ -105,9 +105,9 @@ function renderQRCodePage() {
                 </div>
               </div>
 
-              <div id="qr-error-msg" role="alert" class="hidden p-3 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-200 border border-red-200 dark:border-red-800 text-sm"></div>
+               <div id="qr-error-msg" role="alert" class="hidden p-3 rounded-lg bg-error-50 dark:bg-error-900/20 text-error-700 dark:text-error-200 border border-error-200 dark:border-error-800 text-sm"></div>
 
-              <button id="generate-qr" class="btn btn-primary" data-tooltip="Generate QR code from the input text or URL" w-full py-4 text-lg">
+              <button id="generate-qr" class="btn btn-primary w-full py-4 text-lg" data-tooltip="Generate QR code from the input text or URL">
                 <span data-i18n="tools.qr-code.ui.button0">Generate QR Code</span>
               </button>
 
@@ -159,16 +159,16 @@ function renderQRCodePage() {
                 <span data-i18n="tools.qr-code.ui.button3">Decode QR Code</span>
               </button>
 
-              <div id="qr-decode-result" class="hidden">
-                <div class="bg-green-50 dark:bg-green-900/20 rounded-xl p-6 border border-green-200 dark:border-green-800">
+               <div id="qr-decode-result" class="hidden">
+                 <div class="bg-success-50 dark:bg-success-900/20 rounded-xl p-6 border border-success-200 dark:border-success-800">
                   <div class="flex items-start justify-between gap-4">
                     <div class="flex-1">
                       <p class="text-sm text-surface-600 dark:text-surface-400 mb-2" data-i18n="tools.qr-code.ui.desc19">Decoded Text:</p>
                       <p id="qr-decode-output" class="text-lg font-mono font-bold text-surface-900 dark:text-white break-all"></p>
                     </div>
-                    <button id="copy-decoded" class="btn btn-secondary flex-shrink-0">
-                      <span class="material-symbols-rounded">content_copy</span>
-                    </button>
+                    <button id="copy-decoded" class="btn btn-secondary flex-shrink-0" aria-label="Copy decoded QR code text to clipboard">
+                       <span class="material-symbols-rounded">content_copy</span>
+                     </button>
                   </div>
                 </div>
               </div>
@@ -408,7 +408,7 @@ function renderQRCodePage() {
            } else {
              const errMsg = document.getElementById('qr-error-msg');
              if (errMsg) {
-               errMsg.textContent = 'No QR code found in the image. Please try another image.';
+               errMsg.textContent = _t('tools.qr-code.js.alert2', 'No QR code found in the image. Please try another image.');
                errMsg.classList.remove('hidden');
              }
            }
@@ -427,7 +427,8 @@ function renderQRCodePage() {
              await navigator.clipboard.writeText(text);
              const btn = document.getElementById('copy-decoded');
              const orig = btn.textContent;
-             btn.textContent = 'Copied!';
+             btn.textContent = _t('tools.qr-code.js.alert3', 'Copied!');
+             if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
              setTimeout(() => btn.textContent = orig, 2000);
          }
        });

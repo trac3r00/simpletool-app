@@ -314,7 +314,7 @@ function renderEnvVarManagerPage() {
           return;
         }
 	        el.classList.remove('hidden');
-	        el.className = 'text-xs rounded-lg p-3 border bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-800';
+	        el.className = 'text-xs rounded-lg p-3 border bg-warning-50 dark:bg-warning-900/20 text-warning-800 dark:text-warning-200 border-warning-200 dark:border-warning-800';
 	        el.innerHTML = '<div class="font-semibold mb-1">' + escapeHtml(fmt(t('text3', '{env} parse notes'), { env: envName })) + '</div><ul class="list-disc ml-5 space-y-0.5">' +
 	          issues.slice(0, 8).map(s => '<li>' + s.replace(/</g, '&lt;') + '</li>').join('') +
 	          (issues.length > 8 ? '<li>…</li>' : '') +
@@ -336,9 +336,9 @@ function renderEnvVarManagerPage() {
         return rows;
       }
 
-      function statusLabel(status) {
-        if (status === 'same') return { text: t('text4', 'Same'), cls: 'text-green-700 dark:text-green-200' };
-        if (status === 'changed') return { text: t('text5', 'Changed'), cls: 'text-yellow-700 dark:text-yellow-200' };
+       function statusLabel(status) {
+         if (status === 'same') return { text: t('text4', 'Same'), cls: 'text-success-700 dark:text-success-200' };
+        if (status === 'changed') return { text: t('text5', 'Changed'), cls: 'text-warning-700 dark:text-warning-200' };
         if (status === 'onlyA') return { text: t('text6', 'Only A'), cls: 'text-surface-700 dark:text-surface-200' };
         return { text: t('text7', 'Only B'), cls: 'text-surface-700 dark:text-surface-200' };
       }
@@ -492,6 +492,7 @@ function renderEnvVarManagerPage() {
           await navigator.clipboard.writeText(text);
           const old = els.copyReport.textContent;
           els.copyReport.textContent = t('text16', '✓ Copied');
+          if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
           setTimeout(() => (els.copyReport.textContent = old), 1200);
         } catch (e) {
           console.error('Copy failed:', e);

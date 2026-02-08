@@ -26,25 +26,25 @@ function renderSamlDecoderPage() {
       <header class="bg-white/90 dark:bg-surface-900/80 border border-surface-200 dark:border-surface-800 rounded-3xl shadow-xl p-8">
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
           <div>
-            <p class="text-xs font-semibold uppercase tracking-[0.35em] text-purple-600 dark:text-purple-300 mb-3" data-i18n="tools.saml-decoder.ui.desc11">Enterprise SSO</p>
+             <p class="text-xs font-semibold uppercase tracking-[0.35em] text-primary-600 dark:text-primary-300 mb-3" data-i18n="tools.saml-decoder.ui.desc11">Enterprise SSO</p>
             <h1 class="text-4xl sm:text-5xl font-extrabold text-surface-900 dark:text-white mb-4">SAML Inspector</h1>
             <p class="text-lg text-surface-600 dark:text-surface-300 max-w-2xl" data-i18n="tools.saml-decoder.ui.desc12">Paste a Base64 SAML response or raw XML to inspect issuers, subjects, attributes, and validity windows instantly—no network requests.</p>
           </div>
           <div class="flex flex-col gap-3 text-sm text-surface-600 dark:text-surface-300">
-            <div class="flex items-center gap-3 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-2xl px-4 py-3">
-              <span class="text-xl">🔐</span>
-              <div>
-                <p class="font-semibold">Client-side only</p>
-                <p class="text-surface-500 dark:text-surface-400" data-i18n="tools.saml-decoder.ui.desc13">Nothing leaves your browser.</p>
-              </div>
-            </div>
-            <div class="flex items-center gap-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-2xl px-4 py-3">
-              <span class="text-xl">⚡</span>
-              <div>
-                <p class="font-semibold">Redirect & POST aware</p>
-                <p class="text-surface-500 dark:text-surface-400" data-i18n="tools.saml-decoder.ui.desc14">Base64 + optional deflate.</p>
-              </div>
-            </div>
+             <div class="flex items-center gap-3 bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-800 rounded-2xl px-4 py-3">
+               <span class="text-xl">🔐</span>
+               <div>
+                 <p class="font-semibold">Client-side only</p>
+                 <p class="text-surface-500 dark:text-surface-400" data-i18n="tools.saml-decoder.ui.desc13">Nothing leaves your browser.</p>
+               </div>
+             </div>
+             <div class="flex items-center gap-3 bg-info-50 dark:bg-info-900/20 border border-info-200 dark:border-info-800 rounded-2xl px-4 py-3">
+               <span class="text-xl">⚡</span>
+               <div>
+                 <p class="font-semibold">Redirect & POST aware</p>
+                 <p class="text-surface-500 dark:text-surface-400" data-i18n="tools.saml-decoder.ui.desc14">Base64 + optional deflate.</p>
+               </div>
+             </div>
           </div>
         </div>
       </header>
@@ -53,7 +53,7 @@ function renderSamlDecoderPage() {
         <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-3xl shadow-xl p-6 space-y-4">
           <div class="flex items-center justify-between">
             <label for="saml-input" class="text-sm font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide"><span data-i18n="tools.saml-decoder.ui.label7">SAML response</span> ${infoHint('Paste Base64 SAMLResponse or raw XML; toggle inflate for redirect payloads.')}</label>
-            <button id="clear-btn" type="button" class="text-sm text-surface-500 dark:text-surface-400 hover:text-rose-500"><span data-i18n="tools.saml-decoder.ui.button0">Clear</span></button>
+            <button id="clear-btn" type="button" class="btn btn-ghost btn-sm"><span data-i18n="tools.saml-decoder.ui.button0">Clear</span></button>
           </div>
           <textarea id="saml-input" data-tooltip="Paste Base64-encoded SAML request or response" class="w-full min-h-[220px] rounded-2xl border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-950 px-4 py-3 font-mono text-sm text-surface-900 dark:text-surface-100" placeholder="Paste the Base64 value of SAMLResponse or raw XML here" data-i18n-placeholder="tools.saml-decoder.ui.placeholder8"></textarea>
           <div class="flex flex-wrap gap-4 text-sm text-surface-600 dark:text-surface-400">
@@ -67,10 +67,10 @@ function renderSamlDecoderPage() {
             </label>
           </div>
           <div class="flex flex-wrap gap-3">
-            <button id="decode-btn" data-tooltip="Decode and parse the SAML message" class="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-purple-600 hover:bg-purple-700 text-white font-semibold transition">Decode response<span aria-hidden="true">→</span></button>
-            <button id="sample-btn" type="button" class="px-4 py-3 rounded-2xl border border-surface-300 dark:border-surface-600 text-surface-700 dark:text-surface-200 font-semibold hover:border-purple-500 dark:hover:border-purple-400 transition"><span data-i18n="tools.saml-decoder.ui.button1">Load sample</span></button>
+             <button id="decode-btn" data-tooltip="Decode and parse the SAML message" class="btn btn-primary">Decode response<span aria-hidden="true">→</span></button>
+             <button id="sample-btn" type="button" class="btn btn-secondary"><span data-i18n="tools.saml-decoder.ui.button1">Load sample</span></button>
           </div>
-          <div id="saml-error" role="alert" class="hidden rounded-2xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 text-sm text-red-700 dark:text-red-200 px-4 py-3">Parsing error</div>
+           <div id="saml-error" role="alert" class="hidden rounded-2xl border border-error-200 dark:border-error-800 bg-error-50 dark:bg-error-900/30 text-sm text-error-700 dark:text-error-200 px-4 py-3">Parsing error</div>
         </div>
 
         <div class="space-y-6">
@@ -92,7 +92,7 @@ function renderSamlDecoderPage() {
           <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-3xl shadow-xl p-6">
             <div class="flex items-center justify-between mb-4">
               <h2 class="text-lg font-bold text-surface-900 dark:text-white" data-i18n="tools.saml-decoder.ui.heading10">Attributes</h2>
-              <button id="copy-attributes" class="text-sm text-purple-600 dark:text-purple-300 hover:underline" disabled><span data-i18n="tools.saml-decoder.ui.button2">Copy JSON</span></button>
+              <button id="copy-attributes" class="btn btn-ghost btn-xs" disabled><span data-i18n="tools.saml-decoder.ui.button2">Copy JSON</span></button>
             </div>
             <div class="overflow-x-auto">
               <table class="min-w-full text-sm">
@@ -113,7 +113,7 @@ function renderSamlDecoderPage() {
             <button class="tab-button" data-panel="json"><span data-i18n="tools.saml-decoder.ui.button5">Claims JSON</span></button>
           </div>
           <div id="panel-xml" class="tab-panel space-y-3">
-            <div class="flex justify-end"><button id="copy-xml" class="inline-flex items-center gap-2 text-sm text-purple-600 dark:text-purple-300 hover:underline"><span data-i18n="tools.saml-decoder.ui.button6">Copy XML</span></button></div>
+            <div class="flex justify-end"><button id="copy-xml" class="btn btn-ghost btn-xs"><span data-i18n="tools.saml-decoder.ui.button6">Copy XML</span></button></div>
             <pre id="xml-output" class="bg-surface-900 text-surface-100 p-4 rounded-2xl overflow-x-auto text-sm">—</pre>
           </div>
           <div id="panel-assertion" class="tab-panel hidden space-y-3 text-sm text-surface-700 dark:text-surface-200">
@@ -133,7 +133,7 @@ function renderSamlDecoderPage() {
             </div>
           </div>
           <div id="panel-json" class="tab-panel hidden">
-            <div class="flex justify-end mb-2"><button id="copy-json" class="inline-flex items-center gap-2 text-sm text-purple-600 dark:text-purple-300 hover:underline"><span data-i18n="tools.saml-decoder.ui.button2">Copy JSON</span></button></div>
+            <div class="flex justify-end mb-2"><button id="copy-json" class="btn btn-ghost btn-xs"><span data-i18n="tools.saml-decoder.ui.button2">Copy JSON</span></button></div>
             <pre id="json-output" class="bg-surface-900 text-surface-100 p-4 rounded-2xl overflow-x-auto text-sm">—</pre>
           </div>
         </div>
@@ -206,6 +206,7 @@ function renderSamlDecoderPage() {
           if (!latestJson) return;
           navigator.clipboard.writeText(JSON.stringify(latestJson.attributes, null, 2));
           copyAttributesBtn.textContent = _t('tools.saml-decoder.js.text0', 'Copied!');
+          if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
           setTimeout(() => copyAttributesBtn.textContent = _t('tools.saml-decoder.js.text1', 'Copy JSON'), 1500);
         });
 
@@ -213,6 +214,7 @@ function renderSamlDecoderPage() {
           if (!latestXml) return;
           navigator.clipboard.writeText(latestXml);
           copyXmlBtn.textContent = _t('tools.saml-decoder.js.text0', 'Copied!');
+          if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
           setTimeout(() => copyXmlBtn.textContent = _t('tools.saml-decoder.js.text2', 'Copy XML'), 1500);
         });
 
@@ -220,6 +222,7 @@ function renderSamlDecoderPage() {
           if (!latestJson) return;
           navigator.clipboard.writeText(JSON.stringify(latestJson, null, 2));
           copyJsonBtn.textContent = _t('tools.saml-decoder.js.text0', 'Copied!');
+          if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
           setTimeout(() => copyJsonBtn.textContent = _t('tools.saml-decoder.js.text1', 'Copy JSON'), 1500);
         });
 
@@ -349,21 +352,21 @@ function renderSamlDecoderPage() {
           validityBadge.className = 'text-xs font-semibold px-3 py-1 rounded-full ' + validity.className;
         }
 
-        function describeValidity(notBefore, notAfter) {
-          if (!notBefore && !notAfter) {
-            return { label: 'No conditions', className: 'bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-300' };
-          }
-          const now = Date.now();
-          const start = notBefore ? Date.parse(notBefore) : null;
-          const end = notAfter ? Date.parse(notAfter) : null;
-          if (start && now < start) {
-            return { label: 'Not yet valid', className: 'bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-200' };
-          }
-          if (end && now >= end) {
-            return { label: 'Expired', className: 'bg-rose-100 dark:bg-rose-900/30 text-rose-800 dark:text-rose-200' };
-          }
-          return { label: 'Currently valid', className: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-200' };
-        }
+         function describeValidity(notBefore, notAfter) {
+           if (!notBefore && !notAfter) {
+             return { label: 'No conditions', className: 'bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-300' };
+           }
+           const now = Date.now();
+           const start = notBefore ? Date.parse(notBefore) : null;
+           const end = notAfter ? Date.parse(notAfter) : null;
+           if (start && now < start) {
+              return { label: 'Not yet valid', className: 'bg-warning-100 dark:bg-warning-900/40 text-warning-800 dark:text-warning-200' };
+           }
+           if (end && now >= end) {
+             return { label: 'Expired', className: 'bg-error-100 dark:bg-error-900/30 text-error-800 dark:text-error-200' };
+           }
+           return { label: 'Currently valid', className: 'bg-success-100 dark:bg-success-900/30 text-success-800 dark:text-success-200' };
+         }
 
         function renderAttributes(attributes) {
           if (!attributes.length) {

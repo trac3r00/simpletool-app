@@ -59,7 +59,7 @@ function renderUserAgentDecoderPage() {
         <!-- Input -->
         <div class="mb-6">
           <label class="label"><span data-i18n="tools.user-agent-decoder.ui.label9">User-Agent String</span></label>
-          <textarea id="ua-input" rows="4" placeholder="Paste User-Agent string here..." data-tooltip="Paste a User-Agent string from HTTP request headers" data-i18n-placeholder="tools.user-agent-decoder.ui.placeholder11" class="input resize-vertical font-mono"></textarea>
+          <textarea id="ua-input" rows="4" placeholder="Paste User-Agent string here..." data-i18n-placeholder="tools.user-agent-decoder.ui.placeholder11" data-tooltip="Paste a User-Agent string from HTTP request headers" data-i18n-placeholder="tools.user-agent-decoder.ui.placeholder11" class="input resize-vertical font-mono"></textarea>
         </div>
 
         <!-- Common Examples -->
@@ -94,7 +94,7 @@ function renderUserAgentDecoderPage() {
            </button>
          </div>
 
-         <div id="ua-error" role="alert" class="hidden mb-6 rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 text-sm text-red-700 dark:text-red-200 px-4 py-3"></div>
+          <div id="ua-error" role="alert" class="hidden mb-6 rounded-lg border border-error-200 dark:border-error-800 bg-error-50 dark:bg-error-900/30 text-sm text-error-700 dark:text-error-200 px-4 py-3"></div>
 
          <!-- Results -->
         <div id="results" class="hidden">
@@ -123,67 +123,67 @@ function renderUserAgentDecoderPage() {
             </div>
 
             <!-- OS Info -->
-            <div class="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-              <h2 class="text-sm font-semibold text-green-900 dark:text-green-300 mb-3 flex items-center gap-2">
+            <div class="p-4 bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-800 rounded-lg">
+              <h2 class="text-sm font-semibold text-success-900 dark:text-success-300 mb-3 flex items-center gap-2">
                 <span class="text-xl">💻</span> Operating System
               </h2>
               <div class="space-y-2 text-sm">
-                <div class="flex justify-between border-b border-green-100 dark:border-green-800 pb-1">
+                <div class="flex justify-between border-b border-success-100 dark:border-success-800 pb-1">
                   <span class="text-surface-600 dark:text-surface-400">OS:</span>
                   <span id="os-name" class="font-semibold text-surface-900 dark:text-surface-100">-</span>
                 </div>
-                <div class="flex justify-between border-b border-green-100 dark:border-green-800 pb-1">
-                  <span class="text-surface-600 dark:text-surface-400" data-i18n="tools.user-agent-decoder.ui.desc15">Version:</span>
-                  <span id="os-version" class="font-semibold text-surface-900 dark:text-surface-100">-</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-surface-600 dark:text-surface-400" data-i18n="tools.user-agent-decoder.ui.desc17">Architecture:</span>
-                  <span id="os-arch" class="font-semibold text-surface-900 dark:text-surface-100">-</span>
-                </div>
+                <div class="flex justify-between border-b border-success-100 dark:border-success-800 pb-1">
+                   <span class="text-surface-600 dark:text-surface-400" data-i18n="tools.user-agent-decoder.ui.desc15">Version:</span>
+                   <span id="os-version" class="font-semibold text-surface-900 dark:text-surface-100">-</span>
+                 </div>
+                 <div class="flex justify-between">
+                   <span class="text-surface-600 dark:text-surface-400" data-i18n="tools.user-agent-decoder.ui.desc17">Architecture:</span>
+                   <span id="os-arch" class="font-semibold text-surface-900 dark:text-surface-100">-</span>
+                 </div>
               </div>
             </div>
 
             <!-- Device Info -->
-            <div class="p-4 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg">
-              <h2 class="text-sm font-semibold text-purple-900 dark:text-purple-300 mb-3 flex items-center gap-2">
+            <div class="p-4 bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-800 rounded-lg">
+              <h2 class="text-sm font-semibold text-primary-900 dark:text-primary-300 mb-3 flex items-center gap-2">
                 <span class="text-xl">📱</span> Device
               </h2>
               <div class="space-y-2 text-sm">
-                <div class="flex justify-between border-b border-purple-100 dark:border-purple-800 pb-1">
+                <div class="flex justify-between border-b border-primary-100 dark:border-primary-800 pb-1">
                   <span class="text-surface-600 dark:text-surface-400">Type:</span>
                   <span id="device-type" class="font-semibold text-surface-900 dark:text-surface-100">-</span>
                 </div>
-                <div class="flex justify-between border-b border-purple-100 dark:border-purple-800 pb-1">
-                  <span class="text-surface-600 dark:text-surface-400" data-i18n="tools.user-agent-decoder.ui.desc18">Vendor:</span>
-                  <span id="device-vendor" class="font-semibold text-surface-900 dark:text-surface-100">-</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-surface-600 dark:text-surface-400" data-i18n="tools.user-agent-decoder.ui.desc19">Model:</span>
-                  <span id="device-model" class="font-semibold text-surface-900 dark:text-surface-100">-</span>
-                </div>
+                <div class="flex justify-between border-b border-primary-100 dark:border-primary-800 pb-1">
+                   <span class="text-surface-600 dark:text-surface-400" data-i18n="tools.user-agent-decoder.ui.desc18">Vendor:</span>
+                   <span id="device-vendor" class="font-semibold text-surface-900 dark:text-surface-100">-</span>
+                 </div>
+                 <div class="flex justify-between">
+                   <span class="text-surface-600 dark:text-surface-400" data-i18n="tools.user-agent-decoder.ui.desc19">Model:</span>
+                   <span id="device-model" class="font-semibold text-surface-900 dark:text-surface-100">-</span>
+                 </div>
               </div>
             </div>
 
-            <!-- Additional Info -->
-            <div class="p-4 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg">
-              <h2 class="text-sm font-semibold text-orange-900 dark:text-orange-300 mb-3 flex items-center gap-2">
-                <span class="text-xl">ℹ️</span> Additional Info
-              </h2>
-              <div class="space-y-2 text-sm">
-                <div class="flex justify-between border-b border-orange-100 dark:border-orange-800 pb-1">
-                  <span class="text-surface-600 dark:text-surface-400" data-i18n="tools.user-agent-decoder.ui.desc20">Bot/Crawler:</span>
-                  <span id="is-bot" class="font-semibold text-surface-900 dark:text-surface-100">-</span>
-                </div>
-                <div class="flex justify-between border-b border-orange-100 dark:border-orange-800 pb-1">
-                  <span class="text-surface-600 dark:text-surface-400" data-i18n="tools.user-agent-decoder.ui.desc21">Mobile:</span>
-                  <span id="is-mobile" class="font-semibold text-surface-900 dark:text-surface-100">-</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-surface-600 dark:text-surface-400" data-i18n="tools.user-agent-decoder.ui.desc22">Tablet:</span>
-                  <span id="is-tablet" class="font-semibold text-surface-900 dark:text-surface-100">-</span>
-                </div>
-              </div>
-            </div>
+             <!-- Additional Info -->
+             <div class="p-4 bg-warning-50 dark:bg-warning-900/20 border border-warning-200 dark:border-warning-800 rounded-lg">
+               <h2 class="text-sm font-semibold text-warning-900 dark:text-warning-300 mb-3 flex items-center gap-2">
+                 <span class="text-xl">ℹ️</span> Additional Info
+               </h2>
+               <div class="space-y-2 text-sm">
+                 <div class="flex justify-between border-b border-warning-100 dark:border-warning-800 pb-1">
+                   <span class="text-surface-600 dark:text-surface-400" data-i18n="tools.user-agent-decoder.ui.desc20">Bot/Crawler:</span>
+                   <span id="is-bot" class="font-semibold text-surface-900 dark:text-surface-100">-</span>
+                 </div>
+                 <div class="flex justify-between border-b border-warning-100 dark:border-warning-800 pb-1">
+                   <span class="text-surface-600 dark:text-surface-400" data-i18n="tools.user-agent-decoder.ui.desc21">Mobile:</span>
+                   <span id="is-mobile" class="font-semibold text-surface-900 dark:text-surface-100">-</span>
+                 </div>
+                 <div class="flex justify-between">
+                   <span class="text-surface-600 dark:text-surface-400" data-i18n="tools.user-agent-decoder.ui.desc22">Tablet:</span>
+                   <span id="is-tablet" class="font-semibold text-surface-900 dark:text-surface-100">-</span>
+                 </div>
+               </div>
+             </div>
           </div>
 
           <!-- Raw Analysis -->
@@ -241,6 +241,7 @@ function renderUserAgentDecoderPage() {
         const btn = document.getElementById('copy-analysis');
         const orig = btn.textContent;
         btn.textContent = _t('tools.user-agent-decoder.js.text0', '✓ Copied!');
+        if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
         setTimeout(() => btn.textContent = orig, 2000);
       });
 

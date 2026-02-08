@@ -330,18 +330,18 @@ function renderSecretScannerPage() {
           return;
         }
 
-        if (truncated) {
-          const note = document.createElement('div');
-          note.className = 'rounded-lg border p-3 text-sm bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-800';
-          note.textContent = t('text23', 'Input was large; scanned only the first 250,000 characters.');
-          els.findings.appendChild(note);
-        }
+         if (truncated) {
+           const note = document.createElement('div');
+           note.className = 'rounded-lg border p-3 text-sm bg-warning-50 dark:bg-warning-900/20 text-warning-800 dark:text-warning-200 border-warning-200 dark:border-warning-800';
+           note.textContent = t('text23', 'Input was large; scanned only the first 250,000 characters.');
+           els.findings.appendChild(note);
+         }
 
-        const severityCls = (sev) => sev === 'high'
-          ? 'bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 border-red-200 dark:border-red-800'
-          : sev === 'medium'
-            ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-800'
-            : 'bg-surface-50 dark:bg-surface-950 text-surface-800 dark:text-surface-200 border-surface-200 dark:border-surface-800';
+          const severityCls = (sev) => sev === 'high'
+            ? 'bg-error-50 dark:bg-error-900/20 text-error-800 dark:text-error-200 border-error-200 dark:border-error-800'
+            : sev === 'medium'
+              ? 'bg-warning-50 dark:bg-warning-900/20 text-warning-800 dark:text-warning-200 border-warning-200 dark:border-warning-800'
+              : 'bg-surface-50 dark:bg-surface-950 text-surface-800 dark:text-surface-200 border-surface-200 dark:border-surface-800';
 
         findings.slice(0, 120).forEach(f => {
           const row = document.createElement('div');
@@ -417,6 +417,7 @@ function renderSecretScannerPage() {
           await navigator.clipboard.writeText(text);
           const old = els.copyRedacted.textContent;
           els.copyRedacted.textContent = t('text29', '✓ Copied');
+          if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
           setTimeout(() => (els.copyRedacted.textContent = old), 1200);
         } catch (e) {
           console.error('Copy failed:', e);

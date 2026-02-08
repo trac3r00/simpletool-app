@@ -66,7 +66,7 @@ function renderCIDRCalculatorPage() {
             <p class="mt-2 text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.cidr-calculator.ui.desc21">Specify a prefix if your input omits it.</p>
           </div>
 
-          <div id="cidr-error" class="hidden rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 text-sm text-red-700 dark:text-red-200 px-4 py-3">Invalid CIDR block.</div>
+           <div id="cidr-error" class="hidden rounded-lg border border-error-200 dark:border-error-800 bg-error-50 dark:bg-error-900/30 text-sm text-error-700 dark:text-error-200 px-4 py-3">Invalid CIDR block.</div>
 
           <div class="flex flex-wrap gap-3">
             <button id="analyze-btn" class="btn btn-primary" data-tooltip="Calculate subnet details from CIDR notation"><span data-i18n="tools.cidr-calculator.ui.button1">Run analysis</span></button>
@@ -204,7 +204,7 @@ function renderCIDRCalculatorPage() {
               <select id="subnet-prefix" class="input py-1 px-3 w-auto" aria-label="Target prefix for subnet splitting"></select>
             </div>
           </div>
-          <div id="subnet-warning" class="hidden text-sm text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg px-4 py-3">This block cannot be subdivided further.</div>
+           <div id="subnet-warning" class="hidden text-sm text-warning-700 dark:text-warning-300 bg-warning-50 dark:bg-warning-900/20 border border-warning-200 dark:border-warning-800 rounded-lg px-4 py-3">This block cannot be subdivided further.</div>
           <div class="overflow-x-auto mt-4">
             <table class="min-w-full text-sm text-left">
               <thead class="text-xs uppercase tracking-widest text-surface-500 border-b border-surface-200 dark:border-surface-700">
@@ -232,7 +232,7 @@ function renderCIDRCalculatorPage() {
           </table>` },
         { heading: 'Private Ranges (RFC 1918)', content: `
           <table>
-            <tr><th>Range</th><th>CIDR</th><th>Class</th></tr>
+            <tr><th data-i18n="tools.cidr-calculator.ui.th13">Range</th><th>CIDR</th><th>Class</th></tr>
             <tr><td>10.0.0.0 – 10.255.255.255</td><td><code>10.0.0.0/8</code></td><td>A</td></tr>
             <tr><td>172.16.0.0 – 172.31.255.255</td><td><code>172.16.0.0/12</code></td><td>B</td></tr>
             <tr><td>192.168.0.0 – 192.168.255.255</td><td><code>192.168.0.0/16</code></td><td>C</td></tr>
@@ -498,20 +498,20 @@ function renderCIDRCalculatorPage() {
           return rows.map(row => '<tr><td class="py-2 pr-4 font-semibold text-surface-600 dark:text-surface-300">' + escapeHTML(row[0]) + '</td><td class="py-2 text-surface-900 dark:text-white break-all font-mono">' + escapeHTML(row[1]) + '</td></tr>').join('');
         }
 
-        function buildReferenceRows(details) {
-          const rows = [];
-          const max = details.family === 'IPv6' ? 128 : 32;
-          const windowSize = details.family === 'IPv6' ? 6 : 5;
-          const start = Math.max(0, details.prefix - Math.floor(windowSize / 2));
-          const end = Math.min(max, start + windowSize);
-          for (let prefix = start; prefix <= end; prefix++) {
-            const highlight = prefix === details.prefix ? 'bg-primary-50 dark:bg-primary-900/20' : '';
-            const capacity = details.family === 'IPv6' ? '2^' + (128 - prefix) : formatNumber(Math.pow(2, 32 - prefix));
-            const mask = details.family === 'IPv6' ? '—' : intToIPv4(prefixToMask(prefix));
-            rows.push('<tr class="' + highlight + '"><td class="py-2 pr-4 font-mono font-semibold">/' + prefix + '</td><td class="py-2 pr-4 text-xs sm:text-sm">' + (mask ? mask + ' · ' : '') + capacity + '</td><td class="py-2 text-xs italic text-surface-400">' + (prefix === details.prefix ? 'Current' : '') + '</td></tr>');
-          }
-          return rows.join('');
-        }
+         function buildReferenceRows(details) {
+           const rows = [];
+           const max = details.family === 'IPv6' ? 128 : 32;
+           const windowSize = details.family === 'IPv6' ? 6 : 5;
+           const start = Math.max(0, details.prefix - Math.floor(windowSize / 2));
+           const end = Math.min(max, start + windowSize);
+           for (let prefix = start; prefix <= end; prefix++) {
+             const highlight = prefix === details.prefix ? 'bg-info-50 dark:bg-info-900/20' : '';
+             const capacity = details.family === 'IPv6' ? '2^' + (128 - prefix) : formatNumber(Math.pow(2, 32 - prefix));
+             const mask = details.family === 'IPv6' ? '—' : intToIPv4(prefixToMask(prefix));
+             rows.push('<tr class="' + highlight + '"><td class="py-2 pr-4 font-mono font-semibold">/' + prefix + '</td><td class="py-2 pr-4 text-xs sm:text-sm">' + (mask ? mask + ' · ' : '') + capacity + '</td><td class="py-2 text-xs italic text-surface-400">' + (prefix === details.prefix ? 'Current' : '') + '</td></tr>');
+           }
+           return rows.join('');
+         }
 
         function buildValidationList(details) {
           const items = [];
@@ -522,7 +522,7 @@ function renderCIDRCalculatorPage() {
         }
 
         function successItem(id, text) {
-          return '<li class="flex items-center gap-2"><span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-green-500 text-white text-xs">✓</span><span>' + escapeHTML(text) + '</span></li>';
+          return '<li class="flex items-center gap-2"><span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-success-500 text-white text-xs">✓</span><span>' + escapeHTML(text) + '</span></li>';
         }
 
         function updateSubnetExplorer(details) {

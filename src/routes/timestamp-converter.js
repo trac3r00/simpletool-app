@@ -183,6 +183,7 @@ function renderTimestampConverterPage() {
             window.copyToClipboard(timestamp, document.getElementById('copy-current'));
         } else {
             await navigator.clipboard.writeText(timestamp);
+            if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
         }
       });
 

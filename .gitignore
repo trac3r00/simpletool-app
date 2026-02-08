@@ -54,3 +54,11 @@ Thumbs.db
 *.swp
 *.swo
 *~
+
+# Tests
+tests/
+test-results/
+
+# Opencode
+.sisyphus/
+.opencode/

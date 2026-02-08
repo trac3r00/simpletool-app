@@ -262,17 +262,18 @@ function renderUUIDGeneratorPage() {
           const text = uuidItem.dataset.uuid;
           if(window.copyToClipboard) {
              window.copyToClipboard(text, uuidItem);
-          } else {
-             await navigator.clipboard.writeText(text);
-             // Fallback visual feedback
-             const original = uuidItem.textContent;
-             uuidItem.textContent = _t('tools.uuid-generator.js.text0', '✓ Copied!');
-             uuidItem.classList.add('text-green-600', 'font-bold');
-             setTimeout(() => {
-                uuidItem.textContent = original;
-                uuidItem.classList.remove('text-green-600', 'font-bold');
-             }, 1000);
-          }
+           } else {
+              await navigator.clipboard.writeText(text);
+              // Fallback visual feedback
+              const original = uuidItem.textContent;
+              uuidItem.textContent = _t('tools.uuid-generator.js.text0', '✓ Copied!');
+               uuidItem.classList.add('text-success-600', 'font-bold');
+               if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
+               setTimeout(() => {
+                  uuidItem.textContent = original;
+                  uuidItem.classList.remove('text-success-600', 'font-bold');
+              }, 1000);
+           }
         }
       });
 
@@ -282,6 +283,7 @@ function renderUUIDGeneratorPage() {
             window.copyToClipboard(allUUIDs, document.getElementById('copy-btn'));
         } else {
             await navigator.clipboard.writeText(allUUIDs);
+            if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
         }
       });
     </script>

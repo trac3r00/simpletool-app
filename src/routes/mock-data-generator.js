@@ -66,11 +66,11 @@ function renderMockDataPage() {
           </div>
 
           <div class="pt-4 border-t border-surface-100 dark:border-surface-800">
-            <button id="generate-data" data-tooltip="Generate random mock data with selected fields" class="w-full md:w-auto md:min-w-[200px] inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg bg-primary-600 hover:bg-primary-700 text-white font-bold text-lg shadow-lg shadow-primary-600/20 transition transform hover:-translate-y-0.5">
+            <button id="generate-data" data-tooltip="Generate random mock data with selected fields" class="btn btn-primary w-full md:w-auto md:min-w-[200px] text-lg shadow-lg shadow-primary-600/20 transition transform hover:-translate-y-0.5">
               <span>Generate Data</span>
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" /></svg>
             </button>
-            <div id="data-error" class="mt-4 hidden rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 text-sm text-red-700 dark:text-red-200 px-4 py-3">Error</div>
+             <div id="data-error" class="mt-4 hidden rounded-lg border border-error-200 dark:border-error-800 bg-error-50 dark:bg-error-900/30 text-sm text-error-700 dark:text-error-200 px-4 py-3">Error</div>
           </div>
         </div>
 
@@ -84,8 +84,8 @@ function renderMockDataPage() {
                   Output
                 </h2>
                 <div class="flex gap-2">
-                  <button id="copy-output" class="px-4 py-2 rounded-xl bg-surface-100 hover:bg-surface-200 dark:bg-surface-800 dark:hover:bg-surface-700 text-sm font-medium text-surface-700 dark:text-surface-200 transition" disabled><span data-i18n="tools.mock-data-generator.ui.button0">Copy</span></button>
-                  <button id="download-output" class="px-4 py-2 rounded-xl border border-surface-200 dark:border-surface-700 hover:bg-surface-50 dark:hover:bg-surface-800 text-sm font-medium text-surface-700 dark:text-surface-200 transition" disabled><span data-i18n="tools.mock-data-generator.ui.button1">Download</span></button>
+                  <button id="copy-output" class="btn btn-secondary btn-sm" disabled><span data-i18n="tools.mock-data-generator.ui.button0">Copy</span></button>
+                  <button id="download-output" class="btn btn-secondary btn-sm" disabled><span data-i18n="tools.mock-data-generator.ui.button1">Download</span></button>
                 </div>
               </div>
               <div class="relative flex-1 min-h-0 bg-surface-900 rounded-lg overflow-hidden group">
@@ -195,6 +195,7 @@ function renderMockDataPage() {
           if (outputArea.textContent.trim() === '' || outputArea.textContent.includes('Click "Generate data"')) return;
           navigator.clipboard.writeText(outputArea.textContent);
           copyBtn.textContent = _t('tools.mock-data-generator.js.text0', 'Copied!');
+          if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
           setTimeout(() => copyBtn.textContent = _t('tools.mock-data-generator.js.text1', 'Copy'), 1500);
         });
 

@@ -477,6 +477,7 @@ function renderSVGOptimizerPage() {
           await navigator.clipboard.writeText(text);
           const old = els.copyBtn.textContent;
           els.copyBtn.textContent = t('text8', '✓ Copied');
+          if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
           setTimeout(() => (els.copyBtn.textContent = old), 1200);
         } catch (e) {
           console.error('Copy failed:', e);

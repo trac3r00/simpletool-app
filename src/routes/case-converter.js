@@ -191,14 +191,15 @@ function renderCaseConverterPage() {
           }
           
           if(window.copyToClipboard) {
-             window.copyToClipboard(text, copyBtn);
-          } else {
-             navigator.clipboard.writeText(text).then(() => {
-                const original = copyBtn.innerHTML;
-                copyBtn.innerHTML = '✓';
-                setTimeout(() => copyBtn.innerHTML = original, 2000);
-             });
-          }
+              window.copyToClipboard(text, copyBtn);
+           } else {
+              navigator.clipboard.writeText(text).then(() => {
+                 if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
+                 const original = copyBtn.innerHTML;
+                 copyBtn.innerHTML = '✓';
+                 setTimeout(() => copyBtn.innerHTML = original, 2000);
+              });
+           }
         }
       });
 

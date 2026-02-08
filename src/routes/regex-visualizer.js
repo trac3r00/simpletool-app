@@ -25,19 +25,30 @@ export async function handleRegexVisualizerRoutes(request) {
         <!-- Left Column: Input & Controls -->
         <div class="lg:col-span-4 space-y-6">
           
-          <!-- Regex Input -->
-          <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 p-5">
-            <label for="regex-input" class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2"><span data-i18n="tools.regex-visualizer.ui.label3">Regular Expression</span> ${infoHint('Use JS regex syntax; escape backslashes (\\\\) and omit surrounding / delimiters.')}</label>
-            <div class="relative flex items-center">
-              <span class="absolute left-3 text-surface-400 font-mono text-lg">/</span>
-              <input type="text" id="regex-input" data-tooltip="Enter a regular expression pattern" 
-                class="w-full pl-6 pr-16 py-2.5 bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 font-mono text-surface-900 dark:text-white"
-                placeholder="e.g. [a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}"
-                value="([A-Z])\\w+"
-                spellcheck="false"
-              >
-              <span class="absolute right-3 text-surface-400 font-mono text-lg">/</span>
-            </div>
+           <!-- Regex Input -->
+           <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 p-5">
+             <div class="flex justify-between items-center mb-2">
+               <label for="regex-input" class="block text-sm font-medium text-surface-700 dark:text-surface-300"><span data-i18n="tools.regex-visualizer.ui.label3">Regular Expression</span> ${infoHint('Use JS regex syntax; escape backslashes (\\\\) and omit surrounding / delimiters.')}</label>
+               <select id="preset-select" class="text-xs px-2 py-1 rounded-md bg-surface-100 dark:bg-surface-800 text-surface-700 dark:text-surface-300 border border-surface-300 dark:border-surface-700 focus:ring-2 focus:ring-primary-500">
+                 <option value="">Presets</option>
+                 <option value="email">Email</option>
+                 <option value="url">URL</option>
+                 <option value="phone">Phone (US)</option>
+                 <option value="date">Date (YYYY-MM-DD)</option>
+                 <option value="ipv4">IPv4</option>
+                 <option value="hex-color">Hex Color</option>
+               </select>
+             </div>
+             <div class="relative flex items-center">
+               <span class="absolute left-3 text-surface-400 font-mono text-lg">/</span>
+               <input type="text" id="regex-input" data-tooltip="Enter a regular expression pattern" 
+                 class="w-full pl-6 pr-16 py-2.5 bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 font-mono text-surface-900 dark:text-white"
+                 placeholder="e.g. [a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}"
+                 value="([A-Z])\\w+"
+                 spellcheck="false"
+               >
+               <span class="absolute right-3 text-surface-400 font-mono text-lg">/</span>
+             </div>
             
             <!-- Flags -->
             <div class="mt-3 flex flex-wrap gap-2">
@@ -93,7 +104,7 @@ while ((m = regex.exec(str)) !== null) {
         console.log(\`Found match, group \${groupIndex}: \${match}\`);
     });
 }</code></pre>
-              <button onclick="copyCode()" class="absolute top-2 right-2 p-1.5 rounded-md bg-surface-700 text-surface-300 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-surface-600" title="Copy code" data-i18n-title="tools.regex-visualizer.ui.title7">
+              <button id="copy-code-btn" type="button" class="absolute top-2 right-2 p-1.5 rounded-md bg-surface-700 text-surface-300 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-surface-600" title="Copy code" data-i18n-title="tools.regex-visualizer.ui.title7">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
               </button>
             </div>
@@ -114,9 +125,9 @@ while ((m = regex.exec(str)) !== null) {
               <!-- SVG injected here -->
               <div class="flex items-center justify-center text-surface-400 text-sm italic">Generating diagram...</div>
             </div>
-            <div id="explanation-container" class="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-100 dark:border-blue-800/30">
-              <h3 class="text-sm font-semibold text-blue-800 dark:text-blue-300 mb-2" data-i18n="tools.regex-visualizer.ui.heading12">Explanation</h3>
-              <ul id="explanation-list" class="list-disc list-inside text-sm text-blue-700 dark:text-blue-200 space-y-1">
+            <div id="explanation-container" class="mt-4 p-4 bg-info-50 dark:bg-info-900/20 rounded-lg border border-info-100 dark:border-info-800/30">
+              <h3 class="text-sm font-semibold text-info-800 dark:text-info-300 mb-2" data-i18n="tools.regex-visualizer.ui.heading12">Explanation</h3>
+              <ul id="explanation-list" class="list-disc list-inside text-sm text-info-700 dark:text-info-200 space-y-1">
                 <!-- Explanation items injected here -->
               </ul>
             </div>
@@ -125,7 +136,7 @@ while ((m = regex.exec(str)) !== null) {
           <!-- Match Results -->
           <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 p-5">
             <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4 flex items-center gap-2">
-              <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              <svg class="w-5 h-5 text-success-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
               Match Results
             </h2>
             
@@ -231,10 +242,26 @@ while ((m = regex.exec(str)) !== null) {
       .dark svg.railroad-diagram text { fill: #e2e8f0; }
       .dark svg.railroad-diagram rect { fill: #1e293b; stroke: #475569; }
       
-      /* Highlight styles */
-      .match-highlight { background-color: rgba(59, 130, 246, 0.2); border-bottom: 2px solid #3b82f6; border-radius: 2px; }
-      .match-highlight:hover { background-color: rgba(59, 130, 246, 0.3); }
-      .dark .match-highlight { background-color: rgba(96, 165, 250, 0.2); border-bottom: 2px solid #60a5fa; }
+       /* Highlight styles */
+        .match-highlight { 
+          background-color: rgba(59, 130, 246, 0.25); 
+          border-left: 3px solid #3b82f6;
+          border-radius: 2px;
+          padding: 1px 3px;
+          transition: all 0.15s ease;
+        }
+        .match-highlight:hover { 
+          background-color: rgba(59, 130, 246, 0.4);
+          border-left-color: #1e40af;
+        }
+        .dark .match-highlight { 
+          background-color: rgba(96, 165, 250, 0.25);
+          border-left-color: #60a5fa;
+        }
+        .dark .match-highlight:hover {
+          background-color: rgba(96, 165, 250, 0.4);
+          border-left-color: #93c5fd;
+        }
     </style>
 
     <script>
@@ -413,20 +440,55 @@ while ((m = regex.exec(str)) !== null) {
 
       // --- Main Application Logic ---
 
-      const regexInput = document.getElementById('regex-input');
-      const testStringInput = document.getElementById('test-string');
-      const flagG = document.getElementById('flag-g');
-      const flagI = document.getElementById('flag-i');
-      const flagM = document.getElementById('flag-m');
-      const railroadContainer = document.getElementById('railroad-container');
-      const explanationList = document.getElementById('explanation-list');
-      const highlightDisplay = document.getElementById('highlight-display');
-      const groupsTableBody = document.getElementById('groups-table-body');
-      const matchCount = document.getElementById('match-count');
-      const codeOutput = document.getElementById('code-output');
-      const langBtns = document.querySelectorAll('.lang-btn');
+       const regexInput = document.getElementById('regex-input');
+       const testStringInput = document.getElementById('test-string');
+       const flagG = document.getElementById('flag-g');
+       const flagI = document.getElementById('flag-i');
+       const flagM = document.getElementById('flag-m');
+       const presetSelect = document.getElementById('preset-select');
+       const railroadContainer = document.getElementById('railroad-container');
+       const explanationList = document.getElementById('explanation-list');
+       const highlightDisplay = document.getElementById('highlight-display');
+       const groupsTableBody = document.getElementById('groups-table-body');
+       const matchCount = document.getElementById('match-count');
+       const codeOutput = document.getElementById('code-output');
+       const copyCodeBtn = document.getElementById('copy-code-btn');
+       const langBtns = document.querySelectorAll('.lang-btn');
 
-      let currentLang = 'js';
+       let currentLang = 'js';
+
+       const PRESETS = {
+         email: {
+           pattern: '^[\\\\w.+-]+@[\\\\w-]+\\\\.[\\\\w.]+$',
+           testString: 'user@example.com',
+           flags: ''
+         },
+         url: {
+           pattern: '^https?:\\\\/\\\\/',
+           testString: 'https://example.com',
+           flags: ''
+         },
+         phone: {
+           pattern: '^\\\\(?\\\\d{3}\\\\)?[\\\\s.-]?\\\\d{3}[\\\\s.-]?\\\\d{4}$',
+           testString: '(555) 123-4567',
+           flags: ''
+         },
+         date: {
+           pattern: '^\\\\d{4}-\\\\d{2}-\\\\d{2}$',
+           testString: '2025-02-07',
+           flags: ''
+         },
+         ipv4: {
+           pattern: '^\\\\d{1,3}\\\\.\\\\d{1,3}\\\\.\\\\d{1,3}\\\\.\\\\d{1,3}$',
+           testString: '192.168.1.1',
+           flags: ''
+         },
+         'hex-color': {
+           pattern: '^#?([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$',
+           testString: '#FF5733',
+           flags: ''
+         }
+       };
 
       function updateAll() {
         const pattern = regexInput.value;
@@ -455,7 +517,7 @@ while ((m = regex.exec(str)) !== null) {
           const diagram = Railroad.Diagram(result);
           diagram.addTo(railroadContainer);
         } catch (e) {
-          railroadContainer.innerHTML = '<div class="text-red-500 text-sm p-4">Invalid Regex for Visualization</div>';
+          railroadContainer.innerHTML = '<div class="text-error-500 text-sm p-4">Invalid Regex for Visualization</div>';
           console.error(e);
         }
       }
@@ -492,16 +554,16 @@ while ((m = regex.exec(str)) !== null) {
 
           matchCount.textContent = \`\${matches.length} match\${matches.length !== 1 ? 'es' : ''}\`;
 
-          // Render Highlights
-          let lastIdx = 0;
-          let html = '';
-          
-          matches.forEach((m, i) => {
-            // Text before match
-            html += escapeHtml(text.substring(lastIdx, m.index));
-            // Match
-            html += \`<span class="match-highlight" title="Match \${i + 1}">\${escapeHtml(m[0])}</span>\`;
-            lastIdx = m.index + m[0].length;
+           // Render Highlights
+           let lastIdx = 0;
+           let html = '';
+           
+           matches.forEach((m, i) => {
+             // Text before match
+             html += escapeHtml(text.substring(lastIdx, m.index));
+             // Match with enhanced styling
+             html += \`<span class="match-highlight" title="Match \${i + 1}: \${escapeHtml(m[0])}" data-match-index="\${i + 1}">\${escapeHtml(m[0])}</span>\`;
+             lastIdx = m.index + m[0].length;
 
             // Add to table
             const row = document.createElement('tr');
@@ -530,10 +592,10 @@ while ((m = regex.exec(str)) !== null) {
           html += escapeHtml(text.substring(lastIdx));
           highlightDisplay.innerHTML = html;
 
-        } catch (e) {
-          highlightDisplay.textContent = text;
-          matchCount.textContent = _t('tools.regex-visualizer.js.text1', 'Error');
-          groupsTableBody.innerHTML = '<tr><td colspan="4" class="px-4 py-2 text-red-500 text-sm">Invalid Regular Expression</td></tr>';
+         } catch (e) {
+           highlightDisplay.textContent = text;
+           matchCount.textContent = _t('tools.regex-visualizer.js.text1', 'Error');
+           groupsTableBody.innerHTML = '<tr><td colspan="4" class="px-4 py-2 text-error-500 text-sm">Invalid Regular Expression</td></tr>';
         }
       }
 
@@ -674,14 +736,29 @@ while (matcher.find()) {
       function copyCode() {
         const text = codeOutput.textContent;
         navigator.clipboard.writeText(text).then(() => {
-          // Optional: Show toast
+          if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
+        }).catch(() => {
+          // Ignore clipboard failures (e.g., blocked permission).
         });
       }
 
-      // Event Listeners
-      [regexInput, testStringInput, flagG, flagI, flagM].forEach(el => {
-        el.addEventListener('input', updateAll);
-      });
+       // Event Listeners
+       [regexInput, testStringInput, flagG, flagI, flagM].forEach(el => {
+         el.addEventListener('input', updateAll);
+       });
+
+       presetSelect.addEventListener('change', (e) => {
+         const preset = PRESETS[e.target.value];
+         if (preset) {
+           regexInput.value = preset.pattern;
+           testStringInput.value = preset.testString;
+           flagG.checked = preset.flags.includes('g');
+           flagI.checked = preset.flags.includes('i');
+           flagM.checked = preset.flags.includes('m');
+           presetSelect.value = '';
+           updateAll();
+         }
+       });
 
       langBtns.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -695,6 +772,8 @@ while (matcher.find()) {
           updateAll();
         });
       });
+
+      copyCodeBtn?.addEventListener('click', copyCode);
 
       // Initial render
       waitForRailroad(updateAll);

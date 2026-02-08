@@ -43,13 +43,13 @@ function renderSSHKeyGeneratorPage() {
 
         ${toolHeader}
 
-        <!-- Privacy Notice -->
-        <div class="mb-8 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-          <div class="flex items-start gap-3">
-            <span class="text-2xl">🔒</span>
-            <div>
-              <h2 class="text-sm font-bold text-green-900 dark:text-green-300 mb-1" data-i18n="tools.ssh-key-generator.ui.heading11">100% Client-Side & Private</h2>
-              <ul class="text-xs text-green-800 dark:text-green-200 space-y-1 list-disc list-inside">
+         <!-- Privacy Notice -->
+         <div class="mb-8 p-4 bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-800 rounded-lg">
+           <div class="flex items-start gap-3">
+             <span class="text-2xl">🔒</span>
+             <div>
+               <h2 class="text-sm font-bold text-success-900 dark:text-success-300 mb-1" data-i18n="tools.ssh-key-generator.ui.heading11">100% Client-Side & Private</h2>
+               <ul class="text-xs text-success-800 dark:text-success-200 space-y-1 list-disc list-inside">
                 <li>All keys generated in your browser using Web Crypto API</li>
                 <li>Private keys NEVER leave your device</li>
                 <li>No logging, no tracking, no data collection</li>
@@ -111,7 +111,7 @@ function renderSSHKeyGeneratorPage() {
           </div>
 
           <!-- Error Banner -->
-          <div id="keygen-error" role="alert" class="hidden rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 text-sm text-red-700 dark:text-red-200 px-4 py-3"></div>
+           <div id="keygen-error" role="alert" class="hidden rounded-lg border border-error-200 dark:border-error-800 bg-error-50 dark:bg-error-900/30 text-sm text-error-700 dark:text-error-200 px-4 py-3"></div>
 
           <!-- Results -->
           <div id="results" class="hidden space-y-6">
@@ -121,8 +121,8 @@ function renderSSHKeyGeneratorPage() {
               <div class="flex items-center justify-between mb-2">
                 <h2 class="text-sm font-bold text-surface-900 dark:text-surface-50 uppercase tracking-wide" data-i18n="tools.ssh-key-generator.ui.stat9">🔓 Public Key</h2>
                 <div class="flex gap-2">
-                  <button id="copy-public" class="btn btn-secondary text-xs py-1 px-3"><span data-i18n="tools.ssh-key-generator.ui.button0">Copy</span></button>
-                  <button id="download-public" class="btn btn-secondary text-xs py-1 px-3"><span data-i18n="tools.ssh-key-generator.ui.button1">Download</span></button>
+                  <button id="copy-public" class="btn btn-secondary btn-xs"><span data-i18n="tools.ssh-key-generator.ui.button0">Copy</span></button>
+                  <button id="download-public" class="btn btn-secondary btn-xs"><span data-i18n="tools.ssh-key-generator.ui.button1">Download</span></button>
                 </div>
               </div>
               <textarea id="public-key" readonly rows="4" class="input font-mono text-xs resize-none bg-surface-50 dark:bg-surface-950"></textarea>
@@ -134,12 +134,12 @@ function renderSSHKeyGeneratorPage() {
               <div class="flex items-center justify-between mb-2">
                 <h2 class="text-sm font-bold text-surface-900 dark:text-surface-50 uppercase tracking-wide" data-i18n="tools.ssh-key-generator.ui.stat10">🔐 Private Key</h2>
                 <div class="flex gap-2">
-                  <button id="copy-private" class="btn btn-secondary text-xs py-1 px-3"><span data-i18n="tools.ssh-key-generator.ui.button0">Copy</span></button>
-                  <button id="download-private" class="btn btn-secondary text-xs py-1 px-3"><span data-i18n="tools.ssh-key-generator.ui.button1">Download</span></button>
+                  <button id="copy-private" class="btn btn-secondary btn-xs"><span data-i18n="tools.ssh-key-generator.ui.button0">Copy</span></button>
+                  <button id="download-private" class="btn btn-secondary btn-xs"><span data-i18n="tools.ssh-key-generator.ui.button1">Download</span></button>
                 </div>
               </div>
-              <textarea id="private-key" readonly rows="8" class="input font-mono text-xs resize-none bg-red-50 dark:bg-red-900/10 border-red-200 dark:border-red-900 text-surface-900 dark:text-surface-100"></textarea>
-              <p class="mt-1 text-xs text-red-600 dark:text-red-400 font-semibold" data-i18n="tools.ssh-key-generator.ui.desc15">⚠️ KEEP THIS PRIVATE! Save with permissions 600.</p>
+               <textarea id="private-key" readonly rows="8" class="input font-mono text-xs resize-none bg-error-50 dark:bg-error-900/10 border-error-200 dark:border-error-900 text-surface-900 dark:text-surface-100"></textarea>
+               <p class="mt-1 text-xs text-error-600 dark:text-error-400 font-semibold" data-i18n="tools.ssh-key-generator.ui.desc15">⚠️ KEEP THIS PRIVATE! Save with permissions 600.</p>
             </div>
 
             <!-- Fingerprint -->
@@ -338,6 +338,7 @@ chmod 600 ~/.ssh/authorized_keys</pre>
            } else {
              await navigator.clipboard.writeText(content);
              btn.textContent = _t('tools.ssh-key-generator.js.text0', '✓ Copied');
+             if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
              setTimeout(() => btn.textContent = _t('tools.ssh-key-generator.js.text1', 'Copy'), 2000);
            }
          } else {

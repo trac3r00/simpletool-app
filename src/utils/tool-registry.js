@@ -5,7 +5,7 @@
  * - id: path segment (no leading slash)
  * - name/icon/description: UI strings (English)
  * - path: route path used by the UI (do not change routing here)
- * - category: used for home grouping
+ * - category: used for home grouping (formatters, security, network, generators, game, utils)
  * - keywords: additional search tokens (string)
  */
 
@@ -123,6 +123,17 @@ export const TOOLS = [
     category: 'security',
     keywords: 'ssl, tls, pem, x509',
     tip: 'Paste a PEM certificate to see issuer, subject, validity dates, SANs, and key details'
+  },
+  {
+    id: 'jwk-jwks-studio',
+    name: 'JWK/JWKS Studio',
+    icon: '🧷',
+    description: 'Convert PEM/JWK/JWKS, compute RFC7638 thumbprints, and verify JWT signatures offline.',
+    path: '/jwk-jwks-studio',
+    category: 'security',
+    keywords: 'jwk, jwks, jose, oidc, kid, rfc 7638, thumbprint, jwt, rs256, ps256, es256',
+    tip: 'Paste a JWK/JWKS or PEM public key to compute a correct kid (thumbprint) and verify JWTs client-side',
+    badge: 'NEW'
   },
   {
     id: 'saml-decoder',
@@ -379,5 +390,35 @@ export const TOOLS = [
     path: '/secret-scanner',
     category: 'security',
     keywords: 'api key, token, password, leak, redact, secrets'
+  },
+  {
+    id: 'ladder-game',
+    name: 'Ladder Game',
+    icon: '🪜',
+    description: 'Classic ghost leg ladder game for random matching and decision making.',
+    path: '/ladder-game',
+    category: 'game',
+    keywords: 'ghost leg, random, match, pick, amidakuji, decision',
+    badge: 'NEW'
+  },
+  {
+    id: 'roulette-wheel',
+    name: 'Roulette Wheel',
+    icon: '🎡',
+    description: 'Spin the wheel for fair random picks with real-time statistics.',
+    path: '/roulette-wheel',
+    category: 'game',
+    keywords: 'spin, random, picker, wheel, decision, fair, statistics',
+    badge: 'NEW'
+  },
+  {
+    id: 'marble-roulette',
+    name: 'Marble Roulette',
+    icon: '🎱',
+    description: 'Drop marbles through pegs for a physics-based lucky draw.',
+    path: '/marble-roulette',
+    category: 'game',
+    keywords: 'marble, physics, drop, lucky draw, pachinko, galton, random',
+    badge: 'NEW'
   }
 ];

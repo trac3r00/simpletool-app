@@ -11,7 +11,7 @@ export function renderHomePage() {
   const categories = groupToolsByCategory(tools);
 
   const html = `<!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en" class="scroll-smooth" style="visibility:hidden">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -42,7 +42,7 @@ export function renderHomePage() {
   <header class="pt-16 pb-12 sm:pt-24 sm:pb-16 bg-white dark:bg-surface-950 border-b border-surface-200 dark:border-surface-800 hexagon-pattern">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
       <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-surface-900 dark:text-surface-50 mb-6">
-        ${t('nav.home')}
+        Free Online Developer Tools
       </h1>
       <p class="text-xl text-surface-600 dark:text-surface-400 max-w-2xl mx-auto mb-10 leading-relaxed">
         <span data-i18n="home.heroLine1">A collection of free, privacy-first tools for your daily workflow.</span> <br class="hidden sm:inline">
@@ -56,13 +56,13 @@ export function renderHomePage() {
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
         </div>
-        <input type="text"
-               id="tool-search"
-               class="block w-full pl-11 pr-4 py-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl text-surface-900 dark:text-surface-50 placeholder-surface-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-shadow shadow-sm"
-               placeholder="${t('nav.search')}"
-               data-i18n-placeholder="nav.search"
-               aria-label="${t('nav.search')}"
-               autofocus>
+         <input type="text"
+                id="tool-search"
+                class="block w-full pl-11 pr-4 py-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl text-surface-900 dark:text-surface-50 placeholder-surface-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-shadow shadow-sm"
+                placeholder="${t('nav.search')}"
+                data-i18n-placeholder="nav.search"
+                aria-label="${t('nav.search')}"
+                data-autofocus-desktop>
         <div class="absolute inset-y-0 right-0 pr-4 flex items-center">
           <span class="text-xs text-surface-400 border border-surface-200 dark:border-surface-700 rounded px-1.5 py-0.5 hidden sm:block">⌘K</span>
         </div>
@@ -78,10 +78,11 @@ export function renderHomePage() {
   <!-- Tools Grid -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16 flex-grow">
     <div id="search-results-container" class="hidden space-y-8">
-      <h2 class="text-lg font-bold text-surface-900 dark:text-surface-100 mb-6 flex items-center gap-2 uppercase tracking-wide" data-i18n="home.searchResults">
-        🔍 Search Results
+      <h2 id="search-results-heading" class="text-lg font-bold text-surface-900 dark:text-surface-100 mb-6 flex items-center gap-2 uppercase tracking-wide">
+        🔍 <span id="search-results-label" data-i18n="home.searchResults">Search Results</span>
+        <span id="search-results-count" class="text-xs font-medium text-surface-400 bg-surface-100 dark:bg-surface-800 dark:text-surface-500 px-2 py-0.5 rounded-full"></span>
       </h2>
-      <div id="search-results-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <div id="search-results-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <!-- Search results injected here -->
       </div>
     </div>
@@ -130,17 +131,22 @@ export function renderHomePage() {
   ${getThemeScript()}
   ${getLanguageScript()}
   ${getSearchScript()}
-  <script>
-    (function() {
-      const searchInput = document.getElementById('tool-search');
-      const resultsContainer = document.getElementById('search-results-container');
-      const resultsGrid = document.getElementById('search-results-grid');
-      const categoriesContainer = document.getElementById('tools-categories-container');
-      
-      // Get tools from the global search script's context if possible, or we can just use the same data
-      // Since we want to find ALL tools, we'll use the same tools array that getSearchScript uses.
-      // We'll wait for the global script to be ready or just redefine the tools list here for simplicity
-      // but a better way is to expose it.
+   <script>
+     (function() {
+       const searchInput = document.getElementById('tool-search');
+       const resultsContainer = document.getElementById('search-results-container');
+       const resultsGrid = document.getElementById('search-results-grid');
+       const categoriesContainer = document.getElementById('tools-categories-container');
+       
+       // Conditionally autofocus on desktop only (viewport width > 640px)
+       if (window.innerWidth > 640) {
+         searchInput.focus();
+       }
+       
+       // Get tools from the global search script's context if possible, or we can just use the same data
+       // Since we want to find ALL tools, we'll use the same tools array that getSearchScript uses.
+       // We'll wait for the global script to be ready or just redefine the tools list here for simplicity
+       // but a better way is to expose it.
       
       function renderToolCard(tool) {
         var _tr = (typeof window._i18nToolTranslations === 'function') ? window._i18nToolTranslations() : {};
@@ -185,8 +191,20 @@ export function renderHomePage() {
         
         const filtered = window.fuzzySearch(term, tools);
 
+        var countEl = document.getElementById('search-results-count');
+        countEl.textContent = filtered.length;
+
         if (filtered.length > 0) {
           resultsGrid.innerHTML = filtered.map(tool => renderToolCard(tool)).join('');
+          // Highlight matched terms in card names and descriptions
+          var escaped = term.replace(/[-.*+?^$|(){}[\\]\\\\]/g, '\\\\$&');
+          var re = new RegExp('(' + escaped + ')', 'gi');
+          resultsGrid.querySelectorAll('.tool-name, .tool-desc').forEach(function(el) {
+            var orig = el.textContent;
+            if (re.test(orig)) {
+              el.innerHTML = orig.replace(re, '<mark class="bg-warning-200 dark:bg-warning-800/60 text-inherit rounded px-0.5">$1</mark>');
+            }
+          });
           resultsContainer.classList.remove('hidden');
           categoriesContainer.classList.add('hidden');
         } else {
@@ -216,12 +234,25 @@ export function renderHomePage() {
 }
 
 function renderCategories(categories) {
+   const accentColors = {
+     formatters: 'bg-info-100 text-info-700 dark:bg-info-900/30 dark:text-info-300',
+     security: 'bg-error-100 text-error-700 dark:bg-error-900/30 dark:text-error-300',
+     network: 'bg-success-100 text-success-700 dark:bg-success-900/30 dark:text-success-300',
+     generators: 'bg-warning-100 text-warning-700 dark:bg-warning-900/30 dark:text-warning-300',
+     utils: 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300',
+     game: 'bg-error-100 text-error-700 dark:bg-error-900/30 dark:text-error-300'
+   };
+
   return Object.entries(categories).map(([key, section]) => `
     <section class="category-section">
-      <h2 class="text-lg font-bold text-surface-900 dark:text-surface-100 mb-6 flex items-center gap-2 uppercase tracking-wide" data-i18n="home.cat.${key}">
-        ${section.icon} ${section.title}
-      </h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <div class="flex items-center gap-3 mb-6">
+        <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-lg ${accentColors[key] || ''}">${section.icon}</span>
+        <h2 class="text-xl font-bold text-surface-900 dark:text-surface-100 uppercase tracking-wide" data-i18n="home.cat.${key}">
+          ${section.title}
+        </h2>
+        <span class="text-xs font-medium text-surface-400 bg-surface-100 dark:bg-surface-800 dark:text-surface-500 px-2 py-0.5 rounded-full">${section.tools.length}</span>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         ${section.tools.map(tool => renderToolCard(tool)).join('')}
       </div>
     </section>
@@ -229,13 +260,12 @@ function renderCategories(categories) {
 }
 
 function renderToolCard(tool) {
-  const tipAttr = tool.tip ? ` data-tooltip="${tool.tip}" data-tooltip-pos="bottom"` : '';
   return `
     <a href="${tool.path}" 
        class="tool-card group flex flex-col p-4 bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl hover:border-primary-400 dark:hover:border-primary-600 hover:shadow-md transition-all duration-200"
        data-tool-id="${tool.id}"
        data-name="${tool.name}"
-       data-keywords="${tool.description} ${tool.keywords || ''}"${tipAttr}>
+       data-keywords="${tool.description} ${tool.keywords || ''}">
       <div class="flex items-start justify-between mb-3">
         <div class="text-3xl bg-surface-50 dark:bg-surface-800 p-2 rounded-lg border border-surface-100 dark:border-surface-700 group-hover:scale-110 transition-transform duration-200">
           ${tool.icon}
@@ -258,6 +288,7 @@ function groupToolsByCategory(tools) {
     security: { title: 'Security & Crypto', icon: '🛡️', tools: [] },
     network: { title: 'Network & Web', icon: '🌐', tools: [] },
     generators: { title: 'Generators', icon: '⚡', tools: [] },
+    game: { title: 'Games & Fun', icon: '🎮', tools: [] },
     utils: { title: 'Utilities', icon: '🛠️', tools: [] }
   };
 
@@ -266,8 +297,17 @@ function groupToolsByCategory(tools) {
     else if (tool.category === 'formatters') categories.formatters.tools.push(tool);
     else if (tool.category === 'network') categories.network.tools.push(tool);
     else if (tool.category === 'generators') categories.generators.tools.push(tool);
+    else if (tool.category === 'game') categories.game.tools.push(tool);
     else categories.utils.tools.push(tool);
   });
 
-  return categories;
+  // Filter out empty categories
+  const filtered = {};
+  for (const [key, section] of Object.entries(categories)) {
+    if (section.tools.length > 0) {
+      filtered[key] = section;
+    }
+  }
+
+  return filtered;
 }

@@ -234,7 +234,7 @@ function renderUnitConverterPage() {
           const activeClass = 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300';
           const inactiveClass = 'border-transparent bg-surface-50 dark:bg-surface-800 hover:bg-surface-100 dark:hover:bg-surface-700 text-surface-600 dark:text-surface-300';
           const isActive = key === currentCategory;
-          const className = \`category-btn p-3 rounded-xl border-2 transition-all flex flex-col items-center gap-2 \${isActive ? activeClass : inactiveClass}\`;
+           const className = \`category-btn p-3 rounded-md border-2 transition-all flex flex-col items-center gap-2 \${isActive ? activeClass : inactiveClass}\`;
           
           return \`
           <button 

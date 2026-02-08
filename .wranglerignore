@@ -5,3 +5,8 @@
 !wrangler.toml
 !src/**
 !dist/**
+!tests/**
+!.sisyphus/**
+!.opencode/**
+!test-results/**
+!tests/**
