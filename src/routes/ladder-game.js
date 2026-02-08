@@ -1,6 +1,6 @@
 /**
- * Ladder Game (Ghost Leg / Amidakuji)
- * Fully client-side Canvas tool.
+ * Ladder Game (Ghost Leg / Amidakuji) - Naver-style Wizard Flow
+ * Fully client-side Canvas tool with hidden ladder mechanics.
  */
 
 import { respondHTML } from '../utils/respond.js';
@@ -20,76 +20,122 @@ function renderLadderGamePage() {
       <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
         ${toolHeader}
 
-        <section aria-label="Ladder game" class="space-y-4">
-          <div class="flex flex-col lg:flex-row lg:items-end gap-3 lg:gap-5">
-            <div class="flex-1 min-w-0">
-              <p class="text-sm text-surface-600 dark:text-surface-400" data-i18n="tools.ladder-game.ui.text0">Choose a player count, set names, then press Start to generate a random ladder.</p>
-            </div>
-            <div class="flex flex-wrap items-end gap-2">
-               <div class="flex items-end gap-2">
-                 <label for="player-count" class="label"><span data-i18n="tools.ladder-game.ui.label0">Player count</span></label>
-                 <div class="flex items-center gap-1">
-                   <button id="remove-player" type="button" class="btn btn-ghost px-3" aria-label="Remove player" data-i18n-aria="tools.ladder-game.ui.button3">−</button>
-                   <select id="player-count" class="input w-20" aria-label="Player count">
-                     <option value="2">2</option>
-                     <option value="3">3</option>
-                     <option value="4" selected>4</option>
-                     <option value="5">5</option>
-                     <option value="6">6</option>
-                     <option value="7">7</option>
-                     <option value="8">8</option>
-                     <option value="9">9</option>
-                     <option value="10">10</option>
-                   </select>
-                   <button id="add-player" type="button" class="btn btn-ghost px-3" aria-label="Add player" data-i18n-aria="tools.ladder-game.ui.button4">+</button>
+        <section aria-label="Ladder game" class="space-y-6">
+          <!-- Step 1: Player Count -->
+          <div id="step-1" data-step="1" class="step-panel">
+            <div class="text-center py-8 sm:py-12">
+              <h2 class="text-xl sm:text-2xl font-bold text-surface-900 dark:text-surface-50 mb-2" data-i18n="tools.ladder-game.ui.heading0">How many players?</h2>
+              <p class="text-surface-600 dark:text-surface-400 mb-8" data-i18n="tools.ladder-game.ui.text0">Select the number of participants</p>
+
+              <div class="flex items-center justify-center gap-4 mb-8">
+                <button id="decrement-count" type="button" class="btn btn-secondary w-14 h-14 text-2xl" aria-label="Decrease player count" data-i18n-aria="tools.ladder-game.ui.button3">−</button>
+                <div class="relative">
+                  <input type="number" id="player-count" value="4" min="2" max="24" class="input w-24 text-center text-2xl font-bold py-3" aria-label="Player count" data-i18n-aria="tools.ladder-game.ui.label0">
+                  <span class="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.ladder-game.ui.text1">players</span>
                 </div>
+                <button id="increment-count" type="button" class="btn btn-secondary w-14 h-14 text-2xl" aria-label="Increase player count" data-i18n-aria="tools.ladder-game.ui.button4">+</button>
               </div>
 
-               <div class="flex items-end gap-2">
-                 <label for="map-size" class="label"><span data-i18n="tools.ladder-game.ui.label3">Map size</span></label>
-                 <select id="map-size" class="input w-36" aria-label="Map size">
-                   <option value="compact" data-i18n="tools.ladder-game.ui.option0">Compact</option>
-                   <option value="standard" selected data-i18n="tools.ladder-game.ui.option1">Standard</option>
-                   <option value="large" data-i18n="tools.ladder-game.ui.option2">Large</option>
-                 </select>
-               </div>
-
-               <div class="flex items-center gap-2">
-                 <label class="inline-flex items-center gap-2 text-sm text-surface-700 dark:text-surface-200 select-none">
-                   <input id="spoiler-guard" type="checkbox" class="rounded border-surface-300 text-primary-600 focus:ring-primary-500">
-                   <span data-i18n="tools.ladder-game.ui.label4">Spoiler guard</span>
-                 </label>
-
-                 <button id="generate" type="button" class="btn btn-primary" data-i18n="tools.ladder-game.ui.button0">Start</button>
-                <button id="reveal-all" type="button" class="btn btn-secondary" data-i18n="tools.ladder-game.ui.button1">Reveal All</button>
-                <button id="reset" type="button" class="btn btn-ghost" data-i18n="tools.ladder-game.ui.button2">Reset</button>
+              <div class="flex justify-center">
+                <button id="btn-step-1-next" type="button" class="btn btn-primary px-8 py-3 text-lg" data-i18n="tools.ladder-game.ui.button5">Start</button>
               </div>
             </div>
           </div>
 
-          <div class="border border-surface-200 dark:border-surface-800 rounded-xl bg-white dark:bg-surface-950 overflow-hidden">
-            <div id="ladder-scroll" class="overflow-x-auto">
-              <div id="ladder-stage" class="p-3 sm:p-4">
-                <div class="grid gap-3" style="grid-template-rows: auto auto auto;">
-                  <div id="players-row" class="flex gap-2" aria-label="Players"></div>
+          <!-- Step 2: Names and Results -->
+          <div id="step-2" data-step="2" class="step-panel hidden">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+              <div>
+                <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50" data-i18n="tools.ladder-game.ui.heading1">Enter Names & Results</h2>
+                <p class="text-sm text-surface-600 dark:text-surface-400" data-i18n="tools.ladder-game.ui.text2">Set player names and what they might win</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <label for="preset-select" class="label mb-0" data-i18n="tools.ladder-game.ui.label1">Quick presets</label>
+                <select id="preset-select" class="input w-40">
+                  <option value="" data-i18n="tools.ladder-game.ui.option0">Select...</option>
+                  <option value="coffee" data-i18n="tools.ladder-game.ui.option1">Coffee break</option>
+                  <option value="lunch" data-i18n="tools.ladder-game.ui.option2">Lunch duty</option>
+                  <option value="gift" data-i18n="tools.ladder-game.ui.option3">Gift exchange</option>
+                  <option value="chores" data-i18n="tools.ladder-game.ui.option4">House chores</option>
+                  <option value="teams" data-i18n="tools.ladder-game.ui.option5">Team assignment</option>
+                </select>
+              </div>
+            </div>
 
-                  <div id="ladder-canvas-wrap" class="relative rounded-lg border border-surface-200 dark:border-surface-800 bg-surface-50 dark:bg-surface-900/40 overflow-hidden">
-                    <canvas id="ladder-canvas" class="block w-full" aria-label="Ladder canvas"></canvas>
-                    <div id="ladder-spoiler" class="hidden absolute inset-0 z-40">
-                      <div id="ladder-spoiler-grid" class="absolute inset-0 grid" style="grid-template-columns: repeat(10, minmax(0, 1fr)); grid-template-rows: repeat(8, minmax(0, 1fr));"></div>
-                      <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(circle at 50% 20%, rgba(0,0,0,0.35), rgba(0,0,0,0.55));"></div>
-                    </div>
-                  </div>
+            <div class="space-y-6">
+              <!-- Player Names (Top) -->
+              <div>
+                <h3 class="label" data-i18n="tools.ladder-game.ui.label2">Players (Top)</h3>
+                <div id="players-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                  <!-- Dynamically populated -->
+                </div>
+              </div>
 
-                  <div id="results-row" class="flex gap-2" aria-label="Results"></div>
+              <!-- Results (Bottom) -->
+              <div>
+                <h3 class="label" data-i18n="tools.ladder-game.ui.label3">Results (Bottom)</h3>
+                <div id="results-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                  <!-- Dynamically populated -->
                 </div>
               </div>
             </div>
 
-            <div class="px-4 sm:px-6 py-3 border-t border-surface-200 dark:border-surface-800">
-              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                <div id="status" role="status" aria-live="polite" class="text-sm text-surface-700 dark:text-surface-300" data-i18n="tools.ladder-game.ui.status0">Ready.</div>
-                <div class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.ladder-game.ui.text2">Tip: Generate a new ladder anytime to reshuffle the outcomes.</div>
+            <div class="flex justify-between mt-8">
+              <button id="btn-step-2-back" type="button" class="btn btn-ghost" data-i18n="tools.ladder-game.ui.button6">Back</button>
+              <button id="btn-step-2-next" type="button" class="btn btn-primary px-8" data-i18n="tools.ladder-game.ui.button7">Start Ladder</button>
+            </div>
+          </div>
+
+          <!-- Step 3: The Ladder Game -->
+          <div id="step-3" data-step="3" class="step-panel hidden">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+              <div>
+                <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50" data-i18n="tools.ladder-game.ui.heading2">Find Your Path</h2>
+                <p class="text-sm text-surface-600 dark:text-surface-400" data-i18n="tools.ladder-game.ui.text3">Click a player name to trace down, or a result to trace up</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <label class="inline-flex items-center gap-2 text-sm text-surface-700 dark:text-surface-300 select-none cursor-pointer">
+                  <input id="sound-toggle" type="checkbox" class="rounded border-surface-300 text-primary-600 focus:ring-primary-500">
+                  <span data-i18n="tools.ladder-game.ui.label4">Sound</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Player Names Row (Clickable) -->
+            <div id="game-players-row" class="flex justify-center gap-2 sm:gap-4 mb-2">
+              <!-- Dynamically populated -->
+            </div>
+
+            <!-- Canvas Container -->
+            <div class="relative rounded-xl border border-surface-200 dark:border-surface-800 bg-surface-50 dark:bg-surface-900/40 overflow-hidden">
+              <canvas id="ladder-canvas" class="block w-full" aria-label="Ladder canvas"></canvas>
+              <!-- Loading overlay -->
+              <div id="ladder-loading" class="absolute inset-0 flex items-center justify-center bg-surface-50/80 dark:bg-surface-900/80 hidden">
+                <div class="spinner"></div>
+              </div>
+            </div>
+
+            <!-- Results Row (Clickable) -->
+            <div id="game-results-row" class="flex justify-center gap-2 sm:gap-4 mt-2">
+              <!-- Dynamically populated -->
+            </div>
+
+            <!-- Status -->
+            <div class="mt-4 text-center">
+              <div id="game-status" role="status" aria-live="polite" class="text-sm text-surface-700 dark:text-surface-300" data-i18n="tools.ladder-game.ui.status0">Click a name to start tracing</div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-wrap justify-center gap-3 mt-6">
+              <button id="btn-reveal-all" type="button" class="btn btn-secondary" data-i18n="tools.ladder-game.ui.button8">Reveal All</button>
+              <button id="btn-play-again" type="button" class="btn btn-primary" data-i18n="tools.ladder-game.ui.button9">Play Again</button>
+            </div>
+
+            <!-- Results Summary -->
+            <div id="results-summary" class="mt-6 hidden">
+              <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-50 mb-3 text-center" data-i18n="tools.ladder-game.ui.heading3">Results</h3>
+              <div id="results-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                <!-- Dynamically populated -->
               </div>
             </div>
           </div>
@@ -102,333 +148,391 @@ function renderLadderGamePage() {
     <script src="/vendor/game-utils.min.js"></script>
     <script>
       (function() {
-        const { clamp, cryptoUint32, randInt, randFloat, ensureAudioCtx: _ensureAudioCtx, playBeep: _playBeep } = window.GameUtils;
+        const { clamp, cryptoUint32, randInt, randFloat } = window.GameUtils;
 
+        // Color palette for traces
         const COLOR_PALETTE = [
           '#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6',
-          '#ec4899', '#14b8a6', '#f97316', '#6366f1', '#84cc16'
+          '#ec4899', '#14b8a6', '#f97316', '#6366f1', '#84cc16',
+          '#06b6d4', '#f43f5e', '#8b5cf6', '#10b981', '#f59e0b',
+          '#3b82f6', '#ef4444', '#ec4899', '#14b8a6', '#f97316',
+          '#6366f1', '#84cc16', '#06b6d4', '#f43f5e'
         ];
 
+        // Presets for quick setup
+        const PRESETS = {
+          coffee: {
+            results: ['Pay for coffee', 'Free pass', 'Buy next round', 'Get treated', 'Pay for coffee', 'Free pass', 'Buy next round', 'Get treated', 'Pay for coffee', 'Free pass', 'Buy next round', 'Get treated', 'Pay for coffee', 'Free pass', 'Buy next round', 'Get treated', 'Pay for coffee', 'Free pass', 'Buy next round', 'Get treated', 'Pay for coffee', 'Free pass', 'Buy next round', 'Get treated']
+          },
+          lunch: {
+            results: ['Buy lunch', 'Wash dishes', 'Free pass', 'Buy lunch', 'Wash dishes', 'Free pass', 'Buy lunch', 'Wash dishes', 'Free pass', 'Buy lunch', 'Wash dishes', 'Free pass', 'Buy lunch', 'Wash dishes', 'Free pass', 'Buy lunch', 'Wash dishes', 'Free pass', 'Buy lunch', 'Wash dishes', 'Free pass', 'Buy lunch', 'Wash dishes', 'Free pass']
+          },
+          gift: {
+            results: ['Give a gift', 'Receive a gift', 'Exchange gifts', 'Give a gift', 'Receive a gift', 'Exchange gifts', 'Give a gift', 'Receive a gift', 'Exchange gifts', 'Give a gift', 'Receive a gift', 'Exchange gifts', 'Give a gift', 'Receive a gift', 'Exchange gifts', 'Give a gift', 'Receive a gift', 'Exchange gifts', 'Give a gift', 'Receive a gift', 'Exchange gifts', 'Give a gift', 'Receive a gift', 'Exchange gifts']
+          },
+          chores: {
+            results: ['Clean kitchen', 'Do laundry', 'Vacuum', 'Take out trash', 'Clean bathroom', 'Free pass', 'Clean kitchen', 'Do laundry', 'Vacuum', 'Take out trash', 'Clean bathroom', 'Free pass', 'Clean kitchen', 'Do laundry', 'Vacuum', 'Take out trash', 'Clean bathroom', 'Free pass', 'Clean kitchen', 'Do laundry', 'Vacuum', 'Take out trash', 'Clean bathroom', 'Free pass']
+          },
+          teams: {
+            results: ['Team A', 'Team B', 'Team C', 'Team D', 'Team A', 'Team B', 'Team C', 'Team D', 'Team A', 'Team B', 'Team C', 'Team D', 'Team A', 'Team B', 'Team C', 'Team D', 'Team A', 'Team B', 'Team C', 'Team D', 'Team A', 'Team B', 'Team C', 'Team D']
+          }
+        };
+
+        // Device detection
+        const isMobile = window.matchMedia && window.matchMedia('(max-width: 640px)').matches;
         const MIN_PLAYERS = 2;
-        const MAX_PLAYERS = 10;
+        const MAX_PLAYERS = isMobile ? 12 : 24;
         const DEFAULT_PLAYERS = 4;
 
-        const elCount = document.getElementById('player-count');
-         const elAdd = document.getElementById('add-player');
-         const elRemove = document.getElementById('remove-player');
-         const elGenerate = document.getElementById('generate');
-         const elRevealAll = document.getElementById('reveal-all');
-         const elReset = document.getElementById('reset');
-         const elMapSize = document.getElementById('map-size');
-         const elSpoilerGuard = document.getElementById('spoiler-guard');
-         const elPlayersRow = document.getElementById('players-row');
-         const elResultsRow = document.getElementById('results-row');
-         const elStage = document.getElementById('ladder-stage');
-         const elScroll = document.getElementById('ladder-scroll');
-         const elStatus = document.getElementById('status');
-         const elCanvasWrap = document.getElementById('ladder-canvas-wrap');
-         const elSpoiler = document.getElementById('ladder-spoiler');
-         const elSpoilerGrid = document.getElementById('ladder-spoiler-grid');
-         const canvas = document.getElementById('ladder-canvas');
-         const ctx = canvas.getContext('2d');
+        // State
+        const state = {
+          step: 1,
+          count: DEFAULT_PLAYERS,
+          players: [],
+          results: [],
+          ladder: null,
+          geom: null,
+          computedPaths: [],
+          traces: [],
+          rafId: null,
+          isTracing: false,
+          revealedResults: new Set(),
+          soundEnabled: false,
+          prefersReducedMotion: window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        };
 
-        const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        // Audio context for sound effects
+        const audio = { ctx: null };
 
-        function setStatus(text, type) {
-          elStatus.removeAttribute('data-i18n');
-          elStatus.textContent = text;
-          elStatus.classList.remove('text-primary-700', 'dark:text-primary-300');
-          if (type === 'highlight') {
-            elStatus.classList.add('text-primary-700', 'dark:text-primary-300');
-          }
+        // DOM Elements
+        const elStep1 = document.getElementById('step-1');
+        const elStep2 = document.getElementById('step-2');
+        const elStep3 = document.getElementById('step-3');
+        const elPlayerCount = document.getElementById('player-count');
+        const elDecrement = document.getElementById('decrement-count');
+        const elIncrement = document.getElementById('increment-count');
+        const elBtnStep1Next = document.getElementById('btn-step-1-next');
+        const elBtnStep2Back = document.getElementById('btn-step-2-back');
+        const elBtnStep2Next = document.getElementById('btn-step-2-next');
+        const elPlayersContainer = document.getElementById('players-container');
+        const elResultsContainer = document.getElementById('results-container');
+        const elPresetSelect = document.getElementById('preset-select');
+        const elGamePlayersRow = document.getElementById('game-players-row');
+        const elGameResultsRow = document.getElementById('game-results-row');
+        const elGameStatus = document.getElementById('game-status');
+        const elBtnRevealAll = document.getElementById('btn-reveal-all');
+        const elBtnPlayAgain = document.getElementById('btn-play-again');
+        const elResultsSummary = document.getElementById('results-summary');
+        const elResultsList = document.getElementById('results-list');
+        const elSoundToggle = document.getElementById('sound-toggle');
+        const canvas = document.getElementById('ladder-canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Initialize
+        function init() {
+          // Set max based on device
+          elPlayerCount.max = MAX_PLAYERS;
+          
+          // Initialize arrays
+          resetNames();
+
+          // Event delegation
+          document.addEventListener('click', handleGlobalClick);
+          document.addEventListener('input', handleGlobalInput);
+
+          // Sound toggle
+          elSoundToggle.addEventListener('change', (e) => {
+            state.soundEnabled = e.target.checked;
+            if (state.soundEnabled && !audio.ctx) {
+              ensureAudioCtx();
+            }
+          });
+
+          // Keyboard shortcuts
+          window.addEventListener('keydown', handleKeydown);
+
+          // Resize observer
+          const resizeObs = new ResizeObserver(() => {
+            if (state.step === 3 && state.ladder) {
+              resizeCanvasAndRecompute();
+            }
+          });
+          resizeObs.observe(canvas.parentElement);
+
+          // Theme change observer
+          const mo = new MutationObserver(() => {
+            if (state.step === 3) draw();
+          });
+          mo.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
         }
 
-        function defaultPlayerName(i) {
-          return window._t('tools.ladder-game.js.text0', 'Player') + ' ' + (i + 1);
-        }
+        function handleGlobalClick(e) {
+          const target = e.target;
 
-        function defaultResultName(i) {
-          const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-          const suffix = letters[i] ? letters[i] : String(i + 1);
-          return window._t('tools.ladder-game.js.text1', 'Result') + ' ' + suffix;
-        }
-
-          const state = {
-            count: DEFAULT_PLAYERS,
-            mapSize: 'standard',
-            started: false,
-            spoilerEnabled: false,
-            players: new Array(MAX_PLAYERS).fill('').map((_, i) => defaultPlayerName(i)),
-            results: new Array(MAX_PLAYERS).fill('').map((_, i) => defaultResultName(i)),
-            ladder: null,
-            geom: null,
-            computedPaths: [],
-           traces: [],
-           rafId: null,
-           resizeObs: null
-         };
-
-        function buildRowsIfNeeded() {
-          if (elPlayersRow.childElementCount === MAX_PLAYERS) return;
-
-          elPlayersRow.innerHTML = '';
-          elResultsRow.innerHTML = '';
-
-          for (let i = 0; i < MAX_PLAYERS; i++) {
-            const colWrap = document.createElement('div');
-            colWrap.className = 'min-w-0';
-            colWrap.dataset.col = String(i);
-
-            const revealBtn = document.createElement('button');
-            revealBtn.type = 'button';
-            revealBtn.className = 'btn btn-ghost w-full justify-center px-3 py-2 text-sm whitespace-nowrap overflow-hidden text-ellipsis';
-            revealBtn.dataset.playerReveal = String(i);
-            revealBtn.setAttribute('aria-label', window._t('tools.ladder-game.js.text2', 'Reveal one') + ': ' + state.players[i]);
-            revealBtn.textContent = state.players[i];
-
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.id = 'player-name-' + i;
-            input.className = 'input mt-2';
-            input.value = state.players[i];
-            input.setAttribute('data-i18n-placeholder', 'tools.ladder-game.ui.placeholder0');
-            input.placeholder = 'Player name';
-            input.setAttribute('aria-label', window._t('tools.ladder-game.js.text3', 'Player name'));
-
-            colWrap.appendChild(revealBtn);
-            colWrap.appendChild(input);
-            elPlayersRow.appendChild(colWrap);
-
-            const rWrap = document.createElement('div');
-            rWrap.className = 'min-w-0';
-            rWrap.dataset.col = String(i);
-            rWrap.dataset.resultWrap = '1';
-
-            const rInput = document.createElement('input');
-            rInput.type = 'text';
-            rInput.id = 'result-text-' + i;
-            rInput.className = 'input';
-            rInput.value = state.results[i];
-            rInput.setAttribute('data-i18n-placeholder', 'tools.ladder-game.ui.placeholder1');
-            rInput.placeholder = 'Result text';
-            rInput.setAttribute('aria-label', window._t('tools.ladder-game.js.text4', 'Result text'));
-
-            rWrap.appendChild(rInput);
-            elResultsRow.appendChild(rWrap);
+          // Step 1: Decrement count
+          if (target.closest('#decrement-count')) {
+            const newVal = Math.max(MIN_PLAYERS, parseInt(elPlayerCount.value, 10) - 1);
+            elPlayerCount.value = newVal;
+            state.count = newVal;
           }
 
-          // Ensure i18n applies to dynamically added placeholders.
-          try {
-            if (window.setLanguage && window._i18nGetLang) window.setLanguage(window._i18nGetLang());
-           } catch (e) {}
+          // Step 1: Increment count
+          if (target.closest('#increment-count')) {
+            const newVal = Math.min(MAX_PLAYERS, parseInt(elPlayerCount.value, 10) + 1);
+            elPlayerCount.value = newVal;
+            state.count = newVal;
+          }
 
-           updateControlsEnabled();
-        }
+          // Step 1: Next button
+          if (target.closest('#btn-step-1-next')) {
+            state.count = parseInt(elPlayerCount.value, 10) || DEFAULT_PLAYERS;
+            goToStep(2);
+          }
 
-        function getPlayerControls() {
-          const btns = Array.from(elPlayersRow.querySelectorAll('[data-player-reveal]'));
-          const inputs = Array.from(elPlayersRow.querySelectorAll('input[id^="player-name-"]'));
-          const rInputs = Array.from(elResultsRow.querySelectorAll('input[id^="result-text-"]'));
-          const rWraps = Array.from(elResultsRow.querySelectorAll('[data-result-wrap]'));
-          return { btns, inputs, rInputs, rWraps };
-        }
+          // Step 2: Back button
+          if (target.closest('#btn-step-2-back')) {
+            goToStep(1);
+          }
 
-        function updateVisibilityAndLayout() {
-          const { btns, inputs, rInputs, rWraps } = getPlayerControls();
-          const count = state.count;
+          // Step 2: Next button
+          if (target.closest('#btn-step-2-next')) {
+            collectNamesAndResults();
+            goToStep(3);
+            initGame();
+          }
 
-          for (let i = 0; i < MAX_PLAYERS; i++) {
-            const visible = i < count;
-            const pCol = btns[i].parentElement;
-            const rCol = rInputs[i].parentElement;
-            if (visible) {
-              pCol.classList.remove('hidden');
-              rCol.classList.remove('hidden');
-              btns[i].disabled = !state.started;
-              inputs[i].disabled = false;
-              rInputs[i].disabled = false;
-            } else {
-              pCol.classList.add('hidden');
-              rCol.classList.add('hidden');
-              btns[i].disabled = true;
-              inputs[i].disabled = true;
-              rInputs[i].disabled = true;
+          // Step 3: Reveal All
+          if (target.closest('#btn-reveal-all')) {
+            revealAll();
+          }
+
+          // Step 3: Play Again
+          if (target.closest('#btn-play-again')) {
+            resetGame();
+            goToStep(1);
+          }
+
+          // Game: Click player name to trace
+          if (target.closest('[data-player-index]')) {
+            const btn = target.closest('[data-player-index]');
+            const idx = parseInt(btn.getAttribute('data-player-index'), 10);
+            if (!state.isTracing && state.ladder) {
+              tracePlayer(idx);
             }
           }
 
-          // Compute stage width and per-column width (tighter, Naver-like).
-          const scrollWidth = Math.max(0, elScroll.clientWidth);
-          const gap = 8; // Tailwind gap-2
-          const minColW = 108;
-          const idealColW = 136;
-          const maxColW = 210;
-          const availableForCols = scrollWidth ? (scrollWidth - 32) : (idealColW * count);
-          const approxColW = availableForCols > 0 ? ((availableForCols - gap * (count - 1)) / count) : idealColW;
-          const colW = clamp(Math.round(approxColW), minColW, maxColW);
-          const stageW = Math.max(260, (colW * count) + gap * (count - 1));
-          elStage.style.width = stageW + 'px';
+          // Game: Click result to trace up
+          if (target.closest('[data-result-index]')) {
+            const btn = target.closest('[data-result-index]');
+            const idx = parseInt(btn.getAttribute('data-result-index'), 10);
+            if (!state.isTracing && state.ladder) {
+              traceResult(idx);
+            }
+          }
+        }
 
-          // Apply column widths.
-          for (let i = 0; i < count; i++) {
-            btns[i].parentElement.style.width = colW + 'px';
-            rInputs[i].parentElement.style.width = colW + 'px';
+        function handleGlobalInput(e) {
+          const target = e.target;
+
+          // Player count input
+          if (target.id === 'player-count') {
+            let val = parseInt(target.value, 10);
+            if (Number.isFinite(val)) {
+              val = clamp(val, MIN_PLAYERS, MAX_PLAYERS);
+              state.count = val;
+            }
           }
 
-          // Canvas size is bound to stage width.
-          resizeCanvasAndRecompute();
+          // Preset selection
+          if (target.id === 'preset-select') {
+            applyPreset(target.value);
+          }
         }
 
-        function dismissSpoiler() {
-          if (!elSpoiler) return;
-          elSpoiler.classList.add('hidden');
-          if (elSpoilerGrid) elSpoilerGrid.innerHTML = '';
-        }
-
-        function getSpoilerGridDims() {
-          if (state.mapSize === 'large') return { cols: 12, rows: 10 };
-          if (state.mapSize === 'compact') return { cols: 8, rows: 6 };
-          return { cols: 10, rows: 8 };
-        }
-
-        function buildSpoilerTiles() {
-          if (!elSpoiler || !elSpoilerGrid) return;
-          if (!state.started || !state.spoilerEnabled) {
-            dismissSpoiler();
+        function handleKeydown(e) {
+          if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) {
             return;
           }
 
-          const dims = getSpoilerGridDims();
-          elSpoilerGrid.style.gridTemplateColumns = 'repeat(' + String(dims.cols) + ', minmax(0, 1fr))';
-          elSpoilerGrid.style.gridTemplateRows = 'repeat(' + String(dims.rows) + ', minmax(0, 1fr))';
-          elSpoilerGrid.innerHTML = '';
-
-          const total = dims.cols * dims.rows;
-          for (let i = 0; i < total; i++) {
-            const t = document.createElement('button');
-            t.type = 'button';
-            t.className = 'ladder-spoiler-tile';
-            t.setAttribute('aria-label', 'Reveal');
-            t.addEventListener('click', () => {
-              t.classList.add('ladder-spoiler-tile-off');
-              setTimeout(() => {
-                t.remove();
-                if (!elSpoilerGrid.childElementCount) dismissSpoiler();
-              }, 160);
-            });
-            elSpoilerGrid.appendChild(t);
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            if (state.step === 1) {
+              elBtnStep1Next.click();
+            } else if (state.step === 2) {
+              elBtnStep2Next.click();
+            }
           }
-
-          elSpoiler.classList.remove('hidden');
         }
 
-        function canStart() {
-          const { inputs } = getPlayerControls();
+        function goToStep(step) {
+          state.step = step;
+          elStep1.classList.toggle('hidden', step !== 1);
+          elStep2.classList.toggle('hidden', step !== 2);
+          elStep3.classList.toggle('hidden', step !== 3);
+
+          if (step === 2) {
+            renderStep2();
+          } else if (step === 3) {
+            renderStep3();
+          }
+        }
+
+        function resetNames() {
+          state.players = [];
+          state.results = [];
+          for (let i = 0; i < MAX_PLAYERS; i++) {
+            state.players.push(window._t('tools.ladder-game.js.text0', 'Player') + ' ' + (i + 1));
+            const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const suffix = letters[i % letters.length] || String(i + 1);
+            state.results.push(window._t('tools.ladder-game.js.text1', 'Result') + ' ' + suffix);
+          }
+        }
+
+        function renderStep2() {
+          // Render player inputs
+          elPlayersContainer.innerHTML = '';
+          elResultsContainer.innerHTML = '';
+
           for (let i = 0; i < state.count; i++) {
-            const v = inputs[i] ? String(inputs[i].value || '').trim() : '';
-            if (!v) return false;
+            // Player input
+            const pWrap = document.createElement('div');
+            pWrap.className = 'flex flex-col';
+            pWrap.innerHTML = '<label class="text-xs text-surface-500 dark:text-surface-400 mb-1">' + window._t('tools.ladder-game.js.tpl0', 'Player') + ' ' + (i + 1) + '</label>' +
+              '<input type="text" class="input player-name-input" data-index="' + i + '" value="' + escapeHtml(state.players[i]) + '" placeholder="' + window._t('tools.ladder-game.ui.placeholder0', 'Name') + '" data-i18n-placeholder="tools.ladder-game.ui.placeholder0">';
+            elPlayersContainer.appendChild(pWrap);
+
+            // Result input
+            const rWrap = document.createElement('div');
+            rWrap.className = 'flex flex-col';
+            rWrap.innerHTML = '<label class="text-xs text-surface-500 dark:text-surface-400 mb-1">' + window._t('tools.ladder-game.js.tpl1', 'Result') + ' ' + (i + 1) + '</label>' +
+              '<input type="text" class="input result-input" data-index="' + i + '" value="' + escapeHtml(state.results[i]) + '" placeholder="' + window._t('tools.ladder-game.ui.placeholder1', 'Result') + '" data-i18n-placeholder="tools.ladder-game.ui.placeholder1">';
+            elResultsContainer.appendChild(rWrap);
           }
-          return true;
         }
 
-        function updateControlsEnabled() {
-          const ok = canStart();
-          if (elGenerate) elGenerate.disabled = !ok;
-          if (elRevealAll) elRevealAll.disabled = !state.started;
-          const { btns } = getPlayerControls();
-          for (let i = 0; i < btns.length; i++) {
-            if (!btns[i]) continue;
-            btns[i].disabled = !state.started;
+        function collectNamesAndResults() {
+          const playerInputs = elPlayersContainer.querySelectorAll('.player-name-input');
+          const resultInputs = elResultsContainer.querySelectorAll('.result-input');
+
+          for (let i = 0; i < state.count; i++) {
+            state.players[i] = (playerInputs[i]?.value || state.players[i]).trim();
+            state.results[i] = (resultInputs[i]?.value || state.results[i]).trim();
           }
         }
 
-         function chooseCanvasHeight() {
-           const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
-           const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+        function applyPreset(presetKey) {
+          if (!presetKey || !PRESETS[presetKey]) return;
 
-           // Comfortable ladder area on desktop; keep it compact on short screens.
-           const sizeMult = state.mapSize === 'large' ? 1.22 : (state.mapSize === 'compact' ? 0.90 : 1.0);
-           const base = (vw < 640 ? 560 : 680) * sizeMult;
-           return clamp(Math.round(Math.min(base, vh * 0.86)), 480, 980);
-         }
+          const preset = PRESETS[presetKey];
+          const resultInputs = elResultsContainer.querySelectorAll('.result-input');
 
-        function isDarkMode() {
-          return document.documentElement.classList.contains('dark');
+          for (let i = 0; i < state.count && i < resultInputs.length; i++) {
+            resultInputs[i].value = preset.results[i % preset.results.length];
+          }
         }
 
-        function computeGeometry() {
-          const rect = canvas.getBoundingClientRect();
-          const w = Math.max(10, Math.round(rect.width));
-          const h = Math.max(10, Math.round(rect.height));
+        function renderStep3() {
+          // Render clickable player names
+          elGamePlayersRow.innerHTML = '';
+          elGameResultsRow.innerHTML = '';
 
-          const paddingX = 22;
-          const topTextY = 20;
-          const bottomTextY = h - 14;
-          const yTop = 44;
-          const yBottom = h - 44;
-          const ladderHeight = Math.max(120, yBottom - yTop);
+          const colWidth = Math.min(120, Math.max(60, Math.floor(600 / state.count)));
+
+          for (let i = 0; i < state.count; i++) {
+            // Player button
+            const pBtn = document.createElement('button');
+            pBtn.type = 'button';
+            pBtn.className = 'player-btn px-2 py-2 rounded-lg bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 font-medium text-sm hover:bg-primary-200 dark:hover:bg-primary-900/50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed';
+            pBtn.style.width = colWidth + 'px';
+            pBtn.style.minWidth = '60px';
+            pBtn.textContent = state.players[i];
+            pBtn.setAttribute('data-player-index', i);
+            pBtn.setAttribute('aria-label', window._t('tools.ladder-game.js.text2', 'Trace') + ': ' + state.players[i]);
+            elGamePlayersRow.appendChild(pBtn);
+
+            // Result button
+            const rBtn = document.createElement('button');
+            rBtn.type = 'button';
+            rBtn.className = 'result-btn px-2 py-2 rounded-lg bg-surface-100 dark:bg-surface-800 text-surface-700 dark:text-surface-300 font-medium text-sm hover:bg-surface-200 dark:hover:bg-surface-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed';
+            rBtn.style.width = colWidth + 'px';
+            rBtn.style.minWidth = '60px';
+            rBtn.textContent = state.results[i];
+            rBtn.setAttribute('data-result-index', i);
+            rBtn.setAttribute('aria-label', window._t('tools.ladder-game.js.text3', 'Trace up from') + ': ' + state.results[i]);
+            elGameResultsRow.appendChild(rBtn);
+          }
+        }
+
+        function initGame() {
+          // Reset game state
+          state.revealedResults.clear();
+          state.traces = [];
+          stopAnimationLoop();
+          elResultsSummary.classList.add('hidden');
+          elResultsList.innerHTML = '';
+          setGameStatus(window._t('tools.ladder-game.ui.status0', 'Click a name to start tracing'));
+
+          // Generate ladder
+          generateLadder();
+          computeGeometry();
+          computePaths();
+          resizeCanvasAndRecompute();
+
+          // Reset button states
+          updateButtonStates();
+        }
+
+        function resetGame() {
+          state.ladder = null;
+          state.computedPaths = [];
+          state.traces = [];
+          state.revealedResults.clear();
+          stopAnimationLoop();
+          resetNames();
+          elPresetSelect.value = '';
+        }
+
+        // ============================================
+        // LADDER GENERATION (PRESERVED ALGORITHM)
+        // ============================================
+
+        function ladderParams() {
           const count = state.count;
-          const xSpan = Math.max(20, w - paddingX * 2);
-          const step = count > 1 ? (xSpan / (count - 1)) : 0;
+          // Fixed params for consistency
+          const rowBase = 20;
+          const rowScale = 2;
+          const rows = clamp(rowBase + count * rowScale, 18, 40);
+          const rungMin = 3;
+          const rungMax = 6;
+          const tryP = count <= 3 ? 0.22 : 0.18;
 
-          const xForCol = (c) => paddingX + step * c;
-
-          return {
-            w,
-            h,
-            paddingX,
-            topTextY,
-            bottomTextY,
-            yTop,
-            yBottom,
-            ladderHeight,
-            xForCol
-          };
+          return { rows, rungMin, rungMax, tryP };
         }
 
-         function ladderParams() {
-           const count = state.count;
-           const size = state.mapSize;
- 
-           // Bigger maps: more rows and slightly denser rung distribution.
-           const rowBase = size === 'large' ? 30 : (size === 'compact' ? 16 : 22);
-           const rowScale = size === 'large' ? 3 : (size === 'compact' ? 2 : 2);
-           const rows = clamp(rowBase + count * rowScale, size === 'large' ? 34 : 18, size === 'large' ? 56 : 40);
- 
-           const rungMin = size === 'large' ? 5 : (size === 'compact' ? 3 : 4);
-           const rungMax = size === 'large' ? 9 : (size === 'compact' ? 5 : 7);
- 
-           // Try-rate per cell controls overall density.
-           const tryP = size === 'large'
-             ? (count <= 3 ? 0.30 : 0.24)
-             : (count <= 3 ? 0.22 : 0.18);
- 
-           return { rows, rungMin, rungMax, tryP };
-         }
+        function generateLadder() {
+          const count = state.count;
+          const { rows, rungMin: minPerPair, rungMax: maxPerPair, tryP } = ladderParams();
+          const rungsByRow = new Array(rows).fill(null).map(() => []);
 
-         function generateLadder() {
-           const count = state.count;
-           const { rows, rungMin: minPerPair, rungMax: maxPerPair, tryP } = ladderParams();
-           const rungsByRow = new Array(rows).fill(null).map(() => []);
-
-          // First pass: probabilistic fill with adjacency constraint.
+          // First pass: probabilistic fill with adjacency constraint
           for (let row = 0; row < rows; row++) {
             let prevPlaced = false;
             for (let col = 0; col < count - 1; col++) {
-               const shouldTry = randFloat() < tryP;
-               if (!shouldTry) {
-                 prevPlaced = false;
-                 continue;
-               }
+              const shouldTry = randFloat() < tryP;
+              if (!shouldTry) {
+                prevPlaced = false;
+                continue;
+              }
               if (prevPlaced) continue;
-              // Ensure no rung adjacent on this row.
+              // Ensure no rung adjacent on this row
               if (rungsByRow[row].includes(col - 1) || rungsByRow[row].includes(col + 1)) continue;
               rungsByRow[row].push(col);
               prevPlaced = true;
             }
           }
 
-           // Normalize per-column-pair rung counts.
-           const counts = new Array(count - 1).fill(0);
+          // Normalize per-column-pair rung counts
+          const counts = new Array(count - 1).fill(0);
           for (let row = 0; row < rows; row++) {
             for (let i = 0; i < rungsByRow[row].length; i++) {
               counts[rungsByRow[row][i]]++;
@@ -443,7 +547,7 @@ function renderLadderGamePage() {
             return true;
           }
 
-          // Add missing rungs.
+          // Add missing rungs
           for (let col = 0; col < count - 1; col++) {
             let guard = 0;
             while (counts[col] < minPerPair && guard < 500) {
@@ -455,14 +559,14 @@ function renderLadderGamePage() {
             }
           }
 
-          // Remove extras.
+          // Remove extras
           for (let col = 0; col < count - 1; col++) {
             if (counts[col] <= maxPerPair) continue;
             const positions = [];
             for (let row = 0; row < rows; row++) {
               if (rungsByRow[row].includes(col)) positions.push(row);
             }
-            // Randomly remove until within max.
+            // Randomly remove until within max
             while (counts[col] > maxPerPair && positions.length) {
               const idx = randInt(positions.length);
               const row = positions.splice(idx, 1)[0];
@@ -472,7 +576,7 @@ function renderLadderGamePage() {
             }
           }
 
-          // Materialize rungs.
+          // Materialize rungs
           const rungs = [];
           for (let row = 0; row < rows; row++) {
             rungsByRow[row].sort((a, b) => a - b);
@@ -482,14 +586,48 @@ function renderLadderGamePage() {
           }
 
           state.ladder = { rows, rungsByRow, rungs };
-          setStatus(window._t('tools.ladder-game.js.status0', 'Ladder generated.'), 'highlight');
         }
+
+        function computeGeometry() {
+          const rect = canvas.getBoundingClientRect();
+          const w = Math.max(10, Math.round(rect.width));
+          const h = Math.max(300, Math.min(600, Math.round(w * 0.8)));
+
+          const paddingX = Math.max(30, Math.min(60, w / (state.count + 2)));
+          const topTextY = 20;
+          const bottomTextY = h - 14;
+          const yTop = 44;
+          const yBottom = h - 44;
+          const ladderHeight = Math.max(120, yBottom - yTop);
+          const count = state.count;
+          const xSpan = Math.max(20, w - paddingX * 2);
+          const step = count > 1 ? (xSpan / (count - 1)) : 0;
+
+          const xForCol = (c) => paddingX + step * c;
+
+          state.geom = {
+            w,
+            h,
+            paddingX,
+            topTextY,
+            bottomTextY,
+            yTop,
+            yBottom,
+            ladderHeight,
+            xForCol
+          };
+        }
+
+        // ============================================
+        // PATH TRACING (PRESERVED ALGORITHM)
+        // ============================================
 
         function computePaths() {
           if (!state.ladder || !state.geom) {
             state.computedPaths = [];
             return;
           }
+
           const { rows, rungsByRow } = state.ladder;
           const g = state.geom;
           const count = state.count;
@@ -499,6 +637,7 @@ function renderLadderGamePage() {
             rowYs[r] = g.yTop + ((r + 1) * g.ladderHeight) / (rows + 1);
           }
 
+          // PRESERVED: follow() path tracing algorithm
           function follow(startCol) {
             let col = startCol;
             const pts = [{ x: g.xForCol(col), y: g.yTop }];
@@ -507,9 +646,9 @@ function renderLadderGamePage() {
               const rungCols = rungsByRow[r];
               let delta = 0;
 
-              // If there is a rung starting at our column, cross right.
+              // If there is a rung starting at our column, cross right
               if (rungCols.includes(col)) delta = 1;
-              // Else if there is a rung starting at col-1, we are on the right side; cross left.
+              // Else if there is a rung starting at col-1, we are on the right side; cross left
               else if (rungCols.includes(col - 1)) delta = -1;
 
               if (delta !== 0) {
@@ -531,15 +670,18 @@ function renderLadderGamePage() {
               const dy = points[p].y - points[p - 1].y;
               len += Math.hypot(dx, dy);
             }
-            computed.push({ points, endCol, length: len });
+            computed.push({ points, endCol, length: len, startCol: i });
           }
+
           state.computedPaths = computed;
         }
 
         function resizeCanvasAndRecompute() {
-          const stageRect = elStage.getBoundingClientRect();
-          const cssW = Math.max(10, Math.round(stageRect.width));
-          const cssH = chooseCanvasHeight();
+          if (!state.geom) return;
+
+          const cssW = Math.max(10, Math.round(canvas.parentElement.clientWidth));
+          const cssH = state.geom.h;
+
           canvas.style.height = cssH + 'px';
           canvas.style.width = cssW + 'px';
 
@@ -548,17 +690,18 @@ function renderLadderGamePage() {
           canvas.height = Math.round(cssH * dpr);
           ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-          const prev = state.geom;
-          state.geom = computeGeometry();
+          state.geom.w = cssW;
 
-          // Preserve active trace progress as a ratio on resize.
+          // Recompute paths with new geometry
           const oldPaths = state.computedPaths;
           computePaths();
-          if (prev && oldPaths && oldPaths.length && state.traces.length) {
+
+          // Preserve trace progress on resize
+          if (oldPaths.length && state.traces.length) {
             for (let i = 0; i < state.traces.length; i++) {
               const t = state.traces[i];
-              const oldLen = oldPaths[t.playerIndex] ? oldPaths[t.playerIndex].length : null;
-              const newLen = state.computedPaths[t.playerIndex] ? state.computedPaths[t.playerIndex].length : null;
+              const oldLen = oldPaths[t.playerIndex]?.length;
+              const newLen = state.computedPaths[t.playerIndex]?.length;
               if (oldLen && newLen) {
                 const ratio = clamp(t.progress / oldLen, 0, 1);
                 t.progress = ratio * newLen;
@@ -569,207 +712,256 @@ function renderLadderGamePage() {
           draw();
         }
 
-        function clearCelebrations() {
-          const wraps = elResultsRow.querySelectorAll('[data-result-wrap]');
-          wraps.forEach(w => {
-            w.classList.remove('ring-2', 'ring-primary-400', 'dark:ring-primary-600');
-            w.removeAttribute('data-celebrate');
-          });
+        // ============================================
+        // TRACING & ANIMATION
+        // ============================================
+
+        function tracePlayer(playerIndex) {
+          if (state.isTracing) return;
+          if (state.revealedResults.has(playerIndex)) return;
+
+          const path = state.computedPaths[playerIndex];
+          if (!path) return;
+
+          state.isTracing = true;
+          updateButtonStates();
+
+          const color = COLOR_PALETTE[playerIndex % COLOR_PALETTE.length];
+          state.traces = [{
+            playerIndex,
+            color,
+            progress: 0,
+            done: false,
+            reverse: false
+          }];
+
+          setGameStatus(window._t('tools.ladder-game.js.status1', 'Tracing...'));
+          startAnimationLoop();
         }
 
-        function celebrate(colIndex) {
-          clearCelebrations();
-          const wrap = elResultsRow.querySelector('[data-col="' + colIndex + '"]');
-          if (!wrap) return;
-          wrap.classList.add('ring-2', 'ring-primary-400', 'dark:ring-primary-600');
-          wrap.setAttribute('data-celebrate', '1');
-          setTimeout(() => {
-            wrap.removeAttribute('data-celebrate');
-          }, 700);
+        function traceResult(resultIndex) {
+          if (state.isTracing) return;
+
+          // Find which player ends at this result
+          const playerIndex = state.computedPaths.findIndex(p => p.endCol === resultIndex);
+          if (playerIndex === -1) return;
+          if (state.revealedResults.has(playerIndex)) return;
+
+          state.isTracing = true;
+          updateButtonStates();
+
+          const color = COLOR_PALETTE[playerIndex % COLOR_PALETTE.length];
+          state.traces = [{
+            playerIndex,
+            color,
+            progress: 0,
+            done: false,
+            reverse: true,
+            resultIndex
+          }];
+
+          setGameStatus(window._t('tools.ladder-game.js.status1', 'Tracing...'));
+          startAnimationLoop();
         }
 
-        const audio = { ctx: null };
+        function revealAll() {
+          if (state.isTracing) return;
 
-        function ensureAudioCtx() { return _ensureAudioCtx(audio); }
-        function playBeep(freq, durMs, gain) { _playBeep(audio, freq, durMs, gain); }
+          state.isTracing = true;
+          updateButtonStates();
 
-        function playJunctionPing() {
-          playBeep(1200 + randInt(200), 35, 0.10);
-        }
-
-        function playTraceTick(progress) {
-          const p = clamp(progress, 0, 1);
-          playBeep(600 + p * 300, 20, 0.06 + p * 0.04);
-        }
-
-        function playCelebration() {
-          const notes = [523, 659, 784, 1047, 1319];
-          const delays = [0, 70, 140, 250, 380];
-          for (let i = 0; i < notes.length; i++) {
-            setTimeout(() => playBeep(notes[i], 100, 0.12 - i * 0.01), delays[i]);
-          }
-        }
-
-        function playImpact() {
-          const c = ensureAudioCtx();
-          if (!c) return;
-          try {
-            const t0 = c.currentTime;
-            const o = c.createOscillator();
-            const g = c.createGain();
-            o.type = 'sine';
-            o.frequency.setValueAtTime(120, t0);
-            o.frequency.exponentialRampToValueAtTime(35, t0 + 0.12);
-            g.gain.setValueAtTime(0.25, t0);
-            g.gain.exponentialRampToValueAtTime(0.001, t0 + 0.2);
-            o.connect(g);
-            g.connect(c.destination);
-            o.start(t0);
-            o.stop(t0 + 0.25);
-          } catch (e) {}
-        }
-
-        function screenShake(el) {
-          if (prefersReducedMotion) return;
-          el.classList.remove('ladder-shake');
-          void el.offsetHeight;
-          el.classList.add('ladder-shake');
-          setTimeout(() => el.classList.remove('ladder-shake'), 520);
-        }
-
-        function showCountdown(container, cb) {
-          if (prefersReducedMotion) { cb(); return; }
-          const nums = [3, 2, 1];
-          let idx = 0;
-          function next() {
-            const old = container.querySelector('.ladder-countdown');
-            if (old) old.remove();
-            if (idx >= nums.length) { cb(); return; }
-            const overlay = document.createElement('div');
-            overlay.className = 'ladder-countdown';
-            const numEl = document.createElement('div');
-            numEl.className = 'ladder-countdown-num';
-            numEl.textContent = String(nums[idx]);
-            overlay.appendChild(numEl);
-            container.appendChild(overlay);
-            playBeep(440 + nums[idx] * 200, 100, 0.12);
-            idx++;
-            setTimeout(next, 700);
-          }
-          next();
-        }
-
-        function confettiBurst(cx, cy) {
-          if (prefersReducedMotion) return;
-          const g = state.geom;
-          if (!g) return;
-          const colors = COLOR_PALETTE.slice(0, state.count);
-          const particles = [];
-          for (let i = 0; i < 120; i++) {
-            const a = randFloat() * Math.PI * 2;
-            const sp = 2 + randFloat() * 4;
-            particles.push({
-              x: cx, y: cy,
-              vx: Math.cos(a) * sp,
-              vy: Math.sin(a) * sp - 2.5,
-              rot: randFloat() * Math.PI * 2,
-              vr: (randFloat() - 0.5) * 0.3,
-              w: 4 + randInt(6),
-              h: 7 + randInt(9),
-              alpha: 1,
-              color: colors[randInt(colors.length)]
+          const traces = [];
+          for (let i = 0; i < state.count; i++) {
+            traces.push({
+              playerIndex: i,
+              color: COLOR_PALETTE[i % COLOR_PALETTE.length],
+              progress: 0,
+              done: false,
+              reverse: false
             });
           }
+
+          state.traces = traces;
+          setGameStatus(window._t('tools.ladder-game.js.status1', 'Revealing all...'));
+          startAnimationLoop();
+        }
+
+        function startAnimationLoop() {
+          if (state.rafId) return;
+
           let last = performance.now();
-          const endAt = last + 2000;
+          const baseSpeed = state.prefersReducedMotion ? 1500 : 220;
+
           function tick(now) {
             const dt = Math.min(0.05, Math.max(0.001, (now - last) / 1000));
             last = now;
-            for (let i = particles.length - 1; i >= 0; i--) {
-              const p = particles[i];
-              p.vy += 8 * dt;
-              p.x += p.vx * 60 * dt;
-              p.y += p.vy * 60 * dt;
-              p.rot += p.vr * 60 * dt;
-              p.alpha *= 0.987;
-              if (p.alpha < 0.04 || p.y > g.h + 40) particles.splice(i, 1);
+
+            let anyActive = false;
+            for (let i = 0; i < state.traces.length; i++) {
+              const t = state.traces[i];
+              const path = state.computedPaths[t.playerIndex];
+              if (!path) continue;
+              if (t.done) continue;
+
+              anyActive = true;
+              const ratio = path.length > 0 ? t.progress / path.length : 0;
+              const speedMult = ratio > 0.85 ? 0.6 : 1.0;
+              const effSpeed = baseSpeed * speedMult;
+
+              t.progress += effSpeed * dt;
+
+              if (t.progress >= path.length) {
+                t.progress = path.length;
+                t.done = true;
+                onTraceComplete(t);
+              }
             }
+
             draw();
-            ctx.save();
-            for (let i = 0; i < particles.length; i++) {
-              const p = particles[i];
-              ctx.save();
-              ctx.translate(p.x, p.y);
-              ctx.rotate(p.rot);
-              ctx.globalAlpha = p.alpha;
-              ctx.fillStyle = p.color;
-              ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
-              ctx.restore();
-            }
-            ctx.restore();
-            if (now < endAt && particles.length) {
-              requestAnimationFrame(tick);
+
+            if (anyActive) {
+              state.rafId = requestAnimationFrame(tick);
+            } else {
+              stopAnimationLoop();
+              state.isTracing = false;
+              updateButtonStates();
+              showResultsSummary();
             }
           }
-          requestAnimationFrame(tick);
+
+          state.rafId = requestAnimationFrame(tick);
+        }
+
+        function stopAnimationLoop() {
+          if (state.rafId) {
+            cancelAnimationFrame(state.rafId);
+            state.rafId = null;
+          }
+        }
+
+        function onTraceComplete(trace) {
+          const path = state.computedPaths[trace.playerIndex];
+          if (!path) return;
+
+          state.revealedResults.add(trace.playerIndex);
+
+          // Highlight the result
+          const resultBtn = elGameResultsRow.querySelector('[data-result-index="' + path.endCol + '"]');
+          if (resultBtn) {
+            resultBtn.classList.add('ring-2', 'ring-primary-500', 'dark:ring-primary-400', 'result-revealed');
+          }
+
+          // Highlight the player
+          const playerBtn = elGamePlayersRow.querySelector('[data-player-index="' + trace.playerIndex + '"]');
+          if (playerBtn) {
+            playerBtn.classList.add('ring-2', 'ring-primary-500', 'dark:ring-primary-400');
+            playerBtn.disabled = true;
+          }
+
+          // Play sound if enabled
+          if (state.soundEnabled && !state.prefersReducedMotion) {
+            playCompletionSound();
+          }
+
+          setGameStatus(state.players[trace.playerIndex] + ' \\u2192 ' + state.results[path.endCol]);
+        }
+
+        function updateButtonStates() {
+          const playerBtns = elGamePlayersRow.querySelectorAll('[data-player-index]');
+          const resultBtns = elGameResultsRow.querySelectorAll('[data-result-index]');
+
+          playerBtns.forEach((btn, i) => {
+            btn.disabled = state.isTracing || state.revealedResults.has(i);
+          });
+
+          resultBtns.forEach((btn) => {
+            btn.disabled = state.isTracing;
+          });
+
+          elBtnRevealAll.disabled = state.isTracing || state.revealedResults.size >= state.count;
+        }
+
+        function showResultsSummary() {
+          if (state.revealedResults.size === 0) return;
+
+          elResultsSummary.classList.remove('hidden');
+          elResultsList.innerHTML = '';
+
+          const sortedResults = Array.from(state.revealedResults).sort((a, b) => a - b);
+
+          for (const playerIdx of sortedResults) {
+            const path = state.computedPaths[playerIdx];
+            if (!path) continue;
+
+            const resultIdx = path.endCol;
+            const color = COLOR_PALETTE[playerIdx % COLOR_PALETTE.length];
+
+            const item = document.createElement('div');
+            item.className = 'flex items-center gap-3 p-3 rounded-lg bg-surface-50 dark:bg-surface-800/50 border border-surface-200 dark:border-surface-700';
+            item.innerHTML =
+              '<div class="w-3 h-3 rounded-full" style="background-color: ' + color + '"></div>' +
+              '<div class="flex-1 min-w-0">' +
+              '<div class="font-medium text-surface-900 dark:text-surface-100 truncate">' + escapeHtml(state.players[playerIdx]) + '</div>' +
+              '<div class="text-xs text-surface-500 dark:text-surface-400">' + window._t('tools.ladder-game.js.text4', 'gets') + '</div>' +
+              '</div>' +
+              '<div class="font-semibold text-primary-600 dark:text-primary-400">' + escapeHtml(state.results[resultIdx]) + '</div>';
+            elResultsList.appendChild(item);
+          }
+        }
+
+        // ============================================
+        // RENDERING
+        // ============================================
+
+        function draw() {
+          if (!state.geom) return;
+
+          ctx.clearRect(0, 0, state.geom.w, state.geom.h);
+          drawBackground();
+          drawLadder();
+          drawTraces();
         }
 
         function drawBackground() {
           const g = state.geom;
           const dark = isDarkMode();
+
+          // Gradient background
           const grad = ctx.createLinearGradient(0, 0, g.w, g.h);
           if (dark) {
-            grad.addColorStop(0, 'rgba(15, 23, 42, 0.55)');
-            grad.addColorStop(1, 'rgba(2, 6, 23, 0.55)');
+            grad.addColorStop(0, 'rgba(15, 23, 42, 0.3)');
+            grad.addColorStop(1, 'rgba(2, 6, 23, 0.3)');
           } else {
             grad.addColorStop(0, 'rgba(255, 255, 255, 0.9)');
             grad.addColorStop(1, 'rgba(241, 245, 249, 0.9)');
           }
           ctx.fillStyle = grad;
           ctx.fillRect(0, 0, g.w, g.h);
-
-          // Subtle dots for depth.
-          ctx.save();
-          ctx.globalAlpha = dark ? 0.12 : 0.08;
-          ctx.fillStyle = dark ? '#94a3b8' : '#64748b';
-          const step = 24;
-          for (let y = 10; y < g.h; y += step) {
-            for (let x = 10; x < g.w; x += step) {
-              if (((x + y) / step) % 3 === 0) ctx.fillRect(x, y, 1, 1);
-            }
-          }
-          ctx.restore();
         }
 
-        function drawBaseLadder() {
-          const g = state.geom;
-          const count = state.count;
-          const dark = isDarkMode();
+        function drawLadder() {
+          if (!state.ladder || !state.geom) return;
 
-          const line = dark ? 'rgba(148, 163, 184, 0.55)' : 'rgba(30, 41, 59, 0.35)';
-          const rung = dark ? 'rgba(226, 232, 240, 0.40)' : 'rgba(51, 65, 85, 0.35)';
+          const g = state.geom;
+          const { rows, rungsByRow } = state.ladder;
+          const dark = isDarkMode();
+          const count = state.count;
+
+          const lineColor = dark ? 'rgba(148, 163, 184, 0.4)' : 'rgba(30, 41, 59, 0.25)';
+          const rungColor = dark ? 'rgba(226, 232, 240, 0.35)' : 'rgba(51, 65, 85, 0.3)';
 
           ctx.lineCap = 'round';
           ctx.lineJoin = 'round';
 
-          // Player and result labels on canvas.
-          ctx.save();
-          ctx.font = '12px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif';
-          ctx.fillStyle = dark ? 'rgba(226, 232, 240, 0.88)' : 'rgba(15, 23, 42, 0.78)';
-          ctx.textAlign = 'center';
-          const { btns, rInputs } = getPlayerControls();
-          for (let i = 0; i < count; i++) {
-            const px = g.xForCol(i);
-            const pName = (btns[i] && btns[i].textContent) ? btns[i].textContent.trim() : ('Player ' + (i + 1));
-            const rName = (rInputs[i] && rInputs[i].value) ? rInputs[i].value.trim() : ('Result ' + (i + 1));
-            ctx.fillText(pName, px, g.topTextY);
-            ctx.fillText(rName, px, g.bottomTextY);
+          // Calculate row Y positions
+          const rowYs = new Array(rows);
+          for (let r = 0; r < rows; r++) {
+            rowYs[r] = g.yTop + ((r + 1) * g.ladderHeight) / (rows + 1);
           }
-          ctx.restore();
 
-          // Vertical rails.
+          // Draw vertical rails
           ctx.save();
-          ctx.strokeStyle = line;
+          ctx.strokeStyle = lineColor;
           ctx.lineWidth = 2;
           for (let i = 0; i < count; i++) {
             const x = g.xForCol(i);
@@ -780,17 +972,10 @@ function renderLadderGamePage() {
           }
           ctx.restore();
 
-          // Horizontal rungs.
-          if (!state.ladder) return;
-          const { rows, rungsByRow } = state.ladder;
-          const rowYs = new Array(rows);
-          for (let r = 0; r < rows; r++) {
-            rowYs[r] = g.yTop + ((r + 1) * g.ladderHeight) / (rows + 1);
-          }
-
+          // Draw horizontal rungs (always visible now)
           ctx.save();
-          ctx.strokeStyle = rung;
-          ctx.lineWidth = 3;
+          ctx.strokeStyle = rungColor;
+          ctx.lineWidth = 2.5;
           for (let row = 0; row < rows; row++) {
             const y = rowYs[row];
             const cols = rungsByRow[row];
@@ -807,42 +992,23 @@ function renderLadderGamePage() {
           ctx.restore();
         }
 
-        function drawTracePartial(points, dist) {
-          if (!points || points.length < 2) return;
-          let remaining = dist;
-          ctx.beginPath();
-          ctx.moveTo(points[0].x, points[0].y);
-          for (let i = 1; i < points.length; i++) {
-            const a = points[i - 1];
-            const b = points[i];
-            const segLen = Math.hypot(b.x - a.x, b.y - a.y);
-            if (remaining >= segLen) {
-              ctx.lineTo(b.x, b.y);
-              remaining -= segLen;
-              continue;
-            }
-            if (remaining <= 0) break;
-            const t = remaining / segLen;
-            ctx.lineTo(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t);
-            remaining = 0;
-            break;
-          }
-          ctx.stroke();
-        }
-
         function drawTraces() {
+          if (!state.computedPaths.length || !state.geom) return;
+
           const dark = isDarkMode();
+
           for (let i = 0; i < state.traces.length; i++) {
             const t = state.traces[i];
             const path = state.computedPaths[t.playerIndex];
             if (!path) continue;
+
             const points = path.points;
             const color = t.color;
-            const glow = dark ? 16 : 12;
+            const glow = dark ? 14 : 10;
 
             ctx.save();
             ctx.strokeStyle = color;
-            ctx.lineWidth = 5;
+            ctx.lineWidth = 4.5;
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
             ctx.globalAlpha = 0.95;
@@ -851,21 +1017,22 @@ function renderLadderGamePage() {
             drawTracePartial(points, t.progress);
             ctx.shadowBlur = 0;
             ctx.globalAlpha = 1;
-            ctx.lineWidth = 3.5;
+            ctx.lineWidth = 3;
             drawTracePartial(points, t.progress);
             ctx.restore();
 
+            // Draw tracer dot
             if (!t.done && t.progress > 0) {
               const pos = getPositionAtDist(points, t.progress);
               ctx.save();
               ctx.beginPath();
-              ctx.arc(pos.x, pos.y, 8, 0, Math.PI * 2);
+              ctx.arc(pos.x, pos.y, 7, 0, Math.PI * 2);
               ctx.fillStyle = color;
-              ctx.shadowBlur = 18;
+              ctx.shadowBlur = 15;
               ctx.shadowColor = color;
               ctx.fill();
               ctx.beginPath();
-              ctx.arc(pos.x, pos.y, 4, 0, Math.PI * 2);
+              ctx.arc(pos.x, pos.y, 3.5, 0, Math.PI * 2);
               ctx.fillStyle = 'white';
               ctx.shadowBlur = 0;
               ctx.fill();
@@ -874,19 +1041,31 @@ function renderLadderGamePage() {
           }
         }
 
-        function draw() {
-          if (!state.geom) return;
-          ctx.clearRect(0, 0, state.geom.w, state.geom.h);
-          drawBackground();
-          drawBaseLadder();
-          drawTraces();
-        }
+        function drawTracePartial(points, dist) {
+          if (!points || points.length < 2) return;
 
-        function stopAnimationLoop() {
-          if (state.rafId) {
-            cancelAnimationFrame(state.rafId);
-            state.rafId = null;
+          let remaining = dist;
+          ctx.beginPath();
+          ctx.moveTo(points[0].x, points[0].y);
+
+          for (let i = 1; i < points.length; i++) {
+            const a = points[i - 1];
+            const b = points[i];
+            const segLen = Math.hypot(b.x - a.x, b.y - a.y);
+
+            if (remaining >= segLen) {
+              ctx.lineTo(b.x, b.y);
+              remaining -= segLen;
+              continue;
+            }
+            if (remaining <= 0) break;
+
+            const t = remaining / segLen;
+            ctx.lineTo(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t);
+            remaining = 0;
+            break;
           }
+          ctx.stroke();
         }
 
         function getPositionAtDist(points, dist) {
@@ -905,400 +1084,85 @@ function renderLadderGamePage() {
           return { x: last.x, y: last.y };
         }
 
-        function isAtJunction(points, dist) {
-          let remaining = dist;
-          for (let i = 1; i < points.length; i++) {
-            const a = points[i - 1];
-            const b = points[i];
-            const segLen = Math.hypot(b.x - a.x, b.y - a.y);
-            if (remaining <= segLen) {
-              return remaining < 3 && i > 1 && Math.abs(a.x - points[i - 2].x) > 2;
-            }
-            remaining -= segLen;
-          }
-          return false;
-        }
+        // ============================================
+        // AUDIO
+        // ============================================
 
-        function startAnimationLoop() {
-          if (state.rafId) return;
-          let last = performance.now();
-          const baseSpeed = prefersReducedMotion ? 1500 : 160;
-
-          function tick(now) {
-            const dt = Math.min(0.05, Math.max(0.001, (now - last) / 1000));
-            last = now;
-
-            let anyActive = false;
-            for (let i = 0; i < state.traces.length; i++) {
-              const t = state.traces[i];
-              const path = state.computedPaths[t.playerIndex];
-              if (!path) continue;
-              if (t.done) continue;
-              anyActive = true;
-              const ratio = path.length > 0 ? t.progress / path.length : 0;
-              const speedMult = ratio > 0.85 ? 0.6 : 1.0;
-              const junctionSlow = isAtJunction(path.points, t.progress) ? 0.5 : 1.0;
-              const effSpeed = baseSpeed * speedMult * junctionSlow;
-              const prevProg = t.progress;
-              t.progress += effSpeed * dt;
-
-              if (!prefersReducedMotion && path.length > 0) {
-                const prevRatio = prevProg / path.length;
-                const curRatio = t.progress / path.length;
-                const tickInterval = 0.04;
-                if (Math.floor(curRatio / tickInterval) > Math.floor(prevRatio / tickInterval)) {
-                  playTraceTick(curRatio);
-                }
-                if (isAtJunction(path.points, t.progress) && !isAtJunction(path.points, prevProg)) {
-                  playJunctionPing();
-                }
-              }
-
-              if (t.progress >= path.length) {
-                t.progress = path.length;
-                t.done = true;
-                const pName = state.players[t.playerIndex] || ('Player ' + (t.playerIndex + 1));
-                const endCol = path.endCol;
-                const rText = state.results[endCol] || ('Result ' + (endCol + 1));
-
-                if (!prefersReducedMotion) {
-                  playImpact();
-                  screenShake(canvas.parentElement);
-                  const endPos = getPositionAtDist(path.points, path.length);
-                  confettiBurst(endPos.x, endPos.y);
-                  playCelebration();
-                }
-
-                celebrate(endCol);
-                setStatus(window._t('tools.ladder-game.js.status2', 'Complete:') + ' ' + pName + ' \\u2192 ' + rText, 'highlight');
-              }
-            }
-
-            draw();
-
-            if (anyActive) {
-              state.rafId = requestAnimationFrame(tick);
-            } else {
-              stopAnimationLoop();
-            }
-          }
-
-          state.rafId = requestAnimationFrame(tick);
-        }
-
-        function resetTraces() {
-          stopAnimationLoop();
-          state.traces = [];
-          clearCelebrations();
-          draw();
-          setStatus(window._t('tools.ladder-game.js.status3', 'Reset.'), null);
-        }
-
-        function resetToSetup() {
-          resetTraces();
-          state.started = false;
-          state.ladder = null;
-          state.computedPaths = [];
-          dismissSpoiler();
-          updateVisibilityAndLayout();
-          updateControlsEnabled();
-          draw();
-          setStatus(window._t('tools.ladder-game.js.status5', 'Set names, then press Start.'), null);
-        }
-
-        function revealOne(playerIndex) {
-          if (!state.computedPaths[playerIndex]) return;
-          dismissSpoiler();
-          resetTraces();
-          const container = canvas.parentElement;
-          showCountdown(container, function() {
-            const cd = container.querySelector('.ladder-countdown');
-            if (cd) cd.remove();
-            const color = COLOR_PALETTE[playerIndex % COLOR_PALETTE.length];
-            state.traces = [{ playerIndex, color, progress: 0, done: false }];
-            setStatus(window._t('tools.ladder-game.js.status1', 'Tracing...'), 'highlight');
-            startAnimationLoop();
-          });
-        }
-
-        function revealAll() {
-          if (!state.started) return;
-          dismissSpoiler();
-          resetTraces();
-          const container = canvas.parentElement;
-          showCountdown(container, function() {
-            const cd = container.querySelector('.ladder-countdown');
-            if (cd) cd.remove();
-            const traces = [];
-            for (let i = 0; i < state.count; i++) {
-              traces.push({
-                playerIndex: i,
-                color: COLOR_PALETTE[i % COLOR_PALETTE.length],
-                progress: 0,
-                done: false
-              });
-            }
-            state.traces = traces;
-            setStatus(window._t('tools.ladder-game.js.status1', 'Tracing...'), 'highlight');
-            startAnimationLoop();
-          });
-        }
-
-        function syncNamesFromInputs() {
-          const { btns, inputs, rInputs } = getPlayerControls();
-          for (let i = 0; i < state.count; i++) {
-            const name = inputs[i].value.trim() || defaultPlayerName(i);
-            state.players[i] = name;
-            btns[i].textContent = name;
-            btns[i].setAttribute('aria-label', window._t('tools.ladder-game.js.text2', 'Reveal one') + ': ' + name);
-
-            const r = rInputs[i].value.trim() || defaultResultName(i);
-            state.results[i] = r;
-          }
-          draw();
-        }
-
-        function setCount(next) {
-          const n = clamp(next | 0, MIN_PLAYERS, MAX_PLAYERS);
-          if (n === state.count) return;
-          state.count = n;
-          elCount.value = String(n);
-          resetToSetup();
-          updateVisibilityAndLayout();
-          syncNamesFromInputs();
-          updateControlsEnabled();
-        }
-
-        function init() {
-          buildRowsIfNeeded();
-
-           // Set initial values.
-           elCount.value = String(DEFAULT_PLAYERS);
-           elMapSize.value = state.mapSize;
-           setCount(DEFAULT_PLAYERS);
-
-          const { btns, inputs, rInputs } = getPlayerControls();
-          for (let i = 0; i < MAX_PLAYERS; i++) {
-            inputs[i].value = (i < DEFAULT_PLAYERS) ? ('Player ' + (i + 1)) : defaultPlayerName(i);
-            rInputs[i].value = (i < DEFAULT_PLAYERS)
-              ? ('Result ' + String.fromCharCode(65 + i))
-              : defaultResultName(i);
-          }
-
-          // Sync translated prefixes if non-en language is active.
+        function ensureAudioCtx() {
+          if (audio.ctx) return audio.ctx;
           try {
-            const lang = window._i18nGetLang ? window._i18nGetLang() : 'en';
-            if (lang !== 'en') {
-              for (let i = 0; i < MAX_PLAYERS; i++) {
-                if (inputs[i].value === ('Player ' + (i + 1))) inputs[i].value = defaultPlayerName(i);
-                const expectedA = 'Result ' + String.fromCharCode(65 + i);
-                if (rInputs[i].value === expectedA) rInputs[i].value = defaultResultName(i);
-              }
+            const AC = window.AudioContext || window.webkitAudioContext;
+            if (!AC) return null;
+            audio.ctx = new AC();
+            return audio.ctx;
+          } catch (e) { return null; }
+        }
+
+        function playCompletionSound() {
+          const c = ensureAudioCtx();
+          if (!c) return;
+          try {
+            const t0 = c.currentTime;
+            const notes = [523, 659, 784, 1047];
+            const delays = [0, 60, 120, 200];
+
+            for (let i = 0; i < notes.length; i++) {
+              const o = c.createOscillator();
+              const g = c.createGain();
+              o.type = 'sine';
+              o.frequency.value = notes[i];
+              g.gain.setValueAtTime(0, t0 + delays[i] / 1000);
+              g.gain.linearRampToValueAtTime(0.08, t0 + delays[i] / 1000 + 0.01);
+              g.gain.exponentialRampToValueAtTime(0.001, t0 + delays[i] / 1000 + 0.15);
+              o.connect(g);
+              g.connect(c.destination);
+              o.start(t0 + delays[i] / 1000);
+              o.stop(t0 + delays[i] / 1000 + 0.2);
             }
           } catch (e) {}
+        }
 
-          // Setup mode: straight rails only until Start.
-          state.started = false;
-          state.ladder = null;
-          state.computedPaths = [];
-          dismissSpoiler();
-          updateVisibilityAndLayout();
-          syncNamesFromInputs();
-          draw();
-          setStatus(window._t('tools.ladder-game.js.status5', 'Set names, then press Start.'), null);
+        // ============================================
+        // UTILITIES
+        // ============================================
 
-          // Inputs update names in real time.
-          elPlayersRow.addEventListener('input', (e) => {
-            const input = e.target && e.target.matches && e.target.matches('input');
-            if (!input) return;
-            syncNamesFromInputs();
-            updateControlsEnabled();
-          });
-          elResultsRow.addEventListener('input', (e) => {
-            const input = e.target && e.target.matches && e.target.matches('input');
-            if (!input) return;
-            syncNamesFromInputs();
-          });
+        function setGameStatus(text) {
+          elGameStatus.textContent = text;
+        }
 
-          // Click player name button to reveal one.
-          elPlayersRow.addEventListener('click', (e) => {
-            const btn = e.target && e.target.closest ? e.target.closest('[data-player-reveal]') : null;
-            if (!btn) return;
-            if (!state.started) return;
-            const idx = parseInt(btn.getAttribute('data-player-reveal'), 10);
-            if (!Number.isFinite(idx) || idx < 0 || idx >= state.count) return;
-            revealOne(idx);
-          });
+        function isDarkMode() {
+          return document.documentElement.classList.contains('dark');
+        }
 
-          // Control buttons.
-          elGenerate.addEventListener('click', () => {
-            if (!canStart()) {
-              setStatus(window._t('tools.ladder-game.js.status6', 'Enter all player names first.'), null);
-              return;
-            }
-            dismissSpoiler();
-            resetTraces();
-            syncNamesFromInputs();
-            generateLadder();
-            computePaths();
-            state.started = true;
-            updateVisibilityAndLayout();
-            buildSpoilerTiles();
-            updateControlsEnabled();
-            draw();
-          });
-          elRevealAll.addEventListener('click', () => revealAll());
-          elReset.addEventListener('click', () => resetToSetup());
+        function escapeHtml(s) {
+          return String(s)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+        }
 
-          elAdd.addEventListener('click', () => setCount(state.count + 1));
-          elRemove.addEventListener('click', () => setCount(state.count - 1));
-
-          elCount.addEventListener('change', () => {
-            const n = parseInt(elCount.value, 10);
-            if (!Number.isFinite(n)) {
-              setStatus(window._t('tools.ladder-game.js.status4', 'Player count must be between 2 and 10.'), null);
-              elCount.value = String(state.count);
-              return;
-            }
-            setCount(n);
-          });
-
-           elMapSize.addEventListener('change', () => {
-             const v = String(elMapSize.value || '').toLowerCase();
-             state.mapSize = (v === 'compact' || v === 'large') ? v : 'standard';
-             resetToSetup();
-           });
-
-          if (elSpoilerGuard) {
-            elSpoilerGuard.checked = false;
-            state.spoilerEnabled = false;
-            elSpoilerGuard.addEventListener('change', () => {
-              state.spoilerEnabled = !!elSpoilerGuard.checked;
-              if (state.started && state.spoilerEnabled) buildSpoilerTiles();
-              else dismissSpoiler();
-            });
-          }
-
-          if (elCanvasWrap) {
-            elCanvasWrap.addEventListener('pointerdown', () => {
-              dismissSpoiler();
-            }, { passive: true });
-          }
-
-          updateControlsEnabled();
-
-          // Responsive resizing.
-          state.resizeObs = new ResizeObserver(() => {
-            updateVisibilityAndLayout();
-          });
-          state.resizeObs.observe(elScroll);
-          window.addEventListener('resize', () => updateVisibilityAndLayout(), { passive: true });
-
-           // Theme changes should redraw (canvas colors differ).
-           const mo = new MutationObserver(() => draw());
-           mo.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-
-           // Keyboard shortcuts: Enter (Start), R (Reset), A (Reveal All)
-           window.addEventListener('keydown', (e) => {
-             // Guard: don't fire if user is typing in input/textarea
-             if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) return;
-
-             if (e.key === 'Enter') {
-               e.preventDefault();
-               if (canStart()) {
-                 elGenerate.click();
-               }
-             }
-             if (e.key === 'r' || e.key === 'R') {
-               e.preventDefault();
-               elReset.click();
-             }
-             if (e.key === 'a' || e.key === 'A') {
-               e.preventDefault();
-               elRevealAll.click();
-             }
-           });
-         }
-
-        // Minimal inline animation for celebrations.
-        const style = document.createElement('style');
-        style.textContent = '\\n'
-          + '[data-result-wrap][data-celebrate="1"] {\\n'
-          + '  animation: ladderPulse 650ms ease-out both;\\n'
-          + '}\\n'
-          + '@keyframes ladderPulse {\\n'
-          + '  0% { transform: translateY(0); }\\n'
-          + '  40% { transform: translateY(-2px); }\\n'
-          + '  100% { transform: translateY(0); }\\n'
-          + '}\\n'
-          + '.ladder-countdown {\\n'
-          + '  position: absolute; inset: 0; z-index: 50;\\n'
-          + '  display: flex; align-items: center; justify-content: center;\\n'
-          + '  background: rgba(0,0,0,0.5); backdrop-filter: blur(3px);\\n'
-          + '  pointer-events: none;\\n'
-          + '}\\n'
-          + '.ladder-countdown-num {\\n'
-          + '  font-size: 6rem; font-weight: 900; color: white;\\n'
-          + '  text-shadow: 0 0 30px rgba(255,255,255,0.4), 0 0 60px rgba(99,102,241,0.3);\\n'
-          + '  animation: ladderCountPop 700ms cubic-bezier(0.2,0.9,0.2,1) both;\\n'
-          + '}\\n'
-          + '@keyframes ladderCountPop {\\n'
-          + '  0% { transform: scale(2.5); opacity: 0; }\\n'
-          + '  35% { transform: scale(0.9); opacity: 1; }\\n'
-          + '  60% { transform: scale(1.08); }\\n'
-          + '  100% { transform: scale(1); opacity: 0.2; }\\n'
-          + '}\\n'
-          + '.ladder-shake {\\n'
-          + '  animation: ladderShake 500ms ease-out;\\n'
-          + '}\\n'
-          + '@keyframes ladderShake {\\n'
-          + '  0%,100% { transform: translate(0,0); }\\n'
-          + '  10% { transform: translate(-4px,2px); }\\n'
-          + '  20% { transform: translate(3px,-3px); }\\n'
-          + '  30% { transform: translate(-3px,1px); }\\n'
-          + '  40% { transform: translate(2px,-1px); }\\n'
-          + '  50% { transform: translate(-1px,1px); }\\n'
-          + '}\\n'
-          + '.ladder-spotlight {\\n'
-          + '  animation: ladderSpot 1.2s ease-in-out;\\n'
-          + '}\\n'
-          + '@keyframes ladderSpot {\\n'
-          + '  0% { box-shadow: 0 0 0 0 rgba(251,191,36,0); }\\n'
-          + '  30% { box-shadow: 0 0 20px 6px rgba(251,191,36,0.4), 0 0 40px 15px rgba(251,191,36,0.15); }\\n'
-          + '  100% { box-shadow: 0 0 0 0 rgba(251,191,36,0); }\\n'
-          + '}\\n'
-          + '@media (prefers-reduced-motion: reduce) {\\n'
-          + '  .ladder-countdown-num { animation: none; opacity: 1; transform: scale(1); }\\n'
-          + '  .ladder-shake { animation: none; }\\n'
-          + '  .ladder-spotlight { animation: none; }\\n'
-          + '}\\n'
-          + '.ladder-spoiler-tile {\\n'
-          + '  display:block; width:100%; height:100%;\\n'
-          + '  background: rgba(15, 23, 42, 0.88);\\n'
-          + '  border: 1px solid rgba(148, 163, 184, 0.18);\\n'
-          + '  transition: opacity 140ms ease, transform 140ms ease;\\n'
-          + '}\\n'
-          + '.ladder-spoiler-tile:hover { opacity: 0.96; }\\n'
-          + '.ladder-spoiler-tile-off { opacity: 0; transform: scale(0.98); }\\n';
-        document.head.appendChild(style);
-
+        // Start
         init();
       })();
     </script>
   `;
 
-  return respondHTML(createPageTemplate({
+  return createPageTemplate({
     title: 'Ladder Game',
-    description: 'Play the classic Korean ghost leg ladder game (Amidakuji) to randomly match players to outcomes. Fully client-side with Canvas animations.',
-    path: '/ladder-game',
+    description: 'Classic ghost leg ladder game for random matching and decision making.',
     content,
+    path: '/ladder-game',
     scripts: script
-  }));
+  });
 }
 
 export async function handleLadderGameRoutes(request, url) {
   if (url.pathname === '/ladder-game' || url.pathname === '/ladder-game/') {
-    if (request.method === 'GET') return renderLadderGamePage();
+    if (request.method === 'GET') {
+      return respondHTML(renderLadderGamePage());
+    }
   }
   return null;
 }
