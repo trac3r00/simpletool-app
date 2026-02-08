@@ -9,13 +9,14 @@ const SITE_NAME = 'SimpleTool App';
 const CONTACT_EMAIL = 'hello@simpletool.app';
 const LAST_UPDATED = 'January 24, 2026';
 
-function renderLegalShell({ title, description, content }) {
+function renderLegalShell({ title, description, content, path }) {
   // createPageTemplate always includes the tool ad slot; legal pages have their own slot,
   // so strip the default tool slot to avoid double-ads.
   const html = createPageTemplate({
     title,
     description,
-    content
+    content,
+    path
   });
 
   const toolAdSlot = getAdSlotHTML('tool', {
@@ -26,7 +27,7 @@ function renderLegalShell({ title, description, content }) {
   return respondHTML(htmlWithoutToolSlot);
 }
 
-function wrapLegalPage({ heading, title, description, showLastUpdated = true, body }) {
+function wrapLegalPage({ heading, title, description, showLastUpdated = true, body, path }) {
   const updated = showLastUpdated
     ? `<p class="mt-2 text-sm text-surface-500 dark:text-surface-400">Last Updated: ${LAST_UPDATED}</p>`
     : '';
@@ -48,7 +49,7 @@ function wrapLegalPage({ heading, title, description, showLastUpdated = true, bo
     </main>
   `;
 
-  return renderLegalShell({ title, description, content });
+  return renderLegalShell({ title, description, content, path });
 }
 
 export function renderTermsPage() {
@@ -190,7 +191,8 @@ export function renderTermsPage() {
     title: 'Terms of Service',
     description: `Terms of Service for ${SITE_NAME}.`,
     showLastUpdated: true,
-    body
+    body,
+    path: '/terms'
   });
 }
 
@@ -348,7 +350,8 @@ export function renderPrivacyPage() {
     title: 'Privacy Policy',
     description: `Privacy Policy for ${SITE_NAME}.`,
     showLastUpdated: true,
-    body
+    body,
+    path: '/privacy'
   });
 }
 
@@ -517,7 +520,8 @@ export function renderAboutPage() {
     title: 'About',
     description: `About ${SITE_NAME} and our privacy-first tools.`,
     showLastUpdated: false,
-    body
+    body,
+    path: '/about'
   });
 }
 
@@ -554,7 +558,8 @@ export function renderSecurityPage() {
     title: 'Security Policy',
     description: `Security policy and reporting guidance for ${SITE_NAME}.`,
     showLastUpdated: true,
-    body
+    body,
+    path: '/security'
   });
 }
 
@@ -577,7 +582,8 @@ export function renderCareersPage() {
     title: 'Careers',
     description: `Careers at ${SITE_NAME}.`,
     showLastUpdated: true,
-    body
+    body,
+    path: '/careers'
   });
 }
 
@@ -646,6 +652,7 @@ export function renderContactPage() {
     title: 'Contact',
     description: `Contact information for ${SITE_NAME}.`,
     showLastUpdated: false,
-    body
+    body,
+    path: '/contact'
   });
 }
