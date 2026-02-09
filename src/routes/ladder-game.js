@@ -28,16 +28,16 @@ function renderLadderGamePage() {
               <p class="text-surface-600 dark:text-surface-400 mb-8" data-i18n="tools.ladder-game.ui.text0">Select the number of participants</p>
 
               <div class="flex items-center justify-center gap-4 mb-8">
-                <button id="decrement-count" type="button" class="btn btn-secondary w-14 h-14 text-2xl" aria-label="Decrease player count" data-i18n-aria="tools.ladder-game.ui.button3">−</button>
+                <button id="decrement-count" type="button" class="btn btn-secondary w-14 h-14 text-2xl" aria-label="Decrease player count" data-i18n-aria="tools.ladder-game.ui.aria0">−</button>
                 <div class="relative">
                   <input type="number" id="player-count" value="4" min="2" max="24" class="input w-24 text-center text-2xl font-bold py-3" aria-label="Player count" data-i18n-aria="tools.ladder-game.ui.label0">
                   <span class="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.ladder-game.ui.text1">players</span>
                 </div>
-                <button id="increment-count" type="button" class="btn btn-secondary w-14 h-14 text-2xl" aria-label="Increase player count" data-i18n-aria="tools.ladder-game.ui.button4">+</button>
+                <button id="increment-count" type="button" class="btn btn-secondary w-14 h-14 text-2xl" aria-label="Increase player count" data-i18n-aria="tools.ladder-game.ui.aria1">+</button>
               </div>
 
               <div class="flex justify-center">
-                <button id="btn-step-1-next" type="button" class="btn btn-primary px-8 py-3 text-lg" data-i18n="tools.ladder-game.ui.button5">Start</button>
+                <button id="btn-step-1-next" type="button" class="btn btn-primary px-8 py-3 text-lg" data-i18n="tools.ladder-game.ui.button0">Start</button>
               </div>
             </div>
           </div>
@@ -81,8 +81,8 @@ function renderLadderGamePage() {
             </div>
 
             <div class="flex justify-between mt-8">
-              <button id="btn-step-2-back" type="button" class="btn btn-ghost" data-i18n="tools.ladder-game.ui.button6">Back</button>
-              <button id="btn-step-2-next" type="button" class="btn btn-primary px-8" data-i18n="tools.ladder-game.ui.button7">Start Ladder</button>
+              <button id="btn-step-2-back" type="button" class="btn btn-ghost" data-i18n="tools.ladder-game.ui.button1">Back</button>
+              <button id="btn-step-2-next" type="button" class="btn btn-primary px-8" data-i18n="tools.ladder-game.ui.button2">Start Ladder</button>
             </div>
           </div>
 
@@ -127,8 +127,8 @@ function renderLadderGamePage() {
 
             <!-- Action Buttons -->
             <div class="flex flex-wrap justify-center gap-3 mt-6">
-              <button id="btn-reveal-all" type="button" class="btn btn-secondary" data-i18n="tools.ladder-game.ui.button8">Reveal All</button>
-              <button id="btn-play-again" type="button" class="btn btn-primary" data-i18n="tools.ladder-game.ui.button9">Play Again</button>
+              <button id="btn-reveal-all" type="button" class="btn btn-secondary" data-i18n="tools.ladder-game.ui.button3">Reveal All</button>
+              <button id="btn-play-again" type="button" class="btn btn-primary" data-i18n="tools.ladder-game.ui.button4">Play Again</button>
             </div>
 
             <!-- Results Summary -->
