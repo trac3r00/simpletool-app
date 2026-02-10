@@ -41,7 +41,7 @@ export function sweepRateLimiter(rateLimiter, now) {
 
 export function getSecurityHeaders(contentType = 'text/html; charset=utf-8', cacheControl = null, nonce = null) {
   // Default cache control based on content type
-  let defaultCacheControl = 'private, no-cache, must-revalidate'; // HTML pages: no caching due to CSP nonce
+  let defaultCacheControl = 'public, s-maxage=60, max-age=0, must-revalidate'; // HTML pages: 60s edge cache, browser no-cache
 
   if (contentType.startsWith('application/json')) {
     defaultCacheControl = 'no-store, no-cache, must-revalidate'; // API/JSON: no caching
@@ -93,6 +93,7 @@ export function getSecurityHeaders(contentType = 'text/html; charset=utf-8', cac
     'Permissions-Policy': 'screen-wake-lock=(self), camera=(), microphone=(), geolocation=()',
     'Content-Security-Policy': csp,
     'Cache-Control': cacheControl || defaultCacheControl,
+    'Vary': 'Accept-Encoding',
     'Cross-Origin-Opener-Policy': 'same-origin',
     'Cross-Origin-Resource-Policy': 'same-origin',
     'Server': 'SimpleTool-Worker/2.0'
