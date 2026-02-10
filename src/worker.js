@@ -275,17 +275,14 @@ export default {
       });
     }
 
-    // Periodic rate limiter cleanup for memory fallback
-    const useMemoryRateLimiter = !env?.RATE_LIMITER;
-    if (useMemoryRateLimiter) {
-      if (!globalThis.rateLimiterSweepCounter) {
-        globalThis.rateLimiterSweepCounter = 0;
-      }
-      globalThis.rateLimiterSweepCounter++;
-      if (globalThis.rateLimiterSweepCounter >= 100) {
-        sweepRateLimiter(rateLimiter, now);
-        globalThis.rateLimiterSweepCounter = 0;
-      }
+    // Periodic rate limiter cleanup (always run to prevent memory growth)
+    if (!globalThis.rateLimiterSweepCounter) {
+      globalThis.rateLimiterSweepCounter = 0;
+    }
+    globalThis.rateLimiterSweepCounter++;
+    if (globalThis.rateLimiterSweepCounter >= 100) {
+      sweepRateLimiter(rateLimiter, now);
+      globalThis.rateLimiterSweepCounter = 0;
     }
 
     // Rate limiting: fast in-memory check (synchronous) + async DO persistence — skip in dev
