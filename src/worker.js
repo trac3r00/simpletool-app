@@ -63,7 +63,9 @@ import {
   getSecurityHeaders,
   shouldRateLimit,
   sweepRateLimiter,
+  isLikelySharedIP,
   RATE_LIMIT_MAX_REQUESTS,
+  RATE_LIMIT_MAX_REQUESTS_SHARED_IP,
   RATE_LIMIT_WINDOW_MS
 } from './utils/security.js';
 import { respondJSON, respondText, respond404, respond429 } from './utils/respond.js';
@@ -228,7 +230,7 @@ function buildSitemapXml(origin) {
   ].join('\n');
 }
 
-async function checkRateLimitDO(env, ip, now) {
+async function checkRateLimitDO(env, ip, now, maxRequests = RATE_LIMIT_MAX_REQUESTS) {
   if (!env?.RATE_LIMITER || !ip || ip === 'unknown') {
     return { limited: false };
   }
@@ -238,7 +240,7 @@ async function checkRateLimitDO(env, ip, now) {
     const stub = env.RATE_LIMITER.get(id);
     const url = new URL('https://rate-limiter/check');
     url.searchParams.set('now', String(now));
-    url.searchParams.set('limit', String(RATE_LIMIT_MAX_REQUESTS));
+    url.searchParams.set('limit', String(maxRequests));
     url.searchParams.set('windowMs', String(RATE_LIMIT_WINDOW_MS));
     const response = await stub.fetch(url.toString());
     if (!response.ok) {
@@ -286,16 +288,19 @@ export default {
       }
     }
 
-    // Rate limiting check (Durable Object first, memory fallback) — skip in dev
+    // Rate limiting: fast in-memory check (synchronous) + async DO persistence — skip in dev
     if (!isDev) {
-      const rateLimitResult = await checkRateLimitDO(env, ip, now);
-      if (rateLimitResult?.limited) {
-        const retryAfterSeconds = Math.ceil((rateLimitResult.retryAfterMs || 0) / 1000);
-        return respond429({ retryAfterSeconds });
-      }
-      if ((rateLimitResult?.fallback || useMemoryRateLimiter) && shouldRateLimit(rateLimiter, ip, now)) {
+      const effectiveLimit = isLikelySharedIP(request)
+        ? RATE_LIMIT_MAX_REQUESTS_SHARED_IP
+        : RATE_LIMIT_MAX_REQUESTS;
+
+      if (shouldRateLimit(rateLimiter, ip, now, effectiveLimit)) {
         return respond429();
       }
+
+      ctx.waitUntil(
+        checkRateLimitDO(env, ip, now, effectiveLimit).catch(() => {})
+      );
     }
 
     // Route handling with path-based routing
