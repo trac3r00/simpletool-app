@@ -132,8 +132,36 @@ export function getAdSenseScript() {
   if (!isAdsEnabled()) return '';
   const client = adConfig.client || DEFAULT_ADSENSE_CLIENT;
   return `
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${client}"
-         crossorigin="anonymous" data-ad-client="${client}" onerror="this.remove()"></script>
+    <script>
+      (function() {
+        function loadAdSense() {
+          const script = document.createElement('script');
+          script.async = true;
+          script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${client}';
+          script.crossOrigin = 'anonymous';
+          script.dataset.adClient = '${client}';
+          script.onerror = function() { this.remove(); };
+          document.head.appendChild(script);
+        }
+        // Load after DOM is ready or 2 seconds, whichever comes first
+        if (document.readyState === 'complete') {
+          setTimeout(loadAdSense, 2000);
+        } else {
+          window.addEventListener('DOMContentLoaded', function() {
+            setTimeout(loadAdSense, 2000);
+          });
+        }
+        // Safety timeout: remove if not loaded after 5 seconds
+        setTimeout(function() {
+          const scripts = document.querySelectorAll('script[data-ad-client]');
+          scripts.forEach(function(s) {
+            if (!window.adsbygoogle || !window.adsbygoogle.loaded) {
+              s.remove();
+            }
+          });
+        }, 5000);
+      })();
+    </script>
   `;
 }
 
@@ -700,7 +728,7 @@ export function getStylesheetLinks() {
          font-family: 'Material Symbols Rounded';
         font-style: normal;
         font-weight: 100 700;
-        font-display: block;
+         font-display: swap;
         src: url(/fonts/material-symbols.woff2) format('woff2');
       }
       .material-symbols-rounded {
