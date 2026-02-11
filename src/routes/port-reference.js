@@ -783,8 +783,8 @@ function renderPortReferencePage() {
         function getRiskColor(risk) {
           switch (risk) {
             case 'critical': return 'bg-error-100 dark:bg-error-900 text-error-800 dark:text-error-200';
-            case 'high': return 'bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200';
-            case 'medium': return 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200';
+            case 'high': return 'bg-warning-100 dark:bg-warning-900 text-warning-800 dark:text-warning-200';
+            case 'medium': return 'bg-warning-50 dark:bg-warning-900/50 text-warning-700 dark:text-warning-300';
             case 'low': return 'bg-success-100 dark:bg-success-900 text-success-800 dark:text-success-200';
             case 'none': return 'bg-success-100 dark:bg-success-900 text-success-800 dark:text-success-200';
             default: return 'bg-surface-100 dark:bg-surface-800 text-surface-800 dark:text-surface-200';
@@ -795,8 +795,8 @@ function renderPortReferencePage() {
         function getProtocolColor(protocol) {
           switch (protocol.toLowerCase()) {
             case 'tcp': return 'text-info-600 dark:text-info-400';
-            case 'udp': return 'text-purple-600 dark:text-purple-400';
-            case 'tcp/udp': return 'text-teal-600 dark:text-teal-400';
+            case 'udp': return 'text-primary-600 dark:text-primary-400';
+            case 'tcp/udp': return 'text-success-600 dark:text-success-400';
             default: return 'text-surface-600 dark:text-surface-400';
           }
         }

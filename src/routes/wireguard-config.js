@@ -668,7 +668,14 @@ function renderWireguardConfigPage() {
           titleEl.textContent = _t('tools.wireguard-config.js.text4', 'Warnings');
         }
 
-        messagesEl.innerHTML = messages.map(m => \`<li class="\${type === 'error' ? 'text-error-700 dark:text-error-200' : type === 'warning' ? 'text-warning-700 dark:text-warning-200' : 'text-success-700 dark:text-success-200'}">\${m}</li>\`).join('');
+        messagesEl.textContent = '';
+        const liClass = type === 'error' ? 'text-error-700 dark:text-error-200' : type === 'warning' ? 'text-warning-700 dark:text-warning-200' : 'text-success-700 dark:text-success-200';
+        messages.forEach(m => {
+          const li = document.createElement('li');
+          li.className = liClass;
+          li.textContent = m;
+          messagesEl.appendChild(li);
+        });
       }
 
       // Copy/Download config
@@ -723,7 +730,11 @@ function renderWireguardConfigPage() {
           container.appendChild(canvas);
           currentQR = canvas;
         } catch (error) {
-          container.innerHTML = \`<p class="text-error-500 text-sm">Error: \${error.message}</p>\`;
+          container.textContent = '';
+          const p = document.createElement('p');
+          p.className = 'text-error-500 text-sm';
+          p.textContent = 'Error: ' + error.message;
+          container.appendChild(p);
         }
       });
 

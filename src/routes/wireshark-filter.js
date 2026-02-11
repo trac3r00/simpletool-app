@@ -103,9 +103,9 @@ function renderWiresharkFilterPage() {
                 <div class="border-t border-surface-200 dark:border-surface-700 pt-4">
                   <label class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-2" data-i18n="tools.wireshark-filter.ui.label4">Logical Operators</label>
                   <div class="flex flex-wrap gap-2">
-                    <button class="logic-btn btn btn-secondary btn-sm" data-op="&&">AND</button>
-                    <button class="logic-btn btn btn-secondary btn-sm" data-op="||">OR</button>
-                    <button class="logic-btn btn btn-secondary btn-sm" data-op="!">NOT</button>
+                    <button class="logic-btn btn btn-secondary btn-sm" data-op="&&"><span data-i18n="tools.wireshark-filter.ui.button5">AND</span></button>
+                    <button class="logic-btn btn btn-secondary btn-sm" data-op="||"><span data-i18n="tools.wireshark-filter.ui.button6">OR</span></button>
+                    <button class="logic-btn btn btn-secondary btn-sm" data-op="!"><span data-i18n="tools.wireshark-filter.ui.button7">NOT</span></button>
                     <button class="logic-btn btn btn-secondary btn-sm" data-op="(">(</button>
                     <button class="logic-btn btn btn-secondary btn-sm" data-op=")">)</button>
                   </div>
@@ -677,9 +677,9 @@ function renderWiresharkFilterPage() {
           validationMessage.className = 'mt-3 text-sm text-success-600';
         } else {
           validationIcon.textContent = 'Check';
-          validationIcon.className = 'inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-yellow-100 text-yellow-800';
+          validationIcon.className = 'inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-warning-100 text-warning-800';
           validationMessage.textContent = 'Note: ' + issues.join('; ');
-          validationMessage.className = 'mt-3 text-sm text-yellow-600';
+          validationMessage.className = 'mt-3 text-sm text-warning-600';
         }
       }
 
