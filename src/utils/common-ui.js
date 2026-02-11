@@ -99,7 +99,10 @@ let adConfig = {
 };
 
 function isAdsEnabled() {
-  return typeof adConfig.client === 'string' && Boolean(adConfig.client.trim());
+  return typeof adConfig.client === 'string' && 
+         Boolean(adConfig.client.trim()) && 
+         adConfig.slots && 
+         Object.keys(adConfig.slots).length > 0;
 }
 
 export function setAdConfig(config = {}) {
@@ -131,6 +134,14 @@ export function getGtagScript() {
 export function getAdSenseScript() {
   if (!isAdsEnabled()) return '';
   const client = adConfig.client || DEFAULT_ADSENSE_CLIENT;
+  
+  // Validate client ID format to prevent malformed URLs
+  // Must start with ca-pub- and followed by digits
+  if (!client || !/^ca-pub-\d+$/.test(client)) {
+    console.warn('[AdSense] Invalid client ID format, skipping ad script injection');
+    return '';
+  }
+
   return `
     <script>
       (function() {
@@ -178,7 +189,11 @@ export function getAdSenseScript() {
 export function getAdSlotHTML(slotKey, options = {}) {
   if (!isAdsEnabled()) return '';
   const slotId = adConfig.slots?.[slotKey];
-  if (!slotId) return '';
+  
+  // If no slot ID configured for this key, return empty string
+  if (!slotId || typeof slotId !== 'string' || !slotId.trim()) {
+    return '';
+  }
 
   const {
     wrapperClassName = '',
