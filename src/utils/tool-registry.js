@@ -506,6 +506,7 @@ export const TOOLS = [
     path: '/ladder-game',
     category: 'game',
     keywords: 'ghost leg, random, match, pick, amidakuji, decision',
+    hiddenInProduction: true,
     badge: 'NEW',
     relatedTools: ['roulette-wheel', 'marble-roulette', 'password-generator']
   },
@@ -517,6 +518,7 @@ export const TOOLS = [
     path: '/roulette-wheel',
     category: 'game',
     keywords: 'spin, random, picker, wheel, decision, fair, statistics',
+    hiddenInProduction: true,
     badge: 'NEW',
     relatedTools: ['ladder-game', 'marble-roulette', 'mock-data-generator']
   },
@@ -528,7 +530,13 @@ export const TOOLS = [
     path: '/marble-roulette',
     category: 'game',
     keywords: 'marble, physics, drop, lucky draw, pachinko, galton, random',
+    hiddenInProduction: true,
     badge: 'NEW',
     relatedTools: ['ladder-game', 'roulette-wheel', 'mock-data-generator']
   }
 ];
+
+export function getToolsForEnvironment(isDev = false) {
+  if (isDev) return TOOLS;
+  return TOOLS.filter((tool) => !tool.hiddenInProduction);
+}

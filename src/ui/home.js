@@ -4,10 +4,10 @@
 
 import { respondHTML } from '../utils/respond.js';
 import { getThemeScript, getThemeBootstrapScript, getNavigationHTML, getStylesheetLinks, getGtagScript, getAdSenseScript, getAdSlotHTML, getFooterHTML, getSearchScript, t, getLanguageScript, getLanguageBootstrapScript } from '../utils/common-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
+import { getToolsForEnvironment } from '../utils/tool-registry.js';
 
-export function renderHomePage() {
-  const tools = TOOLS;
+export function renderHomePage({ isDev = false } = {}) {
+  const tools = getToolsForEnvironment(isDev);
   const categories = groupToolsByCategory(tools);
 
   const html = `<!DOCTYPE html>
@@ -115,8 +115,8 @@ export function renderHomePage() {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
     name: 'Developer Tools',
-    numberOfItems: TOOLS.length,
-    itemListElement: TOOLS.map((t, i) => ({
+    numberOfItems: tools.length,
+    itemListElement: tools.map((t, i) => ({
       '@type': 'ListItem',
       position: i + 1,
       name: t.name,
@@ -187,7 +187,7 @@ export function renderHomePage() {
         // we'll have to rely on the fact that we know what's in it or expose it.
         // For now, let's assume we can get it from the DOM or just re-pass it.
         // Actually, let's just use the tools we have in the registry.
-        const tools = ${JSON.stringify(TOOLS.map(t => ({ id: t.id, name: t.name, path: t.path, icon: t.icon, description: t.description, keywords: t.keywords })))};
+        const tools = ${JSON.stringify(tools.map(t => ({ id: t.id, name: t.name, path: t.path, icon: t.icon, description: t.description, keywords: t.keywords })))};
         
         const filtered = window.fuzzySearch(term, tools);
 

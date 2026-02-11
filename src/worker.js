@@ -55,7 +55,7 @@ import { handleWireguardConfigRoutes } from './routes/wireguard-config.js';
 import { handleLadderGameRoutes } from './routes/ladder-game.js';
 import { handleRouletteWheelRoutes } from './routes/roulette-wheel.js';
 import { handleMarbleRouletteRoutes } from './routes/marble-roulette.js';
-import { TOOLS } from './utils/tool-registry.js';
+import { getToolsForEnvironment } from './utils/tool-registry.js';
 import {
   renderTermsPage,
   renderPrivacyPage,
@@ -195,7 +195,7 @@ function getAssetSecurityHeaders() {
   };
 }
 
-function buildSitemapXml(origin) {
+function buildSitemapXml(origin, tools) {
   const base = origin.endsWith('/') ? origin.slice(0, -1) : origin;
   const paths = new Set([
     '/',
@@ -207,7 +207,7 @@ function buildSitemapXml(origin) {
     '/careers'
   ]);
 
-  for (const tool of TOOLS) {
+  for (const tool of tools) {
     if (tool?.path) {
       paths.add(tool.path);
     }
@@ -276,6 +276,7 @@ const worker = {
     const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
     const requestId = crypto.randomUUID();
     const isDev = isDevEnvironment(env, url);
+    const runtimeTools = getToolsForEnvironment(isDev);
 
     if (isDev) {
       setAdConfig({
@@ -356,7 +357,7 @@ const worker = {
 
       // Sitemap.xml
       if (path === '/sitemap.xml') {
-        const sitemapXml = buildSitemapXml(url.origin);
+        const sitemapXml = buildSitemapXml(url.origin, runtimeTools);
         return respondText(sitemapXml, {
           headers: { 'Content-Type': 'application/xml; charset=utf-8' }
         });
@@ -477,7 +478,7 @@ const worker = {
 
       // Home page
       if (path === '/' || path === '/index.html') {
-        return renderHomePage();
+        return renderHomePage({ isDev });
       }
 
       // Legacy routing compatibility: older docs/links used the /tools/<tool-id> prefix.
@@ -518,7 +519,7 @@ const worker = {
       }
 
       // Active tool routes (registry-driven)
-      for (const tool of TOOLS) {
+      for (const tool of runtimeTools) {
         const handler = handlersById[tool.id];
         if (!handler) continue;
         if (matchesToolPath(path, tool.path)) {

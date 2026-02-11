@@ -25,6 +25,7 @@ src/utils/bundled-styles.js
 .env.local
 .env.production
 .env.development
+.sentryclirc
 
 # Testing
 coverage/

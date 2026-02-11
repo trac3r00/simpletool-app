@@ -441,13 +441,14 @@ export function getThemeScript() {
  * Provides smart command palette search across all pages
  */
 export function getSearchScript() {
-  const tools = TOOLS.map(({ id, name, path, icon, description, keywords }) => ({
+  const tools = TOOLS.map(({ id, name, path, icon, description, keywords, hiddenInProduction }) => ({
     id,
     name,
     path,
     icon,
     description,
-    keywords: keywords || ''
+    keywords: keywords || '',
+    hiddenInProduction: Boolean(hiddenInProduction)
   }));
 
   return `
@@ -473,7 +474,10 @@ export function getSearchScript() {
 
     <script>
       (function() {
-        const tools = ${JSON.stringify(tools)};
+        const allTools = ${JSON.stringify(tools)};
+        const hostname = window.location.hostname;
+        const isLocal = hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1';
+        const tools = isLocal ? allTools : allTools.filter((tool) => !tool.hiddenInProduction);
         const modal = document.getElementById('search-modal');
         const overlay = document.getElementById('search-overlay');
         const panel = document.getElementById('search-panel');
