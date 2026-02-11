@@ -719,7 +719,6 @@ export async function handleBandwidthCalculatorRoutes(request, url) {
     }
     return null;
   } catch (error) {
-    console.error('Bandwidth Calculator Route Error:', error);
     return null;
   }
 }

@@ -22,7 +22,6 @@ export async function handleWireguardConfigRoutes(request, url) {
 
     return respondJSON({ error: 'Not found' }, { status: 404 });
   } catch (error) {
-    console.error('WireGuard Config Route Error:', error);
     return respondJSON(
       { error: 'Internal server error', message: error.message },
       { status: 500 }
@@ -318,7 +317,6 @@ function renderWireguardConfigPage() {
         if (typeof sodium !== 'undefined') {
           await sodium.ready;
           sodiumReady = true;
-          console.log('Libsodium ready');
         }
       }
       
