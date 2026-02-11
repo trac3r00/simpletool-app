@@ -15,6 +15,7 @@ BUG.md
 changelog.md
 TODO.md
 .dev.vars
+.github
 
 # Build outputs
 dist/
