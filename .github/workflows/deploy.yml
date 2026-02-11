@@ -1,0 +1,37 @@
+name: Deploy Worker
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to Cloudflare Workers
+        id: wrangler
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Notify Discord (success)
+        if: success()
+        env:
+          WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          curl -H "Content-Type: application/json" \
+            -d "{\"content\":\"✅ Worker deployed: **${{ github.repository }}** @ `${{ github.sha }}` on branch `${{ github.ref_name }}`\"}" \
+            "$WEBHOOK"
+
+      - name: Notify Discord (failure)
+        if: failure()
+        env:
+          WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          curl -H "Content-Type: application/json" \
+            -d "{\"content\":\"❌ Worker deploy FAILED: **${{ github.repository }}** @ `${{ github.sha }}` (check Actions logs)\"}" \
+            "$WEBHOOK"
