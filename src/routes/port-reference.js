@@ -966,7 +966,6 @@ function renderPortReferencePage() {
     title,
     description,
     path: '/port-reference',
-    content,
-    scripts
+    content
   });
 }
