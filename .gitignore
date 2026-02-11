@@ -10,6 +10,10 @@ feedback.md
 # Cloudflare / Wrangler
 .wrangler/
 .dev.vars
+AGENTS.md
+BUG.md
+changelog.md
+TODO.md
 
 # Build outputs
 dist/
@@ -56,8 +60,8 @@ Thumbs.db
 *~
 
 # Tests
-tests/
-test-results/
+tests/*
+test-results/*
 
 # Opencode
 .sisyphus/
