@@ -4,6 +4,7 @@
  */
 
 import { renderHomePage } from './ui/home.js';
+import * as Sentry from '@sentry/cloudflare';
 import { handlePasswordGeneratorRoutes } from './routes/password-generator.js';
 import { handleJSONFormatterRoutes } from './routes/json-formatter.js';
 import { handleQRCodeRoutes } from './routes/qr-code.js';
@@ -267,8 +268,8 @@ async function checkRateLimitDO(env, ip, now, maxRequests = RATE_LIMIT_MAX_REQUE
   }
 }
 
-export default {
-  async fetch(request, env) {
+const worker = {
+  async fetch(request, env, ctx) {
     const now = Date.now();
     const url = new URL(request.url);
     const path = url.pathname;
@@ -329,6 +330,10 @@ export default {
         }, {
           headers: { 'Cache-Control': 'no-store' }
         });
+      }
+
+      if (path === '/debug-sentry') {
+        throw new Error('Sentry test error');
       }
 
       // ads.txt (Google AdSense)
@@ -561,6 +566,7 @@ export default {
       return respond404();
 
     } catch (error) {
+      Sentry.captureException(error);
       console.error('Worker error', {
         requestId,
         path,
@@ -577,6 +583,16 @@ export default {
     }
   }
 };
+
+export default Sentry.withSentry(
+  (env) => ({
+    dsn: env.SENTRY_DSN,
+    enabled: Boolean(env.SENTRY_DSN),
+    release: env.CF_VERSION_METADATA?.id,
+    tracesSampleRate: 1.0
+  }),
+  worker
+);
 
 // Legal pages are now imported from ./ui/legal-pages.js
 export { RateLimiter } from './utils/rate-limiter-do.js';

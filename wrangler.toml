@@ -1,15 +1,20 @@
 name = "simpletool-app"
 main = "src/worker.js"
 compatibility_date = "2024-10-25"
+compatibility_flags = ["nodejs_compat"]
 
 [assets]
 directory = "dist"
 binding = "ASSETS"
 
+[version_metadata]
+binding = "CF_VERSION_METADATA"
+
 [vars]
 ENVIRONMENT = "production"
 ADSENSE_CLIENT = "ca-pub-5134881365131182"
 ADSENSE_SLOTS = "{}"
+SENTRY_DSN = ""
 
 # Note: Custom domain will be configured via Cloudflare Dashboard after deployment
 # Dashboard: Workers & Pages → simpletool-app → Settings → Triggers → Custom Domains
