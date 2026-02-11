@@ -1,5 +1,7 @@
 import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createCheatsheet } from '../utils/common-ui.js';
+import { createPageTemplate, createToolHeader, createCheatsheet, getCopyToClipboardScript } from '../utils/common-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
+import { createRelatedToolsSection } from '../utils/content-ui.js';
 
 export async function handleCurlStudioRoutes(request, url) {
   if (url.pathname !== '/curl-studio' && url.pathname !== '/curl-studio/') return null;
@@ -18,6 +20,10 @@ export async function handleCurlStudioRoutes(request, url) {
     { toolId: 'curl-studio' }
   );
 
+  const currentTool = TOOLS.find(t => t.id === 'curl-studio');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
+
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       ${header}
@@ -28,7 +34,7 @@ export async function handleCurlStudioRoutes(request, url) {
           <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 p-5">
             <div class="flex justify-between items-center mb-2">
               <label for="curl-input" class="block text-sm font-medium text-surface-700 dark:text-surface-300"><span data-i18n="tools.curl-studio.ui.label4">Curl Command</span></label>
-              <button id="parse-btn" data-tooltip="Parse a curl command into structured components" class="px-3 py-1 bg-primary-600 hover:bg-primary-700 text-white text-xs font-semibold rounded-lg transition"><span data-i18n="tools.curl-studio.ui.button0">Parse Command</span></button>
+              <button id="parse-btn" data-tooltip="Parse a curl command into structured components" class="btn btn-primary btn-xs"><span data-i18n="tools.curl-studio.ui.button0">Parse Command</span></button>
             </div>
             <textarea id="curl-input" rows="8" 
               class="w-full p-3 bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 font-mono text-sm text-surface-900 dark:text-white resize-y"
@@ -62,7 +68,7 @@ export async function handleCurlStudioRoutes(request, url) {
                 <label for="gen-body" class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1"><span data-i18n="tools.curl-studio.ui.label7">Body</span></label>
                 <textarea id="gen-body" rows="3" class="w-full p-2 bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg text-sm font-mono focus:ring-2 focus:ring-primary-500" placeholder='{"foo": "bar"}'></textarea>
               </div>
-              <button id="generate-btn" data-tooltip="Build a curl command from the fields above" class="w-full py-2.5 bg-surface-900 dark:bg-surface-700 hover:bg-surface-800 dark:hover:bg-surface-600 text-white font-semibold rounded-lg transition"><span data-i18n="tools.curl-studio.ui.button1">Generate Curl Command</span></button>
+              <button id="generate-btn" data-tooltip="Build a curl command from the fields above" class="btn btn-primary w-full"><span data-i18n="tools.curl-studio.ui.button1">Generate Curl Command</span></button>
             </div>
           </div>
         </div>
@@ -70,18 +76,18 @@ export async function handleCurlStudioRoutes(request, url) {
         <!-- Output Section -->
         <div class="space-y-6">
           <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 p-5">
-            <div class="flex justify-between items-center mb-4">
-              <h2 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.curl-studio.ui.heading10">Structured Output</h2>
-              <button onclick="copyOutput('struct-output')" class="text-xs text-primary-600 dark:text-primary-400 font-medium hover:underline"><span data-i18n="tools.curl-studio.ui.button2">Copy JSON</span></button>
-            </div>
+             <div class="flex justify-between items-center mb-4">
+               <h2 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.curl-studio.ui.heading10">Structured Output</h2>
+                <button id="copy-struct-btn" type="button" class="btn btn-ghost btn-xs"><span data-i18n="tools.curl-studio.ui.button2">Copy JSON</span></button>
+             </div>
             <pre class="bg-surface-900 text-surface-50 p-4 rounded-lg text-xs font-mono overflow-x-auto min-h-[200px]"><code id="struct-output">{}</code></pre>
           </div>
 
           <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 p-5">
-            <div class="flex justify-between items-center mb-4">
-              <h2 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.curl-studio.ui.heading11">Generated Command</h2>
-              <button onclick="copyOutput('gen-output')" class="text-xs text-primary-600 dark:text-primary-400 font-medium hover:underline"><span data-i18n="tools.curl-studio.ui.button3">Copy Command</span></button>
-            </div>
+             <div class="flex justify-between items-center mb-4">
+               <h2 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.curl-studio.ui.heading11">Generated Command</h2>
+                <button id="copy-gen-btn" type="button" class="btn btn-ghost btn-xs"><span data-i18n="tools.curl-studio.ui.button3">Copy Command</span></button>
+             </div>
             <div class="bg-surface-900 text-surface-50 p-4 rounded-lg text-xs font-mono break-all whitespace-pre-wrap min-h-[100px]" id="gen-output">curl ...</div>
           </div>
         </div>
@@ -108,11 +114,13 @@ export async function handleCurlStudioRoutes(request, url) {
             <tr><td><code>--cert file.pem</code></td><td>Client certificate</td></tr>
           </table>` }
       ])}
+    ${createRelatedToolsSection(relatedToolsData)}
     </main>
   `;
 
-  const scripts = `
-    <script type="module">
+   const scripts = `
+     ${getCopyToClipboardScript()}
+     <script type="module">
       // Local curl parser implementation
       function parseCurl(curlCommand) {
         const result = {
@@ -169,6 +177,8 @@ export async function handleCurlStudioRoutes(request, url) {
       const genBody = document.getElementById('gen-body');
       const generateBtn = document.getElementById('generate-btn');
       const genOutput = document.getElementById('gen-output');
+      const copyStructBtn = document.getElementById('copy-struct-btn');
+      const copyGenBtn = document.getElementById('copy-gen-btn');
 
       parseBtn.addEventListener('click', () => {
         const cmd = curlInput.value.trim();
@@ -213,15 +223,15 @@ export async function handleCurlStudioRoutes(request, url) {
         genOutput.textContent = cmd;
       }
 
-      window.copyOutput = (id) => {
+      function copyOutput(id, btnEl) {
         const el = document.getElementById(id);
-        const text = el.textContent || el.innerText;
-        navigator.clipboard.writeText(text).then(() => {
-          const originalText = event.target.innerText;
-          event.target.innerText = _t('tools.curl-studio.js.text1', 'Copied!');
-          setTimeout(() => event.target.innerText = originalText, 2000);
-        });
-      };
+        const text = el ? (el.textContent || el.innerText) : '';
+        if (!btnEl) return;
+        copyToClipboard(text, btnEl);
+      }
+
+      copyStructBtn?.addEventListener('click', () => copyOutput('struct-output', copyStructBtn));
+      copyGenBtn?.addEventListener('click', () => copyOutput('gen-output', copyGenBtn));
       
       // Initial generation
       updateGeneratedCommand();

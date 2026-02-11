@@ -1,9 +1,14 @@
 import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, getCopyToClipboardScript, createCheatsheet, infoHint } from '../utils/common-ui.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 
 export async function handleCronBuilderRoutes(request) {
   const requestPath = new URL(request.url).pathname;
   const canonicalPath = requestPath.replace(/\/$/, '') || '/';
+  const currentTool = TOOLS.find(t => t.id === 'cron-builder');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6 lg:h-[calc(100vh-9rem)] min-h-[800px]">
       ${createToolHeader(
@@ -222,13 +227,13 @@ export async function handleCronBuilderRoutes(request) {
             </div>
           </div>
 
-          <!-- Tips -->
-          <div class="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-6 border border-blue-100 dark:border-blue-800">
-            <h3 class="font-semibold text-blue-800 dark:text-blue-300 mb-2 flex items-center gap-2">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-              Quick Tips
-            </h3>
-            <ul class="text-sm text-blue-700 dark:text-blue-400 space-y-1 list-disc list-inside">
+           <!-- Tips -->
+           <div class="bg-info-50 dark:bg-info-900/20 rounded-xl p-6 border border-info-100 dark:border-info-800">
+             <h3 class="font-semibold text-info-800 dark:text-info-300 mb-2 flex items-center gap-2">
+               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+               Quick Tips
+             </h3>
+             <ul class="text-sm text-info-700 dark:text-info-400 space-y-1 list-disc list-inside">
               <li>Use <code>*</code> for "every"</li>
               <li>Use <code>*/n</code> for intervals (e.g. */5)</li>
               <li>Use <code>,</code> for lists (e.g. 1,3,5)</li>
@@ -267,6 +272,7 @@ export async function handleCronBuilderRoutes(request) {
             <tr><td><code>0 9-17 * * 1-5</code></td><td>Hourly 9am–5pm weekdays</td></tr>
           </table>` }
       ])}
+    ${createRelatedToolsSection(relatedToolsData)}
     </main>
 
     <script>
@@ -597,18 +603,18 @@ export async function handleCronBuilderRoutes(request) {
 
         // --- Human Readable & Next Execution Logic ---
 
-        function updateHumanReadable() {
-          try {
-            const desc = describeCron(state);
-            humanReadable.textContent = desc;
-            humanReadable.classList.remove('text-red-500');
-            humanReadable.classList.add('text-primary-800', 'dark:text-primary-200');
-          } catch (e) {
-            humanReadable.textContent = _t('tools.cron-builder.js.text0', 'Invalid cron expression');
-            humanReadable.classList.add('text-red-500');
-            humanReadable.classList.remove('text-primary-800', 'dark:text-primary-200');
-          }
-        }
+         function updateHumanReadable() {
+           try {
+             const desc = describeCron(state);
+             humanReadable.textContent = desc;
+             humanReadable.classList.remove('text-error-500');
+             humanReadable.classList.add('text-primary-800', 'dark:text-primary-200');
+           } catch (e) {
+             humanReadable.textContent = _t('tools.cron-builder.js.text0', 'Invalid cron expression');
+             humanReadable.classList.add('text-error-500');
+             humanReadable.classList.remove('text-primary-800', 'dark:text-primary-200');
+           }
+         }
 
         function describeCron(s) {
           if (s.minute === '*' && s.hour === '*' && s.dom === '*' && s.month === '*' && s.dow === '*') return 'Every minute';
@@ -640,23 +646,23 @@ export async function handleCronBuilderRoutes(request) {
           return desc.charAt(0).toUpperCase() + desc.slice(1);
         }
 
-        function updateNextExecutions() {
-          nextExecutionsList.innerHTML = '';
-          try {
-            const dates = calculateNextRuns(input.value, 5);
-            dates.forEach(date => {
-              const li = document.createElement('li');
-              li.className = 'flex items-center gap-3 text-sm';
-              li.innerHTML = \`
-                <span class="font-mono text-surface-500 dark:text-surface-400">\${formatDate(date)}</span>
-                <span class="text-xs text-surface-400 dark:text-surface-400">(\${timeFromNow(date)})</span>
-              \`;
-              nextExecutionsList.appendChild(li);
-            });
-          } catch (e) {
-            nextExecutionsList.innerHTML = '<li class="text-red-500 text-sm">Invalid expression</li>';
-          }
-        }
+         function updateNextExecutions() {
+           nextExecutionsList.innerHTML = '';
+           try {
+             const dates = calculateNextRuns(input.value, 5);
+             dates.forEach(date => {
+               const li = document.createElement('li');
+               li.className = 'flex items-center gap-3 text-sm';
+               li.innerHTML = \`
+                 <span class="font-mono text-surface-500 dark:text-surface-400">\${formatDate(date)}</span>
+                 <span class="text-xs text-surface-400 dark:text-surface-400">(\${timeFromNow(date)})</span>
+               \`;
+               nextExecutionsList.appendChild(li);
+             });
+           } catch (e) {
+             nextExecutionsList.innerHTML = '<li class="text-error-500 text-sm">Invalid expression</li>';
+           }
+         }
 
         function formatDate(date) {
           return date.toLocaleString('en-US', { 

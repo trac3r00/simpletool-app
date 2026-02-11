@@ -6,6 +6,8 @@
 
 import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
 import { respondHTML } from '../utils/respond.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 
 /**
  * Render the Unit Converter page
@@ -19,6 +21,8 @@ function renderUnitConverterPage() {
     { toolId: 'unit-converter' }
   );
 
+  const currentTool = TOOLS.find(t => t.id === 'unit-converter');
+  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
   const pageContent = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
@@ -81,271 +85,29 @@ function renderUnitConverterPage() {
 
       </div>
     </main>
-
-    <script>
-      // Unit Definitions
-      const categories = {
-        length: {
-          icon: 'straighten',
-          label: 'Length',
-          base: 'meter',
-          units: {
-            kilometer: { label: 'Kilometer (km)', factor: 1000 },
-            meter: { label: 'Meter (m)', factor: 1 },
-            centimeter: { label: 'Centimeter (cm)', factor: 0.01 },
-            millimeter: { label: 'Millimeter (mm)', factor: 0.001 },
-            mile: { label: 'Mile (mi)', factor: 1609.344 },
-            yard: { label: 'Yard (yd)', factor: 0.9144 },
-            foot: { label: 'Foot (ft)', factor: 0.3048 },
-            inch: { label: 'Inch (in)', factor: 0.0254 }
-          }
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+      ${createEducationalSection([
+        {
+          title: 'Measurement Systems Overview',
+          content: '<p>Measurement systems are collections of units of measurement and rules relating them to each other. The two most common systems are the <strong>Metric System</strong> (International System of Units or SI) and the <strong>Imperial System</strong>. The Metric system is based on powers of ten, making it highly logical and easy to scale (e.g., meters, kilometers, millimeters).</p><p>The Imperial system, primarily used in the United States, uses units like inches, feet, and pounds, which have historical origins and less uniform conversion factors. Understanding the differences between these systems is essential for science, engineering, international trade, and even daily tasks like cooking or traveling.</p>'
         },
-        weight: {
-          icon: 'scale',
-          label: 'Weight',
-          base: 'gram',
-          units: {
-            metric_ton: { label: 'Metric Ton (t)', factor: 1000000 },
-            kilogram: { label: 'Kilogram (kg)', factor: 1000 },
-            gram: { label: 'Gram (g)', factor: 1 },
-            milligram: { label: 'Milligram (mg)', factor: 0.001 },
-            pound: { label: 'Pound (lb)', factor: 453.59237 },
-            ounce: { label: 'Ounce (oz)', factor: 28.34952 }
-          }
+        {
+          title: 'How to Use This Tool',
+          content: '<ol><li>Select the measurement category (e.g., Length, Weight, Temperature) from the grid at the top.</li><li>Choose the unit you want to convert from in the "From" dropdown menu.</li><li>Enter the value you wish to convert in the input field below the "From" unit.</li><li>Select the target unit in the "To" dropdown menu.</li><li>The converted value will appear instantly in the "To" field, along with the mathematical formula used for the conversion.</li></ol>'
         },
-        temperature: {
-          icon: 'thermostat',
-          label: 'Temperature',
-          type: 'temperature', // Special handling
-          units: {
-            celsius: { label: 'Celsius (°C)' },
-            fahrenheit: { label: 'Fahrenheit (°F)' },
-            kelvin: { label: 'Kelvin (K)' }
-          }
+        {
+          title: 'Common Use Cases',
+          content: '<ul><li><strong>Travel:</strong> Convert distances from kilometers to miles or temperatures from Celsius to Fahrenheit when visiting different countries.</li><li><strong>Cooking:</strong> Translate recipes between metric (grams/milliliters) and imperial (ounces/cups) measurements.</li><li><strong>Engineering & Science:</strong> Perform precise conversions between different units of pressure, energy, or speed for technical calculations.</li><li><strong>Digital Storage:</strong> Understand the difference between Megabytes, Gigabytes, and Terabytes when managing your files and hardware.</li></ul>'
         },
-        area: {
-          icon: 'square_foot',
-          label: 'Area',
-          base: 'square_meter',
-          units: {
-            square_kilometer: { label: 'Square Kilometer (km²)', factor: 1000000 },
-            square_meter: { label: 'Square Meter (m²)', factor: 1 },
-            square_mile: { label: 'Square Mile (mi²)', factor: 2589988.11 },
-            square_yard: { label: 'Square Yard (yd²)', factor: 0.836127 },
-            square_foot: { label: 'Square Foot (ft²)', factor: 0.092903 },
-            acre: { label: 'Acre (ac)', factor: 4046.86 },
-            hectare: { label: 'Hectare (ha)', factor: 10000 }
-          }
-        },
-        volume: {
-          icon: 'view_in_ar',
-          label: 'Volume',
-          base: 'liter',
-          units: {
-            cubic_meter: { label: 'Cubic Meter (m³)', factor: 1000 },
-            liter: { label: 'Liter (l)', factor: 1 },
-            milliliter: { label: 'Milliliter (ml)', factor: 0.001 },
-            gallon_us: { label: 'Gallon (US)', factor: 3.78541 },
-            quart_us: { label: 'Quart (US)', factor: 0.946353 },
-            pint_us: { label: 'Pint (US)', factor: 0.473176 },
-            cup_us: { label: 'Cup (US)', factor: 0.24 },
-            fluid_ounce_us: { label: 'Fluid Ounce (US)', factor: 0.0295735 }
-          }
-        },
-        speed: {
-          icon: 'speed',
-          label: 'Speed',
-          base: 'meters_per_second',
-          units: {
-            miles_per_hour: { label: 'Miles per Hour (mph)', factor: 0.44704 },
-            kilometers_per_hour: { label: 'Kilometers per Hour (km/h)', factor: 0.277778 },
-            meters_per_second: { label: 'Meters per Second (m/s)', factor: 1 },
-            knot: { label: 'Knot (kn)', factor: 0.514444 }
-          }
-        },
-        time: {
-          icon: 'timer',
-          label: 'Time',
-          base: 'second',
-          units: {
-            year: { label: 'Year', factor: 31536000 },
-            week: { label: 'Week', factor: 604800 },
-            day: { label: 'Day', factor: 86400 },
-            hour: { label: 'Hour', factor: 3600 },
-            minute: { label: 'Minute', factor: 60 },
-            second: { label: 'Second', factor: 1 },
-            millisecond: { label: 'Millisecond (ms)', factor: 0.001 }
-          }
-        },
-        digital: {
-          icon: 'hard_drive',
-          label: 'Digital Storage',
-          base: 'byte',
-          units: {
-            terabyte: { label: 'Terabyte (TB)', factor: 1099511627776 },
-            gigabyte: { label: 'Gigabyte (GB)', factor: 1073741824 },
-            megabyte: { label: 'Megabyte (MB)', factor: 1048576 },
-            kilobyte: { label: 'Kilobyte (KB)', factor: 1024 },
-            byte: { label: 'Byte (B)', factor: 1 },
-            bit: { label: 'Bit (b)', factor: 0.125 }
-          }
+        {
+          title: 'Pro Tips',
+          content: '<ul><li>Use the "Swap" button to quickly reverse the conversion direction between your selected units.</li><li>Always double-check the specific unit type, especially for volume and weight, as names can be similar across different systems (e.g., US vs. UK gallons).</li><li>When performing multiple conversions in a sequence, keep as many decimal places as possible until the final result to avoid cumulative rounding errors.</li></ul>'
         }
-      };
-
-      // State
-      let currentCategory = 'length';
-
-      // DOM Elements
-      const categoryGrid = document.getElementById('category-grid');
-      const fromUnitSelect = document.getElementById('from-unit');
-      const toUnitSelect = document.getElementById('to-unit');
-      const fromValueInput = document.getElementById('from-value');
-      const toValueInput = document.getElementById('to-value');
-      const toValueLive = document.getElementById('to-value-live');
-      let _liveAnnounce;
-      const swapBtn = document.getElementById('swap-btn');
-      const formulaDisplay = document.getElementById('formula-display');
-
-      // Initialize
-      function init() {
-        renderCategories();
-        updateUnits();
-        
-        // Event Listeners
-        fromValueInput.addEventListener('input', convert);
-        fromUnitSelect.addEventListener('change', convert);
-        toUnitSelect.addEventListener('change', convert);
-        categoryGrid.addEventListener('click', (event) => {
-          const button = event.target.closest('[data-category]');
-          if (!button) return;
-          selectCategory(button.dataset.category);
-        });
-        
-        swapBtn.addEventListener('click', () => {
-          const temp = fromUnitSelect.value;
-          fromUnitSelect.value = toUnitSelect.value;
-          toUnitSelect.value = temp;
-          convert();
-        });
-      }
-
-      function renderCategories() {
-        categoryGrid.innerHTML = Object.entries(categories).map(([key, cat]) => {
-          const activeClass = 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300';
-          const inactiveClass = 'border-transparent bg-surface-50 dark:bg-surface-800 hover:bg-surface-100 dark:hover:bg-surface-700 text-surface-600 dark:text-surface-300';
-          const isActive = key === currentCategory;
-          const className = \`category-btn p-3 rounded-xl border-2 transition-all flex flex-col items-center gap-2 \${isActive ? activeClass : inactiveClass}\`;
-          
-          return \`
-          <button 
-            class="\${className}"
-            type="button"
-            data-category="\${key}"
-          >
-            <span class="material-symbols-rounded text-3xl">\${cat.icon}</span>
-            <span class="text-xs font-bold">\${cat.label}</span>
-          </button>
-          \`;
-        }).join('');
-      }
-
-      function selectCategory(category) {
-        currentCategory = category;
-        renderCategories();
-        updateUnits();
-        fromValueInput.value = '';
-        toValueInput.value = '';
-        toValueLive.textContent = '';
-        formulaDisplay.textContent = _t('tools.unit-converter.js.text0', 'Select units to see the conversion formula');
-      }
-
-      function updateUnits() {
-        const cat = categories[currentCategory];
-        const units = Object.entries(cat.units);
-        
-        const options = units.map(([key, unit]) => 
-          \`<option value="\${key}">\${unit.label}</option>\`
-        ).join('');
-
-        fromUnitSelect.innerHTML = options;
-        toUnitSelect.innerHTML = options;
-        
-        // Set default selection (first and second unit if available)
-        if (units.length > 1) {
-          toUnitSelect.selectedIndex = 1;
-        }
-      }
-
-      function convert() {
-        const cat = categories[currentCategory];
-        const fromUnit = fromUnitSelect.value;
-        const toUnit = toUnitSelect.value;
-        const value = parseFloat(fromValueInput.value);
-
-        if (isNaN(value)) {
-          toValueInput.value = '';
-          toValueLive.textContent = '';
-          formulaDisplay.textContent = _t('tools.unit-converter.js.text1', 'Enter a valid number');
-          return;
-        }
-
-        let result;
-        let formulaText = '';
-
-        if (cat.type === 'temperature') {
-          result = convertTemperature(value, fromUnit, toUnit);
-          formulaText = getTemperatureFormula(fromUnit, toUnit);
-        } else {
-          // Standard conversion using factors
-          const fromFactor = cat.units[fromUnit].factor;
-          const toFactor = cat.units[toUnit].factor;
-          
-          // Convert to base then to target
-          const baseValue = value * fromFactor;
-          result = baseValue / toFactor;
-          
-          formulaText = \`Multiply by \${fromFactor / toFactor}\`;
-        }
-
-        // Format result (avoid floating point errors)
-        toValueInput.value = Number(result.toPrecision(10)).toString();
-        clearTimeout(_liveAnnounce);
-        _liveAnnounce = setTimeout(() => { toValueLive.textContent = toValueInput.value; }, 400);
-        formulaDisplay.textContent = formulaText;
-      }
-
-      function convertTemperature(value, from, to) {
-        if (from === to) return value;
-
-        let celsius;
-        // Convert to Celsius first
-        if (from === 'celsius') celsius = value;
-        else if (from === 'fahrenheit') celsius = (value - 32) * 5/9;
-        else if (from === 'kelvin') celsius = value - 273.15;
-
-        // Convert from Celsius to target
-        if (to === 'celsius') return celsius;
-        else if (to === 'fahrenheit') return (celsius * 9/5) + 32;
-        else if (to === 'kelvin') return celsius + 273.15;
-      }
-
-      function getTemperatureFormula(from, to) {
-        if (from === to) return 'No conversion needed';
-        
-        if (from === 'celsius' && to === 'fahrenheit') return '(°C × 9/5) + 32 = °F';
-        if (from === 'fahrenheit' && to === 'celsius') return '(°F - 32) × 5/9 = °C';
-        if (from === 'celsius' && to === 'kelvin') return '°C + 273.15 = K';
-        if (from === 'kelvin' && to === 'celsius') return 'K - 273.15 = °C';
-        if (from === 'fahrenheit' && to === 'kelvin') return '(°F - 32) × 5/9 + 273.15 = K';
-        if (from === 'kelvin' && to === 'fahrenheit') return '(K - 273.15) × 9/5 + 32 = °F';
-        
-        return 'Complex conversion';
-      }
-
-      // Start
-      init();
-    </script>
+      ], 'unit-converter')}
+    </div>
+    ${createRelatedToolsSection(relatedToolsData)}
   `;
+
 
   return createPageTemplate({
     title: 'Unit Converter',

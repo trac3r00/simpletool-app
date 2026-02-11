@@ -5,6 +5,8 @@
 
 import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 
 export async function handleUUIDGeneratorRoutes(request, url) {
   const { pathname } = url;
@@ -36,6 +38,8 @@ function renderUUIDGeneratorPage() {
     { toolId: 'uuid-generator' }
   );
 
+  const currentTool = TOOLS.find(t => t.id === 'uuid-generator');
+  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
@@ -88,49 +92,29 @@ function renderUUIDGeneratorPage() {
                   <input type="radio" name="format" value="braces" class="w-4 h-4 text-primary-600 focus:ring-primary-500">
                   <span class="text-sm font-medium text-surface-900 dark:text-surface-100" data-i18n="tools.uuid-generator.ui.desc14">With braces {}</span>
                 </label>
-              </div>
-            </div>
-
-            <!-- Generate Button -->
-            <button id="generate-btn" class="btn btn-primary" data-tooltip="Generate new UUID(s) using crypto.getRandomValues()" w-full py-3 text-lg">
-              <span data-i18n="tools.uuid-generator.ui.button0">Generate UUID</span>
-            </button>
-          </div>
-
-          <!-- Results Column -->
-          <div class="lg:col-span-2">
-            <div id="result" class="hidden h-full flex flex-col">
-              <div class="flex items-center justify-between mb-2">
-                <label class="label"><span data-i18n="tools.uuid-generator.ui.label3">Generated UUID(s)</span></label>
-                <button id="copy-btn" class="btn btn-secondary text-xs py-1 px-3">
-                  <span class="material-symbols-rounded text-sm" data-i18n="tools.uuid-generator.ui.desc15">content_copy</span> Copy All
-                </button>
-              </div>
-              <div id="uuid-output" class="flex-grow p-4 bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-800 rounded-lg font-mono text-sm max-h-[600px] overflow-y-auto space-y-1"></div>
-            </div>
-            
-            <!-- Placeholder State -->
-            <div id="placeholder" class="h-full flex flex-col items-center justify-center p-8 text-center text-surface-400 border-2 border-dashed border-surface-200 dark:border-surface-800 rounded-xl">
-               <span class="material-symbols-rounded text-6xl mb-4">manufacturing</span>
-               <p>Click "Generate UUID" to start</p>
-            </div>
-          </div>
-
         </div>
 
-        <!-- Info -->
-        <div class="mt-8 p-4 bg-primary-50 dark:bg-primary-900/20 border border-primary-100 dark:border-primary-800 rounded-lg">
-          <h2 class="text-sm font-semibold text-primary-900 dark:text-primary-100 mb-2" data-i18n="tools.uuid-generator.ui.heading9">ℹ️ About UUID Versions</h2>
-          <div class="text-sm text-surface-700 dark:text-surface-300 space-y-1 grid grid-cols-1 sm:grid-cols-2 gap-x-4">
-            <p><strong>UUID v4:</strong> Randomly generated, 122 bits of randomness. Best for most use cases.</p>
-            <p><strong>UUID v1:</strong> Time-based with MAC address. Sortable but may reveal system info.</p>
-            <p><strong>NIL UUID:</strong> All zeros (0000...). Used as null/empty value.</p>
-            <p><strong>GUID:</strong> Globally Unique Identifier, Microsoft's UUID implementation.</p>
-          </div>
-        </div>
-
+        ${createEducationalSection([
+          {
+            title: 'What is a UUID?',
+            content: 'A Universally Unique Identifier (UUID) is a 128-bit number used to uniquely identify information in computer systems. They are designed to be generated independently without a central authority while maintaining a negligible probability of collision.'
+          },
+          {
+            title: 'How to Use This Tool',
+            content: 'Select the UUID version (v1 for time-based, v4 for random) and the number of IDs you need. Click "Generate" to create a list of unique identifiers ready for use in your database or application.'
+          },
+          {
+            title: 'Common Use Cases',
+            content: 'Primary keys in distributed databases, session identifiers, transaction tracking, and naming temporary files or resources where uniqueness is critical across multiple systems.'
+          },
+          {
+            title: 'Pro Tips',
+            content: 'UUID v4 is the most common choice for general-purpose unique IDs because it relies on high-quality randomness. Use v1 if you need to sort IDs by creation time.'
+          }
+        ], 'uuid-generator')}
       </div>
     </main>
+    ${createRelatedToolsSection(relatedToolsData)}
   `;
 
   const script = `
@@ -262,17 +246,18 @@ function renderUUIDGeneratorPage() {
           const text = uuidItem.dataset.uuid;
           if(window.copyToClipboard) {
              window.copyToClipboard(text, uuidItem);
-          } else {
-             await navigator.clipboard.writeText(text);
-             // Fallback visual feedback
-             const original = uuidItem.textContent;
-             uuidItem.textContent = _t('tools.uuid-generator.js.text0', '✓ Copied!');
-             uuidItem.classList.add('text-green-600', 'font-bold');
-             setTimeout(() => {
-                uuidItem.textContent = original;
-                uuidItem.classList.remove('text-green-600', 'font-bold');
-             }, 1000);
-          }
+           } else {
+              await navigator.clipboard.writeText(text);
+              // Fallback visual feedback
+              const original = uuidItem.textContent;
+              uuidItem.textContent = _t('tools.uuid-generator.js.text0', '✓ Copied!');
+               uuidItem.classList.add('text-success-600', 'font-bold');
+               if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
+               setTimeout(() => {
+                  uuidItem.textContent = original;
+                  uuidItem.classList.remove('text-success-600', 'font-bold');
+              }, 1000);
+           }
         }
       });
 
@@ -282,6 +267,7 @@ function renderUUIDGeneratorPage() {
             window.copyToClipboard(allUUIDs, document.getElementById('copy-btn'));
         } else {
             await navigator.clipboard.writeText(allUUIDs);
+            if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
         }
       });
     </script>

@@ -15,6 +15,7 @@ import { handleMarkdownPreviewRoutes } from './routes/markdown-preview.js';
 import { handleTextDiffRoutes } from './routes/text-diff.js';
 import { handleJWTDecoderRoutes } from './routes/jwt-decoder.js';
 import { handleCertificateDecoderRoutes } from './routes/certificate-decoder.js';
+import { handleJwkJwksStudioRoutes } from './routes/jwk-jwks-studio.js';
 import { handleHashCalculatorRoutes } from './routes/hash-calculator.js';
 import { handleCaseConverterRoutes } from './routes/case-converter.js';
 import { handleLogViewerRoutes } from './routes/log-viewer.js';
@@ -44,6 +45,15 @@ import { handleEnvVarManagerRoutes } from './routes/env-var-manager.js';
 import { handleSVGOptimizerRoutes } from './routes/svg-optimizer.js';
 import { handleCSPBuilderRoutes } from './routes/csp-builder.js';
 import { handleSecretScannerRoutes } from './routes/secret-scanner.js';
+import { handleDNSReferenceRoutes } from './routes/dns-reference.js';
+import { handlePortReferenceRoutes } from './routes/port-reference.js';
+import { handleBandwidthCalculatorRoutes } from './routes/bandwidth-calculator.js';
+import { handleWiresharkFilterRoutes } from './routes/wireshark-filter.js';
+import { handleProtocolHeadersRoutes } from './routes/protocol-headers.js';
+import { handleWireguardConfigRoutes } from './routes/wireguard-config.js';
+import { handleLadderGameRoutes } from './routes/ladder-game.js';
+import { handleRouletteWheelRoutes } from './routes/roulette-wheel.js';
+import { handleMarbleRouletteRoutes } from './routes/marble-roulette.js';
 import { TOOLS } from './utils/tool-registry.js';
 import {
   renderTermsPage,
@@ -53,11 +63,15 @@ import {
   renderSecurityPage,
   renderCareersPage
 } from './ui/legal-pages.js';
+import { handleBlogRoutes, BLOG_ARTICLES } from './ui/blog.js';
+import { handleFaqRoutes } from './ui/faq.js';
 import {
   getSecurityHeaders,
   shouldRateLimit,
   sweepRateLimiter,
+  isLikelySharedIP,
   RATE_LIMIT_MAX_REQUESTS,
+  RATE_LIMIT_MAX_REQUESTS_SHARED_IP,
   RATE_LIMIT_WINDOW_MS
 } from './utils/security.js';
 import { respondJSON, respondText, respond404, respond429 } from './utils/respond.js';
@@ -80,6 +94,7 @@ const handlersById = {
   'text-diff': handleTextDiffRoutes,
   'jwt-decoder': handleJWTDecoderRoutes,
   'certificate-decoder': handleCertificateDecoderRoutes,
+  'jwk-jwks-studio': handleJwkJwksStudioRoutes,
   'hash-calculator': handleHashCalculatorRoutes,
   'case-converter': handleCaseConverterRoutes,
   'log-viewer': handleLogViewerRoutes,
@@ -106,9 +121,18 @@ const handlersById = {
   'prompt-template-builder': handlePromptTemplateBuilderRoutes,
   'sql-formatter': handleSQLFormatterRoutes,
   'env-var-manager': handleEnvVarManagerRoutes,
+  'ladder-game': handleLadderGameRoutes,
+  'roulette-wheel': handleRouletteWheelRoutes,
   'svg-optimizer': handleSVGOptimizerRoutes,
   'csp-builder': handleCSPBuilderRoutes,
-  'secret-scanner': handleSecretScannerRoutes
+  'secret-scanner': handleSecretScannerRoutes,
+  'dns-reference': handleDNSReferenceRoutes,
+  'port-reference': handlePortReferenceRoutes,
+  'bandwidth-calculator': handleBandwidthCalculatorRoutes,
+  'wireshark-filter': handleWiresharkFilterRoutes,
+  'protocol-headers': handleProtocolHeadersRoutes,
+  'wireguard-config': handleWireguardConfigRoutes,
+  'marble-roulette': handleMarbleRouletteRoutes
 };
 
 async function resolveToolResponse(handler, request, url) {
@@ -188,15 +212,25 @@ function buildSitemapXml(origin) {
     }
   }
 
+  paths.add('/blog');
+  paths.add('/faq');
+  for (const article of BLOG_ARTICLES) {
+    if (article?.slug) {
+      paths.add(`/blog/${article.slug}`);
+    }
+  }
+
   const today = new Date().toISOString().split('T')[0];
+  const contentPaths = new Set(['/blog', '/faq']);
   const legalPaths = new Set(['/terms', '/privacy', '/about', '/contact', '/security', '/careers']);
 
   const urls = Array.from(paths).sort().map((path) => {
     const loc = `${base}${path === '/' ? '' : path}`;
     const isHome = path === '/';
     const isLegal = legalPaths.has(path);
-    const priority = isHome ? '1.0' : isLegal ? '0.3' : '0.8';
-    const changefreq = isHome ? 'daily' : isLegal ? 'yearly' : 'weekly';
+    const isContent = contentPaths.has(path) || path.startsWith('/blog/');
+    const priority = isHome ? '1.0' : isLegal ? '0.3' : isContent ? '0.7' : '0.8';
+    const changefreq = isHome ? 'daily' : isLegal ? 'yearly' : isContent ? 'weekly' : 'weekly';
     return `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`;
   });
 
@@ -208,7 +242,7 @@ function buildSitemapXml(origin) {
   ].join('\n');
 }
 
-async function checkRateLimitDO(env, ip, now) {
+async function checkRateLimitDO(env, ip, now, maxRequests = RATE_LIMIT_MAX_REQUESTS) {
   if (!env?.RATE_LIMITER || !ip || ip === 'unknown') {
     return { limited: false };
   }
@@ -218,11 +252,12 @@ async function checkRateLimitDO(env, ip, now) {
     const stub = env.RATE_LIMITER.get(id);
     const url = new URL('https://rate-limiter/check');
     url.searchParams.set('now', String(now));
-    url.searchParams.set('limit', String(RATE_LIMIT_MAX_REQUESTS));
+    url.searchParams.set('limit', String(maxRequests));
     url.searchParams.set('windowMs', String(RATE_LIMIT_WINDOW_MS));
     const response = await stub.fetch(url.toString());
     if (!response.ok) {
-      return { limited: false };
+      console.warn('Durable Object rate limiter returned non-OK status. Falling back to fail-closed response.', response.status);
+      return { limited: false, fallback: true };
     }
     const data = await response.json();
     return data;
@@ -233,7 +268,7 @@ async function checkRateLimitDO(env, ip, now) {
 }
 
 export default {
-  async fetch(request, env, ctx) {
+  async fetch(request, env) {
     const now = Date.now();
     const url = new URL(request.url);
     const path = url.pathname;
@@ -253,28 +288,32 @@ export default {
       });
     }
 
-    // Periodic rate limiter cleanup for memory fallback
-    const useMemoryRateLimiter = !env?.RATE_LIMITER;
-    if (useMemoryRateLimiter) {
-      if (!globalThis.rateLimiterSweepCounter) {
-        globalThis.rateLimiterSweepCounter = 0;
-      }
-      globalThis.rateLimiterSweepCounter++;
-      if (globalThis.rateLimiterSweepCounter >= 100) {
-        sweepRateLimiter(rateLimiter, now);
-        globalThis.rateLimiterSweepCounter = 0;
-      }
+    // Periodic rate limiter cleanup (always run to prevent memory growth)
+    if (!globalThis.rateLimiterSweepCounter) {
+      globalThis.rateLimiterSweepCounter = 0;
+    }
+    globalThis.rateLimiterSweepCounter++;
+    if (globalThis.rateLimiterSweepCounter >= 100) {
+      sweepRateLimiter(rateLimiter, now);
+      globalThis.rateLimiterSweepCounter = 0;
     }
 
-    // Rate limiting check (Durable Object first, memory fallback) — skip in dev
     if (!isDev) {
-      const rateLimitResult = await checkRateLimitDO(env, ip, now);
-      if (rateLimitResult?.limited) {
-        const retryAfterSeconds = Math.ceil((rateLimitResult.retryAfterMs || 0) / 1000);
+      const effectiveLimit = isLikelySharedIP(request)
+        ? RATE_LIMIT_MAX_REQUESTS_SHARED_IP
+        : RATE_LIMIT_MAX_REQUESTS;
+
+      if (shouldRateLimit(rateLimiter, ip, now, effectiveLimit)) {
+        return respond429();
+      }
+
+      const doRateLimitResult = await checkRateLimitDO(env, ip, now, effectiveLimit);
+      if (doRateLimitResult?.limited) {
+        const retryAfterSeconds = Math.ceil((doRateLimitResult.retryAfterMs || 0) / 1000);
         return respond429({ retryAfterSeconds });
       }
-      if ((rateLimitResult?.fallback || useMemoryRateLimiter) && shouldRateLimit(rateLimiter, ip, now)) {
-        return respond429();
+      if (doRateLimitResult?.fallback) {
+        return respond429({ retryAfterSeconds: Math.ceil(RATE_LIMIT_WINDOW_MS / 1000) });
       }
     }
 
@@ -373,11 +412,19 @@ export default {
         if (env && env.ASSETS && typeof env.ASSETS.fetch === 'function') {
           const assetRequest = isDev ? stripConditionalHeaders(request) : request;
           let assetResponse = await env.ASSETS.fetch(assetRequest);
+          
           if (isDev && assetResponse.status === 304) {
             const bustUrl = new URL(request.url);
             bustUrl.searchParams.set('dev-cache-bust', String(Date.now()));
             assetResponse = await env.ASSETS.fetch(new Request(bustUrl.toString(), assetRequest));
           }
+          
+          // If asset not found, return 404 immediately
+          if (assetResponse.status === 404) {
+            console.warn(`Asset not found: ${path}`);
+            return respond404();
+          }
+
           if (!isDev) {
             const headers = new Headers(assetResponse.headers);
             const securityHeaders = getAssetSecurityHeaders();
@@ -402,6 +449,7 @@ export default {
             headers
           });
         }
+        console.error('ASSETS binding missing for path:', path);
         return respond404();
       }
 
@@ -496,6 +544,17 @@ export default {
 
       if (path === '/careers' || path === '/careers.html') {
         return renderCareersPage();
+      }
+
+      // Content pages (blog, FAQ)
+      if (path === '/blog' || path === '/blog/' || path.startsWith('/blog/')) {
+        const blogResponse = handleBlogRoutes(request, url);
+        if (blogResponse) return blogResponse;
+      }
+
+      if (path === '/faq' || path === '/faq/') {
+        const faqResponse = handleFaqRoutes(request, url);
+        if (faqResponse) return faqResponse;
       }
 
       // 404 for everything else

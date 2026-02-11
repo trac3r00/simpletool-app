@@ -99,7 +99,10 @@ let adConfig = {
 };
 
 function isAdsEnabled() {
-  return typeof adConfig.client === 'string' && Boolean(adConfig.client.trim());
+  return typeof adConfig.client === 'string' && 
+         Boolean(adConfig.client.trim()) && 
+         adConfig.slots && 
+         Object.keys(adConfig.slots).length > 0;
 }
 
 export function setAdConfig(config = {}) {
@@ -124,25 +127,52 @@ export function getAdConfig() {
  * @returns {string} AdSense script tag HTML
  */
 export function getGtagScript() {
-  return `
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XF1EYS7JCC" onerror="this.remove()"></script>
-    <script>
-      try {
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-XF1EYS7JCC');
-      } catch(e) {}
-    </script>
-  `;
+  // Disabled by default to avoid third-party requests in restrictive environments.
+  return '';
 }
 
 export function getAdSenseScript() {
   if (!isAdsEnabled()) return '';
   const client = adConfig.client || DEFAULT_ADSENSE_CLIENT;
+  
+  // Validate client ID format to prevent malformed URLs
+  // Must start with ca-pub- and followed by digits
+  if (!client || !/^ca-pub-\d+$/.test(client)) {
+    console.warn('[AdSense] Invalid client ID format, skipping ad script injection');
+    return '';
+  }
+
   return `
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${client}"
-         crossorigin="anonymous" data-ad-client="${client}" onerror="this.remove()"></script>
+    <script>
+      (function() {
+        function loadAdSense() {
+          const script = document.createElement('script');
+          script.async = true;
+          script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${client}';
+          script.crossOrigin = 'anonymous';
+          script.dataset.adClient = '${client}';
+          script.onerror = function() { this.remove(); };
+          document.head.appendChild(script);
+        }
+        // Load after DOM is ready or 2 seconds, whichever comes first
+        if (document.readyState === 'complete') {
+          setTimeout(loadAdSense, 2000);
+        } else {
+          window.addEventListener('DOMContentLoaded', function() {
+            setTimeout(loadAdSense, 2000);
+          });
+        }
+        // Safety timeout: remove if not loaded after 5 seconds
+        setTimeout(function() {
+          const scripts = document.querySelectorAll('script[data-ad-client]');
+          scripts.forEach(function(s) {
+            if (!window.adsbygoogle || !window.adsbygoogle.loaded) {
+              s.remove();
+            }
+          });
+        }, 5000);
+      })();
+    </script>
   `;
 }
 
@@ -159,7 +189,11 @@ export function getAdSenseScript() {
 export function getAdSlotHTML(slotKey, options = {}) {
   if (!isAdsEnabled()) return '';
   const slotId = adConfig.slots?.[slotKey];
-  if (!slotId) return '';
+  
+  // If no slot ID configured for this key, return empty string
+  if (!slotId || typeof slotId !== 'string' || !slotId.trim()) {
+    return '';
+  }
 
   const {
     wrapperClassName = '',
@@ -258,16 +292,21 @@ export function getNavigationHTML(options = {}) {
             <div class="h-4 w-px bg-surface-200 dark:bg-surface-700 hidden sm:block"></div>
           </div>
 
-          <div class="flex items-center gap-2">
-            <div class="hidden md:flex items-center mr-2">
-                <button type="button" id="nav-search-btn" class="flex items-center gap-2 px-3 py-1.5 bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-md text-xs text-surface-500 dark:text-surface-400 hover:text-surface-700 dark:hover:text-surface-300 hover:border-surface-300 dark:hover:border-surface-600 transition-all focus:outline-none focus:ring-2 focus:ring-primary-500">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    <span data-i18n="nav.search">${t('nav.search')}</span>
-                </button>
-            </div>
-            ${getLanguageSelectorHTML()}
-            ${getThemeToggleButton()}
-          </div>
+           <div class="flex items-center gap-2">
+             <!-- Mobile search button (icon only) -->
+             <button type="button" id="mobile-search-btn" class="md:hidden p-2 rounded-lg text-surface-600 hover:bg-surface-100 dark:text-surface-400 dark:hover:bg-surface-800 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500" aria-label="Search tools">
+               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+             </button>
+             <!-- Desktop search button (with text) -->
+             <div class="hidden md:flex items-center mr-2">
+                 <button type="button" id="nav-search-btn" class="flex items-center gap-2 px-3 py-1.5 bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-md text-xs text-surface-500 dark:text-surface-400 hover:text-surface-700 dark:hover:text-surface-300 hover:border-surface-300 dark:hover:border-surface-600 transition-all focus:outline-none focus:ring-2 focus:ring-primary-500">
+                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                     <span data-i18n="nav.search">${t('nav.search')}</span>
+                 </button>
+             </div>
+             ${getLanguageSelectorHTML()}
+             ${getThemeToggleButton()}
+           </div>
         </div>
       </div>
     </nav>
@@ -278,29 +317,31 @@ export function getNavigationHTML(options = {}) {
  * Theme bootstrap script to avoid flash of incorrect theme.
  */
 export function getThemeBootstrapScript() {
-  return `
-    <script data-theme-bootstrap>
-      (function() {
-        const root = document.documentElement;
-        let stored;
-        try {
-          stored = localStorage.getItem('theme');
-        } catch (e) {
-          stored = null;
-        }
-        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const effectiveTheme = (!stored || stored === 'system')
-          ? (prefersDark ? 'dark' : 'light')
-          : stored;
-        if (effectiveTheme === 'dark') {
-          root.classList.add('dark');
-        } else {
-          root.classList.remove('dark');
-        }
-      })();
-    </script>
-  `;
-}
+   return `
+     <script data-theme-bootstrap>
+       (function() {
+         const root = document.documentElement;
+         let stored;
+         try {
+           stored = localStorage.getItem('theme');
+         } catch (e) {
+           stored = null;
+         }
+         const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+         const effectiveTheme = (!stored || stored === 'system')
+           ? (prefersDark ? 'dark' : 'light')
+           : stored;
+         if (effectiveTheme === 'dark') {
+           root.classList.add('dark');
+         } else {
+           root.classList.remove('dark');
+         }
+         // Remove visibility:hidden to prevent FOUC
+         root.style.visibility = '';
+       })();
+     </script>
+   `;
+ }
 
 /**
  * Get common theme management JavaScript
@@ -562,7 +603,10 @@ export function getSearchScript() {
           if (selected) selected.scrollIntoView({ block: 'nearest' });
         }
 
-        navBtn?.addEventListener('click', openSearch);
+         // Bind click to both mobile and desktop search buttons
+         const mobileBtn = document.getElementById('mobile-search-btn');
+         navBtn?.addEventListener('click', openSearch);
+         mobileBtn?.addEventListener('click', openSearch);
 
         window.addEventListener('keydown', (e) => {
           if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
@@ -615,18 +659,91 @@ export function getSearchScript() {
 }
 
 /**
+ * Get Global Toast System
+ * Provides window.Toast object with show(), success(), error(), info() methods
+ */
+export function getToastScript() {
+  return `
+    <div id="toast-container" class="fixed bottom-4 right-4 z-[200] flex flex-col gap-2 pointer-events-none"></div>
+    <script>
+      (function() {
+        const container = document.getElementById('toast-container');
+        
+        window.Toast = {
+          show: function(msg, type = 'info', duration = 3000) {
+            const toast = document.createElement('div');
+            const bgClass = type === 'success' ? 'bg-success-500 dark:bg-success-600' :
+                           type === 'error' ? 'bg-error-500 dark:bg-error-600' :
+                           'bg-info-500 dark:bg-info-600';
+            const icon = type === 'success' ? '✓' :
+                        type === 'error' ? '✕' :
+                        'ℹ';
+            
+            toast.className = \`\${bgClass} text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-2 pointer-events-auto animate-slide-in\`;
+            toast.innerHTML = \`<span>\${icon}</span><span>\${msg}</span>\`;
+            container.appendChild(toast);
+            
+            if (duration > 0) {
+              setTimeout(() => {
+                toast.classList.add('animate-fade-out');
+                setTimeout(() => toast.remove(), 300);
+              }, duration);
+            }
+          },
+          success: function(msg, duration = 3000) {
+            this.show(msg, 'success', duration);
+          },
+          error: function(msg, duration = 3000) {
+            this.show(msg, 'error', duration);
+          },
+          info: function(msg, duration = 3000) {
+            this.show(msg, 'info', duration);
+          }
+        };
+      })();
+    </script>
+    <style>
+      @keyframes slide-in {
+        from {
+          transform: translateX(400px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+      @keyframes fade-out {
+        from {
+          opacity: 1;
+        }
+        to {
+          opacity: 0;
+        }
+      }
+      .animate-slide-in {
+        animation: slide-in 0.3s ease-out;
+      }
+      .animate-fade-out {
+        animation: fade-out 0.3s ease-out;
+      }
+    </style>
+  `;
+}
+
+/**
  * Include bundled stylesheet links
  */
 export function getStylesheetLinks() {
-  const version = bundledStylesHash || 'dev';
-  return `
-    <link rel="preload" as="font" type="font/woff2" href="/fonts/material-symbols.woff2" crossorigin>
-    <style>
-      @font-face {
-        font-family: 'Material Symbols Rounded';
+    const version = bundledStylesHash || 'dev';
+    return `
+      <link rel="preload" as="font" type="font/woff2" href="/fonts/material-symbols.woff2" crossorigin>
+      <style>
+       @font-face {
+         font-family: 'Material Symbols Rounded';
         font-style: normal;
         font-weight: 100 700;
-        font-display: block;
+         font-display: swap;
         src: url(/fonts/material-symbols.woff2) format('woff2');
       }
       .material-symbols-rounded {
@@ -651,24 +768,92 @@ export function getStylesheetLinks() {
 
 /**
  * Get common footer HTML
+ * 3-column layout: Brand | Top Tools | Legal
+ * Responsive: stacks on mobile
  */
 export function getFooterHTML() {
-  return `
-    <footer class="border-t border-surface-200 dark:border-surface-800 bg-white dark:bg-surface-950 mt-12">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div class="flex flex-col md:flex-row justify-between items-center gap-6">
-          <div class="flex items-center gap-2">
-            <span class="font-semibold text-surface-900 dark:text-surface-50">SimpleTool</span>
-            <span class="text-surface-600 dark:text-surface-400">© ${new Date().getFullYear()}</span>
-          </div>
-          <div class="flex gap-6 text-sm text-surface-600 dark:text-surface-400">
-            <a href="/about" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.about">${t('footer.about')}</a>
-            <a href="/privacy" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.privacy">${t('footer.privacy')}</a>
-          </div>
-        </div>
-      </div>
-    </footer>
-  `;
+   const topTools = TOOLS.slice(0, 5);
+   const toolsHTML = topTools.map(tool => 
+     `<li><a href="${tool.path}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors flex items-center gap-2"><span>${tool.icon}</span><span>${tool.name}</span></a></li>`
+   ).join('');
+   
+   return `
+     <footer class="border-t border-surface-200 dark:border-surface-800 bg-white dark:bg-surface-950 mt-12">
+       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <!-- 4-Column Grid: Brand | Tools | Resources | Legal -->
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12 mb-8">
+           
+           <!-- Column 1: Brand -->
+           <div class="flex flex-col">
+             <div class="flex items-center gap-2 mb-2">
+               <div class="p-1.5 rounded bg-primary-50 dark:bg-primary-900/50">
+                 <svg class="w-5 h-5 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+                 </svg>
+               </div>
+               <span class="font-bold text-lg text-surface-900 dark:text-surface-50">SimpleTool</span>
+             </div>
+             <p class="text-sm text-surface-600 dark:text-surface-400 mb-4">Privacy-first web tools for developers.</p>
+             <p class="text-xs text-surface-500 dark:text-surface-500">© ${new Date().getFullYear()} SimpleTool. All rights reserved.</p>
+           </div>
+           
+           <!-- Column 2: Top Tools -->
+           <div class="flex flex-col">
+             <h3 class="font-semibold text-surface-900 dark:text-surface-50 mb-4 text-sm uppercase tracking-wide">Popular Tools</h3>
+             <ul class="space-y-2 flex-1">
+               ${toolsHTML}
+               <li class="pt-2 border-t border-surface-200 dark:border-surface-800">
+                 <a href="/" class="text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors">View all tools →</a>
+               </li>
+             </ul>
+           </div>
+           
+            <!-- Column 3: Resources -->
+            <div class="flex flex-col">
+              <h3 class="font-semibold text-surface-900 dark:text-surface-50 mb-4 text-sm uppercase tracking-wide" data-i18n="footer.resources">Resources</h3>
+              <ul class="space-y-2">
+                <li>
+                  <a href="/blog" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.blog">Blog</a>
+                </li>
+                <li>
+                  <a href="/faq" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.faq">FAQ</a>
+                </li>
+              </ul>
+            </div>
+            
+            <!-- Column 4: Legal & Support -->
+            <div class="flex flex-col">
+              <h3 class="font-semibold text-surface-900 dark:text-surface-50 mb-4 text-sm uppercase tracking-wide">Legal</h3>
+             <ul class="space-y-2">
+               <li>
+                 <a href="/about" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.about">${t('footer.about')}</a>
+               </li>
+               <li>
+                 <a href="/privacy" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.privacy">${t('footer.privacy')}</a>
+               </li>
+               <li>
+                 <a href="/terms" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.terms">${t('footer.terms')}</a>
+               </li>
+               <li>
+                 <a href="/contact" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.contact">${t('footer.contact')}</a>
+               </li>
+               <li>
+                 <a href="/security" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Security</a>
+               </li>
+             </ul>
+           </div>
+           
+         </div>
+         
+         <!-- Divider -->
+         <div class="border-t border-surface-200 dark:border-surface-800 pt-6">
+           <p class="text-xs text-surface-500 dark:text-surface-500 text-center">
+             Built with privacy in mind. All tools run client-side. <a href="/privacy" class="text-primary-600 dark:text-primary-400 hover:underline">Learn more</a>
+           </p>
+         </div>
+       </div>
+     </footer>
+   `;
 }
 
 /**
@@ -680,7 +865,8 @@ export function createPageTemplate(options) {
     description,
     content,
     path = '',
-    scripts = ''
+    scripts = '',
+    schema
   } = options;
   const toolId = path ? path.replace(/^\//, '') : '';
 
@@ -742,13 +928,14 @@ export function createPageTemplate(options) {
   </div>
   ${bottomAd}
   ${getFooterHTML()}
-  ${path ? `<script type="application/ld+json">${JSON.stringify({'@context':'https://schema.org','@type':'SoftwareApplication',name:title,url:pageUrl,description,applicationCategory:'DeveloperApplication',operatingSystem:'Any',offers:{'@type':'Offer',price:'0',priceCurrency:'USD'}})}</script>` : ''}
-  ${getThemeScript()}
-  ${getLanguageScript(toolId)}
-  ${getSearchScript()}
-  ${getKeyboardShortcutsScript()}
-  ${getCheatsheetToggleScript()}
-  ${scripts}
+  ${schema !== undefined ? (schema ? `<script type="application/ld+json">${JSON.stringify(schema)}</script>` : '') : (path ? `<script type="application/ld+json">${JSON.stringify({'@context':'https://schema.org','@type':'SoftwareApplication',name:title,url:pageUrl,description,applicationCategory:'DeveloperApplication',operatingSystem:'Any',offers:{'@type':'Offer',price:'0',priceCurrency:'USD'}})}</script>` : '')}
+   ${getThemeScript()}
+   ${getLanguageScript(toolId)}
+   ${getSearchScript()}
+   ${getToastScript()}
+   ${getKeyboardShortcutsScript()}
+   ${getCheatsheetToggleScript()}
+   ${scripts}
   ${isAdsEnabled() ? `<script>
     (function(){
       function showAds(){document.querySelectorAll('[data-ad-container]').forEach(function(el){el.style.display=''});}
@@ -767,6 +954,7 @@ export function createPageTemplate(options) {
 
 /**
  * Common copy to clipboard function
+ * Shows both button state change AND toast notification for consistent feedback
  */
 export function getCopyToClipboardScript() {
   return `
@@ -777,9 +965,15 @@ export function getCopyToClipboardScript() {
         const originalContent = button.innerHTML;
         const originalClass = button.className;
         
+        // Update button state for localized visual feedback
         button.innerHTML = '<span class="flex items-center gap-1">✓ Copied</span>';
-        button.classList.add('text-green-600', 'dark:text-green-400', 'bg-green-50', 'dark:bg-green-900/20', 'border-green-200', 'dark:border-green-800');
+        button.classList.add('text-success-600', 'dark:text-success-400', 'bg-success-50', 'dark:bg-success-900/20', 'border-success-200', 'dark:border-success-800');
         button.classList.remove('text-surface-600', 'hover:bg-surface-100');
+
+        // Show toast notification for global feedback
+        if (window.Toast && typeof window.Toast.success === 'function') {
+          window.Toast.success('Copied to clipboard!');
+        }
 
         setTimeout(() => {
           button.innerHTML = originalContent;
@@ -788,6 +982,12 @@ export function getCopyToClipboardScript() {
       }).catch(err => {
         console.error('Copy failed:', err);
         button.innerText = 'Error';
+        
+        // Show error toast
+        if (window.Toast && typeof window.Toast.error === 'function') {
+          window.Toast.error('Failed to copy to clipboard');
+        }
+        
         setTimeout(() => button.innerText = 'Copy', 2000);
       });
     }
@@ -843,18 +1043,169 @@ export function infoHint(tooltip, ariaLabel, options = {}) {
   return `<button type="button" class="info-hint${sizeClass}" data-tooltip="${tooltip}"${posAttr}${i18nAttr} aria-label="${label}"><span class="material-symbols-rounded" aria-hidden="true">${icon}</span></button>`;
 }
 
-export function getDownloadFileScript() {
+export function createEmptyState(options = {}) {
+  const {
+    icon = '📥',
+    title = 'No input yet',
+    description = 'Paste or type your input above to get started.',
+    id = 'empty-state',
+    i18nTitle,
+    i18nDesc
+  } = options;
+  const titleAttr = i18nTitle ? ` data-i18n="${i18nTitle}"` : '';
+  const descAttr = i18nDesc ? ` data-i18n="${i18nDesc}"` : '';
   return `
-    function downloadFile(content, filename, contentType) {
-      const blob = new Blob([content], { type: contentType });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
+    <div id="${id}" class="empty-state">
+      <span class="empty-state-icon">${icon}</span>
+      <p class="empty-state-title"${titleAttr}>${title}</p>
+      <p class="empty-state-desc"${descAttr}>${description}</p>
+    </div>
+  `;
+}
+
+export function getBtnLoadingScript() {
+  return `
+    <script>
+      (function() {
+        window.btnLoading = function(btn, fn) {
+          if (btn.disabled) return;
+          var original = btn.innerHTML;
+          var w = btn.offsetWidth;
+          btn.style.minWidth = w + 'px';
+          btn.disabled = true;
+          btn.innerHTML = '<span class="spinner-sm spinner"></span>';
+          var start = Date.now();
+          Promise.resolve().then(function() {
+            return fn();
+          }).then(function() {
+            var elapsed = Date.now() - start;
+            var delay = Math.max(0, 280 - elapsed);
+            setTimeout(function() {
+              btn.innerHTML = original;
+              btn.disabled = false;
+              btn.style.minWidth = '';
+            }, delay);
+          }).catch(function(err) {
+            btn.innerHTML = original;
+            btn.disabled = false;
+            btn.style.minWidth = '';
+            console.error(err);
+          });
+        };
+      })();
+    </script>
+  `;
+}
+
+export function getDownloadFileScript() {
+   return `
+     function downloadFile(content, filename, contentType) {
+       const blob = new Blob([content], { type: contentType });
+       const url = URL.createObjectURL(blob);
+       const a = document.createElement('a');
+       a.href = url;
+       a.download = filename;
+       document.body.appendChild(a);
+       a.click();
+       document.body.removeChild(a);
+       URL.revokeObjectURL(url);
+     }
+   `;
+}
+
+/**
+ * Create a mobile tab view for two-pane layouts
+ * Shows tab bar on mobile (max-width: 1023px), full layout on desktop
+ * @param {Object} options
+ * @param {string} options.leftPaneId - ID of left pane element
+ * @param {string} options.rightPaneId - ID of right pane element
+ * @param {string} options.leftLabel - Label for left tab
+ * @param {string} options.rightLabel - Label for right tab
+ * @returns {string} HTML for tab bar
+ */
+export function createMobileTabView(options = {}) {
+  const {
+    leftPaneId = 'left-pane',
+    rightPaneId = 'right-pane',
+    leftLabel = 'Left',
+    rightLabel = 'Right'
+  } = options;
+
+  return `
+    <div class="mobile-tab-bar" data-left-pane="${leftPaneId}" data-right-pane="${rightPaneId}">
+      <button class="mobile-tab-btn mobile-tab-active" data-tab="left" aria-selected="true" role="tab">
+        ${leftLabel}
+      </button>
+      <button class="mobile-tab-btn" data-tab="right" aria-selected="false" role="tab">
+        ${rightLabel}
+      </button>
+    </div>
+  `;
+}
+
+/**
+ * Get client-side script for mobile tab switching
+ * Handles tab clicks and visibility toggling
+ * @returns {string} Script tag with tab switching logic
+ */
+export function getMobileTabScript() {
+  return `
+    <script>
+      (function() {
+        const tabBars = document.querySelectorAll('.mobile-tab-bar');
+        
+        tabBars.forEach(tabBar => {
+          const leftPaneId = tabBar.getAttribute('data-left-pane');
+          const rightPaneId = tabBar.getAttribute('data-right-pane');
+          const leftPane = document.getElementById(leftPaneId);
+          const rightPane = document.getElementById(rightPaneId);
+          
+          if (!leftPane || !rightPane) return;
+          
+          const buttons = tabBar.querySelectorAll('.mobile-tab-btn');
+          
+          // Restore saved tab preference or default to left
+          let savedTab = 'left';
+          try {
+            savedTab = localStorage.getItem('mobile-tab-preference') || 'left';
+          } catch (e) {}
+          
+          // Initialize visibility
+          const showTab = (tabName) => {
+            if (tabName === 'left') {
+              leftPane.style.display = '';
+              rightPane.style.display = 'none';
+            } else {
+              leftPane.style.display = 'none';
+              rightPane.style.display = '';
+            }
+            
+            // Update button states
+            buttons.forEach(btn => {
+              const isActive = btn.getAttribute('data-tab') === tabName;
+              btn.classList.toggle('mobile-tab-active', isActive);
+              btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+            });
+            
+            // Save preference
+            try {
+              localStorage.setItem('mobile-tab-preference', tabName);
+            } catch (e) {}
+          };
+          
+          // Set initial tab
+          showTab(savedTab);
+          
+          // Bind click handlers
+          buttons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              e.preventDefault();
+              const tabName = btn.getAttribute('data-tab');
+              showTab(tabName);
+            });
+          });
+        });
+      })();
+    </script>
   `;
 }

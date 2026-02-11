@@ -7,6 +7,8 @@
 
 import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
 import { respondHTML } from '../utils/respond.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 
 /**
  * Render the Image Converter page
@@ -20,18 +22,20 @@ function renderImageConverterPage() {
     { toolId: 'image-converter' }
   );
 
+  const currentTool = TOOLS.find(t => t.id === 'image-converter');
+  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
   const pageContent = `
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
         ${toolHeader}
 
-      <!-- Privacy Notice -->
-      <div class="mb-6 p-4 bg-green-50 dark:bg-green-900/20 rounded-xl border-2 border-green-300 dark:border-green-700">
-        <p class="text-sm text-green-800 dark:text-green-300">
-          🔒 <strong>Privacy-First Design:</strong> Your images never leave your device. All conversion and resizing happens client-side using Canvas API.
-        </p>
-      </div>
+       <!-- Privacy Notice -->
+       <div class="mb-6 p-4 bg-success-50 dark:bg-success-900/20 rounded-xl border-2 border-success-300 dark:border-success-700">
+         <p class="text-sm text-success-800 dark:text-success-300">
+           🔒 <strong>Privacy-First Design:</strong> Your images never leave your device. All conversion and resizing happens client-side using Canvas API.
+         </p>
+       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Left Column: Upload & Settings -->
@@ -54,18 +58,18 @@ function renderImageConverterPage() {
             </div>
 
             <div id="file-info" class="mt-4 hidden">
-              <div class="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                <p class="text-sm text-blue-800 dark:text-blue-300">
-                  <strong>File:</strong> <span id="file-name"></span>
-                </p>
-                <p class="text-sm text-blue-800 dark:text-blue-300">
-                  <strong>Size:</strong> <span id="file-size"></span>
-                </p>
-                <p class="text-sm text-blue-800 dark:text-blue-300">
-                  <strong>Dimensions:</strong> <span id="image-dimensions"></span>
-                </p>
-              </div>
-            </div>
+               <div class="p-3 bg-info-50 dark:bg-info-900/20 rounded-lg">
+                 <p class="text-sm text-info-800 dark:text-info-300">
+                   <strong>File:</strong> <span id="file-name"></span>
+                 </p>
+                 <p class="text-sm text-info-800 dark:text-info-300">
+                   <strong>Size:</strong> <span id="file-size"></span>
+                 </p>
+                 <p class="text-sm text-info-800 dark:text-info-300">
+                   <strong>Dimensions:</strong> <span id="image-dimensions"></span>
+                 </p>
+               </div>
+             </div>
           </div>
 
           <!-- Format Selection -->
@@ -169,14 +173,15 @@ function renderImageConverterPage() {
             </div>
            </div>
 
-          <!-- Error Banner -->
-          <div id="img-error" role="alert" class="hidden w-full rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 text-sm text-red-700 dark:text-red-200 px-4 py-3"></div>
+           <!-- Error Banner -->
+           <div id="img-error" role="alert" class="hidden w-full rounded-xl border border-error-200 dark:border-error-800 bg-error-50 dark:bg-error-900/30 text-sm text-error-700 dark:text-error-200 px-4 py-3"></div>
 
-          <!-- Convert Button -->
-          <button id="convert-btn" disabled data-tooltip="Convert image to the selected format and size"
-            class="w-full py-4 px-6 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
-            <span data-i18n="tools.image-converter.ui.button0">🔄 Convert & Resize Image</span>
-          </button>
+           <!-- Convert Button -->
+           <button id="convert-btn" disabled data-tooltip="Convert image to the selected format and size"
+             class="w-full py-4 px-6 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+             <span id="convert-spinner" class="spinner-sm hidden" style="display:inline-block;vertical-align:middle;margin-right:6px;border-color:rgba(255,255,255,0.3);border-top-color:#fff;"></span>
+             <span data-i18n="tools.image-converter.ui.button0">🔄 Convert & Resize Image</span>
+           </button>
         </div>
 
         <!-- Right Column: Preview & Download -->
@@ -208,23 +213,23 @@ function renderImageConverterPage() {
               <canvas id="converted-canvas" class="preview-image hidden"></canvas>
             </div>
 
-            <!-- Converted Image Info -->
-            <div id="converted-info" class="mt-4 hidden">
-              <div class="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg space-y-1">
-                <p class="text-sm text-green-800 dark:text-green-300">
-                  <strong>Format:</strong> <span id="converted-format"></span>
-                </p>
-                <p class="text-sm text-green-800 dark:text-green-300">
-                  <strong>Size:</strong> <span id="converted-size"></span>
-                </p>
-                <p class="text-sm text-green-800 dark:text-green-300">
-                  <strong>Dimensions:</strong> <span id="converted-dimensions"></span>
-                </p>
-                <p class="text-sm font-semibold text-green-800 dark:text-green-300">
-                  💾 <span id="size-reduction"></span>
-                </p>
-              </div>
-            </div>
+             <!-- Converted Image Info -->
+             <div id="converted-info" class="mt-4 hidden">
+               <div class="p-3 bg-success-50 dark:bg-success-900/20 rounded-lg space-y-1">
+                 <p class="text-sm text-success-800 dark:text-success-300">
+                   <strong>Format:</strong> <span id="converted-format"></span>
+                 </p>
+                 <p class="text-sm text-success-800 dark:text-success-300">
+                   <strong>Size:</strong> <span id="converted-size"></span>
+                 </p>
+                 <p class="text-sm text-success-800 dark:text-success-300">
+                   <strong>Dimensions:</strong> <span id="converted-dimensions"></span>
+                 </p>
+                 <p class="text-sm font-semibold text-success-800 dark:text-success-300">
+                   💾 <span id="size-reduction"></span>
+                 </p>
+               </div>
+             </div>
 
             <!-- Download Button -->
             <button id="download-btn" disabled
@@ -261,298 +266,29 @@ function renderImageConverterPage() {
       </div>
       </div>
     </main>
-
-    <script>
-      let originalImage = null;
-      let originalFile = null;
-      let selectedFormat = 'png';
-
-      // DOM Elements
-      const dropZone = document.getElementById('drop-zone');
-      const fileInput = document.getElementById('file-input');
-      const fileInfo = document.getElementById('file-info');
-      const originalPreview = document.getElementById('original-preview');
-      const originalPlaceholder = document.getElementById('original-placeholder');
-      const convertBtn = document.getElementById('convert-btn');
-      const downloadBtn = document.getElementById('download-btn');
-      const convertedCanvas = document.getElementById('converted-canvas');
-      const convertedPlaceholder = document.getElementById('converted-placeholder');
-      const convertedInfo = document.getElementById('converted-info');
-      const qualityControl = document.getElementById('quality-control');
-      const qualitySlider = document.getElementById('quality-slider');
-      const qualityValue = document.getElementById('quality-value');
-      const resizeMode = document.getElementById('resize-mode');
-      const scaleSlider = document.getElementById('scale-slider');
-      const scaleValue = document.getElementById('scale-value');
-
-      // Error banner helper
-      function showImgError(msg) {
-        const el = document.getElementById('img-error');
-        if (msg) {
-          el.textContent = msg;
-          el.classList.remove('hidden');
-        } else {
-          el.textContent = '';
-          el.classList.add('hidden');
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+      ${createEducationalSection([
+        {
+          title: 'Image Formats Compared (PNG/JPEG/WebP)',
+          content: '<p>Choosing the right image format is crucial for web performance and visual quality. <strong>JPEG</strong> is best for photographs and complex images with many colors, as it uses lossy compression to achieve small file sizes. <strong>PNG</strong> is ideal for images that require transparency or have sharp edges and solid colors (like logos and icons), as it uses lossless compression.</p><p><strong>WebP</strong> is a modern format that provides superior lossy and lossless compression, often resulting in significantly smaller file sizes than JPEG or PNG while maintaining high quality. Our tool supports all these formats, allowing you to optimize your assets for any platform or device without sacrificing clarity.</p>'
+        },
+        {
+          title: 'How to Use This Tool',
+          content: '<ol><li>Upload your image by dropping it into the "Upload Image" zone or clicking to browse your files.</li><li>Select your desired output format (PNG, JPG, WebP, or GIF) from the "Convert Format" options.</li><li>If you\'ve selected a lossy format like JPG or WebP, use the quality slider to balance file size and visual fidelity.</li><li>Optionally, use the "Resize Image" settings to scale your image by percentage or specific dimensions.</li><li>Click "Convert & Resize Image" and then "Download" to save your optimized asset.</li></ol>'
+        },
+        {
+          title: 'Common Use Cases',
+          content: '<ul><li><strong>Web Optimization:</strong> Convert large PNG or JPEG images to WebP to improve your website\'s load speed and Core Web Vitals.</li><li><strong>Social Media:</strong> Resize and compress photos to meet the specific upload requirements of platforms like Instagram, Twitter, or LinkedIn.</li><li><strong>Email Marketing:</strong> Reduce the file size of images in your email campaigns to ensure they load quickly for all recipients and don\'t get flagged as spam.</li><li><strong>App Development:</strong> Generate multiple sizes of the same icon or asset for different screen densities (e.g., @2x, @3x) using the resizing features.</li></ul>'
+        },
+        {
+          title: 'Pro Tips',
+          content: '<ul><li>Use WebP whenever possible for web projects, as it is supported by all modern browsers and offers the best compression-to-quality ratio.</li><li>When converting to JPEG, a quality setting of 70-80% usually provides the best balance between file size and visual quality for most web uses.</li><li>Always keep your original high-resolution images and only convert or resize copies for specific use cases to avoid losing quality over time through repeated compression.</li></ul>'
         }
-      }
-
-      // Format Selection
-      document.querySelectorAll('.format-option').forEach(option => {
-        option.addEventListener('click', () => {
-          document.querySelectorAll('.format-option').forEach(o => o.classList.remove('selected'));
-          option.classList.add('selected');
-          selectedFormat = option.dataset.format;
-
-          // Show quality control for lossy formats
-          if (selectedFormat === 'jpeg' || selectedFormat === 'webp') {
-            qualityControl.classList.remove('hidden');
-          } else {
-            qualityControl.classList.add('hidden');
-          }
-        });
-      });
-
-      // Quality Slider
-      qualitySlider.addEventListener('input', (e) => {
-        qualityValue.textContent = e.target.value;
-      });
-
-      // Scale Slider
-      scaleSlider.addEventListener('input', (e) => {
-        scaleValue.textContent = e.target.value;
-      });
-
-      // Resize Mode
-      resizeMode.addEventListener('change', (e) => {
-        document.getElementById('percentage-resize').classList.add('hidden');
-        document.getElementById('dimensions-resize').classList.add('hidden');
-        document.getElementById('max-dimensions-resize').classList.add('hidden');
-
-        if (e.target.value === 'percentage') {
-          document.getElementById('percentage-resize').classList.remove('hidden');
-        } else if (e.target.value === 'dimensions') {
-          document.getElementById('dimensions-resize').classList.remove('hidden');
-        } else if (e.target.value === 'max-dimensions') {
-          document.getElementById('max-dimensions-resize').classList.remove('hidden');
-        }
-      });
-
-      // Drag & Drop
-      dropZone.addEventListener('click', () => fileInput.click());
-
-      dropZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        dropZone.classList.add('drag-over');
-      });
-
-      dropZone.addEventListener('dragleave', () => {
-        dropZone.classList.remove('drag-over');
-      });
-
-      dropZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropZone.classList.remove('drag-over');
-        const files = e.dataTransfer.files;
-        if (files.length > 0 && files[0].type.startsWith('image/')) {
-          handleFileSelect(files[0]);
-        }
-      });
-
-       fileInput.addEventListener('change', (e) => {
-         if (e.target.files.length > 0) {
-           handleFileSelect(e.target.files[0]);
-         }
-       });
-
-      // Handle File Selection
-      function handleFileSelect(file) {
-        if (!file) return;
-
-        // Clear any previous errors
-        showImgError('');
-
-        // Large file warning (> 10MB)
-        if (file.size > 10 * 1024 * 1024) {
-          const proceed = confirm(\`This file is large (\${(file.size / 1024 / 1024).toFixed(1)} MB). Processing might slow down your browser. Do you want to continue?\`);
-          if (!proceed) return;
-        }
-
-        try {
-          if (!file.type.startsWith('image/')) {
-            showImgError('Please upload a valid image file.');
-            return;
-          }
-
-          originalFile = file;
-
-          // Display file info
-          document.getElementById('file-name').textContent = file.name;
-          document.getElementById('file-size').textContent = formatFileSize(file.size);
-          fileInfo.classList.remove('hidden');
-
-          // Load image
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            const img = new Image();
-            img.onload = () => {
-              originalImage = img;
-              originalPreview.src = e.target.result;
-              originalPreview.classList.remove('hidden');
-              originalPlaceholder.classList.add('hidden');
-              document.getElementById('image-dimensions').textContent = \`\${img.width} x \${img.height}px\`;
-              convertBtn.disabled = false;
-
-              // Set default dimensions for custom resize
-              document.getElementById('custom-width').value = img.width;
-              document.getElementById('custom-height').value = img.height;
-              document.getElementById('max-width').value = img.width;
-              document.getElementById('max-height').value = img.height;
-            };
-            img.onerror = () => {
-              showImgError('Failed to load image. The file might be corrupted.');
-            };
-            img.src = e.target.result;
-          };
-          reader.onerror = () => {
-            showImgError('Error reading file.');
-          };
-          reader.readAsDataURL(file);
-        } catch (error) {
-          showImgError('An error occurred: ' + error.message);
-          console.error(error);
-        }
-      }
-
-      // Convert Button
-      convertBtn.addEventListener('click', convertImage);
-
-      function convertImage() {
-        if (!originalImage) return;
-
-        const mode = resizeMode.value;
-        let width = originalImage.width;
-        let height = originalImage.height;
-
-        // Calculate new dimensions
-        if (mode === 'percentage') {
-          const scale = parseInt(scaleSlider.value) / 100;
-          width = Math.round(originalImage.width * scale);
-          height = Math.round(originalImage.height * scale);
-        } else if (mode === 'dimensions') {
-          const customWidth = parseInt(document.getElementById('custom-width').value);
-          const customHeight = parseInt(document.getElementById('custom-height').value);
-          const maintainAspect = document.getElementById('maintain-aspect').checked;
-
-          if (maintainAspect) {
-            const aspectRatio = originalImage.width / originalImage.height;
-            if (customWidth) {
-              width = customWidth;
-              height = Math.round(width / aspectRatio);
-            } else if (customHeight) {
-              height = customHeight;
-              width = Math.round(height * aspectRatio);
-            }
-          } else {
-            width = customWidth || width;
-            height = customHeight || height;
-          }
-        } else if (mode === 'max-dimensions') {
-          const maxW = parseInt(document.getElementById('max-width').value) || width;
-          const maxH = parseInt(document.getElementById('max-height').value) || height;
-          const aspectRatio = originalImage.width / originalImage.height;
-
-          if (width > maxW) {
-            width = maxW;
-            height = Math.round(width / aspectRatio);
-          }
-          if (height > maxH) {
-            height = maxH;
-            width = Math.round(height * aspectRatio);
-          }
-        }
-
-        // Create canvas and draw image
-        convertedCanvas.width = width;
-        convertedCanvas.height = height;
-        const ctx = convertedCanvas.getContext('2d');
-        ctx.drawImage(originalImage, 0, 0, width, height);
-
-         // Convert to selected format
-         const mimeType = selectedFormat === 'jpeg' ? 'image/jpeg' :
-                         selectedFormat === 'webp' ? 'image/webp' :
-                         selectedFormat === 'gif' ? 'image/gif' : 'image/png';
-
-         const quality = (selectedFormat === 'jpeg' || selectedFormat === 'webp') ?
-                        parseInt(qualitySlider.value) / 100 : undefined;
-
-         convertedCanvas.toBlob((blob) => {
-           // Check if blob is null (unsupported format like GIF)
-           if (!blob) {
-             showImgError(selectedFormat.toUpperCase() + ' format is not supported by your browser. Please try PNG, JPG, or WebP instead.');
-             return;
-           }
-
-           // Show converted image
-           convertedCanvas.classList.remove('hidden');
-           convertedPlaceholder.classList.add('hidden');
-
-           // Display info
-           document.getElementById('converted-format').textContent = selectedFormat.toUpperCase();
-           document.getElementById('converted-size').textContent = formatFileSize(blob.size);
-           document.getElementById('converted-dimensions').textContent = \`\${width} x \${height}px\`;
-
-           // Calculate size reduction
-           const reduction = ((originalFile.size - blob.size) / originalFile.size * 100).toFixed(1);
-           const reductionText = reduction > 0 ?
-             \`Reduced by \${reduction}% (\${formatFileSize(originalFile.size - blob.size)} saved)\` :
-             \`Increased by \${Math.abs(reduction)}%\`;
-           document.getElementById('size-reduction').textContent = reductionText;
-
-           convertedInfo.classList.remove('hidden');
-           downloadBtn.disabled = false;
-
-           // Store blob for download
-           downloadBtn.onclick = () => {
-             const url = URL.createObjectURL(blob);
-             const a = document.createElement('a');
-             a.href = url;
-             const extension = selectedFormat === 'jpeg' ? 'jpg' : selectedFormat;
-             a.download = \`converted-image.\${extension}\`;
-             a.click();
-             URL.revokeObjectURL(url);
-           };
-         }, mimeType, quality);
-      }
-
-      // Maintain aspect ratio helper
-      let lastWidth = null;
-      document.getElementById('custom-width').addEventListener('input', (e) => {
-        if (document.getElementById('maintain-aspect').checked && originalImage) {
-          const aspectRatio = originalImage.width / originalImage.height;
-          const newHeight = Math.round(parseInt(e.target.value) / aspectRatio);
-          document.getElementById('custom-height').value = newHeight;
-        }
-      });
-
-      document.getElementById('custom-height').addEventListener('input', (e) => {
-        if (document.getElementById('maintain-aspect').checked && originalImage) {
-          const aspectRatio = originalImage.width / originalImage.height;
-          const newWidth = Math.round(parseInt(e.target.value) * aspectRatio);
-          document.getElementById('custom-width').value = newWidth;
-        }
-      });
-
-      // Utility Functions
-      function formatFileSize(bytes) {
-        if (bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
-      }
-    </script>
+      ], 'image-converter')}
+    </div>
+    ${createRelatedToolsSection(relatedToolsData)}
   `;
+
 
   const customStyles = `
     <style>

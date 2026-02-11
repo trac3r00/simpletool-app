@@ -1,5 +1,7 @@
 import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet } from '../utils/common-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
+import { createRelatedToolsSection } from '../utils/content-ui.js';
 
 export async function handleJsonSchemaStudioRoutes(request, url) {
   if (url.pathname !== '/json-schema-studio' && url.pathname !== '/json-schema-studio/') return null;
@@ -18,6 +20,10 @@ export async function handleJsonSchemaStudioRoutes(request, url) {
     { toolId: 'json-schema-studio' }
   );
 
+  const currentTool = TOOLS.find(t => t.id === 'json-schema-studio');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
+
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       ${header}
@@ -28,8 +34,8 @@ export async function handleJsonSchemaStudioRoutes(request, url) {
           <div class="flex justify-between items-center mb-4">
             <h2 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.json-schema-studio.ui.heading4">Input JSON</h2>
             <div class="flex gap-2">
-              <button id="format-btn" class="text-xs text-primary-600 hover:underline"><span data-i18n="tools.json-schema-studio.ui.button0">Beautify</span></button>
-              <button id="sample-btn" class="text-xs text-primary-600 hover:underline"><span data-i18n="tools.json-schema-studio.ui.button1">Sample</span></button>
+              <button id="format-btn" class="btn btn-secondary btn-xs"><span data-i18n="tools.json-schema-studio.ui.button0">Beautify</span></button>
+              <button id="sample-btn" class="btn btn-secondary btn-xs"><span data-i18n="tools.json-schema-studio.ui.button1">Sample</span></button>
             </div>
           </div>
           <textarea id="json-input" rows="20" data-tooltip="Paste JSON to auto-generate its JSON Schema" 
@@ -42,7 +48,7 @@ export async function handleJsonSchemaStudioRoutes(request, url) {
         <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 p-5 flex flex-col">
           <div class="flex justify-between items-center mb-4">
             <h2 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.json-schema-studio.ui.heading5">JSON Schema Result</h2>
-            <button id="copy-btn" data-tooltip="Copy generated schema to clipboard" class="text-sm text-primary-600 dark:text-primary-400 font-medium hover:underline"><span data-i18n="tools.json-schema-studio.ui.button3">Copy Schema</span></button>
+            <button id="copy-btn" data-tooltip="Copy generated schema to clipboard" class="btn btn-secondary btn-xs"><span data-i18n="tools.json-schema-studio.ui.button3">Copy Schema</span></button>
           </div>
           <pre class="flex-1 bg-surface-900 text-surface-50 p-4 rounded-lg text-sm font-mono overflow-auto min-h-[400px]" id="schema-output">Schema will appear here...</pre>
         </div>
@@ -66,6 +72,7 @@ export async function handleJsonSchemaStudioRoutes(request, url) {
             <tr><td>Array</td><td><code>items</code>, <code>minItems</code>, <code>maxItems</code>, <code>uniqueItems</code></td></tr>
           </table>` }
       ])}
+    ${createRelatedToolsSection(relatedToolsData)}
     </main>
   `;
 
@@ -132,6 +139,7 @@ export async function handleJsonSchemaStudioRoutes(request, url) {
         navigator.clipboard.writeText(output.textContent).then(() => {
           const original = copyBtn.innerText;
           copyBtn.innerText = _t('tools.json-schema-studio.js.text2', 'Copied!');
+          if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
           setTimeout(() => copyBtn.innerText = original, 2000);
         });
       });

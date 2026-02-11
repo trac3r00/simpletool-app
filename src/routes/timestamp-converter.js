@@ -5,6 +5,8 @@
 
 import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 
 export async function handleTimestampConverterRoutes(request, url) {
   const { pathname } = url;
@@ -35,6 +37,10 @@ function renderTimestampConverterPage() {
     [{ text: 'ISO 8601', color: 'orange', tooltip: 'Outputs converted timestamps in ISO 8601 format (e.g. 2025-01-30T12:00:00Z).' }],
     { toolId: 'timestamp-converter' }
   );
+
+  const currentTool = TOOLS.find(t => t.id === 'timestamp-converter');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -154,6 +160,27 @@ function renderTimestampConverterPage() {
 
       </div>
     </main>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+      ${createEducationalSection([
+        {
+          title: 'What is Unix Time?',
+          content: '<p>Unix time (also known as Epoch time, POSIX time, or Unix timestamp) is a system for describing a point in time. It is the number of seconds that have elapsed since the Unix Epoch, minus leap seconds; the Unix Epoch is 00:00:00 UTC on 1 January 1970. It is widely used in operating systems and file formats because it is a single integer, making it easy for computers to store and manipulate.</p><p>This standard allows different systems to communicate time accurately regardless of their local timezone settings. While it might seem abstract to humans, it is the backbone of time representation in software development, database indexing, and performance-critical applications where string parsing would be too slow.</p>'
+        },
+        {
+          title: 'How to Use This Tool',
+          content: '<ol><li>To convert Unix to Human: Enter the timestamp in the "Unix Timestamp" field. Select whether it\'s in seconds or milliseconds.</li><li>To convert Human to Unix: Select the date and time using the pickers, then choose your desired timezone.</li><li>Use the "Now" button to quickly grab the current timestamp for either conversion direction.</li><li>View the results in real-time, including ISO 8601, Local Time, UTC, and relative time (e.g., "2 hours ago").</li><li>Click the "Copy" button next to any result to save it to your clipboard.</li></ol>'
+        },
+        {
+          title: 'Common Use Cases',
+          content: '<ul><li><strong>Log Analysis:</strong> Convert cryptic timestamps found in server logs or database entries into readable dates for debugging.</li><li><strong>API Development:</strong> Verify that your backend is sending the correct epoch values to your frontend or third-party integrations.</li><li><strong>Data Migration:</strong> Ensure time-based data remains consistent when moving between systems with different default time representations.</li><li><strong>Scheduling:</strong> Calculate future or past timestamps for cron jobs, expiration dates, or event triggers.</li></ul>'
+        },
+        {
+          title: 'Pro Tips',
+          content: '<ul><li>When working with JavaScript, remember that <code>Date.now()</code> returns milliseconds, while standard Unix timestamps are in seconds. Divide by 1000 to convert.</li><li>Always use the ISO 8601 format (e.g., 2025-01-30T12:00:00Z) for data exchange between systems to ensure maximum compatibility and readability.</li><li>Be aware of the "Year 2038 problem," where 32-bit signed integers will overflow. Modern systems use 64-bit integers, which solves this for the foreseeable future.</li></ul>'
+        }
+      ], 'timestamp-converter')}
+    ${createRelatedToolsSection(relatedToolsData)}
+    </div>
   `;
 
   const script = `
@@ -183,6 +210,7 @@ function renderTimestampConverterPage() {
             window.copyToClipboard(timestamp, document.getElementById('copy-current'));
         } else {
             await navigator.clipboard.writeText(timestamp);
+            if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
         }
       });
 

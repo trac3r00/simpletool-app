@@ -7,6 +7,8 @@
 
 import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 
 export async function handleSVGOptimizerRoutes(request, url) {
   const { pathname } = url;
@@ -31,6 +33,10 @@ function renderSVGOptimizerPage() {
     ],
     { toolId: 'svg-optimizer' }
   );
+
+  const currentTool = TOOLS.find(t => t.id === 'svg-optimizer');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -130,6 +136,27 @@ function renderSVGOptimizerPage() {
         ])}
       </div>
     </main>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+      ${createEducationalSection([
+        {
+          title: 'What is SVG?',
+          content: '<p>SVG (Scalable Vector Graphics) is an XML-based vector image format for two-dimensional graphics with support for interactivity and animation. Unlike raster formats (like JPEG or PNG), SVGs are defined by mathematical paths, which means they can be scaled to any size without losing quality.</p><p>This makes them perfect for logos, icons, and illustrations on the web, where they remain crisp on everything from mobile screens to high-resolution desktop monitors. Because they are code-based, they can also be manipulated with CSS and JavaScript, providing a level of flexibility and performance that raster images cannot match.</p>'
+        },
+        {
+          title: 'How to Use This Tool',
+          content: '<ol><li>Paste your SVG code into the "SVG Input" text area on the left.</li><li>Click "Preview" to see the graphic and extract its color palette.</li><li>Use the "Optimize" or "Minify" buttons to clean up the markup and reduce file size.</li><li>Optionally, replace specific colors by entering new values in the "Colors" panel and clicking "Apply".</li><li>Click "Copy" or "Download" to save your sanitized and optimized SVG.</li></ol>'
+        },
+        {
+          title: 'Common Use Cases',
+          content: '<ul><li><strong>Icon Management:</strong> Clean up SVGs exported from design tools like Figma or Illustrator to remove unnecessary metadata and hidden layers.</li><li><strong>Theming:</strong> Quickly change the colors of an icon set to match your brand\'s palette without opening a heavy design application.</li><li><strong>Security:</strong> Sanitize SVGs from untrusted sources to remove potential scripts or external references before using them on your site.</li><li><strong>Performance:</strong> Minify SVG markup to reduce the size of inline graphics, improving page load times and DOM performance.</li></ul>'
+        },
+        {
+          title: 'Pro Tips',
+          content: '<ul><li>Use the "currentColor" button to convert all explicit fills and strokes to <code>currentColor</code>, making your SVG easily styleable via CSS.</li><li>Always optimize your SVGs before using them in production to ensure they are as small as possible for fast web performance.</li><li>When creating SVGs in design tools, use the "Outline Stroke" and "Simplify Path" features to reduce the complexity of the generated code before optimization.</li></ul>'
+        }
+      ], 'svg-optimizer')}
+    ${createRelatedToolsSection(relatedToolsData)}
+    </div>
   `;
 
   const scripts = String.raw`
@@ -477,6 +504,7 @@ function renderSVGOptimizerPage() {
           await navigator.clipboard.writeText(text);
           const old = els.copyBtn.textContent;
           els.copyBtn.textContent = t('text8', '✓ Copied');
+          if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
           setTimeout(() => (els.copyBtn.textContent = old), 1200);
         } catch (e) {
           console.error('Copy failed:', e);

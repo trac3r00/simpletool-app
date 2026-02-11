@@ -6,6 +6,8 @@
  */
 
 import { createPageTemplate, createToolHeader, getCopyToClipboardScript } from '../utils/common-ui.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 import { respondHTML } from '../utils/respond.js';
 
 /**
@@ -20,6 +22,8 @@ function renderCSSGradientPage() {
     { toolId: 'css-gradient' }
   );
 
+  const currentTool = TOOLS.find(t => t.id === 'css-gradient');
+  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
   const pageContent = `
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -34,9 +38,9 @@ function renderCSSGradientPage() {
             <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50 mb-4" data-i18n="tools.css-gradient.ui.heading18">🔧 Gradient Type</h2>
 
             <div class="grid grid-cols-2 gap-3">
-              <button id="type-linear" class="gradient-type-btn" data-tooltip="Gradient along a straight line" py-3 px-4 rounded-lg font-semibold transition bg-blue-700 text-white">
-                <span data-i18n="tools.css-gradient.ui.button0">Linear</span>
-              </button>
+               <button id="type-linear" class="gradient-type-btn" data-tooltip="Gradient along a straight line" py-3 px-4 rounded-lg font-semibold transition bg-primary-700 text-white">
+                 <span data-i18n="tools.css-gradient.ui.button0">Linear</span>
+               </button>
               <button id="type-radial" class="gradient-type-btn" data-tooltip="Gradient radiating from a center point" py-3 px-4 rounded-lg font-semibold transition bg-surface-200 dark:bg-surface-800 text-surface-900 dark:text-surface-200">
                 <span data-i18n="tools.css-gradient.ui.button1">Radial</span>
               </button>
@@ -51,10 +55,10 @@ function renderCSSGradientPage() {
                 class="w-full h-2 bg-surface-200 rounded-lg appearance-none cursor-pointer dark:bg-surface-700" />
 
               <div class="grid grid-cols-4 gap-2 mt-3">
-                <button class="direction-btn py-2 px-3 text-xs rounded bg-surface-100 dark:bg-surface-800 hover:bg-blue-700 hover:text-white transition" data-angle="0" aria-label="Set gradient direction to 0 degrees (upward)">↑</button>
-                <button class="direction-btn py-2 px-3 text-xs rounded bg-surface-100 dark:bg-surface-800 hover:bg-blue-700 hover:text-white transition" data-angle="90" aria-label="Set gradient direction to 90 degrees (right)">→</button>
-                <button class="direction-btn py-2 px-3 text-xs rounded bg-surface-100 dark:bg-surface-800 hover:bg-blue-700 hover:text-white transition" data-angle="180" aria-label="Set gradient direction to 180 degrees (downward)">↓</button>
-                <button class="direction-btn py-2 px-3 text-xs rounded bg-surface-100 dark:bg-surface-800 hover:bg-blue-700 hover:text-white transition" data-angle="270" aria-label="Set gradient direction to 270 degrees (left)">←</button>
+                 <button class="direction-btn py-2 px-3 text-xs rounded bg-surface-100 dark:bg-surface-800 hover:bg-primary-700 hover:text-white transition" data-angle="0" aria-label="Set gradient direction to 0 degrees (upward)">↑</button>
+                 <button class="direction-btn py-2 px-3 text-xs rounded bg-surface-100 dark:bg-surface-800 hover:bg-primary-700 hover:text-white transition" data-angle="90" aria-label="Set gradient direction to 90 degrees (right)">→</button>
+                 <button class="direction-btn py-2 px-3 text-xs rounded bg-surface-100 dark:bg-surface-800 hover:bg-primary-700 hover:text-white transition" data-angle="180" aria-label="Set gradient direction to 180 degrees (downward)">↓</button>
+                 <button class="direction-btn py-2 px-3 text-xs rounded bg-surface-100 dark:bg-surface-800 hover:bg-primary-700 hover:text-white transition" data-angle="270" aria-label="Set gradient direction to 270 degrees (left)">←</button>
               </div>
             </div>
 
@@ -85,7 +89,7 @@ function renderCSSGradientPage() {
           <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm p-6">
             <div class="flex justify-between items-center mb-4">
               <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50" data-i18n="tools.css-gradient.ui.heading19">🎨 Color Stops</h2>
-              <button id="add-color-stop" data-tooltip="Add another color to the gradient" class="px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 transition text-sm font-semibold">
+                <button id="add-color-stop" data-tooltip="Add another color to the gradient" class="px-4 py-2 bg-success-600 text-white rounded-lg hover:bg-success-700 transition text-sm font-semibold">
                 <span data-i18n="tools.css-gradient.ui.button2">+ Add Color</span>
               </button>
             </div>
@@ -122,7 +126,7 @@ function renderCSSGradientPage() {
           <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm p-6">
             <div class="flex justify-between items-center mb-4">
               <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50" data-i18n="tools.css-gradient.ui.heading22">📋 CSS Code</h2>
-              <button id="copy-css-btn" class="px-4 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800 transition text-sm font-semibold">
+               <button id="copy-css-btn" class="px-4 py-2 bg-primary-700 text-white rounded-lg hover:bg-primary-800 transition text-sm font-semibold">
                 <span data-i18n="tools.css-gradient.ui.button3">📋 Copy CSS</span>
               </button>
             </div>
@@ -132,9 +136,9 @@ function renderCSSGradientPage() {
 
           <!-- Info Cards -->
           <div class="grid grid-cols-1 gap-4">
-            <div class="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 border-2 border-blue-300 dark:border-blue-700">
-              <h3 class="font-bold text-blue-900 dark:text-blue-200 mb-2" data-i18n="tools.css-gradient.ui.heading23">💡 Quick Tips</h3>
-              <ul class="text-sm text-blue-800 dark:text-blue-300 space-y-1 list-disc list-inside">
+              <div class="bg-info-50 dark:bg-info-900/20 rounded-xl p-4 border-2 border-info-200 dark:border-info-700">
+               <h3 class="font-bold text-info-900 dark:text-info-200 mb-2" data-i18n="tools.css-gradient.ui.heading23">💡 Quick Tips</h3>
+               <ul class="text-sm text-info-800 dark:text-info-300 space-y-1 list-disc list-inside">
                 <li>Use 2-3 colors for smooth gradients</li>
                 <li>Add more color stops for complex effects</li>
                 <li>Try preset gradients for inspiration</li>
@@ -142,9 +146,9 @@ function renderCSSGradientPage() {
               </ul>
             </div>
 
-            <div class="bg-green-50 dark:bg-green-900/20 rounded-xl p-4 border-2 border-green-300 dark:border-green-700">
-              <h3 class="font-bold text-green-900 dark:text-green-200 mb-2" data-i18n="tools.css-gradient.ui.heading24">🎯 Use Cases</h3>
-              <ul class="text-sm text-green-800 dark:text-green-300 space-y-1 list-disc list-inside">
+              <div class="bg-success-50 dark:bg-success-900/20 rounded-xl p-4 border-2 border-success-200 dark:border-success-700">
+               <h3 class="font-bold text-success-900 dark:text-success-200 mb-2" data-i18n="tools.css-gradient.ui.heading24">🎯 Use Cases</h3>
+               <ul class="text-sm text-success-800 dark:text-success-300 space-y-1 list-disc list-inside">
                 <li>Website backgrounds and hero sections</li>
                 <li>Button and card designs</li>
                 <li>Text gradients with background-clip</li>
@@ -156,6 +160,28 @@ function renderCSSGradientPage() {
       </div>
       </div>
     </main>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+      ${createEducationalSection([
+        {
+          title: 'What are CSS Gradients?',
+          content: '<p>CSS gradients are a powerful feature that allows you to display smooth transitions between two or more specified colors. Unlike traditional background images, gradients are generated by the browser, which means they are infinitely scalable, consume less bandwidth, and can be easily manipulated with code. They are commonly used for backgrounds, buttons, and decorative elements to add depth and visual interest to web designs.</p>'
+        },
+        {
+          title: 'Linear vs Radial vs Conic Gradients',
+          content: '<p>There are three main types of CSS gradients:</p><ul><li><strong>Linear Gradients</strong>: Colors transition along a straight line. You can control the direction using angles (e.g., 45deg) or keywords (e.g., to right).</li><li><strong>Radial Gradients</strong>: Colors radiate outward from a central point (the "origin"). You can specify the shape (circle or ellipse) and the position of the center.</li><li><strong>Conic Gradients</strong>: Colors transition around a center point, similar to a pie chart or a color wheel. While less common, they are great for creating unique patterns and UI elements.</li></ul>'
+        },
+        {
+          title: 'Browser Support and Performance',
+          content: '<p>Modern CSS gradients are widely supported across all major browsers, including Chrome, Firefox, Safari, and Edge. Because they are rendered mathematically by the browser\'s engine, they are extremely performant compared to high-resolution images. However, for very complex gradients with dozens of color stops, it\'s always good practice to test performance on lower-end devices. For older browsers (like IE9 and below), it\'s recommended to provide a solid color fallback.</p>'
+        },
+        {
+          title: 'Pro Tips for Better Gradients',
+          content: '<ul><li><strong>Avoid "Gray Dead Zones"</strong>: When transitioning between two distant colors, the midpoint can sometimes look muddy or gray. Adding a vibrant intermediate color stop can keep the gradient looking fresh.</li><li><strong>Use Subtle Transitions</strong>: Often, the best gradients are the ones you barely notice. Using colors that are close to each other on the color wheel creates a sophisticated, professional look.</li><li><strong>Layering</strong>: You can stack multiple gradients on top of each other using the <code>background-image</code> property, allowing for incredibly complex and artistic effects.</li><li><strong>Accessibility</strong>: Ensure that any text placed over a gradient has sufficient contrast. Use tools to check WCAG compliance for all color combinations.</li></ul>'
+        }
+      ], 'css-gradient-generator')}
+    </div>
+    ${createRelatedToolsSection(relatedToolsData)}
 
     ${getCopyToClipboardScript()}
 
@@ -182,19 +208,19 @@ function renderCSSGradientPage() {
       const colorStopsContainer = document.getElementById('color-stops-container');
 
       // Gradient Type Toggle
-      document.getElementById('type-linear').addEventListener('click', () => {
-        gradientType = 'linear';
-        document.getElementById('type-linear').className = 'gradient-type-btn py-3 px-4 rounded-lg font-semibold transition bg-blue-700 text-white';
-        document.getElementById('type-radial').className = 'gradient-type-btn py-3 px-4 rounded-lg font-semibold transition bg-surface-200 dark:bg-surface-800 text-surface-900 dark:text-surface-200';
+       document.getElementById('type-linear').addEventListener('click', () => {
+         gradientType = 'linear';
+         document.getElementById('type-linear').className = 'gradient-type-btn py-3 px-4 rounded-lg font-semibold transition bg-primary-700 text-white';
+         document.getElementById('type-radial').className = 'gradient-type-btn py-3 px-4 rounded-lg font-semibold transition bg-surface-200 dark:bg-surface-800 text-surface-900 dark:text-surface-200';
         linearOptions.classList.remove('hidden');
         radialOptions.classList.add('hidden');
         updateGradient();
       });
 
-      document.getElementById('type-radial').addEventListener('click', () => {
-        gradientType = 'radial';
-        document.getElementById('type-radial').className = 'gradient-type-btn py-3 px-4 rounded-lg font-semibold transition bg-blue-700 text-white';
-        document.getElementById('type-linear').className = 'gradient-type-btn py-3 px-4 rounded-lg font-semibold transition bg-surface-200 dark:bg-surface-800 text-surface-900 dark:text-surface-200';
+       document.getElementById('type-radial').addEventListener('click', () => {
+         gradientType = 'radial';
+         document.getElementById('type-radial').className = 'gradient-type-btn py-3 px-4 rounded-lg font-semibold transition bg-primary-700 text-white';
+         document.getElementById('type-linear').className = 'gradient-type-btn py-3 px-4 rounded-lg font-semibold transition bg-surface-200 dark:bg-surface-800 text-surface-900 dark:text-surface-200';
         linearOptions.classList.add('hidden');
         radialOptions.classList.remove('hidden');
         updateGradient();
@@ -244,7 +270,7 @@ function renderCSSGradientPage() {
             <div class="flex items-center justify-between mb-2">
               <span class="text-sm font-semibold text-surface-700 dark:text-surface-300">Color \${index + 1}</span>
               \${colorStops.length > 2 ? \`
-                <button class="remove-stop text-red-500 hover:text-red-700 text-sm font-semibold" data-index="\${index}">
+                <button class="remove-stop text-error-500 hover:text-error-700 text-sm font-semibold" data-index="\${index}">
                   <span data-i18n="tools.css-gradient.ui.button4">✕ Remove</span>
                 </button>
               \` : ''}
@@ -311,26 +337,27 @@ function renderCSSGradientPage() {
       document.getElementById('copy-css-btn').addEventListener('click', async () => {
         const css = cssOutputEl.textContent;
         try {
-          await navigator.clipboard.writeText(css);
-          const btn = document.getElementById('copy-css-btn');
-          btn.textContent = _t('tools.css-gradient.js.text0', '✓ Copied!');
-          btn.classList.remove('bg-blue-700', 'hover:bg-blue-800');
-          btn.classList.add('bg-green-700', 'hover:bg-green-800');
-          setTimeout(() => {
-            btn.textContent = _t('tools.css-gradient.js.text1', '📋 Copy CSS');
-            btn.classList.remove('bg-green-700', 'hover:bg-green-800');
-            btn.classList.add('bg-blue-700', 'hover:bg-blue-800');
-          }, 2000);
-         } catch (err) {
+           await navigator.clipboard.writeText(css);
            const btn = document.getElementById('copy-css-btn');
-           btn.textContent = 'Copy failed';
-           btn.classList.remove('bg-blue-700', 'hover:bg-blue-800');
-           btn.classList.add('bg-red-700', 'hover:bg-red-800');
-           setTimeout(() => {
-             btn.textContent = _t('tools.css-gradient.js.text1', '📋 Copy CSS');
-             btn.classList.remove('bg-red-700', 'hover:bg-red-800');
-             btn.classList.add('bg-blue-700', 'hover:bg-blue-800');
-           }, 2000);
+            btn.textContent = _t('tools.css-gradient.js.text0', '✓ Copied!');
+            btn.classList.remove('bg-primary-700', 'hover:bg-primary-800');
+            btn.classList.add('bg-success-600', 'hover:bg-success-700');
+            if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
+            setTimeout(() => {
+              btn.textContent = _t('tools.css-gradient.js.text1', '📋 Copy CSS');
+              btn.classList.remove('bg-success-600', 'hover:bg-success-700');
+              btn.classList.add('bg-primary-700', 'hover:bg-primary-800');
+            }, 2000);
+          } catch (err) {
+            const btn = document.getElementById('copy-css-btn');
+            btn.textContent = 'Copy failed';
+            btn.classList.remove('bg-primary-700', 'hover:bg-primary-800');
+            btn.classList.add('bg-error-600', 'hover:bg-error-700');
+            setTimeout(() => {
+              btn.textContent = _t('tools.css-gradient.js.text1', '📋 Copy CSS');
+              btn.classList.remove('bg-error-600', 'hover:bg-error-700');
+              btn.classList.add('bg-primary-700', 'hover:bg-primary-800');
+            }, 2000);
          }
       });
 
@@ -382,19 +409,19 @@ function renderCSSGradientPage() {
         transition: all 0.2s;
       }
 
-      .color-stop:hover {
-        border-color: #3b82f6;
-        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
-      }
+       .color-stop:hover {
+         border-color: var(--primary-500, #3b82f6);
+         box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+       }
 
-      .dark .color-stop {
-        border-color: #374151;
-      }
+       .dark .color-stop {
+         border-color: var(--surface-700, #374151);
+       }
 
-      .dark .color-stop:hover {
-        border-color: #60a5fa;
-        box-shadow: 0 4px 12px rgba(96, 165, 250, 0.1);
-      }
+       .dark .color-stop:hover {
+         border-color: var(--primary-400, #60a5fa);
+         box-shadow: 0 4px 12px rgba(96, 165, 250, 0.1);
+       }
 
       .gradient-preview {
         min-height: 300px;
@@ -410,14 +437,14 @@ function renderCSSGradientPage() {
         border: 2px solid transparent;
       }
 
-      .preset-card:hover {
-        transform: scale(1.05);
-        border-color: #3b82f6;
-      }
+       .preset-card:hover {
+         transform: scale(1.05);
+         border-color: var(--primary-500, #3b82f6);
+       }
 
-      .dark .preset-card:hover {
-        border-color: #60a5fa;
-      }
+       .dark .preset-card:hover {
+         border-color: var(--primary-400, #60a5fa);
+       }
     </style>
   `;
 

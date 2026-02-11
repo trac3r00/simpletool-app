@@ -4,6 +4,23 @@
 
 export const RATE_LIMIT_WINDOW_MS = 60_000;
 export const RATE_LIMIT_MAX_REQUESTS = 120;
+export const RATE_LIMIT_MAX_REQUESTS_SHARED_IP = 240;
+
+export const KNOWN_SHARED_IP_ASNS = new Set([
+  13335,   // Cloudflare (WARP VPN)
+  396982,  // Google LLC (Cloud VPN)
+  14618,   // Amazon (AWS VPN endpoints)
+  8075,    // Microsoft (Azure VPN)
+  20473,   // Choopa/Vultr (VPN providers)
+  60068,   // Datacamp Limited (CDN/proxy)
+  209242,  // Cloudflare WARP consumer
+]);
+
+export function isLikelySharedIP(request) {
+  if (!request || !request.cf) return false;
+  const asn = request.cf.asn;
+  return typeof asn === 'number' && KNOWN_SHARED_IP_ASNS.has(asn);
+}
 
 /**
  * Generate a cryptographically secure nonce for CSP
@@ -16,7 +33,7 @@ export function generateNonce() {
   return btoa(String.fromCharCode(...bytes));
 }
 
-export function shouldRateLimit(rateLimiter, ip, now) {
+export function shouldRateLimit(rateLimiter, ip, now, maxRequests = RATE_LIMIT_MAX_REQUESTS) {
   if (!ip || ip === 'unknown') return false;
 
   const entry = rateLimiter.get(ip);
@@ -26,7 +43,7 @@ export function shouldRateLimit(rateLimiter, ip, now) {
   }
 
   entry.count += 1;
-  return entry.count > RATE_LIMIT_MAX_REQUESTS;
+  return entry.count > maxRequests;
 }
 
 export function sweepRateLimiter(rateLimiter, now) {
@@ -41,7 +58,7 @@ export function sweepRateLimiter(rateLimiter, now) {
 
 export function getSecurityHeaders(contentType = 'text/html; charset=utf-8', cacheControl = null, nonce = null) {
   // Default cache control based on content type
-  let defaultCacheControl = 'private, no-cache, must-revalidate'; // HTML pages: no caching due to CSP nonce
+  let defaultCacheControl = 'public, s-maxage=60, max-age=0, must-revalidate'; // HTML pages: 60s edge cache, browser no-cache
 
   if (contentType.startsWith('application/json')) {
     defaultCacheControl = 'no-store, no-cache, must-revalidate'; // API/JSON: no caching
@@ -93,6 +110,7 @@ export function getSecurityHeaders(contentType = 'text/html; charset=utf-8', cac
     'Permissions-Policy': 'screen-wake-lock=(self), camera=(), microphone=(), geolocation=()',
     'Content-Security-Policy': csp,
     'Cache-Control': cacheControl || defaultCacheControl,
+    'Vary': 'Accept-Encoding',
     'Cross-Origin-Opener-Policy': 'same-origin',
     'Cross-Origin-Resource-Policy': 'same-origin',
     'Server': 'SimpleTool-Worker/2.0'

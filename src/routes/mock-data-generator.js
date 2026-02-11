@@ -5,6 +5,8 @@
 
 import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 
 export async function handleMockDataRoutes(request, url) {
   const { pathname } = url;
@@ -28,6 +30,8 @@ function renderMockDataPage() {
     { toolId: 'mock-data-generator' }
   );
 
+  const currentTool = TOOLS.find(t => t.id === 'mock-data-generator');
+  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
@@ -66,11 +70,11 @@ function renderMockDataPage() {
           </div>
 
           <div class="pt-4 border-t border-surface-100 dark:border-surface-800">
-            <button id="generate-data" data-tooltip="Generate random mock data with selected fields" class="w-full md:w-auto md:min-w-[200px] inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg bg-primary-600 hover:bg-primary-700 text-white font-bold text-lg shadow-lg shadow-primary-600/20 transition transform hover:-translate-y-0.5">
+            <button id="generate-data" data-tooltip="Generate random mock data with selected fields" class="btn btn-primary w-full md:w-auto md:min-w-[200px] text-lg shadow-lg shadow-primary-600/20 transition transform hover:-translate-y-0.5">
               <span>Generate Data</span>
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" /></svg>
             </button>
-            <div id="data-error" class="mt-4 hidden rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 text-sm text-red-700 dark:text-red-200 px-4 py-3">Error</div>
+             <div id="data-error" class="mt-4 hidden rounded-lg border border-error-200 dark:border-error-800 bg-error-50 dark:bg-error-900/30 text-sm text-error-700 dark:text-error-200 px-4 py-3">Error</div>
           </div>
         </div>
 
@@ -84,8 +88,8 @@ function renderMockDataPage() {
                   Output
                 </h2>
                 <div class="flex gap-2">
-                  <button id="copy-output" class="px-4 py-2 rounded-xl bg-surface-100 hover:bg-surface-200 dark:bg-surface-800 dark:hover:bg-surface-700 text-sm font-medium text-surface-700 dark:text-surface-200 transition" disabled><span data-i18n="tools.mock-data-generator.ui.button0">Copy</span></button>
-                  <button id="download-output" class="px-4 py-2 rounded-xl border border-surface-200 dark:border-surface-700 hover:bg-surface-50 dark:hover:bg-surface-800 text-sm font-medium text-surface-700 dark:text-surface-200 transition" disabled><span data-i18n="tools.mock-data-generator.ui.button1">Download</span></button>
+                  <button id="copy-output" class="btn btn-secondary btn-sm" disabled><span data-i18n="tools.mock-data-generator.ui.button0">Copy</span></button>
+                  <button id="download-output" class="btn btn-secondary btn-sm" disabled><span data-i18n="tools.mock-data-generator.ui.button1">Download</span></button>
                 </div>
               </div>
               <div class="relative flex-1 min-h-0 bg-surface-900 rounded-lg overflow-hidden group">
@@ -137,6 +141,27 @@ function renderMockDataPage() {
           </table>` }
       ])}
     </main>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+      ${createEducationalSection([
+        {
+          title: 'What is Mock Data?',
+          content: '<p>Mock data is synthetic information that mimics real-world data without containing any sensitive or personally identifiable information (PII). It is essential for developers and testers who need realistic datasets to build and validate applications without risking data breaches or violating privacy regulations like GDPR or CCPA. By using mock data, you can simulate various scenarios, from standard user profiles to edge cases, ensuring your software handles all types of input gracefully.</p>'
+        },
+        {
+          title: 'Testing Strategies',
+          content: '<p>Effective testing requires diverse datasets. Use mock data to seed your development databases, perform load testing with thousands of records, or verify UI layouts with varying string lengths. It\'s particularly useful for integration testing where you need predictable responses from external APIs. By generating data locally, you can create consistent test environments that are easy to reset and reproduce, leading to more reliable and faster development cycles.</p>'
+        },
+        {
+          title: 'Data Privacy in Mocks',
+          content: '<p>Privacy is a top priority in modern software development. Using real production data in development or staging environments is a major security risk. Mock data generators solve this by producing "fake" but structurally correct data. Our tool runs entirely in your browser, meaning your configuration and the generated data never leave your device. This "Privacy-First" approach ensures that even the process of creating mock data is secure and compliant with the strictest security standards.</p>'
+        },
+        {
+          title: 'Pro Tips',
+          content: '<ul><li><strong>Consistency:</strong> When generating multiple related datasets, use fixed seeds or patterns to maintain referential integrity between tables.</li><li><strong>Edge Cases:</strong> Don\'t just generate "happy path" data. Include empty strings, very long names, and special characters to test your application\'s robustness.</li><li><strong>Format Switching:</strong> Use the SQL export for quick database seeding and CSV for spreadsheet analysis or bulk imports.</li><li><strong>Automation:</strong> While this tool is manual, the patterns it uses can be integrated into your automated CI/CD pipelines for continuous testing.</li></ul>'
+        }
+      ], 'mock-data-generator')}
+    </div>
+    ${createRelatedToolsSection(relatedToolsData)}
 
     <script>
       (function() {
@@ -195,6 +220,7 @@ function renderMockDataPage() {
           if (outputArea.textContent.trim() === '' || outputArea.textContent.includes('Click "Generate data"')) return;
           navigator.clipboard.writeText(outputArea.textContent);
           copyBtn.textContent = _t('tools.mock-data-generator.js.text0', 'Copied!');
+          if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
           setTimeout(() => copyBtn.textContent = _t('tools.mock-data-generator.js.text1', 'Copy'), 1500);
         });
 

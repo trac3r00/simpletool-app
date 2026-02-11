@@ -7,6 +7,8 @@
 
 import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 
 export async function handleCSPBuilderRoutes(request, url) {
   const { pathname } = url;
@@ -31,6 +33,10 @@ function renderCSPBuilderPage() {
     ],
     { toolId: 'csp-builder' }
   );
+
+  const currentTool = TOOLS.find(t => t.id === 'csp-builder');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -122,6 +128,7 @@ function renderCSPBuilderPage() {
           }
         ])}
       </div>
+    ${createRelatedToolsSection(relatedToolsData)}
     </main>
   `;
 
@@ -177,17 +184,17 @@ function renderCSPBuilderPage() {
         return parts.join('; ') + (parts.length ? ';' : '');
       }
 
-      function addWarning(level, text) {
-        const row = document.createElement('div');
-        row.className = 'rounded-lg border p-3 text-sm ' +
-          (level === 'high'
-            ? 'bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 border-red-200 dark:border-red-800'
-            : level === 'medium'
-              ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-800'
-              : 'bg-surface-50 dark:bg-surface-950 text-surface-800 dark:text-surface-200 border-surface-200 dark:border-surface-800');
-        row.textContent = text;
-        els.warnings.appendChild(row);
-      }
+       function addWarning(level, text) {
+         const row = document.createElement('div');
+          row.className = 'rounded-lg border p-3 text-sm ' +
+            (level === 'high'
+              ? 'bg-error-50 dark:bg-error-900/20 text-error-800 dark:text-error-200 border-error-200 dark:border-error-800'
+              : level === 'medium'
+                ? 'bg-warning-50 dark:bg-warning-900/20 text-warning-800 dark:text-warning-200 border-warning-200 dark:border-warning-800'
+                : 'bg-surface-50 dark:bg-surface-950 text-surface-800 dark:text-surface-200 border-surface-200 dark:border-surface-800');
+         row.textContent = text;
+         els.warnings.appendChild(row);
+       }
 
       function validateAndRenderWarnings(policy) {
         els.warnings.innerHTML = '';
@@ -280,6 +287,7 @@ function renderCSPBuilderPage() {
           await navigator.clipboard.writeText(text);
           const old = els.copy.textContent;
           els.copy.textContent = t('text11', '✓ Copied');
+          if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
           setTimeout(() => (els.copy.textContent = old), 1200);
         } catch (e) {
           console.error('Copy failed:', e);

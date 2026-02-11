@@ -5,6 +5,8 @@
 
 import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 
 export async function handlePasswordGeneratorRoutes(request, url) {
   const { pathname } = url;
@@ -47,6 +49,10 @@ function renderPasswordGeneratorPage() {
     [{ text: 'Client-Side Only', color: 'blue', tooltip: 'Runs entirely in your browser using Web APIs — your data never leaves your device.' }],
     { toolId: 'password-generator' }
   );
+
+  const currentTool = TOOLS.find(t => t.id === 'password-generator');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -101,24 +107,36 @@ function renderPasswordGeneratorPage() {
               </label>
             </div>
 
-            <div id="pw-error" role="alert" class="hidden rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 text-sm text-red-700 dark:text-red-200 px-4 py-3"></div>
+             <div id="pw-error" role="alert" class="hidden rounded-lg border border-error-200 dark:border-error-800 bg-error-50 dark:bg-error-900/30 text-sm text-error-700 dark:text-error-200 px-4 py-3"></div>
 
             <button id="generate-password" class="btn btn-primary w-full py-4 text-lg">
               <span data-i18n="tools.password-generator.ui.button0">Generate Password</span>
             </button>
 
-            <div id="password-result" class="hidden">
-              <div class="bg-green-50 dark:bg-green-900/20 rounded-xl p-6 border border-green-200 dark:border-green-800">
+              <div id="password-result" class="hidden">
+                <div class="bg-success-50 dark:bg-success-900/20 rounded-lg p-6 border border-success-200 dark:border-success-800">
                 <div class="flex items-start justify-between gap-4">
                   <div class="flex-1">
                     <p class="text-sm text-surface-600 dark:text-surface-400 mb-2" data-i18n="tools.password-generator.ui.desc28">Your Password:</p>
                     <p id="password-output" class="text-2xl font-mono font-bold text-surface-900 dark:text-white break-all"></p>
                   </div>
-                  <button id="copy-password" class="flex-shrink-0 btn btn-secondary">
-                    <span class="material-symbols-rounded">content_copy</span>
-                  </button>
+                   <button id="copy-password" class="flex-shrink-0 btn btn-secondary" aria-label="Copy password to clipboard">
+                     <span class="material-symbols-rounded">content_copy</span>
+                   </button>
                 </div>
-                <div id="password-strength" class="mt-4 text-sm text-surface-700 dark:text-surface-300 font-medium"></div>
+                <div id="password-strength" class="mt-4">
+                  <!-- Segmented strength bar -->
+                  <div class="flex items-center gap-3">
+                    <div class="flex gap-1 flex-1" id="strength-segments" role="meter" aria-label="Password strength" aria-valuemin="0" aria-valuemax="4" aria-valuenow="0">
+                      <div class="strength-seg h-2 flex-1 rounded-full bg-surface-200 dark:bg-surface-700 transition-all duration-300"></div>
+                      <div class="strength-seg h-2 flex-1 rounded-full bg-surface-200 dark:bg-surface-700 transition-all duration-300"></div>
+                      <div class="strength-seg h-2 flex-1 rounded-full bg-surface-200 dark:bg-surface-700 transition-all duration-300"></div>
+                      <div class="strength-seg h-2 flex-1 rounded-full bg-surface-200 dark:bg-surface-700 transition-all duration-300"></div>
+                    </div>
+                    <span id="strength-label" class="text-sm font-semibold whitespace-nowrap"></span>
+                  </div>
+                  <p id="strength-detail" class="text-xs text-surface-500 dark:text-surface-400 mt-1.5"></p>
+                </div>
               </div>
             </div>
           </div>
@@ -152,16 +170,16 @@ function renderPasswordGeneratorPage() {
               <span data-i18n="tools.password-generator.ui.button1">Generate Username</span>
             </button>
 
-            <div id="username-result" class="hidden">
-              <div class="bg-surface-50 dark:bg-surface-800 rounded-xl p-6 border border-surface-200 dark:border-surface-700">
+             <div id="username-result" class="hidden">
+               <div class="bg-surface-50 dark:bg-surface-800 rounded-lg p-6 border border-surface-200 dark:border-surface-700">
                 <div class="flex items-start justify-between gap-4">
                   <div class="flex-1">
                     <p class="text-sm text-surface-600 dark:text-surface-400 mb-2" data-i18n="tools.password-generator.ui.desc30">Your Username:</p>
                     <p id="username-output" class="text-2xl font-mono font-bold text-surface-900 dark:text-white break-all"></p>
                   </div>
-                  <button id="copy-username" class="flex-shrink-0 btn btn-secondary">
-                    <span class="material-symbols-rounded">content_copy</span>
-                  </button>
+                   <button id="copy-username" class="flex-shrink-0 btn btn-secondary" aria-label="Copy username to clipboard">
+                     <span class="material-symbols-rounded">content_copy</span>
+                   </button>
                 </div>
               </div>
             </div>
@@ -198,16 +216,16 @@ function renderPasswordGeneratorPage() {
               <span data-i18n="tools.password-generator.ui.button2">Generate Passphrase</span>
             </button>
 
-            <div id="passphrase-result" class="hidden">
-              <div class="bg-surface-50 dark:bg-surface-800 rounded-xl p-6 border border-surface-200 dark:border-surface-700">
+             <div id="passphrase-result" class="hidden">
+               <div class="bg-surface-50 dark:bg-surface-800 rounded-lg p-6 border border-surface-200 dark:border-surface-700">
                 <div class="flex items-start justify-between gap-4">
                   <div class="flex-1">
                     <p class="text-sm text-surface-600 dark:text-surface-400 mb-2" data-i18n="tools.password-generator.ui.desc32">Your Passphrase:</p>
                     <p id="passphrase-output" class="text-2xl font-mono font-bold text-surface-900 dark:text-white break-all"></p>
                   </div>
-                  <button id="copy-passphrase" class="flex-shrink-0 btn btn-secondary">
-                    <span class="material-symbols-rounded">content_copy</span>
-                  </button>
+                   <button id="copy-passphrase" class="flex-shrink-0 btn btn-secondary" aria-label="Copy passphrase to clipboard">
+                     <span class="material-symbols-rounded">content_copy</span>
+                   </button>
                 </div>
               </div>
             </div>
@@ -247,19 +265,19 @@ function renderPasswordGeneratorPage() {
               <span data-i18n="tools.password-generator.ui.button3">Generate Catch-all Email</span>
             </button>
 
-            <div id="catchall-result" class="hidden">
-              <div class="bg-surface-50 dark:bg-surface-800 rounded-xl p-6 border border-surface-200 dark:border-surface-700">
-                <div class="flex items-start justify-between gap-4">
-                  <div class="flex-1">
-                    <p class="text-sm text-surface-600 dark:text-surface-400 mb-2" data-i18n="tools.password-generator.ui.desc33">Catch-all Email:</p>
-                    <p id="catchall-output" class="text-xl font-mono font-bold text-surface-900 dark:text-white break-all"></p>
-                  </div>
-                  <button id="copy-catchall" class="flex-shrink-0 btn btn-secondary">
-                    <span class="material-symbols-rounded">content_copy</span>
-                  </button>
-                </div>
-              </div>
-            </div>
+             <div id="catchall-result" class="hidden">
+               <div class="bg-surface-50 dark:bg-surface-800 rounded-lg p-6 border border-surface-200 dark:border-surface-700">
+                 <div class="flex items-start justify-between gap-4">
+                   <div class="flex-1">
+                     <p class="text-sm text-surface-600 dark:text-surface-400 mb-2" data-i18n="tools.password-generator.ui.desc33">Catch-all Email:</p>
+                     <p id="catchall-output" class="text-xl font-mono font-bold text-surface-900 dark:text-white break-all"></p>
+                   </div>
+                    <button id="copy-catchall" class="flex-shrink-0 btn btn-secondary" aria-label="Copy catch-all email to clipboard">
+                      <span class="material-symbols-rounded">content_copy</span>
+                    </button>
+                 </div>
+               </div>
+             </div>
           </div>
 
           <hr class="my-8 border-surface-200 dark:border-surface-700">
@@ -278,30 +296,94 @@ function renderPasswordGeneratorPage() {
               <input type="range" id="alias-tag-length" min="2" max="16" value="6" class="w-full h-2 bg-surface-200 dark:bg-surface-700 rounded-lg appearance-none cursor-pointer accent-primary-600">
             </div>
 
-            <div id="alias-error" role="alert" class="hidden rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 text-sm text-red-700 dark:text-red-200 px-4 py-3"></div>
+             <div id="alias-error" role="alert" class="hidden rounded-lg border border-error-200 dark:border-error-800 bg-error-50 dark:bg-error-900/30 text-sm text-error-700 dark:text-error-200 px-4 py-3"></div>
 
             <button id="generate-alias" class="btn btn-primary w-full py-4 text-lg">
               <span data-i18n="tools.password-generator.ui.button4">Generate Plus Alias</span>
             </button>
 
-            <div id="alias-result" class="hidden">
-              <div class="bg-surface-50 dark:bg-surface-800 rounded-xl p-6 border border-surface-200 dark:border-surface-700">
-                <div class="flex items-start justify-between gap-4">
-                  <div class="flex-1">
-                    <p class="text-sm text-surface-600 dark:text-surface-400 mb-2" data-i18n="tools.password-generator.ui.desc34">Plus Alias:</p>
-                    <p id="alias-output" class="text-xl font-mono font-bold text-surface-900 dark:text-white break-all"></p>
-                  </div>
-                  <button id="copy-alias" class="flex-shrink-0 btn btn-secondary">
-                    <span class="material-symbols-rounded">content_copy</span>
-                  </button>
-                </div>
-              </div>
-            </div>
+             <div id="alias-result" class="hidden">
+               <div class="bg-surface-50 dark:bg-surface-800 rounded-lg p-6 border border-surface-200 dark:border-surface-700">
+                 <div class="flex items-start justify-between gap-4">
+                   <div class="flex-1">
+                     <p class="text-sm text-surface-600 dark:text-surface-400 mb-2" data-i18n="tools.password-generator.ui.desc34">Plus Alias:</p>
+                     <p id="alias-output" class="text-xl font-mono font-bold text-surface-900 dark:text-white break-all"></p>
+                   </div>
+                    <button id="copy-alias" class="flex-shrink-0 btn btn-secondary" aria-label="Copy email alias to clipboard">
+                      <span class="material-symbols-rounded">content_copy</span>
+                    </button>
+                 </div>
+               </div>
+             </div>
           </div>
         </div>
 
       </div>
+
+      ${createEducationalSection([
+        {
+          title: 'What Makes a Password Secure?',
+          content: `
+            <p>A secure password is your first line of defense against unauthorized access. In the modern era of high-speed computing, "secure" is defined by <strong>entropy</strong>—the measure of randomness and unpredictability in a string. A strong password should be long (at least 16 characters), unique to every account, and composed of a diverse set of character types including uppercase, lowercase, numbers, and symbols.</p>
+            <p>Avoid using personal information like birthdays, pet names, or common dictionary words. Even complex-looking substitutions like "P@ssw0rd123" are easily cracked by modern brute-force tools that use massive dictionaries of common patterns.</p>
+          `
+        },
+        {
+          title: 'How to Use This Tool',
+          content: `
+            <ol>
+              <li><strong>Select your mode:</strong> Choose between Password, Username, Passphrase, or Email Alias depending on your needs.</li>
+              <li><strong>Adjust length:</strong> Use the slider to set the desired length. For passwords, 16+ characters is recommended for high security.</li>
+              <li><strong>Configure options:</strong> Toggle character sets (symbols, numbers, etc.) or styles (readable vs. secure).</li>
+              <li><strong>Generate:</strong> Click the "Generate" button to create your unique credential.</li>
+              <li><strong>Copy:</strong> Use the copy icon to safely move the result to your clipboard or password manager.</li>
+            </ol>
+          `
+        },
+        {
+          title: 'Common Use Cases',
+          content: `
+            <ul>
+              <li><strong>Account Security:</strong> Generating unique, high-entropy passwords for every online service you use.</li>
+              <li><strong>System Administration:</strong> Creating secure temporary passwords for new users or service accounts.</li>
+              <li><strong>Privacy Protection:</strong> Using "Plus Aliases" (e.g., user+service@domain.com) to track which services sell your data or to filter spam.</li>
+              <li><strong>Memorable Security:</strong> Using the Passphrase generator for master passwords that need to be typed manually but remain resistant to cracking.</li>
+            </ul>
+          `
+        },
+        {
+          title: 'Pro Tips',
+          content: `
+            <ul>
+              <li><strong>Use a Password Manager:</strong> Never try to memorize complex passwords. Use this tool to generate them, and store them in a reputable password manager like Bitwarden, 1Password, or KeePassXC.</li>
+              <li><strong>Entropy over Complexity:</strong> Length is often more important than character variety. A 20-character lowercase password is often harder to crack than an 8-character "complex" one.</li>
+              <li><strong>Rotate on Breach:</strong> If a service you use is compromised, use this generator to create a completely new, unrelated password immediately.</li>
+            </ul>
+          `
+        }
+      ], 'password-generator')}
     </main>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+      ${createEducationalSection([
+        {
+          title: 'What Makes a Password Secure?',
+          content: '<p>A secure password is your first line of defense against unauthorized access. In the modern era of high-speed computing, "secure" is defined by <strong>entropy</strong>—the measure of randomness and unpredictability in a string. A strong password should be long (at least 16 characters), unique to every account, and composed of a diverse set of character types including uppercase, lowercase, numbers, and symbols.</p><p>Avoid using personal information like birthdays, pet names, or common dictionary words. Even complex-looking substitutions like "P@ssw0rd123" are easily cracked by modern brute-force tools that use massive dictionaries of common patterns.</p>'
+        },
+        {
+          title: 'Entropy Explained',
+          content: '<p>Entropy is a measure of the randomness and unpredictability of a password, typically expressed in bits. The higher the entropy, the stronger the password. For example, a 10-character password using only lowercase letters has much lower entropy than a 10-character password using a full set of alphanumeric and special characters.</p><p>Our generator calculates entropy in real-time to give you an objective measure of your password\'s strength. A password with over 100 bits of entropy is considered exceptionally strong and resistant to modern cracking techniques.</p>'
+        },
+        {
+          title: 'Best Practices',
+          content: '<ul><li><strong>Never Reuse Passwords:</strong> Use a unique password for every single account. If one service is breached, your other accounts remain safe.</li><li><strong>Use a Password Manager:</strong> Since humans can\'t remember dozens of complex, unique passwords, use a reputable password manager to store them securely.</li><li><strong>Enable MFA:</strong> Multi-Factor Authentication adds a critical second layer of security even if your password is compromised.</li><li><strong>Avoid Personal Info:</strong> Never include names, birthdays, or common words that can be found in a dictionary.</li></ul>'
+        },
+        {
+          title: 'Pro Tips',
+          content: '<ul><li>Use the "Passphrase" mode for accounts you need to type manually; they are easier to remember but still highly secure.</li><li>For maximum security, generate the longest password allowed by the service (often 64 or 128 characters).</li><li>Regularly audit your saved passwords using your password manager\'s built-in security check features.</li><li>Consider using "Plus Aliases" (e.g., user+service@gmail.com) to track which services sell your data or send spam.</li></ul>'
+        }
+      ], 'password-generator')}
+    ${createRelatedToolsSection(relatedToolsData)}
+    </div>
   `;
 
   const script = `
@@ -368,6 +450,7 @@ function renderPasswordGeneratorPage() {
              window.copyToClipboard(text, btn);
          } else {
              navigator.clipboard.writeText(text).then(() => {
+                 if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
                  const original = btn.innerHTML;
                  btn.innerHTML = '✓';
                  setTimeout(() => btn.innerHTML = original, 2000);
@@ -405,7 +488,7 @@ function renderPasswordGeneratorPage() {
 
          // Ensure minimum length
          if (length < charsets.length) {
-           document.getElementById('pw-error').textContent = 'Password length too short for selected options.';
+           document.getElementById('pw-error').textContent = _t('tools.password-generator.js.alert2', 'Password length too short for selected options.');
            document.getElementById('pw-error').classList.remove('hidden');
            return;
          }
@@ -441,14 +524,38 @@ function renderPasswordGeneratorPage() {
          document.getElementById('password-output').textContent = password;
          document.getElementById('password-result').classList.remove('hidden');
 
-        // Calculate strength
+        // Calculate strength and drive the segmented meter
         const entropy = password.length * Math.log2(allChars.length);
-        let strengthText = '✅ Good';
-        if (entropy < 40) strengthText = '❌ Weak';
-        else if (entropy < 60) strengthText = '⚠️ Fair';
-        else if (entropy > 100) strengthText = '💪 Strong';
-        
-        document.getElementById('password-strength').textContent = 'Strength: ' + strengthText;
+        const segments = document.querySelectorAll('.strength-seg');
+        const strengthLabel = document.getElementById('strength-label');
+        const strengthDetail = document.getElementById('strength-detail');
+        const segmentsContainer = document.getElementById('strength-segments');
+
+        // Determine level: 0=weak, 1=fair, 2=good, 3=strong
+        let level = 0, label = '', color = '';
+        if (entropy >= 100) {
+          level = 4; label = _t('tools.password-generator.js.status3', 'Strong'); color = '#16a34a';
+        } else if (entropy >= 60) {
+          level = 3; label = _t('tools.password-generator.js.status4', 'Good'); color = '#2563eb';
+        } else if (entropy >= 40) {
+          level = 2; label = _t('tools.password-generator.js.status5', 'Fair'); color = '#d97706';
+        } else {
+          level = 1; label = _t('tools.password-generator.js.status6', 'Weak'); color = '#dc2626';
+        }
+
+        segments.forEach((seg, i) => {
+          if (i < level) {
+            seg.style.backgroundColor = color;
+          } else {
+            seg.style.backgroundColor = '';
+            seg.className = 'strength-seg h-2 flex-1 rounded-full bg-surface-200 dark:bg-surface-700 transition-all duration-300';
+          }
+        });
+
+        segmentsContainer.setAttribute('aria-valuenow', level);
+        strengthLabel.textContent = label;
+        strengthLabel.style.color = color;
+        strengthDetail.textContent = Math.round(entropy) + '-bit entropy \xB7 ' + password.length + ' characters \xB7 ' + allChars.length + ' charset size';
       });
 
       // Copy password

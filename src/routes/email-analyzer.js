@@ -7,6 +7,8 @@
 
 import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 
 export async function handleEmailAnalyzerRoutes(request, url) {
   const { pathname } = url;
@@ -31,6 +33,10 @@ function renderEmailAnalyzerPage() {
     ],
     { toolId: 'email-analyzer' }
   );
+
+  const currentTool = TOOLS.find(t => t.id === 'email-analyzer');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -187,6 +193,27 @@ function renderEmailAnalyzerPage() {
         ])}
       </div>
     </main>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+      ${createEducationalSection([
+        {
+          title: 'Email Authentication Explained',
+          content: '<p>Email authentication is a collection of techniques used to provide verifiable information about the origin of an email message. By validating the sender\'s identity, these protocols help mail servers distinguish between legitimate messages and spoofed or fraudulent ones (like phishing). The three pillars of modern email authentication are SPF, DKIM, and DMARC.</p><p>When an email is received, the receiving server performs these checks and records the results in the email\'s headers, which this tool parses for you.</p>'
+        },
+        {
+          title: 'SPF/DKIM/DMARC',
+          content: '<ul><li><strong>SPF (Sender Policy Framework):</strong> A DNS-based mechanism that lists the IP addresses and domains authorized to send email on behalf of your domain.</li><li><strong>DKIM (DomainKeys Identified Mail):</strong> Adds a digital signature to the email, allowing the receiver to verify that the message was indeed sent by the domain owner and hasn\'t been tampered with in transit.</li><li><strong>DMARC (Domain-based Message Authentication, Reporting, and Conformance):</strong> Ties SPF and DKIM together. It tells the receiver what to do if the authentication fails (e.g., "none," "quarantine," or "reject") and provides a way for receivers to report back to the sender.</li></ul>'
+        },
+        {
+          title: 'Phishing Detection',
+          content: '<p>Phishing emails often use "spoofing" to appear as if they come from a trusted source. Our analyzer looks for common red flags, such as a mismatch between the "From" address (what the user sees) and the "Return-Path" (where the mail actually came from). We also extract and analyze URLs in the email body to identify suspicious links, such as those using Punycode (lookalike domains) or IP addresses instead of hostnames.</p><p>By reviewing the "Findings" section, you can quickly identify these signals and determine if an email is safe to interact with.</p>'
+        },
+        {
+          title: 'Pro Tips',
+          content: '<ul><li>Always check the <strong>"Authentication-Results"</strong> header first; it provides the definitive outcome of the security checks performed by your mail provider.</li><li>Use the <strong>"Mask PII"</strong> option when sharing reports with others to protect sensitive email addresses and IP information.</li><li>Pay close attention to the <strong>"Reply-To"</strong> header; if it differs from the "From" address, it may be a sign of a Business Email Compromise (BEC) attack.</li><li>Review the <strong>"Routing Hops"</strong> to see the path the email took; an unusually long or complex path through unknown servers can be a sign of relay abuse.</li></ul>'
+        }
+      ], 'email-analyzer')}
+    ${createRelatedToolsSection(relatedToolsData)}
+    </div>
   `;
 
   const scripts = String.raw`
@@ -252,22 +279,22 @@ function renderEmailAnalyzerPage() {
         'Unsubscribe: http://xn--exmple-qta.net/unsub?u=soc@example.com'
       ].join('\n');
 
-      function setStatus(kind, message) {
-        if (!message) {
-          els.status.classList.add('hidden');
-          els.status.textContent = '';
-          return;
-        }
-        els.status.classList.remove('hidden');
-        if (kind === 'error') {
-          els.status.className = 'rounded-lg p-3 text-sm font-medium border bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-200 border-red-200 dark:border-red-800';
-        } else if (kind === 'warn') {
-          els.status.className = 'rounded-lg p-3 text-sm font-medium border bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-200 border-yellow-200 dark:border-yellow-800';
-        } else {
-          els.status.className = 'rounded-lg p-3 text-sm font-medium border bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-200 border-green-200 dark:border-green-800';
-        }
-        els.status.textContent = message;
-      }
+       function setStatus(kind, message) {
+         if (!message) {
+           els.status.classList.add('hidden');
+           els.status.textContent = '';
+           return;
+         }
+         els.status.classList.remove('hidden');
+         if (kind === 'error') {
+           els.status.className = 'rounded-lg p-3 text-sm font-medium border bg-danger-50 dark:bg-danger-900/20 text-danger-700 dark:text-danger-200 border-danger-200 dark:border-danger-800';
+         } else if (kind === 'warn') {
+           els.status.className = 'rounded-lg p-3 text-sm font-medium border bg-warning-50 dark:bg-warning-900/20 text-warning-700 dark:text-warning-200 border-warning-200 dark:border-warning-800';
+         } else {
+           els.status.className = 'rounded-lg p-3 text-sm font-medium border bg-success-50 dark:bg-success-900/20 text-success-700 dark:text-success-200 border-success-200 dark:border-success-800';
+         }
+         els.status.textContent = message;
+       }
 
       function normalizeNewlines(text) {
         return String(text || '').replace(/\r\n/g, '\n').replace(/\r/g, '\n');
@@ -488,20 +515,20 @@ function renderEmailAnalyzerPage() {
         return { flags, hostname };
       }
 
-      function severityBadge(sev) {
-        if (sev === 'high') return { label: t('text0', 'High'), cls: 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-200 border-red-200 dark:border-red-800' };
-        if (sev === 'medium') return { label: t('text1', 'Medium'), cls: 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-200 border-yellow-200 dark:border-yellow-800' };
-        return { label: t('text2', 'Low'), cls: 'bg-surface-50 dark:bg-surface-950 text-surface-700 dark:text-surface-200 border-surface-200 dark:border-surface-800' };
-      }
+       function severityBadge(sev) {
+         if (sev === 'high') return { label: t('text0', 'High'), cls: 'bg-danger-50 dark:bg-danger-900/20 text-danger-700 dark:text-danger-200 border-danger-200 dark:border-danger-800' };
+         if (sev === 'medium') return { label: t('text1', 'Medium'), cls: 'bg-warning-50 dark:bg-warning-900/20 text-warning-700 dark:text-warning-200 border-warning-200 dark:border-warning-800' };
+         return { label: t('text2', 'Low'), cls: 'bg-surface-50 dark:bg-surface-950 text-surface-700 dark:text-surface-200 border-surface-200 dark:border-surface-800' };
+       }
 
-      function authBadge(result) {
-        const r = String(result || '').toLowerCase();
-        if (r === 'pass') return { text: t('text3', 'pass'), cls: 'text-green-700 dark:text-green-200' };
-        if (r === 'fail') return { text: t('text4', 'fail'), cls: 'text-red-700 dark:text-red-200' };
-        if (r === 'softfail' || r === 'neutral') return { text: r, cls: 'text-yellow-700 dark:text-yellow-200' };
-        if (r) return { text: r, cls: 'text-surface-700 dark:text-surface-200' };
-        return { text: t('text5', 'unknown'), cls: 'text-surface-500 dark:text-surface-400' };
-      }
+       function authBadge(result) {
+         const r = String(result || '').toLowerCase();
+         if (r === 'pass') return { text: t('text3', 'pass'), cls: 'text-success-700 dark:text-success-200' };
+         if (r === 'fail') return { text: t('text4', 'fail'), cls: 'text-danger-700 dark:text-danger-200' };
+         if (r === 'softfail' || r === 'neutral') return { text: r, cls: 'text-warning-700 dark:text-warning-200' };
+         if (r) return { text: r, cls: 'text-surface-700 dark:text-surface-200' };
+         return { text: t('text5', 'unknown'), cls: 'text-surface-500 dark:text-surface-400' };
+       }
 
       function buildFindings(summary) {
         const findings = [];

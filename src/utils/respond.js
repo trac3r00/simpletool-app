@@ -107,10 +107,14 @@ export function respondJSON(data, options = {}) {
 }
 
 export function respondHTML(html, options = {}) {
-  const { status = 200, headers = {} } = options;
+  const { status = 200, headers = {}, url = null } = options;
 
   // Generate nonce for CSP
   const nonce = generateNonce();
+
+  // Determine cache control: bypass caching for URLs with query parameters
+  const hasQueryParams = url && url.search && url.search.length > 1;
+  const cacheControl = hasQueryParams ? 'private, no-cache, must-revalidate' : null;
 
   const htmlWithStyles = injectStylesheet(html);
   const htmlWithTheme = injectThemeBootstrap(htmlWithStyles);
@@ -126,7 +130,7 @@ export function respondHTML(html, options = {}) {
   return new Response(htmlWithNonce, {
     status,
     headers: {
-      ...getSecurityHeaders('text/html; charset=utf-8', 'no-cache, must-revalidate', nonce),
+      ...getSecurityHeaders('text/html; charset=utf-8', cacheControl, nonce),
       ...headers
     }
   });

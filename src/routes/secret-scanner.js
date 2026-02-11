@@ -7,6 +7,8 @@
 
 import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 
 export async function handleSecretScannerRoutes(request, url) {
   const { pathname } = url;
@@ -31,6 +33,10 @@ function renderSecretScannerPage() {
     ],
     { toolId: 'secret-scanner' }
   );
+
+  const currentTool = TOOLS.find(t => t.id === 'secret-scanner');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -118,6 +124,27 @@ function renderSecretScannerPage() {
         ])}
       </div>
     </main>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+      ${createEducationalSection([
+        {
+          title: 'What are Secret Leaks?',
+          content: '<p>Secret leaks occur when sensitive information like API keys, passwords, or private tokens are accidentally committed to version control or shared in public forums. These leaks can lead to unauthorized access, data breaches, and financial loss. This tool helps identify common secret patterns locally in your browser before you share or commit your code.</p>'
+        },
+        {
+          title: 'How to Use This Tool',
+          content: '<ol><li>Paste your code, configuration, or log files into the input area.</li><li>Click the "Scan" button to analyze the text for potential secrets.</li><li>Review the findings and advice for each detected item.</li><li>Use the "Copy Redacted" button to get a share-safe version of your text with secrets masked.</li></ol>'
+        },
+        {
+          title: 'Common Use Cases',
+          content: '<ul><li><strong>Pre-commit Check:</strong> Scan your code before committing to ensure no secrets are included.</li><li><strong>Log Redaction:</strong> Mask sensitive tokens in logs before sharing them with support or teammates.</li><li><strong>Security Auditing:</strong> Quickly audit configuration files for hardcoded credentials.</li></ul>'
+        },
+        {
+          title: 'Pro Tips',
+          content: '<ul><li>Always rotate your credentials immediately if you discover they have been leaked.</li><li>Use environment variables or secret managers instead of hardcoding secrets in your source code.</li><li>Enable "Include low severity patterns" for a more thorough scan, but be prepared for more false positives.</li></ul>'
+        }
+      ], 'secret-scanner')}
+    ${createRelatedToolsSection(relatedToolsData)}
+    </div>
   `;
 
   const scripts = String.raw`
@@ -330,18 +357,18 @@ function renderSecretScannerPage() {
           return;
         }
 
-        if (truncated) {
-          const note = document.createElement('div');
-          note.className = 'rounded-lg border p-3 text-sm bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-800';
-          note.textContent = t('text23', 'Input was large; scanned only the first 250,000 characters.');
-          els.findings.appendChild(note);
-        }
+         if (truncated) {
+           const note = document.createElement('div');
+           note.className = 'rounded-lg border p-3 text-sm bg-warning-50 dark:bg-warning-900/20 text-warning-800 dark:text-warning-200 border-warning-200 dark:border-warning-800';
+           note.textContent = t('text23', 'Input was large; scanned only the first 250,000 characters.');
+           els.findings.appendChild(note);
+         }
 
-        const severityCls = (sev) => sev === 'high'
-          ? 'bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 border-red-200 dark:border-red-800'
-          : sev === 'medium'
-            ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-800'
-            : 'bg-surface-50 dark:bg-surface-950 text-surface-800 dark:text-surface-200 border-surface-200 dark:border-surface-800';
+          const severityCls = (sev) => sev === 'high'
+            ? 'bg-error-50 dark:bg-error-900/20 text-error-800 dark:text-error-200 border-error-200 dark:border-error-800'
+            : sev === 'medium'
+              ? 'bg-warning-50 dark:bg-warning-900/20 text-warning-800 dark:text-warning-200 border-warning-200 dark:border-warning-800'
+              : 'bg-surface-50 dark:bg-surface-950 text-surface-800 dark:text-surface-200 border-surface-200 dark:border-surface-800';
 
         findings.slice(0, 120).forEach(f => {
           const row = document.createElement('div');
@@ -417,6 +444,7 @@ function renderSecretScannerPage() {
           await navigator.clipboard.writeText(text);
           const old = els.copyRedacted.textContent;
           els.copyRedacted.textContent = t('text29', '✓ Copied');
+          if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
           setTimeout(() => (els.copyRedacted.textContent = old), 1200);
         } catch (e) {
           console.error('Copy failed:', e);

@@ -1,6 +1,8 @@
 import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
 import { t } from '../utils/i18n.js';
+import { TOOLS } from '../utils/tool-registry.js';
+import { createRelatedToolsSection } from '../utils/content-ui.js';
 
 export async function handleCaffeniateRoutes(request, url) {
   if (url.pathname === '/caffeniate' || url.pathname === '/caffeniate/') {
@@ -17,6 +19,10 @@ function renderCaffeniatePage() {
     [{ text: 'Client-Side Only', tooltip: 'Runs entirely in your browser using Web APIs — your data never leaves your device.' }],
     { toolId: 'caffeniate' }
   );
+
+  const currentTool = TOOLS.find(t => t.id === 'caffeniate');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -68,6 +74,7 @@ function renderCaffeniatePage() {
           </div>
         </div>
       </div>
+    ${createRelatedToolsSection(relatedToolsData)}
     </main>
 
     <script>
@@ -109,14 +116,14 @@ function renderCaffeniatePage() {
         toggleBtn.textContent = btnText;
         toggleBtn.setAttribute('data-i18n', isActive ? 'tools.caffeniate.ui.button1' : 'tools.caffeniate.ui.button0');
 
-        statusPanel.classList.remove('border-primary-400', 'dark:border-primary-600', 'border-yellow-400', 'dark:border-yellow-600', 'border-red-400', 'dark:border-red-600');
-        if (panelState === 'active') {
-          statusPanel.classList.add('border-primary-400', 'dark:border-primary-600');
-        } else if (panelState === 'warn') {
-          statusPanel.classList.add('border-yellow-400', 'dark:border-yellow-600');
-        } else if (panelState === 'error') {
-          statusPanel.classList.add('border-red-400', 'dark:border-red-600');
-        }
+         statusPanel.classList.remove('border-primary-400', 'dark:border-primary-600', 'border-warning-400', 'dark:border-warning-600', 'border-error-400', 'dark:border-error-600');
+         if (panelState === 'active') {
+           statusPanel.classList.add('border-primary-400', 'dark:border-primary-600');
+         } else if (panelState === 'warn') {
+           statusPanel.classList.add('border-warning-400', 'dark:border-warning-600');
+         } else if (panelState === 'error') {
+           statusPanel.classList.add('border-error-400', 'dark:border-error-600');
+         }
       }
 
       function showMode(mode) {

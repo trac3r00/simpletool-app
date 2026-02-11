@@ -7,6 +7,8 @@
 
 import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
+import { createRelatedToolsSection } from '../utils/content-ui.js';
 
 export async function handleTokenCounterRoutes(request, url) {
   const { pathname } = url;
@@ -31,6 +33,10 @@ function renderTokenCounterPage() {
     ],
     { toolId: 'token-counter' }
   );
+
+  const currentTool = TOOLS.find(t => t.id === 'token-counter');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -214,6 +220,7 @@ function renderTokenCounterPage() {
           }
         ])}
       </div>
+    ${createRelatedToolsSection(relatedToolsData)}
     </main>
   `;
 
@@ -444,6 +451,7 @@ function renderTokenCounterPage() {
           await navigator.clipboard.writeText(lines.join('\n'));
           const old = els.copy.textContent;
           els.copy.textContent = t('text10', '✓ Copied');
+          if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
           setTimeout(() => (els.copy.textContent = old), 1200);
         } catch (e) {
           console.error('Copy failed:', e);

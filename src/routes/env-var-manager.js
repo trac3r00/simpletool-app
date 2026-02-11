@@ -8,6 +8,8 @@
 
 import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 
 export async function handleEnvVarManagerRoutes(request, url) {
   const { pathname } = url;
@@ -32,6 +34,10 @@ function renderEnvVarManagerPage() {
     ],
     { toolId: 'env-var-manager' }
   );
+
+  const currentTool = TOOLS.find(t => t.id === 'env-var-manager');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -155,6 +161,27 @@ function renderEnvVarManagerPage() {
         ])}
       </div>
     </main>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+      ${createEducationalSection([
+        {
+          title: 'Environment Variables Best Practices',
+          content: '<p>Environment variables are a fundamental part of the "Twelve-Factor App" methodology, which advocates for a strict separation of configuration from code. By using environment variables, you can run the same code in different environments (development, staging, production) simply by changing the configuration values.</p><p>Best practices include using descriptive, uppercase names (e.g., <code>DATABASE_URL</code>), providing default values for non-critical settings, and never hardcoding sensitive information directly into your source control.</p>'
+        },
+        {
+          title: 'Secret Management',
+          content: '<p>Secrets are a special category of environment variables that contain sensitive information like API keys, database passwords, and private certificates. Managing these securely is critical to preventing data breaches. You should use a dedicated secret management service (like AWS Secrets Manager, HashiCorp Vault, or Cloudflare Secrets) for production environments.</p><p>For local development, <code>.env</code> files are commonly used, but they should <strong>never</strong> be committed to your git repository. Always add <code>*.env</code> to your <code>.gitignore</code> file.</p>'
+        },
+        {
+          title: '.env Security',
+          content: '<p>When sharing <code>.env</code> files with teammates for debugging, there is a high risk of accidentally exposing production secrets. Our manager helps mitigate this risk by providing a "Mask sensitive values" feature. It uses heuristics to identify keys like <code>SECRET</code>, <code>TOKEN</code>, or <code>PASSWORD</code> and replaces their values with a masked version (e.g., <code>ab...yz (32)</code>).</p><p>This allows you to compare the structure and non-sensitive values of your environment files without leaking the actual secrets.</p>'
+        },
+        {
+          title: 'Pro Tips',
+          content: '<ul><li>Use the <strong>"Swap"</strong> button to quickly reverse the comparison direction between Environment A and Environment B.</li><li>Leverage the <strong>"Filter keys"</strong> input to focus on specific groups of variables, such as all keys starting with <code>AWS_</code> or <code>DB_</code>.</li><li>Always include a <code>.env.example</code> file in your repository with dummy values to show other developers which variables are required for the app to run.</li><li>Remember that environment variables are typically strings; if your app needs a boolean or a number, ensure you parse the value correctly in your code.</li></ul>'
+        }
+      ], 'env-var-manager')}
+    ${createRelatedToolsSection(relatedToolsData)}
+    </div>
   `;
 
   const scripts = String.raw`
@@ -314,7 +341,7 @@ function renderEnvVarManagerPage() {
           return;
         }
 	        el.classList.remove('hidden');
-	        el.className = 'text-xs rounded-lg p-3 border bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-800';
+	        el.className = 'text-xs rounded-lg p-3 border bg-warning-50 dark:bg-warning-900/20 text-warning-800 dark:text-warning-200 border-warning-200 dark:border-warning-800';
 	        el.innerHTML = '<div class="font-semibold mb-1">' + escapeHtml(fmt(t('text3', '{env} parse notes'), { env: envName })) + '</div><ul class="list-disc ml-5 space-y-0.5">' +
 	          issues.slice(0, 8).map(s => '<li>' + s.replace(/</g, '&lt;') + '</li>').join('') +
 	          (issues.length > 8 ? '<li>…</li>' : '') +
@@ -336,9 +363,9 @@ function renderEnvVarManagerPage() {
         return rows;
       }
 
-      function statusLabel(status) {
-        if (status === 'same') return { text: t('text4', 'Same'), cls: 'text-green-700 dark:text-green-200' };
-        if (status === 'changed') return { text: t('text5', 'Changed'), cls: 'text-yellow-700 dark:text-yellow-200' };
+       function statusLabel(status) {
+         if (status === 'same') return { text: t('text4', 'Same'), cls: 'text-success-700 dark:text-success-200' };
+        if (status === 'changed') return { text: t('text5', 'Changed'), cls: 'text-warning-700 dark:text-warning-200' };
         if (status === 'onlyA') return { text: t('text6', 'Only A'), cls: 'text-surface-700 dark:text-surface-200' };
         return { text: t('text7', 'Only B'), cls: 'text-surface-700 dark:text-surface-200' };
       }
@@ -492,6 +519,7 @@ function renderEnvVarManagerPage() {
           await navigator.clipboard.writeText(text);
           const old = els.copyReport.textContent;
           els.copyReport.textContent = t('text16', '✓ Copied');
+          if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
           setTimeout(() => (els.copyReport.textContent = old), 1200);
         } catch (e) {
           console.error('Copy failed:', e);

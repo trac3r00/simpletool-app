@@ -1,5 +1,13 @@
 import { describe, it, expect } from 'vitest';
-import { shouldRateLimit, sweepRateLimiter, generateNonce } from './security.js';
+import {
+  shouldRateLimit,
+  sweepRateLimiter,
+  generateNonce,
+  getSecurityHeaders,
+  isLikelySharedIP,
+  RATE_LIMIT_MAX_REQUESTS_SHARED_IP,
+  KNOWN_SHARED_IP_ASNS
+} from './security.js';
 
 describe('Security Utils', () => {
   it('generates unique nonces', () => {
@@ -33,5 +41,61 @@ describe('Security Utils', () => {
 
     expect(limiter.has('1.2.3.4')).toBe(false);
     expect(limiter.has('5.6.7.8')).toBe(true);
+  });
+});
+
+describe('getSecurityHeaders', () => {
+  it('returns edge cache headers for HTML', () => {
+    const headers = getSecurityHeaders('text/html; charset=utf-8', null, 'test-nonce');
+    expect(headers['Cache-Control']).toBe('public, s-maxage=60, max-age=0, must-revalidate');
+    expect(headers['Vary']).toBe('Accept-Encoding');
+    expect(headers['Content-Security-Policy']).toContain("nonce-test-nonce");
+  });
+
+  it('returns no-store for JSON', () => {
+    const headers = getSecurityHeaders('application/json; charset=utf-8');
+    expect(headers['Cache-Control']).toBe('no-store, no-cache, must-revalidate');
+    expect(headers['Vary']).toBe('Accept-Encoding');
+  });
+
+  it('returns no-cache for text', () => {
+    const headers = getSecurityHeaders('text/plain; charset=utf-8');
+    expect(headers['Cache-Control']).toBe('no-cache, must-revalidate');
+    expect(headers['Vary']).toBe('Accept-Encoding');
+  });
+});
+
+describe('isLikelySharedIP', () => {
+  it('returns true for known VPN ASNs', () => {
+    const request = { cf: { asn: 13335 } }; // Cloudflare WARP
+    expect(isLikelySharedIP(request)).toBe(true);
+  });
+
+  it('returns false for regular ISP ASNs', () => {
+    const request = { cf: { asn: 12345 } }; // Some random ISP
+    expect(isLikelySharedIP(request)).toBe(false);
+  });
+
+  it('returns false when request.cf is undefined', () => {
+    expect(isLikelySharedIP({})).toBe(false);
+    expect(isLikelySharedIP(null)).toBe(false);
+    expect(isLikelySharedIP(undefined)).toBe(false);
+  });
+
+  it('returns false when asn is not a number', () => {
+    const request = { cf: { asn: 'not-a-number' } };
+    expect(isLikelySharedIP(request)).toBe(false);
+  });
+});
+
+describe('Rate limit constants', () => {
+  it('has correct shared IP limit', () => {
+    expect(RATE_LIMIT_MAX_REQUESTS_SHARED_IP).toBe(240);
+  });
+
+  it('contains known VPN ASNs', () => {
+    expect(KNOWN_SHARED_IP_ASNS.has(13335)).toBe(true); // Cloudflare
+    expect(KNOWN_SHARED_IP_ASNS.has(396982)).toBe(true); // Google Cloud
+    expect(KNOWN_SHARED_IP_ASNS.size).toBeGreaterThanOrEqual(7);
   });
 });

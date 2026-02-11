@@ -1,9 +1,15 @@
 import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
+import { createRelatedToolsSection } from '../utils/content-ui.js';
 
 export async function handleLogViewerRoutes(request, url) {
   if (url.pathname !== '/log-viewer' && url.pathname !== '/log-viewer/') return null;
   if (request.method !== 'GET') return null;
+
+  const currentTool = TOOLS.find(t => t.id === 'log-viewer');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -35,7 +41,7 @@ export async function handleLogViewerRoutes(request, url) {
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
-              <input type="text" id="search-input" placeholder="Search logs..." data-tooltip="Filter logs by text — enable regex toggle for pattern matching" data-i18n-placeholder="tools.log-viewer.ui.placeholder2"
+              <input type="text" id="search-input" placeholder="Search logs..." data-i18n-placeholder="tools.log-viewer.ui.placeholder2" data-tooltip="Filter logs by text — enable regex toggle for pattern matching" data-i18n-placeholder="tools.log-viewer.ui.placeholder2"
                 class="block w-full pl-10 pr-12 py-2 border border-surface-300 dark:border-surface-700 rounded-lg bg-surface-50 dark:bg-surface-950 text-surface-900 dark:text-surface-50 focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
               <div class="absolute inset-y-0 right-0 flex items-center">
                 <label for="regex-toggle" class="flex items-center px-2 cursor-pointer" title="Use Regex" data-i18n-title="tools.log-viewer.ui.title3">
@@ -48,18 +54,21 @@ export async function handleLogViewerRoutes(request, url) {
 
           <!-- Level Filters -->
           <div class="md:col-span-3 flex gap-2">
-            <button id="toggle-info" data-tooltip="Show/hide INFO level messages" class="flex-1 px-3 py-2 rounded-lg text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 border border-transparent hover:border-blue-300 transition-all ring-2 ring-blue-500 ring-offset-1 dark:ring-offset-surface-900" data-active="true">INFO</button>
-            <button id="toggle-warn" class="flex-1 px-3 py-2 rounded-lg text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300 border border-transparent hover:border-yellow-300 transition-all ring-2 ring-yellow-500 ring-offset-1 dark:ring-offset-surface-900" data-active="true">WARN</button>
-            <button id="toggle-error" class="flex-1 px-3 py-2 rounded-lg text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300 border border-transparent hover:border-red-300 transition-all ring-2 ring-red-500 ring-offset-1 dark:ring-offset-surface-900" data-active="true">ERR</button>
+             <button id="toggle-info" data-tooltip="Show/hide INFO level messages" class="flex-1 px-3 py-2 rounded-lg text-xs font-medium bg-info-100 text-info-800 dark:bg-info-900/30 dark:text-info-300 border border-transparent hover:border-info-300 transition-all ring-2 ring-info-500 ring-offset-1 dark:ring-offset-surface-900" data-active="true">INFO</button>
+             <button id="toggle-warn" class="flex-1 px-3 py-2 rounded-lg text-xs font-medium bg-warning-100 text-warning-800 dark:bg-warning-900/30 dark:text-warning-300 border border-transparent hover:border-warning-300 transition-all ring-2 ring-warning-500 ring-offset-1 dark:ring-offset-surface-900" data-active="true">WARN</button>
+             <button id="toggle-error" class="flex-1 px-3 py-2 rounded-lg text-xs font-medium bg-error-100 text-error-800 dark:bg-error-900/30 dark:text-error-300 border border-transparent hover:border-error-300 transition-all ring-2 ring-error-500 ring-offset-1 dark:ring-offset-surface-900" data-active="true">ERR</button>
             <button id="toggle-other" class="flex-1 px-3 py-2 rounded-lg text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300 border border-transparent hover:border-gray-300 transition-all ring-2 ring-gray-500 ring-offset-1 dark:ring-offset-surface-900" data-active="true">OTHER</button>
           </div>
         </div>
         
-        <!-- Stats -->
-        <div class="mt-4 flex items-center justify-between text-xs text-surface-500 dark:text-surface-400 border-t border-surface-100 dark:border-surface-800 pt-3">
-          <div id="status-text">Ready to load file</div>
-          <div id="match-count" class="font-mono hidden">0 matches</div>
-        </div>
+         <!-- Stats -->
+         <div class="mt-4 flex items-center justify-between text-xs text-surface-500 dark:text-surface-400 border-t border-surface-100 dark:border-surface-800 pt-3">
+           <div class="flex items-center gap-2">
+             <div id="status-text">Ready to load file</div>
+             <span id="log-spinner" class="spinner-sm hidden" style="display:inline-block;vertical-align:middle;border-color:rgba(107,114,128,0.3);border-top-color:rgb(107,114,128);"></span>
+           </div>
+           <div id="match-count" class="font-mono hidden">0 matches</div>
+         </div>
       </div>
 
       <!-- Visualization -->
@@ -92,6 +101,7 @@ export async function handleLogViewerRoutes(request, url) {
           </div>
         </div>
       </div>
+    ${createRelatedToolsSection(relatedToolsData)}
     </main>
 
     <style>
@@ -107,9 +117,9 @@ export async function handleLogViewerRoutes(request, url) {
       .log-lvl { width: 4rem; font-weight: bold; margin-right: 1rem; flex-shrink: 0; }
       .log-msg { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: pre; }
       
-      .lvl-info { color: #4fc1ff; }
-      .lvl-warn { color: #dcdcaa; }
-      .lvl-error { color: #f44747; }
+       .lvl-info { color: var(--info-400, #4fc1ff); }
+       .lvl-warn { color: var(--warning-300, #dcdcaa); }
+       .lvl-error { color: var(--error-400, #f44747); }
       .lvl-debug { color: #b5cea8; }
       .lvl-other { color: #9ca3af; }
       
@@ -170,30 +180,33 @@ export async function handleLogViewerRoutes(request, url) {
           };
         };
 
-        // File Handling
-        fileInput.addEventListener('change', (e) => {
-          const file = e.target.files[0];
-          if (!file) return;
+         // File Handling
+         fileInput.addEventListener('change', (e) => {
+           const file = e.target.files[0];
+           if (!file) return;
 
-          statusText.textContent = _t('tools.log-viewer.js.text0', 'Reading file...');
-          const reader = new FileReader();
-          
-          reader.onload = (event) => {
-            const text = event.target.result;
-            statusText.textContent = _t('tools.log-viewer.js.text1', 'Parsing logs...');
-            
-            // Use setTimeout to allow UI to update
-            setTimeout(() => {
-              const lines = text.split(/\\r?\\n/);
-              allLogs = lines.map((line, i) => parseLine(line, i));
-              applyFilters();
-              statusText.textContent = 'Loaded ' + allLogs.length.toLocaleString() + ' lines';
-              vizContainer.classList.remove('hidden');
-            }, 10);
-          };
-          
-          reader.readAsText(file);
-        });
+           const logSpinner = document.getElementById('log-spinner');
+           logSpinner.classList.remove('hidden');
+           statusText.textContent = _t('tools.log-viewer.js.text0', 'Reading file...');
+           const reader = new FileReader();
+           
+           reader.onload = (event) => {
+             const text = event.target.result;
+             statusText.textContent = _t('tools.log-viewer.js.text1', 'Parsing logs...');
+             
+             // Use setTimeout to allow UI to update
+             setTimeout(() => {
+               const lines = text.split(/\\r?\\n/);
+               allLogs = lines.map((line, i) => parseLine(line, i));
+               applyFilters();
+               statusText.textContent = 'Loaded ' + allLogs.length.toLocaleString() + ' lines';
+               logSpinner.classList.add('hidden');
+               vizContainer.classList.remove('hidden');
+             }, 10);
+           };
+           
+           reader.readAsText(file);
+         });
 
         // Filtering
         function applyFilters() {
@@ -202,11 +215,11 @@ export async function handleLogViewerRoutes(request, url) {
           
           if (query) {
             try {
-              regex = isRegex ? new RegExp(query, 'i') : new RegExp(query.replace(/[.*+?^$\{\}()|[\]\\]/g, '\\$&'), 'i');
-              searchInput.classList.remove('border-red-500', 'focus:border-red-500', 'focus:ring-red-500');
-            } catch (e) {
-              searchInput.classList.add('border-red-500', 'focus:border-red-500', 'focus:ring-red-500');
-              return; // Invalid regex
+               regex = isRegex ? new RegExp(query, 'i') : new RegExp(query.replace(/[.*+?^$\{\}()|[\]\\]/g, '\\$&'), 'i');
+               searchInput.classList.remove('border-error-500', 'focus:border-error-500', 'focus:ring-error-500');
+             } catch (e) {
+               searchInput.classList.add('border-error-500', 'focus:border-error-500', 'focus:ring-error-500');
+               return; // Invalid regex
             }
           }
 

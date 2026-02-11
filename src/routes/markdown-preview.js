@@ -1,5 +1,7 @@
 import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet } from '../utils/common-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
+import { createRelatedToolsSection } from '../utils/content-ui.js';
 
 export async function handleMarkdownPreviewRoutes(request, url) {
   const { pathname } = url;
@@ -22,17 +24,23 @@ export async function handleMarkdownPreviewRoutes(request, url) {
 }
 
 function renderMarkdownPreviewPage() {
+  const toolHeader = createToolHeader(
+    { emoji: '📝' },
+    'Markdown Editor',
+    'Live Markdown editor with split-pane preview, Mermaid diagrams, and export tools.',
+    [{ text: 'Live Preview', tooltip: 'Updates the rendered preview instantly as you edit markdown.' },
+     { text: 'Mermaid', tooltip: 'Supports Mermaid.js diagram syntax directly inside the editor.' },
+     { text: 'Export', tooltip: 'Export Markdown, HTML, or other formats without leaving the page.' }],
+    { toolId: 'markdown-preview' }
+  );
+
+  const currentTool = TOOLS.find(t => t.id === 'markdown-preview');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
+
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      ${createToolHeader(
-        { emoji: '📝' },
-        'Markdown Editor',
-        'Live Markdown editor with split-pane preview, Mermaid diagrams, and export tools.',
-        [{ text: 'Live Preview', tooltip: 'Updates the rendered preview instantly as you edit markdown.' },
-         { text: 'Mermaid', tooltip: 'Supports Mermaid.js diagram syntax directly inside the editor.' },
-         { text: 'Export', tooltip: 'Export Markdown, HTML, or other formats without leaving the page.' }],
-        { toolId: 'markdown-preview' }
-      )}
+      ${toolHeader}
 
       <div id="md-preview-root" class="flex flex-col gap-4 min-h-[560px] h-[calc(100vh-20rem)]" data-view="split" style="--split: 55%;">
         <!-- Toolbar -->
@@ -72,26 +80,37 @@ function renderMarkdownPreviewPage() {
 
             <div class="h-4 w-px bg-surface-300 dark:bg-surface-700 mx-1 hidden sm:block"></div>
 
-            <button id="copy-md-btn" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-surface-700 dark:text-surface-200 bg-surface-100 dark:bg-surface-800 hover:bg-surface-200 dark:hover:bg-surface-700 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500">
-              <span data-i18n="tools.markdown-preview.ui.button4">Copy MD</span>
-            </button>
-
-            <button id="copy-html-btn" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-surface-700 dark:text-surface-200 bg-surface-100 dark:bg-surface-800 hover:bg-surface-200 dark:hover:bg-surface-700 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500">
-              <span data-i18n="tools.markdown-preview.ui.button5">Copy HTML</span>
-            </button>
-
-            <button id="download-md-btn" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-primary-700 dark:text-primary-300 bg-primary-50 dark:bg-primary-900/30 hover:bg-primary-100 dark:hover:bg-primary-900/50 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500">
-              <span data-i18n="tools.markdown-preview.ui.button6">Download .md</span>
-            </button>
-
-            <button id="download-html-btn" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-surface-700 dark:text-surface-200 bg-surface-100 dark:bg-surface-800 hover:bg-surface-200 dark:hover:bg-surface-700 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500">
-              <span data-i18n="tools.markdown-preview.ui.button7">Download .html</span>
-            </button>
-
-            <button id="print-btn" class="hidden sm:flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-surface-700 dark:text-surface-200 bg-surface-100 dark:bg-surface-800 hover:bg-surface-200 dark:hover:bg-surface-700 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500" title="Print preview" data-i18n-title="tools.markdown-preview.ui.title8">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6v-8z"></path></svg>
-              Print
-            </button>
+            <div class="relative group">
+              <button id="export-menu-btn" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-primary-700 dark:text-primary-300 bg-primary-50 dark:bg-primary-900/30 hover:bg-primary-100 dark:hover:bg-primary-900/50 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                <span data-i18n="tools.markdown-preview.ui.button11">Export</span>
+                <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+              </button>
+              <div class="absolute right-0 mt-1 w-48 bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-10">
+                <button id="copy-md-btn" class="w-full text-left px-4 py-2 text-sm text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors flex items-center gap-2">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                  <span data-i18n="tools.markdown-preview.ui.button4">Copy MD</span>
+                </button>
+                <button id="copy-html-btn" class="w-full text-left px-4 py-2 text-sm text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors flex items-center gap-2">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                  <span data-i18n="tools.markdown-preview.ui.button5">Copy HTML</span>
+                </button>
+                <div class="border-t border-surface-200 dark:border-surface-700"></div>
+                <button id="download-md-btn" class="w-full text-left px-4 py-2 text-sm text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors flex items-center gap-2">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                  <span data-i18n="tools.markdown-preview.ui.button6">Download .md</span>
+                </button>
+                <button id="download-html-btn" class="w-full text-left px-4 py-2 text-sm text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors flex items-center gap-2">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                  <span data-i18n="tools.markdown-preview.ui.button7">Download .html</span>
+                </button>
+                <div class="border-t border-surface-200 dark:border-surface-700"></div>
+                <button id="print-btn" class="w-full text-left px-4 py-2 text-sm text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors flex items-center gap-2">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6v-8z"></path></svg>
+                  <span data-i18n="tools.markdown-preview.ui.title8">Print</span>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -293,6 +312,7 @@ function renderMarkdownPreviewPage() {
           </table>` },
         { heading: 'Code &amp; Tables', content: '<p>Use triple backticks for code blocks with optional language. Tables use pipes: <code>| Col1 | Col2 |</code> with <code>|---|---|</code> separator.</p>' }
       ])}
+    ${createRelatedToolsSection(relatedToolsData)}
     </main>
   `;
 
@@ -313,13 +333,14 @@ function renderMarkdownPreviewPage() {
         const charCount = document.getElementById('char-count');
         const mdFileInput = document.getElementById('md-file-input');
 
-        const openMdBtn = document.getElementById('open-md-btn');
-        const clearMdBtn = document.getElementById('clear-md-btn');
-        const copyMdBtn = document.getElementById('copy-md-btn');
-        const copyHtmlBtn = document.getElementById('copy-html-btn');
-        const downloadMdBtn = document.getElementById('download-md-btn');
-        const downloadHtmlBtn = document.getElementById('download-html-btn');
-        const printBtn = document.getElementById('print-btn');
+         const openMdBtn = document.getElementById('open-md-btn');
+         const clearMdBtn = document.getElementById('clear-md-btn');
+         const exportMenuBtn = document.getElementById('export-menu-btn');
+         const copyMdBtn = document.getElementById('copy-md-btn');
+         const copyHtmlBtn = document.getElementById('copy-html-btn');
+         const downloadMdBtn = document.getElementById('download-md-btn');
+         const downloadHtmlBtn = document.getElementById('download-html-btn');
+         const printBtn = document.getElementById('print-btn');
 
         const viewBtns = document.querySelectorAll('.view-btn');
 
@@ -423,6 +444,7 @@ function renderMarkdownPreviewPage() {
                 await navigator.clipboard.writeText(code.textContent || '');
                 const old = btn.textContent;
                 btn.textContent = _t('tools.markdown-preview.js.text1', 'Copied');
+                if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
                 setTimeout(() => (btn.textContent = old), 1200);
               } catch (e) {
                 console.error('Copy failed:', e);
@@ -515,20 +537,58 @@ function renderMarkdownPreviewPage() {
           timeoutId = setTimeout(updatePreview, 20);
         });
 
-        // Sync scroll (percentage-based)
-        const syncScroll = (source, target) => {
-          if (isScrolling) return;
-          isScrolling = true;
+         // Sync scroll with line-number mapping for better accuracy
+         const getLineNumber = (element) => {
+           if (element === input) {
+             const text = input.value.substring(0, input.selectionStart);
+             return text.split('\\n').length - 1;
+           }
+           return 0;
+         };
 
-          const denom = source.scrollHeight - source.clientHeight;
-          const percentage = denom > 0 ? (source.scrollTop / denom) : 0;
-          const targetDenom = target.scrollHeight - target.clientHeight;
-          target.scrollTop = percentage * (targetDenom > 0 ? targetDenom : 0);
+         const syncScroll = (source, target) => {
+           if (isScrolling) return;
+           isScrolling = true;
 
-          setTimeout(() => { isScrolling = false; }, 50);
-        };
-        input.addEventListener('scroll', () => syncScroll(input, preview));
-        preview.addEventListener('scroll', () => syncScroll(preview, input));
+           // Try line-based sync for textarea → preview
+           if (source === input && target === preview) {
+             const lines = input.value.split('\\n');
+             const scrollPct = input.scrollHeight > input.clientHeight
+               ? (input.scrollTop / (input.scrollHeight - input.clientHeight))
+               : 0;
+             
+             // Estimate which line is at top of viewport
+             const avgLineHeight = input.scrollHeight / Math.max(lines.length, 1);
+             const estimatedLine = Math.floor((input.scrollTop / avgLineHeight));
+             
+             // Find corresponding heading in preview
+             const headings = preview.querySelectorAll('h1, h2, h3, h4, h5, h6');
+             let targetScroll = scrollPct * (preview.scrollHeight - preview.clientHeight);
+             
+             if (headings.length > 0) {
+               // Use heading positions as anchor points for better sync
+               const headingIndex = Math.min(estimatedLine / 5, headings.length - 1);
+               if (headingIndex >= 0) {
+                 const heading = headings[Math.floor(headingIndex)];
+                 if (heading) {
+                   targetScroll = Math.max(0, heading.offsetTop - preview.clientHeight * 0.2);
+                 }
+               }
+             }
+             
+             target.scrollTop = targetScroll;
+           } else if (source === preview && target === input) {
+             // Preview → textarea: use percentage-based sync
+             const denom = source.scrollHeight - source.clientHeight;
+             const percentage = denom > 0 ? (source.scrollTop / denom) : 0;
+             const targetDenom = target.scrollHeight - target.clientHeight;
+             target.scrollTop = percentage * (targetDenom > 0 ? targetDenom : 0);
+           }
+
+           setTimeout(() => { isScrolling = false; }, 50);
+         };
+         input.addEventListener('scroll', () => syncScroll(input, preview));
+         preview.addEventListener('scroll', () => syncScroll(preview, input));
 
         // Outline jump
         outlineSelect?.addEventListener('change', () => {
@@ -616,6 +676,7 @@ function renderMarkdownPreviewPage() {
             await navigator.clipboard.writeText(input.value || '');
             const originalText = copyMdBtn.textContent;
             copyMdBtn.textContent = _t('tools.markdown-preview.js.text1', 'Copied');
+            if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
             setTimeout(() => { copyMdBtn.textContent = originalText; }, 1200);
           } catch (err) {
             console.error('Failed to copy:', err);
@@ -629,6 +690,7 @@ function renderMarkdownPreviewPage() {
             await navigator.clipboard.writeText(html);
             const originalText = copyHtmlBtn.textContent;
             copyHtmlBtn.textContent = _t('tools.markdown-preview.js.text1', 'Copied');
+            if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
             setTimeout(() => { copyHtmlBtn.textContent = originalText; }, 1200);
           } catch (err) {
             console.error('Failed to copy:', err);
@@ -690,24 +752,29 @@ function renderMarkdownPreviewPage() {
           URL.revokeObjectURL(url);
         });
 
-        // Print preview
-        printBtn?.addEventListener('click', () => {
-          const htmlContent = getExportHTML('Markdown Print');
-          const w = window.open('', '_blank', 'noopener,noreferrer');
-          if (!w) return;
-          w.document.open();
-          w.document.write(htmlContent);
-          w.document.close();
-          w.focus();
-          setTimeout(() => w.print(), 250);
-        });
+         // Print preview
+         printBtn?.addEventListener('click', () => {
+           const htmlContent = getExportHTML('Markdown Print');
+           const w = window.open('', '_blank', 'noopener,noreferrer');
+           if (!w) return;
+           w.document.open();
+           w.document.write(htmlContent);
+           w.document.close();
+           w.focus();
+           setTimeout(() => w.print(), 250);
+         });
 
-        // Re-render mermaid when theme toggles
-        document.addEventListener('click', (e) => {
-          const toggleBtn = e.target.closest('[data-theme-toggle]');
-          if (!toggleBtn) return;
-          setTimeout(updatePreview, 200);
-        });
+         // Close export dropdown on click outside
+         document.addEventListener('click', (e) => {
+           const exportMenu = exportMenuBtn?.closest('.group');
+           if (exportMenu && !exportMenu.contains(e.target)) {
+             exportMenu.classList.remove('group-hover:opacity-100', 'group-hover:visible');
+           }
+           
+           const toggleBtn = e.target.closest('[data-theme-toggle]');
+           if (!toggleBtn) return;
+           setTimeout(updatePreview, 200);
+         });
       });
     </script>
   `;

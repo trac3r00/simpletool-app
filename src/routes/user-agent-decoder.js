@@ -6,6 +6,8 @@
 
 import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 
 export async function handleUserAgentDecoderRoutes(request, url) {
   const { pathname } = url;
@@ -37,6 +39,10 @@ function renderUserAgentDecoderPage() {
     { toolId: 'user-agent-decoder' }
   );
 
+  const currentTool = TOOLS.find(t => t.id === 'user-agent-decoder');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
+
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
@@ -53,153 +59,30 @@ function renderUserAgentDecoderPage() {
             <button id="use-current" class="btn btn-secondary" data-tooltip="Use your current browser User-Agent string" whitespace-nowrap text-sm py-2">
               <span data-i18n="tools.user-agent-decoder.ui.button0">Use This</span>
             </button>
-          </div>
         </div>
 
-        <!-- Input -->
-        <div class="mb-6">
-          <label class="label"><span data-i18n="tools.user-agent-decoder.ui.label9">User-Agent String</span></label>
-          <textarea id="ua-input" rows="4" placeholder="Paste User-Agent string here..." data-tooltip="Paste a User-Agent string from HTTP request headers" data-i18n-placeholder="tools.user-agent-decoder.ui.placeholder11" class="input resize-vertical font-mono"></textarea>
-        </div>
-
-        <!-- Common Examples -->
-        <div class="mb-6">
-          <label class="label"><span data-i18n="tools.user-agent-decoder.ui.label10">Quick Examples</span></label>
-          <div class="flex flex-wrap gap-2">
-            <button class="example-btn px-3 py-2 bg-surface-100 hover:bg-surface-200 dark:bg-surface-800 dark:hover:bg-surface-700 text-surface-700 dark:text-surface-300 text-xs font-medium rounded-lg transition-colors" data-ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36">
-              <span data-i18n="tools.user-agent-decoder.ui.button1">Chrome on Windows</span>
-            </button>
-            <button class="example-btn px-3 py-2 bg-surface-100 hover:bg-surface-200 dark:bg-surface-800 dark:hover:bg-surface-700 text-surface-700 dark:text-surface-300 text-xs font-medium rounded-lg transition-colors" data-ua="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15">
-              <span data-i18n="tools.user-agent-decoder.ui.button2">Safari on macOS</span>
-            </button>
-            <button class="example-btn px-3 py-2 bg-surface-100 hover:bg-surface-200 dark:bg-surface-800 dark:hover:bg-surface-700 text-surface-700 dark:text-surface-300 text-xs font-medium rounded-lg transition-colors" data-ua="Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1">
-              <span data-i18n="tools.user-agent-decoder.ui.button3">iPhone Safari</span>
-            </button>
-            <button class="example-btn px-3 py-2 bg-surface-100 hover:bg-surface-200 dark:bg-surface-800 dark:hover:bg-surface-700 text-surface-700 dark:text-surface-300 text-xs font-medium rounded-lg transition-colors" data-ua="Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.6099.43 Mobile Safari/537.36">
-              <span data-i18n="tools.user-agent-decoder.ui.button4">Android Chrome</span>
-            </button>
-            <button class="example-btn px-3 py-2 bg-surface-100 hover:bg-surface-200 dark:bg-surface-800 dark:hover:bg-surface-700 text-surface-700 dark:text-surface-300 text-xs font-medium rounded-lg transition-colors" data-ua="Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/120.0">
-              <span data-i18n="tools.user-agent-decoder.ui.button5">Firefox on Linux</span>
-            </button>
-          </div>
-        </div>
-
-         <!-- Action Buttons -->
-         <div class="mb-6 flex gap-3">
-           <button id="parse-btn" class="btn btn-primary" data-tooltip="Analyze and break down the User-Agent components" w-full py-3 text-lg">
-             <span data-i18n="tools.user-agent-decoder.ui.button6">🔍 Parse User-Agent</span>
-           </button>
-           <button id="clear-btn" class="btn btn-ghost px-6 text-lg">
-             <span data-i18n="tools.user-agent-decoder.ui.button7">🗑️ Clear</span>
-           </button>
-         </div>
-
-         <div id="ua-error" role="alert" class="hidden mb-6 rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 text-sm text-red-700 dark:text-red-200 px-4 py-3"></div>
-
-         <!-- Results -->
-        <div id="results" class="hidden">
-          <h2 class="text-2xl font-bold text-surface-900 dark:text-surface-50 mb-4" data-i18n="tools.user-agent-decoder.ui.heading13">Parsed Information</h2>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            <!-- Browser Info -->
-            <div class="p-4 bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-800 rounded-lg">
-              <h2 class="text-sm font-semibold text-primary-900 dark:text-primary-300 mb-3 flex items-center gap-2">
-                <span class="text-xl">🌐</span> Browser
-              </h2>
-              <div class="space-y-2 text-sm">
-                <div class="flex justify-between border-b border-primary-100 dark:border-primary-800 pb-1">
-                  <span class="text-surface-600 dark:text-surface-400">Name:</span>
-                  <span id="browser-name" class="font-semibold text-surface-900 dark:text-surface-100">-</span>
-                </div>
-                <div class="flex justify-between border-b border-primary-100 dark:border-primary-800 pb-1">
-                  <span class="text-surface-600 dark:text-surface-400" data-i18n="tools.user-agent-decoder.ui.desc15">Version:</span>
-                  <span id="browser-version" class="font-semibold text-surface-900 dark:text-surface-100">-</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-surface-600 dark:text-surface-400" data-i18n="tools.user-agent-decoder.ui.desc16">Engine:</span>
-                  <span id="browser-engine" class="font-semibold text-surface-900 dark:text-surface-100">-</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- OS Info -->
-            <div class="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-              <h2 class="text-sm font-semibold text-green-900 dark:text-green-300 mb-3 flex items-center gap-2">
-                <span class="text-xl">💻</span> Operating System
-              </h2>
-              <div class="space-y-2 text-sm">
-                <div class="flex justify-between border-b border-green-100 dark:border-green-800 pb-1">
-                  <span class="text-surface-600 dark:text-surface-400">OS:</span>
-                  <span id="os-name" class="font-semibold text-surface-900 dark:text-surface-100">-</span>
-                </div>
-                <div class="flex justify-between border-b border-green-100 dark:border-green-800 pb-1">
-                  <span class="text-surface-600 dark:text-surface-400" data-i18n="tools.user-agent-decoder.ui.desc15">Version:</span>
-                  <span id="os-version" class="font-semibold text-surface-900 dark:text-surface-100">-</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-surface-600 dark:text-surface-400" data-i18n="tools.user-agent-decoder.ui.desc17">Architecture:</span>
-                  <span id="os-arch" class="font-semibold text-surface-900 dark:text-surface-100">-</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Device Info -->
-            <div class="p-4 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg">
-              <h2 class="text-sm font-semibold text-purple-900 dark:text-purple-300 mb-3 flex items-center gap-2">
-                <span class="text-xl">📱</span> Device
-              </h2>
-              <div class="space-y-2 text-sm">
-                <div class="flex justify-between border-b border-purple-100 dark:border-purple-800 pb-1">
-                  <span class="text-surface-600 dark:text-surface-400">Type:</span>
-                  <span id="device-type" class="font-semibold text-surface-900 dark:text-surface-100">-</span>
-                </div>
-                <div class="flex justify-between border-b border-purple-100 dark:border-purple-800 pb-1">
-                  <span class="text-surface-600 dark:text-surface-400" data-i18n="tools.user-agent-decoder.ui.desc18">Vendor:</span>
-                  <span id="device-vendor" class="font-semibold text-surface-900 dark:text-surface-100">-</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-surface-600 dark:text-surface-400" data-i18n="tools.user-agent-decoder.ui.desc19">Model:</span>
-                  <span id="device-model" class="font-semibold text-surface-900 dark:text-surface-100">-</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Additional Info -->
-            <div class="p-4 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg">
-              <h2 class="text-sm font-semibold text-orange-900 dark:text-orange-300 mb-3 flex items-center gap-2">
-                <span class="text-xl">ℹ️</span> Additional Info
-              </h2>
-              <div class="space-y-2 text-sm">
-                <div class="flex justify-between border-b border-orange-100 dark:border-orange-800 pb-1">
-                  <span class="text-surface-600 dark:text-surface-400" data-i18n="tools.user-agent-decoder.ui.desc20">Bot/Crawler:</span>
-                  <span id="is-bot" class="font-semibold text-surface-900 dark:text-surface-100">-</span>
-                </div>
-                <div class="flex justify-between border-b border-orange-100 dark:border-orange-800 pb-1">
-                  <span class="text-surface-600 dark:text-surface-400" data-i18n="tools.user-agent-decoder.ui.desc21">Mobile:</span>
-                  <span id="is-mobile" class="font-semibold text-surface-900 dark:text-surface-100">-</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-surface-600 dark:text-surface-400" data-i18n="tools.user-agent-decoder.ui.desc22">Tablet:</span>
-                  <span id="is-tablet" class="font-semibold text-surface-900 dark:text-surface-100">-</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Raw Analysis -->
-          <div class="p-4 bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-800 rounded-lg">
-            <div class="flex items-center justify-between mb-2">
-              <h2 class="text-sm font-semibold text-surface-900 dark:text-surface-50" data-i18n="tools.user-agent-decoder.ui.heading14">Raw Analysis Output</h2>
-              <button id="copy-analysis" class="btn btn-secondary text-xs py-1 px-3">
-                <span data-i18n="tools.user-agent-decoder.ui.button8">Copy</span>
-              </button>
-            </div>
-            <pre id="raw-output" class="text-xs font-mono text-surface-900 dark:text-surface-100 whitespace-pre-wrap overflow-x-auto max-h-96"></pre>
-          </div>
-        </div>
-
+        ${createEducationalSection([
+          {
+            title: 'What is a User-Agent?',
+            content: 'A User-Agent is a string sent by your browser to every website you visit. It identifies the browser version, operating system, and device type, allowing servers to optimize content for your specific environment.'
+          },
+          {
+            title: 'How to Use This Tool',
+            content: 'Paste a User-Agent string into the input box or click "Use This" to analyze your current browser\'s string. The tool will break down the browser engine, OS version, and device characteristics.'
+          },
+          {
+            title: 'Common Use Cases',
+            content: 'Debugging website compatibility issues, analyzing web server logs to identify bot traffic, verifying browser spoofing, and understanding device distribution in your audience.'
+          },
+          {
+            title: 'Pro Tips',
+            content: 'Many modern browsers "freeze" or simplify their User-Agent strings to prevent fingerprinting. Always look for the "Version" or "Chrome" tokens for the most accurate version info.'
+          }
+        ], 'user-agent-decoder')}
+    ${createRelatedToolsSection(relatedToolsData)}
       </div>
     </main>
+
   `;
 
   const script = `
@@ -241,6 +124,7 @@ function renderUserAgentDecoderPage() {
         const btn = document.getElementById('copy-analysis');
         const orig = btn.textContent;
         btn.textContent = _t('tools.user-agent-decoder.js.text0', '✓ Copied!');
+        if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
         setTimeout(() => btn.textContent = orig, 2000);
       });
 

@@ -5,6 +5,8 @@
 
 import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 
 export async function handleCertificateDecoderRoutes(request, url) {
   const { pathname } = url;
@@ -36,6 +38,10 @@ function renderCertificateDecoderPage() {
     { toolId: 'certificate-decoder' }
   );
 
+  const currentTool = TOOLS.find(t => t.id === 'certificate-decoder');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
+
   const content = `
     <script src="/vendor/forge.min.js" integrity="sha384-xHPi7wmhLGnxH9OUWvRRdUiqfT3b6SJShD/WWXkabW5wIlCxk2UyJezPvffKACOD" crossorigin="anonymous"></script>
 
@@ -61,7 +67,7 @@ function renderCertificateDecoderPage() {
             </div>
           </div>
 
-          <div id="error-banner" role="alert" class="hidden mt-4 p-4 rounded-lg bg-red-50 text-red-900 border border-red-200 dark:bg-red-900/20 dark:text-red-200 dark:border-red-800 text-sm"></div>
+           <div id="error-banner" role="alert" class="hidden mt-4 p-4 rounded-lg bg-error-50 text-error-900 border border-error-200 dark:bg-error-900/20 dark:text-error-200 dark:border-error-800 text-sm"></div>
           
           <div id="status-badge" class="hidden mt-6 flex items-center gap-4 p-4 rounded-lg border-2 transition-all">
             <div id="status-icon" class="text-3xl"></div>
@@ -163,6 +169,51 @@ function renderCertificateDecoderPage() {
           </table>` }
       ])}
     </main>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+      ${createEducationalSection([
+        {
+          title: 'What are X.509 Certificates?',
+          content: `
+            <p>X.509 is a standard format for public key certificates, which are digital documents that securely bind a public key to an identity (such as a website, organization, or individual). These certificates are the foundation of the Public Key Infrastructure (PKI) used to secure the internet via HTTPS, as well as for signing emails and software.</p>
+            <p>An X.509 certificate contains the public key, the identity of the certificate holder, and the digital signature of the Certificate Authority (CA) that issued the certificate, proving its authenticity.</p>
+          `
+        },
+        {
+          title: 'How to Use This Tool',
+          content: `
+            <ol>
+              <li><strong>Paste your certificate:</strong> Copy your PEM-encoded certificate (including the BEGIN and END headers) and paste it into the input field.</li>
+              <li><strong>Parse:</strong> Click "Parse Certificate" to extract and analyze the data.</li>
+              <li><strong>Review Summary:</strong> Check the top cards for the Common Name (CN), Issuer, and validity dates.</li>
+              <li><strong>Inspect Details:</strong> Expand the sections below to see the full Subject, Issuer, SANs, and technical extensions.</li>
+              <li><strong>Check Status:</strong> Look at the status badge to see if the certificate is currently valid or expired.</li>
+            </ol>
+          `
+        },
+        {
+          title: 'Common Use Cases',
+          content: `
+            <ul>
+              <li><strong>SSL/TLS Troubleshooting:</strong> Diagnosing why a website is showing a "Not Secure" warning by checking for expiration or hostname mismatches.</li>
+              <li><strong>Security Auditing:</strong> Verifying that a certificate was issued by a trusted CA and uses strong signature algorithms (like SHA-256).</li>
+              <li><strong>Development:</strong> Inspecting self-signed certificates or CSRs (Certificate Signing Requests) during local development.</li>
+              <li><strong>Infrastructure Management:</strong> Checking the Subject Alternative Names (SANs) to ensure all required subdomains are covered by a single certificate.</li>
+            </ul>
+          `
+        },
+        {
+          title: 'Pro Tips',
+          content: `
+            <ul>
+              <li><strong>Check the SANs:</strong> Modern browsers rely on the Subject Alternative Name (SAN) extension rather than the Common Name (CN) for hostname verification. Always ensure your domain is listed in the SANs.</li>
+              <li><strong>Verify the Chain:</strong> If a certificate is valid but still untrusted, it may be missing intermediate certificates. Check the "Issuer" to identify which intermediate CA you need to include on your server.</li>
+              <li><strong>Fingerprints for Pinning:</strong> Use the SHA-256 Fingerprint provided by this tool if you need to implement certificate pinning in mobile applications or high-security APIs.</li>
+            </ul>
+          `
+        }
+      ], 'certificate-decoder')}
+    ${createRelatedToolsSection(relatedToolsData)}
+    </div>
   `;
 
   const script = `
@@ -193,12 +244,12 @@ function renderCertificateDecoderPage() {
         };
 
         const statusBaseClasses = 'flex items-center gap-4 rounded-lg border-2 px-4 py-4 transition-all shadow-sm';
-        const statusThemes = {
-          valid: { classes: 'border-green-200 bg-green-50 text-green-900 dark:border-green-800 dark:bg-green-900/20 dark:text-green-100', icon: '🟢', label: 'Currently Valid' },
-          expired: { classes: 'border-red-200 bg-red-50 text-red-900 dark:border-red-800 dark:bg-red-900/20 dark:text-red-100', icon: '🔴', label: 'Expired' },
-          notYetValid: { classes: 'border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-100', icon: '🟡', label: 'Not Yet Valid' },
-          error: { classes: 'border-red-200 bg-red-50 text-red-900 dark:border-red-800 dark:bg-red-900/20 dark:text-red-100', icon: '⚠️', label: 'Unable to Parse' }
-        };
+           const statusThemes = {
+            valid: { classes: 'border-success-200 bg-success-50 text-success-900 dark:border-success-800 dark:bg-success-900/20 dark:text-success-100', icon: '🟢', label: 'Currently Valid' },
+            expired: { classes: 'border-error-200 bg-error-50 text-error-900 dark:border-error-800 dark:bg-error-900/20 dark:text-error-100', icon: '🔴', label: 'Expired' },
+             notYetValid: { classes: 'border-warning-200 bg-warning-50 text-warning-900 dark:border-warning-800 dark:bg-warning-900/20 dark:text-warning-100', icon: '🟡', label: 'Not Yet Valid' },
+            error: { classes: 'border-error-200 bg-error-50 text-error-900 dark:border-error-800 dark:bg-error-900/20 dark:text-error-100', icon: '⚠️', label: 'Unable to Parse' }
+          };
 
         parseBtn.addEventListener('click', handleParse);
         clearBtn.addEventListener('click', () => {
@@ -247,7 +298,6 @@ function renderCertificateDecoderPage() {
             hideError();
             renderCertificate(cert);
           } catch (err) {
-            console.error('Certificate parse error', err);
             showError('Failed to parse certificate data. The format might be invalid or corrupted.');
           }
         }

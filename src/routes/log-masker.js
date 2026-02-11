@@ -1,5 +1,7 @@
 import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
+import { createPageTemplate, createToolHeader, getCopyToClipboardScript } from '../utils/common-ui.js';
+import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
+import { TOOLS } from '../utils/tool-registry.js';
 
 export async function handleLogMaskerRoutes(request, url) {
   if (url.pathname !== '/log-masker' && url.pathname !== '/log-masker/') return null;
@@ -18,6 +20,10 @@ export async function handleLogMaskerRoutes(request, url) {
     { toolId: 'log-masker' }
   );
 
+  const currentTool = TOOLS.find(t => t.id === 'log-masker');
+    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+
+
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       ${header}
@@ -28,7 +34,7 @@ export async function handleLogMaskerRoutes(request, url) {
           <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 p-5">
             <div class="flex justify-between items-center mb-2">
               <label for="log-input" class="block text-sm font-medium text-surface-700 dark:text-surface-300"><span data-i18n="tools.log-masker.ui.label2">Raw Logs</span></label>
-              <button id="mask-btn" data-tooltip="Redact all selected PII patterns from the input" class="px-4 py-1.5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold rounded-lg transition"><span data-i18n="tools.log-masker.ui.button0">Mask Logs</span></button>
+              <button id="mask-btn" data-tooltip="Redact all selected PII patterns from the input" class="btn btn-primary btn-sm"><span data-i18n="tools.log-masker.ui.button0">Mask Logs</span></button>
             </div>
             <textarea id="log-input" rows="15" 
               class="w-full p-3 bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 font-mono text-sm text-surface-900 dark:text-white resize-y"
@@ -61,18 +67,40 @@ export async function handleLogMaskerRoutes(request, url) {
 
         <!-- Output -->
         <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 p-5 flex flex-col">
-          <div class="flex justify-between items-center mb-4">
-            <h2 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.log-masker.ui.heading7">Masked Logs</h2>
-            <button onclick="copyLogs()" class="text-sm text-primary-600 dark:text-primary-400 font-medium hover:underline"><span data-i18n="tools.log-masker.ui.button1">Copy Result</span></button>
-          </div>
+           <div class="flex justify-between items-center mb-4">
+             <h2 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.log-masker.ui.heading7">Masked Logs</h2>
+              <button id="copy-result-btn" type="button" class="btn btn-ghost btn-xs"><span data-i18n="tools.log-masker.ui.button1">Copy Result</span></button>
+           </div>
           <div id="log-output" class="flex-1 bg-surface-900 text-surface-50 p-4 rounded-lg text-sm font-mono whitespace-pre-wrap overflow-y-auto min-h-[400px]">Logs will appear here after masking...</div>
         </div>
       </div>
     </main>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+      ${createEducationalSection([
+        {
+          title: 'What is PII?',
+          content: '<p>Personally Identifiable Information (PII) is any data that can be used to identify a specific individual. This includes direct identifiers like names, email addresses, and phone numbers, as well as indirect identifiers like IP addresses, physical locations, and credit card numbers. In the context of server logs, PII often appears in request parameters, headers, or error messages.</p><p>Protecting PII is a critical part of modern data security and is required by various legal frameworks around the world.</p>'
+        },
+        {
+          title: 'Compliance Requirements (GDPR/CCPA)',
+          content: '<p>Regulations like the General Data Protection Regulation (GDPR) in Europe and the California Consumer Privacy Act (CCPA) in the United States impose strict rules on how personal data is handled. These laws require organizations to implement "privacy by design" and to minimize the collection and storage of personal data.</p><p>Sharing raw logs containing PII with third-party support teams or developers can lead to compliance violations. Masking or redacting this data before it leaves your secure environment is a key step in maintaining regulatory compliance.</p>'
+        },
+        {
+          title: 'Masking Strategies',
+          content: '<p>There are several ways to handle sensitive data in logs:</p><ul><li><strong>Redaction:</strong> Replacing the sensitive value with a generic placeholder like <code>[EMAIL_REDACTED]</code>. This is the most common approach for sharing logs.</li><li><strong>Anonymization:</strong> Irreversibly transforming data so the individual can no longer be identified.</li><li><strong>Pseudonymization:</strong> Replacing identifiers with a consistent alias (like a hash) so you can still correlate events without knowing the user\'s identity.</li></ul><p>Our tool focuses on redaction, using pattern matching to find and replace common PII formats instantly.</p>'
+        },
+        {
+          title: 'Pro Tips',
+          content: '<ul><li>Use the <strong>"Custom Keywords"</strong> field to redact internal identifiers like API keys, session tokens, or proprietary project names that aren\'t covered by standard patterns.</li><li>Always perform masking <strong>locally</strong> (as this tool does) to ensure sensitive data never touches a third-party server during the scrubbing process.</li><li>If you are correlating logs across multiple systems, consider using a consistent "salt" with a hashing tool instead of simple redaction to maintain traceability.</li><li>Regularly audit your application code to prevent PII from being logged in the first place; "log at the source" is the best defense.</li></ul>'
+        }
+      ], 'log-masker')}
+    ${createRelatedToolsSection(relatedToolsData)}
+    </div>
   `;
 
-  const scripts = `
-    <script type="module">
+   const scripts = `
+     ${getCopyToClipboardScript()}
+     <script type="module">
       // Local PII redaction implementation
       function redactPII(text, options = {}) {
         let result = text;
@@ -124,6 +152,7 @@ export async function handleLogMaskerRoutes(request, url) {
       const logInput = document.getElementById('log-input');
       const logOutput = document.getElementById('log-output');
       const maskBtn = document.getElementById('mask-btn');
+      const copyResultBtn = document.getElementById('copy-result-btn');
       
       const maskEmail = document.getElementById('mask-email');
       const maskIp = document.getElementById('mask-ip');
@@ -161,14 +190,10 @@ export async function handleLogMaskerRoutes(request, url) {
         }
       });
 
-      window.copyLogs = () => {
-        const text = logOutput.textContent;
-        navigator.clipboard.writeText(text).then(() => {
-          const originalText = event.target.innerText;
-          event.target.innerText = _t('tools.log-masker.js.text2', 'Copied!');
-          setTimeout(() => event.target.innerText = originalText, 2000);
-        });
-      };
+      copyResultBtn?.addEventListener('click', () => {
+        const text = logOutput.textContent || '';
+        copyToClipboard(text, copyResultBtn);
+      });
     </script>
   `;
 
