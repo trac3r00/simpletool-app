@@ -240,7 +240,7 @@ function renderCategories(categories) {
      network: 'bg-success-100 text-success-700 dark:bg-success-900/30 dark:text-success-300',
      generators: 'bg-warning-100 text-warning-700 dark:bg-warning-900/30 dark:text-warning-300',
       utils: 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300',
-      games: 'bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-300',
+      games: 'bg-error-100 text-error-700 dark:bg-error-900/30 dark:text-error-300',
       game: 'bg-error-100 text-error-700 dark:bg-error-900/30 dark:text-error-300'
    };
 

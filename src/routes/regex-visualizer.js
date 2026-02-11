@@ -91,7 +91,7 @@ export async function handleRegexVisualizerRoutes(request) {
             <div class="flex gap-2 mb-3 overflow-x-auto pb-1">
               <button class="lang-btn active px-3 py-1 text-xs font-medium rounded-md bg-primary-100 text-primary-700 dark:bg-primary-900/50 dark:text-primary-300 whitespace-nowrap" data-lang="js"><span data-i18n="tools.regex-visualizer.ui.button0">JavaScript</span></button>
               <button class="lang-btn px-3 py-1 text-xs font-medium rounded-md bg-surface-100 text-surface-600 dark:bg-surface-800 dark:text-surface-400 hover:bg-surface-200 dark:hover:bg-surface-700 whitespace-nowrap" data-lang="python"><span data-i18n="tools.regex-visualizer.ui.button1">Python</span></button>
-              <button class="lang-btn px-3 py-1 text-xs font-medium rounded-md bg-surface-100 text-surface-600 dark:bg-surface-800 dark:text-surface-400 hover:bg-surface-200 dark:hover:bg-surface-700 whitespace-nowrap" data-lang="php">PHP</button>
+              <button class="lang-btn px-3 py-1 text-xs font-medium rounded-md bg-surface-100 text-surface-600 dark:bg-surface-800 dark:text-surface-400 hover:bg-surface-200 dark:hover:bg-surface-700 whitespace-nowrap" data-lang="php"><span data-i18n="tools.regex-visualizer.ui.button3">PHP</span></button>
               <button class="lang-btn px-3 py-1 text-xs font-medium rounded-md bg-surface-100 text-surface-600 dark:bg-surface-800 dark:text-surface-400 hover:bg-surface-200 dark:hover:bg-surface-700 whitespace-nowrap" data-lang="java"><span data-i18n="tools.regex-visualizer.ui.button2">Java</span></button>
             </div>
             <div class="relative group">
@@ -125,7 +125,7 @@ while ((m = regex.exec(str)) !== null) {
           <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 p-5 overflow-hidden">
             <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4 flex items-center gap-2">
               <svg class="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"></path></svg>
-              Visualization
+              <span data-i18n="tools.regex-visualizer.ui.heading13">Visualization</span>
             </h2>
             <div id="railroad-container" class="w-full overflow-x-auto flex justify-center py-4 min-h-[120px] bg-surface-50 dark:bg-surface-950/50 rounded-lg border border-surface-100 dark:border-surface-800/50">
               <!-- SVG injected here -->
@@ -143,7 +143,7 @@ while ((m = regex.exec(str)) !== null) {
           <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 p-5">
             <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4 flex items-center gap-2">
               <svg class="w-5 h-5 text-success-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-              Match Results
+              <span data-i18n="tools.regex-visualizer.ui.heading14">Match Results</span>
             </h2>
             
             <!-- Highlighted Text Display -->

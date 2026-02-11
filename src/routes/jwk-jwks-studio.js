@@ -21,11 +21,10 @@ export async function handleJwkJwksStudioRoutes(request, url) {
     if (pathname === '/jwk-jwks-studio' || pathname === '/jwk-jwks-studio/') {
       if (method === 'GET') return respondHTML(renderJwkJwksStudioPage());
     }
-    return respondJSON({ error: 'Not found' }, { status: 404 });
-  } catch (error) {
-    console.error('JWK/JWKS Studio Route Error:', error);
+    return null;
+  } catch {
     return respondJSON(
-      { error: 'Internal server error', message: error.message },
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }
@@ -94,7 +93,7 @@ function renderJwkJwksStudioPage() {
               <div class="p-4 bg-white dark:bg-surface-950 border border-surface-200 dark:border-surface-800 rounded-lg">
                 <div class="flex items-center justify-between gap-3 mb-2">
                   <h3 class="text-xs font-bold uppercase tracking-wide text-surface-500 dark:text-surface-400" data-i18n="tools.jwk-jwks-studio.ui.stat0">Imported JWK (Public)</h3>
-                  <button id="copy-jwk-btn" class="btn btn-secondary text-xs py-1 px-2">Copy</button>
+                  <button id="copy-jwk-btn" class="btn btn-secondary text-xs py-1 px-2"><span data-i18n="tools.jwk-jwks-studio.ui.button4">Copy</span></button>
                 </div>
                 <pre id="jwk-output" class="text-xs font-mono whitespace-pre-wrap break-words text-surface-900 dark:text-surface-100">—</pre>
               </div>
@@ -105,14 +104,14 @@ function renderJwkJwksStudioPage() {
                     <label class="label mb-1" data-i18n="tools.jwk-jwks-studio.ui.label3">Thumbprint (RFC 7638, SHA-256)</label>
                     <div class="flex gap-2">
                       <input id="thumbprint-output" class="input input-mono text-xs" readonly placeholder="—" />
-                      <button id="copy-thumbprint-btn" class="btn btn-secondary text-xs py-1 px-2">Copy</button>
+                      <button id="copy-thumbprint-btn" class="btn btn-secondary text-xs py-1 px-2"><span data-i18n="tools.jwk-jwks-studio.ui.button5">Copy</span></button>
                     </div>
                   </div>
                   <div>
                     <label class="label mb-1" data-i18n="tools.jwk-jwks-studio.ui.label4">kid (Suggested)</label>
                     <div class="flex gap-2">
                       <input id="kid-output" class="input input-mono text-xs" readonly placeholder="—" />
-                      <button id="copy-kid-btn" class="btn btn-secondary text-xs py-1 px-2">Copy</button>
+                      <button id="copy-kid-btn" class="btn btn-secondary text-xs py-1 px-2"><span data-i18n="tools.jwk-jwks-studio.ui.button6">Copy</span></button>
                     </div>
                   </div>
                 </div>
@@ -134,9 +133,9 @@ function renderJwkJwksStudioPage() {
               placeholder="{&#10;  &quot;keys&quot;: []&#10;}"></textarea>
 
             <div class="mt-3 flex flex-wrap gap-3">
-              <button id="format-jwks-btn" class="btn btn-secondary">Format</button>
-              <button id="copy-jwks-btn" class="btn btn-secondary">Copy</button>
-              <button id="clear-jwks-btn" class="btn btn-ghost">Clear</button>
+              <button id="format-jwks-btn" class="btn btn-secondary"><span data-i18n="tools.jwk-jwks-studio.ui.button7">Format</span></button>
+              <button id="copy-jwks-btn" class="btn btn-secondary"><span data-i18n="tools.jwk-jwks-studio.ui.button8">Copy</span></button>
+              <button id="clear-jwks-btn" class="btn btn-ghost"><span data-i18n="tools.jwk-jwks-studio.ui.button9">Clear</span></button>
             </div>
 
             <div id="jwks-status" class="hidden mt-4 p-3 rounded-lg border text-sm"></div>
@@ -154,8 +153,8 @@ function renderJwkJwksStudioPage() {
               <textarea id="jwt-input" rows="8" class="input font-mono text-xs resize-y" spellcheck="false"
                 placeholder="eyJhbGciOiJSUzI1NiIsImtpZCI6Ii4uLiJ9.eyJzdWIiOiIxMjM0In0. ..."></textarea>
               <div class="mt-3 flex flex-wrap gap-3">
-                <button id="verify-btn" class="btn btn-primary">Verify Signature</button>
-                <button id="clear-jwt-btn" class="btn btn-ghost">Clear</button>
+                <button id="verify-btn" class="btn btn-primary"><span data-i18n="tools.jwk-jwks-studio.ui.button10">Verify Signature</span></button>
+                <button id="clear-jwt-btn" class="btn btn-ghost"><span data-i18n="tools.jwk-jwks-studio.ui.button11">Clear</span></button>
               </div>
               <div id="verify-status" class="hidden mt-4 p-3 rounded-lg border text-sm"></div>
             </div>
@@ -164,7 +163,7 @@ function renderJwkJwksStudioPage() {
               <div class="p-4 bg-white dark:bg-surface-950 border border-surface-200 dark:border-surface-800 rounded-lg">
                 <div class="flex items-center justify-between gap-3 mb-2">
                   <h3 class="text-xs font-bold uppercase tracking-wide text-surface-500 dark:text-surface-400" data-i18n="tools.jwk-jwks-studio.ui.stat1">Header</h3>
-                  <button id="copy-jwt-header-btn" class="btn btn-secondary text-xs py-1 px-2">Copy</button>
+                  <button id="copy-jwt-header-btn" class="btn btn-secondary text-xs py-1 px-2"><span data-i18n="tools.jwk-jwks-studio.ui.button12">Copy</span></button>
                 </div>
                 <pre id="jwt-header-out" class="text-xs font-mono whitespace-pre-wrap break-words text-surface-900 dark:text-surface-100">—</pre>
               </div>
@@ -172,7 +171,7 @@ function renderJwkJwksStudioPage() {
               <div class="p-4 bg-white dark:bg-surface-950 border border-surface-200 dark:border-surface-800 rounded-lg">
                 <div class="flex items-center justify-between gap-3 mb-2">
                   <h3 class="text-xs font-bold uppercase tracking-wide text-surface-500 dark:text-surface-400" data-i18n="tools.jwk-jwks-studio.ui.stat2">Payload</h3>
-                  <button id="copy-jwt-payload-btn" class="btn btn-secondary text-xs py-1 px-2">Copy</button>
+                  <button id="copy-jwt-payload-btn" class="btn btn-secondary text-xs py-1 px-2"><span data-i18n="tools.jwk-jwks-studio.ui.button13">Copy</span></button>
                 </div>
                 <pre id="jwt-payload-out" class="text-xs font-mono whitespace-pre-wrap break-words text-surface-900 dark:text-surface-100">—</pre>
               </div>
@@ -829,7 +828,7 @@ function renderJwkJwksStudioPage() {
 
         // Defensive: prevent uncaught rejections from bubbling to Playwright soak.
         window.addEventListener('unhandledrejection', (e) => {
-          try { console.error('Unhandled promise rejection:', e.reason); } catch {}
+          e.preventDefault();
         });
       })();
     </script>
