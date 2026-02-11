@@ -669,9 +669,9 @@ export async function handleWiresharkFilterRoutes(request, url) {
         
         if (issues.length === 0) {
           validationIcon.textContent = 'Valid';
-          validationIcon.className = 'inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800';
+          validationIcon.className = 'inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-success-100 text-success-800';
           validationMessage.textContent = 'Filter syntax looks correct.';
-          validationMessage.className = 'mt-3 text-sm text-green-600';
+          validationMessage.className = 'mt-3 text-sm text-success-600';
         } else {
           validationIcon.textContent = 'Check';
           validationIcon.className = 'inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-yellow-100 text-yellow-800';

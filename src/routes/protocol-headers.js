@@ -303,20 +303,20 @@ export async function handleProtocolHeadersRoutes(request) {
 
       // Color mapping for Tailwind classes
       const COLOR_MAP = {
-        blue: { bg: 'bg-blue-100 dark:bg-blue-900/30', border: 'border-blue-300 dark:border-blue-700', text: 'text-blue-800 dark:text-blue-200' },
-        indigo: { bg: 'bg-indigo-100 dark:bg-indigo-900/30', border: 'border-indigo-300 dark:border-indigo-700', text: 'text-indigo-800 dark:text-indigo-200' },
+        blue: { bg: 'bg-info-100 dark:bg-info-900/30', border: 'border-info-300 dark:border-info-700', text: 'text-info-800 dark:text-info-200' },
+        indigo: { bg: 'bg-primary-100 dark:bg-primary-900/30', border: 'border-primary-300 dark:border-primary-700', text: 'text-primary-800 dark:text-primary-200' },
         violet: { bg: 'bg-violet-100 dark:bg-violet-900/30', border: 'border-violet-300 dark:border-violet-700', text: 'text-violet-800 dark:text-violet-200' },
         purple: { bg: 'bg-purple-100 dark:bg-purple-900/30', border: 'border-purple-300 dark:border-purple-700', text: 'text-purple-800 dark:text-purple-200' },
         fuchsia: { bg: 'bg-fuchsia-100 dark:bg-fuchsia-900/30', border: 'border-fuchsia-300 dark:border-fuchsia-700', text: 'text-fuchsia-800 dark:text-fuchsia-200' },
         pink: { bg: 'bg-pink-100 dark:bg-pink-900/30', border: 'border-pink-300 dark:border-pink-700', text: 'text-pink-800 dark:text-pink-200' },
         rose: { bg: 'bg-rose-100 dark:bg-rose-900/30', border: 'border-rose-300 dark:border-rose-700', text: 'text-rose-800 dark:text-rose-200' },
-        red: { bg: 'bg-red-100 dark:bg-red-900/30', border: 'border-red-300 dark:border-red-700', text: 'text-red-800 dark:text-red-200' },
+        red: { bg: 'bg-error-100 dark:bg-error-900/30', border: 'border-error-300 dark:border-error-700', text: 'text-error-800 dark:text-error-200' },
         orange: { bg: 'bg-orange-100 dark:bg-orange-900/30', border: 'border-orange-300 dark:border-orange-700', text: 'text-orange-800 dark:text-orange-200' },
-        amber: { bg: 'bg-amber-100 dark:bg-amber-900/30', border: 'border-amber-300 dark:border-amber-700', text: 'text-amber-800 dark:text-amber-200' },
+        amber: { bg: 'bg-warning-100 dark:bg-warning-900/30', border: 'border-warning-300 dark:border-warning-700', text: 'text-warning-800 dark:text-warning-200' },
         yellow: { bg: 'bg-yellow-100 dark:bg-yellow-900/30', border: 'border-yellow-300 dark:border-yellow-700', text: 'text-yellow-800 dark:text-yellow-200' },
         lime: { bg: 'bg-lime-100 dark:bg-lime-900/30', border: 'border-lime-300 dark:border-lime-700', text: 'text-lime-800 dark:text-lime-200' },
-        green: { bg: 'bg-green-100 dark:bg-green-900/30', border: 'border-green-300 dark:border-green-700', text: 'text-green-800 dark:text-green-200' },
-        emerald: { bg: 'bg-emerald-100 dark:bg-emerald-900/30', border: 'border-emerald-300 dark:border-emerald-700', text: 'text-emerald-800 dark:text-emerald-200' },
+        green: { bg: 'bg-success-100 dark:bg-success-900/30', border: 'border-success-300 dark:border-success-700', text: 'text-success-800 dark:text-success-200' },
+        emerald: { bg: 'bg-success-100 dark:bg-success-900/30', border: 'border-success-300 dark:border-success-700', text: 'text-success-800 dark:text-success-200' },
         teal: { bg: 'bg-teal-100 dark:bg-teal-900/30', border: 'border-teal-300 dark:border-teal-700', text: 'text-teal-800 dark:text-teal-200' },
         cyan: { bg: 'bg-cyan-100 dark:bg-cyan-900/30', border: 'border-cyan-300 dark:border-cyan-700', text: 'text-cyan-800 dark:text-cyan-200' },
         sky: { bg: 'bg-sky-100 dark:bg-sky-900/30', border: 'border-sky-300 dark:border-sky-700', text: 'text-sky-800 dark:text-sky-200' }

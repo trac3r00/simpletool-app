@@ -779,11 +779,11 @@ export async function handlePortReferenceRoutes(request, url) {
         // Utility: Get risk badge color
         function getRiskColor(risk) {
           switch (risk) {
-            case 'critical': return 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200';
+            case 'critical': return 'bg-error-100 dark:bg-error-900 text-error-800 dark:text-error-200';
             case 'high': return 'bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200';
             case 'medium': return 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200';
-            case 'low': return 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200';
-            case 'none': return 'bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200';
+            case 'low': return 'bg-success-100 dark:bg-success-900 text-success-800 dark:text-success-200';
+            case 'none': return 'bg-success-100 dark:bg-success-900 text-success-800 dark:text-success-200';
             default: return 'bg-surface-100 dark:bg-surface-800 text-surface-800 dark:text-surface-200';
           }
         }
@@ -791,7 +791,7 @@ export async function handlePortReferenceRoutes(request, url) {
         // Utility: Get protocol color
         function getProtocolColor(protocol) {
           switch (protocol.toLowerCase()) {
-            case 'tcp': return 'text-blue-600 dark:text-blue-400';
+            case 'tcp': return 'text-info-600 dark:text-info-400';
             case 'udp': return 'text-purple-600 dark:text-purple-400';
             case 'tcp/udp': return 'text-teal-600 dark:text-teal-400';
             default: return 'text-surface-600 dark:text-surface-400';
