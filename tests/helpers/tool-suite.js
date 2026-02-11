@@ -6,6 +6,8 @@
  *   waitFor(page) → returns a locator/assertion that confirms the tool responded
  */
 
+import { expect } from '@playwright/test';
+
 export const TOOL_ACTIONS = {
   'ladder-game': {
     async action(page) {
@@ -48,7 +50,6 @@ export const TOOL_ACTIONS = {
       await page.locator('#port-search').fill('443');
     },
     async waitFor(page) {
-      await page.waitForTimeout(300);
       await expect(page.locator('#results-body')).toContainText('HTTPS');
     }
   },
