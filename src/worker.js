@@ -407,11 +407,19 @@ export default {
         if (env && env.ASSETS && typeof env.ASSETS.fetch === 'function') {
           const assetRequest = isDev ? stripConditionalHeaders(request) : request;
           let assetResponse = await env.ASSETS.fetch(assetRequest);
+          
           if (isDev && assetResponse.status === 304) {
             const bustUrl = new URL(request.url);
             bustUrl.searchParams.set('dev-cache-bust', String(Date.now()));
             assetResponse = await env.ASSETS.fetch(new Request(bustUrl.toString(), assetRequest));
           }
+          
+          // If asset not found, return 404 immediately
+          if (assetResponse.status === 404) {
+            console.warn(`Asset not found: ${path}`);
+            return respond404();
+          }
+
           if (!isDev) {
             const headers = new Headers(assetResponse.headers);
             const securityHeaders = getAssetSecurityHeaders();
@@ -436,6 +444,7 @@ export default {
             headers
           });
         }
+        console.error('ASSETS binding missing for path:', path);
         return respond404();
       }
 
