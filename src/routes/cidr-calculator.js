@@ -43,17 +43,17 @@ function renderCIDRCalculatorPage() {
 
       <section class="grid gap-6 lg:grid-cols-[3fr,2fr]">
         <!-- Input Panel -->
-        <div class="card p-6 space-y-6">
+        <div class="tool-card p-6 space-y-6">
           <div>
             <label for="cidr-input" class="label"><span data-i18n="tools.cidr-calculator.ui.label4">Network or host</span> ${infoHint('Enter IP with /prefix or dotted mask; missing prefix uses the slider value.')}</label>
             <div class="mt-2 space-y-3">
               <input id="cidr-input" type="text" data-tooltip="Enter IP address with prefix length, e.g. 192.168.1.0/24" spellcheck="false" autocomplete="off" placeholder="Examples: 192.168.1.10/24 · 2001:db8::/48" data-i18n-placeholder="tools.cidr-calculator.ui.placeholder8" class="input font-mono text-base" />
               <div class="flex flex-wrap gap-2 text-sm">
-                <button type="button" class="cidr-chip px-2 py-1 rounded-md text-xs border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 text-surface-600 dark:text-surface-300 hover:border-primary-400 hover:text-primary-600 transition" data-cidr-example="10.0.0.0/8">10.0.0.0/8</button>
-                <button type="button" class="cidr-chip px-2 py-1 rounded-md text-xs border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 text-surface-600 dark:text-surface-300 hover:border-primary-400 hover:text-primary-600 transition" data-cidr-example="172.16.0.0/12">172.16.0.0/12</button>
-                <button type="button" class="cidr-chip px-2 py-1 rounded-md text-xs border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 text-surface-600 dark:text-surface-300 hover:border-primary-400 hover:text-primary-600 transition" data-cidr-example="192.168.1.0/24">192.168.1.0/24</button>
-                <button type="button" class="cidr-chip px-2 py-1 rounded-md text-xs border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 text-surface-600 dark:text-surface-300 hover:border-primary-400 hover:text-primary-600 transition" data-cidr-example="100.64.0.0/10">100.64.0.0/10</button>
-                <button type="button" class="cidr-chip px-2 py-1 rounded-md text-xs border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 text-surface-600 dark:text-surface-300 hover:border-primary-400 hover:text-primary-600 transition" data-cidr-example="2001:db8::/32"><span data-i18n="tools.cidr-calculator.ui.button0">2001:db8::/32</span></button>
+                <button type="button" class="cidr-chip px-2 py-1 rounded-md text-xs border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 text-surface-600 dark:text-surface-300 hover:border-primary-400 dark:hover:border-primary-600 hover:text-primary-600 dark:hover:text-primary-400 transition" data-cidr-example="10.0.0.0/8">10.0.0.0/8</button>
+                <button type="button" class="cidr-chip px-2 py-1 rounded-md text-xs border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 text-surface-600 dark:text-surface-300 hover:border-primary-400 dark:hover:border-primary-600 hover:text-primary-600 dark:hover:text-primary-400 transition" data-cidr-example="172.16.0.0/12">172.16.0.0/12</button>
+                <button type="button" class="cidr-chip px-2 py-1 rounded-md text-xs border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 text-surface-600 dark:text-surface-300 hover:border-primary-400 dark:hover:border-primary-600 hover:text-primary-600 dark:hover:text-primary-400 transition" data-cidr-example="192.168.1.0/24">192.168.1.0/24</button>
+                <button type="button" class="cidr-chip px-2 py-1 rounded-md text-xs border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 text-surface-600 dark:text-surface-300 hover:border-primary-400 dark:hover:border-primary-600 hover:text-primary-600 dark:hover:text-primary-400 transition" data-cidr-example="100.64.0.0/10">100.64.0.0/10</button>
+                <button type="button" class="cidr-chip px-2 py-1 rounded-md text-xs border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 text-surface-600 dark:text-surface-300 hover:border-primary-400 dark:hover:border-primary-600 hover:text-primary-600 dark:hover:text-primary-400 transition" data-cidr-example="2001:db8::/32"><span data-i18n="tools.cidr-calculator.ui.button0">2001:db8::/32</span></button>
               </div>
             </div>
           </div>
@@ -81,7 +81,7 @@ function renderCIDRCalculatorPage() {
         <!-- Sidebar Tools -->
         <div class="space-y-6">
           <!-- Capacity Planner -->
-          <div class="card p-6">
+          <div class="tool-card p-6">
             <div class="flex items-center justify-between mb-4">
               <h2 class="text-lg font-bold text-surface-900 dark:text-surface-50" data-i18n="tools.cidr-calculator.ui.heading15">Quick host fit</h2>
             </div>
@@ -109,7 +109,7 @@ function renderCIDRCalculatorPage() {
           </div>
 
           <!-- Checklist -->
-          <div class="card p-6">
+          <div class="tool-card p-6">
             <div class="flex items-center justify-between mb-2">
               <h2 class="text-lg font-bold text-surface-900 dark:text-surface-50" data-i18n="tools.cidr-calculator.ui.heading16">Validation</h2>
             </div>
@@ -125,22 +125,22 @@ function renderCIDRCalculatorPage() {
         
         <!-- Summary Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-          <div class="card p-5 border-l-4 border-l-primary-500">
+          <div class="tool-card p-6 border-l-4 border-l-primary-500">
             <p class="label text-surface-500 dark:text-surface-400" data-i18n="tools.cidr-calculator.ui.desc22">Network ID</p>
             <p id="summary-network" class="text-xl font-bold text-surface-900 dark:text-surface-50 mt-1 break-words">—</p>
             <p id="summary-prefix" class="text-xs text-surface-500 mt-1" data-i18n="tools.cidr-calculator.ui.desc23">Prefix —</p>
           </div>
-          <div class="card p-5">
+          <div class="tool-card p-6">
             <p class="label text-surface-500 dark:text-surface-400" data-i18n="tools.cidr-calculator.ui.desc24">Address range</p>
             <p id="summary-range" class="text-xl font-bold text-surface-900 dark:text-surface-50 mt-1 break-words">—</p>
             <p id="summary-first-last" class="text-xs text-surface-500 dark:text-surface-400 mt-1" data-i18n="tools.cidr-calculator.ui.desc25">First · Last</p>
           </div>
-          <div class="card p-5">
+          <div class="tool-card p-6">
             <p class="label text-surface-500 dark:text-surface-400" data-i18n="tools.cidr-calculator.ui.desc26">Capacity</p>
             <p id="summary-capacity" class="text-xl font-bold text-surface-900 dark:text-surface-50 mt-1">—</p>
             <p id="summary-usable" class="text-xs text-surface-500 dark:text-surface-400 mt-1">Usable hosts</p>
           </div>
-          <div class="card p-5">
+          <div class="tool-card p-6">
             <p class="label text-surface-500 dark:text-surface-400" data-i18n="tools.cidr-calculator.ui.desc27">Classification</p>
             <p id="summary-classification" class="text-xl font-bold text-surface-900 dark:text-surface-50 mt-1">—</p>
             <p id="summary-special" class="text-xs text-surface-500 dark:text-surface-400 mt-1">Notes</p>
@@ -148,7 +148,7 @@ function renderCIDRCalculatorPage() {
         </div>
 
         <!-- Detailed Breakdown Table -->
-        <div class="card p-6 overflow-hidden">
+        <div class="tool-card p-6 overflow-hidden">
           <div class="flex items-center justify-between mb-4">
             <h2 class="text-lg font-bold text-surface-900 dark:text-surface-50" data-i18n="tools.cidr-calculator.ui.heading17">Detailed breakdown</h2>
             <span class="text-xs font-mono bg-surface-100 dark:bg-surface-800 px-2 py-1 rounded" id="detail-version">IPv4</span>
@@ -162,7 +162,7 @@ function renderCIDRCalculatorPage() {
 
         <div class="grid gap-6 lg:grid-cols-2">
           <!-- Binary View -->
-          <div class="card p-6">
+          <div class="tool-card p-6">
             <h2 class="text-lg font-bold text-surface-900 dark:text-surface-50 mb-4" data-i18n="tools.cidr-calculator.ui.heading18">Binary & Hex</h2>
             <div class="space-y-4 text-sm font-mono">
               <div>
@@ -177,7 +177,7 @@ function renderCIDRCalculatorPage() {
           </div>
 
           <!-- Reference Slices -->
-          <div class="card p-6">
+          <div class="tool-card p-6">
             <div class="flex items-center justify-between mb-4">
               <h2 class="text-lg font-bold text-surface-900 dark:text-surface-50" data-i18n="tools.cidr-calculator.ui.heading19">Neighboring Prefixes</h2>
             </div>
@@ -197,7 +197,7 @@ function renderCIDRCalculatorPage() {
         </div>
 
         <!-- Subnet Explorer -->
-        <div class="card p-6">
+        <div class="tool-card p-6">
           <div class="flex items-center justify-between flex-wrap gap-4 mb-4">
             <div>
               <h2 class="text-lg font-bold text-surface-900 dark:text-surface-50" data-i18n="tools.cidr-calculator.ui.heading20">Subnet Explorer</h2>
@@ -222,6 +222,98 @@ function renderCIDRCalculatorPage() {
             </table>
           </div>
           <p id="subnet-summary" class="mt-4 text-sm text-surface-500 dark:text-surface-400" data-i18n="tools.cidr-calculator.ui.desc31">Select a prefix to preview subnets.</p>
+        </div>
+
+        <!-- IP Address Formats -->
+        <div class="tool-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h2 class="text-lg font-bold text-surface-900 dark:text-surface-50" data-i18n="tools.cidr-calculator.ui.heading21">IP Address Formats</h2>
+              <p class="text-sm text-surface-500" data-i18n="tools.cidr-calculator.ui.desc32">View the network address in multiple formats.</p>
+            </div>
+          </div>
+          <div class="space-y-4" id="ip-formats-container">
+            <!-- Decimal Dotted -->
+            <div class="flex items-center gap-3 p-3 rounded-lg bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-800">
+              <div class="flex-1 min-w-0">
+                <p class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.cidr-calculator.ui.desc33">Decimal Dotted</p>
+                <p id="format-decimal" class="font-mono text-sm text-surface-900 dark:text-surface-50 break-all">—</p>
+              </div>
+              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-decimal" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+              </button>
+            </div>
+            <!-- Binary -->
+            <div class="flex items-center gap-3 p-3 rounded-lg bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-800">
+              <div class="flex-1 min-w-0">
+                <p class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.cidr-calculator.ui.desc34">Binary</p>
+                <p id="format-binary" class="font-mono text-sm text-surface-900 dark:text-surface-50 break-all">—</p>
+              </div>
+              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-binary" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+              </button>
+            </div>
+            <!-- Hexadecimal -->
+            <div class="flex items-center gap-3 p-3 rounded-lg bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-800">
+              <div class="flex-1 min-w-0">
+                <p class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.cidr-calculator.ui.desc35">Hexadecimal</p>
+                <p id="format-hex" class="font-mono text-sm text-surface-900 dark:text-surface-50 break-all">—</p>
+              </div>
+              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-hex" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+              </button>
+            </div>
+            <!-- Integer/Decimal -->
+            <div class="flex items-center gap-3 p-3 rounded-lg bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-800">
+              <div class="flex-1 min-w-0">
+                <p class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.cidr-calculator.ui.desc36">Integer (Decimal)</p>
+                <p id="format-integer" class="font-mono text-sm text-surface-900 dark:text-surface-50 break-all">—</p>
+              </div>
+              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-integer" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+              </button>
+            </div>
+            <!-- IPv4-mapped IPv6 -->
+            <div id="format-ipv4mapped-row" class="flex items-center gap-3 p-3 rounded-lg bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-800">
+              <div class="flex-1 min-w-0">
+                <p class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.cidr-calculator.ui.desc37">IPv4-mapped IPv6</p>
+                <p id="format-ipv4mapped" class="font-mono text-sm text-surface-900 dark:text-surface-50 break-all">—</p>
+              </div>
+              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-ipv4mapped" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+              </button>
+            </div>
+            <!-- IPv6 Expanded -->
+            <div id="format-ipv6expanded-row" class="hidden flex items-center gap-3 p-3 rounded-lg bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-800">
+              <div class="flex-1 min-w-0">
+                <p class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.cidr-calculator.ui.desc38">IPv6 Expanded</p>
+                <p id="format-ipv6expanded" class="font-mono text-sm text-surface-900 dark:text-surface-50 break-all">—</p>
+              </div>
+              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-ipv6expanded" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+              </button>
+            </div>
+            <!-- IPv6 Compressed -->
+            <div id="format-ipv6compressed-row" class="hidden flex items-center gap-3 p-3 rounded-lg bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-800">
+              <div class="flex-1 min-w-0">
+                <p class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.cidr-calculator.ui.desc39">IPv6 Compressed</p>
+                <p id="format-ipv6compressed" class="font-mono text-sm text-surface-900 dark:text-surface-50 break-all">—</p>
+              </div>
+              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-ipv6compressed" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+              </button>
+            </div>
+            <!-- Reverse DNS (PTR) -->
+            <div class="flex items-center gap-3 p-3 rounded-lg bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-800">
+              <div class="flex-1 min-w-0">
+                <p class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.cidr-calculator.ui.desc40">Reverse DNS (PTR)</p>
+                <p id="format-ptr" class="font-mono text-sm text-surface-900 dark:text-surface-50 break-all">—</p>
+              </div>
+              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-ptr" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+              </button>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -492,6 +584,7 @@ function renderCIDRCalculatorPage() {
           referenceBody.innerHTML = buildReferenceRows(details);
           validationList.innerHTML = buildValidationList(details);
           updateSubnetExplorer(details);
+          renderIPFormats(details);
         }
 
         function buildDetailRows(details) {
@@ -907,6 +1000,107 @@ function renderCIDRCalculatorPage() {
         function formatNumber(value) {
           return Number(value).toLocaleString();
         }
+
+        function ipv4ToBinary(ip) {
+          return ip.split('.').map(octet => {
+            return Number(octet).toString(2).padStart(8, '0');
+          }).join('.');
+        }
+
+        function ipv4ToHex(ip) {
+          const int = ipv4ToInt(ip);
+          return '0x' + int.toString(16).toUpperCase().padStart(8, '0');
+        }
+
+        function ipv4ToInteger(ip) {
+          return String(ipv4ToInt(ip) >>> 0);
+        }
+
+        function ipv4ToMappedIPv6(ip) {
+          return '::ffff:' + ip;
+        }
+
+        function ipv4ToPTR(ip) {
+          return ip.split('.').reverse().join('.') + '.in-addr.arpa';
+        }
+
+        function ipv6ToBinary(expanded) {
+          return expanded.split(':').map(group => {
+            return parseInt(group, 16).toString(2).padStart(16, '0');
+          }).join(':');
+        }
+
+        function ipv6ToHex(expanded) {
+          const big = ipv6ToBigInt(expanded);
+          return '0x' + big.toString(16).toUpperCase().padStart(32, '0');
+        }
+
+        function ipv6ToInteger(expanded) {
+          return ipv6ToBigInt(expanded).toString(10);
+        }
+
+        function ipv6ToPTR(expanded) {
+          const nibbles = expanded.replace(/:/g, '').split('').reverse().join('.');
+          return nibbles + '.ip6.arpa';
+        }
+
+        function renderIPFormats(details) {
+          const formatDecimal = document.getElementById('format-decimal');
+          const formatBinary = document.getElementById('format-binary');
+          const formatHex = document.getElementById('format-hex');
+          const formatInteger = document.getElementById('format-integer');
+          const formatIPv4Mapped = document.getElementById('format-ipv4mapped');
+          const formatIPv4MappedRow = document.getElementById('format-ipv4mapped-row');
+          const formatIPv6Expanded = document.getElementById('format-ipv6expanded');
+          const formatIPv6ExpandedRow = document.getElementById('format-ipv6expanded-row');
+          const formatIPv6Compressed = document.getElementById('format-ipv6compressed');
+          const formatIPv6CompressedRow = document.getElementById('format-ipv6compressed-row');
+          const formatPTR = document.getElementById('format-ptr');
+
+          if (details.family === 'IPv4') {
+            formatDecimal.textContent = details.network;
+            formatBinary.textContent = ipv4ToBinary(details.network);
+            formatHex.textContent = ipv4ToHex(details.network);
+            formatInteger.textContent = ipv4ToInteger(details.network);
+            formatIPv4Mapped.textContent = ipv4ToMappedIPv6(details.network);
+            formatIPv4MappedRow.classList.remove('hidden');
+            formatIPv6ExpandedRow.classList.add('hidden');
+            formatIPv6CompressedRow.classList.add('hidden');
+            formatPTR.textContent = ipv4ToPTR(details.network);
+          } else {
+            formatDecimal.textContent = details.network;
+            formatBinary.textContent = ipv6ToBinary(details.expanded);
+            formatHex.textContent = ipv6ToHex(details.expanded);
+            formatInteger.textContent = ipv6ToInteger(details.expanded);
+            formatIPv4MappedRow.classList.add('hidden');
+            formatIPv6ExpandedRow.classList.remove('hidden');
+            formatIPv6CompressedRow.classList.remove('hidden');
+            formatIPv6Expanded.textContent = details.expanded;
+            formatIPv6Compressed.textContent = details.network;
+            formatPTR.textContent = ipv6ToPTR(details.expanded);
+          }
+        }
+
+        document.querySelectorAll('.copy-format-btn').forEach(btn => {
+          btn.addEventListener('click', async function() {
+            const targetId = this.dataset.target;
+            const targetEl = document.getElementById(targetId);
+            if (targetEl && targetEl.textContent && targetEl.textContent !== '—') {
+              try {
+                await navigator.clipboard.writeText(targetEl.textContent);
+                const originalHTML = this.innerHTML;
+                this.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>';
+                this.classList.add('text-success-600');
+                setTimeout(() => {
+                  this.innerHTML = originalHTML;
+                  this.classList.remove('text-success-600');
+                }, 1500);
+              } catch (err) {
+                console.warn('Clipboard write failed in CIDR calculator', err);
+              }
+            }
+          });
+        });
 
         updatePrefixControls('ipv4');
       })();

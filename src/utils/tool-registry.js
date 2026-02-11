@@ -68,9 +68,75 @@ export const TOOLS = [
     description: 'Calculate IPv4/IPv6 subnets and ranges.',
     path: '/cidr-calculator',
     category: 'network',
-    keywords: 'ip, subnet, mask, network',
+    keywords: 'ip, subnet, mask, network, binary, hex, integer, ptr, reverse dns, ipv6 mapped, format conversion',
     tip: 'Enter a CIDR like 10.0.0.0/24 to see network range, broadcast address, and available hosts',
-    relatedTools: ['curl-studio', 'user-agent-decoder', 'csp-builder']
+    relatedTools: ['curl-studio', 'user-agent-decoder', 'csp-builder', 'dns-reference']
+  },
+  {
+    id: 'dns-reference',
+    name: 'DNS Record Reference',
+    icon: '📇',
+    description: 'Interactive reference for DNS record types with syntax, examples, and command builders.',
+    path: '/dns-reference',
+    category: 'network',
+    keywords: 'dns, record, dig, nslookup, domain, resolver',
+    tip: 'Comprehensive DNS reference — click any record type to see syntax, examples, TTL recommendations, and generate dig/nslookup commands',
+    relatedTools: ['cidr-calculator', 'curl-studio', 'email-analyzer', 'csp-builder']
+  },
+  {
+    id: 'port-reference',
+    name: 'Port Reference',
+    icon: '🌐',
+    description: 'Searchable IANA port database with security risk levels and protocol filters.',
+    path: '/port-reference',
+    category: 'network',
+    keywords: 'port, iana, tcp, udp, service, socket, well-known',
+    tip: 'Search ports by number or service name — includes 100+ well-known and registered ports with security risk ratings',
+    relatedTools: ['cidr-calculator', 'curl-studio', 'dns-reference', 'csp-builder']
+  },
+  {
+    id: 'bandwidth-calculator',
+    name: 'Bandwidth Calculator',
+    icon: '📊',
+    description: 'Calculate transfer times, bandwidth needs, and TCP overhead.',
+    path: '/bandwidth-calculator',
+    category: 'network',
+    keywords: 'transfer, throughput, speed, bdp, tcp, latency',
+    tip: 'Calculate transfer time, required bandwidth, data capacity, and TCP bandwidth-delay product',
+    relatedTools: ['cidr-calculator', 'curl-studio', 'user-agent-decoder']
+  },
+  {
+    id: 'wireguard-config',
+    name: 'WireGuard Config Studio',
+    icon: '🔒',
+    description: 'Generate WireGuard configurations with local key generation and QR export.',
+    path: '/wireguard-config',
+    category: 'network',
+    keywords: 'wireguard, vpn, config, keys, qr, wireguard.conf',
+    tip: 'Generate WireGuard configs with client-side key generation, templates for common topologies, and QR code export',
+    relatedTools: ['cidr-calculator', 'curl-studio', 'dns-reference', 'certificate-decoder']
+  },
+  {
+    id: 'wireshark-filter',
+    name: 'Wireshark Filter Builder',
+    icon: '🦈',
+    description: 'Build Wireshark display filters and BPF capture expressions visually.',
+    path: '/wireshark-filter',
+    category: 'network',
+    keywords: 'wireshark, pcap, bpf, display filter, capture, packet analysis',
+    tip: 'Create complex Wireshark filters without memorizing syntax — supports display filters and BPF capture filters',
+    relatedTools: ['cidr-calculator', 'curl-studio', 'dns-reference', 'port-reference']
+  },
+  {
+    id: 'protocol-headers',
+    name: 'Protocol Header Visualizer',
+    icon: '📡',
+    description: 'Interactive bit-level diagrams for Ethernet, IPv4, IPv6, TCP, UDP, ICMP, and ARP.',
+    path: '/protocol-headers',
+    category: 'network',
+    keywords: 'ethernet, ipv4, ipv6, tcp, udp, icmp, arp, packet, rfc, binary',
+    tip: 'Visualize network protocol headers with interactive bit-level diagrams — click fields for detailed info',
+    relatedTools: ['wireshark-filter', 'cidr-calculator', 'curl-studio', 'dns-reference']
   },
   {
     id: 'text-diff',

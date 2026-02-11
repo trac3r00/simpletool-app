@@ -45,6 +45,12 @@ import { handleEnvVarManagerRoutes } from './routes/env-var-manager.js';
 import { handleSVGOptimizerRoutes } from './routes/svg-optimizer.js';
 import { handleCSPBuilderRoutes } from './routes/csp-builder.js';
 import { handleSecretScannerRoutes } from './routes/secret-scanner.js';
+import { handleDNSReferenceRoutes } from './routes/dns-reference.js';
+import { handlePortReferenceRoutes } from './routes/port-reference.js';
+import { handleBandwidthCalculatorRoutes } from './routes/bandwidth-calculator.js';
+import { handleWiresharkFilterRoutes } from './routes/wireshark-filter.js';
+import { handleProtocolHeadersRoutes } from './routes/protocol-headers.js';
+import { handleWireguardConfigRoutes } from './routes/wireguard-config.js';
 import { handleLadderGameRoutes } from './routes/ladder-game.js';
 import { handleRouletteWheelRoutes } from './routes/roulette-wheel.js';
 import { handleMarbleRouletteRoutes } from './routes/marble-roulette.js';
@@ -120,6 +126,12 @@ const handlersById = {
   'svg-optimizer': handleSVGOptimizerRoutes,
   'csp-builder': handleCSPBuilderRoutes,
   'secret-scanner': handleSecretScannerRoutes,
+  'dns-reference': handleDNSReferenceRoutes,
+  'port-reference': handlePortReferenceRoutes,
+  'bandwidth-calculator': handleBandwidthCalculatorRoutes,
+  'wireshark-filter': handleWiresharkFilterRoutes,
+  'protocol-headers': handleProtocolHeadersRoutes,
+  'wireguard-config': handleWireguardConfigRoutes,
   'marble-roulette': handleMarbleRouletteRoutes
 };
 
@@ -244,7 +256,8 @@ async function checkRateLimitDO(env, ip, now, maxRequests = RATE_LIMIT_MAX_REQUE
     url.searchParams.set('windowMs', String(RATE_LIMIT_WINDOW_MS));
     const response = await stub.fetch(url.toString());
     if (!response.ok) {
-      return { limited: false };
+      console.warn('Durable Object rate limiter returned non-OK status. Falling back to fail-closed response.', response.status);
+      return { limited: false, fallback: true };
     }
     const data = await response.json();
     return data;
@@ -255,7 +268,7 @@ async function checkRateLimitDO(env, ip, now, maxRequests = RATE_LIMIT_MAX_REQUE
 }
 
 export default {
-  async fetch(request, env, ctx) {
+  async fetch(request, env) {
     const now = Date.now();
     const url = new URL(request.url);
     const path = url.pathname;
@@ -285,7 +298,6 @@ export default {
       globalThis.rateLimiterSweepCounter = 0;
     }
 
-    // Rate limiting: fast in-memory check (synchronous) + async DO persistence — skip in dev
     if (!isDev) {
       const effectiveLimit = isLikelySharedIP(request)
         ? RATE_LIMIT_MAX_REQUESTS_SHARED_IP
@@ -295,9 +307,14 @@ export default {
         return respond429();
       }
 
-      ctx.waitUntil(
-        checkRateLimitDO(env, ip, now, effectiveLimit).catch(() => {})
-      );
+      const doRateLimitResult = await checkRateLimitDO(env, ip, now, effectiveLimit);
+      if (doRateLimitResult?.limited) {
+        const retryAfterSeconds = Math.ceil((doRateLimitResult.retryAfterMs || 0) / 1000);
+        return respond429({ retryAfterSeconds });
+      }
+      if (doRateLimitResult?.fallback) {
+        return respond429({ retryAfterSeconds: Math.ceil(RATE_LIMIT_WINDOW_MS / 1000) });
+      }
     }
 
     // Route handling with path-based routing
@@ -395,11 +412,19 @@ export default {
         if (env && env.ASSETS && typeof env.ASSETS.fetch === 'function') {
           const assetRequest = isDev ? stripConditionalHeaders(request) : request;
           let assetResponse = await env.ASSETS.fetch(assetRequest);
+          
           if (isDev && assetResponse.status === 304) {
             const bustUrl = new URL(request.url);
             bustUrl.searchParams.set('dev-cache-bust', String(Date.now()));
             assetResponse = await env.ASSETS.fetch(new Request(bustUrl.toString(), assetRequest));
           }
+          
+          // If asset not found, return 404 immediately
+          if (assetResponse.status === 404) {
+            console.warn(`Asset not found: ${path}`);
+            return respond404();
+          }
+
           if (!isDev) {
             const headers = new Headers(assetResponse.headers);
             const securityHeaders = getAssetSecurityHeaders();
@@ -424,6 +449,7 @@ export default {
             headers
           });
         }
+        console.error('ASSETS binding missing for path:', path);
         return respond404();
       }
 
