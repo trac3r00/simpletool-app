@@ -1096,6 +1096,7 @@ function renderCIDRCalculatorPage() {
                   this.classList.remove('text-success-600');
                 }, 1500);
               } catch (err) {
+                console.warn('Clipboard write failed in CIDR calculator', err);
               }
             }
           });
