@@ -6,7 +6,10 @@ import { createRelatedToolsSection } from '../utils/content-ui.js';
 export async function handlePortReferenceRoutes(request, url) {
   if (url.pathname !== '/port-reference' && url.pathname !== '/port-reference/') return null;
   if (request.method !== 'GET') return null;
+  return respondHTML(renderPortReferencePage());
+}
 
+function renderPortReferencePage() {
   const title = 'Port Reference';
   const description = 'Comprehensive IANA port database with search, filters, and security risk indicators.';
 
@@ -959,11 +962,11 @@ export async function handlePortReferenceRoutes(request, url) {
     </script>
   `;
 
-  return respondHTML(createPageTemplate({
+  return createPageTemplate({
     title,
     description,
     path: '/port-reference',
     content,
     scripts
-  }));
+  });
 }

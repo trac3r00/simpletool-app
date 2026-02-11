@@ -6,7 +6,10 @@ import { createRelatedToolsSection } from '../utils/content-ui.js';
 export async function handleWiresharkFilterRoutes(request, url) {
   if (url.pathname !== '/wireshark-filter' && url.pathname !== '/wireshark-filter/') return null;
   if (request.method !== 'GET') return null;
+  return respondHTML(renderWiresharkFilterPage());
+}
 
+function renderWiresharkFilterPage() {
   const title = 'Wireshark Filter Builder';
   const description = 'Build Wireshark display filters and BPF capture filters with visual controls and protocol references.';
 
@@ -709,11 +712,11 @@ export async function handleWiresharkFilterRoutes(request, url) {
     </script>
   `;
 
-  return respondHTML(createPageTemplate({
+  return createPageTemplate({
     title,
     description,
     path: '/wireshark-filter',
     content,
     scripts
-  }));
+  });
 }

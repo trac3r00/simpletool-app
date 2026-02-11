@@ -3,9 +3,13 @@ import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from
 import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
 
-export async function handleProtocolHeadersRoutes(request) {
-  const requestPath = new URL(request.url).pathname;
-  const canonicalPath = requestPath.replace(/\/$/, '') || '/';
+export async function handleProtocolHeadersRoutes(request, url) {
+  if (url.pathname !== '/protocol-headers' && url.pathname !== '/protocol-headers/') return null;
+  if (request.method !== 'GET') return null;
+  return respondHTML(renderProtocolHeadersPage());
+}
+
+function renderProtocolHeadersPage() {
   const title = 'Protocol Header Visualizer';
   const description = 'Interactive bit-level diagrams for Ethernet, IPv4, IPv6, TCP, UDP, ICMP, and ARP protocol headers.';
 
@@ -732,11 +736,11 @@ export async function handleProtocolHeadersRoutes(request) {
     </style>
   `;
 
-  return respondHTML(createPageTemplate({
+  return createPageTemplate({
     title,
     description,
-    path: canonicalPath,
+    path: '/protocol-headers',
     content,
     scripts
-  }));
+  });
 }

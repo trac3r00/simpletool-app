@@ -6,7 +6,10 @@ import { createRelatedToolsSection } from '../utils/content-ui.js';
 export async function handleDNSReferenceRoutes(request, url) {
   if (url.pathname !== '/dns-reference' && url.pathname !== '/dns-reference/') return null;
   if (request.method !== 'GET') return null;
+  return respondHTML(renderDnsReferencePage());
+}
 
+function renderDnsReferencePage() {
   const title = 'DNS Record Reference';
   const description = 'Interactive reference for DNS record types with syntax, examples, and command builders.';
 
@@ -525,13 +528,13 @@ export async function handleDNSReferenceRoutes(request, url) {
     </script>
   `;
 
-  return respondHTML(createPageTemplate({
+  return createPageTemplate({
     title,
     description,
     path: '/dns-reference',
     content,
     scripts
-  }));
+  });
 }
 
 function recordTypeCards() {

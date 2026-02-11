@@ -4,29 +4,15 @@
  * All key generation happens locally using libsodium.js
  */
 
-import { respondHTML, respondJSON } from '../utils/respond.js';
+import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
 import { createRelatedToolsSection } from '../utils/content-ui.js';
 
 export async function handleWireguardConfigRoutes(request, url) {
-  const { pathname } = url;
-  const method = request.method;
-
-  try {
-    if (pathname === '/wireguard-config' || pathname === '/wireguard-config/') {
-      if (method === 'GET') {
-        return renderWireguardConfigPage();
-      }
-    }
-
-    return respondJSON({ error: 'Not found' }, { status: 404 });
-  } catch (error) {
-    return respondJSON(
-      { error: 'Internal server error', message: error.message },
-      { status: 500 }
-    );
-  }
+  if (url.pathname !== '/wireguard-config' && url.pathname !== '/wireguard-config/') return null;
+  if (request.method !== 'GET') return null;
+  return respondHTML(renderWireguardConfigPage());
 }
 
 function renderWireguardConfigPage() {
@@ -839,11 +825,11 @@ function renderWireguardConfigPage() {
     </script>
   `;
 
-  return respondHTML(createPageTemplate({
+  return createPageTemplate({
     title: 'WireGuard Config Studio',
     description: 'Generate WireGuard configurations with local key generation, templates, and QR export.',
     path: '/wireguard-config',
     content,
     scripts: script
-  }));
+  });
 }
