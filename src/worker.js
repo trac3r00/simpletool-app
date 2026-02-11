@@ -45,6 +45,12 @@ import { handleEnvVarManagerRoutes } from './routes/env-var-manager.js';
 import { handleSVGOptimizerRoutes } from './routes/svg-optimizer.js';
 import { handleCSPBuilderRoutes } from './routes/csp-builder.js';
 import { handleSecretScannerRoutes } from './routes/secret-scanner.js';
+import { handleDNSReferenceRoutes } from './routes/dns-reference.js';
+import { handlePortReferenceRoutes } from './routes/port-reference.js';
+import { handleBandwidthCalculatorRoutes } from './routes/bandwidth-calculator.js';
+import { handleWiresharkFilterRoutes } from './routes/wireshark-filter.js';
+import { handleProtocolHeadersRoutes } from './routes/protocol-headers.js';
+import { handleWireguardConfigRoutes } from './routes/wireguard-config.js';
 import { handleLadderGameRoutes } from './routes/ladder-game.js';
 import { handleRouletteWheelRoutes } from './routes/roulette-wheel.js';
 import { handleMarbleRouletteRoutes } from './routes/marble-roulette.js';
@@ -120,6 +126,12 @@ const handlersById = {
   'svg-optimizer': handleSVGOptimizerRoutes,
   'csp-builder': handleCSPBuilderRoutes,
   'secret-scanner': handleSecretScannerRoutes,
+  'dns-reference': handleDNSReferenceRoutes,
+  'port-reference': handlePortReferenceRoutes,
+  'bandwidth-calculator': handleBandwidthCalculatorRoutes,
+  'wireshark-filter': handleWiresharkFilterRoutes,
+  'protocol-headers': handleProtocolHeadersRoutes,
+  'wireguard-config': handleWireguardConfigRoutes,
   'marble-roulette': handleMarbleRouletteRoutes
 };
 
