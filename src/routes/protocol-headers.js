@@ -221,7 +221,7 @@ function renderProtocolHeadersPage() {
             { name: 'TOS', bits: 8, offset: 8, desc: 'Type of Service / DSCP + ECN', example: '0x00 = Default', color: 'cyan' },
             { name: 'Total Length', bits: 16, offset: 16, desc: 'Total packet length in bytes', example: '60', color: 'indigo' },
             { name: 'Identification', bits: 16, offset: 32, desc: 'Unique packet identifier', example: '0x1C46', color: 'violet' },
-            { name: 'Flags', bits: 3, offset: 48, desc: 'Reserved, DF (Don\'t Fragment), MF (More Fragments)', example: '0x2 = DF set', color: 'pink' },
+            { name: 'Flags', bits: 3, offset: 48, desc: 'Reserved, DF (Don\\'t Fragment), MF (More Fragments)', example: '0x2 = DF set', color: 'pink' },
             { name: 'Fragment Offset', bits: 13, offset: 51, desc: 'Position in fragmented stream (x8 bytes)', example: '0', color: 'rose' },
             { name: 'TTL', bits: 8, offset: 64, desc: 'Time To Live (hop counter)', example: '64', color: 'orange' },
             { name: 'Protocol', bits: 8, offset: 72, desc: 'Next layer protocol', example: '6=TCP, 17=UDP, 1=ICMP', color: 'amber' },
@@ -687,7 +687,9 @@ function renderProtocolHeadersPage() {
 
         try {
           const bytes = parseHexDump(hexText);
-          if (bytes.length === 0) {
+          const nonWs = hexText.replace(/\\s+/g, '');
+          const looksLikeHex = bytes.length >= 2 && (bytes.length * 2) >= (nonWs.length * 0.3);
+          if (bytes.length === 0 || !looksLikeHex) {
             errorEl.classList.remove('hidden');
             return;
           }
