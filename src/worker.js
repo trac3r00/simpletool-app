@@ -256,7 +256,8 @@ async function checkRateLimitDO(env, ip, now, maxRequests = RATE_LIMIT_MAX_REQUE
     url.searchParams.set('windowMs', String(RATE_LIMIT_WINDOW_MS));
     const response = await stub.fetch(url.toString());
     if (!response.ok) {
-      return { limited: false };
+      console.warn('Durable Object rate limiter returned non-OK status. Falling back to fail-closed response.', response.status);
+      return { limited: false, fallback: true };
     }
     const data = await response.json();
     return data;
@@ -267,7 +268,7 @@ async function checkRateLimitDO(env, ip, now, maxRequests = RATE_LIMIT_MAX_REQUE
 }
 
 export default {
-  async fetch(request, env, ctx) {
+  async fetch(request, env) {
     const now = Date.now();
     const url = new URL(request.url);
     const path = url.pathname;
@@ -297,7 +298,6 @@ export default {
       globalThis.rateLimiterSweepCounter = 0;
     }
 
-    // Rate limiting: fast in-memory check (synchronous) + async DO persistence — skip in dev
     if (!isDev) {
       const effectiveLimit = isLikelySharedIP(request)
         ? RATE_LIMIT_MAX_REQUESTS_SHARED_IP
@@ -307,9 +307,14 @@ export default {
         return respond429();
       }
 
-      ctx.waitUntil(
-        checkRateLimitDO(env, ip, now, effectiveLimit).catch(() => {})
-      );
+      const doRateLimitResult = await checkRateLimitDO(env, ip, now, effectiveLimit);
+      if (doRateLimitResult?.limited) {
+        const retryAfterSeconds = Math.ceil((doRateLimitResult.retryAfterMs || 0) / 1000);
+        return respond429({ retryAfterSeconds });
+      }
+      if (doRateLimitResult?.fallback) {
+        return respond429({ retryAfterSeconds: Math.ceil(RATE_LIMIT_WINDOW_MS / 1000) });
+      }
     }
 
     // Route handling with path-based routing
