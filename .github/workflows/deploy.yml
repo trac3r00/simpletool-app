@@ -2,7 +2,7 @@ name: Deploy Worker
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   deploy:
@@ -11,27 +11,35 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Build (creates dist/)
+        run: npm run build
+
       - name: Deploy to Cloudflare Workers
-        id: wrangler
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: "4.60.0"
+          command: deploy
 
-      - name: Notify Discord (success)
-        if: success()
+      - name: Notify Discord
+        if: always()
         env:
           WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          STATUS: ${{ job.status }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+          BRANCH: ${{ github.ref_name }}
         run: |
+          if [ "$STATUS" = "success" ]; then EMOJI="✅"; else EMOJI="❌"; fi
           curl -H "Content-Type: application/json" \
-            -d "{\"content\":\"✅ Worker deployed: **${{ github.repository }}** @ `${{ github.sha }}` on branch `${{ github.ref_name }}`\"}" \
-            "$WEBHOOK"
-
-      - name: Notify Discord (failure)
-        if: failure()
-        env:
-          WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
-        run: |
-          curl -H "Content-Type: application/json" \
-            -d "{\"content\":\"❌ Worker deploy FAILED: **${{ github.repository }}** @ `${{ github.sha }}` (check Actions logs)\"}" \
+            -d "{\"content\":\"$EMOJI Worker deploy **$STATUS**: **$REPO** @ $SHA (branch $BRANCH)\"}" \
             "$WEBHOOK"
