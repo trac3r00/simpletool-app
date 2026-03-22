@@ -18,6 +18,8 @@ TODO.md
 
 # Build outputs
 dist/
+!dist/manifest.json
+!dist/sw.js
 src/utils/bundled-styles.js
 
 # Environment variables

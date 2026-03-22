@@ -1,0 +1,17 @@
+{
+  "name": "SimpleTool",
+  "short_name": "SimpleTool",
+  "description": "Free, privacy-focused online tools for developers",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fafafa",
+  "theme_color": "#4f46e5",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    }
+  ],
+  "categories": ["developer", "utilities", "productivity"]
+}
