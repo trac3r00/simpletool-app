@@ -12,6 +12,7 @@ export const SUPPORTED_LANGUAGES = {
 };
 
 export const DEFAULT_LANGUAGE = 'en';
+export const LANGUAGE_QUERY_KEY = 'lang';
 
 // Translation dictionary
 const TRANSLATIONS = {
@@ -33,7 +34,14 @@ const TRANSLATIONS = {
       resources: 'Resources',
       blog: 'Blog',
       faq: 'FAQ',
-      github: 'GitHub'
+      github: 'GitHub',
+      tagline: 'Privacy-first web tools for developers.',
+      popularTools: 'Popular Tools',
+      viewAll: 'View all tools →',
+      legal: 'Legal',
+      security: 'Security',
+      learnMore: 'Learn more',
+      privacyNote: 'Built with privacy in mind. All tools run client-side.'
     },
     common: {
       copy: 'Copy',
@@ -42,15 +50,23 @@ const TRANSLATIONS = {
       download: 'Download'
     },
     home: {
+      heroTitle: 'Free Online Developer Tools',
       heroLine1: 'A collection of free, privacy-first tools for your daily workflow.',
       heroLine2: 'No tracking, no data collection — just tools that work.',
-      searchResults: '🔍 Search Results',
+      favorites: 'Favorites',
+      recentlyUsed: 'Recently Used',
+      searchResultsLabel: 'Search Results',
       noResults: 'No tools found matching your search.',
+      meta: {
+        title: 'SimpleTool - Free Online Developer Tools',
+        description: 'Free, privacy-focused online tools for developers. JSON formatter, password generator, marble roulette, and dozens more utilities.'
+      },
       cat: {
         formatters: '🔄 Formatters & Converters',
         security: '🛡️ Security & Crypto',
         network: '🌐 Network & Web',
         generators: '⚡ Generators',
+        game: '🎮 Games & Fun',
         utils: '🛠️ Utilities'
       }
     },
@@ -104,7 +120,8 @@ const TRANSLATIONS = {
       'secret-scanner': { name: 'Secret Scanner', desc: 'Scan pasted code/config for leaked API keys, tokens, and passwords — then generate a share-safe redaction.', ui: {"badge0":"Local Only","badge1":"Actionable","button0":"Scan","button1":"Sample","button2":"Clear","button3":"Copy Redacted","label0":"Input","label1":"Show full matches (unsafe)","label2":"Include low severity patterns","label3":"Redacted output (share-safe)","placeholder0":"Paste code/config here...","placeholder1":"Redacted text will appear here after scanning...","stat0":"High","stat1":"Medium","stat2":"Low","heading0":"Findings","heading1":"What to do if you find a secret","heading2":"Immediate steps","heading3":"Notes","text0":"Revoke/rotate","desc0":"Paste code, logs, configs, CI output, .env, or JSON. This tool uses regex heuristics — false positives are possible.","desc1":"Click Scan to find secrets.","desc2":"Use this when pasting logs into tickets or chats. Always rotate credentials if a real secret leaked.","desc3":"the credential immediately (don’t just delete the commit).","desc4":"Search for usage in logs and audit trails.","desc5":"Invalidate sessions if applicable.","desc6":"Patch the process: use secret managers, pre-commit scanning, CI checks.","desc7":"Regex scanners can miss secrets (false negatives) and flag benign strings (false positives). Use multiple signals."}, js: {"text0":"Private key block","text1":"Revoke/rotate the key. Treat as compromised.","text2":"AWS Access Key ID","text3":"Rotate AWS keys and investigate CloudTrail usage.","text4":"GitHub token","text5":"Revoke the token in GitHub and audit access.","text6":"Google API key","text7":"Restrict/rotate the key in Google Cloud Console.","text8":"Stripe secret key","text9":"Roll the key in Stripe and check recent charges/activity.","text10":"Slack token","text11":"Revoke the Slack token and review app scopes.","text12":"JWT-like token","text13":"If this is a real session token, invalidate sessions and rotate signing keys if needed.","text14":"Bearer token in header","text15":"Treat as credential. Rotate/invalidate token and audit usage.","text16":"Password assignment","text17":"Remove hardcoded passwords. Store in a secret manager or env var.","text18":"API key assignment","text19":"Review if this is a real secret. Consider moving to a secret store.","text20":"[REDACTED]","text21":"No matches found in the first 250k characters.","text22":"No matches found.","text23":"Input was large; scanned only the first 250,000 characters.","text24":"High","text25":"Medium","text26":"Low","text27":"Showing first {n} findings.","text28":"Click Scan to find secrets.","text29":"✓ Copied"} },
       'token-studio': { name: 'Token Cryptography Suite', desc: 'Inspect, generate, and manage JWT tokens and cryptographic keys.' },
       'encoding-workbench': { name: 'Encoding & Decoding Workbench', desc: 'Encode, decode, hash, and identify data transformations.' },
-      'oauth-debugger': { name: 'OAuth 2.0 / PKCE Debugger', desc: 'Generate PKCE challenges, visualize OAuth flows, and analyze security.' }
+      'oauth-debugger': { name: 'OAuth 2.0 / PKCE Debugger', desc: 'Generate PKCE challenges, visualize OAuth flows, and analyze security.' },
+      'marble-roulette': { name: 'Marble Roulette', desc: 'Drop marbles through pegs for a physics-based lucky draw.', ui: {"badge0":"Client-Side Only","badge1":"Fair + Unpredictable","heading0":"Board","status0":"Ready.","stat0":"Drops","stat1":"Speed","text1":"Start","text2":"Reset","heading1":"Winner","text3":"—","heading2":"Fairness","desc0":"Each drop randomizes start positions using Web Crypto.","heading3":"Controls","label0":"Names / options","placeholder0":"Alice&#10;Bob&#10;Charlie&#10;Dave","desc1":"Enter 2–10 names (one per line or comma-separated).","label2":"Speed","button0":"1x","button1":"2x","button2":"3x","desc2":"Higher speed runs the simulation faster.","button3":"Start","button4":"Reset","heading4":"Result","text4":"🏁 Ranking","button5":"Drop Again","button6":"Remove Winner & Drop","button7":"New Draw","desc3":"Tip: share by adding ?names=Alice,Bob&autostart=true.","heading5":"Statistics","button8":"Clear Stats","text5":"No drops yet — press Start.","heading8":"Winner","text6":"First to the bottom!","button9":"Awesome"}, js: {"text0":"—","text1":"Ready.","err0":"Enter at least 2 names.","err1":"Max 10 names.","text2":"Dropping...","text3":"No finishes yet.","text4":"Race finished.","text5":"Winner found!","text6":"Time up — ranking by progress.","text7":"Drops:","err2":"Need at least 2 names after removing winner.","text8":"Stats cleared."} }
     }
   },
   ko: {
@@ -125,7 +142,14 @@ const TRANSLATIONS = {
       resources: '리소스',
       blog: '블로그',
       faq: '자주 묻는 질문',
-      github: 'GitHub'
+      github: 'GitHub',
+      tagline: '개발자를 위한 개인정보 보호 우선 웹 도구.',
+      popularTools: '인기 도구',
+      viewAll: '모든 도구 보기 →',
+      legal: '법률',
+      security: '보안',
+      learnMore: '자세히 보기',
+      privacyNote: '개인정보 보호를 최우선으로 만들었습니다. 모든 도구는 클라이언트에서 실행됩니다.'
     },
     common: {
       copy: '복사',
@@ -134,15 +158,23 @@ const TRANSLATIONS = {
       download: '다운로드'
     },
     home: {
+      heroTitle: '무료 온라인 개발자 도구',
       heroLine1: '매일 쓰는 무료 개인정보 보호 도구 모음.',
       heroLine2: '추적 없음, 데이터 수집 없음 — 그냥 바로 쓰세요.',
-      searchResults: '🔍 검색 결과',
+      favorites: '즐겨찾기',
+      recentlyUsed: '최근 사용',
+      searchResultsLabel: '검색 결과',
       noResults: '검색 결과가 없습니다.',
+      meta: {
+        title: 'SimpleTool - 무료 온라인 개발자 도구',
+        description: '개발자를 위한 무료 개인정보 보호 도구 모음입니다. JSON 정리기, 비밀번호 생성기, 마블 룰렛 등 다양한 유틸리티를 제공합니다.'
+      },
       cat: {
         formatters: '🔄 정리 & 변환',
         security: '🛡️ 보안 & 암호화',
         network: '🌐 네트워크 & 웹',
         generators: '⚡ 생성 도구',
+        game: '🎮 게임 & 재미',
         utils: '🛠️ 편의 도구'
       }
     },
@@ -196,7 +228,8 @@ const TRANSLATIONS = {
       'secret-scanner': { name: '시크릿 스캐너', desc: '코드/설정에서 API 키, 토큰, 비밀번호 유출을 탐지하고 공유용으로 마스킹합니다.', ui: {"badge0":"로컬 전용","badge1":"조치 가능","button0":"스캔","button1":"샘플","button2":"지우기","button3":"마스킹 복사","label0":"입력","label1":"일치 항목 전체 표시(위험)","label2":"낮은 심각도 패턴 포함","label3":"마스킹 출력(공유용)","placeholder0":"코드/설정/로그를 여기에 붙여넣으세요...","placeholder1":"스캔 후 마스킹된 텍스트가 여기에 표시됩니다...","stat0":"높음","stat1":"중간","stat2":"낮음","heading0":"발견 사항","heading1":"시크릿을 찾았을 때 해야 할 일","heading2":"즉시 조치","heading3":"참고","text0":"폐기/교체","desc0":"코드, 로그, 설정, CI 출력, .env, JSON 등을 붙여넣으세요. 이 툴은 정규식 휴리스틱을 사용하므로 거짓 양성이 있을 수 있습니다.","desc1":"스캔을 클릭해 시크릿을 찾으세요.","desc2":"티켓/채팅에 로그를 붙여넣을 때 사용하세요. 실제 시크릿이 유출됐다면 반드시 교체(rotate)하세요.","desc3":"지금 바로 자격 증명을 폐기/교체하세요(커밋만 지우면 안 됩니다).","desc4":"로그와 감사 추적에서 사용 흔적을 찾으세요.","desc5":"필요하다면 세션을 무효화하세요.","desc6":"프로세스를 개선하세요: 시크릿 매니저, pre-commit 스캔, CI 체크 등을 사용하세요.","desc7":"정규식 스캐너는 시크릿을 놓칠 수(거짓 음성) 있고, 정상 문자열을 잡아낼 수(거짓 양성) 있습니다. 여러 신호로 판단하세요."}, js: {"text0":"개인 키 블록","text1":"키를 폐기/교체하고 유출로 간주하세요.","text2":"AWS Access Key ID","text3":"AWS 키를 교체하고 CloudTrail에서 사용 흔적을 조사하세요.","text4":"GitHub 토큰","text5":"GitHub에서 토큰을 폐기하고 접근 내역을 확인하세요.","text6":"Google API 키","text7":"Google Cloud Console에서 키를 제한/교체하세요.","text8":"Stripe 시크릿 키","text9":"Stripe에서 키를 롤링하고 최근 결제/활동을 확인하세요.","text10":"Slack 토큰","text11":"Slack 토큰을 폐기하고 앱 권한(scope)을 점검하세요.","text12":"JWT 형태 토큰","text13":"실제 세션 토큰이라면 세션을 무효화하고 필요 시 서명 키를 교체하세요.","text14":"헤더의 Bearer 토큰","text15":"자격 증명으로 취급하세요. 토큰을 교체/무효화하고 사용 내역을 점검하세요.","text16":"비밀번호 할당","text17":"하드코딩된 비밀번호를 제거하세요. 시크릿 매니저나 환경 변수로 옮기세요.","text18":"API 키 할당","text19":"실제 시크릿인지 확인하세요. 시크릿 저장소로 옮기는 것을 고려하세요.","text20":"[REDACTED]","text21":"처음 250k 문자에서는 일치 항목이 없습니다.","text22":"일치 항목이 없습니다.","text23":"입력이 커서 처음 250,000자만 스캔했습니다.","text24":"높음","text25":"중간","text26":"낮음","text27":"처음 {n}개 결과만 표시합니다.","text28":"스캔을 클릭해 시크릿을 찾으세요.","text29":"✓ 복사됨"} },
       'token-studio': { name: '토큰 암호화 스위트', desc: 'JWT 토큰과 암호화 키를 검사, 생성, 관리합니다.' },
       'encoding-workbench': { name: '인코딩 & 디코딩 워크벤치', desc: '인코딩, 디코딩, 해시, 데이터 변환을 식별합니다.' },
-      'oauth-debugger': { name: 'OAuth 2.0 / PKCE 디버거', desc: 'PKCE 챌린지를 생성하고 OAuth 흐름을 시각화하며 보안을 분석합니다.' }
+      'oauth-debugger': { name: 'OAuth 2.0 / PKCE 디버거', desc: 'PKCE 챌린지를 생성하고 OAuth 흐름을 시각화하며 보안을 분석합니다.' },
+      'marble-roulette': { name: '마블 룰렛', desc: '구슬이 핀을 통과하며 떨어지는 물리 기반 추첨 게임입니다.', ui: {"badge0":"내 브라우저에서만","badge1":"공정하고 예측 불가","heading0":"보드","status0":"준비 완료.","stat0":"드롭 수","stat1":"속도","text1":"시작","text2":"초기화","heading1":"우승자","text3":"—","heading2":"공정성","desc0":"각 드롭은 Web Crypto로 시작 위치를 무작위화합니다.","heading3":"컨트롤","label0":"이름 / 옵션","placeholder0":"철수&#10;영희&#10;민수&#10;지수","desc1":"이름을 2~10개 입력하세요. (줄바꿈 또는 쉼표 구분)","label2":"속도","button0":"1배속","button1":"2배속","button2":"3배속","desc2":"속도를 높이면 시뮬레이션이 더 빨라집니다.","button3":"시작","button4":"초기화","heading4":"결과","text4":"🏁 순위","button5":"한 번 더","button6":"우승자 제거 후 다시","button7":"새 추첨","desc3":"팁: ?names=Alice,Bob&autostart=true 를 붙여 공유할 수 있습니다.","heading5":"통계","button8":"통계 초기화","text5":"아직 드롭이 없습니다 — 시작을 눌러주세요.","heading8":"우승자","text6":"가장 먼저 도착했습니다!","button9":"좋아요"}, js: {"text0":"—","text1":"준비 완료.","err0":"이름을 최소 2개 입력하세요.","err1":"최대 10개까지 가능합니다.","text2":"드롭 중...","text3":"아직 완주한 구슬이 없습니다.","text4":"레이스가 종료되었습니다.","text5":"우승자가 정해졌습니다!","text6":"시간 종료 — 진행률 기준으로 순위를 정합니다.","text7":"드롭 수:","err2":"우승자를 제거한 뒤 최소 2개의 이름이 필요합니다.","text8":"통계를 초기화했습니다."} }
     }
   },
   ja: {
@@ -217,7 +250,14 @@ const TRANSLATIONS = {
       resources: 'リソース',
       blog: 'ブログ',
       faq: 'よくある質問',
-      github: 'GitHub'
+      github: 'GitHub',
+      tagline: '開発者向けのプライバシー重視Webツール。',
+      popularTools: '人気ツール',
+      viewAll: 'すべてのツールを見る →',
+      legal: '法務',
+      security: 'セキュリティ',
+      learnMore: '詳しく見る',
+      privacyNote: 'プライバシーを最優先に構築。すべてのツールはクライアント側で動作します。'
     },
     common: {
       copy: 'コピー',
@@ -226,15 +266,23 @@ const TRANSLATIONS = {
       download: 'ダウンロード'
     },
     home: {
+      heroTitle: '無料のオンライン開発ツール',
       heroLine1: '日常ワークフローのための無料・プライバシー重視ツール集。',
       heroLine2: 'トラッキングなし、データ収集なし — すぐ使えるツール。',
-      searchResults: '🔍 検索結果',
+      favorites: 'お気に入り',
+      recentlyUsed: '最近使ったツール',
+      searchResultsLabel: '検索結果',
       noResults: '検索結果が見つかりません。',
+      meta: {
+        title: 'SimpleTool - 無料のオンライン開発ツール',
+        description: '開発者向けの無料・プライバシー重視ツール集。JSON整形ツール、パスワード生成、マーブルルーレットなどを利用できます。'
+      },
       cat: {
         formatters: '🔄 整形＆変換ツール',
         security: '🛡️ セキュリティ＆暗号化',
         network: '🌐 ネットワーク＆Web',
         generators: '⚡ 生成ツール',
+        game: '🎮 ゲーム＆エンタメ',
         utils: '🛠️ 便利ツール'
       }
     },
@@ -288,7 +336,8 @@ const TRANSLATIONS = {
       'secret-scanner': { name: 'シークレットスキャナー', desc: 'コード/設定の漏えいキーを検知し、共有用のマスク済みコピーを作成します。', ui: {"badge0":"ローカルのみ","badge1":"対処向け","button0":"スキャン","button1":"サンプル","button2":"クリア","button3":"マスクをコピー","label0":"入力","label1":"完全一致を表示（危険）","label2":"低重要度パターンも含める","label3":"マスク済み出力（共有用）","placeholder0":"コード/設定をここに貼り付け...","placeholder1":"スキャン後、マスク済みテキストがここに表示されます...","stat0":"高","stat1":"中","stat2":"低","heading0":"検出結果","heading1":"シークレットを見つけたら","heading2":"直ちに行うこと","heading3":"注意","text0":"無効化/ローテーション","desc0":"コード、ログ、設定、CI出力、.env、JSONなどを貼り付けてください。正規表現のヒューリスティックのため誤検知の可能性があります。","desc1":"スキャンをクリックしてシークレットを探します。","desc2":"チケットやチャットに貼る際に使ってください。本物のシークレットが漏えいした場合は必ずローテーションしてください。","desc3":"資格情報を直ちに無効化/ローテーションしてください（コミット削除だけでは不十分）。","desc4":"ログや監査証跡で利用状況を確認してください。","desc5":"必要ならセッションを無効化してください。","desc6":"プロセスを改善: シークレットマネージャ、pre-commitスキャン、CIチェックを導入してください。","desc7":"正規表現スキャナーは見逃し（偽陰性）も誤検知（偽陽性）もあります。複数のシグナルで判断してください。"}, js: {"text0":"秘密鍵ブロック","text1":"キーを無効化/ローテーションし、漏えいとして扱ってください。","text2":"AWS Access Key ID","text3":"AWSキーをローテーションし、CloudTrailで利用状況を調査してください。","text4":"GitHubトークン","text5":"GitHubでトークンを無効化し、アクセスを監査してください。","text6":"Google APIキー","text7":"Google Cloud Consoleでキーを制限/ローテーションしてください。","text8":"Stripeシークレットキー","text9":"Stripeでキーをロールし、最近の請求/アクティビティを確認してください。","text10":"Slackトークン","text11":"Slackトークンを無効化し、アプリの権限(scope)を確認してください。","text12":"JWT風トークン","text13":"実際のセッショントークンならセッションを無効化し、必要なら署名鍵をローテーションしてください。","text14":"ヘッダーのBearerトークン","text15":"資格情報として扱い、無効化/ローテーションして利用状況を確認してください。","text16":"パスワード代入","text17":"ハードコードされたパスワードを削除し、シークレットマネージャや環境変数に移してください。","text18":"APIキー代入","text19":"実際のシークレットか確認し、シークレットストアへの移行を検討してください。","text20":"[REDACTED]","text21":"先頭250k文字では一致が見つかりませんでした。","text22":"一致が見つかりませんでした。","text23":"入力が大きいため先頭250,000文字のみスキャンしました。","text24":"高","text25":"中","text26":"低","text27":"先頭{n}件の結果を表示しています。","text28":"スキャンをクリックしてシークレットを探します。","text29":"✓ コピー済み"} },
       'token-studio': { name: 'トークン暗号スイート', desc: 'JWTトークンと暗号キーの検査、生成、管理を行います。' },
       'encoding-workbench': { name: 'エンコード＆デコードワークベンチ', desc: 'エンコード、デコード、ハッシュ、データ変換の識別を行います。' },
-      'oauth-debugger': { name: 'OAuth 2.0 / PKCE デバッガー', desc: 'PKCEチャレンジの生成、OAuthフローの可視化、セキュリティ分析を行います。' }
+      'oauth-debugger': { name: 'OAuth 2.0 / PKCE デバッガー', desc: 'PKCEチャレンジの生成、OAuthフローの可視化、セキュリティ分析を行います。' },
+      'marble-roulette': { name: 'マーブルルーレット', desc: 'ビー玉がピンを通って落ちる物理ベースの抽選ゲームです。', ui: {"badge0":"ブラウザ内完結","badge1":"公平で予測不能","heading0":"ボード","status0":"準備完了。","stat0":"ドロップ数","stat1":"速度","text1":"開始","text2":"リセット","heading1":"勝者","text3":"—","heading2":"公平性","desc0":"各ドロップは Web Crypto で開始位置をランダム化します。","heading3":"操作","label0":"名前 / オプション","placeholder0":"アリス&#10;ボブ&#10;チャーリー&#10;デイブ","desc1":"2〜10個の名前を入力してください（改行またはカンマ区切り）。","label2":"速度","button0":"1倍","button1":"2倍","button2":"3倍","desc2":"速度を上げるとシミュレーションが速くなります。","button3":"開始","button4":"リセット","heading4":"結果","text4":"🏁 ランキング","button5":"もう一度","button6":"勝者を除外して再抽選","button7":"新しい抽選","desc3":"ヒント: ?names=Alice,Bob&autostart=true を付けて共有できます。","heading5":"統計","button8":"統計をクリア","text5":"まだドロップがありません — 開始を押してください。","heading8":"勝者","text6":"最初にゴール！","button9":"了解"}, js: {"text0":"—","text1":"準備完了。","err0":"少なくとも2人の名前を入力してください。","err1":"最大10人までです。","text2":"ドロップ中...","text3":"まだ完走がありません。","text4":"レース終了。","text5":"勝者が決まりました！","text6":"時間切れ — 進捗順でランキングします。","text7":"ドロップ数:","err2":"勝者を除外した後も最低2人必要です。","text8":"統計をクリアしました。"} }
     }
   },
   es: {
@@ -309,7 +358,14 @@ const TRANSLATIONS = {
       resources: 'Recursos',
       blog: 'Blog',
       faq: 'Preguntas frecuentes',
-      github: 'GitHub'
+      github: 'GitHub',
+      tagline: 'Herramientas web centradas en la privacidad para desarrolladores.',
+      popularTools: 'Herramientas populares',
+      viewAll: 'Ver todas las herramientas →',
+      legal: 'Legal',
+      security: 'Seguridad',
+      learnMore: 'Más información',
+      privacyNote: 'Diseñado pensando en la privacidad. Todas las herramientas se ejecutan del lado del cliente.'
     },
     common: {
       copy: 'Copiar',
@@ -318,15 +374,23 @@ const TRANSLATIONS = {
       download: 'Descargar'
     },
     home: {
+      heroTitle: 'Herramientas gratuitas para desarrolladores',
       heroLine1: 'Una colección de herramientas gratuitas y privadas para tu flujo de trabajo diario.',
       heroLine2: 'Sin rastreo, sin recopilación de datos — solo herramientas que funcionan.',
-      searchResults: '🔍 Resultados de búsqueda',
+      favorites: 'Favoritos',
+      recentlyUsed: 'Usadas recientemente',
+      searchResultsLabel: 'Resultados de búsqueda',
       noResults: 'No se encontraron herramientas.',
+      meta: {
+        title: 'SimpleTool - Herramientas gratuitas para desarrolladores',
+        description: 'Herramientas online gratuitas y centradas en la privacidad para desarrolladores. Incluye JSON, generadores, Marble Roulette y muchas utilidades más.'
+      },
       cat: {
         formatters: '🔄 Formateadores y Convertidores',
         security: '🛡️ Seguridad y Criptografía',
         network: '🌐 Red y Web',
         generators: '⚡ Generadores',
+        game: '🎮 Juegos y diversión',
         utils: '🛠️ Utilidades'
       }
     },
@@ -380,7 +444,8 @@ const TRANSLATIONS = {
       'secret-scanner': { name: 'Escáner de secretos', desc: 'Detecta claves/tokens/contraseñas expuestas y genera una copia enmascarada.', ui: {"badge0":"Solo local","badge1":"Accionable","button0":"Escanear","button1":"Ejemplo","button2":"Limpiar","button3":"Copiar enmascarado","label0":"Entrada","label1":"Mostrar coincidencias completas (riesgoso)","label2":"Incluir patrones de baja severidad","label3":"Salida enmascarada (para compartir)","placeholder0":"Pega código/config aquí...","placeholder1":"El texto enmascarado aparecerá aquí después del escaneo...","stat0":"Alta","stat1":"Media","stat2":"Baja","heading0":"Hallazgos","heading1":"Qué hacer si encuentras un secreto","heading2":"Pasos inmediatos","heading3":"Notas","text0":"Revocar/rotar","desc0":"Pega código, logs, configs, salida de CI, .env o JSON. Esta herramienta usa heurísticas con regex — puede haber falsos positivos.","desc1":"Haz clic en Escanear para buscar secretos.","desc2":"Úsalo al pegar logs en tickets o chats. Si se filtró un secreto real, rota siempre las credenciales.","desc3":"la credencial de inmediato (no solo borres el commit).","desc4":"Busca uso en logs y trazas de auditoría.","desc5":"Invalida sesiones si aplica.","desc6":"Corrige el proceso: usa gestores de secretos, escaneo pre-commit y checks en CI.","desc7":"Los escáneres con regex pueden pasar por alto secretos (falsos negativos) y marcar cadenas benignas (falsos positivos). Usa varias señales."}, js: {"text0":"Bloque de clave privada","text1":"Revoca/rota la clave. Trátala como comprometida.","text2":"AWS Access Key ID","text3":"Rota las claves de AWS e investiga el uso en CloudTrail.","text4":"Token de GitHub","text5":"Revoca el token en GitHub y audita el acceso.","text6":"Clave API de Google","text7":"Restringe/rota la clave en Google Cloud Console.","text8":"Clave secreta de Stripe","text9":"Rota la clave en Stripe y revisa cargos/actividad recientes.","text10":"Token de Slack","text11":"Revoca el token de Slack y revisa los scopes de la app.","text12":"Token tipo JWT","text13":"Si es un token de sesión real, invalida sesiones y rota claves de firma si hace falta.","text14":"Token Bearer en encabezado","text15":"Trátalo como credencial. Rota/invalida el token y audita el uso.","text16":"Asignación de contraseña","text17":"Elimina contraseñas hardcodeadas. Guarda en un gestor de secretos o variable de entorno.","text18":"Asignación de clave API","text19":"Revisa si es un secreto real. Considera moverlo a un almacén de secretos.","text20":"[REDACTED]","text21":"No se encontraron coincidencias en los primeros 250k caracteres.","text22":"No se encontraron coincidencias.","text23":"La entrada era grande; solo se escanearon los primeros 250,000 caracteres.","text24":"Alta","text25":"Media","text26":"Baja","text27":"Mostrando los primeros {n} hallazgos.","text28":"Haz clic en Escanear para buscar secretos.","text29":"✓ Copiado"} },
       'token-studio': { name: 'Suite de Criptografía de Tokens', desc: 'Inspecciona, genera y administra tokens JWT y claves criptográficas.' },
       'encoding-workbench': { name: 'Taller de Codificación y Decodificación', desc: 'Codifica, decodifica, genera hashes e identifica transformaciones de datos.' },
-      'oauth-debugger': { name: 'Depurador OAuth 2.0 / PKCE', desc: 'Genera desafíos PKCE, visualiza flujos OAuth y analiza la seguridad.' }
+      'oauth-debugger': { name: 'Depurador OAuth 2.0 / PKCE', desc: 'Genera desafíos PKCE, visualiza flujos OAuth y analiza la seguridad.' },
+      'marble-roulette': { name: 'Ruleta de Canicas', desc: 'Suelta canicas entre clavijas para un sorteo impulsado por física.', ui: {"badge0":"Solo cliente","badge1":"Justo e impredecible","heading0":"Tablero","status0":"Listo.","stat0":"Caídas","stat1":"Velocidad","text1":"Iniciar","text2":"Reiniciar","heading1":"Ganador","text3":"—","heading2":"Equidad","desc0":"Cada caída aleatoriza la posición inicial con Web Crypto.","heading3":"Controles","label0":"Nombres / opciones","placeholder0":"Alicia&#10;Beto&#10;Carla&#10;Diego","desc1":"Introduce entre 2 y 10 nombres (uno por línea o separados por comas).","label2":"Velocidad","button0":"1x","button1":"2x","button2":"3x","desc2":"Mayor velocidad acelera la simulación.","button3":"Iniciar","button4":"Reiniciar","heading4":"Resultado","text4":"🏁 Clasificación","button5":"Otra vez","button6":"Quitar ganador y volver a tirar","button7":"Nuevo sorteo","desc3":"Consejo: comparte añadiendo ?names=Alice,Bob&autostart=true.","heading5":"Estadísticas","button8":"Borrar estadísticas","text5":"Aún no hay caídas — pulsa Iniciar.","heading8":"Ganador","text6":"¡Llegó primero al fondo!","button9":"Genial"}, js: {"text0":"—","text1":"Listo.","err0":"Introduce al menos 2 nombres.","err1":"Máximo 10 nombres.","text2":"Cayendo...","text3":"Aún no hay llegadas.","text4":"Carrera terminada.","text5":"¡Ganador encontrado!","text6":"Tiempo agotado — clasificación por progreso.","text7":"Caídas:","err2":"Se necesitan al menos 2 nombres tras quitar al ganador.","text8":"Estadísticas borradas."} }
     }
   }
 };
@@ -423,18 +488,77 @@ export function t(path, lang = getCurrentLanguage()) {
   return result;
 }
 
+export function normalizeLanguage(lang) {
+  const base = String(lang || '').trim().toLowerCase().split(/[-_]/)[0];
+  return SUPPORTED_LANGUAGES[base] ? base : DEFAULT_LANGUAGE;
+}
+
+export function resolveRequestLanguage(request, url) {
+  const queryLang = url?.searchParams?.get(LANGUAGE_QUERY_KEY);
+  if (queryLang && SUPPORTED_LANGUAGES[normalizeLanguage(queryLang)]) {
+    return normalizeLanguage(queryLang);
+  }
+
+  const acceptLanguage = request?.headers?.get('Accept-Language') || '';
+  for (const part of acceptLanguage.split(',')) {
+    const code = normalizeLanguage(part.split(';')[0]);
+    if (SUPPORTED_LANGUAGES[code]) {
+      return code;
+    }
+  }
+
+  return DEFAULT_LANGUAGE;
+}
+
+export function withLanguageQuery(path, lang = DEFAULT_LANGUAGE) {
+  if (!path || path.startsWith('http') || path.startsWith('mailto:') || path.startsWith('#')) {
+    return path;
+  }
+  const normalized = normalizeLanguage(lang);
+  if (normalized === DEFAULT_LANGUAGE) {
+    return path;
+  }
+  const [pathname, hash = ''] = path.split('#');
+  const [base, search = ''] = pathname.split('?');
+  const params = new URLSearchParams(search);
+  params.set(LANGUAGE_QUERY_KEY, normalized);
+  const query = params.toString();
+  return `${base}${query ? `?${query}` : ''}${hash ? `#${hash}` : ''}`;
+}
+
+export function getToolTranslation(toolId, lang = DEFAULT_LANGUAGE) {
+  const normalized = normalizeLanguage(lang);
+  return TRANSLATIONS[normalized]?.tools?.[toolId] || TRANSLATIONS[DEFAULT_LANGUAGE]?.tools?.[toolId] || null;
+}
+
+export function localizeTool(tool, lang = DEFAULT_LANGUAGE) {
+  const translation = getToolTranslation(tool?.id, lang);
+  if (!translation) return { ...tool };
+  return {
+    ...tool,
+    name: translation.name || tool.name,
+    description: translation.desc || tool.description
+  };
+}
+
+export function localizeTools(tools, lang = DEFAULT_LANGUAGE) {
+  return (tools || []).map((tool) => localizeTool(tool, lang));
+}
+
 /**
  * Get the language bootstrap script to avoid flash of incorrect language
  */
-export function getLanguageBootstrapScript() {
+export function getLanguageBootstrapScript(serverLang = DEFAULT_LANGUAGE) {
   return `
     <script data-i18n-bootstrap>
       (function() {
         const supported = ${JSON.stringify(Object.keys(SUPPORTED_LANGUAGES))};
-        let lang = localStorage.getItem('language');
-        if (!lang || !supported.includes(lang)) {
+        const params = new URLSearchParams(window.location.search);
+        let lang = params.get('${LANGUAGE_QUERY_KEY}') || localStorage.getItem('language') || ${JSON.stringify(serverLang)};
+        lang = (lang || '').split(/[-_]/)[0];
+        if (!supported.includes(lang)) {
           lang = navigator.language.split('-')[0];
-          if (!supported.includes(lang)) lang = 'en';
+          if (!supported.includes(lang)) lang = ${JSON.stringify(DEFAULT_LANGUAGE)};
         }
         document.documentElement.lang = lang;
       })();
@@ -445,7 +569,7 @@ export function getLanguageBootstrapScript() {
 /**
  * Get the language management script for the client
  */
-export function getLanguageScript(toolId) {
+export function getLanguageScript(toolId, serverLang = DEFAULT_LANGUAGE) {
   const slim = {};
   for (const [lang, data] of Object.entries(TRANSLATIONS)) {
     slim[lang] = { ...data };
@@ -471,11 +595,12 @@ export function getLanguageScript(toolId) {
         var _langs = ${JSON.stringify(SUPPORTED_LANGUAGES)};
 
         function _getLang() {
-          var s = localStorage.getItem('language');
+          var params = new URLSearchParams(window.location.search);
+          var s = params.get('${LANGUAGE_QUERY_KEY}') || localStorage.getItem('language') || ${JSON.stringify(serverLang)};
           if (s && _supported.indexOf(s) !== -1) return s;
           var b = navigator.language.split('-')[0];
           if (_supported.indexOf(b) !== -1) return b;
-          return 'en';
+          return ${JSON.stringify(DEFAULT_LANGUAGE)};
         }
 
         function _resolve(lang, path) {
@@ -567,6 +692,13 @@ export function getLanguageScript(toolId) {
 
         window.setLanguage = function(lang) {
           localStorage.setItem('language', lang);
+          var next = new URL(window.location.href);
+          if (lang === ${JSON.stringify(DEFAULT_LANGUAGE)}) {
+            next.searchParams.delete('${LANGUAGE_QUERY_KEY}');
+          } else {
+            next.searchParams.set('${LANGUAGE_QUERY_KEY}', lang);
+          }
+          window.history.replaceState({}, '', next.toString());
           document.documentElement.lang = lang;
           _patchDOM(lang);
         };
@@ -620,8 +752,8 @@ export function getLanguageScript(toolId) {
 /**
  * Get language selector HTML
  */
-export function getLanguageSelectorHTML() {
-  const current = getCurrentLanguage();
+export function getLanguageSelectorHTML(lang = DEFAULT_LANGUAGE) {
+  const current = normalizeLanguage(lang);
   const options = Object.entries(SUPPORTED_LANGUAGES).map(([code, { name, flag }]) => `
     <button data-lang="${code}" 
             class="flex items-center gap-2 w-full px-4 py-2 text-sm text-surface-700 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors ${current === code ? 'bg-surface-50 dark:bg-surface-800/50 font-semibold' : ''}"
