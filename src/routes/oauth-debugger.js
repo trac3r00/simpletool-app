@@ -77,7 +77,7 @@ function renderOAuthDebuggerPage() {
 
               <!-- Flow diagram -->
               <div class="overflow-x-auto">
-                <div class="flex items-start gap-0 min-w-max text-xs">
+                <div class="flex items-start gap-0 min-w-[600px] text-xs">
                   ${flowStep('1', 'Client', 'Build authorization URL with code_challenge', 'bg-primary-100 dark:bg-primary-900/30 border-primary-300 dark:border-primary-700 text-primary-800 dark:text-primary-200')}
                   ${flowArrow('GET /authorize?...')}
                   ${flowStep('2', 'Auth Server', 'Authenticate user, display consent screen', 'bg-surface-100 dark:bg-surface-800 border-surface-300 dark:border-surface-600 text-surface-700 dark:text-surface-300')}

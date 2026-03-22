@@ -1089,7 +1089,7 @@ export function createPageTemplate(options) {
   ${getNavigationHTML()}
   <div class="flex-grow" role="presentation">
     <div class="flex">
-      <div class="flex-1 min-w-0">
+      <div class="flex-1 min-w-0 overflow-x-hidden">
         ${content}
       </div>
       ${sidebarAd}
