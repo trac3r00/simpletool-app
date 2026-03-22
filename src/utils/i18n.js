@@ -33,7 +33,14 @@ const TRANSLATIONS = {
       resources: 'Resources',
       blog: 'Blog',
       faq: 'FAQ',
-      github: 'GitHub'
+      github: 'GitHub',
+      tagline: 'Privacy-first web tools for developers.',
+      copyright: '© SimpleTool. All rights reserved.',
+      popularTools: 'Popular Tools',
+      viewAll: 'View all tools →',
+      legal: 'Legal',
+      security: 'Security',
+      learnMore: 'Learn more'
     },
     common: {
       copy: 'Copy',
@@ -122,7 +129,14 @@ const TRANSLATIONS = {
       resources: '리소스',
       blog: '블로그',
       faq: '자주 묻는 질문',
-      github: 'GitHub'
+      github: 'GitHub',
+      tagline: '개발자를 위한 프라이버시 우선 웹 도구.',
+      copyright: '© SimpleTool. 무단 전재 및 재배포 금지.',
+      popularTools: '인기 도구',
+      viewAll: '모든 도구 보기 →',
+      legal: '법적 고지',
+      security: '보안',
+      learnMore: '자세히 보기'
     },
     common: {
       copy: '복사',
@@ -211,7 +225,14 @@ const TRANSLATIONS = {
       resources: 'リソース',
       blog: 'ブログ',
       faq: 'よくある質問',
-      github: 'GitHub'
+      github: 'GitHub',
+      tagline: 'プライバシー重視の開発者向けウェブツール。',
+      copyright: '© SimpleTool. 無断転載禁止。',
+      popularTools: '人気ツール',
+      viewAll: 'すべてのツールを見る →',
+      legal: '法的事項',
+      security: 'セキュリティ',
+      learnMore: '詳しく見る'
     },
     common: {
       copy: 'コピー',
@@ -300,7 +321,14 @@ const TRANSLATIONS = {
       resources: 'Recursos',
       blog: 'Blog',
       faq: 'Preguntas frecuentes',
-      github: 'GitHub'
+      github: 'GitHub',
+      tagline: 'Herramientas web para desarrolladores con privacidad.',
+      copyright: '© SimpleTool. Todos los derechos reservados.',
+      popularTools: 'Herramientas populares',
+      viewAll: 'Ver todas las herramientas →',
+      legal: 'Legal',
+      security: 'Seguridad',
+      learnMore: 'Saber más'
     },
     common: {
       copy: 'Copiar',

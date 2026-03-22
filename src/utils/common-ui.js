@@ -99,6 +99,12 @@ export function setAnalyticsToken(token) {
   analyticsToken = typeof token === 'string' ? token.trim() : '';
 }
 
+let siteUrl = 'https://simpletool.app';
+
+export function setSiteUrl(url) {
+  siteUrl = typeof url === 'string' ? url.replace(/\/+$/, '') : 'https://simpletool.app';
+}
+
 export function getAnalyticsScript() {
   if (!analyticsToken) return '';
   return `<!-- Cloudflare Web Analytics (privacy-preserving, no cookies) -->
@@ -258,9 +264,8 @@ export function getActionBarScript() {
   </script>`;
 }
 
-const DEFAULT_ADSENSE_CLIENT = 'ca-pub-5134881365131182';
 let adConfig = {
-  client: DEFAULT_ADSENSE_CLIENT,
+  client: null,
   slots: {}
 };
 
@@ -299,7 +304,7 @@ export function getGtagScript() {
 
 export function getAdSenseScript() {
   if (!isAdsEnabled()) return '';
-  const client = adConfig.client || DEFAULT_ADSENSE_CLIENT;
+  const client = adConfig.client;
   
   // Validate client ID format to prevent malformed URLs
   // Must start with ca-pub- and followed by digits
@@ -961,17 +966,17 @@ export function getFooterHTML() {
                </div>
                <span class="font-bold text-lg text-surface-900 dark:text-surface-50">SimpleTool</span>
              </div>
-             <p class="text-sm text-surface-600 dark:text-surface-400 mb-4">Privacy-first web tools for developers.</p>
-             <p class="text-xs text-surface-500 dark:text-surface-500">© ${new Date().getFullYear()} SimpleTool. All rights reserved.</p>
+             <p class="text-sm text-surface-600 dark:text-surface-400 mb-4" data-i18n="footer.tagline">Privacy-first web tools for developers.</p>
+             <p class="text-xs text-surface-500 dark:text-surface-500"><span data-i18n="footer.copyright">© ${new Date().getFullYear()} SimpleTool. All rights reserved.</span></p>
            </div>
            
            <!-- Column 2: Top Tools -->
            <div class="flex flex-col">
-             <h3 class="font-semibold text-surface-900 dark:text-surface-50 mb-4 text-sm uppercase tracking-wide">Popular Tools</h3>
+             <h3 class="font-semibold text-surface-900 dark:text-surface-50 mb-4 text-sm uppercase tracking-wide" data-i18n="footer.popularTools">Popular Tools</h3>
              <ul class="space-y-2 flex-1">
                ${toolsHTML}
                <li class="pt-2 border-t border-surface-200 dark:border-surface-800">
-                 <a href="/" class="text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors">View all tools →</a>
+                 <a href="/" class="text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors" data-i18n="footer.viewAll">View all tools →</a>
                </li>
              </ul>
            </div>
@@ -991,7 +996,7 @@ export function getFooterHTML() {
             
             <!-- Column 4: Legal & Support -->
             <div class="flex flex-col">
-              <h3 class="font-semibold text-surface-900 dark:text-surface-50 mb-4 text-sm uppercase tracking-wide">Legal</h3>
+              <h3 class="font-semibold text-surface-900 dark:text-surface-50 mb-4 text-sm uppercase tracking-wide" data-i18n="footer.legal">Legal</h3>
              <ul class="space-y-2">
                <li>
                  <a href="/about" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.about">${t('footer.about')}</a>
@@ -1006,7 +1011,7 @@ export function getFooterHTML() {
                  <a href="/contact" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.contact">${t('footer.contact')}</a>
                </li>
                <li>
-                 <a href="/security" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Security</a>
+                 <a href="/security" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.security">${t('footer.security')}</a>
                </li>
              </ul>
            </div>
@@ -1016,7 +1021,7 @@ export function getFooterHTML() {
          <!-- Divider -->
          <div class="border-t border-surface-200 dark:border-surface-800 pt-6">
            <p class="text-xs text-surface-500 dark:text-surface-500 text-center">
-             Built with privacy in mind. All tools run client-side. <a href="/privacy" class="text-primary-600 dark:text-primary-400 hover:underline">Learn more</a>
+             Built with privacy in mind. All tools run client-side. <a href="/privacy" class="text-primary-600 dark:text-primary-400 hover:underline" data-i18n="footer.learnMore">${t('footer.learnMore')}</a>
            </p>
          </div>
        </div>
@@ -1038,8 +1043,7 @@ export function createPageTemplate(options) {
   } = options;
   const toolId = path ? path.replace(/^\//, '') : '';
 
-  const SITE_URL = 'https://simpletool.app';
-  const pageUrl = path ? `${SITE_URL}${path}` : SITE_URL;
+  const pageUrl = path ? `${siteUrl}${path}` : siteUrl;
   const fullTitle = `${title} | SimpleTool`;
 
   const sidebarAd = getAdSlotHTML('sidebar', {

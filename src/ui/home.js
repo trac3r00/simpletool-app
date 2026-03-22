@@ -4,7 +4,7 @@
 
 import { respondHTML } from '../utils/respond.js';
 import { getThemeScript, getThemeBootstrapScript, getNavigationHTML, getStylesheetLinks, getGtagScript, getAdSenseScript, getAdSlotHTML, getFooterHTML, getSearchScript, t, getLanguageScript, getLanguageBootstrapScript, getAnalyticsScript } from '../utils/common-ui.js';
-import { getToolsForEnvironment } from '../utils/tool-registry.js';
+import { getToolsForEnvironment, CATEGORIES } from '../utils/tool-registry.js';
 
 export function renderHomePage({ isDev = false } = {}) {
   const tools = getToolsForEnvironment(isDev);
@@ -296,7 +296,6 @@ function renderCategories(categories) {
      network: 'bg-success-100 text-success-700 dark:bg-success-900/30 dark:text-success-300',
      generators: 'bg-warning-100 text-warning-700 dark:bg-warning-900/30 dark:text-warning-300',
       utils: 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300',
-      games: 'bg-error-100 text-error-700 dark:bg-error-900/30 dark:text-error-300',
       game: 'bg-error-100 text-error-700 dark:bg-error-900/30 dark:text-error-300'
    };
 
@@ -340,24 +339,13 @@ function renderToolCard(tool) {
 }
 
 function groupToolsByCategory(tools) {
-  const categories = {
-    formatters: { title: 'Formatters & Converters', icon: '🔄', tools: [] },
-    security: { title: 'Security & Crypto', icon: '🛡️', tools: [] },
-    network: { title: 'Network & Web', icon: '🌐', tools: [] },
-    generators: { title: 'Generators', icon: '⚡', tools: [] },
-    games: { title: 'Games', icon: '🎮', tools: [] },
-    game: { title: 'Games & Fun', icon: '🎮', tools: [] },
-    utils: { title: 'Utilities', icon: '🛠️', tools: [] }
-  };
+  const categories = Object.fromEntries(
+    Object.entries(CATEGORIES).map(([key, meta]) => [key, { ...meta, tools: [] }])
+  );
 
   tools.forEach(tool => {
-    if (tool.category === 'security') categories.security.tools.push(tool);
-    else if (tool.category === 'formatters') categories.formatters.tools.push(tool);
-    else if (tool.category === 'network') categories.network.tools.push(tool);
-    else if (tool.category === 'generators') categories.generators.tools.push(tool);
-    else if (tool.category === 'games') categories.games.tools.push(tool);
-    else if (tool.category === 'game') categories.game.tools.push(tool);
-    else categories.utils.tools.push(tool);
+    const cat = tool.category && categories[tool.category] ? tool.category : 'utils';
+    categories[cat].tools.push(tool);
   });
 
   // Filter out empty categories

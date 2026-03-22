@@ -12,6 +12,7 @@ binding = "CF_VERSION_METADATA"
 
 [vars]
 ENVIRONMENT = "production"
+SITE_URL = "https://simpletool.app"
 ADSENSE_CLIENT = "ca-pub-5134881365131182"
 ADSENSE_SLOTS = "{}"
 SENTRY_DSN = ""

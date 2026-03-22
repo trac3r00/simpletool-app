@@ -14,10 +14,7 @@ import { handleColorConverterRoutes } from './routes/color-converter.js';
 import { handleUnitConverterRoutes } from './routes/unit-converter.js';
 import { handleMarkdownPreviewRoutes } from './routes/markdown-preview.js';
 import { handleTextDiffRoutes } from './routes/text-diff.js';
-import { handleJWTDecoderRoutes } from './routes/jwt-decoder.js';
 import { handleCertificateDecoderRoutes } from './routes/certificate-decoder.js';
-import { handleJwkJwksStudioRoutes } from './routes/jwk-jwks-studio.js';
-import { handleHashCalculatorRoutes } from './routes/hash-calculator.js';
 import { handleCaseConverterRoutes } from './routes/case-converter.js';
 import { handleLogViewerRoutes } from './routes/log-viewer.js';
 import { handleImageConverterRoutes } from './routes/image-converter.js';
@@ -31,7 +28,6 @@ import { handleCronBuilderRoutes } from './routes/cron-builder.js';
 import { handleMockDataRoutes } from './routes/mock-data-generator.js';
 import { handleUserAgentDecoderRoutes } from './routes/user-agent-decoder.js';
 import { handleSSHKeyGeneratorRoutes } from './routes/ssh-key-generator.js';
-import { handleUniversalDecoderRoutes } from './routes/universal-decoder.js';
 import { handleRegexVisualizerRoutes } from './routes/regex-visualizer.js';
 import { handleCurlStudioRoutes } from './routes/curl-studio.js';
 import { handleLogMaskerRoutes } from './routes/log-masker.js';
@@ -80,7 +76,7 @@ import {
 } from './utils/security.js';
 import { respondJSON, respondText, respond404, respond429 } from './utils/respond.js';
 import { bundledStyles, bundledStylesHash } from './utils/bundled-styles.js';
-import { setAdConfig, setAnalyticsToken } from './utils/common-ui.js';
+import { setAdConfig, setAnalyticsToken, setSiteUrl } from './utils/common-ui.js';
 
 // Rate limiting state (memory fallback)
 const rateLimiter = new Map();
@@ -96,10 +92,7 @@ const handlersById = {
   'unit-converter': handleUnitConverterRoutes,
   'markdown-preview': handleMarkdownPreviewRoutes,
   'text-diff': handleTextDiffRoutes,
-  'jwt-decoder': handleJWTDecoderRoutes,
   'certificate-decoder': handleCertificateDecoderRoutes,
-  'jwk-jwks-studio': handleJwkJwksStudioRoutes,
-  'hash-calculator': handleHashCalculatorRoutes,
   'case-converter': handleCaseConverterRoutes,
   'log-viewer': handleLogViewerRoutes,
   'image-converter': handleImageConverterRoutes,
@@ -113,7 +106,6 @@ const handlersById = {
   'mock-data-generator': handleMockDataRoutes,
   'user-agent-decoder': handleUserAgentDecoderRoutes,
   'ssh-key-generator': handleSSHKeyGeneratorRoutes,
-  'universal-decoder': handleUniversalDecoderRoutes,
   'regex-visualizer': handleRegexVisualizerRoutes,
   'curl-studio': handleCurlStudioRoutes,
   'log-masker': handleLogMaskerRoutes,
@@ -283,6 +275,8 @@ const worker = {
     const requestId = crypto.randomUUID();
     const isDev = isDevEnvironment(env, url);
     const runtimeTools = getToolsForEnvironment(isDev);
+
+    setSiteUrl(env?.SITE_URL || 'https://simpletool.app');
 
     if (isDev) {
       setAdConfig({

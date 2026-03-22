@@ -21,17 +21,6 @@ export const TOOLS = [
     relatedTools: ['json-schema-studio', 'yaml-toml-converter', 'token-studio', 'text-diff']
   },
   {
-    id: 'token-studio',
-    name: 'JWT Inspector',
-    icon: '🔓',
-    description: 'Inspect and decode JSON Web Tokens.',
-    path: '/jwt-decoder',
-    category: 'security',
-    keywords: 'token, auth, base64',
-    tip: 'Decode JWT header, payload, and verify signature — paste any JWT to see its claims',
-    relatedTools: ['token-studio', 'saml-decoder', 'encoding-workbench', 'json-formatter']
-  },
-  {
     id: 'uuid-generator',
     name: 'UUID Generator',
     icon: '🔑',
@@ -50,16 +39,6 @@ export const TOOLS = [
     category: 'security',
     keywords: 'random, secure, strong',
     relatedTools: ['encoding-workbench', 'htpasswd-generator', 'ssh-key-generator', 'secret-scanner']
-  },
-  {
-    id: 'encoding-workbench',
-    name: 'Hash Calculator',
-    icon: '#️⃣',
-    description: 'Compute SHA256, MD5, and other hashes.',
-    path: '/hash-calculator',
-    category: 'security',
-    keywords: 'checksum, crypto, digest',
-    relatedTools: ['password-generator', 'htpasswd-generator', 'certificate-decoder', 'secret-scanner']
   },
   {
     id: 'cidr-calculator',
@@ -160,17 +139,6 @@ export const TOOLS = [
     relatedTools: ['text-diff', 'case-converter', 'log-viewer', 'code-minifier']
   },
   {
-    id: 'encoding-workbench',
-    name: 'Layered Decoder',
-    icon: '🔮',
-    description: 'Auto-detect and unwrap layered encodings (Base64, URL, Hex, and more).',
-    path: '/universal-decoder',
-    category: 'formatters',
-    keywords: 'base64, hex, url, html',
-    tip: 'Paste encoded text and watch it unwrap layer by layer — Base64 inside URL encoding inside Hex, etc.',
-    relatedTools: ['token-studio', 'saml-decoder', 'encoding-workbench', 'json-formatter']
-  },
-  {
     id: 'cron-builder',
     name: 'Cron Builder',
     icon: '⏰',
@@ -201,18 +169,6 @@ export const TOOLS = [
     keywords: 'ssl, tls, pem, x509',
     tip: 'Paste a PEM certificate to see issuer, subject, validity dates, SANs, and key details',
     relatedTools: ['ssh-key-generator', 'token-studio', 'saml-decoder', 'csp-builder']
-  },
-  {
-    id: 'token-studio',
-    name: 'JWK/JWKS Studio',
-    icon: '🧷',
-    description: 'Convert PEM/JWK/JWKS, compute RFC7638 thumbprints, and verify JWT signatures offline.',
-    path: '/jwk-jwks-studio',
-    category: 'security',
-    keywords: 'jwk, jwks, jose, oidc, kid, rfc 7638, thumbprint, jwt, rs256, ps256, es256',
-    tip: 'Paste a JWK/JWKS or PEM public key to compute a correct kid (thumbprint) and verify JWTs client-side',
-    badge: 'NEW',
-    relatedTools: ['token-studio', 'certificate-decoder', 'ssh-key-generator', 'saml-decoder']
   },
   {
     id: 'token-studio',
@@ -571,6 +527,15 @@ export const TOOLS = [
     relatedTools: ['ladder-game', 'roulette-wheel', 'mock-data-generator']
   }
 ];
+
+export const CATEGORIES = {
+  formatters: { title: 'Formatters & Converters', icon: '🔄' },
+  security: { title: 'Security & Crypto', icon: '🛡️' },
+  network: { title: 'Network & Web', icon: '🌐' },
+  generators: { title: 'Generators', icon: '⚡' },
+  game: { title: 'Games & Fun', icon: '🎮' },
+  utils: { title: 'Utilities', icon: '🛠️' }
+};
 
 export function getToolsForEnvironment(isDev = false) {
   if (isDev) return TOOLS;
