@@ -8,7 +8,16 @@ import { bundledStylesHash } from './bundled-styles.js';
 import { getKeyboardShortcutsScript } from './keyboard-shortcuts.js';
 import { TOOLS } from './tool-registry.js';
 import { getPersonalizationScript } from './personalization.js';
-import { t, getLanguageSelectorHTML, getLanguageBootstrapScript, getLanguageScript } from './i18n.js';
+import {
+  DEFAULT_LANGUAGE,
+  t,
+  getLanguageSelectorHTML,
+  getLanguageBootstrapScript,
+  getLanguageScript,
+  localizeTools,
+  normalizeLanguage,
+  withLanguageQuery
+} from './i18n.js';
 
 // Re-export keyboard shortcuts, i18n, and personalization for easy access
 export { getKeyboardShortcutsScript, t, getLanguageSelectorHTML, getLanguageBootstrapScript, getLanguageScript, getPersonalizationScript };
@@ -440,8 +449,11 @@ export function getThemeToggleButton(options = {}) {
  */
 export function getNavigationHTML(options = {}) {
   const {
-    maxWidth = 'max-w-7xl'
+    maxWidth = 'max-w-7xl',
+    lang = DEFAULT_LANGUAGE
   } = options;
+  const currentLang = normalizeLanguage(lang);
+  const homeHref = withLanguageQuery('/', currentLang);
 
   return `
     <!-- Navigation -->
@@ -450,6 +462,7 @@ export function getNavigationHTML(options = {}) {
         <div class="flex justify-between items-center h-14">
           <div class="flex items-center gap-4">
             <a href="/"
+               href="${homeHref}"
                class="flex items-center gap-2 text-surface-900 dark:text-surface-50 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200 group focus:outline-none focus:ring-2 focus:ring-primary-500 rounded-md py-1 pr-2">
               <div class="p-1 rounded bg-primary-50 dark:bg-primary-900/50 group-hover:bg-primary-100 dark:group-hover:bg-primary-900 transition-colors">
                 <svg class="w-5 h-5 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -465,15 +478,15 @@ export function getNavigationHTML(options = {}) {
 
            <div class="flex items-center gap-2">
              <!-- Mobile search button (icon only) -->
-             <button type="button" id="mobile-search-btn" class="md:hidden p-2 rounded-lg text-surface-600 hover:bg-surface-100 dark:text-surface-400 dark:hover:bg-surface-800 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500" aria-label="Search tools">
+             <button type="button" id="mobile-search-btn" class="md:hidden p-2 rounded-lg text-surface-600 hover:bg-surface-100 dark:text-surface-400 dark:hover:bg-surface-800 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500" aria-label="${t('nav.searchTools', currentLang)}">
                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
              </button>
              <!-- Desktop search input (readonly, triggers modal on click/focus) -->
              <div class="hidden md:flex items-center mr-2 relative">
                  <svg class="absolute left-3 w-3.5 h-3.5 text-surface-400 dark:text-surface-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                 <input type="text" readonly id="nav-search-btn" placeholder="${t('nav.search')}" data-i18n-placeholder="nav.search" class="w-48 lg:w-64 pl-8 pr-3 py-1.5 bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-md text-xs text-surface-500 dark:text-surface-400 placeholder-surface-500 dark:placeholder-surface-400 hover:border-surface-300 dark:hover:border-surface-600 cursor-pointer transition-all focus:outline-none focus:ring-2 focus:ring-primary-500" aria-label="Search tools" />
+                 <input type="text" readonly id="nav-search-btn" placeholder="${t('nav.search', currentLang)}" data-i18n-placeholder="nav.search" class="w-48 lg:w-64 pl-8 pr-3 py-1.5 bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-md text-xs text-surface-500 dark:text-surface-400 placeholder-surface-500 dark:placeholder-surface-400 hover:border-surface-300 dark:hover:border-surface-600 cursor-pointer transition-all focus:outline-none focus:ring-2 focus:ring-primary-500" aria-label="${t('nav.searchTools', currentLang)}" />
              </div>
-             ${getLanguageSelectorHTML()}
+             ${getLanguageSelectorHTML(currentLang)}
              ${getThemeToggleButton()}
            </div>
         </div>
@@ -609,11 +622,15 @@ export function getThemeScript() {
  * Get Global Search Script
  * Provides smart command palette search across all pages
  */
-export function getSearchScript() {
-  const tools = TOOLS.map(({ id, name, path, icon, description, keywords, hiddenInProduction }) => ({
+export function getSearchScript(options = {}) {
+  const {
+    lang = DEFAULT_LANGUAGE
+  } = options;
+  const currentLang = normalizeLanguage(lang);
+  const tools = localizeTools(TOOLS, currentLang).map(({ id, name, path, icon, description, keywords, hiddenInProduction }) => ({
     id,
     name,
-    path,
+    path: withLanguageQuery(path, currentLang),
     icon,
     description,
     keywords: keywords || '',
@@ -629,13 +646,13 @@ export function getSearchScript() {
             <svg class="pointer-events-none absolute left-4 top-3.5 h-5 w-5 text-surface-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
               <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
             </svg>
-            <input type="text" class="h-12 w-full border-0 bg-transparent pl-11 pr-4 text-surface-900 dark:text-white placeholder:text-surface-400 focus:ring-0 sm:text-sm" placeholder="Search tools..." data-i18n-placeholder="nav.searchTools" id="global-search-input" role="combobox" aria-expanded="false" aria-controls="search-results">
+            <input type="text" class="h-12 w-full border-0 bg-transparent pl-11 pr-4 text-surface-900 dark:text-white placeholder:text-surface-400 focus:ring-0 sm:text-sm" placeholder="${t('nav.searchTools', currentLang)}" data-i18n-placeholder="nav.searchTools" id="global-search-input" role="combobox" aria-expanded="false" aria-controls="search-results">
           </div>
           <ul class="max-h-96 scroll-py-3 overflow-y-auto p-3" id="search-results" role="listbox">
             <!-- Results injected here -->
           </ul>
           <div class="flex flex-wrap items-center bg-surface-50 dark:bg-surface-950 px-4 py-2.5 text-xs text-surface-500 dark:text-surface-400 border-t border-surface-100 dark:border-surface-800">
-            Type to search tools · <kbd class="mx-1 font-sans font-semibold text-surface-900 dark:text-white">↑↓</kbd> to navigate · <kbd class="mx-1 font-sans font-semibold text-surface-900 dark:text-white">↵</kbd> to select · <kbd class="mx-1 font-sans font-semibold text-surface-900 dark:text-white">esc</kbd> to close
+            ${t('nav.searchTools', currentLang)} · <kbd class="mx-1 font-sans font-semibold text-surface-900 dark:text-white">↑↓</kbd> ${t('nav.toggleTheme', currentLang)} · <kbd class="mx-1 font-sans font-semibold text-surface-900 dark:text-white">↵</kbd> ${t('common.copy', currentLang)} · <kbd class="mx-1 font-sans font-semibold text-surface-900 dark:text-white">esc</kbd> ${t('common.error', currentLang)}
           </div>
         </div>
       </div>
@@ -746,7 +763,7 @@ export function getSearchScript() {
           if (results.length === 0) {
             resultsList.innerHTML = \`
               <li class="p-4 text-center text-sm text-surface-500 dark:text-surface-400">
-                No tools found matching your query.
+                ${t('home.noResults', currentLang)}
               </li>
             \`;
             return;
@@ -944,10 +961,12 @@ export function getStylesheetLinks() {
  * 3-column layout: Brand | Top Tools | Legal
  * Responsive: stacks on mobile
  */
-export function getFooterHTML() {
-   const topTools = TOOLS.slice(0, 5);
+export function getFooterHTML(options = {}) {
+   const { lang = DEFAULT_LANGUAGE } = options;
+   const currentLang = normalizeLanguage(lang);
+   const topTools = localizeTools(TOOLS.slice(0, 5), currentLang);
    const toolsHTML = topTools.map(tool => 
-     `<li><a href="${tool.path}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors flex items-center gap-2"><span>${tool.icon}</span><span>${tool.name}</span></a></li>`
+     `<li><a href="${withLanguageQuery(tool.path, currentLang)}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors flex items-center gap-2"><span>${tool.icon}</span><span>${tool.name}</span></a></li>`
    ).join('');
    
    return `
@@ -966,17 +985,17 @@ export function getFooterHTML() {
                </div>
                <span class="font-bold text-lg text-surface-900 dark:text-surface-50">SimpleTool</span>
              </div>
-             <p class="text-sm text-surface-600 dark:text-surface-400 mb-4" data-i18n="footer.tagline">Privacy-first web tools for developers.</p>
-             <p class="text-xs text-surface-500 dark:text-surface-500"><span data-i18n="footer.copyright">© ${new Date().getFullYear()} SimpleTool. All rights reserved.</span></p>
+             <p class="text-sm text-surface-600 dark:text-surface-400 mb-4" data-i18n="footer.tagline">${t('footer.tagline', currentLang)}</p>
+             <p class="text-xs text-surface-500 dark:text-surface-500">© ${new Date().getFullYear()} SimpleTool</p>
            </div>
            
            <!-- Column 2: Top Tools -->
            <div class="flex flex-col">
-             <h3 class="font-semibold text-surface-900 dark:text-surface-50 mb-4 text-sm uppercase tracking-wide" data-i18n="footer.popularTools">Popular Tools</h3>
+             <h3 class="font-semibold text-surface-900 dark:text-surface-50 mb-4 text-sm uppercase tracking-wide" data-i18n="footer.popularTools">${t('footer.popularTools', currentLang)}</h3>
              <ul class="space-y-2 flex-1">
                ${toolsHTML}
                <li class="pt-2 border-t border-surface-200 dark:border-surface-800">
-                 <a href="/" class="text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors" data-i18n="footer.viewAll">View all tools →</a>
+                 <a href="${withLanguageQuery('/', currentLang)}" class="text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors" data-i18n="footer.viewAll">${t('footer.viewAll', currentLang)}</a>
                </li>
              </ul>
            </div>
@@ -986,32 +1005,32 @@ export function getFooterHTML() {
               <h3 class="font-semibold text-surface-900 dark:text-surface-50 mb-4 text-sm uppercase tracking-wide" data-i18n="footer.resources">Resources</h3>
               <ul class="space-y-2">
                 <li>
-                  <a href="/blog" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.blog">Blog</a>
+                 <a href="${withLanguageQuery('/blog', currentLang)}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.blog">Blog</a>
                 </li>
                 <li>
-                  <a href="/faq" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.faq">FAQ</a>
+                  <a href="${withLanguageQuery('/faq', currentLang)}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.faq">FAQ</a>
                 </li>
               </ul>
             </div>
             
             <!-- Column 4: Legal & Support -->
             <div class="flex flex-col">
-              <h3 class="font-semibold text-surface-900 dark:text-surface-50 mb-4 text-sm uppercase tracking-wide" data-i18n="footer.legal">Legal</h3>
+              <h3 class="font-semibold text-surface-900 dark:text-surface-50 mb-4 text-sm uppercase tracking-wide" data-i18n="footer.legal">${t('footer.legal', currentLang)}</h3>
              <ul class="space-y-2">
                <li>
-                 <a href="/about" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.about">${t('footer.about')}</a>
+                 <a href="${withLanguageQuery('/about', currentLang)}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.about">${t('footer.about', currentLang)}</a>
                </li>
                <li>
-                 <a href="/privacy" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.privacy">${t('footer.privacy')}</a>
+                 <a href="${withLanguageQuery('/privacy', currentLang)}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.privacy">${t('footer.privacy', currentLang)}</a>
                </li>
                <li>
-                 <a href="/terms" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.terms">${t('footer.terms')}</a>
+                 <a href="${withLanguageQuery('/terms', currentLang)}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.terms">${t('footer.terms', currentLang)}</a>
                </li>
                <li>
-                 <a href="/contact" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.contact">${t('footer.contact')}</a>
+                 <a href="${withLanguageQuery('/contact', currentLang)}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.contact">${t('footer.contact', currentLang)}</a>
                </li>
                <li>
-                 <a href="/security" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.security">${t('footer.security')}</a>
+                 <a href="${withLanguageQuery('/security', currentLang)}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.security">${t('footer.security', currentLang)}</a>
                </li>
              </ul>
            </div>
@@ -1021,7 +1040,7 @@ export function getFooterHTML() {
          <!-- Divider -->
          <div class="border-t border-surface-200 dark:border-surface-800 pt-6">
            <p class="text-xs text-surface-500 dark:text-surface-500 text-center">
-             Built with privacy in mind. All tools run client-side. <a href="/privacy" class="text-primary-600 dark:text-primary-400 hover:underline" data-i18n="footer.learnMore">${t('footer.learnMore')}</a>
+             ${t('footer.privacyNote', currentLang)} <a href="${withLanguageQuery('/privacy', currentLang)}" class="text-primary-600 dark:text-primary-400 hover:underline" data-i18n="footer.learnMore">${t('footer.learnMore', currentLang)}</a>
            </p>
          </div>
        </div>
@@ -1041,6 +1060,7 @@ export function createPageTemplate(options) {
     scripts = '',
     schema
   } = options;
+  const currentLang = normalizeLanguage(options.lang || DEFAULT_LANGUAGE);
   const toolId = path ? path.replace(/^\//, '') : '';
 
   const pageUrl = path ? `${siteUrl}${path}` : siteUrl;
@@ -1061,7 +1081,7 @@ export function createPageTemplate(options) {
   });
 
   return `<!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="${currentLang}" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1080,13 +1100,13 @@ export function createPageTemplate(options) {
   <meta name="twitter:title" content="${fullTitle}">
   <meta name="twitter:description" content="${description}">
   ${getThemeBootstrapScript()}
-  ${getLanguageBootstrapScript()}
+  ${getLanguageBootstrapScript(currentLang)}
   ${getGtagScript()}
   ${getAdSenseScript()}
   ${getStylesheetLinks()}
 </head>
 <body class="bg-surface-50 text-surface-900 dark:bg-surface-950 dark:text-surface-50 transition-colors duration-200 flex flex-col min-h-screen" data-tool-page-id="${toolId}">
-  ${getNavigationHTML()}
+  ${getNavigationHTML({ lang: currentLang })}
   <div class="flex-grow" role="presentation">
     <div class="flex">
       <div class="flex-1 min-w-0 overflow-x-hidden">
@@ -1096,11 +1116,11 @@ export function createPageTemplate(options) {
     </div>
   </div>
   ${bottomAd}
-  ${getFooterHTML()}
+  ${getFooterHTML({ lang: currentLang })}
   ${schema !== undefined ? (schema ? `<script type="application/ld+json">${JSON.stringify(schema)}</script>` : '') : (path ? `<script type="application/ld+json">${JSON.stringify({'@context':'https://schema.org','@type':'SoftwareApplication',name:title,url:pageUrl,description,applicationCategory:'DeveloperApplication',operatingSystem:'Any',offers:{'@type':'Offer',price:'0',priceCurrency:'USD'}})}</script>` : '')}
    ${getThemeScript()}
-   ${getLanguageScript(toolId)}
-   ${getSearchScript()}
+   ${getLanguageScript(toolId, currentLang)}
+   ${getSearchScript({ lang: currentLang })}
    ${getToastScript()}
    ${getKeyboardShortcutsScript()}
    ${getCheatsheetToggleScript()}
