@@ -461,8 +461,7 @@ export function getNavigationHTML(options = {}) {
       <div class="${maxWidth} mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-14">
           <div class="flex items-center gap-4">
-            <a href="/"
-               href="${homeHref}"
+            <a href="${homeHref}"
                class="flex items-center gap-2 text-surface-900 dark:text-surface-50 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200 group focus:outline-none focus:ring-2 focus:ring-primary-500 rounded-md py-1 pr-2">
               <div class="p-1 rounded bg-primary-50 dark:bg-primary-900/50 group-hover:bg-primary-100 dark:group-hover:bg-primary-900 transition-colors">
                 <svg class="w-5 h-5 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
