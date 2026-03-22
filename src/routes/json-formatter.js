@@ -8,6 +8,7 @@ import { createPageTemplate, createToolHeader, createEmptyState, getCopyToClipbo
 import { createRichEditorPane, getRichEditorStyles, getRichEditorScript } from '../utils/rich-editor.js';
 import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
+import { getToolTranslation, resolveRequestLanguage, t } from '../utils/i18n.js';
 
 export async function handleJSONFormatterRoutes(request, url) {
   const { pathname } = url;
@@ -16,7 +17,7 @@ export async function handleJSONFormatterRoutes(request, url) {
   try {
     if (pathname === '/json-formatter' || pathname === '/json-formatter/') {
       if (method === 'GET') {
-        return renderJSONFormatterPage();
+        return renderJSONFormatterPage(resolveRequestLanguage(request, url));
       }
     }
 
@@ -30,12 +31,13 @@ export async function handleJSONFormatterRoutes(request, url) {
   }
 }
 
-function renderJSONFormatterPage() {
+function renderJSONFormatterPage(lang = 'en') {
+  const toolTranslation = getToolTranslation('json-formatter', lang);
   const toolHeader = createToolHeader(
     { emoji: '📋' },
-    'JSON Formatter',
-    'Format, validate, and beautify JSON data',
-    [{ text: 'Privacy First', color: 'green', tooltip: 'All processing happens in your browser — no data is sent to any server.' }],
+    toolTranslation?.name || 'JSON Formatter',
+    toolTranslation?.desc || 'Format, validate, and beautify JSON data',
+    [{ text: t('tools.json-formatter.ui.badge12', lang), color: 'green', tooltip: 'All processing happens in your browser — no data is sent to any server.' }],
     { toolId: 'json-formatter' }
   );
 
@@ -264,10 +266,11 @@ function renderJSONFormatterPage() {
    `;
 
   return respondHTML(createPageTemplate({
-    title: 'JSON Formatter',
-    description: 'Format, validate, minify and beautify JSON data with syntax highlighting and error detection.',
+    title: toolTranslation?.name || 'JSON Formatter',
+    description: toolTranslation?.desc || 'Format, validate, minify and beautify JSON data with syntax highlighting and error detection.',
     path: '/json-formatter',
     content,
-    scripts: script
+    scripts: script,
+    lang
   }));
 }

@@ -1,14 +1,16 @@
 import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
+import { getToolTranslation, resolveRequestLanguage, t } from '../utils/i18n.js';
 
-function renderMarbleRoulettePage() {
+function renderMarbleRoulettePage(lang = 'en') {
+  const toolTranslation = getToolTranslation('marble-roulette', lang);
   const toolHeader = createToolHeader(
     { emoji: '🎱' },
-    'Marble Roulette',
-    'Drop marbles through pegs for a physics-based lucky draw.',
+    toolTranslation?.name || 'Marble Roulette',
+    toolTranslation?.desc || 'Drop marbles through pegs for a physics-based lucky draw.',
     [
-      { text: '<span data-i18n="tools.marble-roulette.ui.badge0">Client-Side Only</span>' },
-      { text: '<span data-i18n="tools.marble-roulette.ui.badge1">Fair + Unpredictable</span>' }
+      { text: `<span data-i18n="tools.marble-roulette.ui.badge0">${t('tools.marble-roulette.ui.badge0', lang)}</span>` },
+      { text: `<span data-i18n="tools.marble-roulette.ui.badge1">${t('tools.marble-roulette.ui.badge1', lang)}</span>` }
     ],
     { toolId: 'marble-roulette' }
   );
@@ -1149,17 +1151,18 @@ Dave</textarea>
   `;
 
   return respondHTML(createPageTemplate({
-    title: 'Marble Roulette',
-    description: 'A physics-based marble race lucky draw. Marbles drop through pegs and the first to reach a collection slot wins.',
+    title: toolTranslation?.name || 'Marble Roulette',
+    description: toolTranslation?.desc || 'A physics-based marble race lucky draw. Marbles drop through pegs and the first to reach a collection slot wins.',
     path: '/marble-roulette',
     content,
-    scripts
+    scripts,
+    lang
   }));
 }
 
 export async function handleMarbleRouletteRoutes(request, url) {
   if (url.pathname === '/marble-roulette' || url.pathname === '/marble-roulette/') {
-    if (request.method === 'GET') return renderMarbleRoulettePage();
+    if (request.method === 'GET') return renderMarbleRoulettePage(resolveRequestLanguage(request, url));
   }
   return null;
 }

@@ -77,6 +77,7 @@ import {
 import { respondJSON, respondText, respond404, respond429 } from './utils/respond.js';
 import { bundledStyles, bundledStylesHash } from './utils/bundled-styles.js';
 import { setAdConfig, setAnalyticsToken, setSiteUrl } from './utils/common-ui.js';
+import { resolveRequestLanguage } from './utils/i18n.js';
 
 // Rate limiting state (memory fallback)
 const rateLimiter = new Map();
@@ -480,7 +481,7 @@ const worker = {
 
       // Home page
       if (path === '/' || path === '/index.html') {
-        return renderHomePage({ isDev });
+        return renderHomePage({ isDev, lang: resolveRequestLanguage(request, url) });
       }
 
       // Legacy routing compatibility: older docs/links used the /tools/<tool-id> prefix.
