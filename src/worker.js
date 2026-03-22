@@ -55,6 +55,9 @@ import { handleWireguardConfigRoutes } from './routes/wireguard-config.js';
 import { handleLadderGameRoutes } from './routes/ladder-game.js';
 import { handleRouletteWheelRoutes } from './routes/roulette-wheel.js';
 import { handleMarbleRouletteRoutes } from './routes/marble-roulette.js';
+import { handleTokenStudioRoutes } from './routes/token-studio.js';
+import { handleEncodingWorkbenchRoutes } from './routes/encoding-workbench.js';
+import { handleOAuthDebuggerRoutes } from './routes/oauth-debugger.js';
 import { getToolsForEnvironment } from './utils/tool-registry.js';
 import {
   renderTermsPage,
@@ -77,7 +80,7 @@ import {
 } from './utils/security.js';
 import { respondJSON, respondText, respond404, respond429 } from './utils/respond.js';
 import { bundledStyles, bundledStylesHash } from './utils/bundled-styles.js';
-import { setAdConfig } from './utils/common-ui.js';
+import { setAdConfig, setAnalyticsToken } from './utils/common-ui.js';
 
 // Rate limiting state (memory fallback)
 const rateLimiter = new Map();
@@ -133,7 +136,10 @@ const handlersById = {
   'wireshark-filter': handleWiresharkFilterRoutes,
   'protocol-headers': handleProtocolHeadersRoutes,
   'wireguard-config': handleWireguardConfigRoutes,
-  'marble-roulette': handleMarbleRouletteRoutes
+  'marble-roulette': handleMarbleRouletteRoutes,
+  'token-studio': handleTokenStudioRoutes,
+  'encoding-workbench': handleEncodingWorkbenchRoutes,
+  'oauth-debugger': handleOAuthDebuggerRoutes
 };
 
 async function resolveToolResponse(handler, request, url) {
@@ -283,11 +289,13 @@ const worker = {
         client: null,
         slots: {}
       });
+      setAnalyticsToken('');
     } else {
       setAdConfig({
         client: env?.ADSENSE_CLIENT,
         slots: parseAdSlots(env)
       });
+      setAnalyticsToken(env?.CF_ANALYTICS_TOKEN);
     }
 
     // Periodic rate limiter cleanup (always run to prevent memory growth)
@@ -414,7 +422,7 @@ const worker = {
         });
       }
 
-      if (path.startsWith('/vendor/') || path.startsWith('/fonts/')) {
+      if (path.startsWith('/vendor/') || path.startsWith('/fonts/') || path === '/manifest.json' || path === '/sw.js') {
         if (env && env.ASSETS && typeof env.ASSETS.fetch === 'function') {
           const assetRequest = isDev ? stripConditionalHeaders(request) : request;
           let assetResponse = await env.ASSETS.fetch(assetRequest);
@@ -498,7 +506,7 @@ const worker = {
 
       // Redirects for removed/merged tools
       if (path === '/encoder-decoder' || path.startsWith('/encoder-decoder/')) {
-        return Response.redirect(new URL('/universal-decoder', request.url).href, 301);
+        return Response.redirect(new URL('/encoding-workbench', request.url).href, 301);
       }
 
       if (path === '/regex-tester' || path.startsWith('/regex-tester/')) {
@@ -513,9 +521,21 @@ const worker = {
         return Response.redirect(new URL('/', request.url).href, 301);
       }
 
-      // Legacy alias: /hash-generator* should remain compatible with hash calculator handler.
+      // Consolidated tool redirects (JWT+JWK → Token Studio, Hash+Decoder → Encoding Workbench)
+      if (path === '/jwt-decoder' || path.startsWith('/jwt-decoder/')) {
+        return Response.redirect(new URL('/token-studio', request.url).href, 301);
+      }
+      if (path === '/jwk-jwks-studio' || path.startsWith('/jwk-jwks-studio/')) {
+        return Response.redirect(new URL('/token-studio', request.url).href, 301);
+      }
+      if (path === '/hash-calculator' || path.startsWith('/hash-calculator/')) {
+        return Response.redirect(new URL('/encoding-workbench', request.url).href, 301);
+      }
+      if (path === '/universal-decoder' || path.startsWith('/universal-decoder/')) {
+        return Response.redirect(new URL('/encoding-workbench', request.url).href, 301);
+      }
       if (path === '/hash-generator' || path.startsWith('/hash-generator/')) {
-        return resolveToolResponse(handleHashCalculatorRoutes, request, url);
+        return Response.redirect(new URL('/encoding-workbench', request.url).href, 301);
       }
 
       // Active tool routes (registry-driven)

@@ -7,10 +7,11 @@
 import { bundledStylesHash } from './bundled-styles.js';
 import { getKeyboardShortcutsScript } from './keyboard-shortcuts.js';
 import { TOOLS } from './tool-registry.js';
+import { getPersonalizationScript } from './personalization.js';
 import { t, getLanguageSelectorHTML, getLanguageBootstrapScript, getLanguageScript } from './i18n.js';
 
-// Re-export keyboard shortcuts and i18n for easy access
-export { getKeyboardShortcutsScript, t, getLanguageSelectorHTML, getLanguageBootstrapScript, getLanguageScript };
+// Re-export keyboard shortcuts, i18n, and personalization for easy access
+export { getKeyboardShortcutsScript, t, getLanguageSelectorHTML, getLanguageBootstrapScript, getLanguageScript, getPersonalizationScript };
 
 export function createCheatsheet(toolId, title, sections) {
   const id = `cheatsheet-${toolId}`;
@@ -90,6 +91,171 @@ export function getCheatsheetToggleScript() {
       })();
     </script>
   `;
+}
+
+let analyticsToken = '';
+
+export function setAnalyticsToken(token) {
+  analyticsToken = typeof token === 'string' ? token.trim() : '';
+}
+
+export function getAnalyticsScript() {
+  if (!analyticsToken) return '';
+  return `<!-- Cloudflare Web Analytics (privacy-preserving, no cookies) -->
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "${analyticsToken}"}'></script>`;
+}
+
+/**
+ * Shared tool layout abstraction.
+ * Provides consistent inner content structure for tool pages.
+ * Modes: 'two-panel' (input/output grid), 'single-panel' (centered), 'custom' (pass-through).
+ *
+ * @param {Object} options
+ * @param {string} options.mode - 'two-panel' | 'single-panel' | 'custom'
+ * @param {string} options.toolHeader - HTML from createToolHeader()
+ * @param {string} [options.controls] - Controls bar HTML (buttons, selectors)
+ * @param {string} [options.leftPanel] - Left/input panel HTML (two-panel mode)
+ * @param {string} [options.rightPanel] - Right/output panel HTML (two-panel mode)
+ * @param {string} [options.content] - Main content HTML (single-panel or custom mode)
+ * @param {string} [options.footer] - Additional sections below main (education, related tools)
+ * @param {Object} [options.actionBar] - Action bar config { copy: bool, download: bool, share: bool, fullscreen: bool }
+ * @returns {string} HTML string for tool page content
+ */
+export function createToolLayout(options) {
+  const {
+    mode = 'two-panel',
+    toolHeader = '',
+    controls = '',
+    leftPanel = '',
+    rightPanel = '',
+    content = '',
+    footer = '',
+    actionBar
+  } = options;
+
+  const actionBarHTML = actionBar ? getActionBarHTML(actionBar) : '';
+
+  let innerContent;
+  if (mode === 'two-panel') {
+    innerContent = `
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="flex flex-col gap-2">${leftPanel}</div>
+        <div class="flex flex-col gap-2 relative">
+          ${actionBarHTML}
+          ${rightPanel}
+        </div>
+      </div>`;
+  } else if (mode === 'single-panel') {
+    innerContent = `
+      <div class="max-w-3xl mx-auto">
+        ${actionBarHTML}
+        ${content}
+      </div>`;
+  } else {
+    innerContent = content;
+  }
+
+  return `
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+        ${toolHeader}
+        ${controls ? `<div class="flex flex-wrap gap-3 mb-6 bg-surface-50 dark:bg-surface-950/50 p-2 rounded-lg border border-surface-100 dark:border-surface-800">${controls}</div>` : ''}
+        ${innerContent}
+      </div>
+      ${footer}
+    </main>`;
+}
+
+/**
+ * Universal action bar for tool output areas.
+ * @param {Object} options - { copy: bool, download: bool, share: bool, fullscreen: bool, outputId: string }
+ * @returns {string} HTML
+ */
+export function getActionBarHTML(options = {}) {
+  const { copy = true, download = false, share = false, fullscreen = false, outputId = 'output' } = options;
+  const buttons = [];
+
+  if (copy) {
+    buttons.push(`<button type="button" class="action-btn" data-action="copy" data-target="${outputId}" title="Copy to clipboard">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+      <span class="action-label">Copy</span>
+    </button>`);
+  }
+  if (download) {
+    buttons.push(`<button type="button" class="action-btn" data-action="download" data-target="${outputId}" title="Download">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+      <span class="action-label">Download</span>
+    </button>`);
+  }
+  if (share) {
+    buttons.push(`<button type="button" class="action-btn" data-action="share" title="Share permalink">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+      <span class="action-label">Share</span>
+    </button>`);
+  }
+  if (fullscreen) {
+    buttons.push(`<button type="button" class="action-btn" data-action="fullscreen" title="Fullscreen">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+      <span class="action-label">Fullscreen</span>
+    </button>`);
+  }
+
+  if (buttons.length === 0) return '';
+
+  return `<div class="flex items-center justify-end gap-1 mb-2">
+    ${buttons.join('\n    ')}
+  </div>`;
+}
+
+/**
+ * Script for universal action bar interactions (copy with feedback, download, share).
+ * @returns {string} Script tag
+ */
+export function getActionBarScript() {
+  return `<script>
+  (function() {
+    document.addEventListener('click', function(e) {
+      var btn = e.target.closest('[data-action]');
+      if (!btn) return;
+      var action = btn.dataset.action;
+      var targetId = btn.dataset.target;
+
+      if (action === 'copy') {
+        var el = document.getElementById(targetId);
+        var text = el ? (el.value || el.textContent || el.innerText) : '';
+        if (text && navigator.clipboard) {
+          navigator.clipboard.writeText(text).then(function() {
+            var label = btn.querySelector('.action-label');
+            if (label) { var orig = label.textContent; label.textContent = '✓ Copied'; setTimeout(function() { label.textContent = orig; }, 2000); }
+          });
+        }
+      }
+      if (action === 'download') {
+        var el = document.getElementById(targetId);
+        var text = el ? (el.value || el.textContent || el.innerText) : '';
+        if (text) {
+          var blob = new Blob([text], { type: 'text/plain' });
+          var a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = (targetId || 'output') + '.txt';
+          a.click();
+          URL.revokeObjectURL(a.href);
+        }
+      }
+      if (action === 'share') {
+        var url = new URL(window.location.href);
+        navigator.clipboard.writeText(url.href).then(function() {
+          var label = btn.querySelector('.action-label');
+          if (label) { var orig = label.textContent; label.textContent = '✓ Link copied'; setTimeout(function() { label.textContent = orig; }, 2000); }
+        });
+      }
+      if (action === 'fullscreen') {
+        var main = document.querySelector('main');
+        if (main) { if (document.fullscreenElement) document.exitFullscreen(); else main.requestFullscreen(); }
+      }
+    });
+  })();
+  </script>`;
 }
 
 const DEFAULT_ADSENSE_CLIENT = 'ca-pub-5134881365131182';
@@ -297,12 +463,10 @@ export function getNavigationHTML(options = {}) {
              <button type="button" id="mobile-search-btn" class="md:hidden p-2 rounded-lg text-surface-600 hover:bg-surface-100 dark:text-surface-400 dark:hover:bg-surface-800 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500" aria-label="Search tools">
                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
              </button>
-             <!-- Desktop search button (with text) -->
-             <div class="hidden md:flex items-center mr-2">
-                 <button type="button" id="nav-search-btn" class="flex items-center gap-2 px-3 py-1.5 bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-md text-xs text-surface-500 dark:text-surface-400 hover:text-surface-700 dark:hover:text-surface-300 hover:border-surface-300 dark:hover:border-surface-600 transition-all focus:outline-none focus:ring-2 focus:ring-primary-500">
-                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                     <span data-i18n="nav.search">${t('nav.search')}</span>
-                 </button>
+             <!-- Desktop search input (readonly, triggers modal on click/focus) -->
+             <div class="hidden md:flex items-center mr-2 relative">
+                 <svg class="absolute left-3 w-3.5 h-3.5 text-surface-400 dark:text-surface-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                 <input type="text" readonly id="nav-search-btn" placeholder="${t('nav.search')}" data-i18n-placeholder="nav.search" class="w-48 lg:w-64 pl-8 pr-3 py-1.5 bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-md text-xs text-surface-500 dark:text-surface-400 placeholder-surface-500 dark:placeholder-surface-400 hover:border-surface-300 dark:hover:border-surface-600 cursor-pointer transition-all focus:outline-none focus:ring-2 focus:ring-primary-500" aria-label="Search tools" />
              </div>
              ${getLanguageSelectorHTML()}
              ${getThemeToggleButton()}
@@ -878,12 +1042,8 @@ export function createPageTemplate(options) {
   const pageUrl = path ? `${SITE_URL}${path}` : SITE_URL;
   const fullTitle = `${title} | SimpleTool`;
 
-  const adSlot = getAdSlotHTML('tool', {
-    wrapperClassName: 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6'
-  });
-
   const sidebarAd = getAdSlotHTML('sidebar', {
-    wrapperClassName: 'hidden 2xl:block w-[160px] flex-shrink-0 sticky top-24 self-start ml-4 mt-8',
+    wrapperClassName: 'hidden xl:block w-[160px] flex-shrink-0 sticky top-24 self-start ml-4 mt-8',
     format: 'vertical',
     responsive: false,
     label: ''
@@ -905,6 +1065,8 @@ export function createPageTemplate(options) {
   <meta name="description" content="${description}">
   <link rel="canonical" href="${pageUrl}">
   <link rel="icon" type="image/svg+xml" href="/favicon.ico">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#4f46e5">
   <meta property="og:type" content="website">
   <meta property="og:url" content="${pageUrl}">
   <meta property="og:title" content="${fullTitle}">
@@ -921,7 +1083,6 @@ export function createPageTemplate(options) {
 </head>
 <body class="bg-surface-50 text-surface-900 dark:bg-surface-950 dark:text-surface-50 transition-colors duration-200 flex flex-col min-h-screen" data-tool-page-id="${toolId}">
   ${getNavigationHTML()}
-  ${adSlot}
   <div class="flex-grow" role="presentation">
     <div class="flex">
       <div class="flex-1 min-w-0">
@@ -939,6 +1100,7 @@ export function createPageTemplate(options) {
    ${getToastScript()}
    ${getKeyboardShortcutsScript()}
    ${getCheatsheetToggleScript()}
+   ${toolId ? getPersonalizationScript(toolId) : ''}
    ${scripts}
   ${isAdsEnabled() ? `<script>
     (function(){
@@ -952,6 +1114,8 @@ export function createPageTemplate(options) {
       setTimeout(function(){clearInterval(check);},5000);
     })();
   </script>` : ''}
+  ${getAnalyticsScript()}
+  <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){});}</script>
 </body>
 </html>`;
 }

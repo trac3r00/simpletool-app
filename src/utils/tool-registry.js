@@ -18,10 +18,10 @@ export const TOOLS = [
     path: '/json-formatter',
     category: 'formatters',
     keywords: 'lint, validator, beautify',
-    relatedTools: ['json-schema-studio', 'yaml-toml-converter', 'jwt-decoder', 'text-diff']
+    relatedTools: ['json-schema-studio', 'yaml-toml-converter', 'token-studio', 'text-diff']
   },
   {
-    id: 'jwt-decoder',
+    id: 'token-studio',
     name: 'JWT Inspector',
     icon: '🔓',
     description: 'Inspect and decode JSON Web Tokens.',
@@ -29,7 +29,7 @@ export const TOOLS = [
     category: 'security',
     keywords: 'token, auth, base64',
     tip: 'Decode JWT header, payload, and verify signature — paste any JWT to see its claims',
-    relatedTools: ['jwk-jwks-studio', 'saml-decoder', 'universal-decoder', 'json-formatter']
+    relatedTools: ['token-studio', 'saml-decoder', 'encoding-workbench', 'json-formatter']
   },
   {
     id: 'uuid-generator',
@@ -39,7 +39,7 @@ export const TOOLS = [
     path: '/uuid-generator',
     category: 'generators',
     keywords: 'guid, identifier, unique',
-    relatedTools: ['password-generator', 'mock-data-generator', 'hash-calculator']
+    relatedTools: ['password-generator', 'mock-data-generator', 'encoding-workbench']
   },
   {
     id: 'password-generator',
@@ -49,10 +49,10 @@ export const TOOLS = [
     path: '/password-generator',
     category: 'security',
     keywords: 'random, secure, strong',
-    relatedTools: ['hash-calculator', 'htpasswd-generator', 'ssh-key-generator', 'secret-scanner']
+    relatedTools: ['encoding-workbench', 'htpasswd-generator', 'ssh-key-generator', 'secret-scanner']
   },
   {
-    id: 'hash-calculator',
+    id: 'encoding-workbench',
     name: 'Hash Calculator',
     icon: '#️⃣',
     description: 'Compute SHA256, MD5, and other hashes.',
@@ -160,7 +160,7 @@ export const TOOLS = [
     relatedTools: ['text-diff', 'case-converter', 'log-viewer', 'code-minifier']
   },
   {
-    id: 'universal-decoder',
+    id: 'encoding-workbench',
     name: 'Layered Decoder',
     icon: '🔮',
     description: 'Auto-detect and unwrap layered encodings (Base64, URL, Hex, and more).',
@@ -168,7 +168,7 @@ export const TOOLS = [
     category: 'formatters',
     keywords: 'base64, hex, url, html',
     tip: 'Paste encoded text and watch it unwrap layer by layer — Base64 inside URL encoding inside Hex, etc.',
-    relatedTools: ['jwt-decoder', 'saml-decoder', 'hash-calculator', 'json-formatter']
+    relatedTools: ['token-studio', 'saml-decoder', 'encoding-workbench', 'json-formatter']
   },
   {
     id: 'cron-builder',
@@ -189,7 +189,7 @@ export const TOOLS = [
     path: '/ssh-key-generator',
     category: 'security',
     keywords: 'openssh, pem, public key',
-    relatedTools: ['certificate-decoder', 'password-generator', 'jwk-jwks-studio', 'htpasswd-generator']
+    relatedTools: ['certificate-decoder', 'password-generator', 'token-studio', 'htpasswd-generator']
   },
   {
     id: 'certificate-decoder',
@@ -200,10 +200,10 @@ export const TOOLS = [
     category: 'security',
     keywords: 'ssl, tls, pem, x509',
     tip: 'Paste a PEM certificate to see issuer, subject, validity dates, SANs, and key details',
-    relatedTools: ['ssh-key-generator', 'jwk-jwks-studio', 'saml-decoder', 'csp-builder']
+    relatedTools: ['ssh-key-generator', 'token-studio', 'saml-decoder', 'csp-builder']
   },
   {
-    id: 'jwk-jwks-studio',
+    id: 'token-studio',
     name: 'JWK/JWKS Studio',
     icon: '🧷',
     description: 'Convert PEM/JWK/JWKS, compute RFC7638 thumbprints, and verify JWT signatures offline.',
@@ -212,7 +212,31 @@ export const TOOLS = [
     keywords: 'jwk, jwks, jose, oidc, kid, rfc 7638, thumbprint, jwt, rs256, ps256, es256',
     tip: 'Paste a JWK/JWKS or PEM public key to compute a correct kid (thumbprint) and verify JWTs client-side',
     badge: 'NEW',
-    relatedTools: ['jwt-decoder', 'certificate-decoder', 'ssh-key-generator', 'saml-decoder']
+    relatedTools: ['token-studio', 'certificate-decoder', 'ssh-key-generator', 'saml-decoder']
+  },
+  {
+    id: 'token-studio',
+    name: 'Token Cryptography Suite',
+    icon: '🔐',
+    description: 'Inspect, generate, and manage JWT tokens and cryptographic keys.',
+    path: '/token-studio',
+    category: 'security',
+    keywords: 'jwt, jwk, jwks, token, auth, jose, oidc, rsa, ec, sign, verify, kid, thumbprint',
+    tip: 'All-in-one JWT inspect/generate, JWK key management, and JWKS endpoint simulation',
+    badge: 'NEW',
+    relatedTools: ['certificate-decoder', 'saml-decoder', 'ssh-key-generator', 'encoding-workbench']
+  },
+  {
+    id: 'encoding-workbench',
+    name: 'Encoding & Decoding Workbench',
+    icon: '🔓',
+    description: 'Encode, decode, hash, and identify data transformations.',
+    path: '/encoding-workbench',
+    category: 'security',
+    keywords: 'base64, hex, url, html, hash, md5, sha, bcrypt, decode, encode, identify',
+    tip: 'Auto-detect encoding layers, hash with all algorithms, identify unknown hashes',
+    badge: 'NEW',
+    relatedTools: ['token-studio', 'certificate-decoder', 'json-formatter', 'secret-scanner']
   },
   {
     id: 'saml-decoder',
@@ -223,7 +247,19 @@ export const TOOLS = [
     category: 'security',
     keywords: 'sso, xml, assertion',
     tip: 'Decode Base64-encoded SAML requests and responses into readable XML for SSO debugging',
-    relatedTools: ['jwt-decoder', 'certificate-decoder', 'universal-decoder', 'email-analyzer']
+    relatedTools: ['token-studio', 'certificate-decoder', 'encoding-workbench', 'email-analyzer']
+  },
+  {
+    id: 'oauth-debugger',
+    name: 'OAuth 2.0 / PKCE Debugger',
+    icon: '🔑',
+    description: 'Generate PKCE challenges, visualize OAuth flows, and analyze security.',
+    path: '/oauth-debugger',
+    category: 'security',
+    keywords: 'oauth, pkce, authorization, code, flow, openid, oidc, implicit, token',
+    tip: 'Generate PKCE code verifier/challenge pairs and check OAuth configuration security',
+    badge: 'NEW',
+    relatedTools: ['token-studio', 'saml-decoder', 'certificate-decoder', 'csp-builder']
   },
   {
     id: 'user-agent-decoder',
@@ -294,7 +330,7 @@ export const TOOLS = [
     category: 'security',
     keywords: 'apache, basic auth',
     tip: 'Create Apache htpasswd entries with bcrypt, SHA-1, or MD5 for HTTP Basic Auth',
-    relatedTools: ['password-generator', 'hash-calculator', 'csp-builder', 'ssh-key-generator']
+    relatedTools: ['password-generator', 'encoding-workbench', 'csp-builder', 'ssh-key-generator']
   },
   {
     id: 'mock-data-generator',

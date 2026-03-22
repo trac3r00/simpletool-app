@@ -2,7 +2,7 @@
  * SQL Formatter & Validator
  * - Formats SQL with readable indentation
  * - Detects common syntax issues (quotes/parens/comments)
- * - Dialects: Postgres / MySQL (heuristic)
+ * - Dialects: Postgres / MySQL / BigQuery / Snowflake / ClickHouse / SQLite (heuristic)
  */
 
 import { respondHTML } from '../utils/respond.js';
@@ -66,6 +66,10 @@ function renderSQLFormatterPage() {
                 <select id="dialect" class="input">
                   <option value="postgres" data-i18n="tools.sql-formatter.ui.option0">Postgres</option>
                   <option value="mysql" data-i18n="tools.sql-formatter.ui.option1">MySQL</option>
+                  <option value="bigquery">BigQuery</option>
+                  <option value="snowflake">Snowflake</option>
+                  <option value="clickhouse">ClickHouse</option>
+                  <option value="sqlite">SQLite</option>
                 </select>
               </div>
               <div>
@@ -162,7 +166,7 @@ function renderSQLFormatterPage() {
         issues: $('issues'),
       };
 
-      const KEYWORDS = new Set([
+      var BASE_KW = [
         'SELECT','FROM','WHERE','GROUP','BY','ORDER','HAVING','LIMIT','OFFSET',
         'INSERT','INTO','VALUES','UPDATE','SET','DELETE','RETURNING',
         'JOIN','LEFT','RIGHT','FULL','INNER','OUTER','CROSS','ON',
@@ -170,7 +174,20 @@ function renderSQLFormatterPage() {
         'CASE','WHEN','THEN','ELSE','END',
         'CREATE','ALTER','DROP','TABLE','VIEW','INDEX',
         'WITH'
-      ]);
+      ];
+      var DIALECT_KW = {
+        postgres: ['ILIKE','LATERAL','RETURNING','PARTITION','WINDOW','EXCLUDE','FILTER','WITHIN'],
+        mysql: ['AUTO_INCREMENT','ENGINE','CHARSET','COLLATE','UNSIGNED','ENUM','REPLACE','IGNORE'],
+        bigquery: ['STRUCT','ARRAY','UNNEST','TABLESAMPLE','QUALIFY','PIVOT','UNPIVOT','SAFE_CAST','IFNULL','COUNTIF','ANY_VALUE','ARRAY_AGG','STRING_AGG','EXCEPT','REPLACE','WINDOW','ROWS','RANGE'],
+        snowflake: ['VARIANT','OBJECT','LATERAL','FLATTEN','QUALIFY','ILIKE','RLIKE','SAMPLE','STREAM','TASK','PIPE','STAGE','MERGE','CLONE','UNDROP','SWAP'],
+        clickhouse: ['ENGINE','PREWHERE','GLOBAL','FINAL','SAMPLE','MATERIALIZED','SETTINGS','FORMAT','ARRAY','TUPLE','NULLABLE','LOWCARDINALITY'],
+        sqlite: ['AUTOINCREMENT','GLOB','REPLACE','VACUUM','ATTACH','DETACH','PRAGMA','REINDEX','EXPLAIN']
+      };
+      function buildKeywords(dialect) {
+        var extra = DIALECT_KW[dialect] || [];
+        return new Set(BASE_KW.concat(extra));
+      }
+      var KEYWORDS = buildKeywords('postgres');
 
        function setIssues(kind, html) {
          if (!html) {
@@ -222,7 +239,7 @@ function renderSQLFormatterPage() {
             adv(j - i);
             continue;
           }
-          if (dialect === 'mysql' && ch === '#') {
+          if ((dialect === 'mysql' || dialect === 'clickhouse') && ch === '#') {
             let j = i + 1;
             while (j < s.length && s[j] !== '\n') j++;
             push('comment', s.slice(i, j), at);
@@ -262,7 +279,7 @@ function renderSQLFormatterPage() {
             adv(j - i);
             continue;
           }
-          if (dialect === 'mysql' && ch === BT) {
+          if ((dialect === 'mysql' || dialect === 'bigquery') && ch === BT) {
             let j = i + 1;
             while (j < s.length) {
               if (s[j] === BT && s[j + 1] === BT) { j += 2; continue; }
@@ -348,7 +365,7 @@ function renderSQLFormatterPage() {
           // Line comment skip
           if (!inSingle && !inDouble && !inBacktick) {
             if (ch === '-' && next === '-') { while (i < s.length && s[i] !== '\n') i++; continue; }
-            if (dialect === 'mysql' && ch === '#') { while (i < s.length && s[i] !== '\n') i++; continue; }
+            if ((dialect === 'mysql' || dialect === 'clickhouse') && ch === '#') { while (i < s.length && s[i] !== '\n') i++; continue; }
           }
 
           // Quotes
@@ -362,7 +379,7 @@ function renderSQLFormatterPage() {
             inDouble = !inDouble;
             continue;
           }
-          if (dialect === 'mysql' && !inSingle && !inDouble && ch === BT) {
+          if ((dialect === 'mysql' || dialect === 'bigquery') && !inSingle && !inDouble && ch === BT) {
             if (inBacktick && next === BT) { i++; col++; continue; }
             inBacktick = !inBacktick;
             continue;
@@ -672,6 +689,7 @@ function renderSQLFormatterPage() {
         showOutput(out);
       }
 
+      els.dialect.addEventListener('change', function() { KEYWORDS = buildKeywords(this.value); });
       els.format.addEventListener('click', function() { window.btnLoading(this, runFormat); });
       els.validate.addEventListener('click', function() { window.btnLoading(this, runValidate); });
       els.minify.addEventListener('click', function() { window.btnLoading(this, runMinify); });

@@ -15,6 +15,7 @@ ENVIRONMENT = "production"
 ADSENSE_CLIENT = "ca-pub-5134881365131182"
 ADSENSE_SLOTS = "{}"
 SENTRY_DSN = ""
+CF_ANALYTICS_TOKEN = ""
 
 # Note: Custom domain will be configured via Cloudflare Dashboard after deployment
 # Dashboard: Workers & Pages → simpletool-app → Settings → Triggers → Custom Domains

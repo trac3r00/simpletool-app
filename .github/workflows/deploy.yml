@@ -22,6 +22,15 @@ jobs:
       - name: Build (creates dist/)
         run: npm run build
 
+      - name: Run unit tests
+        run: npm test
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run E2E tests
+        run: npm run test:e2e
+
       - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
         with:
