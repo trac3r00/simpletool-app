@@ -114,7 +114,7 @@ function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
             title: 'Pro Tips',
             content: 'UUID v4 is the most common choice for general-purpose unique IDs because it relies on high-quality randomness. Use v1 if you need to sort IDs by creation time.'
           }
-        ], 'uuid-generator')}
+        ], 'uuid-generator', currentLang)}
       </div>
     </main>
     ${createRelatedToolsSection(relatedToolsData)}

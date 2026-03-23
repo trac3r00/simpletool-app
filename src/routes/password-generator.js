@@ -364,7 +364,7 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
             </ul>
           `
         }
-      ], 'password-generator')}
+      ], 'password-generator', currentLang)}
     </main>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
       ${createEducationalSection([
@@ -384,7 +384,7 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
           title: 'Pro Tips',
           content: '<ul><li>Use the "Passphrase" mode for accounts you need to type manually; they are easier to remember but still highly secure.</li><li>For maximum security, generate the longest password allowed by the service (often 64 or 128 characters).</li><li>Regularly audit your saved passwords using your password manager\'s built-in security check features.</li><li>Consider using "Plus Aliases" (e.g., user+service@gmail.com) to track which services sell your data or send spam.</li></ul>'
         }
-      ], 'password-generator')}
+      ], 'password-generator', currentLang)}
     ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;

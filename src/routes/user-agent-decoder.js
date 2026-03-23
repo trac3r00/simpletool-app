@@ -83,7 +83,7 @@ function renderUserAgentDecoderPage(lang = DEFAULT_LANGUAGE) {
             title: 'Pro Tips',
             content: 'Many modern browsers "freeze" or simplify their User-Agent strings to prevent fingerprinting. Always look for the "Version" or "Chrome" tokens for the most accurate version info.'
           }
-        ], 'user-agent-decoder')}
+        ], 'user-agent-decoder', currentLang)}
     ${createRelatedToolsSection(relatedToolsData)}
       </div>
     </main>

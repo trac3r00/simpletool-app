@@ -157,7 +157,7 @@ function renderSVGOptimizerPage(lang = DEFAULT_LANGUAGE) {
           title: 'Pro Tips',
           content: '<ul><li>Use the "currentColor" button to convert all explicit fills and strokes to <code>currentColor</code>, making your SVG easily styleable via CSS.</li><li>Always optimize your SVGs before using them in production to ensure they are as small as possible for fast web performance.</li><li>When creating SVGs in design tools, use the "Outline Stroke" and "Simplify Path" features to reduce the complexity of the generated code before optimization.</li></ul>'
         }
-      ], 'svg-optimizer')}
+      ], 'svg-optimizer', currentLang)}
     ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;

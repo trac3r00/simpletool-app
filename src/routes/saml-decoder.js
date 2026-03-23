@@ -206,7 +206,7 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
             </ul>
           `
         }
-      ], 'saml-decoder')}
+      ], 'saml-decoder', currentLang)}
     ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;

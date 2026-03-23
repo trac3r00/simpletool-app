@@ -185,7 +185,7 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
             </ul>
           `
         }
-      ], 'htpasswd-generator')}
+      ], 'htpasswd-generator', currentLang)}
     ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;

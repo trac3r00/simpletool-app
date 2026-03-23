@@ -159,7 +159,7 @@ function renderColorConverterPage(lang = DEFAULT_LANGUAGE) {
           title: 'Pro Tips',
           content: '<ul><li>Use HSL when designing UI components like buttons, as it makes it easy to create hover states by simply adjusting the lightness value.</li><li>When working with transparency in CSS, prefer <code>rgba()</code> or <code>hsla()</code> for better readability and control over the alpha channel.</li><li>Always check for color contrast ratios to ensure your designs are accessible to users with visual impairments.</li></ul>'
         }
-      ], 'color-converter')}
+      ], 'color-converter', currentLang)}
     </div>
     ${createRelatedToolsSection(relatedToolsData)}
   `

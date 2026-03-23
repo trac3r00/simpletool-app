@@ -295,7 +295,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
           title: 'Hash Algorithm Guide',
           content: '<ul><li><strong>MD5</strong> — 128-bit output. Cryptographically broken; use only for legacy compatibility or non-security checksums.</li><li><strong>SHA-1</strong> — 160-bit output. Deprecated for security use. Still found in older Git commits and certificates.</li><li><strong>SHA-256</strong> — 256-bit output. General-purpose, widely used in TLS, code signing, and data integrity checks.</li><li><strong>SHA-512</strong> — 512-bit output. Higher security margin; preferred for password-adjacent workflows.</li><li><strong>bcrypt</strong> — Adaptive password-hashing function with a configurable cost factor. Use for storing passwords; not for data integrity.</li></ul>'
         }
-      ], 'encoding-workbench')}
+      ], 'encoding-workbench', currentLang)}
       ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;

@@ -436,7 +436,7 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
           title: 'Security Best Practices',
           content: '<ul><li>Always validate <code>exp</code>, <code>nbf</code>, <code>iss</code>, and <code>aud</code> claims server-side.</li><li>Never use the <code>alg: none</code> algorithm in production — it removes all signature protection.</li><li>Prefer asymmetric algorithms (RS*, ES*, PS*) over HMAC when multiple services need to verify tokens.</li><li>Rotate keys regularly and use <code>kid</code> to identify which key was used to sign each token.</li><li>Store private keys securely — never commit them to version control.</li><li>Use short expiration times and refresh tokens rather than long-lived JWTs.</li></ul>'
         }
-      ], 'token-studio')}
+      ], 'token-studio', currentLang)}
       ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;

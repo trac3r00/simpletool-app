@@ -337,7 +337,7 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
           title: 'Pro Tips',
           content: 'Remember that in IPv4, the first and last addresses in a subnet are typically reserved for the network ID and broadcast address. In IPv6, subnets are almost always /64 for standard local networks.'
         }
-      ], 'cidr-calculator')}
+      ], 'cidr-calculator', currentLang)}
 
       ${createCheatsheet('cidr-calculator', 'Subnet Quick Reference', [
         { heading: 'Common Subnets', content: `

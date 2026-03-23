@@ -138,7 +138,7 @@ function renderJSONFormatterPage(lang = 'en') {
           title: 'Pro Tips',
           content: '<ul><li>Use the "Validate" button if you only want to check for syntax errors without changing the formatting of your input.</li><li>Pay attention to the "Max Depth" statistic to identify overly complex or deeply nested structures that might cause performance issues.</li><li>Always use double quotes for keys and string values, as single quotes are invalid in standard JSON.</li></ul>'
         }
-      ], 'json-formatter')}
+      ], 'json-formatter', lang)}
     ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;

@@ -140,7 +140,7 @@ function renderSQLFormatterPage(lang = DEFAULT_LANGUAGE) {
           title: 'Pro Tips',
           content: '<ul><li>Use Common Table Expressions (CTEs) with the <code>WITH</code> clause to break down complex queries into smaller, more manageable parts.</li><li>Always use descriptive aliases for tables and columns to make the intent of your query clear to others.</li><li>Use the "Minify" button if you need to compress your SQL into a single line for use in configuration files or command-line tools.</li></ul>'
         }
-      ], 'sql-formatter')}
+      ], 'sql-formatter', currentLang)}
     ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;

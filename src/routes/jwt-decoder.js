@@ -175,7 +175,7 @@ function renderJWTDecoderPage(lang = DEFAULT_LANGUAGE) {
             </ul>
           `
         }
-      ], 'jwt-decoder')}
+      ], 'jwt-decoder', currentLang)}
 
       ${createCheatsheet('jwt-decoder', 'JWT Quick Reference', [
         { heading: 'Structure', content: '<p><code>header.payload.signature</code> — each part is Base64URL-encoded</p>' },
@@ -217,7 +217,7 @@ function renderJWTDecoderPage(lang = DEFAULT_LANGUAGE) {
           title: 'Pro Tips',
           content: '<ul><li>Use the <strong>"exp"</strong> claim to set a short expiration time for access tokens to minimize the impact of a stolen token.</li><li>Always use <strong>HTTPS</strong> to transmit JWTs to prevent interception via man-in-the-middle attacks.</li><li>If using asymmetric algorithms (like RS256), you can share your public key so other services can verify your tokens without being able to create them.</li><li>Check for the <strong>"nbf"</strong> (Not Before) claim if you want to issue a token that only becomes valid at a specific future time.</li></ul>'
         }
-      ], 'jwt-decoder')}
+      ], 'jwt-decoder', currentLang)}
     ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;

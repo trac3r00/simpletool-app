@@ -143,7 +143,7 @@ function renderDataConverterPage(lang = DEFAULT_LANGUAGE) {
           title: 'Pro Tips',
           content: '<ul><li>Use YAML for CI/CD pipelines where readability of complex, nested structures is essential for maintainability.</li><li>Prefer TOML for application-level configuration files to provide a clean and obvious interface for end-users who might need to edit them manually.</li><li>When converting from YAML to JSON, be aware of YAML\'s "Norway problem" (where <code>NO</code> can be interpreted as <code>false</code>) and ensure your data types are preserved correctly.</li></ul>'
         }
-      ], 'yaml-toml-converter')}
+      ], 'yaml-toml-converter', currentLang)}
     ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;

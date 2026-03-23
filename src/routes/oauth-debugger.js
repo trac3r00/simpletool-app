@@ -238,7 +238,7 @@ function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
               </ol>
             `
           }
-        ], 'oauth-debugger')}
+        ], 'oauth-debugger', currentLang)}
       </div>
 
       ${createRelatedToolsSection(relatedToolsData)}

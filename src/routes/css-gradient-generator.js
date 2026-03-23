@@ -182,7 +182,7 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
           title: 'Pro Tips for Better Gradients',
           content: '<ul><li><strong>Avoid "Gray Dead Zones"</strong>: When transitioning between two distant colors, the midpoint can sometimes look muddy or gray. Adding a vibrant intermediate color stop can keep the gradient looking fresh.</li><li><strong>Use Subtle Transitions</strong>: Often, the best gradients are the ones you barely notice. Using colors that are close to each other on the color wheel creates a sophisticated, professional look.</li><li><strong>Layering</strong>: You can stack multiple gradients on top of each other using the <code>background-image</code> property, allowing for incredibly complex and artistic effects.</li><li><strong>Accessibility</strong>: Ensure that any text placed over a gradient has sufficient contrast. Use tools to check WCAG compliance for all color combinations.</li></ul>'
         }
-      ], 'css-gradient-generator')}
+      ], 'css-gradient-generator', currentLang)}
     </div>
     ${createRelatedToolsSection(relatedToolsData)}
 

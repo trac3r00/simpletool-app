@@ -114,7 +114,7 @@ function renderCaseConverterPage(lang = DEFAULT_LANGUAGE) {
           title: 'Pro Tips',
           content: '<ul><li>Be consistent within your project; even if you prefer one style, always follow the existing convention of the codebase you are working on.</li><li>Use descriptive names that convey meaning, rather than just following the case convention (e.g., <code>isUserLoggedIn</code> is better than <code>status</code>).</li><li>When working with APIs, be prepared to convert between cases, as backend systems often use <code>snake_case</code> while frontends prefer <code>camelCase</code>.</li></ul>'
         }
-      ], 'case-converter')}
+      ], 'case-converter', currentLang)}
     ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;

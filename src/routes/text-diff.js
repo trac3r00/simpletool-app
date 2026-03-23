@@ -100,7 +100,7 @@ function renderTextDiffPage(lang = DEFAULT_LANGUAGE) {
           title: 'Pro Tips',
           content: '<ul><li><strong>Ignore Whitespace:</strong> Many diff tools have options to ignore changes in indentation or trailing spaces, which can reduce noise when comparing code.</li><li><strong>Context Lines:</strong> When viewing diffs, including a few lines of unchanged text around the differences (context) helps you understand the impact of the changes.</li><li><strong>Word-level vs. Line-level:</strong> While line-level diffs are standard for code, word-level diffs are often more useful for prose and natural language documents.</li><li><strong>Side-by-Side View:</strong> For complex changes, a side-by-side (split) view is often easier to read than a unified (inline) view.</li></ul>'
         }
-      ], 'text-diff')}
+      ], 'text-diff', currentLang)}
     ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;

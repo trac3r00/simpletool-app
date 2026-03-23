@@ -106,7 +106,7 @@ function renderUnitConverterPage(lang = DEFAULT_LANGUAGE) {
           title: 'Pro Tips',
           content: '<ul><li>Use the "Swap" button to quickly reverse the conversion direction between your selected units.</li><li>Always double-check the specific unit type, especially for volume and weight, as names can be similar across different systems (e.g., US vs. UK gallons).</li><li>When performing multiple conversions in a sequence, keep as many decimal places as possible until the final result to avoid cumulative rounding errors.</li></ul>'
         }
-      ], 'unit-converter')}
+      ], 'unit-converter', currentLang)}
     </div>
     ${createRelatedToolsSection(relatedToolsData)}
   `;

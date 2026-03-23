@@ -181,7 +181,7 @@ function renderTimestampConverterPage(lang = DEFAULT_LANGUAGE) {
           title: 'Pro Tips',
           content: '<ul><li>When working with JavaScript, remember that <code>Date.now()</code> returns milliseconds, while standard Unix timestamps are in seconds. Divide by 1000 to convert.</li><li>Always use the ISO 8601 format (e.g., 2025-01-30T12:00:00Z) for data exchange between systems to ensure maximum compatibility and readability.</li><li>Be aware of the "Year 2038 problem," where 32-bit signed integers will overflow. Modern systems use 64-bit integers, which solves this for the foreseeable future.</li></ul>'
         }
-      ], 'timestamp-converter')}
+      ], 'timestamp-converter', currentLang)}
     ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;

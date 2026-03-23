@@ -214,7 +214,7 @@ function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
             </ul>
           `
         }
-      ], 'certificate-decoder')}
+      ], 'certificate-decoder', currentLang)}
     ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;

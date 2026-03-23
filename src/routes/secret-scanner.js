@@ -145,7 +145,7 @@ function renderSecretScannerPage(lang = DEFAULT_LANGUAGE) {
           title: 'Pro Tips',
           content: '<ul><li>Always rotate your credentials immediately if you discover they have been leaked.</li><li>Use environment variables or secret managers instead of hardcoding secrets in your source code.</li><li>Enable "Include low severity patterns" for a more thorough scan, but be prepared for more false positives.</li></ul>'
         }
-      ], 'secret-scanner')}
+      ], 'secret-scanner', currentLang)}
     ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;

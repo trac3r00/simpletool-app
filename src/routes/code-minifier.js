@@ -137,7 +137,7 @@ function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
           title: 'Pro Tips',
           content: '<ul><li>Always keep your original, unminified source code for development and only use the minified version for production deployment.</li><li>Use Source Maps to bridge the gap between minified production code and readable development code, allowing for efficient debugging in the browser.</li><li>Combine minification with Gzip or Brotli compression on your server for the maximum possible reduction in file size and transfer time.</li></ul>'
         }
-      ], 'code-minifier')}
+      ], 'code-minifier', currentLang)}
     </div>
     ${createRelatedToolsSection(relatedToolsData)}
   `;

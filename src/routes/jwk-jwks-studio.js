@@ -227,7 +227,7 @@ function renderJwkJwksStudioPage() {
             </ul>
           `
         }
-      ], 'jwk-jwks-studio')}
+      ], 'jwk-jwks-studio', lang)}
     ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;

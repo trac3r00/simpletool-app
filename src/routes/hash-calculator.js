@@ -315,7 +315,7 @@ function renderHashCalculatorPage(lang = DEFAULT_LANGUAGE) {
             </ul>
           `
         }
-      ], 'hash-calculator')}
+      ], 'hash-calculator', currentLang)}
     ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;

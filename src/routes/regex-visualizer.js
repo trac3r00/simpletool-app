@@ -234,7 +234,7 @@ while ((m = regex.exec(str)) !== null) {
           title: 'Pro Tips',
           content: '<ul><li>Start simple and build complex patterns incrementally</li><li>Use non-capturing groups (?:) when you do not need to reference the match</li><li>Test edge cases like empty strings and special characters</li><li>Consider regex readability—complex patterns can be documented with comments</li></ul>'
         }
-      ], 'regex-visualizer')}
+      ], 'regex-visualizer', currentLang)}
     ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;

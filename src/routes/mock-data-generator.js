@@ -165,7 +165,7 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
           title: 'Pro Tips',
           content: '<ul><li><strong>Consistency:</strong> When generating multiple related datasets, use fixed seeds or patterns to maintain referential integrity between tables.</li><li><strong>Edge Cases:</strong> Don\'t just generate "happy path" data. Include empty strings, very long names, and special characters to test your application\'s robustness.</li><li><strong>Format Switching:</strong> Use the SQL export for quick database seeding and CSV for spreadsheet analysis or bulk imports.</li><li><strong>Automation:</strong> While this tool is manual, the patterns it uses can be integrated into your automated CI/CD pipelines for continuous testing.</li></ul>'
         }
-      ], 'mock-data-generator')}
+      ], 'mock-data-generator', currentLang)}
     </div>
     ${createRelatedToolsSection(relatedToolsData)}
 

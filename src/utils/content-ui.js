@@ -11,24 +11,30 @@ import { DEFAULT_LANGUAGE, normalizeLanguage, withLanguageQuery, t } from './i18
  * @param {string} [toolId] - Optional tool ID for i18n namespacing
  * @returns {string} HTML
  */
-export function createEducationalSection(sections, toolId) {
+export function createEducationalSection(sections, toolId, lang = DEFAULT_LANGUAGE) {
   if (!sections || sections.length === 0) return '';
 
   const prefix = toolId ? `tools.${toolId}.edu` : 'content.edu';
+  const currentLang = normalizeLanguage(lang);
 
-  const items = sections.map((section, i) => `
+  const items = sections.map((section, i) => {
+    const headingKey = `${prefix}.heading${i + 1}`;
+    const contentKey = `${prefix}.p${i + 1}`;
+    const headingText = t(headingKey, currentLang) !== headingKey ? t(headingKey, currentLang) : section.title;
+    const contentText = t(contentKey, currentLang) !== contentKey ? t(contentKey, currentLang) : section.content;
+    return `
     <details class="group border-l-4 border-primary-500 dark:border-primary-400 bg-white dark:bg-surface-900 rounded-r-lg shadow-sm"${i === 0 ? ' open' : ''}>
-      <summary class="flex items-center justify-between w-full px-5 py-4 cursor-pointer select-none text-left text-surface-900 dark:text-surface-50 font-semibold text-base hover:bg-surface-50 dark:hover:bg-surface-800/50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500" data-i18n="${prefix}.heading${i + 1}">
-        <span>${section.title}</span>
+      <summary class="flex items-center justify-between w-full px-5 py-4 cursor-pointer select-none text-left text-surface-900 dark:text-surface-50 font-semibold text-base hover:bg-surface-50 dark:hover:bg-surface-800/50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500" data-i18n="${headingKey}">
+        <span>${headingText}</span>
         <svg class="w-5 h-5 text-surface-400 dark:text-surface-500 transition-transform duration-200 group-open:rotate-180 flex-shrink-0 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
         </svg>
       </summary>
-      <div class="px-5 pb-5 pt-1 text-sm text-surface-700 dark:text-surface-300 leading-relaxed prose dark:prose-invert max-w-none" data-i18n-html="${prefix}.p${i + 1}">
-        ${section.content}
+      <div class="px-5 pb-5 pt-1 text-sm text-surface-700 dark:text-surface-300 leading-relaxed prose dark:prose-invert max-w-none" data-i18n-html="${contentKey}">
+        ${contentText}
       </div>
     </details>
-  `).join('');
+  `;}).join('');
 
   return `
     <div data-section="educational" class="space-y-3 mt-8" role="region" aria-label="Educational content">

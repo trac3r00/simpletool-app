@@ -287,7 +287,7 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
           title: 'Pro Tips',
           content: '<ul><li>Use WebP whenever possible for web projects, as it is supported by all modern browsers and offers the best compression-to-quality ratio.</li><li>When converting to JPEG, a quality setting of 70-80% usually provides the best balance between file size and visual quality for most web uses.</li><li>Always keep your original high-resolution images and only convert or resize copies for specific use cases to avoid losing quality over time through repeated compression.</li></ul>'
         }
-      ], 'image-converter')}
+      ], 'image-converter', currentLang)}
     </div>
     ${createRelatedToolsSection(relatedToolsData)}
   `;

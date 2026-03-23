@@ -205,7 +205,7 @@ function renderQRCodePage(lang = DEFAULT_LANGUAGE) {
             title: 'Pro Tips',
             content: 'Higher error correction levels (H or Q) allow the QR code to remain scannable even if partially damaged or obscured, which is ideal for physical signage or branding.'
           }
-        ], 'qr-code')}
+        ], 'qr-code', currentLang)}
       </div>
     </main>
     ${createRelatedToolsSection(relatedToolsData)}

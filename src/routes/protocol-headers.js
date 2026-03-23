@@ -198,7 +198,7 @@ function renderProtocolHeadersPage(lang = DEFAULT_LANGUAGE) {
           title: 'Common Use Cases',
           content: '<ul><li><strong>Packet Analysis:</strong> Understand the structure of captured network traffic</li><li><strong>Protocol Learning:</strong> Visual aid for studying network protocols</li><li><strong>Debugging:</strong> Identify malformed headers or incorrect field values</li><li><strong>Development:</strong> Reference when implementing network protocols</li></ul>'
         }
-      ], 'protocol-headers')}
+      ], 'protocol-headers', currentLang)}
       ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;
