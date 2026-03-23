@@ -65,6 +65,7 @@ import {
 } from './ui/legal-pages.js';
 import { handleBlogRoutes, BLOG_ARTICLES } from './ui/blog.js';
 import { handleFaqRoutes } from './ui/faq.js';
+import { handleChangelogRoutes } from './routes/changelog.js';
 import {
   getSecurityHeaders,
   shouldRateLimit,
@@ -581,6 +582,11 @@ const worker = {
       if (path === '/faq' || path === '/faq/') {
         const faqResponse = handleFaqRoutes(request, url);
         if (faqResponse) return faqResponse;
+      }
+
+      if (path === '/changelog' || path === '/changelog/') {
+        const changelogResponse = await handleChangelogRoutes(request, url);
+        if (changelogResponse) return changelogResponse;
       }
 
       // 404 for everything else

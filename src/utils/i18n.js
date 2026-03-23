@@ -362,10 +362,16 @@ export function getLanguageScript(toolId, serverLang = DEFAULT_LANGUAGE) {
             window.location.href = next.toString();
             return;
           }
-          window.history.replaceState({}, '', next.toString());
+          window.history.pushState({ lang: lang }, '', next.toString());
           document.documentElement.lang = lang;
           _patchDOM(lang);
         };
+
+        window.addEventListener('popstate', function() {
+          var lang = _getLang();
+          document.documentElement.lang = lang;
+          _patchDOM(lang);
+        });
 
         document.addEventListener('DOMContentLoaded', function() {
           var lang = _getLang();

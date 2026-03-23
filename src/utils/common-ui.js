@@ -1014,7 +1014,7 @@ export function getFooterHTML(options = {}) {
                <span class="font-bold text-lg text-surface-900 dark:text-surface-50">SimpleTool</span>
              </div>
              <p class="text-sm text-surface-600 dark:text-surface-400 mb-4" data-i18n="footer.tagline">${t('footer.tagline', currentLang)}</p>
-             <p class="text-xs text-surface-500 dark:text-surface-500">© ${new Date().getFullYear()} SimpleTool</p>
+             <p class="text-xs text-surface-500 dark:text-surface-500">© ${new Date().getFullYear()} SimpleTool · <a href="/changelog" class="hover:text-primary-500 transition-colors">v2.4.0</a></p>
            </div>
            
            <!-- Column 2: Top Tools -->
