@@ -10,19 +10,22 @@ import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
 import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
+import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
 
 export async function handleEnvVarManagerRoutes(request, url) {
   const { pathname } = url;
   if (pathname === '/env-var-manager' || pathname === '/env-var-manager/') {
-    if (request.method === 'GET') return respondHTML(renderEnvVarManagerPage());
+    if (request.method === 'GET') return respondHTML(renderEnvVarManagerPage(resolveRequestLanguage(request, url)));
     return new Response('Method not allowed', { status: 405 });
   }
   return null;
 }
 
-function renderEnvVarManagerPage() {
-  const title = 'Env Var Manager';
-  const description = 'Compare .env files across environments and generate a share-safe (masked) diff.';
+function renderEnvVarManagerPage(lang = DEFAULT_LANGUAGE) {
+  const currentLang = normalizeLanguage(lang);
+  const translation = getToolTranslation('env-var-manager', currentLang);
+  const title = translation?.name || 'Env Var Manager';
+  const description = translation?.desc || 'Compare .env files across environments and generate a share-safe (masked) diff.';
 
   const header = createToolHeader(
     { emoji: '🧪' },
@@ -533,6 +536,7 @@ function renderEnvVarManagerPage() {
     description,
     path: '/env-var-manager',
     content,
-    scripts
+    scripts,
+    lang: currentLang
   });
 }

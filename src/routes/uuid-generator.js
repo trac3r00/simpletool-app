@@ -7,6 +7,7 @@ import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
 import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
+import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
 
 export async function handleUUIDGeneratorRoutes(request, url) {
   const { pathname } = url;
@@ -15,7 +16,7 @@ export async function handleUUIDGeneratorRoutes(request, url) {
   try {
     if (pathname === '/uuid-generator' || pathname === '/uuid-generator/') {
       if (method === 'GET') {
-        return renderUUIDGeneratorPage();
+        return renderUUIDGeneratorPage(resolveRequestLanguage(request, url));
       }
     }
 
@@ -29,12 +30,14 @@ export async function handleUUIDGeneratorRoutes(request, url) {
   }
 }
 
-function renderUUIDGeneratorPage() {
+function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
+  const currentLang = normalizeLanguage(lang);
+  const translation = getToolTranslation('uuid-generator', currentLang);
   const toolHeader = createToolHeader(
     { emoji: '🔑' },
-    'UUID Generator',
-    'Generate unique identifiers instantly (UUID v4, v1, NIL, GUID)',
-    [{ text: 'Bulk Generation', color: 'purple', tooltip: 'Generate multiple UUIDs or GUIDs at once without any network requests.' }],
+    translation?.name || 'UUID Generator',
+    translation?.desc || 'Generate unique identifiers instantly (UUID v4, v1, NIL, GUID)',
+    [{ text: translation?.ui?.badge16 || 'Bulk Generation', color: 'purple', tooltip: 'Generate multiple UUIDs or GUIDs at once without any network requests.' }],
     { toolId: 'uuid-generator' }
   );
 
@@ -53,7 +56,7 @@ function renderUUIDGeneratorPage() {
             <!-- UUID Type Selection -->
             <div>
               <label for="uuid-version" class="label"><span data-i18n="tools.uuid-generator.ui.label1">UUID Version</span></label>
-              <select id="uuid-version" class="input" data-tooltip="v4 is random and most common. v1 is time-based.">
+              <select id="uuid-version" class="input" data-tooltip="v4 is random and most common. v1 is time-based." data-i18n-tooltip="tools.uuid-generator.ui.tip0">
                 <option value="v4" selected data-i18n="tools.uuid-generator.ui.option5">UUID v4 (Random)</option>
                 <option value="v1" data-i18n="tools.uuid-generator.ui.option6">UUID v1 (Timestamp)</option>
                 <option value="nil" data-i18n="tools.uuid-generator.ui.option7">NIL UUID (All zeros)</option>
@@ -69,7 +72,7 @@ function renderUUIDGeneratorPage() {
               <label for="quantity" class="label">
                 Quantity: <span id="quantity-value" class="font-bold text-primary-600 dark:text-primary-400">1</span>
               </label>
-              <input type="range" id="quantity" min="1" data-tooltip="Generate multiple UUIDs at once (up to 100)" max="100" value="1" class="w-full h-2 bg-surface-200 dark:bg-surface-700 rounded-lg appearance-none cursor-pointer accent-primary-600">
+              <input type="range" id="quantity" min="1" data-tooltip="Generate multiple UUIDs at once (up to 100)" data-i18n-tooltip="tools.uuid-generator.ui.tip1" max="100" value="1" class="w-full h-2 bg-surface-200 dark:bg-surface-700 rounded-lg appearance-none cursor-pointer accent-primary-600">
             </div>
 
             <!-- Format Options -->
@@ -134,12 +137,12 @@ function renderUUIDGeneratorPage() {
         guid: 'Microsoft GUID format (uppercase with braces)'
       };
 
-      versionSelect.addEventListener('change', () => {
-        versionDesc.textContent = descriptions[versionSelect.value];
+      if (versionSelect) versionSelect.addEventListener('change', () => {
+        if (versionDesc) versionDesc.textContent = descriptions[versionSelect.value];
       });
 
-      quantitySlider.addEventListener('input', (e) => {
-        quantityValue.textContent = e.target.value;
+      if (quantitySlider) quantitySlider.addEventListener('input', (e) => {
+        if (quantityValue) quantityValue.textContent = e.target.value;
       });
 
       // UUID v4 Generator (cryptographically secure)
@@ -205,7 +208,8 @@ function renderUUIDGeneratorPage() {
         }
       }
 
-      document.getElementById('generate-btn').addEventListener('click', () => {
+      var generateBtn = document.getElementById('generate-btn');
+      if (generateBtn) generateBtn.addEventListener('click', () => {
         const version = versionSelect.value;
         const quantity = parseInt(quantitySlider.value);
         const format = document.querySelector('input[name="format"]:checked').value;
@@ -240,7 +244,7 @@ function renderUUIDGeneratorPage() {
       });
 
       // Event delegation for clicking UUID items
-      uuidOutput.addEventListener('click', async (e) => {
+      if (uuidOutput) uuidOutput.addEventListener('click', async (e) => {
         const uuidItem = e.target.closest('.uuid-item');
         if (uuidItem) {
           const text = uuidItem.dataset.uuid;
@@ -261,10 +265,11 @@ function renderUUIDGeneratorPage() {
         }
       });
 
-      document.getElementById('copy-btn').addEventListener('click', async () => {
-        const allUUIDs = Array.from(uuidOutput.children).map(div => div.textContent.trim()).join('\\n');
+      var copyBtn = document.getElementById('copy-btn');
+      if (copyBtn) copyBtn.addEventListener('click', async () => {
+        const allUUIDs = uuidOutput ? Array.from(uuidOutput.children).map(div => div.textContent.trim()).join('\\n') : '';
         if(window.copyToClipboard) {
-            window.copyToClipboard(allUUIDs, document.getElementById('copy-btn'));
+            window.copyToClipboard(allUUIDs, copyBtn);
         } else {
             await navigator.clipboard.writeText(allUUIDs);
             if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
@@ -274,10 +279,11 @@ function renderUUIDGeneratorPage() {
   `;
 
   return respondHTML(createPageTemplate({
-    title: 'UUID Generator',
-    description: 'Generate UUIDs (v1, v4), GUIDs, and NIL UUIDs with bulk generation support.',
+    title: translation?.name || 'UUID Generator',
+    description: translation?.desc || 'Generate standard UUIDs (v1, v4).',
     path: '/uuid-generator',
     content,
-    scripts: script
+    scripts: script,
+    lang: currentLang
   }));
 }

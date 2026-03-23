@@ -8,6 +8,7 @@ import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
 import { createRelatedToolsSection } from '../utils/content-ui.js';
+import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
 
 export async function handleSSHKeyGeneratorRoutes(request, url) {
   const { pathname } = url;
@@ -16,7 +17,7 @@ export async function handleSSHKeyGeneratorRoutes(request, url) {
   try {
     if (pathname === '/ssh-key-generator' || pathname === '/ssh-key-generator/') {
       if (method === 'GET') {
-        return renderSSHKeyGeneratorPage();
+        return renderSSHKeyGeneratorPage(resolveRequestLanguage(request, url));
       }
     }
 
@@ -30,12 +31,17 @@ export async function handleSSHKeyGeneratorRoutes(request, url) {
   }
 }
 
-function renderSSHKeyGeneratorPage() {
+function renderSSHKeyGeneratorPage(lang = DEFAULT_LANGUAGE) {
+  const currentLang = normalizeLanguage(lang);
+  const translation = getToolTranslation('ssh-key-generator', currentLang);
+  const title = translation?.name || 'SSH Key Generator';
+  const description = translation?.desc || 'Generate secure SSH key pairs client-side using Web Crypto API';
+
   const toolHeader = createToolHeader(
     { emoji: '🔑' },
-    'SSH Key Generator',
-    'Generate secure SSH key pairs client-side using Web Crypto API',
-    [{ text: 'Private & Secure', color: 'green', tooltip: 'Keys are generated in the browser via the Web Crypto API and private material never leaves your device.' }],
+    title,
+    description,
+    [{ text: translation?.ui?.badge18 || 'Private & Secure', color: 'green', tooltip: 'Keys are generated in the browser via the Web Crypto API and private material never leaves your device.' }],
     { toolId: 'ssh-key-generator' }
   );
 
@@ -73,14 +79,14 @@ function renderSSHKeyGeneratorPage() {
               <label class="label mb-3"><span data-i18n="tools.ssh-key-generator.ui.label2">Key Type</span> ${infoHint('Choose ECDSA for modern clients or RSA when you need older-system compatibility.')}</label>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <label class="relative flex items-start p-4 bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-800 rounded-lg cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-900 transition-all has-[:checked]:border-primary-500 has-[:checked]:bg-primary-50 dark:has-[:checked]:bg-primary-900/20">
-                  <input type="radio" name="keyType" value="ecdsa" data-tooltip="Modern, smaller keys, faster operations" checked class="mt-1 w-4 h-4 text-primary-600 focus:ring-primary-500">
+                  <input type="radio" name="keyType" value="ecdsa" data-tooltip="Modern, smaller keys, faster operations" data-i18n-tooltip="tools.ssh-key-generator.ui.tip0" checked class="mt-1 w-4 h-4 text-primary-600 focus:ring-primary-500">
                   <div class="ml-3">
                     <div class="text-sm font-bold text-surface-900 dark:text-surface-50">ECDSA (P-256)</div>
                     <div class="text-xs text-surface-500 dark:text-surface-400 mt-1">Modern, secure, fast. Compatible with most systems.</div>
                   </div>
                 </label>
                 <label class="relative flex items-start p-4 bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-800 rounded-lg cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-900 transition-all has-[:checked]:border-primary-500 has-[:checked]:bg-primary-50 dark:has-[:checked]:bg-primary-900/20">
-                  <input type="radio" name="keyType" value="rsa" data-tooltip="Traditional, widely compatible with older systems" class="mt-1 w-4 h-4 text-primary-600 focus:ring-primary-500">
+                  <input type="radio" name="keyType" value="rsa" data-tooltip="Traditional, widely compatible with older systems" data-i18n-tooltip="tools.ssh-key-generator.ui.tip1" class="mt-1 w-4 h-4 text-primary-600 focus:ring-primary-500">
                   <div class="ml-3">
                     <div class="text-sm font-bold text-surface-900 dark:text-surface-50">RSA</div>
                     <div class="text-xs text-surface-500 dark:text-surface-400 mt-1">Traditional, widely supported. Larger key size.</div>
@@ -107,7 +113,7 @@ function renderSSHKeyGeneratorPage() {
             </div>
 
             <!-- Generate Button -->
-            <button id="generate-btn" class="btn btn-primary" data-tooltip="Generate a new SSH key pair in your browser" w-full py-3 text-lg">
+            <button id="generate-btn" class="btn btn-primary" data-tooltip="Generate a new SSH key pair in your browser" data-i18n-tooltip="tools.ssh-key-generator.ui.tip2" w-full py-3 text-lg">
               <span id="btn-text">Generate Key Pair</span>
               <span id="btn-loading" class="hidden flex items-center gap-2">
                 <span class="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
@@ -178,14 +184,14 @@ chmod 600 ~/.ssh/authorized_keys</pre>
       ${createCheatsheet('ssh-key-generator', 'SSH Key Quick Reference', [
         { heading: 'Key Types', content: `
           <table>
-            <tr><th>Algorithm</th><th>Key Size</th><th>Security</th><th>Use Case</th></tr>
+            <tr><th data-i18n="tools.ssh-key-generator.ui.th7">Algorithm</th><th data-i18n="tools.ssh-key-generator.ui.th8">Key Size</th><th data-i18n="tools.ssh-key-generator.ui.th9">Security</th><th data-i18n="tools.ssh-key-generator.ui.th10">Use Case</th></tr>
             <tr><td><code>RSA</code></td><td>2048/4096-bit</td><td>✅ Secure</td><td>General purpose, widest compatibility</td></tr>
             <tr><td><code>ECDSA</code></td><td>P-256</td><td>✅ Secure</td><td>Modern systems, compact keys</td></tr>
             <tr><td><code>Ed25519</code></td><td>256-bit</td><td>✅ Best</td><td>Best performance (if supported)</td></tr>
           </table>` },
         { heading: 'Common Commands', content: `
           <table>
-            <tr><th>Command</th><th>Description</th></tr>
+            <tr><th data-i18n="tools.ssh-key-generator.ui.th11">Command</th><th data-i18n="tools.ssh-key-generator.ui.th12">Description</th></tr>
             <tr><td><code>ssh-keygen -t ed25519</code></td><td>Generate Ed25519 key</td></tr>
             <tr><td><code>ssh-copy-id user@host</code></td><td>Copy public key to server</td></tr>
             <tr><td><code>ssh-add ~/.ssh/id_ed25519</code></td><td>Add key to SSH agent</td></tr>
@@ -239,7 +245,7 @@ chmod 600 ~/.ssh/authorized_keys</pre>
           }
         } catch (error) {
           const errEl = document.getElementById('keygen-error');
-          errEl.textContent = 'Error generating key pair: ' + error.message;
+          errEl.textContent = _t('tools.ssh-key-generator.js.text2', 'Error generating key pair: ') + error.message;
           errEl.classList.remove('hidden');
           console.error(error);
         } finally {
@@ -376,10 +382,11 @@ chmod 600 ~/.ssh/authorized_keys</pre>
   `;
 
   return respondHTML(createPageTemplate({
-    title: 'SSH Key Generator',
-    description: 'Generate secure SSH key pairs client-side using Web Crypto API.',
+    title,
+    description,
     path: '/ssh-key-generator',
     content,
-    scripts: script
+    scripts: script,
+    lang: currentLang
   }));
 }

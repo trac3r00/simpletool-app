@@ -2,25 +2,29 @@ import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet } from '../utils/common-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
 import { createRelatedToolsSection } from '../utils/content-ui.js';
+import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
 
 export async function handlePortReferenceRoutes(request, url) {
   if (url.pathname !== '/port-reference' && url.pathname !== '/port-reference/') return null;
   if (request.method !== 'GET') return null;
-  return respondHTML(renderPortReferencePage());
+  const lang = resolveRequestLanguage(request, url);
+  return respondHTML(renderPortReferencePage(lang));
 }
 
-function renderPortReferencePage() {
-  const title = 'Port Reference';
-  const description = 'Comprehensive IANA port database with search, filters, and security risk indicators.';
+function renderPortReferencePage(lang = DEFAULT_LANGUAGE) {
+  const currentLang = normalizeLanguage(lang);
+  const translation = getToolTranslation('port-reference', currentLang);
+  const title = translation?.name || 'Port Reference';
+  const description = translation?.desc || 'Comprehensive IANA port database with search, filters, and security risk indicators.';
 
   const header = createToolHeader(
     { emoji: '🌐' },
     title,
-    'Search and explore the complete IANA port registry. Identify services, protocols, and security risks for any port number.',
+    description,
     [
-      { text: 'IANA Official', tooltip: 'Official port assignments from IANA registry.' },
-      { text: 'Security Flags', tooltip: 'Highlights commonly exploited ports with risk indicators.' },
-      { text: 'Client-Side Only', tooltip: 'All data is embedded locally — no network requests.' }
+      { text: translation?.ui?.badge23 || 'IANA Official', tooltip: 'Official port assignments from IANA registry.' },
+      { text: translation?.ui?.badge24 || 'Security Flags', tooltip: 'Highlights commonly exploited ports with risk indicators.' },
+      { text: translation?.ui?.badge25 || 'Client-Side Only', tooltip: 'All data is embedded locally — no network requests.' }
     ],
     { toolId: 'port-reference' }
   );
@@ -47,7 +51,7 @@ function renderPortReferencePage() {
                 class="input w-full" 
                 placeholder="e.g., 443, HTTPS, SSH..."
                 data-i18n-placeholder="tools.port-reference.ui.placeholder0"
-                data-tooltip="Type a port number (e.g., 443) or service name (e.g., HTTPS)"
+                data-tooltip="Type a port number (e.g., 443) or service name (e.g., HTTPS)" data-i18n-tooltip="tools.port-reference.ui.tip0"
               />
             </div>
 
@@ -120,7 +124,7 @@ function renderPortReferencePage() {
             
             <div id="pagination" class="mt-4 flex justify-between items-center hidden">
               <button id="prev-page" class="btn btn-ghost btn-xs" disabled data-i18n="tools.port-reference.ui.button8">Previous</button>
-              <span id="page-info" class="text-sm text-surface-500 dark:text-surface-400">Page 1 of 1</span>
+              <span id="page-info" class="text-sm text-surface-500 dark:text-surface-400" data-i18n="tools.port-reference.ui.desc22">Page 1 of 1</span>
               <button id="next-page" class="btn btn-ghost btn-xs" disabled data-i18n="tools.port-reference.ui.button9">Next</button>
             </div>
           </div>
@@ -140,14 +144,14 @@ function renderPortReferencePage() {
       ${createCheatsheet('port-reference', 'Port Categories & Security Guide', [
         { heading: 'Port Number Ranges', content: `
           <table>
-            <tr><th>Range</th><th>Name</th><th>Description</th></tr>
+            <tr><th data-i18n="tools.port-reference.ui.th14">Range</th><th data-i18n="tools.port-reference.ui.th15">Name</th><th data-i18n="tools.port-reference.ui.th12">Description</th></tr>
             <tr><td><code>0-1023</code></td><td>Well-Known</td><td>Reserved for system services (HTTP, SSH, etc.)</td></tr>
             <tr><td><code>1024-49151</code></td><td>Registered</td><td>User-registered ports for applications</td></tr>
             <tr><td><code>49152-65535</code></td><td>Dynamic/Private</td><td>Ephemeral ports for client connections</td></tr>
           </table>` },
         { heading: 'High Risk Ports', content: `
           <table>
-            <tr><th>Port</th><th>Service</th><th>Risk</th></tr>
+            <tr><th data-i18n="tools.port-reference.ui.th10">Port</th><th data-i18n="tools.port-reference.ui.th11">Service</th><th data-i18n="tools.port-reference.ui.th13">Risk</th></tr>
             <tr><td><code>21</code></td><td>FTP</td><td>Unencrypted file transfers</td></tr>
             <tr><td><code>23</code></td><td>Telnet</td><td>Plain text authentication</td></tr>
             <tr><td><code>25</code></td><td>SMTP</td><td>Email spam relay risk</td></tr>
@@ -965,6 +969,7 @@ function renderPortReferencePage() {
   return createPageTemplate({
     title,
     description,
+    lang: currentLang,
     path: '/port-reference',
     content
   });

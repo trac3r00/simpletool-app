@@ -2,10 +2,14 @@ import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, getCopyToClipboardScript, createCheatsheet, infoHint } from '../utils/common-ui.js';
 import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
+import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
 
 export async function handleCronBuilderRoutes(request) {
   const requestPath = new URL(request.url).pathname;
   const canonicalPath = requestPath.replace(/\/$/, '') || '/';
+  const currentLang = resolveRequestLanguage(request, new URL(request.url));
+  const normalizedLang = normalizeLanguage(currentLang);
+  const translation = getToolTranslation('cron-builder', normalizedLang);
   const currentTool = TOOLS.find(t => t.id === 'cron-builder');
     const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
 
@@ -13,9 +17,9 @@ export async function handleCronBuilderRoutes(request) {
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6 lg:h-[calc(100vh-9rem)] min-h-[800px]">
       ${createToolHeader(
         { emoji: '⏰' },
-        'Cron Builder',
-        'Visually build, parse, and schedule cron jobs with next execution previews.',
-        [{ text: 'Bi-directional', color: 'blue', tooltip: 'Parse cron expressions and build them visually in either direction without leaving the page.' }],
+        translation?.name || 'Cron Builder',
+        translation?.desc || 'Visually build, parse, and schedule cron jobs with next execution previews.',
+        [{ text: translation?.ui?.badge21 || 'Bi-directional', color: 'blue', tooltip: 'Parse cron expressions and build them visually in either direction without leaving the page.' }],
         { toolId: 'cron-builder' }
       )}
 
@@ -247,7 +251,7 @@ export async function handleCronBuilderRoutes(request) {
       ${createCheatsheet('cron-builder', 'Cron Syntax Reference', [
         { heading: 'Field Order', content: `
           <table>
-            <tr><th>Position</th><th>Field</th><th>Range</th></tr>
+            <tr><th data-i18n="tools.cron-builder.ui.th0">Position</th><th data-i18n="tools.cron-builder.ui.th1">Field</th><th data-i18n="tools.cron-builder.ui.th2">Range</th></tr>
             <tr><td>1</td><td>Minute</td><td>0–59</td></tr>
             <tr><td>2</td><td>Hour</td><td>0–23</td></tr>
             <tr><td>3</td><td>Day of Month</td><td>1–31</td></tr>
@@ -256,7 +260,7 @@ export async function handleCronBuilderRoutes(request) {
           </table>` },
         { heading: 'Special Characters', content: `
           <table>
-            <tr><th>Char</th><th>Meaning</th><th>Example</th></tr>
+            <tr><th data-i18n="tools.cron-builder.ui.th3">Char</th><th data-i18n="tools.cron-builder.ui.th4">Meaning</th><th data-i18n="tools.cron-builder.ui.th5">Example</th></tr>
             <tr><td><code>*</code></td><td>Any value</td><td>Every minute</td></tr>
             <tr><td><code>,</code></td><td>List</td><td><code>1,15</code> (1st and 15th)</td></tr>
             <tr><td><code>-</code></td><td>Range</td><td><code>1-5</code> (Mon–Fri)</td></tr>
@@ -264,7 +268,7 @@ export async function handleCronBuilderRoutes(request) {
           </table>` },
         { heading: 'Common Examples', content: `
           <table>
-            <tr><th>Expression</th><th>Description</th></tr>
+            <tr><th data-i18n="tools.cron-builder.ui.th6">Expression</th><th data-i18n="tools.cron-builder.ui.th7">Description</th></tr>
             <tr><td><code>0 * * * *</code></td><td>Every hour</td></tr>
             <tr><td><code>0 0 * * *</code></td><td>Daily at midnight</td></tr>
             <tr><td><code>0 0 * * 1</code></td><td>Every Monday</td></tr>
@@ -660,7 +664,7 @@ export async function handleCronBuilderRoutes(request) {
                nextExecutionsList.appendChild(li);
              });
            } catch (e) {
-             nextExecutionsList.innerHTML = '<li class="text-error-500 text-sm">Invalid expression</li>';
+             nextExecutionsList.innerHTML = '<li class="text-error-500 text-sm">' + (window._t ? window._t('tools.cron-builder.js.text0', 'Invalid expression') : 'Invalid expression') + '</li>';
            }
          }
 
@@ -771,11 +775,12 @@ export async function handleCronBuilderRoutes(request) {
   `;
 
   return respondHTML(createPageTemplate({
-    title: 'Cron Builder',
-    description: 'Visual cron expression editor and scheduler. Build, debug, and preview cron jobs with next execution times.',
+    title: translation?.name || 'Cron Builder',
+    description: translation?.desc || 'Visual cron editor with human-readable descriptions and next-run preview.',
     path: canonicalPath,
     content: content,
-    scripts: getCopyToClipboardScript()
+    scripts: getCopyToClipboardScript(),
+    lang: normalizedLang
   }), {
     headers: {
       'Cache-Control': 'public, max-age=3600'

@@ -7,13 +7,14 @@ import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, getCopyToClipboardScript } from '../utils/common-ui.js';
 import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
+import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
 
 export async function handleTokenStudioRoutes(request, url) {
   const { pathname } = url;
 
   try {
     if (pathname === '/token-studio' || pathname === '/token-studio/') {
-      if (request.method === 'GET') return renderTokenStudioPage();
+      if (request.method === 'GET') return renderTokenStudioPage(resolveRequestLanguage(request, url));
     }
 
     return respondJSON({ error: 'Not found' }, { status: 404 });
@@ -26,11 +27,13 @@ export async function handleTokenStudioRoutes(request, url) {
   }
 }
 
-function renderTokenStudioPage() {
+function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
+  const currentLang = normalizeLanguage(lang);
+  const translation = getToolTranslation('token-studio', currentLang);
   const toolHeader = createToolHeader(
     { emoji: '🔐' },
-    'Token Cryptography Suite',
-    'Inspect, generate, and manage JWT tokens and cryptographic keys',
+    translation?.name || 'Token Cryptography Suite',
+    translation?.desc || 'Inspect, generate, and manage JWT tokens and cryptographic keys',
     [{ text: 'Privacy First', color: 'green', tooltip: 'All cryptographic operations happen in your browser.' }],
     { toolId: 'token-studio' }
   );
@@ -153,24 +156,24 @@ function renderTokenStudioPage() {
                 <label for="gen-algorithm" class="label" data-i18n="tools.token-studio.ui.labelAlgorithm">Algorithm</label>
                 <select id="gen-algorithm" class="w-full p-2.5 bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg focus:ring-2 focus:ring-primary-500 text-sm">
                   <optgroup label="HMAC">
-                    <option value="HS256" selected>HS256</option>
-                    <option value="HS384">HS384</option>
-                    <option value="HS512">HS512</option>
+                    <option value="HS256" selected data-i18n="tools.token-studio.ui.option19">HS256</option>
+                    <option value="HS384" data-i18n="tools.token-studio.ui.option20">HS384</option>
+                    <option value="HS512" data-i18n="tools.token-studio.ui.option21">HS512</option>
                   </optgroup>
                   <optgroup label="RSA">
-                    <option value="RS256">RS256</option>
-                    <option value="RS384">RS384</option>
-                    <option value="RS512">RS512</option>
+                    <option value="RS256" data-i18n="tools.token-studio.ui.option22">RS256</option>
+                    <option value="RS384" data-i18n="tools.token-studio.ui.option23">RS384</option>
+                    <option value="RS512" data-i18n="tools.token-studio.ui.option24">RS512</option>
                   </optgroup>
                   <optgroup label="ECDSA">
-                    <option value="ES256">ES256</option>
-                    <option value="ES384">ES384</option>
-                    <option value="ES512">ES512</option>
+                    <option value="ES256" data-i18n="tools.token-studio.ui.option25">ES256</option>
+                    <option value="ES384" data-i18n="tools.token-studio.ui.option26">ES384</option>
+                    <option value="ES512" data-i18n="tools.token-studio.ui.option27">ES512</option>
                   </optgroup>
                   <optgroup label="RSA-PSS">
-                    <option value="PS256">PS256</option>
-                    <option value="PS384">PS384</option>
-                    <option value="PS512">PS512</option>
+                    <option value="PS256" data-i18n="tools.token-studio.ui.option28">PS256</option>
+                    <option value="PS384" data-i18n="tools.token-studio.ui.option29">PS384</option>
+                    <option value="PS512" data-i18n="tools.token-studio.ui.option30">PS512</option>
                   </optgroup>
                 </select>
               </div>
@@ -214,7 +217,7 @@ function renderTokenStudioPage() {
                   id="gen-key"
                   rows="3"
                   class="w-full p-3 font-mono text-sm bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none resize-y"
-                  placeholder="your-256-bit-secret"
+                  placeholder="your-256-bit-secret" data-i18n-placeholder="tools.token-studio.ui.placeholder17"
                 ></textarea>
                 <p class="text-xs text-surface-500 dark:text-surface-400 mt-1" id="gen-key-hint" data-i18n="tools.token-studio.ui.hintSecret">For HMAC algorithms, enter any UTF-8 string as the shared secret.</p>
               </div>
@@ -272,16 +275,16 @@ function renderTokenStudioPage() {
                   <label for="keys-algorithm" class="label" data-i18n="tools.token-studio.ui.labelKeyAlgorithm">Algorithm</label>
                   <select id="keys-algorithm" class="p-2.5 bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-700 rounded-lg focus:ring-2 focus:ring-primary-500 text-sm">
                     <optgroup label="RSA">
-                      <option value="RSA-2048">RSA 2048</option>
-                      <option value="RSA-4096">RSA 4096</option>
+                      <option value="RSA-2048" data-i18n="tools.token-studio.ui.option31">RSA 2048</option>
+                      <option value="RSA-4096" data-i18n="tools.token-studio.ui.option32">RSA 4096</option>
                     </optgroup>
                     <optgroup label="ECDSA">
-                      <option value="EC-P256" selected>EC P-256</option>
-                      <option value="EC-P384">EC P-384</option>
-                      <option value="EC-P521">EC P-521</option>
+                      <option value="EC-P256" selected data-i18n="tools.token-studio.ui.option33">EC P-256</option>
+                      <option value="EC-P384" data-i18n="tools.token-studio.ui.option34">EC P-384</option>
+                      <option value="EC-P521" data-i18n="tools.token-studio.ui.option35">EC P-521</option>
                     </optgroup>
                     <optgroup label="EdDSA">
-                      <option value="OKP-Ed25519">OKP Ed25519</option>
+                      <option value="OKP-Ed25519" data-i18n="tools.token-studio.ui.option36">OKP Ed25519</option>
                     </optgroup>
                   </select>
                 </div>
@@ -332,7 +335,7 @@ function renderTokenStudioPage() {
                 id="keys-import-input"
                 rows="5"
                 class="w-full p-3 font-mono text-sm bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-700 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none resize-y"
-                placeholder='Paste JWK JSON or PEM key here...'
+                placeholder="Paste JWK JSON or PEM key here..." data-i18n-placeholder="tools.token-studio.ui.placeholder18"
               ></textarea>
               <div class="flex gap-3 mt-2">
                 <button id="keys-import-btn" class="btn btn-secondary">
@@ -650,7 +653,7 @@ function renderTokenStudioPage() {
           if (!lastParsed) { return; }
           var keyInput = verifyKeyEl.value.trim();
           if (!keyInput) {
-            verifyResultEl.textContent = 'Please provide a JWK or shared secret to verify against.';
+            verifyResultEl.textContent = _t('tools.token-studio.js.text0', 'Please provide a JWK or shared secret to verify against.');
             verifyResultEl.className = 'rounded-lg p-3 text-sm font-medium border bg-error-50 dark:bg-error-900/20 text-error-700 dark:text-error-300 border-error-200 dark:border-error-800';
             verifyResultEl.classList.remove('hidden');
             return;
@@ -701,7 +704,7 @@ function renderTokenStudioPage() {
                 : 'bg-error-50 dark:bg-error-900/20 text-error-700 dark:text-error-300 border-error-200 dark:border-error-800');
             verifyResultEl.classList.remove('hidden');
           } catch(e) {
-            verifyResultEl.textContent = 'Verification error: ' + e.message;
+            verifyResultEl.textContent = _t('tools.token-studio.js.text16', 'Verification error: ') + e.message;
             verifyResultEl.className = 'rounded-lg p-3 text-sm font-medium border bg-error-50 dark:bg-error-900/20 text-error-700 dark:text-error-300 border-error-200 dark:border-error-800';
             verifyResultEl.classList.remove('hidden');
           }
@@ -731,12 +734,12 @@ function renderTokenStudioPage() {
         function updateKeyLabel() {
           var alg = algSelect.value;
           if (isHmacAlg(alg)) {
-            keyLabel.textContent = 'Shared Secret (HMAC)';
-            keyHint.textContent = 'For HMAC algorithms, enter any UTF-8 string as the shared secret.';
+            keyLabel.textContent = _t('tools.token-studio.js.text2', 'Shared Secret (HMAC)');
+            keyHint.textContent = _t('tools.token-studio.js.text3', 'For HMAC algorithms, enter any UTF-8 string as the shared secret.');
             keyTa.placeholder = 'your-256-bit-secret';
           } else {
-            keyLabel.textContent = 'Private Key (JWK)';
-            keyHint.textContent = 'Paste the private JWK JSON from Key Management tab, or generate one there first.';
+            keyLabel.textContent = _t('tools.token-studio.js.text4', 'Private Key (JWK)');
+            keyHint.textContent = _t('tools.token-studio.js.text5', 'Paste the private JWK JSON from Key Management tab, or generate one there first.');
             keyTa.placeholder = '{"kty":"EC","crv":"P-256","d":"...","x":"...","y":"..."}';
           }
         }
@@ -905,7 +908,7 @@ function renderTokenStudioPage() {
               thumbprintRow.classList.add('hidden');
             }
           } catch(e) {
-            errorEl.textContent = 'Export error: ' + e.message;
+            errorEl.textContent = _t('tools.token-studio.js.text17', 'Export error: ') + e.message;
             errorEl.classList.remove('hidden');
           }
         }
@@ -961,7 +964,7 @@ function renderTokenStudioPage() {
 
             lastAlgParam = algParams;
             generateBtn.disabled = true;
-            generateBtn.textContent = 'Generating...';
+            generateBtn.textContent = _t('tools.token-studio.js.text7', 'Generating...');
 
             var keyPair = await crypto.subtle.generateKey(algParams, extractable, ['sign', 'verify']);
             lastPrivateKey = keyPair.privateKey;
@@ -970,18 +973,18 @@ function renderTokenStudioPage() {
             outputEl.classList.remove('hidden');
             await updateKeyOutputs();
           } catch(e) {
-            errorEl.textContent = 'Generation failed: ' + e.message + (sel === 'OKP-Ed25519' ? ' (Ed25519 may not be supported in this browser)' : '');
+            errorEl.textContent = _t('tools.token-studio.js.text18', 'Generation failed: ') + e.message + (sel === 'OKP-Ed25519' ? ' (Ed25519 may not be supported in this browser)' : '');
             errorEl.classList.remove('hidden');
           } finally {
             generateBtn.disabled = false;
-            generateBtn.textContent = 'Generate Key Pair';
+            generateBtn.textContent = _t('tools.token-studio.js.text9', 'Generate Key Pair');
           }
         });
 
         importBtn.addEventListener('click', async function() {
           var raw = importInput.value.trim();
           if (!raw) {
-            importResult.textContent = 'Please paste a JWK or PEM key.';
+            importResult.textContent = _t('tools.token-studio.js.text10', 'Please paste a JWK or PEM key.');
             importResult.className = 'rounded-lg p-3 text-sm border bg-error-50 dark:bg-error-900/20 text-error-700 dark:text-error-300 border-error-200 dark:border-error-800';
             importResult.classList.remove('hidden');
             return;
@@ -997,19 +1000,19 @@ function renderTokenStudioPage() {
               if (jwk.use) info += ', use: ' + jwk.use;
               if (jwk.kid) info += ', kid: ' + jwk.kid;
               var keyUse = jwk.d ? 'private' : 'public';
-              importResult.textContent = 'Valid JWK (' + keyUse + ' key). ' + info;
+              importResult.textContent = _t('tools.token-studio.js.text11', 'Valid JWK (') + keyUse + ' key). ' + info;
               importResult.className = 'rounded-lg p-3 text-sm border bg-success-50 dark:bg-success-900/20 text-success-700 dark:text-success-300 border-success-200 dark:border-success-800';
             } else if (raw.includes('-----BEGIN')) {
               var typeMatch = raw.match(/-----BEGIN ([^-]+)-----/);
               var keyType = typeMatch ? typeMatch[1] : 'KEY';
-              importResult.textContent = 'Valid PEM detected: ' + keyType + '. Use a library for full PEM import/conversion.';
+              importResult.textContent = _t('tools.token-studio.js.text19', 'Valid PEM detected: ') + keyType + '. Use a library for full PEM import/conversion.';
               importResult.className = 'rounded-lg p-3 text-sm border bg-surface-50 dark:bg-surface-950 text-surface-700 dark:text-surface-300 border-surface-200 dark:border-surface-700';
             } else {
               throw new Error('Unrecognized format. Expected JWK JSON or PEM.');
             }
             importResult.classList.remove('hidden');
           } catch(e) {
-            importResult.textContent = 'Parse error: ' + e.message;
+            importResult.textContent = _t('tools.token-studio.js.text20', 'Parse error: ') + e.message;
             importResult.className = 'rounded-lg p-3 text-sm border bg-error-50 dark:bg-error-900/20 text-error-700 dark:text-error-300 border-error-200 dark:border-error-800';
             importResult.classList.remove('hidden');
           }
@@ -1047,16 +1050,25 @@ function renderTokenStudioPage() {
           }
 
           if (errors.length > 0) {
-            validationEl.textContent = 'Warnings: ' + errors.join('; ');
+            validationEl.textContent = _t('tools.token-studio.js.text21', 'Warnings: ') + errors.join('; ');
             validationEl.className = 'rounded-lg p-3 text-sm font-medium border bg-warning-50 dark:bg-warning-900/20 text-warning-700 dark:text-warning-300 border-warning-200 dark:border-warning-800';
             validationEl.classList.remove('hidden');
           } else if (keys.length > 0) {
-            validationEl.textContent = '✓ Valid JWKS structure (' + keys.length + ' key' + (keys.length !== 1 ? 's' : '') + ')';
+            validationEl.textContent = _t('tools.token-studio.js.text15', '✓ Valid JWKS structure (') + keys.length + ' key' + (keys.length !== 1 ? 's' : '') + ')';
             validationEl.className = 'rounded-lg p-3 text-sm font-medium border bg-success-50 dark:bg-success-900/20 text-success-700 dark:text-success-300 border-success-200 dark:border-success-800';
             validationEl.classList.remove('hidden');
           } else {
             validationEl.classList.add('hidden');
           }
+        }
+
+        function escapeHtml(str) {
+          return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#x27;');
         }
 
         function renderKeyList() {
@@ -1069,9 +1081,10 @@ function renderTokenStudioPage() {
           emptyLabel.classList.add('hidden');
           var items = keys.map(function(k, i) {
             var label = k.kid ? k.kid : (k.kty + (k.crv ? ' (' + k.crv + ')' : ''));
+            label = escapeHtml(label);
             return '<div class="flex items-center justify-between px-3 py-2 bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg text-sm">' +
-              '<span class="font-mono text-surface-700 dark:text-surface-300 truncate">' + label + '</span>' +
-              '<button class="ml-2 text-error-500 hover:text-error-700 text-xs px-2 py-1 rounded" data-remove-idx="' + i + '" aria-label="Remove key">Remove</button>' +
+              '<span class="font-mono text-surface-700 dark:text-surface-300 truncate" data-i18n="tools.token-studio.ui.desc51">' + label + '</span>' +
+              '<button class="ml-2 text-error-500 hover:text-error-700 text-xs px-2 py-1 rounded" data-remove-idx="' + i + '" aria-label="Remove key"><span data-i18n="tools.token-studio.ui.button7">Remove</span></button>' +
               '</div>';
           });
           keyList.innerHTML = items.join('');
@@ -1089,7 +1102,7 @@ function renderTokenStudioPage() {
         addBtn.addEventListener('click', function() {
           addError.classList.add('hidden');
           var raw = keyInput.value.trim();
-          if (!raw) { addError.textContent = 'Please paste a JWK.'; addError.classList.remove('hidden'); return; }
+          if (!raw) { addError.textContent = _t('tools.token-studio.js.text16', 'Please paste a JWK.'); addError.classList.remove('hidden'); return; }
           try {
             var jwk = JSON.parse(raw);
             if (!jwk.kty) throw new Error('Missing kty property — not a valid JWK.');
@@ -1099,7 +1112,7 @@ function renderTokenStudioPage() {
             renderKeyList();
             updateOutput();
           } catch(e) {
-            addError.textContent = 'Invalid JWK: ' + e.message;
+            addError.textContent = _t('tools.token-studio.js.text22', 'Invalid JWK: ') + e.message;
             addError.classList.remove('hidden');
           }
         });
@@ -1119,10 +1132,11 @@ function renderTokenStudioPage() {
   `;
 
   return respondHTML(createPageTemplate({
-    title: 'Token Cryptography Suite',
-    description: 'Inspect, decode, generate, and verify JWT tokens. Manage JWK keys and JWKS endpoints. All cryptographic operations run in your browser.',
+    title: translation?.name || 'Token Cryptography Suite',
+    description: translation?.desc || 'Inspect, decode, generate, and verify JWT tokens. Manage JWK keys and JWKS endpoints. All cryptographic operations run in your browser.',
     path: '/token-studio',
     content,
-    scripts: script
+    scripts: script,
+    lang: currentLang
   }));
 }

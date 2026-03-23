@@ -8,6 +8,7 @@ import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
 import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
+import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
 
 export async function handleUserAgentDecoderRoutes(request, url) {
   const { pathname } = url;
@@ -16,7 +17,7 @@ export async function handleUserAgentDecoderRoutes(request, url) {
   try {
     if (pathname === '/user-agent-decoder' || pathname === '/user-agent-decoder/') {
       if (method === 'GET') {
-        return renderUserAgentDecoderPage();
+        return renderUserAgentDecoderPage(resolveRequestLanguage(request, url));
       }
     }
 
@@ -30,12 +31,16 @@ export async function handleUserAgentDecoderRoutes(request, url) {
   }
 }
 
-function renderUserAgentDecoderPage() {
+function renderUserAgentDecoderPage(lang = DEFAULT_LANGUAGE) {
+  const currentLang = normalizeLanguage(lang);
+  const translation = getToolTranslation('user-agent-decoder', currentLang);
+  const toolName = translation?.name || 'User-Agent Parser';
+  const toolDescription = translation?.desc || 'Parse browser, OS, and device information from User-Agent strings';
   const toolHeader = createToolHeader(
     { emoji: '🔍' },
-    'User-Agent Parser',
-    'Parse browser, OS, and device information from User-Agent strings',
-    [{ text: 'Log Analysis', color: 'cyan', tooltip: 'Analyze User-Agent strings and related logs entirely in your browser.' }],
+    toolName,
+    toolDescription,
+    [{ text: translation?.ui?.badge23 || 'Log Analysis', color: 'cyan', tooltip: 'Analyze User-Agent strings and related logs entirely in your browser.' }],
     { toolId: 'user-agent-decoder' }
   );
 
@@ -56,7 +61,7 @@ function renderUserAgentDecoderPage() {
               <h2 class="text-sm font-bold text-primary-900 dark:text-primary-300 mb-2" data-i18n="tools.user-agent-decoder.ui.heading12">🌐 Your Current Browser</h2>
               <div id="current-ua" class="text-xs font-mono text-surface-700 dark:text-surface-300 bg-white dark:bg-surface-950 p-3 rounded border border-primary-200 dark:border-primary-700 break-all"></div>
             </div>
-            <button id="use-current" class="btn btn-secondary" data-tooltip="Use your current browser User-Agent string" whitespace-nowrap text-sm py-2">
+            <button id="use-current" class="btn btn-secondary" data-tooltip="Use your current browser User-Agent string" data-i18n-tooltip="tools.user-agent-decoder.ui.tip0" whitespace-nowrap text-sm py-2">
               <span data-i18n="tools.user-agent-decoder.ui.button0">Use This</span>
             </button>
         </div>
@@ -92,46 +97,50 @@ function renderUserAgentDecoderPage() {
       const resultsEl = document.getElementById('results');
 
       // Display current browser UA
-      currentUa.textContent = navigator.userAgent;
+      if (currentUa) currentUa.textContent = navigator.userAgent;
 
       // Use current UA button
-      document.getElementById('use-current').addEventListener('click', () => {
-        uaInput.value = navigator.userAgent;
+      var useCurrentBtn = document.getElementById('use-current');
+      if (useCurrentBtn) useCurrentBtn.addEventListener('click', () => {
+        if (uaInput) uaInput.value = navigator.userAgent;
         parseUserAgent();
       });
 
       // Example buttons
       document.querySelectorAll('.example-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-          uaInput.value = btn.dataset.ua;
+          if (uaInput) uaInput.value = btn.dataset.ua;
           parseUserAgent();
         });
       });
 
       // Parse button
-      document.getElementById('parse-btn').addEventListener('click', parseUserAgent);
+      var parseBtn = document.getElementById('parse-btn');
+      if (parseBtn) parseBtn.addEventListener('click', parseUserAgent);
 
       // Clear button
-      document.getElementById('clear-btn').addEventListener('click', () => {
-        uaInput.value = '';
-        resultsEl.classList.add('hidden');
+      var clearBtn = document.getElementById('clear-btn');
+      if (clearBtn) clearBtn.addEventListener('click', () => {
+        if (uaInput) uaInput.value = '';
+        if (resultsEl) resultsEl.classList.add('hidden');
       });
 
       // Copy analysis button
-      document.getElementById('copy-analysis').addEventListener('click', async () => {
-        const text = document.getElementById('raw-output').textContent;
+      var copyAnalysisBtn = document.getElementById('copy-analysis');
+      if (copyAnalysisBtn) copyAnalysisBtn.addEventListener('click', async () => {
+        const rawOutput = document.getElementById('raw-output');
+        const text = rawOutput ? rawOutput.textContent : '';
         await navigator.clipboard.writeText(text);
-        const btn = document.getElementById('copy-analysis');
-        const orig = btn.textContent;
-        btn.textContent = _t('tools.user-agent-decoder.js.text0', '✓ Copied!');
+        const orig = copyAnalysisBtn.textContent;
+        copyAnalysisBtn.textContent = _t('tools.user-agent-decoder.js.text0', '✓ Copied!');
         if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
-        setTimeout(() => btn.textContent = orig, 2000);
+        setTimeout(() => copyAnalysisBtn.textContent = orig, 2000);
       });
 
        function parseUserAgent() {
          const ua = uaInput.value.trim();
          if (!ua) {
-           document.getElementById('ua-error').textContent = 'Please enter a User-Agent string.';
+           document.getElementById('ua-error').textContent = _t('tools.user-agent-decoder.js.text0', 'Please enter a User-Agent string.');
            document.getElementById('ua-error').classList.remove('hidden');
            return;
          }
@@ -300,10 +309,11 @@ function renderUserAgentDecoderPage() {
   `;
 
   return respondHTML(createPageTemplate({
-    title: 'User-Agent Parser - Parse Browser & OS Information',
-    description: 'Parse and analyze User-Agent strings to identify browser, OS, device type, and version. Perfect for log analysis and web development.',
+    title: toolName,
+    description: toolDescription,
     path: '/user-agent-decoder',
     content,
-    scripts: script
+    scripts: script,
+    lang: currentLang
   }));
 }

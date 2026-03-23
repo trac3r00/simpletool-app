@@ -76,10 +76,10 @@ function renderJwkJwksStudioPage() {
               <button id="import-btn" class="btn btn-primary">
                 <span data-i18n="tools.jwk-jwks-studio.ui.button0">Import</span>
               </button>
-              <button id="thumbprint-btn" class="btn btn-secondary" data-tooltip="Compute RFC 7638 SHA-256 thumbprint for the imported JWK">
+              <button id="thumbprint-btn" class="btn btn-secondary" data-tooltip="Compute RFC 7638 SHA-256 thumbprint for the imported JWK" data-i18n-tooltip="tools.jwk-jwks-studio.ui.tip0">
                 <span data-i18n="tools.jwk-jwks-studio.ui.button1">Thumbprint</span>
               </button>
-              <button id="add-to-jwks-btn" class="btn btn-secondary" data-tooltip="Add/Upsert imported key into the JWKS editor">
+              <button id="add-to-jwks-btn" class="btn btn-secondary" data-tooltip="Add/Upsert imported key into the JWKS editor" data-i18n-tooltip="tools.jwk-jwks-studio.ui.tip1">
                 <span data-i18n="tools.jwk-jwks-studio.ui.button2">Add to JWKS</span>
               </button>
               <button id="clear-key-btn" class="btn btn-ghost">

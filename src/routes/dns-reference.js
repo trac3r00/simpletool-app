@@ -2,24 +2,28 @@ import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, getCopyToClipboardScript } from '../utils/common-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
 import { createRelatedToolsSection } from '../utils/content-ui.js';
+import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
 
 export async function handleDNSReferenceRoutes(request, url) {
   if (url.pathname !== '/dns-reference' && url.pathname !== '/dns-reference/') return null;
   if (request.method !== 'GET') return null;
-  return respondHTML(renderDnsReferencePage());
+  const lang = resolveRequestLanguage(request, url);
+  return respondHTML(renderDnsReferencePage(lang));
 }
 
-function renderDnsReferencePage() {
-  const title = 'DNS Record Reference';
-  const description = 'Interactive reference for DNS record types with syntax, examples, and command builders.';
+function renderDnsReferencePage(lang = DEFAULT_LANGUAGE) {
+  const currentLang = normalizeLanguage(lang);
+  const translation = getToolTranslation('dns-reference', currentLang);
+  const title = translation?.name || 'DNS Record Reference';
+  const description = translation?.desc || 'Interactive reference for DNS record types with syntax, examples, and command builders.';
 
   const header = createToolHeader(
     { emoji: '📇' },
     title,
-    'Comprehensive DNS record type reference with syntax examples, TTL recommendations, and command builders for dig and nslookup.',
+    description,
     [
-      { text: '<span data-i18n="tools.dns-reference.ui.badge0">Interactive</span>', tooltip: 'Click any record type to see detailed information and examples.' },
-      { text: '<span data-i18n="tools.dns-reference.ui.badge1">Command Builder</span>', tooltip: 'Generate dig and nslookup commands with one click.' }
+      { text: translation?.ui?.badge13 || '<span data-i18n="tools.dns-reference.ui.badge0">Interactive</span>', tooltip: 'Click any record type to see detailed information and examples.' },
+      { text: translation?.ui?.badge14 || '<span data-i18n="tools.dns-reference.ui.badge1">Command Builder</span>', tooltip: 'Generate dig and nslookup commands with one click.' }
     ],
     { toolId: 'dns-reference' }
   );
@@ -531,6 +535,7 @@ function renderDnsReferencePage() {
   return createPageTemplate({
     title,
     description,
+    lang: currentLang,
     path: '/dns-reference',
     content,
     scripts

@@ -2,6 +2,7 @@ import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet } from '../utils/common-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
 import { createRelatedToolsSection } from '../utils/content-ui.js';
+import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
 
 export async function handleMarkdownPreviewRoutes(request, url) {
   const { pathname } = url;
@@ -10,7 +11,7 @@ export async function handleMarkdownPreviewRoutes(request, url) {
   try {
     if (pathname === '/markdown-preview' || pathname === '/markdown-preview/') {
       if (method === 'GET') {
-        return renderMarkdownPreviewPage();
+        return renderMarkdownPreviewPage(resolveRequestLanguage(request, url));
       }
     }
     return respondJSON({ error: 'Not found' }, { status: 404 });
@@ -23,14 +24,16 @@ export async function handleMarkdownPreviewRoutes(request, url) {
   }
 }
 
-function renderMarkdownPreviewPage() {
+function renderMarkdownPreviewPage(lang = DEFAULT_LANGUAGE) {
+  const currentLang = normalizeLanguage(lang);
+  const translation = getToolTranslation('markdown-preview', currentLang);
   const toolHeader = createToolHeader(
     { emoji: '📝' },
-    'Markdown Editor',
-    'Live Markdown editor with split-pane preview, Mermaid diagrams, and export tools.',
-    [{ text: 'Live Preview', tooltip: 'Updates the rendered preview instantly as you edit markdown.' },
-     { text: 'Mermaid', tooltip: 'Supports Mermaid.js diagram syntax directly inside the editor.' },
-     { text: 'Export', tooltip: 'Export Markdown, HTML, or other formats without leaving the page.' }],
+    translation?.name || 'Markdown Editor',
+    translation?.desc || 'Live Markdown editor with split-pane preview, Mermaid diagrams, and export tools.',
+    [{ text: translation?.ui?.badge11 || 'Live Preview', tooltip: 'Updates the rendered preview instantly as you edit markdown.' },
+     { text: translation?.ui?.badge12 || 'Mermaid', tooltip: 'Supports Mermaid.js diagram syntax directly inside the editor.' },
+     { text: translation?.ui?.badge13 || 'Export', tooltip: 'Export Markdown, HTML, or other formats without leaving the page.' }],
     { toolId: 'markdown-preview' }
   );
 
@@ -59,7 +62,7 @@ function renderMarkdownPreviewPage() {
             </div>
 
             <div class="hidden md:block">
-              <label for="outline-select" class="sr-only">Jump to heading</label>
+              <label for="outline-select" class="sr-only"><span data-i18n="tools.markdown-preview.ui.label0">Jump to heading</span></label>
               <select id="outline-select" class="max-w-[220px] px-2.5 py-1.5 text-sm bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-700 rounded-md text-surface-700 dark:text-surface-200 focus:outline-none focus:ring-2 focus:ring-primary-500" disabled>
                 <option value="" data-i18n="tools.markdown-preview.ui.option9">Jump to heading...</option>
               </select>
@@ -119,7 +122,7 @@ function renderMarkdownPreviewPage() {
           <div id="md-split" dir="ltr" class="h-full min-h-0 grid">
             <!-- Editor -->
             <div id="md-editor-pane" class="min-h-0 flex flex-col relative group">
-              <label for="markdown-input" class="sr-only">Markdown input</label>
+              <label for="markdown-input" class="sr-only"><span data-i18n="tools.markdown-preview.ui.label1">Markdown input</span></label>
               <textarea
                 id="markdown-input"
                 dir="auto"
@@ -145,7 +148,7 @@ function renderMarkdownPreviewPage() {
                 class="flex-grow w-full p-6 overflow-y-auto prose dark:prose-invert max-w-none prose-sm sm:prose-base prose-pre:bg-surface-100 dark:prose-pre:bg-surface-950 prose-pre:border prose-pre:border-surface-200 dark:prose-pre:border-surface-800"
               ></div>
               <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                <span class="text-xs text-surface-400 bg-surface-100 dark:bg-surface-800 px-2 py-1 rounded">Preview</span>
+                <span class="text-xs text-surface-400 bg-surface-100 dark:bg-surface-800 px-2 py-1 rounded" data-i18n="tools.markdown-preview.ui.desc7">Preview</span>
               </div>
             </div>
           </div>
@@ -287,7 +290,7 @@ function renderMarkdownPreviewPage() {
       ${createCheatsheet('markdown-preview', 'Markdown Quick Reference', [
         { heading: 'Formatting', content: `
           <table>
-            <tr><th>Syntax</th><th>Result</th></tr>
+            <tr><th data-i18n="tools.markdown-preview.ui.th3">Syntax</th><th data-i18n="tools.markdown-preview.ui.th4">Result</th></tr>
             <tr><td><code>**bold**</code></td><td>Bold text</td></tr>
             <tr><td><code>*italic*</code></td><td>Italic text</td></tr>
             <tr><td><code>~~strike~~</code></td><td>Strikethrough</td></tr>
@@ -296,7 +299,7 @@ function renderMarkdownPreviewPage() {
           </table>` },
         { heading: 'Structure', content: `
           <table>
-            <tr><th>Syntax</th><th>Element</th></tr>
+            <tr><th data-i18n="tools.markdown-preview.ui.th3">Syntax</th><th data-i18n="tools.markdown-preview.ui.th5">Element</th></tr>
             <tr><td><code># H1</code> to <code>###### H6</code></td><td>Headings</td></tr>
             <tr><td><code>- item</code> or <code>* item</code></td><td>Unordered list</td></tr>
             <tr><td><code>1. item</code></td><td>Ordered list</td></tr>
@@ -305,7 +308,7 @@ function renderMarkdownPreviewPage() {
           </table>` },
         { heading: 'Links &amp; Media', content: `
           <table>
-            <tr><th>Syntax</th><th>Result</th></tr>
+            <tr><th data-i18n="tools.markdown-preview.ui.th3">Syntax</th><th data-i18n="tools.markdown-preview.ui.th4">Result</th></tr>
             <tr><td><code>[text](url)</code></td><td>Hyperlink</td></tr>
             <tr><td><code>![alt](url)</code></td><td>Image</td></tr>
             <tr><td><code>[text](url "title")</code></td><td>Link with tooltip</td></tr>
@@ -781,11 +784,12 @@ function renderMarkdownPreviewPage() {
 
   return respondHTML(
     createPageTemplate({
-      title: 'Markdown Editor',
-      description: 'Live Markdown editor with split-pane preview, Mermaid diagrams, and export tools.',
+      title: translation?.name || 'Markdown Editor',
+      description: translation?.desc || 'Split-pane Markdown editor with sync scroll and GFM support.',
       path: '/markdown-preview',
       content,
-      scripts
+      scripts,
+      lang: currentLang
     })
   );
 }

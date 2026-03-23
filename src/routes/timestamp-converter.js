@@ -7,6 +7,7 @@ import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
 import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
+import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
 
 export async function handleTimestampConverterRoutes(request, url) {
   const { pathname } = url;
@@ -15,7 +16,7 @@ export async function handleTimestampConverterRoutes(request, url) {
   try {
     if (pathname === '/timestamp-converter' || pathname === '/timestamp-converter/') {
       if (method === 'GET') {
-        return renderTimestampConverterPage();
+        return renderTimestampConverterPage(resolveRequestLanguage(request, url));
       }
     }
 
@@ -29,12 +30,14 @@ export async function handleTimestampConverterRoutes(request, url) {
   }
 }
 
-function renderTimestampConverterPage() {
+function renderTimestampConverterPage(lang = DEFAULT_LANGUAGE) {
+  const currentLang = normalizeLanguage(lang);
+  const translation = getToolTranslation('timestamp-converter', currentLang);
   const toolHeader = createToolHeader(
     { emoji: '⏰' },
-    'Timestamp Converter',
-    'Convert between Unix timestamps and human-readable dates with timezone support',
-    [{ text: 'ISO 8601', color: 'orange', tooltip: 'Outputs converted timestamps in ISO 8601 format (e.g. 2025-01-30T12:00:00Z).' }],
+    translation?.name || 'Timestamp Converter',
+    translation?.desc || 'Convert between Unix timestamps and human-readable dates with timezone support',
+    [{ text: translation?.ui?.badge17 || 'ISO 8601', color: 'orange', tooltip: 'Outputs converted timestamps in ISO 8601 format (e.g. 2025-01-30T12:00:00Z).' }],
     { toolId: 'timestamp-converter' }
   );
 
@@ -71,7 +74,7 @@ function renderTimestampConverterPage() {
               <div>
                 <label for="unix-input" class="label"><span data-i18n="tools.timestamp-converter.ui.label1">Unix Timestamp</span></label>
                 <div class="flex gap-2">
-                  <input type="text" id="unix-input" placeholder="e.g. 1700000000" class="input font-mono" data-tooltip="Seconds since Jan 1, 1970 00:00:00 UTC">
+                  <input type="text" id="unix-input" placeholder="e.g. 1700000000" class="input font-mono" data-tooltip="Seconds since Jan 1, 1970 00:00:00 UTC" data-i18n-tooltip="tools.timestamp-converter.ui.tip0">
                   <button id="now-btn" class="btn btn-primary whitespace-nowrap">
                     <span data-i18n="tools.timestamp-converter.ui.button0">Now</span>
                   </button>
@@ -79,11 +82,11 @@ function renderTimestampConverterPage() {
                 <div class="flex gap-4 mt-3">
                   <label class="flex items-center space-x-2 cursor-pointer">
                     <input type="radio" name="unix-unit" value="seconds" checked class="w-4 h-4 text-primary-600 focus:ring-primary-500">
-                    <span class="text-sm text-surface-700 dark:text-surface-300" data-i18n="tools.timestamp-converter.ui.desc15" data-tooltip="Standard Unix epoch (10 digits)">Seconds</span>
+                    <span class="text-sm text-surface-700 dark:text-surface-300" data-i18n="tools.timestamp-converter.ui.desc15" data-tooltip="Standard Unix epoch (10 digits)" data-i18n-tooltip="tools.timestamp-converter.ui.tip1">Seconds</span>
                   </label>
                   <label class="flex items-center space-x-2 cursor-pointer">
                     <input type="radio" name="unix-unit" value="milliseconds" class="w-4 h-4 text-primary-600 focus:ring-primary-500">
-                    <span class="text-sm text-surface-700 dark:text-surface-300" data-i18n="tools.timestamp-converter.ui.desc16" data-tooltip="JavaScript Date.now() format (13 digits)">Milliseconds</span>
+                    <span class="text-sm text-surface-700 dark:text-surface-300" data-i18n="tools.timestamp-converter.ui.desc16" data-tooltip="JavaScript Date.now() format (13 digits)" data-i18n-tooltip="tools.timestamp-converter.ui.tip2">Milliseconds</span>
                   </label>
                 </div>
               </div>
@@ -94,7 +97,7 @@ function renderTimestampConverterPage() {
                   <div id="iso-output" class="font-mono text-sm break-all text-surface-900 dark:text-surface-100">-</div>
                 </div>
                 <div class="bg-surface-50 dark:bg-surface-950 p-3 rounded-lg border border-surface-200 dark:border-surface-800">
-                  <div class="text-xs text-surface-500 dark:text-surface-400 uppercase mb-1">Local Time</div>
+                  <div class="text-xs text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.timestamp-converter.ui.label0">Local Time</div>
                   <div id="local-output" class="font-mono text-sm break-all text-surface-900 dark:text-surface-100">-</div>
                 </div>
                 <div class="bg-surface-50 dark:bg-surface-950 p-3 rounded-lg border border-surface-200 dark:border-surface-800">
@@ -102,7 +105,7 @@ function renderTimestampConverterPage() {
                   <div id="utc-output" class="font-mono text-sm break-all text-surface-900 dark:text-surface-100">-</div>
                 </div>
                 <div class="bg-surface-50 dark:bg-surface-950 p-3 rounded-lg border border-surface-200 dark:border-surface-800">
-                  <div class="text-xs text-surface-500 dark:text-surface-400 uppercase mb-1">Relative</div>
+                  <div class="text-xs text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.timestamp-converter.ui.label1">Relative</div>
                   <div id="relative-output" class="font-mono text-sm break-all text-surface-900 dark:text-surface-100">-</div>
                 </div>
               </div>
@@ -347,10 +350,11 @@ function renderTimestampConverterPage() {
   `;
 
   return respondHTML(createPageTemplate({
-    title: 'Timestamp Converter',
-    description: 'Convert between Unix timestamps, ISO 8601, and human-readable dates with timezone support.',
+    title: translation?.name || 'Timestamp Converter',
+    description: translation?.desc || 'Convert Unix timestamps to human dates.',
     path: '/timestamp-converter',
     content,
-    scripts: script
+    scripts: script,
+    lang: currentLang
   }));
 }

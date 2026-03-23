@@ -1,22 +1,24 @@
 import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
-import { t } from '../utils/i18n.js';
+import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage, t } from '../utils/i18n.js';
 import { TOOLS } from '../utils/tool-registry.js';
 import { createRelatedToolsSection } from '../utils/content-ui.js';
 
 export async function handleCaffeniateRoutes(request, url) {
   if (url.pathname === '/caffeniate' || url.pathname === '/caffeniate/') {
-    if (request.method === 'GET') return respondHTML(renderCaffeniatePage());
+    if (request.method === 'GET') return respondHTML(renderCaffeniatePage(resolveRequestLanguage(request, url)));
   }
   return null;
 }
 
-function renderCaffeniatePage() {
+function renderCaffeniatePage(lang = DEFAULT_LANGUAGE) {
+  const currentLang = normalizeLanguage(lang);
+  const translation = getToolTranslation('caffeniate', currentLang);
   const toolHeader = createToolHeader(
     { emoji: '☕' },
-    'Caffeniate',
-    'Keep your device screen awake using the Wake Lock API. No downloads, fully client-side.',
-    [{ text: 'Client-Side Only', tooltip: 'Runs entirely in your browser using Web APIs — your data never leaves your device.' }],
+    translation?.name || 'Caffeniate',
+    translation?.desc || 'Keep your device screen awake using the Wake Lock API. No downloads, fully client-side.',
+    [{ text: translation?.ui?.badge0 || 'Client-Side Only', tooltip: 'Runs entirely in your browser using Web APIs — your data never leaves your device.' }],
     { toolId: 'caffeniate' }
   );
 
@@ -411,9 +413,10 @@ function renderCaffeniatePage() {
   `;
 
   return createPageTemplate({
-    title: 'Caffeniate - Keep Screen Awake',
-    description: 'Keep your device screen awake using the Wake Lock API. Client-side, no downloads required.',
+    title: translation?.name || 'Caffeniate',
+    description: translation?.desc || 'Keep your device screen awake using the Wake Lock API. No downloads, fully client-side.',
     content,
-    path: '/caffeniate'
+    path: '/caffeniate',
+    lang: currentLang
   });
 }

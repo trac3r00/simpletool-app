@@ -33,11 +33,15 @@ export async function handleJSONFormatterRoutes(request, url) {
 
 function renderJSONFormatterPage(lang = 'en') {
   const toolTranslation = getToolTranslation('json-formatter', lang);
+  const tr = (key, fallback) => {
+    const value = t(key, lang);
+    return value === key ? fallback : value;
+  };
   const toolHeader = createToolHeader(
     { emoji: '📋' },
     toolTranslation?.name || 'JSON Formatter',
     toolTranslation?.desc || 'Format, validate, and beautify JSON data',
-    [{ text: t('tools.json-formatter.ui.badge12', lang), color: 'green', tooltip: 'All processing happens in your browser — no data is sent to any server.' }],
+    [{ text: tr('tools.json-formatter.ui.badge12', 'Privacy First'), color: 'green', tooltip: 'All processing happens in your browser — no data is sent to any server.' }],
     { toolId: 'json-formatter' }
   );
 
@@ -53,19 +57,19 @@ function renderJSONFormatterPage(lang = 'en') {
 
         <!-- Controls -->
         <div class="flex flex-wrap gap-3 mb-6 bg-surface-50 dark:bg-surface-950/50 p-2 rounded-lg border border-surface-100 dark:border-surface-800">
-          <button id="format-btn" class="btn btn-primary" data-tooltip="Pretty-print with 2-space indent">
+          <button id="format-btn" class="btn btn-primary" data-tooltip="Pretty-print with 2-space indent" data-i18n-tooltip="tools.json-formatter.ui.tip0">
             <span data-i18n="tools.json-formatter.ui.button0">🎨 Format</span>
           </button>
-          <button id="minify-btn" class="btn btn-secondary" data-tooltip="Remove all whitespace to reduce size">
+          <button id="minify-btn" class="btn btn-secondary" data-tooltip="Remove all whitespace to reduce size" data-i18n-tooltip="tools.json-formatter.ui.tip1">
             <span data-i18n="tools.json-formatter.ui.button1">📦 Minify</span>
           </button>
-          <button id="validate-btn" class="btn btn-secondary" data-tooltip="Check JSON syntax without reformatting">
+          <button id="validate-btn" class="btn btn-secondary" data-tooltip="Check JSON syntax without reformatting" data-i18n-tooltip="tools.json-formatter.ui.tip2">
             <span data-i18n="tools.json-formatter.ui.button2">✓ Validate</span>
           </button>
-          <button id="clear-btn" class="btn btn-ghost ml-auto" data-tooltip="Clear input and output">
+          <button id="clear-btn" class="btn btn-ghost ml-auto" data-tooltip="Clear input and output" data-i18n-tooltip="tools.json-formatter.ui.tip3">
             <span data-i18n="tools.json-formatter.ui.button3">🗑️ Clear</span>
           </button>
-          <button id="copy-btn" class="btn btn-secondary" data-tooltip="Copy formatted output to clipboard">
+          <button id="copy-btn" class="btn btn-secondary" data-tooltip="Copy formatted output to clipboard" data-i18n-tooltip="tools.json-formatter.ui.tip4">
             <span data-i18n="tools.json-formatter.ui.button4">📋 Copy</span>
           </button>
         </div>
@@ -84,7 +88,7 @@ function renderJSONFormatterPage(lang = 'en') {
                  <label class="label"><span data-i18n="tools.json-formatter.ui.label6">Formatted Output</span></label>
                  <span id="status-indicator" class="text-xs font-mono hidden"></span>
               </div>
-             ${createEmptyState({ icon: '📋', title: 'No output yet', description: 'Paste JSON on the left, then click Format or Minify.', id: 'json-empty-state' })}
+             ${createEmptyState({ icon: '📋', title: 'No output yet', description: 'Paste JSON on the left, then click Format or Minify.', id: 'json-empty-state', i18nTitle: 'tools.json-formatter.ui.desc13', i18nDesc: 'tools.json-formatter.ui.desc14' })}
              ${createRichEditorPane({ id: 'output', mode: 'pre', ariaLabel: 'JSON output', hidden: true })}
              <textarea id="json-output" class="hidden" readonly aria-hidden="true"></textarea>
            </div>
@@ -98,19 +102,19 @@ function renderJSONFormatterPage(lang = 'en') {
         <div id="json-stats" class="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4 hidden">
           <div class="p-4 bg-surface-50 dark:bg-surface-950 rounded-lg border border-surface-200 dark:border-surface-800">
             <div class="text-2xl font-bold text-primary-600 dark:text-primary-400" id="stat-size">0</div>
-            <div class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.json-formatter.ui.stat7" data-tooltip="Total character count in output">Characters</div>
+            <div class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.json-formatter.ui.stat7" data-tooltip="Total character count in output" data-i18n-tooltip="tools.json-formatter.ui.tip5">Characters</div>
           </div>
           <div class="p-4 bg-surface-50 dark:bg-surface-950 rounded-lg border border-surface-200 dark:border-surface-800">
             <div class="text-2xl font-bold text-primary-600 dark:text-primary-400" id="stat-lines">0</div>
-            <div class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.json-formatter.ui.stat8" data-tooltip="Number of lines in formatted output">Lines</div>
+            <div class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.json-formatter.ui.stat8" data-tooltip="Number of lines in formatted output" data-i18n-tooltip="tools.json-formatter.ui.tip6">Lines</div>
           </div>
           <div class="p-4 bg-surface-50 dark:bg-surface-950 rounded-lg border border-surface-200 dark:border-surface-800">
             <div class="text-2xl font-bold text-primary-600 dark:text-primary-400" id="stat-keys">0</div>
-            <div class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.json-formatter.ui.stat9" data-tooltip="Total object keys including nested">Keys</div>
+            <div class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.json-formatter.ui.stat9" data-tooltip="Total object keys including nested" data-i18n-tooltip="tools.json-formatter.ui.tip7">Keys</div>
           </div>
           <div class="p-4 bg-surface-50 dark:bg-surface-950 rounded-lg border border-surface-200 dark:border-surface-800">
             <div class="text-2xl font-bold text-primary-600 dark:text-primary-400" id="stat-depth">0</div>
-            <div class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.json-formatter.ui.stat10" data-tooltip="Deepest nesting level in the structure">Max Depth</div>
+            <div class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.json-formatter.ui.stat10" data-tooltip="Deepest nesting level in the structure" data-i18n-tooltip="tools.json-formatter.ui.tip8">Max Depth</div>
           </div>
         </div>
 

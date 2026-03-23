@@ -10,19 +10,22 @@ import { createPageTemplate, createToolHeader, createCheatsheet, infoHint, creat
 import { createRichEditorPane, getRichEditorStyles, getRichEditorScript } from '../utils/rich-editor.js';
 import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
+import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
 
 export async function handleSQLFormatterRoutes(request, url) {
   const { pathname } = url;
   if (pathname === '/sql-formatter' || pathname === '/sql-formatter/') {
-    if (request.method === 'GET') return respondHTML(renderSQLFormatterPage());
+    if (request.method === 'GET') return respondHTML(renderSQLFormatterPage(resolveRequestLanguage(request, url)));
     return new Response('Method not allowed', { status: 405 });
   }
   return null;
 }
 
-function renderSQLFormatterPage() {
-  const title = 'SQL Formatter & Validator';
-  const description = 'Format SQL and catch common syntax issues. Supports Postgres/MySQL-friendly formatting (offline).';
+function renderSQLFormatterPage(lang = DEFAULT_LANGUAGE) {
+  const currentLang = normalizeLanguage(lang);
+  const translation = getToolTranslation('sql-formatter', currentLang);
+  const title = translation?.name || 'SQL Formatter & Validator';
+  const description = translation?.desc || 'Format SQL and catch common syntax issues. Supports Postgres/MySQL-friendly formatting (offline).';
 
   const header = createToolHeader(
     { emoji: '🗄️' },
@@ -66,10 +69,10 @@ function renderSQLFormatterPage() {
                 <select id="dialect" class="input">
                   <option value="postgres" data-i18n="tools.sql-formatter.ui.option0">Postgres</option>
                   <option value="mysql" data-i18n="tools.sql-formatter.ui.option1">MySQL</option>
-                  <option value="bigquery">BigQuery</option>
-                  <option value="snowflake">Snowflake</option>
-                  <option value="clickhouse">ClickHouse</option>
-                  <option value="sqlite">SQLite</option>
+                  <option value="bigquery" data-i18n="tools.sql-formatter.ui.option6">BigQuery</option>
+                  <option value="snowflake" data-i18n="tools.sql-formatter.ui.option7">Snowflake</option>
+                  <option value="clickhouse" data-i18n="tools.sql-formatter.ui.option8">ClickHouse</option>
+                  <option value="sqlite" data-i18n="tools.sql-formatter.ui.option9">SQLite</option>
                 </select>
               </div>
               <div>
@@ -94,7 +97,7 @@ function renderSQLFormatterPage() {
 
           <div class="space-y-2">
             <label class="label" data-i18n="tools.sql-formatter.ui.label4">Output</label>
-            ${createEmptyState({ icon: '🗄️', title: 'No output yet', description: 'Paste SQL on the left, then click Format or Validate.', id: 'sql-empty-state' })}
+            ${createEmptyState({ icon: '🗄️', title: 'No output yet', description: 'Paste SQL on the left, then click Format or Validate.', id: 'sql-empty-state', i18nTitle: 'tools.sql-formatter.ui.desc9', i18nDesc: 'tools.sql-formatter.ui.desc10' })}
             ${createRichEditorPane({ id: 'sql-out', mode: 'pre', ariaLabel: 'Formatted SQL output', hidden: true })}
           </div>
         </div>
@@ -635,7 +638,7 @@ function renderSQLFormatterPage() {
         const kind = hasError ? 'error' : 'warn';
         const items = issues.slice(0, 12).map(i => {
           const where = 'L' + i.line + ':' + i.col;
-          return '<li><span class="font-mono text-xs">' + where + '</span> — ' + i.msg + '</li>';
+          return '<li><span class="font-mono text-xs" data-i18n="tools.sql-formatter.ui.desc14">' + where + '</span> — ' + i.msg + '</li>';
         }).join('');
 	        const note = issues.length > 12 ? '<div class="mt-2 text-xs opacity-80">' + fmtVars(t('text8', 'Showing first {n} issues.'), { n: 12 }) + '</div>' : '';
         setIssues(kind, '<ul class="list-disc ml-5 space-y-1">' + items + '</ul>' + note);
@@ -724,6 +727,7 @@ function renderSQLFormatterPage() {
     description,
     path: '/sql-formatter',
     content,
-    scripts
+    scripts,
+    lang: currentLang
   });
 }

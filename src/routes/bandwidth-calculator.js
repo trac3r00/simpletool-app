@@ -8,16 +8,19 @@ import { createPageTemplate, createToolHeader, createCheatsheet, getCopyToClipbo
 import { respondHTML } from '../utils/respond.js';
 import { TOOLS } from '../utils/tool-registry.js';
 import { createRelatedToolsSection } from '../utils/content-ui.js';
+import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
 
 /**
  * Render the Bandwidth Calculator page
  */
-function renderBandwidthCalculatorPage() {
+function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
+  const currentLang = normalizeLanguage(lang);
+  const translation = getToolTranslation('bandwidth-calculator', currentLang);
   const toolHeader = createToolHeader(
     { emoji: '📊' },
-    'Bandwidth Calculator',
-    'Calculate transfer times, required bandwidth, data capacity, and TCP overhead.',
-    [{ text: 'Client-Side Only', tooltip: 'Runs entirely in your browser using Web APIs — your data never leaves your device.' }],
+    translation?.name || 'Bandwidth Calculator',
+    translation?.desc || 'Calculate transfer times, required bandwidth, data capacity, and TCP overhead.',
+    [{ text: translation?.ui?.badge54 || 'Client-Side Only', tooltip: 'Runs entirely in your browser using Web APIs — your data never leaves your device.' }],
     { toolId: 'bandwidth-calculator' }
   );
 
@@ -87,10 +90,10 @@ function renderBandwidthCalculatorPage() {
                 <div class="flex gap-2">
                   <input type="number" id="transfer-bandwidth" min="0" step="any" placeholder="100" class="input flex-1" data-i18n-placeholder="tools.bandwidth-calculator.ui.placeholder1">
                   <select id="transfer-bandwidth-unit" class="input w-28">
-                    <option value="bps">bps</option>
-                    <option value="Kbps">Kbps</option>
-                    <option value="Mbps" selected>Mbps</option>
-                    <option value="Gbps">Gbps</option>
+                    <option value="bps" data-i18n="tools.bandwidth-calculator.ui.option15">bps</option>
+                    <option value="Kbps" data-i18n="tools.bandwidth-calculator.ui.option16">Kbps</option>
+                    <option value="Mbps" selected data-i18n="tools.bandwidth-calculator.ui.option17">Mbps</option>
+                    <option value="Gbps" data-i18n="tools.bandwidth-calculator.ui.option18">Gbps</option>
                   </select>
                 </div>
               </div>
@@ -207,10 +210,10 @@ function renderBandwidthCalculatorPage() {
                 <div class="flex gap-2">
                   <input type="number" id="cap-bandwidth" min="0" step="any" placeholder="100" class="input flex-1" data-i18n-placeholder="tools.bandwidth-calculator.ui.placeholder6">
                   <select id="cap-bandwidth-unit" class="input w-28">
-                    <option value="bps">bps</option>
-                    <option value="Kbps">Kbps</option>
-                    <option value="Mbps" selected>Mbps</option>
-                    <option value="Gbps">Gbps</option>
+                    <option value="bps" data-i18n="tools.bandwidth-calculator.ui.option15">bps</option>
+                    <option value="Kbps" data-i18n="tools.bandwidth-calculator.ui.option16">Kbps</option>
+                    <option value="Mbps" selected data-i18n="tools.bandwidth-calculator.ui.option17">Mbps</option>
+                    <option value="Gbps" data-i18n="tools.bandwidth-calculator.ui.option18">Gbps</option>
                   </select>
                 </div>
               </div>
@@ -267,10 +270,10 @@ function renderBandwidthCalculatorPage() {
                 <div class="flex gap-2">
                   <input type="number" id="tcp-bandwidth" min="0" step="any" placeholder="1" class="input flex-1" data-i18n-placeholder="tools.bandwidth-calculator.ui.placeholder10">
                   <select id="tcp-bandwidth-unit" class="input w-28">
-                    <option value="bps">bps</option>
-                    <option value="Kbps">Kbps</option>
-                    <option value="Mbps">Mbps</option>
-                    <option value="Gbps" selected>Gbps</option>
+                    <option value="bps" data-i18n="tools.bandwidth-calculator.ui.option15">bps</option>
+                    <option value="Kbps" data-i18n="tools.bandwidth-calculator.ui.option16">Kbps</option>
+                    <option value="Mbps" data-i18n="tools.bandwidth-calculator.ui.option17">Mbps</option>
+                    <option value="Gbps" selected data-i18n="tools.bandwidth-calculator.ui.option18">Gbps</option>
                   </select>
                 </div>
               </div>
@@ -280,7 +283,7 @@ function renderBandwidthCalculatorPage() {
                 <div class="flex gap-2">
                   <input type="number" id="tcp-rtt" min="0" step="any" placeholder="50" class="input flex-1" data-i18n-placeholder="tools.bandwidth-calculator.ui.placeholder11">
                   <select id="tcp-rtt-unit" class="input w-28">
-                    <option value="ms" selected>ms</option>
+                    <option value="ms" selected data-i18n="tools.bandwidth-calculator.ui.option19">ms</option>
                     <option value="s">s</option>
                   </select>
                 </div>
@@ -326,7 +329,7 @@ function renderBandwidthCalculatorPage() {
             heading: 'Common Connection Types',
             content: `
               <table>
-                <tr><th>Connection</th><th>Speed</th><th>Use Case</th></tr>
+                <tr><th data-i18n="tools.bandwidth-calculator.ui.th20">Connection</th><th data-i18n="tools.bandwidth-calculator.ui.th21">Speed</th><th data-i18n="tools.bandwidth-calculator.ui.th22">Use Case</th></tr>
                 <tr><td>Dial-up</td><td>56 Kbps</td><td>Legacy, text-only</td></tr>
                 <tr><td>ADSL</td><td>10 Mbps</td><td>Basic home internet</td></tr>
                 <tr><td>Cable/Fiber</td><td>100-1000 Mbps</td><td>Home/Office internet</td></tr>
@@ -339,7 +342,7 @@ function renderBandwidthCalculatorPage() {
             heading: 'Data Size Reference',
             content: `
               <table>
-                <tr><th>Media</th><th>Approx. Size</th></tr>
+                <tr><th data-i18n="tools.bandwidth-calculator.ui.th23">Media</th><th data-i18n="tools.bandwidth-calculator.ui.th24">Approx. Size</th></tr>
                 <tr><td>MP3 Song (4 min)</td><td>4 MB</td></tr>
                 <tr><td>CD Audio (74 min)</td><td>650 MB</td></tr>
                 <tr><td>DVD (single layer)</td><td>4.7 GB</td></tr>
@@ -352,14 +355,14 @@ function renderBandwidthCalculatorPage() {
             heading: 'Unit Conversions',
             content: `
               <table>
-                <tr><th>Decimal (SI)</th><th>Value</th></tr>
+                <tr><th data-i18n="tools.bandwidth-calculator.ui.th25">Decimal (SI)</th><th data-i18n="tools.bandwidth-calculator.ui.th26">Value</th></tr>
                 <tr><td>1 KB</td><td>1,000 bytes</td></tr>
                 <tr><td>1 MB</td><td>1,000,000 bytes</td></tr>
                 <tr><td>1 GB</td><td>1,000,000,000 bytes</td></tr>
                 <tr><td>1 Gbps</td><td>1,000,000,000 bits/sec</td></tr>
               </table>
               <table>
-                <tr><th>Binary (IEC)</th><th>Value</th></tr>
+                <tr><th data-i18n="tools.bandwidth-calculator.ui.th27">Binary (IEC)</th><th data-i18n="tools.bandwidth-calculator.ui.th26">Value</th></tr>
                 <tr><td>1 KiB</td><td>1,024 bytes</td></tr>
                 <tr><td>1 MiB</td><td>1,048,576 bytes</td></tr>
                 <tr><td>1 GiB</td><td>1,073,741,824 bytes</td></tr>
@@ -616,10 +619,10 @@ function renderBandwidthCalculatorPage() {
         const scaleEl = document.getElementById('tcp-scale-needed');
         if (scaleNeeded) {
           const scaleFactor = Math.ceil(Math.log2(windowNeeded / standardWindow));
-          scaleEl.textContent = 'Yes (scale factor: ' + Math.min(scaleFactor, 14) + ')';
+          scaleEl.textContent = _t('tools.bandwidth-calculator.js.text2', 'Yes (scale factor: ') + Math.min(scaleFactor, 14) + ')';
           scaleEl.className = 'text-sm font-medium text-warning-600 dark:text-warning-400';
         } else {
-          scaleEl.textContent = 'No';
+          scaleEl.textContent = _t('tools.bandwidth-calculator.js.text1', 'No');
           scaleEl.className = 'text-sm font-medium text-success-600 dark:text-success-400';
         }
       }
@@ -699,11 +702,12 @@ function renderBandwidthCalculatorPage() {
   `;
 
   return createPageTemplate({
-    title: 'Bandwidth Calculator',
-    description: 'Calculate transfer times, required bandwidth, data capacity, and TCP bandwidth-delay product.',
+    title: translation?.name || 'Bandwidth Calculator',
+    description: translation?.desc || 'Calculate transfer times, required bandwidth, data capacity, and TCP overhead.',
     path: '/bandwidth-calculator',
     content,
-    scripts
+    scripts,
+    lang: currentLang
   });
 }
 
@@ -714,7 +718,7 @@ export async function handleBandwidthCalculatorRoutes(request, url) {
   try {
     if (url.pathname === '/bandwidth-calculator' || url.pathname === '/bandwidth-calculator/') {
       if (request.method === 'GET') {
-        return respondHTML(renderBandwidthCalculatorPage());
+        return respondHTML(renderBandwidthCalculatorPage(resolveRequestLanguage(request, url)));
       }
     }
     return null;

@@ -7,6 +7,7 @@ import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
 import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
+import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
 
 export async function handleTextDiffRoutes(request, url) {
   const { pathname } = url;
@@ -15,7 +16,7 @@ export async function handleTextDiffRoutes(request, url) {
   try {
     if (pathname === '/text-diff' || pathname === '/text-diff/') {
       if (method === 'GET') {
-        return renderTextDiffPage();
+        return renderTextDiffPage(resolveRequestLanguage(request, url));
       }
     }
 
@@ -29,12 +30,17 @@ export async function handleTextDiffRoutes(request, url) {
   }
 }
 
-function renderTextDiffPage() {
+function renderTextDiffPage(lang = DEFAULT_LANGUAGE) {
+  const currentLang = normalizeLanguage(lang);
+  const translation = getToolTranslation('text-diff', currentLang);
   const toolHeader = createToolHeader(
     { emoji: '🔍' },
-    'Text Diff',
-    'Compare two texts side-by-side and highlight differences',
-    [{ text: 'Privacy First', color: 'blue', tooltip: 'All processing happens in your browser — no data is sent to any server.' }],
+    translation?.name || 'Text Diff',
+    translation?.desc || 'Compare two texts side-by-side and highlight differences',
+    [
+      { text: translation?.ui?.badge7 || 'Client-Side Only', color: 'blue', tooltip: 'All processing happens in your browser — no data is sent to any server.' },
+      { text: translation?.ui?.badge8 || 'Privacy First', color: 'blue', tooltip: 'All processing happens in your browser — no data is sent to any server.' }
+    ],
     { toolId: 'text-diff' }
   );
 
@@ -51,16 +57,16 @@ function renderTextDiffPage() {
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           <div class="card p-4">
             <h2 class="text-lg font-semibold mb-2 text-surface-900 dark:text-surface-50" data-i18n="tools.text-diff.ui.heading3">Original Text</h2>
-            <textarea id="text1" rows="15" data-tooltip="Paste the original text here" class="w-full px-4 py-3 bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-800 rounded-lg font-mono text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow resize-none" placeholder="Enter original text..." data-i18n-placeholder="tools.text-diff.ui.placeholder1"></textarea>
+            <textarea id="text1" rows="15" data-tooltip="Paste the original text here" data-i18n-tooltip="tools.text-diff.ui.tip0" class="w-full px-4 py-3 bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-800 rounded-lg font-mono text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow resize-none" placeholder="Enter original text..." data-i18n-placeholder="tools.text-diff.ui.placeholder1"></textarea>
           </div>
 
           <div class="card p-4">
             <h2 class="text-lg font-semibold mb-2 text-surface-900 dark:text-surface-50" data-i18n="tools.text-diff.ui.heading4">Modified Text</h2>
-            <textarea id="text2" rows="15" data-tooltip="Paste the modified text here" class="w-full px-4 py-3 bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-800 rounded-lg font-mono text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow resize-none" placeholder="Enter modified text..." data-i18n-placeholder="tools.text-diff.ui.placeholder2"></textarea>
+            <textarea id="text2" rows="15" data-tooltip="Paste the modified text here" data-i18n-tooltip="tools.text-diff.ui.tip2" class="w-full px-4 py-3 bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-800 rounded-lg font-mono text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow resize-none" placeholder="Enter modified text..." data-i18n-placeholder="tools.text-diff.ui.placeholder2"></textarea>
           </div>
         </div>
 
-        <button id="compare-btn" class="btn btn-primary w-full py-4 text-lg mb-6" data-tooltip="Compare the two texts and highlight differences">
+        <button id="compare-btn" class="btn btn-primary w-full py-4 text-lg mb-6" data-tooltip="Compare the two texts and highlight differences" data-i18n-tooltip="tools.text-diff.ui.tip1">
           <span data-i18n="tools.text-diff.ui.button0">Compare Texts</span>
         </button>
 
@@ -155,10 +161,11 @@ function renderTextDiffPage() {
   `;
 
   return respondHTML(createPageTemplate({
-    title: 'Text Diff',
-    description: 'Compare two texts side-by-side and highlight differences.',
+    title: translation?.name || 'Text Diff',
+    description: translation?.desc || 'Compare two texts side-by-side and highlight differences.',
     path: '/text-diff',
     content,
-    scripts: script
+    scripts: script,
+    lang: currentLang
   }));
 }

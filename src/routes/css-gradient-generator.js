@@ -9,16 +9,19 @@ import { createPageTemplate, createToolHeader, getCopyToClipboardScript } from '
 import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
 import { respondHTML } from '../utils/respond.js';
+import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
 
 /**
  * Render the CSS Gradient Generator page
  */
-function renderCSSGradientPage() {
+function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
+  const currentLang = normalizeLanguage(lang);
+  const translation = getToolTranslation('css-gradient', currentLang);
   const toolHeader = createToolHeader(
     { emoji: '🌈' },
-    'Gradient Generator',
-    'Create beautiful CSS gradients with an interactive editor. Perfect for web designers and developers.',
-    [{ text: 'Client-Side Only', tooltip: 'Runs entirely in your browser using Web APIs — your data never leaves your device.' }],
+    translation?.name || 'Gradient Generator',
+    translation?.desc || 'Create beautiful CSS gradients with an interactive editor. Perfect for web designers and developers.',
+    [{ text: translation?.ui?.badge32 || 'Client-Side Only', tooltip: 'Runs entirely in your browser using Web APIs — your data never leaves your device.' }],
     { toolId: 'css-gradient' }
   );
 
@@ -38,17 +41,17 @@ function renderCSSGradientPage() {
             <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50 mb-4" data-i18n="tools.css-gradient.ui.heading18">🔧 Gradient Type</h2>
 
             <div class="grid grid-cols-2 gap-3">
-               <button id="type-linear" class="gradient-type-btn" data-tooltip="Gradient along a straight line" py-3 px-4 rounded-lg font-semibold transition bg-primary-700 text-white">
+               <button id="type-linear" class="gradient-type-btn" data-tooltip="Gradient along a straight line" data-i18n-tooltip="tools.css-gradient-generator.ui.tip0" py-3 px-4 rounded-lg font-semibold transition bg-primary-700 text-white">
                  <span data-i18n="tools.css-gradient.ui.button0">Linear</span>
                </button>
-              <button id="type-radial" class="gradient-type-btn" data-tooltip="Gradient radiating from a center point" py-3 px-4 rounded-lg font-semibold transition bg-surface-200 dark:bg-surface-800 text-surface-900 dark:text-surface-200">
+              <button id="type-radial" class="gradient-type-btn" data-tooltip="Gradient radiating from a center point" data-i18n-tooltip="tools.css-gradient-generator.ui.tip1" py-3 px-4 rounded-lg font-semibold transition bg-surface-200 dark:bg-surface-800 text-surface-900 dark:text-surface-200">
                 <span data-i18n="tools.css-gradient.ui.button1">Radial</span>
               </button>
             </div>
 
             <!-- Linear Options -->
             <div id="linear-options" class="mt-4">
-              <label for="angle-slider" class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2" data-tooltip="Direction angle for linear gradient (0-360°)">
+              <label for="angle-slider" class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2" data-tooltip="Direction angle for linear gradient (0-360°)" data-i18n-tooltip="tools.css-gradient-generator.ui.tip2">
                 Direction: <span id="angle-value">90</span>°
               </label>
               <input type="range" id="angle-slider" min="0" max="360" value="90"
@@ -89,7 +92,7 @@ function renderCSSGradientPage() {
           <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm p-6">
             <div class="flex justify-between items-center mb-4">
               <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50" data-i18n="tools.css-gradient.ui.heading19">🎨 Color Stops</h2>
-                <button id="add-color-stop" data-tooltip="Add another color to the gradient" class="px-4 py-2 bg-success-600 text-white rounded-lg hover:bg-success-700 transition text-sm font-semibold">
+                <button id="add-color-stop" data-tooltip="Add another color to the gradient" data-i18n-tooltip="tools.css-gradient-generator.ui.tip3" class="px-4 py-2 bg-success-600 text-white rounded-lg hover:bg-success-700 transition text-sm font-semibold">
                 <span data-i18n="tools.css-gradient.ui.button2">+ Add Color</span>
               </button>
             </div>
@@ -278,7 +281,7 @@ function renderCSSGradientPage() {
             <div class="flex items-center gap-3">
               <input type="color" value="\${stop.color}" aria-label="Color stop \${index + 1}" class="color-picker w-12 h-12 rounded border-2 border-surface-300 dark:border-surface-700 cursor-pointer" data-index="\${index}" />
               <div class="flex-1">
-                <label class="text-xs text-surface-600 dark:text-surface-400">Position: \${stop.position}%</label>
+                <label class="text-xs text-surface-600 dark:text-surface-400" data-i18n="tools.css-gradient-generator.ui.label0">Position: \${stop.position}%</label>
                 <input type="range" min="0" max="100" value="\${stop.position}" aria-label="Color stop \${index + 1} position" class="position-slider w-full h-2 bg-surface-200 rounded-lg appearance-none cursor-pointer dark:bg-surface-700" data-index="\${index}" />
               </div>
             </div>
@@ -350,7 +353,7 @@ function renderCSSGradientPage() {
             }, 2000);
           } catch (err) {
             const btn = document.getElementById('copy-css-btn');
-            btn.textContent = 'Copy failed';
+            btn.textContent = _t('tools.css-gradient.js.text0', 'Copy failed');
             btn.classList.remove('bg-primary-700', 'hover:bg-primary-800');
             btn.classList.add('bg-error-600', 'hover:bg-error-700');
             setTimeout(() => {
@@ -449,10 +452,11 @@ function renderCSSGradientPage() {
   `;
 
   return createPageTemplate({
-    title: 'Gradient Generator',
-    description: 'Create beautiful CSS gradients with interactive editor. Linear and radial gradients with live preview and code export.',
+    title: translation?.name || 'Gradient Generator',
+    description: translation?.desc || 'Create beautiful CSS gradients with interactive editor. Linear and radial gradients with live preview and code export.',
     path: '/css-gradient',
-    content: customStyles + pageContent
+    content: customStyles + pageContent,
+    lang: currentLang
   });
 }
 
@@ -464,7 +468,7 @@ export async function handleCSSGradientRoutes(request, url) {
 
   try {
     if (pathname === '/css-gradient' || pathname === '/css-gradient/' || pathname === '/css-gradient-generator' || pathname === '/css-gradient-generator/') {
-      return respondHTML(renderCSSGradientPage());
+      return respondHTML(renderCSSGradientPage(resolveRequestLanguage(request, url)));
     }
     return new Response('Not Found', { status: 404 });
   } catch (error) {

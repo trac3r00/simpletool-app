@@ -9,19 +9,22 @@ import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
 import { createRelatedToolsSection } from '../utils/content-ui.js';
+import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
 
 export async function handleTokenCounterRoutes(request, url) {
   const { pathname } = url;
   if (pathname === '/token-counter' || pathname === '/token-counter/') {
-    if (request.method === 'GET') return respondHTML(renderTokenCounterPage());
+    if (request.method === 'GET') return respondHTML(renderTokenCounterPage(resolveRequestLanguage(request, url)));
     return new Response('Method not allowed', { status: 405 });
   }
   return null;
 }
 
-function renderTokenCounterPage() {
-  const title = 'Token Counter & Cost Estimator';
-  const description = 'Estimate token counts for GPT, Claude, and Llama families and calculate cost with your pricing.';
+function renderTokenCounterPage(lang = DEFAULT_LANGUAGE) {
+  const currentLang = normalizeLanguage(lang);
+  const translation = getToolTranslation('token-counter', currentLang);
+  const title = translation?.name || 'Token Counter & Cost Estimator';
+  const description = translation?.desc || 'Estimate token counts for GPT, Claude, and Llama families and calculate cost with your pricing.';
 
   const header = createToolHeader(
     { emoji: '🧮' },
@@ -468,6 +471,7 @@ function renderTokenCounterPage() {
     description,
     path: '/token-counter',
     content,
-    scripts
+    scripts,
+    lang: currentLang
   });
 }

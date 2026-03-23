@@ -9,16 +9,19 @@ import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
 import { respondHTML } from '../utils/respond.js';
 import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
+import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
 
 /**
  * Render the Image Converter page
  */
-function renderImageConverterPage() {
+function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
+  const currentLang = normalizeLanguage(lang);
+  const translation = getToolTranslation('image-converter', currentLang);
   const toolHeader = createToolHeader(
     { emoji: '🖼️' },
-    'Image Converter',
-    'Convert between image formats and resize images while maintaining quality. All processing happens in your browser.',
-    [{ text: 'Client-Side Only', tooltip: 'Runs entirely in your browser using Web APIs — your data never leaves your device.' }],
+    translation?.name || 'Image Converter',
+    translation?.desc || 'Convert between image formats and resize images while maintaining quality. All processing happens in your browser.',
+    [{ text: translation?.ui?.badge26 || 'Client-Side Only', tooltip: 'Runs entirely in your browser using Web APIs — your data never leaves your device.' }],
     { toolId: 'image-converter' }
   );
 
@@ -105,7 +108,7 @@ function renderImageConverterPage() {
 
             <!-- Quality Slider (for lossy formats) -->
             <div id="quality-control" class="mt-4 hidden">
-              <label for="quality-slider" class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2" data-tooltip="Lower quality = smaller file size, more compression artifacts">
+              <label for="quality-slider" class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2" data-tooltip="Lower quality = smaller file size, more compression artifacts" data-i18n-tooltip="tools.image-converter.ui.tip0">
                 Quality: <span id="quality-value">90</span>%
               </label>
               <input type="range" id="quality-slider" min="1" max="100" value="90"
@@ -153,7 +156,7 @@ function renderImageConverterPage() {
                   class="w-full px-4 py-2 border border-surface-300 dark:border-surface-700 rounded-lg bg-white dark:bg-surface-950 text-surface-900 dark:text-surface-50" />
               </div>
               <label for="maintain-aspect" class="flex items-center">
-                <input type="checkbox" id="maintain-aspect" checked data-tooltip="Keep original width-to-height ratio when resizing" class="mr-2" />
+                <input type="checkbox" id="maintain-aspect" checked data-tooltip="Keep original width-to-height ratio when resizing" data-i18n-tooltip="tools.image-converter.ui.tip1" class="mr-2" />
                 <span class="text-sm text-surface-700 dark:text-surface-300" data-i18n="tools.image-converter.ui.desc26">Maintain aspect ratio</span>
               </label>
             </div>
@@ -177,7 +180,7 @@ function renderImageConverterPage() {
            <div id="img-error" role="alert" class="hidden w-full rounded-xl border border-error-200 dark:border-error-800 bg-error-50 dark:bg-error-900/30 text-sm text-error-700 dark:text-error-200 px-4 py-3"></div>
 
            <!-- Convert Button -->
-           <button id="convert-btn" disabled data-tooltip="Convert image to the selected format and size"
+           <button id="convert-btn" disabled data-tooltip="Convert image to the selected format and size" data-i18n-tooltip="tools.image-converter.ui.tip2"
              class="w-full py-4 px-6 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
              <span id="convert-spinner" class="spinner-sm hidden" style="display:inline-block;vertical-align:middle;margin-right:6px;border-color:rgba(255,255,255,0.3);border-top-color:#fff;"></span>
              <span data-i18n="tools.image-converter.ui.button0">🔄 Convert & Resize Image</span>
@@ -369,10 +372,11 @@ function renderImageConverterPage() {
   `;
 
   return createPageTemplate({
-    title: 'Image Converter',
-    description: 'Convert and resize images in your browser. Support for PNG, JPG, WebP, GIF. Privacy-first, client-side processing.',
+    title: translation?.name || 'Image Converter',
+    description: translation?.desc || 'Convert and resize images in your browser. Support for PNG, JPG, WebP, GIF. Privacy-first, client-side processing.',
     path: '/image-converter',
-    content: customStyles + pageContent
+    content: customStyles + pageContent,
+    lang: currentLang
   });
 }
 
@@ -383,7 +387,7 @@ export async function handleImageConverterRoutes(request, url) {
   const pathname = url.pathname;
 
   if (pathname === '/image-converter' || pathname === '/image-converter/') {
-    return respondHTML(renderImageConverterPage());
+    return respondHTML(renderImageConverterPage(resolveRequestLanguage(request, url)));
   }
 
   return null;

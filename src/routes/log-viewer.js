@@ -2,23 +2,28 @@ import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
 import { createRelatedToolsSection } from '../utils/content-ui.js';
+import { getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
 
 export async function handleLogViewerRoutes(request, url) {
   if (url.pathname !== '/log-viewer' && url.pathname !== '/log-viewer/') return null;
   if (request.method !== 'GET') return null;
+  const currentLang = resolveRequestLanguage(request, url);
+  const translation = getToolTranslation('log-viewer', currentLang);
 
   const currentTool = TOOLS.find(t => t.id === 'log-viewer');
-    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
 
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       ${createToolHeader(
         { emoji: '📃' },
-        'Enterprise Log Viewer',
-        'Analyze massive log files locally with virtual scrolling, filtering, and density visualization.',
-        [{ text: 'Client-Side Only', tooltip: 'Runs entirely in your browser using Web APIs — your data never leaves your device.' },
-         { text: '100k+ Lines', tooltip: 'Designed to handle and visualize very large log files without server streaming.' }],
+        translation?.name || 'Enterprise Log Viewer',
+        translation?.desc || 'Analyze massive log files locally with virtual scrolling, filtering, and density visualization.',
+        [
+          { text: translation?.ui?.badge10 || 'Client-Side Only', tooltip: 'Runs entirely in your browser using Web APIs — your data never leaves your device.' },
+          { text: translation?.ui?.badge11 || '100k+ Lines', tooltip: 'Designed to handle and visualize very large log files without server streaming.' }
+        ],
         { toolId: 'log-viewer' }
       )}
 
@@ -41,11 +46,11 @@ export async function handleLogViewerRoutes(request, url) {
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
-              <input type="text" id="search-input" placeholder="Search logs..." data-i18n-placeholder="tools.log-viewer.ui.placeholder2" data-tooltip="Filter logs by text — enable regex toggle for pattern matching" data-i18n-placeholder="tools.log-viewer.ui.placeholder2"
+              <input type="text" id="search-input" placeholder="Search logs..." data-i18n-placeholder="tools.log-viewer.ui.placeholder2" data-tooltip="Filter logs by text — enable regex toggle for pattern matching" data-i18n-tooltip="tools.log-viewer.ui.tip0" data-i18n-placeholder="tools.log-viewer.ui.placeholder2"
                 class="block w-full pl-10 pr-12 py-2 border border-surface-300 dark:border-surface-700 rounded-lg bg-surface-50 dark:bg-surface-950 text-surface-900 dark:text-surface-50 focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
               <div class="absolute inset-y-0 right-0 flex items-center">
                 <label for="regex-toggle" class="flex items-center px-2 cursor-pointer" title="Use Regex" data-i18n-title="tools.log-viewer.ui.title3">
-                  <input type="checkbox" id="regex-toggle" class="sr-only peer" data-tooltip="Enable regex pattern matching in search">
+                  <input type="checkbox" id="regex-toggle" class="sr-only peer" data-tooltip="Enable regex pattern matching in search" data-i18n-tooltip="tools.log-viewer.ui.tip1">
                   <span class="text-xs font-bold text-surface-400 peer-checked:text-primary-600 dark:peer-checked:text-primary-400 select-none">.*</span>
                 </label>
               </div>
@@ -54,7 +59,7 @@ export async function handleLogViewerRoutes(request, url) {
 
           <!-- Level Filters -->
           <div class="md:col-span-3 flex gap-2">
-             <button id="toggle-info" data-tooltip="Show/hide INFO level messages" class="flex-1 px-3 py-2 rounded-lg text-xs font-medium bg-info-100 text-info-800 dark:bg-info-900/30 dark:text-info-300 border border-transparent hover:border-info-300 transition-all ring-2 ring-info-500 ring-offset-1 dark:ring-offset-surface-900" data-active="true">INFO</button>
+             <button id="toggle-info" data-tooltip="Show/hide INFO level messages" data-i18n-tooltip="tools.log-viewer.ui.tip2" class="flex-1 px-3 py-2 rounded-lg text-xs font-medium bg-info-100 text-info-800 dark:bg-info-900/30 dark:text-info-300 border border-transparent hover:border-info-300 transition-all ring-2 ring-info-500 ring-offset-1 dark:ring-offset-surface-900" data-active="true">INFO</button>
              <button id="toggle-warn" class="flex-1 px-3 py-2 rounded-lg text-xs font-medium bg-warning-100 text-warning-800 dark:bg-warning-900/30 dark:text-warning-300 border border-transparent hover:border-warning-300 transition-all ring-2 ring-warning-500 ring-offset-1 dark:ring-offset-surface-900" data-active="true">WARN</button>
              <button id="toggle-error" class="flex-1 px-3 py-2 rounded-lg text-xs font-medium bg-error-100 text-error-800 dark:bg-error-900/30 dark:text-error-300 border border-transparent hover:border-error-300 transition-all ring-2 ring-error-500 ring-offset-1 dark:ring-offset-surface-900" data-active="true">ERR</button>
             <button id="toggle-other" class="flex-1 px-3 py-2 rounded-lg text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300 border border-transparent hover:border-gray-300 transition-all ring-2 ring-gray-500 ring-offset-1 dark:ring-offset-surface-900" data-active="true">OTHER</button>
@@ -64,10 +69,10 @@ export async function handleLogViewerRoutes(request, url) {
          <!-- Stats -->
          <div class="mt-4 flex items-center justify-between text-xs text-surface-500 dark:text-surface-400 border-t border-surface-100 dark:border-surface-800 pt-3">
            <div class="flex items-center gap-2">
-             <div id="status-text">Ready to load file</div>
+             <div id="status-text" data-i18n="tools.log-viewer.ui.desc6">Ready to load file</div>
              <span id="log-spinner" class="spinner-sm hidden" style="display:inline-block;vertical-align:middle;border-color:rgba(107,114,128,0.3);border-top-color:rgb(107,114,128);"></span>
            </div>
-           <div id="match-count" class="font-mono hidden">0 matches</div>
+           <div id="match-count" class="font-mono hidden" data-i18n="tools.log-viewer.ui.desc7">0 matches</div>
          </div>
       </div>
 
@@ -82,9 +87,9 @@ export async function handleLogViewerRoutes(request, url) {
         <!-- Header -->
         <div class="flex items-center px-4 py-2 bg-surface-800 border-b border-surface-700 text-xs font-mono text-surface-400 select-none">
           <div class="w-16 text-right mr-4">#</div>
-          <div class="w-24">TIMESTAMP</div>
-          <div class="w-16">LEVEL</div>
-          <div class="flex-1">MESSAGE</div>
+          <div class="w-24" data-i18n="tools.log-viewer.ui.col0">TIMESTAMP</div>
+          <div class="w-16" data-i18n="tools.log-viewer.ui.col1">LEVEL</div>
+          <div class="flex-1" data-i18n="tools.log-viewer.ui.col2">MESSAGE</div>
         </div>
 
         <!-- Virtual Scroll Container -->
@@ -94,7 +99,7 @@ export async function handleLogViewerRoutes(request, url) {
             <!-- Rows injected here -->
             <div class="flex items-center justify-center h-full text-surface-500 pt-20">
               <div class="text-center">
-                <p class="mb-2">No file loaded</p>
+                <p class="mb-2" data-i18n="tools.log-viewer.ui.desc8">No file loaded</p>
                 <p class="text-xs opacity-70" data-i18n="tools.log-viewer.ui.desc5">Select a log file to begin analysis</p>
               </div>
             </div>
@@ -199,7 +204,7 @@ export async function handleLogViewerRoutes(request, url) {
                const lines = text.split(/\\r?\\n/);
                allLogs = lines.map((line, i) => parseLine(line, i));
                applyFilters();
-               statusText.textContent = 'Loaded ' + allLogs.length.toLocaleString() + ' lines';
+               statusText.textContent = (window._t ? window._t('tools.log-viewer.js.text2', 'Loaded ') : 'Loaded ') + allLogs.length.toLocaleString() + (window._t ? ' ' + window._t('tools.log-viewer.js.text3', 'lines') : ' lines');
                logSpinner.classList.add('hidden');
                vizContainer.classList.remove('hidden');
              }, 10);
@@ -236,7 +241,7 @@ export async function handleLogViewerRoutes(request, url) {
             return regex.test(log.raw);
           });
 
-          matchCount.textContent = filteredLogs.length.toLocaleString() + ' matches';
+          matchCount.textContent = filteredLogs.length.toLocaleString() + ' ' + (window._t ? window._t('tools.log-viewer.js.text4', 'matches') : 'matches');
           matchCount.classList.remove('hidden');
           
           updateVirtualScroll();
@@ -439,9 +444,10 @@ export async function handleLogViewerRoutes(request, url) {
   `;
 
   return respondHTML(createPageTemplate({
-    title: 'Log Viewer',
-    description: 'Client-side enterprise log viewer with virtual scrolling and filtering.',
+    title: translation?.name || 'Log Viewer',
+    description: translation?.desc || 'Client-side enterprise log viewer with virtual scrolling and filtering.',
     path: '/log-viewer',
-    content: content
+    content: content,
+    lang: normalizeLanguage(currentLang)
   }));
 }

@@ -57,7 +57,7 @@ function renderUniversalDecoderPage() {
             <!-- Input Area -->
             <div class="bg-surface-50 dark:bg-surface-950/50 border border-surface-200 dark:border-surface-800 rounded-lg p-4">
               <label for="magic-input" class="label flex items-center justify-between">
-                <span>Input Payload</span>
+                <span data-i18n="tools.universal-decoder.ui.label0">Input Payload</span>
                 <span id="status-message" class="text-xs font-mono text-surface-500 dark:text-surface-400" data-i18n="tools.universal-decoder.ui.desc15">● IDLE</span>
               </label>
               <textarea
@@ -70,16 +70,16 @@ function renderUniversalDecoderPage() {
             <!-- Controls -->
             <div class="bg-surface-50 dark:bg-surface-950/50 border border-surface-200 dark:border-surface-800 rounded-lg p-4">
               <div class="flex flex-wrap items-center gap-3 mb-4">
-                <button id="analyze-btn" class="btn btn-primary" data-tooltip="Detect encoding layers and unwrap them one by one"><span data-i18n="tools.universal-decoder.ui.button0">Analyze</span></button>
+                <button id="analyze-btn" class="btn btn-primary" data-tooltip="Detect encoding layers and unwrap them one by one" data-i18n-tooltip="tools.universal-decoder.ui.tip0"><span data-i18n="tools.universal-decoder.ui.button0">Analyze</span></button>
 
                 <label class="inline-flex items-center gap-2 text-sm font-medium text-surface-700 dark:text-surface-200 cursor-pointer">
-                  <input id="live-mode" type="checkbox" data-tooltip="Automatically analyze as you type or paste" class="rounded border-surface-300 text-primary-600 focus:ring-primary-500" checked>
-                  <span>Live Mode</span>
+                  <input id="live-mode" type="checkbox" data-tooltip="Automatically analyze as you type or paste" data-i18n-tooltip="tools.universal-decoder.ui.tip1" class="rounded border-surface-300 text-primary-600 focus:ring-primary-500" checked>
+                  <span data-i18n="tools.universal-decoder.ui.label1">Live Mode</span>
                 </label>
 
                 <label class="inline-flex items-center gap-2 text-sm font-medium text-surface-700 dark:text-surface-200 cursor-pointer">
                   <input id="external-api" type="checkbox" class="rounded border-surface-300 text-primary-600 focus:ring-primary-500">
-                  <span>Use External APIs</span>
+                  <span data-i18n="tools.universal-decoder.ui.label2">Use External APIs</span>
                 </label>
 
               </div>
@@ -96,11 +96,11 @@ function renderUniversalDecoderPage() {
               </div>
 
               <div class="mt-4 space-y-2">
-                <p class="text-xs font-semibold uppercase tracking-wide text-surface-500 dark:text-surface-400">Custom Rainbow Entry</p>
+                <p class="text-xs font-semibold uppercase tracking-wide text-surface-500 dark:text-surface-400" data-i18n="tools.universal-decoder.ui.stat7">Custom Rainbow Entry</p>
                 <div class="flex flex-col sm:flex-row gap-2">
-                  <input id="custom-hash" type="text" placeholder="Hash (e.g., 5f4dcc...)" class="input text-xs flex-1" aria-label="Custom hash">
-                  <input id="custom-value" type="text" placeholder="Value" class="input text-xs w-full sm:w-32" aria-label="Custom value">
-                  <button id="add-custom" class="btn btn-secondary text-xs">Add</button>
+                  <input id="custom-hash" type="text" placeholder="Hash (e.g., 5f4dcc...)" data-i18n-placeholder="tools.universal-decoder.ui.placeholder4" class="input text-xs flex-1" aria-label="Custom hash">
+                  <input id="custom-value" type="text" placeholder="Value" data-i18n-placeholder="tools.universal-decoder.ui.placeholder5" class="input text-xs w-full sm:w-32" aria-label="Custom value">
+                  <button id="add-custom" class="btn btn-secondary text-xs"><span data-i18n="tools.universal-decoder.ui.button0">Add</span></button>
                 </div>
               </div>
             </div>
@@ -111,10 +111,10 @@ function renderUniversalDecoderPage() {
                 Detection Matrix
               </p>
               <ul class="space-y-2 text-sm text-surface-600 dark:text-surface-300">
-                <li class="flex items-start gap-2"><span class="text-surface-400 mt-0.5">•</span> Base64 & Base64URL, URL encoding, Hex (ASCII/UTF-16)</li>
-                <li class="flex items-start gap-2"><span class="text-surface-400 mt-0.5">•</span> JWT payloads, HTML entities, Unicode escapes</li>
-                <li class="flex items-start gap-2"><span class="text-surface-400 mt-0.5">•</span> Nested encodings (e.g., Base64 → URL → JWT)</li>
-                <li class="flex items-start gap-2"><span class="text-surface-400 mt-0.5">•</span> Query strings & phishing URL analysis</li>
+                <li class="flex items-start gap-2"><span class="text-surface-400 mt-0.5">•</span> <span data-i18n="tools.universal-decoder.ui.matrix0">Base64 & Base64URL, URL encoding, Hex (ASCII/UTF-16)</span></li>
+                <li class="flex items-start gap-2"><span class="text-surface-400 mt-0.5">•</span> <span data-i18n="tools.universal-decoder.ui.matrix1">JWT payloads, HTML entities, Unicode escapes</span></li>
+                <li class="flex items-start gap-2"><span class="text-surface-400 mt-0.5">•</span> <span data-i18n="tools.universal-decoder.ui.matrix2">Nested encodings (e.g., Base64 → URL → JWT)</span></li>
+                <li class="flex items-start gap-2"><span class="text-surface-400 mt-0.5">•</span> <span data-i18n="tools.universal-decoder.ui.matrix3">Query strings & phishing URL analysis</span></li>
               </ul>
             </div>
           </section>
@@ -137,7 +137,7 @@ function renderUniversalDecoderPage() {
                   <span id="final-format" class="font-semibold">N/A</span>
                 </div>
                 <div class="flex items-center gap-2">
-                  <span id="hash-lookup-stats" class="px-3 py-1 text-xs font-semibold rounded border border-surface-200 text-surface-600 bg-white dark:bg-surface-900 dark:border-surface-800 dark:text-surface-300">🔍 Hash Lookups: 0/0 successful</span>
+                  <span id="hash-lookup-stats" class="px-3 py-1 text-xs font-semibold rounded border border-surface-200 text-surface-600 bg-white dark:bg-surface-900 dark:border-surface-800 dark:text-surface-300" data-i18n="tools.universal-decoder.ui.desc18">🔍 Hash Lookups: 0/0 successful</span>
                 </div>
               </div>
             </div>
@@ -147,7 +147,7 @@ function renderUniversalDecoderPage() {
             <!-- Output Area -->
             <div class="bg-surface-50 dark:bg-surface-950/50 border border-surface-200 dark:border-surface-800 rounded-lg p-4">
               <label class="label flex items-center justify-between">
-                <span>Output</span>
+                <span data-i18n="tools.universal-decoder.ui.label3">Output</span>
                 <span id="final-byte-length" class="text-xs font-mono text-surface-500 dark:text-surface-400" data-i18n="tools.universal-decoder.ui.desc19">0 BYTES</span>
               </label>
               <textarea
@@ -178,13 +178,13 @@ function renderUniversalDecoderPage() {
 
               <div class="bg-surface-50 dark:bg-surface-950/50 border border-surface-200 dark:border-surface-800 rounded-lg p-4">
                 <div class="flex items-center justify-between mb-3">
-                  <h2 class="text-sm font-semibold text-surface-700 dark:text-surface-200 uppercase tracking-wide">
+                  <h2 class="text-sm font-semibold text-surface-700 dark:text-surface-200 uppercase tracking-wide" data-i18n="tools.universal-decoder.ui.stat10">
                     Hash Analysis
                   </h2>
-                  <span class="text-xs text-surface-400 font-mono">ONE-WAY</span>
+                  <span class="text-xs text-surface-400 font-mono" data-i18n="tools.universal-decoder.ui.desc22">ONE-WAY</span>
                 </div>
                 <div id="hash-analysis" class="space-y-3 text-sm text-surface-600 dark:text-surface-300 font-mono">
-                  <p class="text-surface-500 dark:text-surface-400 italic font-mono">No hashes detected yet.</p>
+                  <p class="text-surface-500 dark:text-surface-400 italic font-mono" data-i18n="tools.universal-decoder.ui.desc23">No hashes detected yet.</p>
                 </div>
               </div>
 
@@ -193,7 +193,7 @@ function renderUniversalDecoderPage() {
                   Query Params
                 </h2>
                 <div id="query-params" class="text-sm text-surface-600 dark:text-surface-300 font-mono">
-                  <p class="text-surface-500 dark:text-surface-400 italic">No query string detected.</p>
+                  <p class="text-surface-500 dark:text-surface-400 italic" data-i18n="tools.universal-decoder.ui.desc24">No query string detected.</p>
                 </div>
               </div>
 
@@ -3837,7 +3837,7 @@ function renderUniversalDecoderPage() {
           );
 
           // Keep query params panel stable (avoid parse/runtime issues).
-          queryParamsEl.innerHTML = '<p class="text-surface-500 dark:text-surface-400 italic">No query string detected.</p>';
+          queryParamsEl.innerHTML = '<p class="text-surface-500 dark:text-surface-400 italic" data-i18n="tools.universal-decoder.ui.desc24">No query string detected.</p>';
         }
 
         analyzeBtn.addEventListener('click', () => void analyze());

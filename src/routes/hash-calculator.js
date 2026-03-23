@@ -8,6 +8,7 @@ import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint, createEmptyState } from '../utils/common-ui.js';
 import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
+import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
 
 export async function handleHashCalculatorRoutes(request, url) {
   const { pathname } = url;
@@ -18,7 +19,7 @@ export async function handleHashCalculatorRoutes(request, url) {
     if (pathname === '/hash-generator' || pathname === '/hash-generator/' ||
         pathname === '/hash-calculator' || pathname === '/hash-calculator/') {
       if (method === 'GET') {
-        return renderHashCalculatorPage();
+        return renderHashCalculatorPage(resolveRequestLanguage(request, url));
       }
     }
 
@@ -32,12 +33,14 @@ export async function handleHashCalculatorRoutes(request, url) {
   }
 }
 
-function renderHashCalculatorPage() {
+function renderHashCalculatorPage(lang = DEFAULT_LANGUAGE) {
+  const currentLang = normalizeLanguage(lang);
+  const translation = getToolTranslation('hash-calculator', currentLang);
   const toolHeader = createToolHeader(
     { emoji: '🔐' },
-    'Hash Calculator',
-    'Calculate and verify cryptographic hashes from text or files',
-    [{ text: 'SHA-256 Recommended', color: 'green', tooltip: 'SHA-256 hashing is used by default because it is cryptographically strong and browser-native.' }],
+    translation?.name || 'Hash Calculator',
+    translation?.desc || 'Calculate and verify cryptographic hashes from text or files',
+    [{ text: translation?.ui?.badge23 || 'SHA-256 Recommended', color: 'green', tooltip: 'SHA-256 hashing is used by default because it is cryptographically strong and browser-native.' }],
     { toolId: 'hash-calculator' }
   );
 
@@ -60,13 +63,13 @@ function renderHashCalculatorPage() {
       <!-- Tab Navigation -->
       <div class="mb-8">
         <div class="flex bg-surface-100 dark:bg-surface-800 p-1 rounded-xl border border-surface-200 dark:border-surface-700 w-fit" role="tablist">
-          <button id="tab-text" class="tab-button active px-6 py-2 rounded-lg font-medium text-sm transition-all duration-200 bg-white dark:bg-surface-900 text-primary-600 dark:text-primary-400 shadow-sm" role="tab" aria-controls="content-text" aria-selected="true" data-tooltip="Hash text input directly">
+          <button id="tab-text" class="tab-button active px-6 py-2 rounded-lg font-medium text-sm transition-all duration-200 bg-white dark:bg-surface-900 text-primary-600 dark:text-primary-400 shadow-sm" role="tab" aria-controls="content-text" aria-selected="true" data-tooltip="Hash text input directly" data-i18n-tooltip="tools.hash-calculator.ui.tip0">
             <span data-i18n="tools.hash-calculator.ui.button0">📝 Text</span>
           </button>
-          <button id="tab-file" class="tab-button px-6 py-2 rounded-lg font-medium text-sm transition-all duration-200 text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-200" role="tab" aria-controls="content-file" aria-selected="false" data-tooltip="Hash a file upload">
+          <button id="tab-file" class="tab-button px-6 py-2 rounded-lg font-medium text-sm transition-all duration-200 text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-200" role="tab" aria-controls="content-file" aria-selected="false" data-tooltip="Hash a file upload" data-i18n-tooltip="tools.hash-calculator.ui.tip1">
             <span data-i18n="tools.hash-calculator.ui.button1">📁 File</span>
           </button>
-          <button id="tab-verify" class="tab-button px-6 py-2 rounded-lg font-medium text-sm transition-all duration-200 text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-200" role="tab" aria-controls="content-verify" aria-selected="false" data-tooltip="Compare a known hash against input">
+          <button id="tab-verify" class="tab-button px-6 py-2 rounded-lg font-medium text-sm transition-all duration-200 text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-200" role="tab" aria-controls="content-verify" aria-selected="false" data-tooltip="Compare a known hash against input" data-i18n-tooltip="tools.hash-calculator.ui.tip2">
             <span data-i18n="tools.hash-calculator.ui.button2">✓ Verify</span>
           </button>
         </div>
@@ -79,15 +82,15 @@ function renderHashCalculatorPage() {
           <div class="bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800 p-4">
             <div class="flex items-start justify-between gap-4">
               <div>
-                <h3 class="text-sm font-semibold text-surface-900 dark:text-surface-100">Legacy Hashes (MD5, SHA-1)</h3>
-                <p class="text-xs text-surface-500 dark:text-surface-400 mt-1">Opt in to legacy hashes for compatibility with older systems.</p>
+                <h3 class="text-sm font-semibold text-surface-900 dark:text-surface-100" data-i18n="tools.hash-calculator.ui.heading21">Legacy Hashes (MD5, SHA-1)</h3>
+                <p class="text-xs text-surface-500 dark:text-surface-400 mt-1" data-i18n="tools.hash-calculator.ui.desc23">Opt in to legacy hashes for compatibility with older systems.</p>
               </div>
               <label class="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" id="legacy-hashes" class="w-4 h-4 rounded border-surface-300 dark:border-surface-700 text-primary-600 focus:ring-2 focus:ring-primary-500">
-                <span id="legacy-label" class="text-xs font-semibold text-surface-700 dark:text-surface-300">Enable</span>
+                <span id="legacy-label" class="text-xs font-semibold text-surface-700 dark:text-surface-300" data-i18n="tools.hash-calculator.ui.desc24">Enable</span>
               </label>
             </div>
-            <p class="mt-3 text-xs text-error-600 dark:text-error-400">Warning: MD5 and SHA-1 are broken and should only be used for legacy verification.</p>
+            <p class="mt-3 text-xs text-error-600 dark:text-error-400" data-i18n="tools.hash-calculator.ui.desc25">Warning: MD5 and SHA-1 are broken and should only be used for legacy verification.</p>
           </div>
           <!-- Text Input Content -->
           <div id="content-text" class="tab-content" role="tabpanel">
@@ -109,7 +112,7 @@ function renderHashCalculatorPage() {
             </div>
 
             <div class="bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800 p-6">
-              <label class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3 block" data-tooltip="Add a secret key to create a keyed hash (HMAC)"><span data-i18n="tools.hash-calculator.ui.label10">HMAC Secret (Optional)</span> ${infoHint('Optional private key for HMAC hashing; keep it secret when sharing hashes.')}</label>
+              <label class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3 block" data-tooltip="Add a secret key to create a keyed hash (HMAC)" data-i18n-tooltip="tools.hash-calculator.ui.tip3"><span data-i18n="tools.hash-calculator.ui.label10">HMAC Secret (Optional)</span> ${infoHint('Optional private key for HMAC hashing; keep it secret when sharing hashes.')}</label>
               <input
                 type="password"
                 id="text-hmac"
@@ -154,7 +157,7 @@ function renderHashCalculatorPage() {
             </div>
 
             <div class="bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800 p-6">
-              <label class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3 block" data-tooltip="Add a secret key to create a keyed hash (HMAC)"><span>HMAC Secret (Optional)</span> ${infoHint('Optional private key for HMAC hashing; keep it secret when sharing hashes.')}</label>
+              <label class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3 block" data-tooltip="Add a secret key to create a keyed hash (HMAC)" data-i18n-tooltip="tools.hash-calculator.ui.tip3"><span>HMAC Secret (Optional)</span> ${infoHint('Optional private key for HMAC hashing; keep it secret when sharing hashes.')}</label>
               <input
                 type="password"
                 id="file-hmac"
@@ -180,27 +183,27 @@ function renderHashCalculatorPage() {
                 class="w-full bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-800 rounded-lg p-3 font-mono text-sm text-surface-900 dark:text-surface-100 placeholder-surface-400 dark:placeholder-surface-600 focus:outline-none focus:ring-2 focus:ring-primary-500"
               />
               <div class="mt-4">
-                <label class="text-xs font-semibold text-surface-700 dark:text-surface-300 mb-2 block">Algorithm</label>
+                <label class="text-xs font-semibold text-surface-700 dark:text-surface-300 mb-2 block"><span data-i18n="tools.hash-calculator.ui.label0">Algorithm</span></label>
                 <select
                   id="verify-algorithm"
                   class="w-full bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-800 rounded-lg px-3 py-2 text-sm text-surface-900 dark:text-surface-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
                 >
-                  <option value="auto">Auto (length)</option>
-                  <option value="SHA-256">SHA-256</option>
-                  <option value="SHA-384">SHA-384</option>
-                  <option value="SHA-512">SHA-512</option>
-                  <option value="SHA3-256">SHA3-256</option>
-                  <option value="SHA3-512">SHA3-512</option>
-                  <option value="SHAKE128">SHAKE128 (256-bit)</option>
-                  <option value="SHAKE256">SHAKE256 (512-bit)</option>
-                  <option value="Keccak-256">Keccak-256</option>
-                  <option value="BLAKE2s-256">BLAKE2s-256</option>
-                  <option value="BLAKE2b-512">BLAKE2b-512</option>
-                  <option value="RIPEMD-160">RIPEMD-160</option>
-                  <option value="MD5">MD5 (Legacy)</option>
-                  <option value="SHA-1">SHA-1 (Legacy)</option>
+                  <option value="auto" data-i18n="tools.hash-calculator.ui.option4">Auto (length)</option>
+                  <option value="SHA-256" data-i18n="tools.hash-calculator.ui.option5">SHA-256</option>
+                  <option value="SHA-384" data-i18n="tools.hash-calculator.ui.option6">SHA-384</option>
+                  <option value="SHA-512" data-i18n="tools.hash-calculator.ui.option7">SHA-512</option>
+                  <option value="SHA3-256" data-i18n="tools.hash-calculator.ui.option8">SHA3-256</option>
+                  <option value="SHA3-512" data-i18n="tools.hash-calculator.ui.option9">SHA3-512</option>
+                  <option value="SHAKE128" data-i18n="tools.hash-calculator.ui.option10">SHAKE128 (256-bit)</option>
+                  <option value="SHAKE256" data-i18n="tools.hash-calculator.ui.option11">SHAKE256 (512-bit)</option>
+                  <option value="Keccak-256" data-i18n="tools.hash-calculator.ui.option12">Keccak-256</option>
+                  <option value="BLAKE2s-256" data-i18n="tools.hash-calculator.ui.option13">BLAKE2s-256</option>
+                  <option value="BLAKE2b-512" data-i18n="tools.hash-calculator.ui.option14">BLAKE2b-512</option>
+                  <option value="RIPEMD-160" data-i18n="tools.hash-calculator.ui.option15">RIPEMD-160</option>
+                  <option value="MD5" data-i18n="tools.hash-calculator.ui.option16">MD5 (Legacy)</option>
+                  <option value="SHA-1" data-i18n="tools.hash-calculator.ui.option17">SHA-1 (Legacy)</option>
                 </select>
-                <p class="mt-2 text-xs text-surface-500 dark:text-surface-400">Auto works only when the hash length maps to a single algorithm.</p>
+                <p class="mt-2 text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.hash-calculator.ui.desc28">Auto works only when the hash length maps to a single algorithm.</p>
               </div>
             </div>
             
@@ -238,7 +241,7 @@ function renderHashCalculatorPage() {
             </div>
 
             <div id="hash-results" class="space-y-4 flex-grow">
-               ${createEmptyState({ icon: '🔐', title: 'Awaiting input', description: 'Enter text or drop a file to compute hashes.', id: 'hash-empty-state' })}
+               ${createEmptyState({ icon: '🔐', title: 'Awaiting input', description: 'Enter text or drop a file to compute hashes.', id: 'hash-empty-state', i18nTitle: 'tools.hash-calculator.ui.desc21', i18nDesc: 'tools.hash-calculator.ui.desc23' })}
              </div>
 
             <div id="verify-result" class="hidden mt-6"></div>
@@ -260,7 +263,7 @@ function renderHashCalculatorPage() {
       ${createCheatsheet('hash-calculator', 'Hash Algorithm Reference', [
         { heading: 'Algorithm Comparison', content: `
           <table>
-            <tr><th>Algorithm</th><th>Output</th><th>Security</th><th>Use Cases</th></tr>
+            <tr><th data-i18n="tools.hash-calculator.ui.th17">Algorithm</th><th data-i18n="tools.hash-calculator.ui.th18">Output</th><th data-i18n="tools.hash-calculator.ui.th19">Security</th><th data-i18n="tools.hash-calculator.ui.th20">Use Cases</th></tr>
             <tr><td><code>MD5</code></td><td>128-bit</td><td>⚠️ Broken</td><td>Legacy checksums (opt-in)</td></tr>
             <tr><td><code>SHA-1</code></td><td>160-bit</td><td>⚠️ Deprecated</td><td>Legacy compatibility (opt-in)</td></tr>
             <tr><td><code>SHA-256</code></td><td>256-bit</td><td>✅ Secure</td><td>General purpose, TLS</td></tr>
@@ -618,7 +621,7 @@ function renderHashCalculatorPage() {
              hashResults.innerHTML = '';
              const errDiv = document.createElement('div');
              errDiv.className = 'p-6 text-error-600 dark:text-error-400 bg-error-50 dark:bg-error-900/20 border border-error-200 dark:border-error-800 rounded-xl font-mono text-sm';
-             errDiv.textContent = 'Error: ' + error.message;
+             errDiv.textContent = (window._t ? window._t('tools.hash-calculator.js.text0', 'Error: ') : 'Error: ') + error.message;
              hashResults.appendChild(errDiv);
              textHashSpinner.classList.add('hidden');
              fileHashSpinner.classList.add('hidden');
@@ -776,14 +779,14 @@ function renderHashCalculatorPage() {
           if (expected) {
             const expectedLine = document.createElement('p');
             expectedLine.className = 'break-all';
-            expectedLine.textContent = 'Expected: ' + expected;
+            expectedLine.textContent = (window._t ? window._t('tools.hash-calculator.js.text1', 'Expected: ') : 'Expected: ') + expected;
             details.appendChild(expectedLine);
           }
 
           if (computed) {
             const computedLine = document.createElement('p');
             computedLine.className = 'break-all';
-            computedLine.textContent = 'Computed: ' + computed;
+            computedLine.textContent = (window._t ? window._t('tools.hash-calculator.js.text2', 'Computed: ') : 'Computed: ') + computed;
             details.appendChild(computedLine);
           }
 
@@ -867,10 +870,11 @@ function renderHashCalculatorPage() {
   `;
 
   return respondHTML(createPageTemplate({
-    title: 'Hash Calculator',
-    description: 'Calculate and verify cryptographic hashes from text or files. Support for SHA-256, SHA-384, SHA-512, and HMAC.',
+    title: translation?.name || 'Hash Calculator',
+    description: translation?.desc || 'Compute SHA256, MD5, and other hashes.',
     path: '/hash-calculator',
     content,
-    scripts: script
+    scripts: script,
+    lang: currentLang
   }));
 }

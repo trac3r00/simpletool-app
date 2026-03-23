@@ -9,33 +9,36 @@ import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
 import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
+import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
 
 export async function handleEmailAnalyzerRoutes(request, url) {
   const { pathname } = url;
   if (pathname === '/email-analyzer' || pathname === '/email-analyzer/') {
-    if (request.method === 'GET') return respondHTML(renderEmailAnalyzerPage());
+    if (request.method === 'GET') return respondHTML(renderEmailAnalyzerPage(resolveRequestLanguage(request, url)));
     return new Response('Method not allowed', { status: 405 });
   }
   return null;
 }
 
-function renderEmailAnalyzerPage() {
-  const title = 'Email Security Analyzer';
-  const description = 'Understand SPF, DKIM, DMARC, routing hops, and embedded URLs from a raw email — all locally.';
+function renderEmailAnalyzerPage(lang = DEFAULT_LANGUAGE) {
+  const currentLang = normalizeLanguage(lang);
+  const translation = getToolTranslation('email-analyzer', currentLang);
+  const title = translation?.name || 'Email Security Analyzer';
+  const description = translation?.desc || 'Understand SPF, DKIM, DMARC, routing hops, and embedded URLs from a raw email — all locally.';
 
   const header = createToolHeader(
     { emoji: '📧' },
     title,
     description,
     [
-      { text: '<span data-i18n="tools.email-analyzer.ui.badge0">Client-Side Only</span>', tooltip: 'Parsing and analysis happen entirely in your browser. Nothing is uploaded.' },
-      { text: '<span data-i18n="tools.email-analyzer.ui.badge1">SOC-Friendly</span>', tooltip: 'Highlights authentication results, identity mismatches, and suspicious URLs.' }
+      { text: translation?.ui?.badge0 || '<span data-i18n="tools.email-analyzer.ui.badge0">Client-Side Only</span>', tooltip: 'Parsing and analysis happen entirely in your browser. Nothing is uploaded.' },
+      { text: translation?.ui?.badge1 || '<span data-i18n="tools.email-analyzer.ui.badge1">SOC-Friendly</span>', tooltip: 'Highlights authentication results, identity mismatches, and suspicious URLs.' }
     ],
     { toolId: 'email-analyzer' }
   );
 
   const currentTool = TOOLS.find(t => t.id === 'email-analyzer');
-    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
 
 
   const content = `
@@ -858,11 +861,11 @@ function renderEmailAnalyzerPage() {
         els.idDate.textContent = '—';
         els.idReturnPath.textContent = '—';
         els.idReplyTo.textContent = '—';
-        els.findings.innerHTML = '<p class="text-surface-500 dark:text-surface-400">' + t('text50', 'Run analysis to see signals and mismatches.') + '</p>';
+        els.findings.innerHTML = '<p class="text-surface-500 dark:text-surface-400" data-i18n="tools.email-analyzer.ui.desc14">' + t('text50', 'Run analysis to see signals and mismatches.') + '</p>';
         els.findingCount.textContent = '0';
-        els.urls.innerHTML = '<p class="text-surface-500 dark:text-surface-400">' + t('text51', 'No URLs extracted yet.') + '</p>';
+        els.urls.innerHTML = '<p class="text-surface-500 dark:text-surface-400" data-i18n="tools.email-analyzer.ui.desc15">' + t('text51', 'No URLs extracted yet.') + '</p>';
         els.urlCount.textContent = '0';
-        els.hops.innerHTML = '<p class="text-surface-500 dark:text-surface-400">' + t('text52', 'No routing data yet.') + '</p>';
+        els.hops.innerHTML = '<p class="text-surface-500 dark:text-surface-400" data-i18n="tools.email-analyzer.ui.desc16">' + t('text52', 'No routing data yet.') + '</p>';
         els.hopCount.textContent = '0';
         els.copySummaryBtn.disabled = true;
         lastSummary = null;
@@ -874,6 +877,7 @@ function renderEmailAnalyzerPage() {
   return createPageTemplate({
     title,
     description,
+    lang: currentLang,
     path: '/email-analyzer',
     content,
     scripts

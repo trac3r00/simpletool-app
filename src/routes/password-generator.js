@@ -7,6 +7,7 @@ import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
 import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
+import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
 
 export async function handlePasswordGeneratorRoutes(request, url) {
   const { pathname } = url;
@@ -16,7 +17,7 @@ export async function handlePasswordGeneratorRoutes(request, url) {
     // Serve the UI
     if (pathname === '/password-generator' || pathname === '/password-generator/') {
       if (method === 'GET') {
-        return renderPasswordGeneratorPage();
+        return renderPasswordGeneratorPage(resolveRequestLanguage(request, url));
       }
     }
 
@@ -41,12 +42,14 @@ export async function handlePasswordGeneratorRoutes(request, url) {
   }
 }
 
-function renderPasswordGeneratorPage() {
+function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
+  const currentLang = normalizeLanguage(lang);
+  const translation = getToolTranslation('password-generator', currentLang);
   const toolHeader = createToolHeader(
     { emoji: '🔐' },
-    'Password Generator',
-    'Create secure passwords, usernames, and passphrases with advanced customization options.',
-    [{ text: 'Client-Side Only', color: 'blue', tooltip: 'Runs entirely in your browser using Web APIs — your data never leaves your device.' }],
+    translation?.name || 'Password Generator',
+    translation?.desc || 'Create secure passwords, usernames, and passphrases with advanced customization options.',
+    [{ text: translation?.ui?.badge35 || 'Client-Side Only', color: 'blue', tooltip: 'Runs entirely in your browser using Web APIs — your data never leaves your device.' }],
     { toolId: 'password-generator' }
   );
 
@@ -64,16 +67,16 @@ function renderPasswordGeneratorPage() {
         <div class="border-b border-surface-200 dark:border-surface-700 mb-8">
           <nav class="flex flex-wrap gap-2" aria-label="Password generator modes" role="tablist">
             <button id="tab-trigger-password" class="tab-button active px-4 py-2 border-b-2 border-primary-600 font-medium text-sm text-primary-600 dark:text-primary-400 transition-colors" data-tab="password" role="tab" aria-controls="tab-password" aria-selected="true" tabindex="0">
-              <span class="material-symbols-rounded text-base align-middle">lock</span> Password
+              <span class="material-symbols-rounded text-base align-middle">lock</span> <span data-i18n="tools.password-generator.ui.tab0">Password</span>
             </button>
             <button id="tab-trigger-username" class="tab-button px-4 py-2 border-b-2 border-transparent font-medium text-sm text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-200 transition-colors" data-tab="username" role="tab" aria-controls="tab-username" aria-selected="false" tabindex="-1">
-              <span class="material-symbols-rounded text-base align-middle">person</span> Username
+              <span class="material-symbols-rounded text-base align-middle">person</span> <span data-i18n="tools.password-generator.ui.tab1">Username</span>
             </button>
             <button id="tab-trigger-passphrase" class="tab-button px-4 py-2 border-b-2 border-transparent font-medium text-sm text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-200 transition-colors" data-tab="passphrase" role="tab" aria-controls="tab-passphrase" aria-selected="false" tabindex="-1">
-              <span class="material-symbols-rounded text-base align-middle">description</span> Passphrase
+              <span class="material-symbols-rounded text-base align-middle">description</span> <span data-i18n="tools.password-generator.ui.tab2">Passphrase</span>
             </button>
             <button id="tab-trigger-email" class="tab-button px-4 py-2 border-b-2 border-transparent font-medium text-sm text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-200 transition-colors" data-tab="email" role="tab" aria-controls="tab-email" aria-selected="false" tabindex="-1">
-              <span class="material-symbols-rounded text-base align-middle">email</span> Email
+              <span class="material-symbols-rounded text-base align-middle">email</span> <span data-i18n="tools.password-generator.ui.tab3">Email</span>
             </button>
           </nav>
         </div>
@@ -83,27 +86,27 @@ function renderPasswordGeneratorPage() {
           <div class="space-y-6">
             <div>
               <label for="password-length" class="label">
-                Password Length: <span id="length-value" class="font-bold text-primary-600 dark:text-primary-400">16</span>
+                <span data-i18n="tools.password-generator.ui.label0">Password Length:</span> <span id="length-value" class="font-bold text-primary-600 dark:text-primary-400">16</span>
               </label>
-              <input type="range" id="password-length" min="8" max="128" value="16" class="w-full h-2 bg-surface-200 dark:bg-surface-700 rounded-lg appearance-none cursor-pointer accent-primary-600" data-tooltip="Longer passwords are stronger. 16+ characters recommended">
+              <input type="range" id="password-length" min="8" max="128" value="16" class="w-full h-2 bg-surface-200 dark:bg-surface-700 rounded-lg appearance-none cursor-pointer accent-primary-600" data-tooltip="Longer passwords are stronger. 16+ characters recommended" data-i18n-tooltip="tools.password-generator.ui.tip0">
             </div>
 
             <div class="grid grid-cols-2 gap-4">
               <label class="flex items-center space-x-3 p-3 bg-surface-50 dark:bg-surface-800 rounded-lg cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors border border-surface-200 dark:border-surface-700">
                 <input type="checkbox" id="use-uppercase" checked class="w-5 h-5 text-primary-600 rounded focus:ring-primary-500">
-                <span class="text-sm font-medium text-surface-900 dark:text-surface-100" data-i18n="tools.password-generator.ui.desc24" data-tooltip="26 uppercase letters increase entropy">Uppercase (A-Z)</span>
+                <span class="text-sm font-medium text-surface-900 dark:text-surface-100" data-i18n="tools.password-generator.ui.desc24" data-tooltip="26 uppercase letters increase entropy" data-i18n-tooltip="tools.password-generator.ui.tip1">Uppercase (A-Z)</span>
               </label>
               <label class="flex items-center space-x-3 p-3 bg-surface-50 dark:bg-surface-800 rounded-lg cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors border border-surface-200 dark:border-surface-700">
                 <input type="checkbox" id="use-lowercase" checked class="w-5 h-5 text-primary-600 rounded focus:ring-primary-500">
-                <span class="text-sm font-medium text-surface-900 dark:text-surface-100" data-i18n="tools.password-generator.ui.desc25" data-tooltip="26 lowercase letters increase entropy">Lowercase (a-z)</span>
+                <span class="text-sm font-medium text-surface-900 dark:text-surface-100" data-i18n="tools.password-generator.ui.desc25" data-tooltip="26 lowercase letters increase entropy" data-i18n-tooltip="tools.password-generator.ui.tip2">Lowercase (a-z)</span>
               </label>
               <label class="flex items-center space-x-3 p-3 bg-surface-50 dark:bg-surface-800 rounded-lg cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors border border-surface-200 dark:border-surface-700">
                 <input type="checkbox" id="use-numbers" checked class="w-5 h-5 text-primary-600 rounded focus:ring-primary-500">
-                <span class="text-sm font-medium text-surface-900 dark:text-surface-100" data-i18n="tools.password-generator.ui.desc26" data-tooltip="10 digits add variety to your password">Numbers (0-9)</span>
+                <span class="text-sm font-medium text-surface-900 dark:text-surface-100" data-i18n="tools.password-generator.ui.desc26" data-tooltip="10 digits add variety to your password" data-i18n-tooltip="tools.password-generator.ui.tip3">Numbers (0-9)</span>
               </label>
               <label class="flex items-center space-x-3 p-3 bg-surface-50 dark:bg-surface-800 rounded-lg cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors border border-surface-200 dark:border-surface-700">
                 <input type="checkbox" id="use-symbols" checked class="w-5 h-5 text-primary-600 rounded focus:ring-primary-500">
-                <span class="text-sm font-medium text-surface-900 dark:text-surface-100" data-i18n="tools.password-generator.ui.desc27" data-tooltip="Special characters greatly increase password strength">Symbols (!@#$)</span>
+                <span class="text-sm font-medium text-surface-900 dark:text-surface-100" data-i18n="tools.password-generator.ui.desc27" data-tooltip="Special characters greatly increase password strength" data-i18n-tooltip="tools.password-generator.ui.tip4">Symbols (!@#$)</span>
               </label>
             </div>
 
@@ -147,7 +150,7 @@ function renderPasswordGeneratorPage() {
           <div class="space-y-6">
             <div>
               <label for="username-length" class="label">
-                Username Length: <span id="username-length-value" class="font-bold text-primary-600 dark:text-primary-400">12</span>
+                <span data-i18n="tools.password-generator.ui.label1">Username Length:</span> <span id="username-length-value" class="font-bold text-primary-600 dark:text-primary-400">12</span>
               </label>
               <input type="range" id="username-length" min="6" max="32" value="12" class="w-full h-2 bg-surface-200 dark:bg-surface-700 rounded-lg appearance-none cursor-pointer accent-primary-600">
             </div>
@@ -191,7 +194,7 @@ function renderPasswordGeneratorPage() {
           <div class="space-y-6">
             <div>
               <label for="passphrase-words" class="label">
-                Word Count: <span id="passphrase-words-value" class="font-bold text-primary-600 dark:text-primary-400">4</span>
+                <span data-i18n="tools.password-generator.ui.label2">Word Count:</span> <span id="passphrase-words-value" class="font-bold text-primary-600 dark:text-primary-400">4</span>
               </label>
               <input type="range" id="passphrase-words" min="3" max="8" value="4" class="w-full h-2 bg-surface-200 dark:bg-surface-700 rounded-lg appearance-none cursor-pointer accent-primary-600">
             </div>
@@ -481,7 +484,7 @@ function renderPasswordGeneratorPage() {
         if (useSymbols) charsets.push('!@#$%^&*()_+-=[]{}|;:,.<>?');
 
          if (charsets.length === 0) {
-           document.getElementById('pw-error').textContent = 'Please select at least one character type.';
+           document.getElementById('pw-error').textContent = _t('tools.password-generator.js.text0', 'Please select at least one character type.');
            document.getElementById('pw-error').classList.remove('hidden');
            return;
          }
@@ -785,7 +788,7 @@ function renderPasswordGeneratorPage() {
        document.getElementById('generate-alias')?.addEventListener('click', () => {
          const baseEmail = document.getElementById('alias-base-email').value;
          if (!baseEmail || !baseEmail.includes('@')) {
-           document.getElementById('alias-error').textContent = 'Please enter a valid base email address.';
+           document.getElementById('alias-error').textContent = _t('tools.password-generator.js.text1', 'Please enter a valid base email address.');
            document.getElementById('alias-error').classList.remove('hidden');
            return;
          }
@@ -811,10 +814,11 @@ function renderPasswordGeneratorPage() {
   `;
 
   return respondHTML(createPageTemplate({
-    title: 'Password Generator - Create Secure Passwords',
-    description: 'Generate secure passwords, usernames, passphrases, and email aliases. All generation happens client-side for maximum privacy.',
+    title: translation?.name || 'Password Generator',
+    description: translation?.desc || 'Create secure, random passwords.',
     path: '/password-generator',
     content,
-    scripts: script
+    scripts: script,
+    lang: currentLang
   }));
 }

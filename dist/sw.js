@@ -85,26 +85,8 @@ self.addEventListener('fetch', function(event) {
       })
     );
   } else {
-    // Network-first with stale-while-revalidate for HTML pages
-    event.respondWith(
-      fetch(event.request).then(function(response) {
-        if (response.ok) {
-          var clone = response.clone();
-          caches.open(CACHE_NAME).then(function(cache) {
-            cache.put(event.request, clone);
-          });
-        }
-        return response;
-      }).catch(function() {
-        return caches.match(event.request).then(function(cached) {
-          if (cached) return cached;
-          // Offline fallback for navigation requests
-          if (event.request.mode === 'navigate') {
-            return caches.match('/');
-          }
-          return new Response('Offline', { status: 503, statusText: 'Service Unavailable' });
-        });
-      })
-    );
+    // Network-only for HTML pages — never cache because CSP nonces are per-request
+    // Stale nonces from cache would block all inline scripts
+    event.respondWith(fetch(event.request));
   }
 });

@@ -3,6 +3,7 @@ import { createPageTemplate, createToolHeader, createCheatsheet, infoHint, creat
 import { createRichEditorPane, getRichEditorStyles, getRichEditorScript } from '../utils/rich-editor.js';
 import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
+import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
 
 export async function handleJWTDecoderRoutes(request, url) {
   const { pathname } = url;
@@ -11,7 +12,7 @@ export async function handleJWTDecoderRoutes(request, url) {
   try {
     if (pathname === '/jwt-decoder' || pathname === '/jwt-decoder/') {
       if (method === 'GET') {
-        return respondHTML(renderJWTDecoderPage());
+        return respondHTML(renderJWTDecoderPage(resolveRequestLanguage(request, url)));
       }
     }
 
@@ -25,12 +26,14 @@ export async function handleJWTDecoderRoutes(request, url) {
   }
 }
 
-function renderJWTDecoderPage() {
+function renderJWTDecoderPage(lang = DEFAULT_LANGUAGE) {
+  const currentLang = normalizeLanguage(lang);
+  const translation = getToolTranslation('jwt-decoder', currentLang);
   const toolHeader = createToolHeader(
     { emoji: '🔓' },
-    'JWT Inspector',
-    'Decode and validate JSON Web Tokens with real-time analysis',
-    [{ text: 'Privacy First', color: 'indigo', tooltip: 'All processing happens in your browser — no data is sent to any server.' }],
+    translation?.name || 'JWT Inspector',
+    translation?.desc || 'Decode and validate JSON Web Tokens with real-time analysis',
+    [{ text: translation?.ui?.badge11 || 'Privacy First', color: 'indigo', tooltip: 'All processing happens in your browser — no data is sent to any server.' }],
     { toolId: 'jwt-decoder' }
   );
 
@@ -74,7 +77,7 @@ function renderJWTDecoderPage() {
          </div>
 
          <!-- Empty State -->
-         ${createEmptyState({ icon: '🔓', title: 'No token decoded', description: 'Paste a JWT token above and click Decode.', id: 'jwt-empty-state' })}
+         ${createEmptyState({ icon: '🔓', title: 'No token decoded', description: 'Paste a JWT token above and click Decode.', id: 'jwt-empty-state', i18nTitle: 'tools.jwt-decoder.ui.desc10', i18nDesc: 'tools.jwt-decoder.ui.desc11' })}
 
          <!-- Decoded Output -->
          <div id="decoded-output" class="hidden space-y-6">
@@ -83,7 +86,7 @@ function renderJWTDecoderPage() {
             <div class="flex items-center justify-between mb-4">
               <h2 class="text-lg font-bold text-surface-900 dark:text-surface-50 flex items-center gap-2">
                 <span class="text-2xl">📋</span>
-                <span data-tooltip="Algorithm and token type metadata">Header</span>
+                <span data-tooltip="Algorithm and token type metadata" data-i18n="tools.jwt-decoder.ui.heading0">Header</span>
               </h2>
               <button data-copy-part="header" class="copy-part-btn btn btn-secondary text-xs py-1 px-2">
                 <span data-i18n="tools.jwt-decoder.ui.button2">Copy</span>
@@ -97,7 +100,7 @@ function renderJWTDecoderPage() {
              <div class="flex items-center justify-between mb-4">
                <h2 class="text-lg font-bold text-surface-900 dark:text-surface-50 flex items-center gap-2">
                  <span class="text-2xl">📦</span>
-                 <span data-tooltip="Claims and data carried by the token">Payload</span>
+                 <span data-tooltip="Claims and data carried by the token" data-i18n="tools.jwt-decoder.ui.heading1">Payload</span>
                </h2>
                <button data-copy-part="payload" class="copy-part-btn btn btn-secondary text-xs py-1 px-2">
                  <span data-i18n="tools.jwt-decoder.ui.button2">Copy</span>
@@ -114,7 +117,7 @@ function renderJWTDecoderPage() {
             <div class="flex items-center justify-between mb-4">
               <h2 class="text-lg font-bold text-surface-900 dark:text-surface-50 flex items-center gap-2">
                 <span class="text-2xl">🔐</span>
-                <span data-tooltip="Cryptographic signature to verify token integrity">Signature</span>
+                <span data-tooltip="Cryptographic signature to verify token integrity" data-i18n="tools.jwt-decoder.ui.heading2">Signature</span>
               </h2>
               <button data-copy-part="signature" class="copy-part-btn btn btn-secondary text-xs py-1 px-2">
                 <span data-i18n="tools.jwt-decoder.ui.button2">Copy</span>
@@ -178,7 +181,7 @@ function renderJWTDecoderPage() {
         { heading: 'Structure', content: '<p><code>header.payload.signature</code> — each part is Base64URL-encoded</p>' },
         { heading: 'Common Claims', content: `
           <table>
-            <tr><th>Claim</th><th>Name</th><th>Description</th></tr>
+            <tr><th data-i18n="tools.jwt-decoder.ui.th0">Claim</th><th data-i18n="tools.jwt-decoder.ui.th1">Name</th><th data-i18n="tools.jwt-decoder.ui.th2">Description</th></tr>
             <tr><td><code>iss</code></td><td>Issuer</td><td>Who created the token</td></tr>
             <tr><td><code>sub</code></td><td>Subject</td><td>Who the token is about</td></tr>
             <tr><td><code>aud</code></td><td>Audience</td><td>Intended recipient</td></tr>
@@ -189,7 +192,7 @@ function renderJWTDecoderPage() {
           </table>` },
         { heading: 'Algorithms', content: `
           <table>
-            <tr><th>Algorithm</th><th>Type</th><th>Notes</th></tr>
+            <tr><th data-i18n="tools.jwt-decoder.ui.th3">Algorithm</th><th data-i18n="tools.jwt-decoder.ui.th4">Type</th><th data-i18n="tools.jwt-decoder.ui.th5">Notes</th></tr>
             <tr><td><code>HS256</code></td><td>Symmetric</td><td>HMAC + SHA-256, shared secret</td></tr>
             <tr><td><code>RS256</code></td><td>Asymmetric</td><td>RSA + SHA-256, public/private key pair</td></tr>
             <tr><td><code>ES256</code></td><td>Asymmetric</td><td>ECDSA + P-256, smaller keys, faster</td></tr>
@@ -319,7 +322,7 @@ function renderJWTDecoderPage() {
       function decodeJWT() {
         var token = jwtEditor.getValue().trim();
         if (!token) {
-          showStatus(_t('tools.jwt-decoder.js.status0', 'error'), 'No Token Provided', 'Please paste a JWT token to decode');
+          showStatus('error', window._t ? window._t('tools.jwt-decoder.js.status2', 'No Token Provided') : 'No Token Provided', window._t ? window._t('tools.jwt-decoder.js.status3', 'Please paste a JWT token to decode') : 'Please paste a JWT token to decode');
           decodedOutput.classList.add('hidden');
           return;
         }
@@ -339,7 +342,7 @@ function renderJWTDecoderPage() {
           displayPayloadAnalysis(analyzePayload(payload));
 
            var algorithm = header.alg || 'Unknown';
-           showStatus(_t('tools.jwt-decoder.js.status1', 'success'), 'Token Decoded Successfully', \`Algorithm: \${algorithm}\`);
+           showStatus('success', window._t ? window._t('tools.jwt-decoder.js.status4', 'Token Decoded Successfully') : 'Token Decoded Successfully', (window._t ? window._t('tools.jwt-decoder.js.status5', 'Algorithm: ') : 'Algorithm: ') + algorithm);
 
            document.getElementById('jwt-empty-state').classList.add('hidden');
            decodedOutput.classList.remove('hidden');
@@ -347,7 +350,7 @@ function renderJWTDecoderPage() {
 
           window.decodedData = { header: header, payload: payload, signature: signature };
         } catch (error) {
-          showStatus(_t('tools.jwt-decoder.js.status0', 'error'), 'Decoding Failed', error.message);
+          showStatus('error', window._t ? window._t('tools.jwt-decoder.js.status6', 'Decoding Failed') : 'Decoding Failed', error.message);
           decodedOutput.classList.add('hidden');
         }
       }
@@ -401,10 +404,11 @@ function renderJWTDecoderPage() {
   `;
 
   return createPageTemplate({
-    title: 'JWT Inspector',
-    description: 'Decode and validate JSON Web Tokens with real-time analysis.',
+    title: translation?.name || 'JWT Inspector',
+    description: translation?.desc || 'Decode and validate JSON Web Tokens with real-time analysis.',
     path: '/jwt-decoder',
     content,
-    scripts: script
+    scripts: script,
+    lang: currentLang
   });
 }

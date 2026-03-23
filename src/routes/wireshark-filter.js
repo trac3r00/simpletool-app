@@ -2,24 +2,30 @@ import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, getCopyToClipboardScript } from '../utils/common-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
 import { createRelatedToolsSection } from '../utils/content-ui.js';
+import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
 
 export async function handleWiresharkFilterRoutes(request, url) {
   if (url.pathname !== '/wireshark-filter' && url.pathname !== '/wireshark-filter/') return null;
   if (request.method !== 'GET') return null;
-  return respondHTML(renderWiresharkFilterPage());
+  const lang = resolveRequestLanguage(request, url);
+  return respondHTML(renderWiresharkFilterPage(lang));
 }
 
-function renderWiresharkFilterPage() {
-  const title = 'Wireshark Filter Builder';
-  const description = 'Build Wireshark display filters and BPF capture filters with visual controls and protocol references.';
+function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
+  const currentLang = normalizeLanguage(lang);
+  const translation = getToolTranslation('wireshark-filter', currentLang);
+  const title = translation?.name || 'Wireshark Filter Builder';
+  const description = translation?.desc || 'Build Wireshark display filters and BPF capture expressions visually.';
 
   const header = createToolHeader(
     { emoji: '🦈' },
     title,
-    'Create complex Wireshark filters visually. Build display filters and BPF capture expressions without memorizing syntax.',
-    [{ text: 'Display Filters', tooltip: 'Build Wireshark display filters for analyzing captured traffic' },
-     { text: 'BPF Capture', tooltip: 'Create Berkeley Packet Filter expressions for capture-time filtering' },
-     { text: 'Protocol Reference', tooltip: 'Quick reference for protocol fields and filter syntax' }],
+    description,
+    [
+      { text: translation?.ui?.badge49 || 'Display Filters', tooltip: 'Build Wireshark display filters for analyzing captured traffic' },
+      { text: translation?.ui?.badge50 || 'BPF Capture', tooltip: 'Create Berkeley Packet Filter expressions for capture-time filtering' },
+      { text: translation?.ui?.badge51 || 'Protocol Reference', tooltip: 'Quick reference for protocol fields and filter syntax' }
+    ],
     { toolId: 'wireshark-filter' }
   );
 
@@ -55,7 +61,7 @@ function renderWiresharkFilterPage() {
                     <option value="tcp">TCP</option>
                     <option value="udp">UDP</option>
                     <option value="http">HTTP</option>
-                    <option value="tls">TLS/SSL</option>
+                    <option value="tls" data-i18n="tools.wireshark-filter.ui.option21">TLS/SSL</option>
                     <option value="dns">DNS</option>
                     <option value="icmp">ICMP</option>
                     <option value="arp">ARP</option>
@@ -73,21 +79,21 @@ function renderWiresharkFilterPage() {
                 <div>
                   <label class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label1">Field</label>
                   <select id="df-field" class="w-full bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500">
-                    <option value="">-- Select Field --</option>
+                    <option value="" data-i18n="tools.wireshark-filter.ui.option0">-- Select Field --</option>
                   </select>
                 </div>
 
                 <div>
                   <label class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label2">Operator</label>
                   <select id="df-operator" class="w-full bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500">
-                    <option value="==">== (equals)</option>
-                    <option value="!=">!= (not equals)</option>
-                    <option value=">">> (greater than)</option>
+                    <option value="==" data-i18n="tools.wireshark-filter.ui.option22">== (equals)</option>
+                    <option value="!=" data-i18n="tools.wireshark-filter.ui.option23">!= (not equals)</option>
+                    <option value=">" data-i18n="tools.wireshark-filter.ui.option24">&gt; (greater than)</option>
                     <option value="<">< (less than)</option>
-                    <option value=">=">>= (greater or equal)</option>
+                    <option value=">=" data-i18n="tools.wireshark-filter.ui.option25">&gt;= (greater or equal)</option>
                     <option value="<="><= (less or equal)</option>
-                    <option value="contains">contains</option>
-                    <option value="matches">matches (regex)</option>
+                    <option value="contains" data-i18n="tools.wireshark-filter.ui.option26">contains</option>
+                    <option value="matches" data-i18n="tools.wireshark-filter.ui.option27">matches (regex)</option>
                   </select>
                 </div>
 
@@ -130,20 +136,20 @@ function renderWiresharkFilterPage() {
                 <div>
                   <label class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label6">Primitive</label>
                   <select id="bpf-primitive" class="w-full bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500">
-                    <option value="host">host</option>
-                    <option value="net">net</option>
-                    <option value="port">port</option>
-                    <option value="portrange">portrange</option>
-                    <option value="proto">proto</option>
+                    <option value="host" data-i18n="tools.wireshark-filter.ui.option28">host</option>
+                    <option value="net" data-i18n="tools.wireshark-filter.ui.option29">net</option>
+                    <option value="port" data-i18n="tools.wireshark-filter.ui.option30">port</option>
+                    <option value="portrange" data-i18n="tools.wireshark-filter.ui.option31">portrange</option>
+                    <option value="proto" data-i18n="tools.wireshark-filter.ui.option32">proto</option>
                   </select>
                 </div>
 
                 <div>
                   <label class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label7">Direction</label>
                   <select id="bpf-direction" class="w-full bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500">
-                    <option value="">src or dst (either)</option>
-                    <option value="src">src (source only)</option>
-                    <option value="dst">dst (destination only)</option>
+                    <option value="" data-i18n="tools.wireshark-filter.ui.option33">src or dst (either)</option>
+                    <option value="src" data-i18n="tools.wireshark-filter.ui.option34">src (source only)</option>
+                    <option value="dst" data-i18n="tools.wireshark-filter.ui.option35">dst (destination only)</option>
                   </select>
                 </div>
 
@@ -155,13 +161,13 @@ function renderWiresharkFilterPage() {
                 <div>
                   <label class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label9">Protocol</label>
                   <select id="bpf-protocol" class="w-full bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500">
-                    <option value="">Any</option>
+                    <option value="" data-i18n="tools.wireshark-filter.ui.option36">Any</option>
                     <option value="tcp">tcp</option>
-                    <option value="udp">udp</option>
-                    <option value="icmp">icmp</option>
-                    <option value="arp">arp</option>
-                    <option value="ip">ip</option>
-                    <option value="ipv6">ipv6</option>
+                    <option value="udp" data-i18n="tools.wireshark-filter.ui.option37">udp</option>
+                    <option value="icmp" data-i18n="tools.wireshark-filter.ui.option38">icmp</option>
+                    <option value="arp" data-i18n="tools.wireshark-filter.ui.option39">arp</option>
+                    <option value="ip" data-i18n="tools.wireshark-filter.ui.option40">ip</option>
+                    <option value="ipv6" data-i18n="tools.wireshark-filter.ui.option41">ipv6</option>
                   </select>
                 </div>
 
@@ -172,9 +178,9 @@ function renderWiresharkFilterPage() {
                 <div class="border-t border-surface-200 dark:border-surface-700 pt-4">
                   <label class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-2" data-i18n="tools.wireshark-filter.ui.label10">Logical Operators</label>
                   <div class="flex flex-wrap gap-2">
-                    <button class="bpf-logic-btn btn btn-secondary btn-sm" data-op="and">and</button>
-                    <button class="bpf-logic-btn btn btn-secondary btn-sm" data-op="or">or</button>
-                    <button class="bpf-logic-btn btn btn-secondary btn-sm" data-op="not">not</button>
+                    <button class="bpf-logic-btn btn btn-secondary btn-sm" data-op="and"><span data-i18n="tools.wireshark-filter.ui.button5">and</span></button>
+                    <button class="bpf-logic-btn btn btn-secondary btn-sm" data-op="or"><span data-i18n="tools.wireshark-filter.ui.button6">or</span></button>
+                    <button class="bpf-logic-btn btn btn-secondary btn-sm" data-op="not"><span data-i18n="tools.wireshark-filter.ui.button7">not</span></button>
                     <button class="bpf-logic-btn btn btn-secondary btn-sm" data-op="(">(</button>
                     <button class="bpf-logic-btn btn btn-secondary btn-sm" data-op=")">)</button>
                   </div>
@@ -183,10 +189,10 @@ function renderWiresharkFilterPage() {
                 <div class="border-t border-surface-200 dark:border-surface-700 pt-4">
                   <label class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-2" data-i18n="tools.wireshark-filter.ui.label11">Common BPF Filters</label>
                   <div class="flex flex-wrap gap-2">
-                    <button class="bpf-preset-btn btn btn-ghost btn-xs" data-filter="port-80">port 80</button>
-                    <button class="bpf-preset-btn btn btn-ghost btn-xs" data-filter="host-local">host 127.0.0.1</button>
-                    <button class="bpf-preset-btn btn btn-ghost btn-xs" data-filter="tcp-only">tcp</button>
-                    <button class="bpf-preset-btn btn btn-ghost btn-xs" data-filter="no-arp">not arp</button>
+                    <button class="bpf-preset-btn btn btn-ghost btn-xs" data-filter="port-80"><span data-i18n="tools.wireshark-filter.ui.button8">port 80</span></button>
+                    <button class="bpf-preset-btn btn btn-ghost btn-xs" data-filter="host-local"><span data-i18n="tools.wireshark-filter.ui.button9">host 127.0.0.1</span></button>
+                    <button class="bpf-preset-btn btn btn-ghost btn-xs" data-filter="tcp-only"><span data-i18n="tools.wireshark-filter.ui.button10">tcp</span></button>
+                    <button class="bpf-preset-btn btn btn-ghost btn-xs" data-filter="no-arp"><span data-i18n="tools.wireshark-filter.ui.button11">not arp</span></button>
                   </div>
                 </div>
               </div>
@@ -335,7 +341,7 @@ function renderWiresharkFilterPage() {
       ${createCheatsheet('wireshark-filter', 'Display Filters vs BPF Comparison', [
         { heading: 'When to Use Each', content: `
           <table>
-            <tr><th>Display Filter</th><th>BPF Capture Filter</th></tr>
+            <tr><th data-i18n="tools.wireshark-filter.ui.th42">Display Filter</th><th data-i18n="tools.wireshark-filter.ui.th43">BPF Capture Filter</th></tr>
             <tr><td>Applied <strong>after</strong> capture</td><td>Applied <strong>during</strong> capture</td></tr>
             <tr><td>More flexible (deep packet inspection)</td><td>Faster performance</td></tr>
             <tr><td>Can filter on any dissected field</td><td>Limited to link-layer headers</td></tr>
@@ -343,7 +349,7 @@ function renderWiresharkFilterPage() {
           </table>` },
         { heading: 'Common Display Filter Examples', content: `
           <table>
-            <tr><th>Filter</th><th>Description</th></tr>
+            <tr><th data-i18n="tools.wireshark-filter.ui.th44">Filter</th><th data-i18n="tools.wireshark-filter.ui.th45">Description</th></tr>
             <tr><td><code>ip.addr == 192.168.1.1</code></td><td>Traffic to/from IP</td></tr>
             <tr><td><code>tcp.port == 80</code></td><td>HTTP traffic</td></tr>
             <tr><td><code>http.request</code></td><td>Only HTTP requests</td></tr>
@@ -353,7 +359,7 @@ function renderWiresharkFilterPage() {
           </table>` },
         { heading: 'Common BPF Examples', content: `
           <table>
-            <tr><th>Filter</th><th>Description</th></tr>
+            <tr><th data-i18n="tools.wireshark-filter.ui.th44">Filter</th><th data-i18n="tools.wireshark-filter.ui.th45">Description</th></tr>
             <tr><td><code>host 192.168.1.1</code></td><td>Traffic to/from host</td></tr>
             <tr><td><code>net 10.0.0.0/24</code></td><td>Network range</td></tr>
             <tr><td><code>port 80</code></td><td>Port 80 traffic</td></tr>
@@ -671,14 +677,14 @@ function renderWiresharkFilterPage() {
         const issues = validateFilter(currentFilter, currentMode);
         
         if (issues.length === 0) {
-          validationIcon.textContent = 'Valid';
+          validationIcon.textContent = _t('tools.wireshark-filter.js.text0', 'Valid');
           validationIcon.className = 'inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-success-100 text-success-800';
-          validationMessage.textContent = 'Filter syntax looks correct.';
+          validationMessage.textContent = _t('tools.wireshark-filter.js.text1', 'Filter syntax looks correct.');
           validationMessage.className = 'mt-3 text-sm text-success-600';
         } else {
-          validationIcon.textContent = 'Check';
+          validationIcon.textContent = _t('tools.wireshark-filter.js.text2', 'Check');
           validationIcon.className = 'inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-warning-100 text-warning-800';
-          validationMessage.textContent = 'Note: ' + issues.join('; ');
+          validationMessage.textContent = _t('tools.wireshark-filter.js.text3', 'Note: ') + issues.join('; ');
           validationMessage.className = 'mt-3 text-sm text-warning-600';
         }
       }
@@ -715,6 +721,7 @@ function renderWiresharkFilterPage() {
   return createPageTemplate({
     title,
     description,
+    lang: currentLang,
     path: '/wireshark-filter',
     content,
     scripts

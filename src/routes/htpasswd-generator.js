@@ -7,13 +7,14 @@ import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, infoHint } from '../utils/common-ui.js';
 import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
+import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
 
 export async function handleHtpasswdRoutes(request, url) {
   const { pathname } = url;
 
   if (pathname === '/htpasswd-generator' || pathname === '/htpasswd-generator/') {
     if (request.method === 'GET') {
-      return respondHTML(renderHtpasswdPage());
+      return respondHTML(renderHtpasswdPage(resolveRequestLanguage(request, url)));
     }
     return respondJSON({ error: 'Method not allowed' }, { status: 405 });
   }
@@ -21,31 +22,36 @@ export async function handleHtpasswdRoutes(request, url) {
   return null;
 }
 
-function renderHtpasswdPage() {
+function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
+  const currentLang = normalizeLanguage(lang);
+  const translation = getToolTranslation('htpasswd-generator', currentLang);
+  const title = translation?.name || 'Htpasswd Entry Generator';
+  const description = translation?.desc || 'Create bcrypt, apr1-md5, SHA, or plaintext htpasswd entries securely in your browser.';
+
   const currentTool = TOOLS.find(t => t.id === 'htpasswd-generator');
-    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
 
   const content = `
     <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
        <header class="bg-white/90 dark:bg-surface-900/80 border border-surface-200 dark:border-surface-800 rounded-3xl shadow-xl p-8">
          <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
            <div>
-             <p class="text-xs font-semibold uppercase tracking-[0.35em] text-success-600 dark:text-success-300 mb-3" data-i18n="tools.htpasswd-generator.ui.desc20">Ops · Infra</p>
-            <h1 class="text-4xl sm:text-5xl font-extrabold text-surface-900 dark:text-white mb-4">Htpasswd Entry Generator</h1>
+            <p class="text-xs font-semibold uppercase tracking-[0.35em] text-success-600 dark:text-success-300 mb-3" data-i18n="tools.htpasswd-generator.ui.desc20">Ops · Infra</p>
+            <h1 class="text-4xl sm:text-5xl font-extrabold text-surface-900 dark:text-white mb-4">${title}</h1>
             <p class="text-lg text-surface-600 dark:text-surface-300 max-w-2xl" data-i18n="tools.htpasswd-generator.ui.desc21">Generate production-ready htpasswd entries using bcrypt (-B), Apache MD5 (-m), SHA1 (-s), or plaintext—completely client-side.</p>
           </div>
            <div class="grid gap-3 text-sm text-surface-600 dark:text-surface-300">
              <div class="flex items-center gap-3 bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-800 rounded-2xl px-4 py-3">
                <span class="text-xl">🛡️</span>
                <div>
-                 <p class="font-semibold">Zero trust by design</p>
+                 <p class="font-semibold" data-i18n="tools.htpasswd-generator.ui.desc24">Zero trust by design</p>
                  <p class="text-surface-500 dark:text-surface-400" data-i18n="tools.htpasswd-generator.ui.desc22">No network calls.</p>
                </div>
              </div>
              <div class="flex items-center gap-3 bg-info-50 dark:bg-info-900/20 border border-info-200 dark:border-info-800 rounded-2xl px-4 py-3">
                <span class="text-xl">⚙️</span>
                <div>
-                 <p class="font-semibold">Multiple algorithms</p>
+                 <p class="font-semibold" data-i18n="tools.htpasswd-generator.ui.desc25">Multiple algorithms</p>
                  <p class="text-surface-500 dark:text-surface-400" data-i18n="tools.htpasswd-generator.ui.desc23">Bcrypt, apr1, SHA, plain.</p>
                </div>
              </div>
@@ -57,7 +63,7 @@ function renderHtpasswdPage() {
         <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-3xl shadow-xl p-6 space-y-5">
           <div class="space-y-2">
             <label for="username-input" class="text-sm font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide"><span data-i18n="tools.htpasswd-generator.ui.label7">Username</span></label>
-            <input id="username-input" type="text" data-tooltip="Username for the htpasswd entry" class="w-full px-4 py-3 rounded-2xl border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-950 text-surface-900 dark:text-surface-100" placeholder="deploy" data-i18n-placeholder="tools.htpasswd-generator.ui.placeholder11" autocomplete="off" />
+            <input id="username-input" type="text" data-tooltip="Username for the htpasswd entry" data-i18n-tooltip="tools.htpasswd-generator.ui.tip0" class="w-full px-4 py-3 rounded-2xl border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-950 text-surface-900 dark:text-surface-100" placeholder="deploy" data-i18n-placeholder="tools.htpasswd-generator.ui.placeholder11" autocomplete="off" />
           </div>
 
           <div class="space-y-2">
@@ -68,7 +74,7 @@ function renderHtpasswdPage() {
                    <button id="generate-password" type="button" class="btn btn-ghost btn-xs text-primary-600 dark:text-primary-400"><span data-i18n="tools.htpasswd-generator.ui.button1">Generate strong</span></button>
                  </div>
              </div>
-            <input id="password-input" type="password" data-tooltip="Password to hash for the entry" class="w-full px-4 py-3 rounded-2xl border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-950 text-surface-900 dark:text-surface-100 font-mono" placeholder="•••••••" autocomplete="new-password" />
+            <input id="password-input" type="password" data-tooltip="Password to hash for the entry" data-i18n-tooltip="tools.htpasswd-generator.ui.tip1" class="w-full px-4 py-3 rounded-2xl border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-950 text-surface-900 dark:text-surface-100 font-mono" placeholder="•••••••" autocomplete="new-password" />
           </div>
 
           <div class="space-y-2">
@@ -83,10 +89,10 @@ function renderHtpasswdPage() {
 
           <div id="bcrypt-options" class="space-y-2">
             <div class="flex justify-between text-sm text-surface-600 dark:text-surface-400">
-              <label for="cost-slider"><span>Cost</span></label>
-              <span id="cost-label">12 rounds</span>
+              <label for="cost-slider"><span data-i18n="tools.htpasswd-generator.ui.label11">Cost</span></label>
+              <span id="cost-label" data-i18n="tools.htpasswd-generator.ui.label12">12 rounds</span>
             </div>
-            <input id="cost-slider" type="range" aria-label="Bcrypt cost factor" data-tooltip="Higher cost = stronger hash but slower generation" min="8" max="15" value="12" class="w-full h-2 bg-surface-200 dark:bg-surface-800 rounded-lg" />
+            <input id="cost-slider" type="range" aria-label="Bcrypt cost factor" data-tooltip="Higher cost = stronger hash but slower generation" data-i18n-tooltip="tools.htpasswd-generator.ui.tip2" min="8" max="15" value="12" class="w-full h-2 bg-surface-200 dark:bg-surface-800 rounded-lg" />
           </div>
 
           <div id="salt-options" class="space-y-2 hidden">
@@ -111,7 +117,7 @@ function renderHtpasswdPage() {
                 <button id="download-entry" class="btn btn-secondary btn-sm" disabled><span data-i18n="tools.htpasswd-generator.ui.button5">Download</span></button>
               </div>
             </div>
-            <pre id="entry-output" role="status" class="min-h-[80px] bg-surface-900 text-surface-100 p-4 rounded-2xl overflow-x-auto text-sm">No entry yet.</pre>
+            <pre id="entry-output" role="status" class="min-h-[80px] bg-surface-900 text-surface-100 p-4 rounded-2xl overflow-x-auto text-sm" data-i18n="tools.htpasswd-generator.ui.desc26">No entry yet.</pre>
           </div>
 
           <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-3xl shadow-xl p-6">
@@ -123,13 +129,13 @@ function renderHtpasswdPage() {
               <table class="min-w-full text-sm">
                 <thead class="text-xs uppercase tracking-widest text-surface-500">
                   <tr>
-                    <th class="py-2 text-left">Username</th>
-                    <th class="py-2 text-left">Algorithm</th>
+                    <th class="py-2 text-left" data-i18n="tools.htpasswd-generator.ui.th6">Username</th>
+                    <th class="py-2 text-left" data-i18n="tools.htpasswd-generator.ui.th7">Algorithm</th>
                     <th class="py-2 text-left" data-i18n="tools.htpasswd-generator.ui.th17">Actions</th>
                   </tr>
                 </thead>
                 <tbody id="history-body" class="divide-y divide-surface-100 dark:divide-surface-800 text-surface-700 dark:text-surface-200">
-                  <tr><td class="py-3 text-surface-500" colspan="3">Nothing generated yet.</td></tr>
+                  <tr><td class="py-3 text-surface-500" colspan="3" data-i18n="tools.htpasswd-generator.ui.desc27">Nothing generated yet.</td></tr>
                 </tbody>
               </table>
             </div>
@@ -185,9 +191,10 @@ function renderHtpasswdPage() {
   `;
 
   return createPageTemplate({
-    title: 'Htpasswd Entry Generator',
-    description: 'Create bcrypt, apr1-md5, SHA, or plaintext htpasswd entries securely in your browser.',
+    title,
+    description,
     path: '/htpasswd-generator',
-    content
+    content,
+    lang: currentLang
   });
 }

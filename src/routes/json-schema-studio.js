@@ -2,27 +2,35 @@ import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet } from '../utils/common-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
 import { createRelatedToolsSection } from '../utils/content-ui.js';
+import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
 
 export async function handleJsonSchemaStudioRoutes(request, url) {
   if (url.pathname !== '/json-schema-studio' && url.pathname !== '/json-schema-studio/') return null;
   if (request.method !== 'GET') return null;
 
-  const title = 'JSON Schema Studio';
-  const description = 'Generate a JSON Schema from JSON input automatically. Fast, private, and perfect for API documentation.';
+  return renderJsonSchemaStudioPage(resolveRequestLanguage(request, url));
+}
+
+function renderJsonSchemaStudioPage(lang = DEFAULT_LANGUAGE) {
+  const currentLang = normalizeLanguage(lang);
+  const translation = getToolTranslation('json-schema-studio', currentLang);
+  const title = translation?.name || 'JSON Schema Studio';
+  const description = translation?.desc || 'Generate a JSON Schema from JSON input automatically. Fast, private, and perfect for API documentation.';
 
   const header = createToolHeader(
     { emoji: '📋' },
     title,
-    'Turn any JSON sample into a valid JSON Schema instantly. Use it for validation, documentation, or code generation.',
-    [{ text: 'Auto-Generator', tooltip: 'Automatically infers a JSON Schema from your sample JSON input.' },
-     { text: 'JSON Schema', tooltip: 'Produces schemas that comply with the JSON Schema specification.' },
-     { text: 'Privacy-First', tooltip: 'All processing happens in your browser — no data is sent to any server.' }],
+    translation?.desc || 'Turn any JSON sample into a valid JSON Schema instantly. Use it for validation, documentation, or code generation.',
+    [
+      { text: translation?.ui?.badge6 || 'Auto-Generator', tooltip: 'Automatically infers a JSON Schema from your sample JSON input.' },
+      { text: translation?.ui?.badge7 || 'JSON Schema', tooltip: 'Produces schemas that comply with the JSON Schema specification.' },
+      { text: translation?.ui?.badge9 || 'Client-Side Only', tooltip: 'All processing happens in your browser — no data is sent to any server.' }
+    ],
     { toolId: 'json-schema-studio' }
   );
 
   const currentTool = TOOLS.find(t => t.id === 'json-schema-studio');
-    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
-
+  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -38,26 +46,26 @@ export async function handleJsonSchemaStudioRoutes(request, url) {
               <button id="sample-btn" class="btn btn-secondary btn-xs"><span data-i18n="tools.json-schema-studio.ui.button1">Sample</span></button>
             </div>
           </div>
-          <textarea id="json-input" rows="20" data-tooltip="Paste JSON to auto-generate its JSON Schema" 
+          <textarea id="json-input" rows="20" data-tooltip="Paste JSON to auto-generate its JSON Schema" data-i18n-tooltip="tools.json-schema-studio.ui.tip0"
             class="w-full p-4 bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 font-mono text-sm text-surface-900 dark:text-white resize-none"
             placeholder='{ "name": "John", "age": 30 }'></textarea>
-          <button id="generate-btn" data-tooltip="Analyze JSON structure and generate a matching schema" class="w-full mt-4 py-3 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-lg transition shadow-md"><span data-i18n="tools.json-schema-studio.ui.button2">Generate JSON Schema</span></button>
+          <button id="generate-btn" data-tooltip="Analyze JSON structure and generate a matching schema" data-i18n-tooltip="tools.json-schema-studio.ui.tip1" class="w-full mt-4 py-3 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-lg transition shadow-md"><span data-i18n="tools.json-schema-studio.ui.button2">Generate JSON Schema</span></button>
         </div>
 
         <!-- Output -->
         <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 p-5 flex flex-col">
           <div class="flex justify-between items-center mb-4">
             <h2 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.json-schema-studio.ui.heading5">JSON Schema Result</h2>
-            <button id="copy-btn" data-tooltip="Copy generated schema to clipboard" class="btn btn-secondary btn-xs"><span data-i18n="tools.json-schema-studio.ui.button3">Copy Schema</span></button>
+            <button id="copy-btn" data-tooltip="Copy generated schema to clipboard" data-i18n-tooltip="tools.json-schema-studio.ui.tip2" class="btn btn-secondary btn-xs"><span data-i18n="tools.json-schema-studio.ui.button3">Copy Schema</span></button>
           </div>
-          <pre class="flex-1 bg-surface-900 text-surface-50 p-4 rounded-lg text-sm font-mono overflow-auto min-h-[400px]" id="schema-output">Schema will appear here...</pre>
+          <pre class="flex-1 bg-surface-900 text-surface-50 p-4 rounded-lg text-sm font-mono overflow-auto min-h-[400px]" id="schema-output" data-i18n="tools.json-schema-studio.ui.desc4">Schema will appear here...</pre>
         </div>
       </div>
 
       ${createCheatsheet('json-schema-studio', 'JSON Schema Keywords', [
         { heading: 'Type Keywords', content: `
           <table>
-            <tr><th>Keyword</th><th>Description</th></tr>
+            <tr><th data-i18n="tools.json-schema-studio.ui.th0">Keyword</th><th data-i18n="tools.json-schema-studio.ui.th1">Description</th></tr>
             <tr><td><code>type</code></td><td>Data type (string, number, integer, boolean, object, array, null)</td></tr>
             <tr><td><code>enum</code></td><td>Allowed values list</td></tr>
             <tr><td><code>const</code></td><td>Single allowed value</td></tr>
@@ -65,7 +73,7 @@ export async function handleJsonSchemaStudioRoutes(request, url) {
           </table>` },
         { heading: 'Validation Keywords', content: `
           <table>
-            <tr><th>Type</th><th>Keywords</th></tr>
+            <tr><th data-i18n="tools.json-schema-studio.ui.th2">Type</th><th data-i18n="tools.json-schema-studio.ui.th3">Keywords</th></tr>
             <tr><td>String</td><td><code>minLength</code>, <code>maxLength</code>, <code>pattern</code>, <code>format</code></td></tr>
             <tr><td>Number</td><td><code>minimum</code>, <code>maximum</code>, <code>multipleOf</code>, <code>exclusiveMinimum</code></td></tr>
             <tr><td>Object</td><td><code>required</code>, <code>properties</code>, <code>additionalProperties</code>, <code>minProperties</code></td></tr>
@@ -107,7 +115,7 @@ export async function handleJsonSchemaStudioRoutes(request, url) {
           });
           output.textContent = JSON.stringify(schema, null, 2);
         } catch (e) {
-          output.textContent = 'Invalid JSON: ' + e.message;
+          output.textContent = (window._t ? window._t('tools.json-schema-studio.js.text1', 'Invalid JSON: ') : 'Invalid JSON: ') + e.message;
         }
       }
 
@@ -151,6 +159,7 @@ export async function handleJsonSchemaStudioRoutes(request, url) {
     description,
     path: '/json-schema-studio',
     content,
-    scripts
+    scripts,
+    lang: currentLang
   }));
 }

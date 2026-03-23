@@ -2,24 +2,28 @@ import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
 import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
+import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
 
 export async function handleProtocolHeadersRoutes(request, url) {
   if (url.pathname !== '/protocol-headers' && url.pathname !== '/protocol-headers/') return null;
   if (request.method !== 'GET') return null;
-  return respondHTML(renderProtocolHeadersPage());
+  const lang = resolveRequestLanguage(request, url);
+  return respondHTML(renderProtocolHeadersPage(lang));
 }
 
-function renderProtocolHeadersPage() {
-  const title = 'Protocol Header Visualizer';
-  const description = 'Interactive bit-level diagrams for Ethernet, IPv4, IPv6, TCP, UDP, ICMP, and ARP protocol headers.';
+function renderProtocolHeadersPage(lang = DEFAULT_LANGUAGE) {
+  const currentLang = normalizeLanguage(lang);
+  const translation = getToolTranslation('protocol-headers', currentLang);
+  const title = translation?.name || 'Protocol Header Visualizer';
+  const description = translation?.desc || 'Interactive bit-level diagrams for Ethernet, IPv4, IPv6, TCP, UDP, ICMP, and ARP protocol headers.';
 
   const header = createToolHeader(
     { emoji: '📡' },
     title,
-    'Visualize network protocol headers with interactive bit-level diagrams. Click any field to see detailed information.',
-    [{ text: 'Interactive', tooltip: 'Click fields to see detailed information and bit offsets.' },
-     { text: '7 Protocols', tooltip: 'Ethernet II, IPv4, IPv6, TCP, UDP, ICMP, and ARP.' },
-     { text: 'Hex Parser', tooltip: 'Parse hex dumps to visualize packet structure.' }],
+    description,
+    [{ text: translation?.ui?.badge18 || 'Interactive', tooltip: 'Click fields to see detailed information and bit offsets.' },
+     { text: translation?.ui?.badge19 || '7 Protocols', tooltip: 'Ethernet II, IPv4, IPv6, TCP, UDP, ICMP, and ARP.' },
+     { text: translation?.ui?.badge20 || 'Hex Parser', tooltip: 'Parse hex dumps to visualize packet structure.' }],
     { toolId: 'protocol-headers' }
   );
 
@@ -54,9 +58,9 @@ function renderProtocolHeadersPage() {
               <label class="block text-sm font-medium text-surface-700 dark:text-surface-300" data-i18n="tools.protocol-headers.ui.label1">Hex Dump Parser</label>
               ${infoHint('Paste a hex dump to parse and visualize the packet structure.', 'Hex dump parser help')}
             </div>
-            <textarea id="hex-input" rows="8" data-i18n-placeholder="tools.protocol-headers.ui.placeholder0"
+            <textarea id="hex-input" rows="8"
               class="w-full p-3 bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 font-mono text-xs text-surface-900 dark:text-white resize-y"
-              placeholder="Paste hex dump here...&#10;e.g.&#10;00 1a 2b 3c 4d 5e 00 50&#10;56 c0 00 08 08 00 45 00&#10;00 3c 1c 46 40 00 40 06&#10;b1 e6 c0 a8 01 0a c0 a8&#10;01 01"
+              placeholder="Paste hex dump here...&#10;e.g.&#10;00 1a 2b 3c 4d 5e 00 50&#10;56 c0 00 08 08 00 45 00&#10;00 3c 1c 46 40 00 40 06&#10;b1 e6 c0 a8 01 0a c0 a8&#10;01 01" data-i18n-placeholder="tools.protocol-headers.ui.placeholder8"
               spellcheck="false"></textarea>
             <div class="flex gap-2 mt-3">
               <button id="parse-hex-btn" class="btn btn-primary flex-1 text-sm" data-i18n="tools.protocol-headers.ui.button7">Parse Hex</button>
@@ -85,8 +89,8 @@ function renderProtocolHeadersPage() {
           <!-- Protocol Diagram -->
           <div class="tool-card">
             <div class="flex justify-between items-center mb-4">
-              <h2 id="diagram-title" class="text-lg font-semibold text-surface-900 dark:text-white">Ethernet II Header</h2>
-              <span id="header-size" class="text-xs font-medium px-2 py-1 rounded-full bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-400">14 bytes</span>
+              <h2 id="diagram-title" class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.protocol-headers.ui.heading14">Ethernet II Header</h2>
+              <span id="header-size" class="text-xs font-medium px-2 py-1 rounded-full bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-400" data-i18n="tools.protocol-headers.ui.desc17">14 bytes</span>
             </div>
 
             <!-- Bit Labels -->
@@ -143,14 +147,14 @@ function renderProtocolHeadersPage() {
       ${createCheatsheet('protocol-headers', 'Protocol Quick Reference', [
         { heading: 'Ethernet II', content: `
           <table>
-            <tr><th>Field</th><th>Size</th><th>Description</th></tr>
+            <tr><th data-i18n="tools.protocol-headers.ui.th9">Field</th><th data-i18n="tools.protocol-headers.ui.th10">Size</th><th data-i18n="tools.protocol-headers.ui.th11">Description</th></tr>
             <tr><td>Destination MAC</td><td>6 bytes</td><td>Target hardware address</td></tr>
             <tr><td>Source MAC</td><td>6 bytes</td><td>Sender hardware address</td></tr>
             <tr><td>EtherType</td><td>2 bytes</td><td>Protocol type (0x0800=IPv4, 0x86DD=IPv6)</td></tr>
           </table>` },
         { heading: 'IPv4 Header', content: `
           <table>
-            <tr><th>Field</th><th>Size</th><th>Description</th></tr>
+            <tr><th data-i18n="tools.protocol-headers.ui.th9">Field</th><th data-i18n="tools.protocol-headers.ui.th10">Size</th><th data-i18n="tools.protocol-headers.ui.th11">Description</th></tr>
             <tr><td>Version</td><td>4 bits</td><td>IP version (4)</td></tr>
             <tr><td>IHL</td><td>4 bits</td><td>Header length in 32-bit words</td></tr>
             <tr><td>TOS</td><td>1 byte</td><td>Type of Service / DSCP</td></tr>
@@ -161,7 +165,7 @@ function renderProtocolHeadersPage() {
           </table>` },
         { heading: 'TCP Header', content: `
           <table>
-            <tr><th>Field</th><th>Size</th><th>Description</th></tr>
+            <tr><th data-i18n="tools.protocol-headers.ui.th9">Field</th><th data-i18n="tools.protocol-headers.ui.th10">Size</th><th data-i18n="tools.protocol-headers.ui.th11">Description</th></tr>
             <tr><td>Source Port</td><td>2 bytes</td><td>Sender port number</td></tr>
             <tr><td>Dest Port</td><td>2 bytes</td><td>Receiver port number</td></tr>
             <tr><td>Seq Number</td><td>4 bytes</td><td>Sequence number</td></tr>
@@ -172,7 +176,7 @@ function renderProtocolHeadersPage() {
           </table>` },
         { heading: 'Common EtherTypes', content: `
           <table>
-            <tr><th>Value</th><th>Protocol</th></tr>
+            <tr><th data-i18n="tools.protocol-headers.ui.th12">Value</th><th data-i18n="tools.protocol-headers.ui.th13">Protocol</th></tr>
             <tr><td><code>0x0800</code></td><td>IPv4</td></tr>
             <tr><td><code>0x0806</code></td><td>ARP</td></tr>
             <tr><td><code>0x86DD</code></td><td>IPv6</td></tr>
@@ -671,7 +675,7 @@ function renderProtocolHeadersPage() {
 
           currentProtocol = tab.dataset.protocol;
           renderProtocol(currentProtocol);
-          document.getElementById('field-detail').innerHTML = '<p class="text-sm text-surface-500 dark:text-surface-400 italic">Click on any field in the diagram to see details.</p>';
+          document.getElementById('field-detail').innerHTML = '<p class="text-sm text-surface-500 dark:text-surface-400 italic" data-i18n="tools.protocol-headers.ui.desc16">Click on any field in the diagram to see details.</p>';
         });
       });
 
@@ -741,6 +745,7 @@ function renderProtocolHeadersPage() {
   return createPageTemplate({
     title,
     description,
+    lang: currentLang,
     path: '/protocol-headers',
     content,
     scripts

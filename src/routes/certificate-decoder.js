@@ -7,6 +7,7 @@ import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
 import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
+import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
 
 export async function handleCertificateDecoderRoutes(request, url) {
   const { pathname } = url;
@@ -15,7 +16,7 @@ export async function handleCertificateDecoderRoutes(request, url) {
   try {
     if (pathname === '/certificate-decoder' || pathname === '/certificate-decoder/') {
       if (method === 'GET') {
-        return respondHTML(renderCertificateDecoderPage());
+        return respondHTML(renderCertificateDecoderPage(resolveRequestLanguage(request, url)));
       }
     }
 
@@ -29,12 +30,14 @@ export async function handleCertificateDecoderRoutes(request, url) {
   }
 }
 
-function renderCertificateDecoderPage() {
+function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
+  const currentLang = normalizeLanguage(lang);
+  const translation = getToolTranslation('certificate-decoder', currentLang);
   const toolHeader = createToolHeader(
     { emoji: '📜' },
-    'X.509 Certificate Inspector',
-    'Inspect PEM certificates client-side. Validate issuers, SANs, and extensions securely.',
-    [{ text: 'Privacy First', color: 'emerald', tooltip: 'All processing happens in your browser — no data is sent to any server.' }],
+    translation?.name || 'X.509 Certificate Inspector',
+    translation?.desc || 'Inspect PEM certificates client-side. Validate issuers, SANs, and extensions securely.',
+    [{ text: translation?.ui?.badge16 || 'Privacy First', color: 'emerald', tooltip: 'All processing happens in your browser — no data is sent to any server.' }],
     { toolId: 'certificate-decoder' }
   );
 
@@ -54,14 +57,14 @@ function renderCertificateDecoderPage() {
 
           <div class="space-y-4">
             <label for="certificate-input" class="label"><span data-i18n="tools.certificate-decoder.ui.label2">Paste Certificate (PEM Format)</span> ${infoHint('Paste PEM block with BEGIN/END headers so the parser detects it.')}</label>
-            <textarea id="certificate-input" class="input font-mono" data-tooltip="Paste PEM certificate starting with -----BEGIN CERTIFICATE-----" h-48 resize-y" placeholder="-----BEGIN CERTIFICATE-----&#10;MIIByzCCAXSgAwIBAgIUTQl...
+            <textarea id="certificate-input" class="input font-mono" data-tooltip="Paste PEM certificate starting with -----BEGIN CERTIFICATE-----" data-i18n-tooltip="tools.certificate-decoder.ui.tip0" h-48 resize-y" placeholder="-----BEGIN CERTIFICATE-----&#10;MIIByzCCAXSgAwIBAgIUTQl...
 -----END CERTIFICATE-----"></textarea>
             
             <div class="flex gap-3">
-              <button id="parse-btn" class="btn btn-primary" data-tooltip="Decode and display certificate details">
+              <button id="parse-btn" class="btn btn-primary" data-tooltip="Decode and display certificate details" data-i18n-tooltip="tools.certificate-decoder.ui.tip1">
                 <span data-i18n="tools.certificate-decoder.ui.button0">Parse Certificate</span>
               </button>
-              <button id="clear-btn" class="btn btn-ghost" data-tooltip="Clear input and results">
+              <button id="clear-btn" class="btn btn-ghost" data-tooltip="Clear input and results" data-i18n-tooltip="tools.certificate-decoder.ui.tip2">
                 <span data-i18n="tools.certificate-decoder.ui.button1">Clear</span>
               </button>
             </div>
@@ -152,7 +155,7 @@ function renderCertificateDecoderPage() {
       ${createCheatsheet('certificate-decoder', 'X.509 Certificate Reference', [
         { heading: 'Certificate Fields', content: `
           <table>
-            <tr><th>Field</th><th>Description</th></tr>
+            <tr><th data-i18n="tools.certificate-decoder.ui.th4">Field</th><th data-i18n="tools.certificate-decoder.ui.th5">Description</th></tr>
             <tr><td><code>Subject</code></td><td>Entity the certificate identifies</td></tr>
             <tr><td><code>Issuer</code></td><td>CA that signed the certificate</td></tr>
             <tr><td><code>Serial Number</code></td><td>Unique certificate identifier</td></tr>
@@ -162,7 +165,7 @@ function renderCertificateDecoderPage() {
           </table>` },
         { heading: 'Certificate Types', content: `
           <table>
-            <tr><th>Type</th><th>Validation</th><th>Use Case</th></tr>
+            <tr><th data-i18n="tools.certificate-decoder.ui.th6">Type</th><th data-i18n="tools.certificate-decoder.ui.th7">Validation</th><th data-i18n="tools.certificate-decoder.ui.th8">Use Case</th></tr>
             <tr><td><code>DV</code> (Domain)</td><td>Quick / automated</td><td>Basic HTTPS</td></tr>
             <tr><td><code>OV</code> (Organization)</td><td>Business verified</td><td>Company sites</td></tr>
             <tr><td><code>EV</code> (Extended)</td><td>Strict verification</td><td>Financial / legal</td></tr>
@@ -501,10 +504,11 @@ function renderCertificateDecoderPage() {
   `;
 
   return createPageTemplate({
-    title: 'X.509 Certificate Inspector',
-    description: 'Inspect PEM certificates client-side. Validate issuers, SANs, and extensions securely.',
+    title: translation?.name || 'X.509 Certificate Inspector',
+    description: translation?.desc || 'Inspect PEM certificates client-side. Validate issuers, SANs, and extensions securely.',
     path: '/certificate-decoder',
     content,
-    scripts: script
+    scripts: script,
+    lang: currentLang
   });
 }

@@ -3,7 +3,7 @@
  */
 
 import { respondHTML } from '../utils/respond.js';
-import { getThemeScript, getThemeBootstrapScript, getNavigationHTML, getStylesheetLinks, getGtagScript, getAdSenseScript, getAdSlotHTML, getFooterHTML, getSearchScript, t, getLanguageScript, getLanguageBootstrapScript, getAnalyticsScript } from '../utils/common-ui.js';
+import { getThemeScript, getThemeBootstrapScript, getNavigationHTML, getStylesheetLinks, getGtagScript, getAdSenseScript, getAdSlotHTML, getFooterHTML, getSearchScript, t, getLanguageScript, getLanguageBootstrapScript, getAnalyticsScript, getAlternateLanguageLinks } from '../utils/common-ui.js';
 import { getToolsForEnvironment, CATEGORIES } from '../utils/tool-registry.js';
 import { DEFAULT_LANGUAGE, localizeTools, normalizeLanguage, withLanguageQuery } from '../utils/i18n.js';
 
@@ -13,6 +13,9 @@ export function renderHomePage({ isDev = false, lang = DEFAULT_LANGUAGE } = {}) 
   const categories = groupToolsByCategory(tools);
   const homeTitle = t('home.meta.title', currentLang);
   const homeDescription = t('home.meta.description', currentLang);
+  const homePath = withLanguageQuery('/', currentLang);
+  const homeUrl = `https://simpletool.app${homePath}`;
+  const searchTarget = `https://simpletool.app${withLanguageQuery('/?q={search_term_string}', currentLang)}`;
 
   const html = `<!DOCTYPE html>
 <html lang="${currentLang}" class="scroll-smooth" style="visibility:hidden">
@@ -21,19 +24,24 @@ export function renderHomePage({ isDev = false, lang = DEFAULT_LANGUAGE } = {}) 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${homeTitle}</title>
   <meta name="description" content="${homeDescription}">
-  <link rel="canonical" href="https://simpletool.app">
+  <link rel="canonical" href="${homeUrl}">
+  ${getAlternateLanguageLinks('/', currentLang)}
   <link rel="icon" type="image/svg+xml" href="/favicon.ico">
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#4f46e5">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://simpletool.app">
+  <meta property="og:url" content="${homeUrl}">
   <meta property="og:title" content="${homeTitle}">
   <meta property="og:description" content="${homeDescription}">
   <meta property="og:site_name" content="SimpleTool">
-  <meta name="twitter:card" content="summary">
+  <meta property="og:image" content="https://simpletool.app/og-image.svg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${homeTitle}">
   <meta name="twitter:description" content="${homeDescription}">
-  <meta name="keywords" content="online tools, developer tools, JSON formatter, password generator, hash calculator, UUID generator, regex tester, base64 decoder, QR code generator, free tools, privacy tools">
+  <meta name="twitter:image" content="https://simpletool.app/og-image.svg">
+  <meta name="keywords" content="online tools, developer tools, JSON formatter, password generator, hash calculator, UUID generator, regex tester, base64 decoder, QR code generator, free tools, privacy tools"><!-- TODO: translate via t('home.meta.keywords', currentLang) once key is added to i18n files -->
   ${getThemeBootstrapScript()}
   ${getLanguageBootstrapScript(currentLang)}
   ${getGtagScript()}
@@ -41,18 +49,20 @@ export function renderHomePage({ isDev = false, lang = DEFAULT_LANGUAGE } = {}) 
   ${getStylesheetLinks()}
 </head>
 <body class="bg-surface-50 text-surface-900 dark:bg-surface-950 dark:text-surface-50 transition-colors duration-200 flex flex-col min-h-screen">
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary-600 focus:text-white focus:rounded">Skip to main content</a>
 
   ${getNavigationHTML({ maxWidth: 'max-w-7xl', lang: currentLang })}
 
   <!-- Hero Section -->
+  <div id="main-content"></div>
   <header class="pt-16 pb-12 sm:pt-24 sm:pb-16 bg-white dark:bg-surface-950 border-b border-surface-200 dark:border-surface-800 hexagon-pattern">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
       <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-surface-900 dark:text-surface-50 mb-6">
         ${t('home.heroTitle', currentLang)}
       </h1>
       <p class="text-xl text-surface-600 dark:text-surface-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-        <span data-i18n="home.heroLine1">A collection of free, privacy-first tools for your daily workflow.</span> <br class="hidden sm:inline">
-        <span data-i18n="home.heroLine2">No tracking, no data collection — just tools that work.</span>
+        <span data-i18n="home.heroLine1">${t('home.heroLine1', currentLang)}</span> <br class="hidden sm:inline">
+        <span data-i18n="home.heroLine2">${t('home.heroLine2', currentLang)}</span>
       </p>
       
       <!-- Search Input -->
@@ -127,11 +137,11 @@ export function renderHomePage({ isDev = false, lang = DEFAULT_LANGUAGE } = {}) 
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'SimpleTool',
-    url: 'https://simpletool.app',
+    url: homeUrl,
     description: homeDescription,
     potentialAction: {
       '@type': 'SearchAction',
-      target: 'https://simpletool.app/?q={search_term_string}',
+      target: searchTarget,
       'query-input': 'required name=search_term_string'
     }
   })}
@@ -142,11 +152,11 @@ export function renderHomePage({ isDev = false, lang = DEFAULT_LANGUAGE } = {}) 
     '@type': 'ItemList',
     name: t('home.heroTitle', currentLang),
     numberOfItems: tools.length,
-    itemListElement: tools.map((t, i) => ({
+    itemListElement: tools.map((tool, i) => ({
       '@type': 'ListItem',
       position: i + 1,
-      name: t.name,
-      url: `https://simpletool.app${t.path}`
+      name: tool.name,
+      url: `https://simpletool.app${withLanguageQuery(tool.path, currentLang)}`
     }))
   })}
   </script>
@@ -187,10 +197,10 @@ export function renderHomePage({ isDev = false, lang = DEFAULT_LANGUAGE } = {}) 
                 \${tool.icon}
               </div>
             </div>
-            <h3 class="font-bold text-surface-900 dark:text-surface-50 mb-1 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+            <h3 class="tool-name font-bold text-surface-900 dark:text-surface-50 mb-1 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
               \${dName}
             </h3>
-            <p class="text-sm text-surface-500 dark:text-surface-400 leading-relaxed line-clamp-2">
+            <p class="tool-desc text-sm text-surface-500 dark:text-surface-400 leading-relaxed line-clamp-2">
               \${dDesc}
             </p>
           </a>
@@ -213,7 +223,7 @@ export function renderHomePage({ isDev = false, lang = DEFAULT_LANGUAGE } = {}) 
         // we'll have to rely on the fact that we know what's in it or expose it.
         // For now, let's assume we can get it from the DOM or just re-pass it.
         // Actually, let's just use the tools we have in the registry.
-        const tools = ${JSON.stringify(tools.map(t => ({ id: t.id, name: t.name, path: t.path, icon: t.icon, description: t.description, keywords: t.keywords })))};
+        const tools = ${JSON.stringify(tools.map(t => ({ id: t.id, name: t.name, path: withLanguageQuery(t.path, currentLang), icon: t.icon, description: t.description, keywords: t.keywords })))};
         
         const filtered = window.fuzzySearch(term, tools);
 
@@ -294,21 +304,11 @@ export function renderHomePage({ isDev = false, lang = DEFAULT_LANGUAGE } = {}) 
 }
 
 function renderCategories(categories, lang = DEFAULT_LANGUAGE) {
-   const accentColors = {
-     formatters: 'bg-info-100 text-info-700 dark:bg-info-900/30 dark:text-info-300',
-     security: 'bg-error-100 text-error-700 dark:bg-error-900/30 dark:text-error-300',
-     network: 'bg-success-100 text-success-700 dark:bg-success-900/30 dark:text-success-300',
-     generators: 'bg-warning-100 text-warning-700 dark:bg-warning-900/30 dark:text-warning-300',
-      utils: 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300',
-      game: 'bg-error-100 text-error-700 dark:bg-error-900/30 dark:text-error-300'
-   };
-
   return Object.entries(categories).map(([key, section]) => `
     <section class="category-section">
       <div class="flex items-center gap-3 mb-6">
-        <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-lg ${accentColors[key] || ''}">${section.icon}</span>
         <h2 class="text-xl font-bold text-surface-900 dark:text-surface-100 uppercase tracking-wide" data-i18n="home.cat.${key}">
-          ${section.title}
+          ${t('home.cat.' + key, lang)}
         </h2>
         <span class="text-xs font-medium text-surface-400 bg-surface-100 dark:bg-surface-800 dark:text-surface-500 px-2 py-0.5 rounded-full">${section.tools.length}</span>
       </div>

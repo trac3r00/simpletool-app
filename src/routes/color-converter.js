@@ -7,6 +7,7 @@ import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
 import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
+import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
 
 export async function handleColorConverterRoutes(request, url) {
   const { pathname } = url;
@@ -15,7 +16,7 @@ export async function handleColorConverterRoutes(request, url) {
   try {
     if (pathname === '/color-converter' || pathname === '/color-converter/') {
       if (method === 'GET') {
-        return renderColorConverterPage();
+        return renderColorConverterPage(resolveRequestLanguage(request, url));
       }
     }
 
@@ -29,12 +30,14 @@ export async function handleColorConverterRoutes(request, url) {
   }
 }
 
-function renderColorConverterPage() {
+function renderColorConverterPage(lang = DEFAULT_LANGUAGE) {
+  const currentLang = normalizeLanguage(lang);
+  const translation = getToolTranslation('color-converter', currentLang);
   const toolHeader = createToolHeader(
     { emoji: '🎨' },
-    'Color Converter',
-    'Convert between HEX, RGB, HSL, and other color formats with live preview',
-    [{ text: 'Live Preview', color: 'pink', tooltip: 'Updates the color preview and conversion values instantly as you edit inputs.' }],
+    translation?.name || 'Color Converter',
+    translation?.desc || 'Convert between HEX, RGB, HSL, and other color formats with live preview',
+    [{ text: translation?.ui?.badge6 || 'Live Preview', color: 'pink', tooltip: 'Updates the color preview and conversion values instantly as you edit inputs.' }],
     { toolId: 'color-converter' }
   );
 
@@ -70,12 +73,12 @@ function renderColorConverterPage() {
             <!-- Fallback native picker + Manual Input -->
             <div class="flex gap-4 items-end">
               <div class="flex-shrink-0">
-                <label for="color-picker" class="label mb-1 text-xs">Native</label>
+                <label for="color-picker" class="label mb-1 text-xs"><span data-i18n="tools.color-converter.ui.label0">Native</span></label>
                 <input type="color" id="color-picker" value="#3b82f6" class="w-10 h-10 rounded-lg cursor-pointer border border-surface-200 dark:border-surface-700 shadow-sm">
               </div>
               <div class="flex-1 space-y-1">
                 <label for="manual-input" class="label"><span data-i18n="tools.color-converter.ui.label1">Manual Input</span></label>
-                <input type="text" id="manual-input" placeholder="#FF5733 or rgb(255,87,51) or hsl(14,100%,60%)" data-i18n-placeholder="tools.color-converter.ui.placeholder3" class="input font-mono" data-tooltip="Enter any color format: #hex, rgb(), or hsl()">
+                <input type="text" id="manual-input" placeholder="#FF5733 or rgb(255,87,51) or hsl(14,100%,60%)" data-i18n-placeholder="tools.color-converter.ui.placeholder3" class="input font-mono" data-tooltip="Enter any color format: #hex, rgb(), or hsl()" data-i18n-tooltip="tools.color-converter.ui.tip0">
                 <p class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.color-converter.ui.desc4">Supports #hex, rgb(r,g,b), hsl(h,s,l)</p>
               </div>
             </div>
@@ -93,7 +96,7 @@ function renderColorConverterPage() {
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div class="card p-4">
                 <div class="flex justify-between items-center mb-2">
-                  <span class="text-xs font-bold text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-tooltip="6-digit hexadecimal color code">HEX</span>
+                  <span class="text-xs font-bold text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-tooltip="6-digit hexadecimal color code" data-i18n-tooltip="tools.color-converter.ui.tip1">HEX</span>
                    <button data-copy-target="hex-value" class="copy-btn text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" aria-label="Copy HEX color value">
                      <span class="material-symbols-rounded text-sm" data-i18n="tools.color-converter.ui.desc5">content_copy</span>
                    </button>
@@ -103,7 +106,7 @@ function renderColorConverterPage() {
 
               <div class="card p-4">
                 <div class="flex justify-between items-center mb-2">
-                  <span class="text-xs font-bold text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-tooltip="Red, Green, Blue — 0 to 255 each">RGB</span>
+                  <span class="text-xs font-bold text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-tooltip="Red, Green, Blue — 0 to 255 each" data-i18n-tooltip="tools.color-converter.ui.tip2">RGB</span>
                    <button data-copy-target="rgb-value" class="copy-btn text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" aria-label="Copy RGB color value">
                      <span class="material-symbols-rounded text-sm" data-i18n="tools.color-converter.ui.desc5">content_copy</span>
                    </button>
@@ -113,7 +116,7 @@ function renderColorConverterPage() {
 
               <div class="card p-4">
                 <div class="flex justify-between items-center mb-2">
-                  <span class="text-xs font-bold text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-tooltip="Hue 0-360°, Saturation 0-100%, Lightness 0-100%">HSL</span>
+                  <span class="text-xs font-bold text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-tooltip="Hue 0-360°, Saturation 0-100%, Lightness 0-100%" data-i18n-tooltip="tools.color-converter.ui.tip3">HSL</span>
                    <button data-copy-target="hsl-value" class="copy-btn text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" aria-label="Copy HSL color value">
                      <span class="material-symbols-rounded text-sm" data-i18n="tools.color-converter.ui.desc5">content_copy</span>
                    </button>
@@ -521,10 +524,11 @@ function renderColorConverterPage() {
   `
 
   return respondHTML(createPageTemplate({
-    title: 'Color Converter',
-    description: 'Convert between HEX, RGB, HSL, and other color formats with live preview.',
+    title: translation?.name || 'Color Converter',
+    description: translation?.desc || 'Convert HEX, RGB, and HSL colors.',
     path: '/color-converter',
     content,
-    scripts: script
+    scripts: script,
+    lang: currentLang
   }));
 }

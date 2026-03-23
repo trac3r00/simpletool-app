@@ -13,7 +13,13 @@ binding = "CF_VERSION_METADATA"
 [vars]
 ENVIRONMENT = "production"
 SITE_URL = "https://simpletool.app"
+# AdSense: publisher client ID (format: ca-pub-<digits>). Must be set for ads to load.
 ADSENSE_CLIENT = "ca-pub-5134881365131182"
+# AdSense: optional single fallback slot ID used when ADSENSE_SLOTS does not cover a key.
+# ADSENSE_SLOT = ""
+# AdSense: JSON object mapping slot keys to slot IDs. Empty object disables all ads.
+# Slot keys: home, tool, legal, sidebar, bottom
+# Example: ADSENSE_SLOTS = "{\"home\":\"1234567890\",\"tool\":\"2345678901\",\"legal\":\"3456789012\",\"sidebar\":\"4567890123\",\"bottom\":\"5678901234\"}"
 ADSENSE_SLOTS = "{}"
 SENTRY_DSN = ""
 CF_ANALYTICS_TOKEN = ""

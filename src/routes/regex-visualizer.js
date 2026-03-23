@@ -2,20 +2,24 @@ import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
 import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
+import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
 
 export async function handleRegexVisualizerRoutes(request) {
   const requestPath = new URL(request.url).pathname;
   const canonicalPath = requestPath.replace(/\/$/, '') || '/';
-  const title = 'Regex Studio';
-  const description = 'Visualize regular expressions with railroad diagrams, test matches in real-time, and generate code snippets.';
+  const currentLang = resolveRequestLanguage(request, new URL(request.url));
+  const normalizedLang = normalizeLanguage(currentLang);
+  const translation = getToolTranslation('regex-visualizer', normalizedLang);
+  const title = translation?.name || 'Regex Studio';
+  const description = translation?.desc || 'Visualize regular expressions with railroad diagrams, test matches in real-time, and generate code snippets.';
 
   const header = createToolHeader(
     { emoji: '🧩' },
     title,
     'Understand, test, and debug regular expressions with interactive visualizations and real-time explanations.',
-    [{ text: 'Visualizer', tooltip: 'Renders interactive railroad diagrams so you can explore the regex structure.' },
-     { text: 'Tester', tooltip: 'Run the regex against example text instantly to validate matches.' },
-     { text: 'Code Gen', tooltip: 'Generate ready-to-use snippets showing how to use the pattern in code.' }],
+    [{ text: translation?.ui?.badge18 || 'Visualizer', tooltip: 'Renders interactive railroad diagrams so you can explore the regex structure.' },
+     { text: translation?.ui?.badge19 || 'Tester', tooltip: 'Run the regex against example text instantly to validate matches.' },
+     { text: translation?.ui?.badge20 || 'Code Gen', tooltip: 'Generate ready-to-use snippets showing how to use the pattern in code.' }],
     { toolId: 'regex-visualizer' }
   );
 
@@ -36,18 +40,18 @@ export async function handleRegexVisualizerRoutes(request) {
              <div class="flex justify-between items-center mb-2">
                <label for="regex-input" class="block text-sm font-medium text-surface-700 dark:text-surface-300"><span data-i18n="tools.regex-visualizer.ui.label3">Regular Expression</span> ${infoHint('Use JS regex syntax; escape backslashes (\\\\) and omit surrounding / delimiters.')}</label>
                <select id="preset-select" class="text-xs px-2 py-1 rounded-md bg-surface-100 dark:bg-surface-800 text-surface-700 dark:text-surface-300 border border-surface-300 dark:border-surface-700 focus:ring-2 focus:ring-primary-500">
-                 <option value="">Presets</option>
-                 <option value="email">Email</option>
-                 <option value="url">URL</option>
-                 <option value="phone">Phone (US)</option>
-                 <option value="date">Date (YYYY-MM-DD)</option>
-                 <option value="ipv4">IPv4</option>
-                 <option value="hex-color">Hex Color</option>
+                 <option value="" data-i18n="tools.regex-visualizer.ui.option2">Presets</option>
+                 <option value="email" data-i18n="tools.regex-visualizer.ui.option3">Email</option>
+                 <option value="url" data-i18n="tools.regex-visualizer.ui.option8">URL</option>
+                 <option value="phone" data-i18n="tools.regex-visualizer.ui.option4">Phone (US)</option>
+                 <option value="date" data-i18n="tools.regex-visualizer.ui.option5">Date (YYYY-MM-DD)</option>
+                 <option value="ipv4" data-i18n="tools.regex-visualizer.ui.option6">IPv4</option>
+                 <option value="hex-color" data-i18n="tools.regex-visualizer.ui.option7">Hex Color</option>
                </select>
              </div>
              <div class="relative flex items-center">
                <span class="absolute left-3 text-surface-400 font-mono text-lg">/</span>
-               <input type="text" id="regex-input" data-tooltip="Enter a regular expression pattern" 
+               <input type="text" id="regex-input" data-tooltip="Enter a regular expression pattern" data-i18n-tooltip="tools.regex-visualizer.ui.tip0"
                  class="w-full pl-6 pr-16 py-2.5 bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 font-mono text-surface-900 dark:text-white"
                  placeholder="e.g. [a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}"
                  value="([A-Z])\\w+"
@@ -59,15 +63,15 @@ export async function handleRegexVisualizerRoutes(request) {
             <!-- Flags -->
             <div class="mt-3 flex flex-wrap gap-2">
               <label class="inline-flex items-center px-2 py-1 rounded bg-surface-100 dark:bg-surface-800 cursor-pointer hover:bg-surface-200 dark:hover:bg-surface-700 transition-colors">
-                <input type="checkbox" id="flag-g" data-tooltip="Global — find all matches, not just the first" class="rounded border-surface-300 text-primary-600 focus:ring-primary-500" checked>
+                <input type="checkbox" id="flag-g" data-tooltip="Global — find all matches, not just the first" data-i18n-tooltip="tools.regex-visualizer.ui.tip1" class="rounded border-surface-300 text-primary-600 focus:ring-primary-500" checked>
                 <span class="ml-2 text-xs font-mono text-surface-700 dark:text-surface-300" data-i18n="tools.regex-visualizer.ui.desc13">g (global)</span>
               </label>
               <label class="inline-flex items-center px-2 py-1 rounded bg-surface-100 dark:bg-surface-800 cursor-pointer hover:bg-surface-200 dark:hover:bg-surface-700 transition-colors">
-                <input type="checkbox" id="flag-i" data-tooltip="Case-insensitive — A matches a" class="rounded border-surface-300 text-primary-600 focus:ring-primary-500">
+                <input type="checkbox" id="flag-i" data-tooltip="Case-insensitive — A matches a" data-i18n-tooltip="tools.regex-visualizer.ui.tip2" class="rounded border-surface-300 text-primary-600 focus:ring-primary-500">
                 <span class="ml-2 text-xs font-mono text-surface-700 dark:text-surface-300" data-i18n="tools.regex-visualizer.ui.desc14">i (insensitive)</span>
               </label>
               <label class="inline-flex items-center px-2 py-1 rounded bg-surface-100 dark:bg-surface-800 cursor-pointer hover:bg-surface-200 dark:hover:bg-surface-700 transition-colors">
-                <input type="checkbox" id="flag-m" data-tooltip="Multiline — ^ and $ match line boundaries" class="rounded border-surface-300 text-primary-600 focus:ring-primary-500">
+                <input type="checkbox" id="flag-m" data-tooltip="Multiline — ^ and $ match line boundaries" data-i18n-tooltip="tools.regex-visualizer.ui.tip3" class="rounded border-surface-300 text-primary-600 focus:ring-primary-500">
                 <span class="ml-2 text-xs font-mono text-surface-700 dark:text-surface-300" data-i18n="tools.regex-visualizer.ui.desc15">m (multiline)</span>
               </label>
             </div>
@@ -79,7 +83,7 @@ export async function handleRegexVisualizerRoutes(request) {
               <label for="test-string" class="block text-sm font-medium text-surface-700 dark:text-surface-300"><span data-i18n="tools.regex-visualizer.ui.label4">Test String</span> ${infoHint('Enter sample text to test against; matches highlight instantly below.')}</label>
               <span id="match-count" class="text-xs font-medium px-2 py-0.5 rounded-full bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-400" data-i18n="tools.regex-visualizer.ui.desc16">2 matches</span>
             </div>
-            <textarea id="test-string" rows="6" data-tooltip="Text to test the regex pattern against" 
+            <textarea id="test-string" rows="6" data-tooltip="Text to test the regex pattern against" data-i18n-tooltip="tools.regex-visualizer.ui.tip4"
               class="w-full p-3 bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 font-mono text-sm text-surface-900 dark:text-white resize-y"
               placeholder="Enter text to test against..." data-i18n-placeholder="tools.regex-visualizer.ui.placeholder6"
               spellcheck="false"></textarea>
@@ -175,7 +179,7 @@ while ((m = regex.exec(str)) !== null) {
       ${createCheatsheet('regex-visualizer', 'Regex Quick Reference', [
         { heading: 'Character Classes', content: `
           <table>
-            <tr><th>Pattern</th><th>Matches</th></tr>
+            <tr><th data-i18n="tools.regex-visualizer.ui.th12">Pattern</th><th data-i18n="tools.regex-visualizer.ui.th13">Matches</th></tr>
             <tr><td><code>\\\\d</code></td><td>Any digit (0-9)</td></tr>
             <tr><td><code>\\\\w</code></td><td>Word char (a-z, A-Z, 0-9, _)</td></tr>
             <tr><td><code>\\\\s</code></td><td>Whitespace</td></tr>
@@ -185,7 +189,7 @@ while ((m = regex.exec(str)) !== null) {
           </table>` },
         { heading: 'Quantifiers', content: `
           <table>
-            <tr><th>Pattern</th><th>Meaning</th></tr>
+            <tr><th data-i18n="tools.regex-visualizer.ui.th12">Pattern</th><th data-i18n="tools.regex-visualizer.ui.th14">Meaning</th></tr>
             <tr><td><code>*</code></td><td>0 or more</td></tr>
             <tr><td><code>+</code></td><td>1 or more</td></tr>
             <tr><td><code>?</code></td><td>0 or 1</td></tr>
@@ -194,7 +198,7 @@ while ((m = regex.exec(str)) !== null) {
           </table>` },
         { heading: 'Anchors &amp; Groups', content: `
           <table>
-            <tr><th>Pattern</th><th>Meaning</th></tr>
+            <tr><th data-i18n="tools.regex-visualizer.ui.th12">Pattern</th><th data-i18n="tools.regex-visualizer.ui.th14">Meaning</th></tr>
             <tr><td><code>^</code></td><td>Start of string</td></tr>
             <tr><td><code>$</code></td><td>End of string</td></tr>
             <tr><td><code>(...)</code></td><td>Capture group</td></tr>
@@ -204,7 +208,7 @@ while ((m = regex.exec(str)) !== null) {
           </table>` },
         { heading: 'Common Patterns', content: `
           <table>
-            <tr><th>Pattern</th><th>Matches</th></tr>
+            <tr><th data-i18n="tools.regex-visualizer.ui.th12">Pattern</th><th data-i18n="tools.regex-visualizer.ui.th13">Matches</th></tr>
             <tr><td><code>^[\\\\w.+-]+@[\\\\w-]+\\\\.[\\\\w.]+$</code></td><td>Email</td></tr>
             <tr><td><code>^https?:\\/\\/</code></td><td>URL</td></tr>
             <tr><td><code>^\\\\d{4}-\\\\d{2}-\\\\d{2}$</code></td><td>Date (YYYY-MM-DD)</td></tr>
@@ -537,14 +541,14 @@ while ((m = regex.exec(str)) !== null) {
           const result = parser.parse();
           
           if (!result) {
-             railroadContainer.innerHTML = '<div class="flex items-center justify-center text-surface-400 text-sm italic">Loading visualization library...</div>';
+             railroadContainer.innerHTML = '<div class="flex items-center justify-center text-surface-400 text-sm italic">' + _t('tools.regex-visualizer.js.text2', 'Loading visualization library...') + '</div>';
              return;
           }
           
           const diagram = Railroad.Diagram(result);
           diagram.addTo(railroadContainer);
         } catch (e) {
-          railroadContainer.innerHTML = '<div class="text-error-500 text-sm p-4">Invalid Regex for Visualization</div>';
+          railroadContainer.innerHTML = '<div class="text-error-500 text-sm p-4">' + _t('tools.regex-visualizer.js.text3', 'Invalid Regex for Visualization') + '</div>';
           console.error(e);
         }
       }
@@ -622,7 +626,7 @@ while ((m = regex.exec(str)) !== null) {
          } catch (e) {
            highlightDisplay.textContent = text;
            matchCount.textContent = _t('tools.regex-visualizer.js.text1', 'Error');
-           groupsTableBody.innerHTML = '<tr><td colspan="4" class="px-4 py-2 text-error-500 text-sm">Invalid Regular Expression</td></tr>';
+           groupsTableBody.innerHTML = '<tr><td colspan="4" class="px-4 py-2 text-error-500 text-sm">' + _t('tools.regex-visualizer.js.text4', 'Invalid Regular Expression') + '</td></tr>';
         }
       }
 
@@ -812,6 +816,7 @@ while (matcher.find()) {
     description,
     path: canonicalPath,
     content,
-    scripts
+    scripts,
+    lang: normalizedLang
   }));
 }

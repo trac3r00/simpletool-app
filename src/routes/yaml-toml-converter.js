@@ -7,13 +7,14 @@ import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createCheatsheet } from '../utils/common-ui.js';
 import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
+import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
 
 export async function handleDataConverterRoutes(request, url) {
   const { pathname } = url;
 
   if (pathname === '/yaml-toml-converter' || pathname === '/yaml-toml-converter/') {
     if (request.method === 'GET') {
-      return respondHTML(renderDataConverterPage());
+      return respondHTML(renderDataConverterPage(resolveRequestLanguage(request, url)));
     }
     return respondJSON({ error: 'Method not allowed' }, { status: 405 });
   }
@@ -21,31 +22,36 @@ export async function handleDataConverterRoutes(request, url) {
   return null;
 }
 
-function renderDataConverterPage() {
+function renderDataConverterPage(lang = DEFAULT_LANGUAGE) {
+  const currentLang = normalizeLanguage(lang);
+  const translation = getToolTranslation('yaml-toml-converter', currentLang);
+  const title = translation?.name || 'Config Converter';
+  const description = translation?.desc || 'Validate and convert configuration files between JSON, YAML, and TOML without uploading anything.';
+
   const currentTool = TOOLS.find(t => t.id === 'yaml-toml-converter');
-    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
 
   const content = `
     <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
       <header class="bg-white/90 dark:bg-surface-900/80 border border-surface-200 dark:border-surface-800 rounded-3xl shadow-xl p-8">
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
           <div>
-             <p class="text-xs font-semibold uppercase tracking-[0.35em] text-info-600 dark:text-info-300 mb-3" data-i18n="tools.yaml-toml-converter.ui.desc9">Data formats</p>
-            <h1 class="text-4xl sm:text-5xl font-extrabold text-surface-900 dark:text-white mb-4">Config Converter</h1>
+            <p class="text-xs font-semibold uppercase tracking-[0.35em] text-info-600 dark:text-info-300 mb-3" data-i18n="tools.yaml-toml-converter.ui.desc9">Data formats</p>
+            <h1 class="text-4xl sm:text-5xl font-extrabold text-surface-900 dark:text-white mb-4">${title}</h1>
             <p class="text-lg text-surface-600 dark:text-surface-300 max-w-3xl" data-i18n="tools.yaml-toml-converter.ui.desc10">Validate and translate configs instantly. Paste once, get well-formed JSON, YAML, and TOML representations without leaking secrets.</p>
           </div>
           <div class="flex flex-col gap-3 text-sm text-surface-600 dark:text-surface-300">
              <div class="flex items-center gap-3 bg-info-50 dark:bg-info-900/20 border border-info-200 dark:border-info-800 rounded-2xl px-4 py-3">
               <span class="text-xl">🧪</span>
               <div>
-                <p class="font-semibold">Schema-less validation</p>
+                <p class="font-semibold" data-i18n="tools.yaml-toml-converter.ui.feat0">Schema-less validation</p>
                 <p class="text-surface-500 dark:text-surface-400" data-i18n="tools.yaml-toml-converter.ui.desc11">Instant parse feedback.</p>
               </div>
             </div>
              <div class="flex items-center gap-3 bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-800 rounded-2xl px-4 py-3">
               <span class="text-xl">🔒</span>
               <div>
-                <p class="font-semibold">Offline friendly</p>
+                <p class="font-semibold" data-i18n="tools.yaml-toml-converter.ui.feat1">Offline friendly</p>
                 <p class="text-surface-500 dark:text-surface-400" data-i18n="tools.yaml-toml-converter.ui.desc12">Everything stays local.</p>
               </div>
             </div>
@@ -65,7 +71,7 @@ function renderDataConverterPage() {
             </select>
              <button id="load-sample" class="btn btn-ghost btn-xs"><span data-i18n="tools.yaml-toml-converter.ui.button0">Load sample</span></button>
           </div>
-          <label for="format-input" class="sr-only">Input configuration data</label>
+          <label for="format-input" class="sr-only"><span data-i18n="tools.yaml-toml-converter.ui.label0">Input configuration data</span></label>
           <textarea id="format-input" class="w-full min-h-[280px] rounded-2xl border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-950 px-4 py-3 font-mono text-sm text-surface-900 dark:text-surface-100" placeholder="Paste JSON, YAML, or TOML..." data-i18n-placeholder="tools.yaml-toml-converter.ui.placeholder7"></textarea>
           <div class="flex flex-wrap gap-3">
              <button id="validate-btn" class="btn btn-secondary" data-tooltip="Check syntax without converting"><span data-i18n="tools.yaml-toml-converter.ui.button1">Validate only</span></button>
@@ -105,7 +111,7 @@ function renderDataConverterPage() {
       ${createCheatsheet('yaml-toml-converter', 'Format Comparison', [
         { heading: 'Syntax Differences', content: `
           <table>
-            <tr><th>Feature</th><th>JSON</th><th>YAML</th><th>TOML</th></tr>
+            <tr><th data-i18n="tools.yaml-toml-converter.ui.th3">Feature</th><th>JSON</th><th>YAML</th><th>TOML</th></tr>
             <tr><td>Comments</td><td>❌ None</td><td><code># comment</code></td><td><code># comment</code></td></tr>
             <tr><td>Strings</td><td><code>"double only"</code></td><td><code>bare or "quoted"</code></td><td><code>"basic"</code> or <code>'literal'</code></td></tr>
             <tr><td>Arrays</td><td><code>[1, 2]</code></td><td><code>- 1</code> (newline each)</td><td><code>[1, 2]</code></td></tr>
@@ -144,9 +150,10 @@ function renderDataConverterPage() {
 
 
   return createPageTemplate({
-    title: 'Config Converter',
-    description: 'Validate and convert configuration files between JSON, YAML, and TOML without uploading anything.',
+    title,
+    description,
     path: '/yaml-toml-converter',
-    content
+    content,
+    lang: currentLang
   });
 }

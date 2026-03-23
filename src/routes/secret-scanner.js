@@ -9,19 +9,22 @@ import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
 import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
+import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
 
 export async function handleSecretScannerRoutes(request, url) {
   const { pathname } = url;
   if (pathname === '/secret-scanner' || pathname === '/secret-scanner/') {
-    if (request.method === 'GET') return respondHTML(renderSecretScannerPage());
+    if (request.method === 'GET') return respondHTML(renderSecretScannerPage(resolveRequestLanguage(request, url)));
     return new Response('Method not allowed', { status: 405 });
   }
   return null;
 }
 
-function renderSecretScannerPage() {
-  const title = 'Secret Scanner';
-  const description = 'Scan pasted code/config for leaked API keys, tokens, and passwords — then generate a share-safe redaction.';
+function renderSecretScannerPage(lang = DEFAULT_LANGUAGE) {
+  const currentLang = normalizeLanguage(lang);
+  const translation = getToolTranslation('secret-scanner', currentLang);
+  const title = translation?.name || 'Secret Scanner';
+  const description = translation?.desc || 'Scan pasted code/config for leaked API keys, tokens, and passwords — then generate a share-safe redaction.';
 
   const header = createToolHeader(
     { emoji: '🔎' },
@@ -431,7 +434,7 @@ function renderSecretScannerPage() {
       els.clear.addEventListener('click', () => {
         els.input.value = '';
         els.redacted.value = '';
-        els.findings.innerHTML = '<p class="text-surface-500 dark:text-surface-400">' + t('text28', 'Click Scan to find secrets.') + '</p>';
+        els.findings.innerHTML = '<p class="text-surface-500 dark:text-surface-400" data-i18n="tools.secret-scanner.ui.desc7">' + t('text28', 'Click Scan to find secrets.') + '</p>';
         els.high.textContent = '0';
         els.med.textContent = '0';
         els.low.textContent = '0';
@@ -463,6 +466,7 @@ function renderSecretScannerPage() {
     description,
     path: '/secret-scanner',
     content,
-    scripts
+    scripts,
+    lang: currentLang
   });
 }

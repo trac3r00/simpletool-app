@@ -2,27 +2,35 @@ import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, getCopyToClipboardScript } from '../utils/common-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
 import { createRelatedToolsSection } from '../utils/content-ui.js';
+import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
 
 export async function handleCurlStudioRoutes(request, url) {
   if (url.pathname !== '/curl-studio' && url.pathname !== '/curl-studio/') return null;
   if (request.method !== 'GET') return null;
+  const lang = resolveRequestLanguage(request, url);
+  return renderCurlStudioPage(lang);
+}
 
-  const title = 'Curl Studio';
-  const description = 'Parse curl commands into structured data and generate curl commands from inputs locally.';
+function renderCurlStudioPage(lang = DEFAULT_LANGUAGE) {
+  const currentLang = normalizeLanguage(lang);
+  const translation = getToolTranslation('curl-studio', currentLang);
+  const title = translation?.name || 'Curl Studio';
+  const description = translation?.desc || 'Parse and generate curl commands.';
 
   const header = createToolHeader(
     { emoji: '🐚' },
     title,
-    'Analyze, debug, and generate curl commands privately. All processing happens in your browser.',
-    [{ text: 'Parser', tooltip: 'Breaks curl commands into structured fields directly in your browser.' },
-     { text: 'Generator', tooltip: 'Build ready-to-run curl commands from form inputs without network calls.' },
-     { text: 'Privacy-First', tooltip: 'All processing happens in your browser — no data is sent to any server.' }],
+    description,
+    [
+      { text: '<span data-i18n="tools.curl-studio.ui.badge12">Parser</span>', tooltip: 'Breaks curl commands into structured fields directly in your browser.' },
+      { text: '<span data-i18n="tools.curl-studio.ui.badge13">Generator</span>', tooltip: 'Build ready-to-run curl commands from form inputs without network calls.' },
+      { text: '<span data-i18n="tools.curl-studio.ui.badge14">Privacy-First</span>', tooltip: 'All processing happens in your browser — no data is sent to any server.' }
+    ],
     { toolId: 'curl-studio' }
   );
 
   const currentTool = TOOLS.find(t => t.id === 'curl-studio');
-    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
-
+  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -34,11 +42,11 @@ export async function handleCurlStudioRoutes(request, url) {
           <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 p-5">
             <div class="flex justify-between items-center mb-2">
               <label for="curl-input" class="block text-sm font-medium text-surface-700 dark:text-surface-300"><span data-i18n="tools.curl-studio.ui.label4">Curl Command</span></label>
-              <button id="parse-btn" data-tooltip="Parse a curl command into structured components" class="btn btn-primary btn-xs"><span data-i18n="tools.curl-studio.ui.button0">Parse Command</span></button>
+              <button id="parse-btn" data-tooltip="Parse a curl command into structured components" data-i18n-tooltip="tools.curl-studio.ui.tip0" class="btn btn-primary btn-xs"><span data-i18n="tools.curl-studio.ui.button0">Parse Command</span></button>
             </div>
             <textarea id="curl-input" rows="8" 
               class="w-full p-3 bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 font-mono text-sm text-surface-900 dark:text-white resize-y"
-              placeholder="Paste your curl command here (e.g., curl -X POST https://api.example.com -H 'Content-Type: application/json' -d '{\\"key\\":\\"value\\"}')"></textarea>
+              placeholder="Paste your curl command here (e.g., curl -X POST https://api.example.com -H 'Content-Type: application/json' -d '{\\"key\\":\\"value\\"}')" data-i18n-placeholder="tools.curl-studio.ui.placeholder8"></textarea>
           </div>
 
           <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 p-5">
@@ -47,7 +55,7 @@ export async function handleCurlStudioRoutes(request, url) {
               <div>
                 <label class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1"><span data-i18n="tools.curl-studio.ui.label5">Method & URL</span></label>
                 <div class="flex gap-2">
-                  <select id="gen-method" aria-label="HTTP method" data-tooltip="HTTP method: GET retrieves, POST submits, PUT replaces, DELETE removes" class="bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg text-sm px-2 py-2 focus:ring-2 focus:ring-primary-500">
+                  <select id="gen-method" aria-label="HTTP method" data-tooltip="HTTP method: GET retrieves, POST submits, PUT replaces, DELETE removes" data-i18n-tooltip="tools.curl-studio.ui.tip1" class="bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg text-sm px-2 py-2 focus:ring-2 focus:ring-primary-500">
                     <option>GET</option>
                     <option>POST</option>
                     <option>PUT</option>
@@ -56,7 +64,7 @@ export async function handleCurlStudioRoutes(request, url) {
                     <option>HEAD</option>
                     <option>OPTIONS</option>
                   </select>
-                  <input type="text" id="gen-url" aria-label="Target URL" data-tooltip="Target URL for the request" placeholder="https://api.example.com/v1"
+                  <input type="text" id="gen-url" aria-label="Target URL" data-tooltip="Target URL for the request" data-i18n-tooltip="tools.curl-studio.ui.tip2" placeholder="https://api.example.com/v1"
                     class="flex-1 p-2 bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg text-sm focus:ring-2 focus:ring-primary-500">
                 </div>
               </div>
@@ -68,7 +76,7 @@ export async function handleCurlStudioRoutes(request, url) {
                 <label for="gen-body" class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1"><span data-i18n="tools.curl-studio.ui.label7">Body</span></label>
                 <textarea id="gen-body" rows="3" class="w-full p-2 bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg text-sm font-mono focus:ring-2 focus:ring-primary-500" placeholder='{"foo": "bar"}'></textarea>
               </div>
-              <button id="generate-btn" data-tooltip="Build a curl command from the fields above" class="btn btn-primary w-full"><span data-i18n="tools.curl-studio.ui.button1">Generate Curl Command</span></button>
+              <button id="generate-btn" data-tooltip="Build a curl command from the fields above" data-i18n-tooltip="tools.curl-studio.ui.tip3" class="btn btn-primary w-full"><span data-i18n="tools.curl-studio.ui.button1">Generate Curl Command</span></button>
             </div>
           </div>
         </div>
@@ -96,7 +104,7 @@ export async function handleCurlStudioRoutes(request, url) {
       ${createCheatsheet('curl-studio', 'Curl Flags Reference', [
         { heading: 'Common Flags', content: `
           <table>
-            <tr><th>Flag</th><th>Description</th><th>Example</th></tr>
+            <tr><th data-i18n="tools.curl-studio.ui.th1">Flag</th><th data-i18n="tools.curl-studio.ui.th2">Description</th><th data-i18n="tools.curl-studio.ui.th3">Example</th></tr>
             <tr><td><code>-X</code></td><td>HTTP method</td><td><code>-X POST</code></td></tr>
             <tr><td><code>-H</code></td><td>Add header</td><td><code>-H "Content-Type: application/json"</code></td></tr>
             <tr><td><code>-d</code></td><td>Request body</td><td><code>-d '{"key":"val"}'</code></td></tr>
@@ -108,7 +116,7 @@ export async function handleCurlStudioRoutes(request, url) {
           </table>` },
         { heading: 'Authentication', content: `
           <table>
-            <tr><th>Flag</th><th>Type</th></tr>
+            <tr><th data-i18n="tools.curl-studio.ui.th1">Flag</th><th data-i18n="tools.curl-studio.ui.th4">Type</th></tr>
             <tr><td><code>-u user:pass</code></td><td>Basic auth</td></tr>
             <tr><td><code>-H "Authorization: Bearer TOKEN"</code></td><td>Bearer token</td></tr>
             <tr><td><code>--cert file.pem</code></td><td>Client certificate</td></tr>
@@ -118,7 +126,7 @@ export async function handleCurlStudioRoutes(request, url) {
     </main>
   `;
 
-   const scripts = `
+  const scripts = `
      ${getCopyToClipboardScript()}
      <script type="module">
       // Local curl parser implementation
@@ -195,7 +203,7 @@ export async function handleCurlStudioRoutes(request, url) {
           
           updateGeneratedCommand();
         } catch (e) {
-          structOutput.textContent = 'Error parsing curl command: ' + e.message;
+          structOutput.textContent = _t('tools.curl-studio.js.text0', 'Error parsing curl command: ') + e.message;
         }
       });
 
@@ -241,6 +249,7 @@ export async function handleCurlStudioRoutes(request, url) {
   return respondHTML(createPageTemplate({
     title,
     description,
+    lang: currentLang,
     path: '/curl-studio',
     content,
     scripts

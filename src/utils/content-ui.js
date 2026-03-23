@@ -3,6 +3,8 @@
  * Professional editorial aesthetic: clean typography, generous whitespace, subtle accent borders.
  */
 
+import { DEFAULT_LANGUAGE, normalizeLanguage, withLanguageQuery, t } from './i18n.js';
+
 /**
  * Educational section with collapsible panels.
  * @param {Array<{title: string, content: string}>} sections
@@ -22,7 +24,7 @@ export function createEducationalSection(sections, toolId) {
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
         </svg>
       </summary>
-      <div class="px-5 pb-5 pt-1 text-sm text-surface-700 dark:text-surface-300 leading-relaxed prose dark:prose-invert max-w-none" data-i18n="${prefix}.p${i + 1}">
+      <div class="px-5 pb-5 pt-1 text-sm text-surface-700 dark:text-surface-300 leading-relaxed prose dark:prose-invert max-w-none" data-i18n-html="${prefix}.p${i + 1}">
         ${section.content}
       </div>
     </details>
@@ -40,18 +42,19 @@ export function createEducationalSection(sections, toolId) {
  * @param {Array<{id: string, question: string, answer: string}>} items
  * @returns {string} HTML
  */
-export function createFaqAccordion(items) {
+export function createFaqAccordion(items, options = {}) {
   if (!items || items.length === 0) return '';
+  const withI18n = options.i18n !== false;
 
   const faqItems = items.map((item, i) => `
     <details id="${item.id || 'q' + (i + 1)}" class="group border border-surface-200 dark:border-surface-800 rounded-lg bg-white dark:bg-surface-900 shadow-sm" data-faq-item>
-      <summary class="flex items-center justify-between w-full px-5 py-4 cursor-pointer select-none text-left font-medium text-surface-900 dark:text-surface-50 hover:bg-surface-50 dark:hover:bg-surface-800/50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500" data-i18n="content.faq.q${i}">
+      <summary class="flex items-center justify-between w-full px-5 py-4 cursor-pointer select-none text-left font-medium text-surface-900 dark:text-surface-50 hover:bg-surface-50 dark:hover:bg-surface-800/50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"${withI18n ? ` data-i18n="content.faq.q${i}"` : ''}>
         <span>${item.question}</span>
         <svg class="w-5 h-5 text-surface-400 dark:text-surface-500 transition-transform duration-200 group-open:rotate-180 flex-shrink-0 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
         </svg>
       </summary>
-      <div class="px-5 pb-5 pt-1 text-sm text-surface-700 dark:text-surface-300 leading-relaxed border-t border-surface-100 dark:border-surface-800 mt-1 prose dark:prose-invert max-w-none" data-i18n="content.faq.a${i}">
+      <div class="px-5 pb-5 pt-1 text-sm text-surface-700 dark:text-surface-300 leading-relaxed border-t border-surface-100 dark:border-surface-800 mt-1 prose dark:prose-invert max-w-none"${withI18n ? ` data-i18n-html="content.faq.a${i}"` : ''}>
         ${item.answer}
       </div>
     </details>
@@ -69,23 +72,25 @@ export function createFaqAccordion(items) {
  * @param {{title: string, description: string, slug: string, category: string, readingTime: string, datePublished: string}} article
  * @returns {string} HTML
  */
-export function createBlogArticleCard(article) {
+export function createBlogArticleCard(article, options = {}) {
   if (!article) return '';
+  const lang = normalizeLanguage(options.lang || DEFAULT_LANGUAGE);
+  const locale = options.locale || 'en-US';
 
   const dateFormatted = article.datePublished
-    ? new Date(article.datePublished).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+    ? new Date(article.datePublished).toLocaleDateString(locale, { year: 'numeric', month: 'long', day: 'numeric' })
     : '';
 
   return `
-    <a href="/blog/${article.slug}" class="block card p-6 hover:border-primary-400 dark:hover:border-primary-600 transition-colors duration-200 group" data-blog-card>
+    <a href="${withLanguageQuery(`/blog/${article.slug}`, lang)}" class="block card p-6 hover:border-primary-400 dark:hover:border-primary-600 transition-colors duration-200 group" data-blog-card>
       <div class="flex flex-wrap items-center gap-2 mb-3">
-        ${article.category ? `<span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300" data-i18n="content.blog.cat.${article.slug}">${article.category}</span>` : ''}
+        ${article.category ? `<span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300">${article.category}</span>` : ''}
         ${article.readingTime ? `<span class="text-xs text-surface-500 dark:text-surface-400">${article.readingTime}</span>` : ''}
       </div>
-      <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-50 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-200 mb-2" data-i18n="content.blog.title.${article.slug}">
+      <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-50 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-200 mb-2">
         ${article.title}
       </h3>
-      <p class="text-sm text-surface-600 dark:text-surface-400 leading-relaxed mb-3" data-i18n="content.blog.desc.${article.slug}">
+      <p class="text-sm text-surface-600 dark:text-surface-400 leading-relaxed mb-3">
         ${article.description}
       </p>
       ${dateFormatted ? `<time datetime="${article.datePublished}" class="text-xs text-surface-400 dark:text-surface-500">${dateFormatted}</time>` : ''}
@@ -98,14 +103,14 @@ export function createBlogArticleCard(article) {
  * @param {Array<{icon: string, name: string, description: string, path: string}>} tools
  * @returns {string} HTML
  */
-export function createRelatedToolsSection(tools) {
+export function createRelatedToolsSection(tools, lang = DEFAULT_LANGUAGE) {
   if (!tools || tools.length === 0) return '';
 
   const cards = tools.slice(0, 4).map(tool => `
     <a href="${tool.path}" class="card p-4 hover:border-primary-400 dark:hover:border-primary-600 transition-colors duration-200 group flex items-start gap-3">
       <span class="text-2xl flex-shrink-0" aria-hidden="true">${tool.icon}</span>
       <div class="min-w-0">
-        <h4 class="text-sm font-semibold text-surface-900 dark:text-surface-50 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">${tool.name}</h4>
+        <h3 class="text-sm font-semibold text-surface-900 dark:text-surface-50 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">${tool.name}</h3>
         <p class="text-xs text-surface-500 dark:text-surface-400 mt-0.5 line-clamp-2">${tool.description}</p>
       </div>
     </a>
@@ -113,7 +118,7 @@ export function createRelatedToolsSection(tools) {
 
   return `
     <section class="mt-10" aria-label="Related tools">
-      <h2 class="text-lg font-semibold text-surface-900 dark:text-surface-50 mb-4" data-i18n="content.relatedTools">Related Tools</h2>
+      <h2 class="text-lg font-semibold text-surface-900 dark:text-surface-50 mb-4" data-i18n="content.relatedTools">${t('content.relatedTools', lang)}</h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         ${cards}
       </div>
@@ -126,14 +131,15 @@ export function createRelatedToolsSection(tools) {
  * @param {Array<{label: string, url: string}>} items — last item is current page (no link)
  * @returns {string} HTML
  */
-export function createBreadcrumbs(items) {
+export function createBreadcrumbs(items, options = {}) {
   if (!items || items.length === 0) return '';
+  const lang = normalizeLanguage(options.lang || DEFAULT_LANGUAGE);
 
   const schemaItems = items.map((item, i) => ({
     '@type': 'ListItem',
     'position': i + 1,
     'name': item.label,
-    ...(item.url ? { 'item': `https://simpletool.app${item.url}` } : {})
+    ...(item.url ? { 'item': `https://simpletool.app${withLanguageQuery(item.url, lang)}` } : {})
   }));
 
   const schema = {
@@ -147,7 +153,7 @@ export function createBreadcrumbs(items) {
     if (isLast) {
       return `<span class="text-sm text-surface-500 dark:text-surface-400" aria-current="page">${item.label}</span>`;
     }
-    return `<a href="${item.url}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">${item.label}</a>`;
+    return `<a href="${withLanguageQuery(item.url, lang)}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">${item.label}</a>`;
   }).join(`<svg class="w-4 h-4 text-surface-400 dark:text-surface-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>`);
 
   return `

@@ -8,19 +8,22 @@ import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
 import { createRelatedToolsSection } from '../utils/content-ui.js';
+import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
 
 export async function handlePromptTemplateBuilderRoutes(request, url) {
   const { pathname } = url;
   if (pathname === '/prompt-template-builder' || pathname === '/prompt-template-builder/') {
-    if (request.method === 'GET') return respondHTML(renderPromptTemplateBuilderPage());
+    if (request.method === 'GET') return respondHTML(renderPromptTemplateBuilderPage(resolveRequestLanguage(request, url)));
     return new Response('Method not allowed', { status: 405 });
   }
   return null;
 }
 
-function renderPromptTemplateBuilderPage() {
-  const title = 'Prompt Template Builder';
-  const description = 'Generate a clean, reusable prompt template optimized for GPT, Claude, and other chat models.';
+function renderPromptTemplateBuilderPage(lang = DEFAULT_LANGUAGE) {
+  const currentLang = normalizeLanguage(lang);
+  const translation = getToolTranslation('prompt-template-builder', currentLang);
+  const title = translation?.name || 'Prompt Template Builder';
+  const description = translation?.desc || 'Generate a clean, reusable prompt template optimized for GPT, Claude, and other chat models.';
 
   const header = createToolHeader(
     { emoji: '🧩' },
@@ -469,6 +472,7 @@ function renderPromptTemplateBuilderPage() {
     description,
     path: '/prompt-template-builder',
     content,
-    scripts
+    scripts,
+    lang: currentLang
   });
 }

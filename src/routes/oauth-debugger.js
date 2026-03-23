@@ -7,12 +7,13 @@ import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, getCopyToClipboardScript } from '../utils/common-ui.js';
 import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
+import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
 
 export async function handleOAuthDebuggerRoutes(request, url) {
   const { pathname } = url;
   try {
     if (pathname === '/oauth-debugger' || pathname === '/oauth-debugger/') {
-      if (request.method === 'GET') return renderOAuthDebuggerPage();
+      if (request.method === 'GET') return renderOAuthDebuggerPage(resolveRequestLanguage(request, url));
     }
     return respondJSON({ error: 'Not found' }, { status: 404 });
   } catch (error) {
@@ -21,11 +22,16 @@ export async function handleOAuthDebuggerRoutes(request, url) {
   }
 }
 
-function renderOAuthDebuggerPage() {
+function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
+  const currentLang = normalizeLanguage(lang);
+  const translation = getToolTranslation('oauth-debugger', currentLang);
+  const title = translation?.name || 'OAuth 2.0 / PKCE Debugger';
+  const description = translation?.desc || 'Generate PKCE challenges, visualize OAuth flows, and analyze security.';
+
   const toolHeader = createToolHeader(
     { emoji: '🔑' },
-    'OAuth 2.0 / PKCE Debugger',
-    'Generate PKCE challenges, visualize OAuth flows, and analyze security',
+    title,
+    description,
     [{ text: 'Privacy First', color: 'green', tooltip: 'All operations happen in your browser.' }],
     { toolId: 'oauth-debugger' }
   );
@@ -145,19 +151,19 @@ function renderOAuthDebuggerPage() {
                 <div>
                   <label for="sec-response-type" class="block text-xs font-semibold uppercase tracking-wide text-surface-500 dark:text-surface-400 mb-1" data-i18n="tools.oauth-debugger.ui.label10">response_type</label>
                   <select id="sec-response-type" class="w-full p-3 font-mono text-sm bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-700 rounded-lg text-surface-900 dark:text-surface-100">
-                    <option value="code">code (Authorization Code)</option>
-                    <option value="token">token (Implicit — deprecated)</option>
-                    <option value="id_token">id_token (Implicit OIDC — deprecated)</option>
-                    <option value="code id_token">code id_token (Hybrid)</option>
+                    <option value="code" data-i18n="tools.oauth-debugger.ui.option19">code (Authorization Code)</option>
+                    <option value="token" data-i18n="tools.oauth-debugger.ui.option20">token (Implicit — deprecated)</option>
+                    <option value="id_token" data-i18n="tools.oauth-debugger.ui.option21">id_token (Implicit OIDC — deprecated)</option>
+                    <option value="code id_token" data-i18n="tools.oauth-debugger.ui.option22">code id_token (Hybrid)</option>
                   </select>
                 </div>
                 <div>
                   <label for="sec-grant-type" class="block text-xs font-semibold uppercase tracking-wide text-surface-500 dark:text-surface-400 mb-1" data-i18n="tools.oauth-debugger.ui.label11">grant_type (token endpoint)</label>
                   <select id="sec-grant-type" class="w-full p-3 font-mono text-sm bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-700 rounded-lg text-surface-900 dark:text-surface-100">
-                    <option value="authorization_code">authorization_code</option>
-                    <option value="client_credentials">client_credentials</option>
-                    <option value="refresh_token">refresh_token</option>
-                    <option value="password">password (deprecated)</option>
+                    <option value="authorization_code" data-i18n="tools.oauth-debugger.ui.option23">authorization_code</option>
+                    <option value="client_credentials" data-i18n="tools.oauth-debugger.ui.option24">client_credentials</option>
+                    <option value="refresh_token" data-i18n="tools.oauth-debugger.ui.option25">refresh_token</option>
+                    <option value="password" data-i18n="tools.oauth-debugger.ui.option26">password (deprecated)</option>
                   </select>
                 </div>
                 <div>
@@ -256,7 +262,7 @@ function renderOAuthDebuggerPage() {
           for (var i = 0; i < bytes.byteLength; i++) {
             bin += String.fromCharCode(bytes[i]);
           }
-          return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+          return btoa(bin).replace(/\\+/g, '-').replace(/\\//g, '_').replace(/=+$/, '');
         }
 
         async function deriveChallenge(verifier) {
@@ -382,13 +388,13 @@ function renderOAuthDebuggerPage() {
             var label = '';
             if (f.severity === 'critical') {
               classes += 'bg-error-50 dark:bg-error-900/20 border-error-300 dark:border-error-700 text-error-800 dark:text-error-200';
-              label = '<span class="font-bold uppercase tracking-wide mr-2">Critical:</span>';
+              label = '<span class="font-bold uppercase tracking-wide mr-2" data-i18n="tools.oauth-debugger.ui.stat31">Critical:</span>';
             } else if (f.severity === 'warning') {
               classes += 'bg-warning-50 dark:bg-warning-900/20 border-warning-300 dark:border-warning-700 text-warning-800 dark:text-warning-200';
-              label = '<span class="font-bold uppercase tracking-wide mr-2">Warning:</span>';
+              label = '<span class="font-bold uppercase tracking-wide mr-2" data-i18n="tools.oauth-debugger.ui.stat32">Warning:</span>';
             } else {
               classes += 'bg-info-50 dark:bg-info-900/20 border-info-300 dark:border-info-700 text-info-800 dark:text-info-200';
-              label = '<span class="font-bold uppercase tracking-wide mr-2">Info:</span>';
+              label = '<span class="font-bold uppercase tracking-wide mr-2" data-i18n="tools.oauth-debugger.ui.stat33">Info:</span>';
             }
             div.className = classes;
             div.innerHTML = label + f.text;
@@ -402,8 +408,9 @@ function renderOAuthDebuggerPage() {
   `;
 
   return respondHTML(createPageTemplate({
-    title: 'OAuth 2.0 / PKCE Debugger',
-    description: 'Generate PKCE challenges, visualize OAuth 2.0 Authorization Code flows, and analyze security configuration — entirely in your browser.',
+    title,
+    description,
+    lang: currentLang,
     path: '/oauth-debugger',
     content,
     scripts

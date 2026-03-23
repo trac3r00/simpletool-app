@@ -9,33 +9,36 @@ import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
 import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
+import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
 
 export async function handleSVGOptimizerRoutes(request, url) {
   const { pathname } = url;
   if (pathname === '/svg-optimizer' || pathname === '/svg-optimizer/') {
-    if (request.method === 'GET') return respondHTML(renderSVGOptimizerPage());
+    if (request.method === 'GET') return respondHTML(renderSVGOptimizerPage(resolveRequestLanguage(request, url)));
     return new Response('Method not allowed', { status: 405 });
   }
   return null;
 }
 
-function renderSVGOptimizerPage() {
-  const title = 'SVG Optimizer & Editor';
-  const description = 'Clean up and preview SVGs, then quickly adjust fill/stroke colors — all locally.';
+function renderSVGOptimizerPage(lang = DEFAULT_LANGUAGE) {
+  const currentLang = normalizeLanguage(lang);
+  const translation = getToolTranslation('svg-optimizer', currentLang);
+  const title = translation?.name || 'SVG Optimizer & Editor';
+  const description = translation?.desc || 'Clean up and preview SVGs, then quickly adjust fill/stroke colors — all locally.';
 
   const header = createToolHeader(
     { emoji: '✍️' },
     title,
     description,
     [
-      { text: '<span data-i18n="tools.svg-optimizer.ui.badge0">Sanitized</span>', tooltip: 'Removes scripts/foreignObject/event handlers for safe preview.' },
-      { text: '<span data-i18n="tools.svg-optimizer.ui.badge1">Icon Workflow</span>', tooltip: 'Extract colors and replace them with a few clicks.' }
+      { text: translation?.ui?.badge0 || '<span data-i18n="tools.svg-optimizer.ui.badge0">Sanitized</span>', tooltip: 'Removes scripts/foreignObject/event handlers for safe preview.' },
+      { text: translation?.ui?.badge1 || '<span data-i18n="tools.svg-optimizer.ui.badge1">Icon Workflow</span>', tooltip: 'Extract colors and replace them with a few clicks.' }
     ],
     { toolId: 'svg-optimizer' }
   );
 
   const currentTool = TOOLS.find(t => t.id === 'svg-optimizer');
-    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
 
 
   const content = `
@@ -410,7 +413,7 @@ function renderSVGOptimizerPage() {
         if (!res.ok) {
           setPreviewMessage(res.error);
           els.output.value = '';
-          els.colors.innerHTML = '<p class="text-surface-500 dark:text-surface-400">' + t('text5', 'Preview an SVG to extract colors.') + '</p>';
+          els.colors.innerHTML = '<p class="text-surface-500 dark:text-surface-400" data-i18n="tools.svg-optimizer.ui.desc11">' + t('text5', 'Preview an SVG to extract colors.') + '</p>';
           els.colorCount.textContent = '0';
           syncOutputButtons();
           updateStats();
@@ -489,7 +492,7 @@ function renderSVGOptimizerPage() {
         els.input.value = '';
         els.output.value = '';
         setPreviewMessage(t('text7', 'No preview yet.'));
-        els.colors.innerHTML = '<p class="text-surface-500 dark:text-surface-400">' + t('text5', 'Preview an SVG to extract colors.') + '</p>';
+        els.colors.innerHTML = '<p class="text-surface-500 dark:text-surface-400" data-i18n="tools.svg-optimizer.ui.desc11">' + t('text5', 'Preview an SVG to extract colors.') + '</p>';
         els.colorCount.textContent = '0';
         current = { input: '', sanitized: '', optimized: '', doc: null, editDoc: null, editSvg: null, mapping: null, lastMinify: false };
         els.applyColors.disabled = true;
@@ -541,6 +544,7 @@ function renderSVGOptimizerPage() {
     description,
     path: '/svg-optimizer',
     content,
-    scripts
+    scripts,
+    lang: currentLang
   });
 }

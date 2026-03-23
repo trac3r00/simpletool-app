@@ -10,6 +10,7 @@ import { TOOLS } from './tool-registry.js';
 import { getPersonalizationScript } from './personalization.js';
 import {
   DEFAULT_LANGUAGE,
+  SUPPORTED_LANGUAGES,
   t,
   getLanguageSelectorHTML,
   getLanguageBootstrapScript,
@@ -24,8 +25,10 @@ export { getKeyboardShortcutsScript, t, getLanguageSelectorHTML, getLanguageBoot
 
 export function createCheatsheet(toolId, title, sections) {
   const id = `cheatsheet-${toolId}`;
-  const sectionsHTML = sections.map(s =>
-    `${s.heading ? `<h3>${s.heading}</h3>` : ''}${s.content}`
+  const prefix = `tools.${toolId}.cheatsheet`;
+  const sectionsHTML = sections.map((s, i) =>
+    `${s.heading ? `<h3 data-i18n="${prefix}.h${i}">${s.heading}</h3>` : ''}` +
+    `<div data-i18n-html="${prefix}.c${i}">${s.content}</div>`
   ).join('');
 
   return `
@@ -33,7 +36,7 @@ export function createCheatsheet(toolId, title, sections) {
       <button class="cheatsheet-toggle" aria-expanded="false" aria-controls="${id}-content" data-cheatsheet-id="${toolId}">
         <span class="flex items-center gap-2">
           <span class="text-base">📖</span>
-          <span>${title}</span>
+          <span data-i18n="${prefix}.title">${title}</span>
         </span>
         <svg class="w-4 h-4 transition-transform duration-200 cheatsheet-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
@@ -112,6 +115,16 @@ let siteUrl = 'https://simpletool.app';
 
 export function setSiteUrl(url) {
   siteUrl = typeof url === 'string' ? url.replace(/\/+$/, '') : 'https://simpletool.app';
+}
+
+export function getAlternateLanguageLinks(path = '/', currentLang = DEFAULT_LANGUAGE) {
+  const normalizedPath = path || '/';
+  const links = Object.keys(SUPPORTED_LANGUAGES).map((lang) => {
+    const href = `${siteUrl}${withLanguageQuery(normalizedPath, lang)}`;
+    return `<link rel="alternate" hreflang="${lang}" href="${href}">`;
+  });
+  links.push(`<link rel="alternate" hreflang="x-default" href="${siteUrl}${withLanguageQuery(normalizedPath, DEFAULT_LANGUAGE)}">`);
+  return links.join('\n  ');
 }
 
 export function getAnalyticsScript() {
@@ -408,9 +421,16 @@ export function getAdSlotHTML(slotKey, options = {}) {
 export function getThemeToggleButton(options = {}) {
   const {
     id = 'theme-toggle',
-    label = 'Toggle dark mode',
+    currentLang = DEFAULT_LANGUAGE,
+    label = t('nav.toggleTheme', normalizeLanguage(currentLang)),
     className = ''
   } = options;
+  const lang = normalizeLanguage(currentLang);
+  const labels = {
+    system: t('nav.toggleTheme', lang),
+    light: t('nav.switchDark', lang),
+    dark: t('nav.switchLight', lang)
+  };
 
   // Uses btn-ghost style but manual classes to avoid dependency loop if CSS isn't loaded yet
   const classes = [
@@ -423,7 +443,7 @@ export function getThemeToggleButton(options = {}) {
   ].filter(Boolean).join(' ');
 
   return `
-    <button id="${id}" type="button" aria-label="${label}" title="Theme: System" class="${classes}" data-theme-toggle="true">
+    <button id="${id}" type="button" aria-label="${label}" title="${labels.system}" class="${classes}" data-theme-toggle="true" data-theme-label-system="${labels.system}" data-theme-label-light="${labels.light}" data-theme-label-dark="${labels.dark}">
       <span class="sr-only">${label}</span>
       <!-- System Icon (monitor) -->
       <svg class="w-5 h-5" data-theme-icon="system" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -486,7 +506,7 @@ export function getNavigationHTML(options = {}) {
                  <input type="text" readonly id="nav-search-btn" placeholder="${t('nav.search', currentLang)}" data-i18n-placeholder="nav.search" class="w-48 lg:w-64 pl-8 pr-3 py-1.5 bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-md text-xs text-surface-500 dark:text-surface-400 placeholder-surface-500 dark:placeholder-surface-400 hover:border-surface-300 dark:hover:border-surface-600 cursor-pointer transition-all focus:outline-none focus:ring-2 focus:ring-primary-500" aria-label="${t('nav.searchTools', currentLang)}" />
              </div>
              ${getLanguageSelectorHTML(currentLang)}
-             ${getThemeToggleButton()}
+             ${getThemeToggleButton({ currentLang })}
            </div>
         </div>
       </div>
@@ -535,13 +555,16 @@ export function getThemeScript() {
         const root = document.documentElement;
         let transitionTimeout;
         const MODES = ['system', 'light', 'dark'];
-        const LABELS = { system: 'Theme: System', light: 'Theme: Light', dark: 'Theme: Dark' };
 
         // Show only the icon matching the current mode
         const syncToggleState = (mode) => {
           const toggles = document.querySelectorAll('[data-theme-toggle]');
           toggles.forEach(btn => {
-            btn.setAttribute('title', LABELS[mode]);
+            const label = btn.getAttribute('data-theme-label-' + mode) || btn.getAttribute('aria-label') || '';
+            btn.setAttribute('title', label);
+            btn.setAttribute('aria-label', label);
+            const srOnly = btn.querySelector('.sr-only');
+            if (srOnly) srOnly.textContent = label;
             btn.querySelectorAll('[data-theme-icon]').forEach(icon => {
               icon.classList.toggle('hidden', icon.dataset.themeIcon !== mode);
             });
@@ -645,13 +668,13 @@ export function getSearchScript(options = {}) {
             <svg class="pointer-events-none absolute left-4 top-3.5 h-5 w-5 text-surface-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
               <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
             </svg>
-            <input type="text" class="h-12 w-full border-0 bg-transparent pl-11 pr-4 text-surface-900 dark:text-white placeholder:text-surface-400 focus:ring-0 sm:text-sm" placeholder="${t('nav.searchTools', currentLang)}" data-i18n-placeholder="nav.searchTools" id="global-search-input" role="combobox" aria-expanded="false" aria-controls="search-results">
+            <input type="text" class="h-12 w-full border-0 bg-transparent pl-11 pr-4 text-surface-900 dark:text-white placeholder:text-surface-400 focus:ring-0 sm:text-sm" placeholder="${t('nav.searchTools', currentLang)}" data-i18n-placeholder="nav.searchTools" id="global-search-input" role="combobox" aria-label="Search tools" aria-expanded="false" aria-controls="search-results">
           </div>
           <ul class="max-h-96 scroll-py-3 overflow-y-auto p-3" id="search-results" role="listbox">
             <!-- Results injected here -->
           </ul>
           <div class="flex flex-wrap items-center bg-surface-50 dark:bg-surface-950 px-4 py-2.5 text-xs text-surface-500 dark:text-surface-400 border-t border-surface-100 dark:border-surface-800">
-            ${t('nav.searchTools', currentLang)} · <kbd class="mx-1 font-sans font-semibold text-surface-900 dark:text-white">↑↓</kbd> ${t('nav.toggleTheme', currentLang)} · <kbd class="mx-1 font-sans font-semibold text-surface-900 dark:text-white">↵</kbd> ${t('common.copy', currentLang)} · <kbd class="mx-1 font-sans font-semibold text-surface-900 dark:text-white">esc</kbd> ${t('common.error', currentLang)}
+            ${t('nav.searchTools', currentLang)} · <kbd class="mx-1 font-sans font-semibold text-surface-900 dark:text-white">↑↓</kbd> ${t('nav.searchNavigate', currentLang)} · <kbd class="mx-1 font-sans font-semibold text-surface-900 dark:text-white">↵</kbd> ${t('nav.searchSelect', currentLang)} · <kbd class="mx-1 font-sans font-semibold text-surface-900 dark:text-white">esc</kbd> ${t('nav.searchClose', currentLang)}
           </div>
         </div>
       </div>
@@ -950,6 +973,12 @@ export function getStylesheetLinks() {
         -webkit-font-feature-settings: 'liga';
         -webkit-font-smoothing: antialiased;
       }
+      /* i18n overflow protection for longer translations (de, fr, pt) */
+      [data-i18n], [data-i18n-html] { overflow-wrap: break-word; word-break: break-word; }
+      .btn, [role="menuitem"] { overflow: hidden; text-overflow: ellipsis; }
+      .language-dropdown { scrollbar-width: thin; }
+      .language-dropdown::-webkit-scrollbar { width: 6px; }
+      .language-dropdown::-webkit-scrollbar-thumb { background: rgba(128,128,128,0.3); border-radius: 3px; }
     </style>
     <link rel="stylesheet" href="/styles.css?v=${version}" data-bundled-stylesheet="true">
   `;
@@ -1001,13 +1030,13 @@ export function getFooterHTML(options = {}) {
            
             <!-- Column 3: Resources -->
             <div class="flex flex-col">
-              <h3 class="font-semibold text-surface-900 dark:text-surface-50 mb-4 text-sm uppercase tracking-wide" data-i18n="footer.resources">Resources</h3>
+              <h3 class="font-semibold text-surface-900 dark:text-surface-50 mb-4 text-sm uppercase tracking-wide" data-i18n="footer.resources">${t('footer.resources', currentLang)}</h3>
               <ul class="space-y-2">
                 <li>
-                 <a href="${withLanguageQuery('/blog', currentLang)}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.blog">Blog</a>
+                 <a href="${withLanguageQuery('/blog', currentLang)}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.blog">${t('footer.blog', currentLang)}</a>
                 </li>
                 <li>
-                  <a href="${withLanguageQuery('/faq', currentLang)}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.faq">FAQ</a>
+                  <a href="${withLanguageQuery('/faq', currentLang)}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.faq">${t('footer.faq', currentLang)}</a>
                 </li>
               </ul>
             </div>
@@ -1062,7 +1091,8 @@ export function createPageTemplate(options) {
   const currentLang = normalizeLanguage(options.lang || DEFAULT_LANGUAGE);
   const toolId = path ? path.replace(/^\//, '') : '';
 
-  const pageUrl = path ? `${siteUrl}${path}` : siteUrl;
+  const pagePath = path || '/';
+  const pageUrl = `${siteUrl}${withLanguageQuery(pagePath, currentLang)}`;
   const fullTitle = `${title} | SimpleTool`;
 
   const sidebarAd = getAdSlotHTML('sidebar', {
@@ -1087,6 +1117,7 @@ export function createPageTemplate(options) {
   <title>${fullTitle}</title>
   <meta name="description" content="${description}">
   <link rel="canonical" href="${pageUrl}">
+  ${getAlternateLanguageLinks(pagePath, currentLang)}
   <link rel="icon" type="image/svg+xml" href="/favicon.ico">
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#4f46e5">
@@ -1095,9 +1126,13 @@ export function createPageTemplate(options) {
   <meta property="og:title" content="${fullTitle}">
   <meta property="og:description" content="${description}">
   <meta property="og:site_name" content="SimpleTool">
-  <meta name="twitter:card" content="summary">
+  <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${fullTitle}">
   <meta name="twitter:description" content="${description}">
+  <meta property="og:image" content="https://simpletool.app/og-image.svg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:image" content="https://simpletool.app/og-image.svg">
   ${getThemeBootstrapScript()}
   ${getLanguageBootstrapScript(currentLang)}
   ${getGtagScript()}
@@ -1105,10 +1140,11 @@ export function createPageTemplate(options) {
   ${getStylesheetLinks()}
 </head>
 <body class="bg-surface-50 text-surface-900 dark:bg-surface-950 dark:text-surface-50 transition-colors duration-200 flex flex-col min-h-screen" data-tool-page-id="${toolId}">
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary-600 focus:text-white focus:rounded">Skip to main content</a>
   ${getNavigationHTML({ lang: currentLang })}
   <div class="flex-grow" role="presentation">
     <div class="flex">
-      <div class="flex-1 min-w-0 overflow-x-hidden">
+      <div id="main-content" class="flex-1 min-w-0 overflow-x-hidden">
         ${content}
       </div>
       ${sidebarAd}

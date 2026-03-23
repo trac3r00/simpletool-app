@@ -9,19 +9,22 @@ import { respondHTML } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
 import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
+import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
 
 export async function handleCSPBuilderRoutes(request, url) {
   const { pathname } = url;
   if (pathname === '/csp-builder' || pathname === '/csp-builder/') {
-    if (request.method === 'GET') return respondHTML(renderCSPBuilderPage());
+    if (request.method === 'GET') return respondHTML(renderCSPBuilderPage(resolveRequestLanguage(request, url)));
     return new Response('Method not allowed', { status: 405 });
   }
   return null;
 }
 
-function renderCSPBuilderPage() {
-  const title = 'CSP Header Builder';
-  const description = 'Build a Content-Security-Policy header with clear explanations and safety checks.';
+function renderCSPBuilderPage(lang = DEFAULT_LANGUAGE) {
+  const currentLang = normalizeLanguage(lang);
+  const translation = getToolTranslation('csp-builder', currentLang);
+  const title = translation?.name || 'CSP Header Builder';
+  const description = translation?.desc || 'Build a Content-Security-Policy header with clear explanations and safety checks.';
 
   const header = createToolHeader(
     { emoji: '🧱' },
@@ -276,7 +279,7 @@ function renderCSPBuilderPage() {
         els.reportOnly.checked = false;
         els.output.value = '';
         els.copy.disabled = true;
-        els.warnings.innerHTML = '<p class="text-surface-500 dark:text-surface-400">' + t('text10', 'No warnings yet.') + '</p>';
+        els.warnings.innerHTML = '<p class="text-surface-500 dark:text-surface-400" data-i18n="tools.csp-builder.ui.desc5">' + t('text10', 'No warnings yet.') + '</p>';
       });
 
       els.copy.addEventListener('click', async () => {
@@ -306,7 +309,8 @@ function renderCSPBuilderPage() {
     description,
     path: '/csp-builder',
     content,
-    scripts
+    scripts,
+    lang: currentLang
   });
 }
 

@@ -518,19 +518,24 @@ const worker = {
 
       // Consolidated tool redirects (JWT+JWK → Token Studio, Hash+Decoder → Encoding Workbench)
       if (path === '/jwt-decoder' || path.startsWith('/jwt-decoder/')) {
-        return Response.redirect(new URL('/token-studio', request.url).href, 301);
+        const dest = new URL('/token-studio', request.url); dest.search = url.search;
+        return Response.redirect(dest.href, 301);
       }
       if (path === '/jwk-jwks-studio' || path.startsWith('/jwk-jwks-studio/')) {
-        return Response.redirect(new URL('/token-studio', request.url).href, 301);
+        const dest = new URL('/token-studio', request.url); dest.search = url.search;
+        return Response.redirect(dest.href, 301);
       }
       if (path === '/hash-calculator' || path.startsWith('/hash-calculator/')) {
-        return Response.redirect(new URL('/encoding-workbench', request.url).href, 301);
+        const dest = new URL('/encoding-workbench', request.url); dest.search = url.search;
+        return Response.redirect(dest.href, 301);
       }
       if (path === '/universal-decoder' || path.startsWith('/universal-decoder/')) {
-        return Response.redirect(new URL('/encoding-workbench', request.url).href, 301);
+        const dest = new URL('/encoding-workbench', request.url); dest.search = url.search;
+        return Response.redirect(dest.href, 301);
       }
       if (path === '/hash-generator' || path.startsWith('/hash-generator/')) {
-        return Response.redirect(new URL('/encoding-workbench', request.url).href, 301);
+        const dest = new URL('/encoding-workbench', request.url); dest.search = url.search;
+        return Response.redirect(dest.href, 301);
       }
 
       // Active tool routes (registry-driven)
@@ -544,27 +549,27 @@ const worker = {
 
       // Legal & Static pages
       if (path === '/terms' || path === '/terms.html') {
-        return renderTermsPage();
+        return renderTermsPage(resolveRequestLanguage(request, url));
       }
 
       if (path === '/privacy' || path === '/privacy.html') {
-        return renderPrivacyPage();
+        return renderPrivacyPage(resolveRequestLanguage(request, url));
       }
 
       if (path === '/about' || path === '/about.html') {
-        return renderAboutPage();
+        return renderAboutPage(resolveRequestLanguage(request, url));
       }
 
       if (path === '/contact' || path === '/contact.html') {
-        return renderContactPage();
+        return renderContactPage(resolveRequestLanguage(request, url));
       }
 
       if (path === '/security' || path === '/security.html') {
-        return renderSecurityPage();
+        return renderSecurityPage(resolveRequestLanguage(request, url));
       }
 
       if (path === '/careers' || path === '/careers.html') {
-        return renderCareersPage();
+        return renderCareersPage(resolveRequestLanguage(request, url));
       }
 
       // Content pages (blog, FAQ)

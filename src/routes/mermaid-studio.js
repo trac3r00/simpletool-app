@@ -3,26 +3,31 @@ import { createPageTemplate, createToolHeader, createCheatsheet, createMobileTab
 import { createRichEditorPane, getRichEditorStyles, getRichEditorScript } from '../utils/rich-editor.js';
 import { TOOLS } from '../utils/tool-registry.js';
 import { createRelatedToolsSection } from '../utils/content-ui.js';
+import { getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
 
 export async function handleMermaidStudioRoutes(request, url) {
   if (url.pathname !== '/mermaid-studio' && url.pathname !== '/mermaid-studio/') return null;
   if (request.method !== 'GET') return null;
+  const currentLang = resolveRequestLanguage(request, url);
+  const translation = getToolTranslation('mermaid-studio', currentLang);
 
-  const title = 'Mermaid Studio';
-  const description = 'Live Mermaid.js diagram previewer. Create flowcharts, sequence diagrams, and gantt charts with ease.';
+  const title = translation?.name || 'Mermaid Studio';
+  const description = translation?.desc || 'Live Mermaid.js diagram previewer. Create flowcharts, sequence diagrams, and gantt charts with ease.';
 
   const header = createToolHeader(
     { emoji: '🧜‍♀️' },
     title,
-    'Write diagram code and see it rendered in real-time. Fast, private, and entirely in your browser.',
-    [{ text: 'Live Preview', tooltip: 'Updates the rendered diagram instantly as you edit Mermaid code.' },
-     { text: 'Flowcharts', tooltip: 'Tailored for creating flowcharts, sequence diagrams, and similar graphs.' },
-     { text: 'SVG Export', tooltip: 'Download the rendered diagram as an SVG file for reuse.' }],
+    description,
+    [
+      { text: translation?.ui?.badge6 || 'Live Preview', tooltip: 'Updates the rendered diagram instantly as you edit Mermaid code.' },
+      { text: translation?.ui?.badge7 || 'Flowcharts', tooltip: 'Tailored for creating flowcharts, sequence diagrams, and similar graphs.' },
+      { text: translation?.ui?.badge8 || 'SVG Export', tooltip: 'Download the rendered diagram as an SVG file for reuse.' }
+    ],
     { toolId: 'mermaid-studio' }
   );
 
   const currentTool = TOOLS.find(t => t.id === 'mermaid-studio');
-    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
 
 
   const content = `
@@ -52,7 +57,7 @@ export async function handleMermaidStudioRoutes(request, url) {
             </div>
           </div>
           <div id="mermaid-render" class="flex-1 p-8 overflow-auto flex items-center justify-center bg-white dark:bg-surface-950">
-            ${createEmptyState({ icon: '🧜‍♀️', title: 'No diagram yet', description: 'Write Mermaid code on the left to see it rendered here.', id: 'mermaid-empty-state' })}
+            ${createEmptyState({ icon: '🧜‍♀️', title: 'No diagram yet', description: 'Write Mermaid code on the left to see it rendered here.', id: 'mermaid-empty-state', i18nTitle: 'tools.mermaid-studio.ui.desc10', i18nDesc: 'tools.mermaid-studio.ui.desc11' })}
           </div>
         </div>
       </div>
@@ -60,7 +65,7 @@ export async function handleMermaidStudioRoutes(request, url) {
       ${createCheatsheet('mermaid-studio', 'Mermaid Syntax Reference', [
         { heading: 'Diagram Types', content: `
           <table>
-            <tr><th>Keyword</th><th>Type</th></tr>
+            <tr><th data-i18n="tools.mermaid-studio.ui.th2">Keyword</th><th data-i18n="tools.mermaid-studio.ui.th3">Type</th></tr>
             <tr><td><code>graph TD</code></td><td>Top-down flowchart</td></tr>
             <tr><td><code>graph LR</code></td><td>Left-right flowchart</td></tr>
             <tr><td><code>sequenceDiagram</code></td><td>Sequence diagram</td></tr>
@@ -72,7 +77,7 @@ export async function handleMermaidStudioRoutes(request, url) {
           </table>` },
         { heading: 'Flowchart Syntax', content: `
           <table>
-            <tr><th>Syntax</th><th>Shape</th></tr>
+            <tr><th data-i18n="tools.mermaid-studio.ui.th4">Syntax</th><th data-i18n="tools.mermaid-studio.ui.th5">Shape</th></tr>
             <tr><td><code>A[Text]</code></td><td>Rectangle</td></tr>
             <tr><td><code>A(Text)</code></td><td>Rounded</td></tr>
             <tr><td><code>A{Text}</code></td><td>Diamond</td></tr>
@@ -143,7 +148,7 @@ export async function handleMermaidStudioRoutes(request, url) {
            if (prev) prev.remove();
            const errDiv = document.createElement('div');
            errDiv.className = 'mermaid-error bg-error-50 dark:bg-error-900/20 text-error-600 dark:text-error-400 p-4 rounded-lg text-sm font-mono whitespace-pre-wrap animate-fade-in-up';
-           errDiv.textContent = 'Syntax Error: ' + e.message;
+           errDiv.textContent = (window._t ? window._t('tools.mermaid-studio.js.text0', 'Syntax Error: ') : 'Syntax Error: ') + e.message;
            renderArea.appendChild(errDiv);
          }
        }
@@ -188,6 +193,7 @@ export async function handleMermaidStudioRoutes(request, url) {
     description,
     path: '/mermaid-studio',
     content,
-    scripts
+    scripts,
+    lang: normalizeLanguage(currentLang)
   }));
 }

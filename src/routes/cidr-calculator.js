@@ -7,13 +7,14 @@ import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
 import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
+import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
 
 export async function handleCIDRCalculatorRoutes(request, url) {
   const { pathname } = url;
 
   if (pathname === '/cidr-calculator' || pathname === '/cidr-calculator/') {
     if (request.method === 'GET') {
-      return respondHTML(renderCIDRCalculatorPage());
+      return respondHTML(renderCIDRCalculatorPage(resolveRequestLanguage(request, url)));
     }
 
     return respondJSON({ error: 'Method not allowed' }, { status: 405 });
@@ -22,14 +23,16 @@ export async function handleCIDRCalculatorRoutes(request, url) {
   return null;
 }
 
-function renderCIDRCalculatorPage() {
+function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
+  const currentLang = normalizeLanguage(lang);
+  const translation = getToolTranslation('cidr-calculator', currentLang);
   const toolHeader = createToolHeader(
     { emoji: '🕸️' },
-    'IP Subnet Planner',
-    'Inspect IPv4 and IPv6 networks, validate ranges, plan host allocations, and share subnet blueprints.',
+    translation?.name || 'IP Subnet Planner',
+    translation?.desc || 'Inspect IPv4 and IPv6 networks, validate ranges, plan host allocations, and share subnet blueprints.',
     [
-      { text: 'Zero Upload', color: 'blue', tooltip: 'No data is uploaded; all subnet math runs locally in your browser.' },
-      { text: 'IPv4 & IPv6', color: 'purple', tooltip: 'Handles subnet planning for both IPv4 and IPv6 address spaces.' }
+      { text: translation?.ui?.badge34 || 'Zero Upload', color: 'blue', tooltip: 'No data is uploaded; all subnet math runs locally in your browser.' },
+      { text: translation?.ui?.badge35 || 'IPv4 & IPv6', color: 'purple', tooltip: 'Handles subnet planning for both IPv4 and IPv6 address spaces.' }
     ],
     { toolId: 'cidr-calculator' }
   );
@@ -47,7 +50,7 @@ function renderCIDRCalculatorPage() {
           <div>
             <label for="cidr-input" class="label"><span data-i18n="tools.cidr-calculator.ui.label4">Network or host</span> ${infoHint('Enter IP with /prefix or dotted mask; missing prefix uses the slider value.')}</label>
             <div class="mt-2 space-y-3">
-              <input id="cidr-input" type="text" data-tooltip="Enter IP address with prefix length, e.g. 192.168.1.0/24" spellcheck="false" autocomplete="off" placeholder="Examples: 192.168.1.10/24 · 2001:db8::/48" data-i18n-placeholder="tools.cidr-calculator.ui.placeholder8" class="input font-mono text-base" />
+              <input id="cidr-input" type="text" data-tooltip="Enter IP address with prefix length, e.g. 192.168.1.0/24" data-i18n-tooltip="tools.cidr-calculator.ui.tip0" spellcheck="false" autocomplete="off" placeholder="Examples: 192.168.1.10/24 · 2001:db8::/48" data-i18n-placeholder="tools.cidr-calculator.ui.placeholder8" class="input font-mono text-base" />
               <div class="flex flex-wrap gap-2 text-sm">
                 <button type="button" class="cidr-chip px-2 py-1 rounded-md text-xs border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 text-surface-600 dark:text-surface-300 hover:border-primary-400 dark:hover:border-primary-600 hover:text-primary-600 dark:hover:text-primary-400 transition" data-cidr-example="10.0.0.0/8">10.0.0.0/8</button>
                 <button type="button" class="cidr-chip px-2 py-1 rounded-md text-xs border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 text-surface-600 dark:text-surface-300 hover:border-primary-400 dark:hover:border-primary-600 hover:text-primary-600 dark:hover:text-primary-400 transition" data-cidr-example="172.16.0.0/12">172.16.0.0/12</button>
@@ -60,20 +63,20 @@ function renderCIDRCalculatorPage() {
 
           <div>
             <div class="flex items-center justify-between text-sm font-semibold text-surface-600 dark:text-surface-300">
-              <span>Prefix length</span>
+              <span data-i18n="tools.cidr-calculator.ui.label0">Prefix length</span>
               <span><span id="prefix-display">/24</span> · <span id="host-bits-display">8 host bits</span></span>
             </div>
             <div class="flex items-center gap-4 mt-3">
-              <input id="prefix-slider" type="range" aria-label="Prefix length slider" data-tooltip="Adjust subnet prefix length (smaller = more hosts)" min="0" max="32" value="24" class="flex-1 h-2 bg-surface-200 rounded-lg appearance-none cursor-pointer dark:bg-surface-700 accent-primary-600" />
+              <input id="prefix-slider" type="range" aria-label="Prefix length slider" data-tooltip="Adjust subnet prefix length (smaller = more hosts)" data-i18n-tooltip="tools.cidr-calculator.ui.tip1" min="0" max="32" value="24" class="flex-1 h-2 bg-surface-200 rounded-lg appearance-none cursor-pointer dark:bg-surface-700 accent-primary-600" />
               <input id="prefix-number" type="number" aria-label="Prefix length value" min="0" max="32" value="24" class="w-20 input text-center" />
             </div>
             <p class="mt-2 text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.cidr-calculator.ui.desc21">Specify a prefix if your input omits it.</p>
           </div>
 
-           <div id="cidr-error" class="hidden rounded-lg border border-error-200 dark:border-error-800 bg-error-50 dark:bg-error-900/30 text-sm text-error-700 dark:text-error-200 px-4 py-3">Invalid CIDR block.</div>
+           <div id="cidr-error" class="hidden rounded-lg border border-error-200 dark:border-error-800 bg-error-50 dark:bg-error-900/30 text-sm text-error-700 dark:text-error-200 px-4 py-3" data-i18n="tools.cidr-calculator.ui.error0">Invalid CIDR block.</div>
 
           <div class="flex flex-wrap gap-3">
-            <button id="analyze-btn" class="btn btn-primary" data-tooltip="Calculate subnet details from CIDR notation"><span data-i18n="tools.cidr-calculator.ui.button1">Run analysis</span></button>
+            <button id="analyze-btn" class="btn btn-primary" data-tooltip="Calculate subnet details from CIDR notation" data-i18n-tooltip="tools.cidr-calculator.ui.tip2"><span data-i18n="tools.cidr-calculator.ui.button1">Run analysis</span></button>
             <button id="reset-btn" class="btn btn-ghost"><span data-i18n="tools.cidr-calculator.ui.button2">Reset</span></button>
           </div>
         </div>
@@ -239,7 +242,7 @@ function renderCIDRCalculatorPage() {
                 <p class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.cidr-calculator.ui.desc33">Decimal Dotted</p>
                 <p id="format-decimal" class="font-mono text-sm text-surface-900 dark:text-surface-50 break-all">—</p>
               </div>
-              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-decimal" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard">
+              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-decimal" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard" data-i18n-title="tools.cidr-calculator.ui.title3">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
               </button>
             </div>
@@ -249,7 +252,7 @@ function renderCIDRCalculatorPage() {
                 <p class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.cidr-calculator.ui.desc34">Binary</p>
                 <p id="format-binary" class="font-mono text-sm text-surface-900 dark:text-surface-50 break-all">—</p>
               </div>
-              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-binary" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard">
+              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-binary" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard" data-i18n-title="tools.cidr-calculator.ui.title3">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
               </button>
             </div>
@@ -259,7 +262,7 @@ function renderCIDRCalculatorPage() {
                 <p class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.cidr-calculator.ui.desc35">Hexadecimal</p>
                 <p id="format-hex" class="font-mono text-sm text-surface-900 dark:text-surface-50 break-all">—</p>
               </div>
-              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-hex" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard">
+              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-hex" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard" data-i18n-title="tools.cidr-calculator.ui.title3">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
               </button>
             </div>
@@ -269,7 +272,7 @@ function renderCIDRCalculatorPage() {
                 <p class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.cidr-calculator.ui.desc36">Integer (Decimal)</p>
                 <p id="format-integer" class="font-mono text-sm text-surface-900 dark:text-surface-50 break-all">—</p>
               </div>
-              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-integer" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard">
+              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-integer" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard" data-i18n-title="tools.cidr-calculator.ui.title3">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
               </button>
             </div>
@@ -279,7 +282,7 @@ function renderCIDRCalculatorPage() {
                 <p class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.cidr-calculator.ui.desc37">IPv4-mapped IPv6</p>
                 <p id="format-ipv4mapped" class="font-mono text-sm text-surface-900 dark:text-surface-50 break-all">—</p>
               </div>
-              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-ipv4mapped" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard">
+              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-ipv4mapped" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard" data-i18n-title="tools.cidr-calculator.ui.title3">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
               </button>
             </div>
@@ -289,7 +292,7 @@ function renderCIDRCalculatorPage() {
                 <p class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.cidr-calculator.ui.desc38">IPv6 Expanded</p>
                 <p id="format-ipv6expanded" class="font-mono text-sm text-surface-900 dark:text-surface-50 break-all">—</p>
               </div>
-              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-ipv6expanded" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard">
+              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-ipv6expanded" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard" data-i18n-title="tools.cidr-calculator.ui.title3">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
               </button>
             </div>
@@ -299,7 +302,7 @@ function renderCIDRCalculatorPage() {
                 <p class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.cidr-calculator.ui.desc39">IPv6 Compressed</p>
                 <p id="format-ipv6compressed" class="font-mono text-sm text-surface-900 dark:text-surface-50 break-all">—</p>
               </div>
-              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-ipv6compressed" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard">
+              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-ipv6compressed" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard" data-i18n-title="tools.cidr-calculator.ui.title3">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
               </button>
             </div>
@@ -309,7 +312,7 @@ function renderCIDRCalculatorPage() {
                 <p class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.cidr-calculator.ui.desc40">Reverse DNS (PTR)</p>
                 <p id="format-ptr" class="font-mono text-sm text-surface-900 dark:text-surface-50 break-all">—</p>
               </div>
-              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-ptr" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard">
+              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-ptr" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard" data-i18n-title="tools.cidr-calculator.ui.title3">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
               </button>
             </div>
@@ -339,7 +342,7 @@ function renderCIDRCalculatorPage() {
       ${createCheatsheet('cidr-calculator', 'Subnet Quick Reference', [
         { heading: 'Common Subnets', content: `
           <table>
-            <tr><th>CIDR</th><th>Subnet Mask</th><th>Hosts</th><th>Use Case</th></tr>
+            <tr><th>CIDR</th><th data-i18n="tools.cidr-calculator.ui.th18">Subnet Mask</th><th data-i18n="tools.cidr-calculator.ui.th19">Hosts</th><th data-i18n="tools.cidr-calculator.ui.th20">Use Case</th></tr>
             <tr><td><code>/32</code></td><td>255.255.255.255</td><td>1</td><td>Single host</td></tr>
             <tr><td><code>/24</code></td><td>255.255.255.0</td><td>254</td><td>Small network</td></tr>
             <tr><td><code>/16</code></td><td>255.255.0.0</td><td>65,534</td><td>Medium network</td></tr>
@@ -347,7 +350,7 @@ function renderCIDRCalculatorPage() {
           </table>` },
         { heading: 'Private Ranges (RFC 1918)', content: `
           <table>
-            <tr><th data-i18n="tools.cidr-calculator.ui.th13">Range</th><th>CIDR</th><th>Class</th></tr>
+            <tr><th data-i18n="tools.cidr-calculator.ui.th13">Range</th><th>CIDR</th><th data-i18n="tools.cidr-calculator.ui.th21">Class</th></tr>
             <tr><td>10.0.0.0 – 10.255.255.255</td><td><code>10.0.0.0/8</code></td><td>A</td></tr>
             <tr><td>172.16.0.0 – 172.31.255.255</td><td><code>172.16.0.0/12</code></td><td>B</td></tr>
             <tr><td>192.168.0.0 – 192.168.255.255</td><td><code>192.168.0.0/16</code></td><td>C</td></tr>
@@ -358,6 +361,7 @@ function renderCIDRCalculatorPage() {
 
     <script>
       (function() {
+        var _t = (typeof window._t === 'function') ? window._t : function(key, fallback) { return fallback || key; };
         const cidrInput = document.getElementById('cidr-input');
         const prefixSlider = document.getElementById('prefix-slider');
         const prefixNumber = document.getElementById('prefix-number');
@@ -422,7 +426,7 @@ function renderCIDRCalculatorPage() {
           const prefix = Number(prefixSlider.value);
           const hostBits = max - prefix;
           prefixDisplay.textContent = '/' + prefix;
-          hostBitsDisplay.textContent = hostBits + ' host bits';
+          hostBitsDisplay.textContent = hostBits + _t('tools.cidr-calculator.js.text7', ' host bits');
         }
 
         function syncPrefixInputs(event) {
@@ -563,7 +567,7 @@ function renderCIDRCalculatorPage() {
           updatePrefixControls('ipv4');
           resultPanel.classList.add('hidden');
           showError('');
-          validationList.innerHTML = '<li class="validation-item">Enter a CIDR block to begin.</li>';
+          validationList.innerHTML = '<li class="validation-item">' + _t('tools.cidr-calculator.js.text8', 'Enter a CIDR block to begin.') + '</li>';
         });
 
         function renderResults(details) {
@@ -686,7 +690,7 @@ function renderCIDRCalculatorPage() {
               const usable = targetPrefix >= 31 ? 'Point-to-point' : formatNumber(Math.max(Math.pow(2, 32 - targetPrefix) - 2, 0)) + ' hosts';
               rows.push('<tr><td class="py-2 pr-4 font-mono font-semibold">' + intToIPv4(start) + '/' + targetPrefix + '</td><td class="py-2 pr-4 font-mono text-xs sm:text-sm">' + intToIPv4(start) + ' – ' + intToIPv4(end) + '</td><td class="py-2 text-xs sm:text-sm">' + usable + '</td></tr>');
             }
-            subnetSummary.textContent = 'Total subnets: ' + formatNumber(subnetCount) + ' · Showing first ' + Math.min(subnetCount, limit);
+            subnetSummary.textContent = (window._t ? window._t('tools.cidr-calculator.js.text5', 'Total subnets: ') : 'Total subnets: ') + formatNumber(subnetCount) + ' · ' + (window._t ? window._t('tools.cidr-calculator.js.text6', 'Showing first ') : 'Showing first ') + Math.min(subnetCount, limit);
           } else {
             const increment = 1n << BigInt(128 - targetPrefix);
             const subnetCount = 1n << BigInt(targetPrefix - details.prefix);
@@ -1108,9 +1112,10 @@ function renderCIDRCalculatorPage() {
   `;
 
   return createPageTemplate({
-    title: 'IP Subnet Planner',
-    description: 'Inspect IPv4 and IPv6 networks, validate ranges, plan host allocations, and share subnet blueprints without sending data off-device.',
+    title: translation?.name || 'IP Subnet Planner',
+    description: translation?.desc || 'Calculate IPv4/IPv6 subnets and ranges.',
     path: '/cidr-calculator',
     content,
+    lang: currentLang,
   });
 }
