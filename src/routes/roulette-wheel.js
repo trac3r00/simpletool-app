@@ -33,10 +33,10 @@ function renderRouletteWheelPage(lang = 'en') {
   const styles = `
     <style>
       .rw-container { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; padding: 1rem; }
-      .rw-wheel-wrapper { perspective: 900px; }
-      .rw-wheel-stage { position: relative; width: min(560px, 90vw); height: min(560px, 90vw); max-width: 640px; max-height: 640px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, rgba(99, 102, 241, 0.1), transparent 50%), radial-gradient(circle at 70% 70%, rgba(236, 72, 153, 0.08), transparent 50%); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1) inset; transform: rotateX(8deg); transform-style: preserve-3d; transition: transform 0.5s ease, box-shadow 0.3s ease; }
+      .rw-wheel-wrapper { }
+      .rw-wheel-stage { position: relative; width: min(560px, 90vw); height: min(560px, 90vw); max-width: 640px; max-height: 640px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, rgba(99, 102, 241, 0.1), transparent 50%), radial-gradient(circle at 70% 70%, rgba(236, 72, 153, 0.08), transparent 50%); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1) inset; transition: box-shadow 0.3s ease; }
       .dark .rw-wheel-stage { background: radial-gradient(circle at 30% 30%, rgba(99, 102, 241, 0.15), transparent 50%), radial-gradient(circle at 70% 70%, rgba(236, 72, 153, 0.1), transparent 50%); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05) inset; }
-      .rw-wheel-stage.spinning { animation: rw-pulse-glow 2s ease-in-out infinite; transform: rotateX(12deg); }
+      .rw-wheel-stage.spinning { animation: rw-pulse-glow 2s ease-in-out infinite; }
       .rw-wheel-stage.neon-glow { box-shadow: 0 0 30px rgba(99, 102, 241, 0.5), 0 0 60px rgba(139, 92, 246, 0.3), 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1) inset; }
       @keyframes rw-pulse-glow { 0%, 100% { box-shadow: 0 25px 50px -12px rgba(99, 102, 241, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1) inset; } 50% { box-shadow: 0 25px 50px -12px rgba(99, 102, 241, 0.5), 0 0 20px rgba(99, 102, 241, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1) inset; } }
       .rw-canvas { width: 100%; height: 100%; border-radius: 50%; touch-action: none; }
@@ -523,8 +523,8 @@ function renderRouletteWheelPage(lang = 'en') {
           elResultText.textContent = seg.label || ('Option ' + (index + 1));
           elResultPopup.classList.remove('show', 'bounce');
           void elResultPopup.offsetHeight;
-          elResultPopup.classList.add('bounce');
-          setTimeout(function() { elResultPopup.classList.remove('bounce'); elResultPopup.classList.add('show'); }, 500);
+          elResultPopup.classList.add('bounce', 'show');
+          setTimeout(function() { elResultPopup.classList.remove('bounce'); }, 500);
           setTimeout(function() { elResultPopup.classList.remove('show'); }, 3500);
         }
 
