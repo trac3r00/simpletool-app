@@ -367,24 +367,6 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
       ], 'password-generator', currentLang)}
     </main>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-      ${createEducationalSection([
-        {
-          title: 'What Makes a Password Secure?',
-          content: '<p>A secure password is your first line of defense against unauthorized access. In the modern era of high-speed computing, "secure" is defined by <strong>entropy</strong>—the measure of randomness and unpredictability in a string. A strong password should be long (at least 16 characters), unique to every account, and composed of a diverse set of character types including uppercase, lowercase, numbers, and symbols.</p><p>Avoid using personal information like birthdays, pet names, or common dictionary words. Even complex-looking substitutions like "P@ssw0rd123" are easily cracked by modern brute-force tools that use massive dictionaries of common patterns.</p>'
-        },
-        {
-          title: 'Entropy Explained',
-          content: '<p>Entropy is a measure of the randomness and unpredictability of a password, typically expressed in bits. The higher the entropy, the stronger the password. For example, a 10-character password using only lowercase letters has much lower entropy than a 10-character password using a full set of alphanumeric and special characters.</p><p>Our generator calculates entropy in real-time to give you an objective measure of your password\'s strength. A password with over 100 bits of entropy is considered exceptionally strong and resistant to modern cracking techniques.</p>'
-        },
-        {
-          title: 'Best Practices',
-          content: '<ul><li><strong>Never Reuse Passwords:</strong> Use a unique password for every single account. If one service is breached, your other accounts remain safe.</li><li><strong>Use a Password Manager:</strong> Since humans can\'t remember dozens of complex, unique passwords, use a reputable password manager to store them securely.</li><li><strong>Enable MFA:</strong> Multi-Factor Authentication adds a critical second layer of security even if your password is compromised.</li><li><strong>Avoid Personal Info:</strong> Never include names, birthdays, or common words that can be found in a dictionary.</li></ul>'
-        },
-        {
-          title: 'Pro Tips',
-          content: '<ul><li>Use the "Passphrase" mode for accounts you need to type manually; they are easier to remember but still highly secure.</li><li>For maximum security, generate the longest password allowed by the service (often 64 or 128 characters).</li><li>Regularly audit your saved passwords using your password manager\'s built-in security check features.</li><li>Consider using "Plus Aliases" (e.g., user+service@gmail.com) to track which services sell your data or send spam.</li></ul>'
-        }
-      ], 'password-generator', currentLang)}
     ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;

@@ -557,10 +557,15 @@ export function getThemeScript() {
         const MODES = ['system', 'light', 'dark'];
 
         // Show only the icon matching the current mode
+        const MODE_LABELS = { system: 'System', light: 'Light', dark: 'Dark' };
         const syncToggleState = (mode) => {
           const toggles = document.querySelectorAll('[data-theme-toggle]');
+          const nextIdx = (MODES.indexOf(mode) + 1) % MODES.length;
+          const nextMode = MODES[nextIdx];
           toggles.forEach(btn => {
-            const label = btn.getAttribute('data-theme-label-' + mode) || btn.getAttribute('aria-label') || '';
+            const currentLabel = MODE_LABELS[mode] || mode;
+            const nextLabel = MODE_LABELS[nextMode] || nextMode;
+            const label = 'Theme: ' + currentLabel + ' \u2014 click for ' + nextLabel;
             btn.setAttribute('title', label);
             btn.setAttribute('aria-label', label);
             const srOnly = btn.querySelector('.sr-only');
@@ -949,7 +954,7 @@ export function getToastScript() {
 export function getStylesheetLinks() {
     const version = bundledStylesHash || 'dev';
     return `
-      <link rel="preload" as="font" type="font/woff2" href="/fonts/material-symbols.woff2" crossorigin>
+      <link rel="prefetch" as="font" type="font/woff2" href="/fonts/material-symbols.woff2" crossorigin>
       <style>
        @font-face {
          font-family: 'Material Symbols Rounded';

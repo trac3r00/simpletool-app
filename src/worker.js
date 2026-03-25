@@ -318,9 +318,7 @@ const worker = {
         const retryAfterSeconds = Math.ceil((doRateLimitResult.retryAfterMs || 0) / 1000);
         return respond429({ retryAfterSeconds });
       }
-      if (doRateLimitResult?.fallback) {
-        return respond429({ retryAfterSeconds: Math.ceil(RATE_LIMIT_WINDOW_MS / 1000) });
-      }
+      // If DO is unavailable (fallback: true), rely on in-memory rate limiter above
     }
 
     // Route handling with path-based routing

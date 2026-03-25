@@ -998,7 +998,7 @@ function renderMarbleRoulettePage(lang = 'en') {
                   + '<span class="w-2.5 h-2.5 rounded-full" style="background:' + escapeHtml(m.color) + '" aria-hidden="true"></span>'
                   + '<span class="text-sm font-semibold text-surface-900 dark:text-surface-50 truncate" data-i18n="tools.marble-roulette.ui.desc17">' + escapeHtml(m.name) + '</span>'
                 + '</div>'
-                + '<div class="text-xs text-surface-500 dark:text-surface-400 tabular-nums">' + (m.finishedAt ? m.finishedAt.toFixed(1) + 's' : '') + '</div>'
+                + '<div class="text-xs text-surface-500 dark:text-surface-400 tabular-nums">' + (m.finishedAt ? m.finishedAt.toFixed(2) + 's' : '') + '</div>'
               + '</div>'
             );
           }).join('');

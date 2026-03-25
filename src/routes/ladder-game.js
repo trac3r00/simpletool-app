@@ -1562,7 +1562,13 @@ function renderLadderGamePage(lang = 'en') {
           });
 
           resultBtns.forEach((btn) => {
-            btn.disabled = state.isTracing || state.gameMode !== 'classic';
+            const isDisabled = state.isTracing || state.gameMode !== 'classic';
+            btn.disabled = isDisabled;
+            if (state.gameMode !== 'classic' && !state.isTracing) {
+              btn.title = window._t ? window._t('tools.ladder-game.ui.traceUpDisabledHint', 'Trace-up is only available in Classic mode') : 'Trace-up is only available in Classic mode';
+            } else {
+              btn.removeAttribute('title');
+            }
           });
 
           if (elBtnRevealAll) {

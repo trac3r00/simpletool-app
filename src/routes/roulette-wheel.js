@@ -192,8 +192,8 @@ function renderRouletteWheelPage(lang = 'en') {
                 ${rouletteBootConfig.soundThemes.map(st => `<option value="${st.id}">${st.fallbackLabel}</option>`).join('')}
               </select>
               <button id="clear-stats-btn" class="btn btn-ghost btn-sm" data-i18n="tools.roulette-wheel.ui.clear-stats">${t('tools.roulette-wheel.ui.clear-stats', lang)}</button>
-              <button id="fullscreen-btn" class="btn btn-ghost btn-sm" data-i18n="tools.roulette-wheel.ui.fullscreen" title="${t('tools.roulette-wheel.ui.fullscreen', lang)}">&#x26F6;</button>
-              <button id="neon-toggle-btn" class="btn btn-ghost btn-sm" data-i18n="tools.roulette-wheel.ui.neonToggle" title="${t('tools.roulette-wheel.ui.neonToggle', lang)}">&#x2728;</button>
+              <button id="fullscreen-btn" class="btn btn-ghost btn-sm" data-i18n="tools.roulette-wheel.ui.fullscreen" title="${t('tools.roulette-wheel.ui.fullscreen', lang)}" aria-label="${t('tools.roulette-wheel.ui.fullscreen', lang)}">&#x26F6;</button>
+              <button id="neon-toggle-btn" class="btn btn-ghost btn-sm" data-i18n="tools.roulette-wheel.ui.neonToggle" title="${t('tools.roulette-wheel.ui.neonToggle', lang)}" aria-label="${t('tools.roulette-wheel.ui.neonToggle', lang)}">&#x2728;</button>
             </div>
             <div class="rw-section open" id="segments-section" data-section-id="segments">
               <button class="rw-section-header" type="button" aria-expanded="true" data-section-toggle>
@@ -573,7 +573,7 @@ function renderRouletteWheelPage(lang = 'en') {
           var list = document.getElementById('segments-list'), n = state.segments.length, weightLabel = _t('tools.roulette-wheel.ui.weightLabel', 'Weight');
           list.innerHTML = state.segments.map(function(seg, i) {
             var canDelete = n > MIN_SEGMENTS;
-            return '<div class="rw-segment-item" draggable="true" data-seg-id="' + seg.id + '"><input type="color" class="rw-segment-color" value="' + seg.color + '" style="background:' + seg.color + '" title="Pick color"><input type="text" class="rw-segment-input" value="' + escapeHtml(seg.label || '') + '" placeholder="' + (_t ? _t('tools.roulette-wheel.ui.ph0', 'Segment name') : 'Segment name') + '"><label class="text-[11px] text-surface-500 dark:text-surface-400">' + escapeHtml(weightLabel) + '<input type="number" class="rw-mode-input rw-segment-weight ml-2" min="0" max="100" step="1" value="' + Math.max(0, Number(seg.weight || 1)) + '"></label><button class="rw-segment-delete" ' + (canDelete ? '' : 'disabled') + ' aria-label="Delete segment"><svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button></div>';
+            return '<div class="rw-segment-item" draggable="true" data-seg-id="' + seg.id + '"><input type="color" class="rw-segment-color" value="' + seg.color + '" style="background:' + seg.color + '" title="Pick color" aria-label="Pick color"><input type="text" class="rw-segment-input" value="' + escapeHtml(seg.label || '') + '" placeholder="' + (_t ? _t('tools.roulette-wheel.ui.ph0', 'Segment name') : 'Segment name') + '"><label class="text-[11px] text-surface-500 dark:text-surface-400">' + escapeHtml(weightLabel) + '<input type="number" class="rw-mode-input rw-segment-weight ml-2" min="0" max="100" step="1" value="' + Math.max(0, Number(seg.weight || 1)) + '"></label><button class="rw-segment-delete" ' + (canDelete ? '' : 'disabled') + ' aria-label="Delete segment"><svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button></div>';
           }).join('');
         }
 

@@ -74,7 +74,8 @@ export function getSecurityHeaders(contentType = 'text/html; charset=utf-8', cac
     'https://tpc.googlesyndication.com',
     'https://googleads.g.doubleclick.net',
     'https://adservice.google.com',
-    'https://www.googletagmanager.com'
+    'https://www.googletagmanager.com',
+    'https://static.cloudflareinsights.com'
   ].join(' ');
 
   const adFrameSrc = [
@@ -90,7 +91,8 @@ export function getSecurityHeaders(contentType = 'text/html; charset=utf-8', cac
     'https://tpc.googlesyndication.com',
     'https://www.google-analytics.com',
     'https://www.googletagmanager.com',
-    'https://analytics.google.com'
+    'https://analytics.google.com',
+    'https://cloudflareinsights.com'
   ].join(' ');
 
   if (nonce) {
