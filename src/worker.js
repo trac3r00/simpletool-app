@@ -6,6 +6,7 @@
 import { renderHomePage } from './ui/home.js';
 import * as Sentry from '@sentry/cloudflare';
 import { handlersById } from './routes/_handlers.js';
+import { handlePipeRoutes } from './routes/pipe.js';
 import { getToolsForEnvironment } from './utils/tool-registry.js';
 import {
   renderTermsPage,
@@ -437,6 +438,12 @@ const worker = {
       if (path === '/hash-generator' || path.startsWith('/hash-generator/')) {
         const dest = new URL('/encoding-workbench', request.url); dest.search = url.search;
         return Response.redirect(dest.href, 301);
+      }
+
+      // Pipe Mode
+      if (path === '/pipe' || path === '/pipe/') {
+        const pipeResponse = await handlePipeRoutes(request, url);
+        if (pipeResponse) return pipeResponse;
       }
 
       // Active tool routes (registry-driven)
