@@ -774,7 +774,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
       document.getElementById('generate-qr-btn').addEventListener('click', async () => {
         const config = buildConfig();
         if (!config) {
-          alert(_t('tools.wireguard-config.js.alert0', 'Please generate a configuration first'));
+          if (window.Toast) window.Toast.error(_t('tools.wireguard-config.js.alert0', 'Please generate a configuration first'));
           return;
         }
 

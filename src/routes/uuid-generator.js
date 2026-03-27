@@ -95,6 +95,33 @@ function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
                   <input type="radio" name="format" value="braces" class="w-4 h-4 text-primary-600 focus:ring-primary-500">
                   <span class="text-sm font-medium text-surface-900 dark:text-surface-100" data-i18n="tools.uuid-generator.ui.desc14">With braces {}</span>
                 </label>
+                </div>
+            </div>
+
+            <!-- Generate Button -->
+            <button id="generate-btn" class="btn btn-primary w-full">
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              <span data-i18n="tools.uuid-generator.ui.button0">Generate</span>
+            </button>
+          </div>
+
+          <!-- Results Column -->
+          <div class="lg:col-span-2">
+            <div id="placeholder" class="flex flex-col items-center justify-center py-16 text-surface-400 dark:text-surface-500">
+              <svg class="w-16 h-16 mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
+              <p class="text-sm" data-i18n="tools.uuid-generator.ui.text0">Click Generate to create UUIDs</p>
+            </div>
+            <div id="result" class="hidden">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-semibold text-surface-700 dark:text-surface-300" data-i18n="tools.uuid-generator.ui.heading0">Generated UUIDs</h3>
+                <button id="copy-btn" class="btn btn-ghost text-xs">
+                  <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                  <span data-i18n="tools.uuid-generator.ui.button1">Copy All</span>
+                </button>
+              </div>
+              <div id="uuid-output" class="font-mono text-sm space-y-1 max-h-96 overflow-y-auto bg-surface-50 dark:bg-surface-800 rounded-lg p-4 border border-surface-200 dark:border-surface-700"></div>
+            </div>
+          </div>
         </div>
 
         ${createEducationalSection([

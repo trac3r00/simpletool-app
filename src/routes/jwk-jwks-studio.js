@@ -44,7 +44,7 @@ function renderJwkJwksStudioPage() {
 
 
   const content = `
-    <script src="/vendor/forge.min.js" integrity="sha384-xHPi7wmhLGnxH9OUWvRRdUiqfT3b6SJShD/WWXkabW5wIlCxk2UyJezPvffKACOD" crossorigin="anonymous"></script>
+    <script src="/vendor/forge.min.js" integrity="sha384-wX64sW+w67fcBkYc40eYEvKyZMtpFujAPnxJPPMvE6fT3WDOJDZOAAny4rWgoBYq" crossorigin="anonymous"></script>
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="space-y-8">

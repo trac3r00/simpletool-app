@@ -415,7 +415,7 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
         const encoded = btoa(encodeURIComponent(JSON.stringify(data)));
         if (encoded.length > 1500) {
           navigator.clipboard.writeText(JSON.stringify(data, null, 2));
-          alert('Pipeline too long for URL. Config copied to clipboard as JSON.');
+          if (window.Toast) window.Toast.info('Pipeline too long for URL. Config copied to clipboard as JSON.');
           return;
         }
         const url = location.origin + '/pipe#' + encoded;

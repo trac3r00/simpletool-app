@@ -804,9 +804,18 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
         return '<div class="hash-row">' +
           '<span class="hash-algo-name">' + safeAlgo + '</span>' +
           '<span class="hash-value" id="' + rowId + '">' + safeValue + '</span>' +
-          '<button class="btn btn-ghost btn-xs text-surface-600 dark:text-surface-400 hover:bg-surface-100 dark:hover:bg-surface-800" onclick="copyToClipboard(document.getElementById(\\'' + rowId + '\\').textContent, this)"><span data-i18n="tools.encoding-workbench.ui.button10">Copy</span></button>' +
+          '<button class="btn btn-ghost btn-xs text-surface-600 dark:text-surface-400 hover:bg-surface-100 dark:hover:bg-surface-800 hash-copy-btn" data-copy-target="' + rowId + '"><span data-i18n="tools.encoding-workbench.ui.button10">Copy</span></button>' +
           '</div>';
       }
+
+      // Event delegation for hash copy buttons
+      document.getElementById('hash-results').addEventListener('click', function(e) {
+        var btn = e.target.closest('.hash-copy-btn');
+        if (!btn) return;
+        var targetId = btn.dataset.copyTarget;
+        var el = document.getElementById(targetId);
+        if (el) copyToClipboard(el.textContent, btn);
+      });
 
       document.getElementById('hash-clear-btn').addEventListener('click', function() {
         document.getElementById('hash-text-input').value = '';
@@ -891,9 +900,9 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
           var badgeClass = c.confidence === 'High' ? 'badge-high' : c.confidence === 'Medium' ? 'badge-medium' : 'badge-low';
           var actionBtn = '';
           if (c.action === 'decode') {
-            actionBtn = '<button class="btn btn-ghost btn-xs" onclick="switchToDecodeTab(this.dataset.v)" data-v="' + escapeHTML(inputVal).replace(/"/g, '&quot;') + '" data-i18n="tools.encoding-workbench.ui.decodeThis">Decode this \u2192</button>';
+            actionBtn = '<button class="btn btn-ghost btn-xs identify-action-btn" data-action="decode" data-v="' + escapeHTML(inputVal).replace(/"/g, '&quot;') + '" data-i18n="tools.encoding-workbench.ui.decodeThis">Decode this \u2192</button>';
           } else if (c.action === 'hash') {
-            actionBtn = '<button class="btn btn-ghost btn-xs" onclick="switchToHashTab()" data-i18n="tools.encoding-workbench.ui.verifyHash">Verify hash →</button>';
+            actionBtn = '<button class="btn btn-ghost btn-xs identify-action-btn" data-action="hash" data-i18n="tools.encoding-workbench.ui.verifyHash">Verify hash →</button>';
           }
           return '<div class="flex items-center justify-between py-3 border-b border-surface-100 dark:border-surface-800 last:border-0">' +
             '<div class="flex items-center gap-3">' +
@@ -915,15 +924,17 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
         document.getElementById('identify-results').innerHTML = \`${createEmptyState({ icon: '🔍', title: 'Nothing identified yet', description: 'Paste a hash or encoded string above and click Identify.', id: 'identify-empty-state', i18nTitle: 'tools.encoding-workbench.ui.desc4', i18nDesc: 'tools.encoding-workbench.ui.desc5' })}\`;
       });
 
-      // Quick-action tab switches
-      window.switchToDecodeTab = function(value) {
-        document.getElementById('enc-input').value = value;
-        document.getElementById('tab-encode').click();
-        document.getElementById('auto-detect-btn').click();
-      };
-      window.switchToHashTab = function() {
-        document.getElementById('tab-hash').click();
-      };
+      document.getElementById('identify-results').addEventListener('click', function(e) {
+        var btn = e.target.closest('.identify-action-btn');
+        if (!btn) return;
+        if (btn.dataset.action === 'decode') {
+          document.getElementById('enc-input').value = btn.dataset.v;
+          document.getElementById('tab-encode').click();
+          document.getElementById('auto-detect-btn').click();
+        } else if (btn.dataset.action === 'hash') {
+          document.getElementById('tab-hash').click();
+        }
+      });
 
       // Spinner keyframe (inline so CSP nonce covers it)
       if (!document.getElementById('workbench-spin-style')) {
