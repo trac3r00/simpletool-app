@@ -5,55 +5,7 @@
 
 import { renderHomePage } from './ui/home.js';
 import * as Sentry from '@sentry/cloudflare';
-import { handlePasswordGeneratorRoutes } from './routes/password-generator.js';
-import { handleJSONFormatterRoutes } from './routes/json-formatter.js';
-import { handleQRCodeRoutes } from './routes/qr-code.js';
-import { handleUUIDGeneratorRoutes } from './routes/uuid-generator.js';
-import { handleTimestampConverterRoutes } from './routes/timestamp-converter.js';
-import { handleColorConverterRoutes } from './routes/color-converter.js';
-import { handleUnitConverterRoutes } from './routes/unit-converter.js';
-import { handleMarkdownPreviewRoutes } from './routes/markdown-preview.js';
-import { handleTextDiffRoutes } from './routes/text-diff.js';
-import { handleCertificateDecoderRoutes } from './routes/certificate-decoder.js';
-import { handleCaseConverterRoutes } from './routes/case-converter.js';
-import { handleLogViewerRoutes } from './routes/log-viewer.js';
-import { handleImageConverterRoutes } from './routes/image-converter.js';
-import { handleCSSGradientRoutes } from './routes/css-gradient-generator.js';
-import { handleCodeMinifierRoutes } from './routes/code-minifier.js';
-import { handleCIDRCalculatorRoutes } from './routes/cidr-calculator.js';
-import { handleSamlDecoderRoutes } from './routes/saml-decoder.js';
-import { handleHtpasswdRoutes } from './routes/htpasswd-generator.js';
-import { handleDataConverterRoutes } from './routes/yaml-toml-converter.js';
-import { handleCronBuilderRoutes } from './routes/cron-builder.js';
-import { handleMockDataRoutes } from './routes/mock-data-generator.js';
-import { handleUserAgentDecoderRoutes } from './routes/user-agent-decoder.js';
-import { handleSSHKeyGeneratorRoutes } from './routes/ssh-key-generator.js';
-import { handleRegexVisualizerRoutes } from './routes/regex-visualizer.js';
-import { handleCurlStudioRoutes } from './routes/curl-studio.js';
-import { handleLogMaskerRoutes } from './routes/log-masker.js';
-import { handleMermaidStudioRoutes } from './routes/mermaid-studio.js';
-import { handleJsonSchemaStudioRoutes } from './routes/json-schema-studio.js';
-import { handleCaffeniateRoutes } from './routes/caffeniate.js';
-import { handleEmailAnalyzerRoutes } from './routes/email-analyzer.js';
-import { handleTokenCounterRoutes } from './routes/token-counter.js';
-import { handlePromptTemplateBuilderRoutes } from './routes/prompt-template-builder.js';
-import { handleSQLFormatterRoutes } from './routes/sql-formatter.js';
-import { handleEnvVarManagerRoutes } from './routes/env-var-manager.js';
-import { handleSVGOptimizerRoutes } from './routes/svg-optimizer.js';
-import { handleCSPBuilderRoutes } from './routes/csp-builder.js';
-import { handleSecretScannerRoutes } from './routes/secret-scanner.js';
-import { handleDNSReferenceRoutes } from './routes/dns-reference.js';
-import { handlePortReferenceRoutes } from './routes/port-reference.js';
-import { handleBandwidthCalculatorRoutes } from './routes/bandwidth-calculator.js';
-import { handleWiresharkFilterRoutes } from './routes/wireshark-filter.js';
-import { handleProtocolHeadersRoutes } from './routes/protocol-headers.js';
-import { handleWireguardConfigRoutes } from './routes/wireguard-config.js';
-import { handleLadderGameRoutes } from './routes/ladder-game.js';
-import { handleRouletteWheelRoutes } from './routes/roulette-wheel.js';
-import { handleMarbleRouletteRoutes } from './routes/marble-roulette.js';
-import { handleTokenStudioRoutes } from './routes/token-studio.js';
-import { handleEncodingWorkbenchRoutes } from './routes/encoding-workbench.js';
-import { handleOAuthDebuggerRoutes } from './routes/oauth-debugger.js';
+import { handlersById } from './routes/_handlers.js';
 import { getToolsForEnvironment } from './utils/tool-registry.js';
 import {
   renderTermsPage,
@@ -84,57 +36,7 @@ import { resolveRequestLanguage } from './utils/i18n.js';
 const rateLimiter = new Map();
 const workerStartedAt = Date.now();
 
-const handlersById = {
-  'password-generator': handlePasswordGeneratorRoutes,
-  'json-formatter': handleJSONFormatterRoutes,
-  'qr-code': handleQRCodeRoutes,
-  'uuid-generator': handleUUIDGeneratorRoutes,
-  'timestamp-converter': handleTimestampConverterRoutes,
-  'color-converter': handleColorConverterRoutes,
-  'unit-converter': handleUnitConverterRoutes,
-  'markdown-preview': handleMarkdownPreviewRoutes,
-  'text-diff': handleTextDiffRoutes,
-  'certificate-decoder': handleCertificateDecoderRoutes,
-  'case-converter': handleCaseConverterRoutes,
-  'log-viewer': handleLogViewerRoutes,
-  'image-converter': handleImageConverterRoutes,
-  'css-gradient': handleCSSGradientRoutes,
-  'code-minifier': handleCodeMinifierRoutes,
-  'cidr-calculator': handleCIDRCalculatorRoutes,
-  'saml-decoder': handleSamlDecoderRoutes,
-  'htpasswd-generator': handleHtpasswdRoutes,
-  'yaml-toml-converter': handleDataConverterRoutes,
-  'cron-builder': handleCronBuilderRoutes,
-  'mock-data-generator': handleMockDataRoutes,
-  'user-agent-decoder': handleUserAgentDecoderRoutes,
-  'ssh-key-generator': handleSSHKeyGeneratorRoutes,
-  'regex-visualizer': handleRegexVisualizerRoutes,
-  'curl-studio': handleCurlStudioRoutes,
-  'log-masker': handleLogMaskerRoutes,
-  'mermaid-studio': handleMermaidStudioRoutes,
-  'json-schema-studio': handleJsonSchemaStudioRoutes,
-  'caffeniate': handleCaffeniateRoutes,
-  'email-analyzer': handleEmailAnalyzerRoutes,
-  'token-counter': handleTokenCounterRoutes,
-  'prompt-template-builder': handlePromptTemplateBuilderRoutes,
-  'sql-formatter': handleSQLFormatterRoutes,
-  'env-var-manager': handleEnvVarManagerRoutes,
-  'ladder-game': handleLadderGameRoutes,
-  'roulette-wheel': handleRouletteWheelRoutes,
-  'svg-optimizer': handleSVGOptimizerRoutes,
-  'csp-builder': handleCSPBuilderRoutes,
-  'secret-scanner': handleSecretScannerRoutes,
-  'dns-reference': handleDNSReferenceRoutes,
-  'port-reference': handlePortReferenceRoutes,
-  'bandwidth-calculator': handleBandwidthCalculatorRoutes,
-  'wireshark-filter': handleWiresharkFilterRoutes,
-  'protocol-headers': handleProtocolHeadersRoutes,
-  'wireguard-config': handleWireguardConfigRoutes,
-  'marble-roulette': handleMarbleRouletteRoutes,
-  'token-studio': handleTokenStudioRoutes,
-  'encoding-workbench': handleEncodingWorkbenchRoutes,
-  'oauth-debugger': handleOAuthDebuggerRoutes
-};
+// handlersById is imported from ./routes/_handlers.js (auto-generated)
 
 async function resolveToolResponse(handler, request, url) {
   const response = await handler(request, url);
@@ -329,7 +231,7 @@ const worker = {
           status: 'healthy',
           uptime: now - workerStartedAt,
           timestamp: new Date().toISOString(),
-          version: '2.3.0'
+          version: '2.4.0'
         }, {
           headers: { 'Cache-Control': 'no-store' }
         });

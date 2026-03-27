@@ -12,7 +12,7 @@ const RELEASES = [
     date: '2026-03-23',
     title: 'Production Readiness & Full i18n',
     changes: [
-      { type: 'feat', text: 'Full i18n support for all 10 languages across 53 tools' },
+      { type: 'feat', text: 'Full i18n support for all 10 languages across 49 tools' },
       { type: 'feat', text: 'Added unit-converter with 10 categories and real conversion formulas' },
       { type: 'feat', text: 'Added code-minifier with JS/CSS/HTML/JSON minify and beautify' },
       { type: 'feat', text: 'Added SAML decoder with Base64 decode, XML parse, and inflate support' },
