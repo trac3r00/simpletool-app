@@ -439,6 +439,12 @@ const worker = {
         const dest = new URL('/encoding-workbench', request.url); dest.search = url.search;
         return Response.redirect(dest.href, 301);
       }
+      // Filename-vs-route alias: route file is css-gradient-generator.js but registered at /css-gradient.
+      // Anyone guessing the URL from the filename should land on the canonical path, not 404.
+      if (path === '/css-gradient-generator' || path.startsWith('/css-gradient-generator/')) {
+        const dest = new URL('/css-gradient', request.url); dest.search = url.search;
+        return Response.redirect(dest.href, 301);
+      }
 
       // Pipe Mode
       if (path === '/pipe' || path === '/pipe/') {
