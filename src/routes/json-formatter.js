@@ -9,6 +9,7 @@ import { createRichEditorPane, getRichEditorStyles, getRichEditorScript } from '
 import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
 import { getToolTranslation, resolveRequestLanguage, t } from '../utils/i18n.js';
+import { countKeys } from '../utils/json-stats.js';
 
 export async function handleJSONFormatterRoutes(request, url) {
   const { pathname } = url;
@@ -180,22 +181,9 @@ function renderJSONFormatterPage(lang = 'en') {
           }
         }
 
-        function countKeys(obj, depth) {
-          depth = depth || 0;
-          var count = 0;
-          var maxDepth = depth;
-          if (typeof obj === 'object' && obj !== null) {
-            for (var key in obj) {
-              count++;
-              if (typeof obj[key] === 'object' && obj[key] !== null) {
-                var result = countKeys(obj[key], depth + 1);
-                count += result.count;
-                maxDepth = Math.max(maxDepth, result.maxDepth);
-              }
-            }
-          }
-          return { count: count, maxDepth: maxDepth };
-        }
+        // Inlined from src/utils/json-stats.js — keep in sync via the import above.
+        // The same function powers the unit tests in src/utils/json-stats.test.js.
+        ${countKeys.toString()}
 
         function updateStats(jsonObj, formatted) {
           var result = countKeys(jsonObj);
