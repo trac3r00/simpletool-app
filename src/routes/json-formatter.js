@@ -194,6 +194,15 @@ function renderJSONFormatterPage(lang = 'en') {
           statsEl.classList.remove('hidden');
         }
 
+        // Drop the stale formatted output so an error never leaves the user
+        // staring at output that does not correspond to their current input.
+        function resetOutputPanel() {
+          outputEl.value = '';
+          outputEditor.clear(true);
+          statsEl.classList.add('hidden');
+          document.getElementById('json-empty-state').classList.remove('hidden');
+        }
+
         document.getElementById('format-btn').addEventListener('click', function() {
            try {
              var input = inputEditor.getValue().trim();
@@ -207,7 +216,7 @@ function renderJSONFormatterPage(lang = 'en') {
              showStatus(_t('tools.json-formatter.js.status1', 'Formatted successfully'), 'success');
            } catch (error) {
              showStatus(error.message, 'error');
-             statsEl.classList.add('hidden');
+             resetOutputPanel();
            }
          });
 
@@ -224,6 +233,7 @@ function renderJSONFormatterPage(lang = 'en') {
              showStatus(_t('tools.json-formatter.js.status2', 'Minified successfully'), 'success');
            } catch (error) {
              showStatus(error.message, 'error');
+             resetOutputPanel();
            }
          });
 
@@ -236,6 +246,9 @@ function renderJSONFormatterPage(lang = 'en') {
             showStatus(_t('tools.json-formatter.js.status3', 'Valid JSON'), 'success');
           } catch (error) {
             showStatus(error.message, 'error');
+            // Validate does not write output, but it does surface stats on
+            // success — hide them on failure so the panel matches reality.
+            statsEl.classList.add('hidden');
           }
         });
 
