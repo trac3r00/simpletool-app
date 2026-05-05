@@ -85,7 +85,7 @@ function renderJsonSchemaStudioPage(lang = DEFAULT_LANGUAGE) {
   `;
 
   const scripts = `
-    <script src="/vendor/to-json-schema.min.js" integrity="sha384-SQtZqPfpn1uLbqIZ/C7YZy247iVhjHtJ9ZQNjmXtwPApoyZ0qWOpB7EcWNDfRt8H" crossorigin="anonymous"></script>
+    <script src="/vendor/to-json-schema.min.js" integrity="sha384-RFP9czE3KJcsSTKWpTlZLG1xuiVY/XphuDBSN4FM5UKiUSSPnZvgxiVO69J11GYe" crossorigin="anonymous"></script>
     <script>
       const toJsonSchemaFn = window.toJsonSchema;
 
