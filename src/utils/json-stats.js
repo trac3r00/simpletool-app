@@ -3,8 +3,21 @@
  *
  * The route handler inlines this code into the page bundle via
  * `String(countKeys.toString())` so the SAME function runs in the browser
- * and is unit-tested under vitest. Keep these functions pure and ES5-safe
- * (no spread, no arrow, no const/let inside).
+ * and is unit-tested under vitest.
+ *
+ * IMPORTANT: function source is emitted VERBATIM to the HTML page — it
+ * does NOT pass through the esbuild transpiler when inlined via
+ * `.toString()`. The syntax written here is the syntax that ships.
+ *
+ * Allowed: ES2015+ (const, let, template literals, default params,
+ * Array.isArray). The project's browserslist is `defaults` which covers
+ * every browser that supports those features.
+ *
+ * Forbidden inside the function body (would ship un-transpiled and break
+ * older targets): arrow functions used as the top-level export (the
+ * exported binding must be a `function` declaration so toString returns
+ * a complete source), async/await, optional chaining (?.), nullish
+ * coalescing (??), top-level await, async iterators.
  */
 
 /**
