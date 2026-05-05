@@ -1164,6 +1164,8 @@ export function createPageTemplate(options) {
    ${getToastScript()}
    ${getKeyboardShortcutsScript()}
    ${getCheatsheetToggleScript()}
+   ${getCopyToClipboardScript()}
+   ${getClipboardSafetyScript()}
    ${toolId ? getPersonalizationScript(toolId) : ''}
    ${scripts}
   ${isAdsEnabled() ? `<script>
@@ -1214,15 +1216,54 @@ export function getCopyToClipboardScript() {
       }).catch(err => {
         console.error('Copy failed:', err);
         button.innerText = 'Error';
-        
+
         // Show error toast
         if (window.Toast && typeof window.Toast.error === 'function') {
           window.Toast.error('Failed to copy to clipboard');
         }
-        
+
         setTimeout(() => button.innerText = 'Copy', 2000);
       });
     }
+    </script>
+  `;
+}
+
+/**
+ * Global safety net for clipboard rejections.
+ *
+ * Many tool routes call `navigator.clipboard.writeText(...)` directly. The
+ * call can reject in plenty of contexts (insecure HTTP, iframe without
+ * write permission, denied user permission, no user activation). When
+ * those rejections aren't caught they surface as `unhandledrejection`
+ * page errors — which the exhaustive QA harness flagged on 9+ tools.
+ *
+ * This script swallows clipboard-only rejections and shows a single user-
+ * facing toast instead. It is intentionally narrow: it ONLY catches
+ * `NotAllowedError` / `SecurityError` thrown from the Clipboard API and
+ * forwards everything else, so we don't hide unrelated bugs.
+ */
+export function getClipboardSafetyScript() {
+  return `
+    <script>
+    (function () {
+      function isClipboardError(reason) {
+        if (!reason) return false;
+        if (typeof reason === 'string') return /clipboard/i.test(reason);
+        var name = reason.name || '';
+        var msg = reason.message || String(reason);
+        return /clipboard/i.test(msg) ||
+               name === 'NotAllowedError' ||
+               name === 'SecurityError';
+      }
+      window.addEventListener('unhandledrejection', function (e) {
+        if (!isClipboardError(e.reason)) return;
+        e.preventDefault();
+        if (window.Toast && typeof window.Toast.error === 'function') {
+          window.Toast.error('Could not copy — clipboard access denied. Please copy manually.');
+        }
+      });
+    })();
     </script>
   `;
 }
