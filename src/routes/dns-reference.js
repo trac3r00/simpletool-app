@@ -1,5 +1,5 @@
 import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createCheatsheet, getCopyToClipboardScript } from '../utils/common-ui.js';
+import { createPageTemplate, createToolHeader, createCheatsheet } from '../utils/common-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
 import { createRelatedToolsSection } from '../utils/content-ui.js';
 import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
@@ -199,7 +199,6 @@ function renderDnsReferencePage(lang = DEFAULT_LANGUAGE) {
   `;
 
   const scripts = `
-    ${getCopyToClipboardScript()}
     <script>
       const t = (k, fb) => (window._t ? window._t('tools.dns-reference.js.' + k, fb) : (fb || k));
 

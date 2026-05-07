@@ -137,17 +137,6 @@ export function getAnalyticsScript() {
  * Shared tool layout abstraction.
  * Provides consistent inner content structure for tool pages.
  * Modes: 'two-panel' (input/output grid), 'single-panel' (centered), 'custom' (pass-through).
- *
- * @param {Object} options
- * @param {string} options.mode - 'two-panel' | 'single-panel' | 'custom'
- * @param {string} options.toolHeader - HTML from createToolHeader()
- * @param {string} [options.controls] - Controls bar HTML (buttons, selectors)
- * @param {string} [options.leftPanel] - Left/input panel HTML (two-panel mode)
- * @param {string} [options.rightPanel] - Right/output panel HTML (two-panel mode)
- * @param {string} [options.content] - Main content HTML (single-panel or custom mode)
- * @param {string} [options.footer] - Additional sections below main (education, related tools)
- * @param {Object} [options.actionBar] - Action bar config { copy: bool, download: bool, share: bool, fullscreen: bool }
- * @returns {string} HTML string for tool page content
  */
 export function createToolLayout(options) {
   const {
@@ -196,8 +185,6 @@ export function createToolLayout(options) {
 
 /**
  * Universal action bar for tool output areas.
- * @param {Object} options - { copy: bool, download: bool, share: bool, fullscreen: bool, outputId: string }
- * @returns {string} HTML
  */
 export function getActionBarHTML(options = {}) {
   const { copy = true, download = false, share = false, fullscreen = false, outputId = 'output' } = options;
@@ -316,8 +303,7 @@ export function getAdConfig() {
 }
 
 /**
- * Google AdSense script tag
- * @returns {string} AdSense script tag HTML
+ * Google AdSense script tag (disabled by default).
  */
 export function getGtagScript() {
   // Disabled by default to avoid third-party requests in restrictive environments.
@@ -371,13 +357,6 @@ export function getAdSenseScript() {
 
 /**
  * Render an AdSense slot, if configured.
- * @param {string} slotKey - Slot key from ADSENSE_SLOTS mapping.
- * @param {Object} options
- * @param {string} [options.wrapperClassName=''] - Wrapper classes.
- * @param {string} [options.label='Sponsored'] - Label text.
- * @param {string} [options.format='auto'] - Ad format.
- * @param {boolean} [options.responsive=true] - Full width responsive flag.
- * @returns {string}
  */
 export function getAdSlotHTML(slotKey, options = {}) {
   if (!isAdsEnabled()) return '';
@@ -413,10 +392,6 @@ export function getAdSlotHTML(slotKey, options = {}) {
 
 /**
  * Shared theme toggle button markup with accessible defaults
- * @param {Object} options
- * @param {string} [options.id='theme-toggle'] - Element ID so scripts can find the button
- * @param {string} [options.label='Toggle dark mode'] - Accessible label announced by screen readers
- * @param {string} [options.className=''] - Extra utility classes to append
  */
 export function getThemeToggleButton(options = {}) {
   const {
@@ -463,9 +438,6 @@ export function getThemeToggleButton(options = {}) {
 
 /**
  * Get common navigation HTML
- * @param {Object} options - Navigation configuration options
- * @param {string} [options.pageTitle='Tool'] - Optional page title for navigation context
- * @param {string} [options.maxWidth='max-w-7xl'] - Maximum width container class
  */
 export function getNavigationHTML(options = {}) {
   const {
@@ -646,8 +618,7 @@ export function getThemeScript() {
 }
 
 /**
- * Get Global Search Script
- * Provides smart command palette search across all pages
+ * Global Search Script
  */
 export function getSearchScript(options = {}) {
   const {
@@ -876,8 +847,7 @@ export function getSearchScript(options = {}) {
 }
 
 /**
- * Get Global Toast System
- * Provides window.Toast object with show(), success(), error(), info() methods
+ * Global Toast System
  */
 export function getToastScript() {
   return `
@@ -1253,8 +1223,8 @@ export function getClipboardSafetyScript() {
         var name = reason.name || '';
         var msg = reason.message || String(reason);
         return /clipboard/i.test(msg) ||
-               name === 'NotAllowedError' ||
-               name === 'SecurityError';
+               ((name === 'NotAllowedError' || name === 'SecurityError') &&
+                /clipboard|write/i.test(msg));
       }
       window.addEventListener('unhandledrejection', function (e) {
         if (!isClipboardError(e.reason)) return;

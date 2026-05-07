@@ -5,7 +5,7 @@
  * All processing happens client-side
  */
 
-import { createPageTemplate, createToolHeader, getCopyToClipboardScript } from '../utils/common-ui.js';
+import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
 import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
 import { respondHTML } from '../utils/respond.js';
@@ -185,8 +185,6 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
       ], 'css-gradient-generator', currentLang)}
     </div>
     ${createRelatedToolsSection(relatedToolsData)}
-
-    ${getCopyToClipboardScript()}
 
     <script>
       // State

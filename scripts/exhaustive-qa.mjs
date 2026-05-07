@@ -30,6 +30,10 @@ const OUT_MD = join(OUT_DIR, `exhaustive-qa-${today}.md`);
 
 const handlersSrc = readFileSync(join(ROOT, 'scripts', 'build-routes.js'), 'utf8');
 const ROUTES = [...handlersSrc.matchAll(/id:\s*'([^']+)'/g)].map((m) => m[1]);
+if (ROUTES.length === 0) {
+  console.error('No routes found in scripts/build-routes.js — regex may be stale');
+  process.exit(1);
+}
 
 /**
  * Harness function injected into the page. Returns a structured findings

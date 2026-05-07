@@ -4,7 +4,7 @@
  */
 
 import { respondHTML, respondJSON } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createEmptyState, getCopyToClipboardScript } from '../utils/common-ui.js';
+import { createPageTemplate, createToolHeader, createEmptyState } from '../utils/common-ui.js';
 import { createRichEditorPane, getRichEditorStyles, getRichEditorScript } from '../utils/rich-editor.js';
 import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
@@ -145,12 +145,11 @@ function renderJSONFormatterPage(lang = 'en') {
   `;
 
    const script = `
-     <style>
-       ${getRichEditorStyles()}
-     </style>
-     ${getCopyToClipboardScript()}
-     ${getRichEditorScript()}
-      <script>
+      <style>
+        ${getRichEditorStyles()}
+      </style>
+      ${getRichEditorScript()}
+       <script>
         var inputEditor = new RichEditor('input');
         var outputEditor = new RichEditor('output');
         outputEditor.setHighlighter('json');

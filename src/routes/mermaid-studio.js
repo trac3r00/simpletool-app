@@ -29,7 +29,6 @@ export async function handleMermaidStudioRoutes(request, url) {
   const currentTool = TOOLS.find(t => t.id === 'mermaid-studio');
   const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
 
-
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       ${header}

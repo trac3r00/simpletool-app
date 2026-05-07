@@ -25,6 +25,10 @@ const OUT_MD = join(OUT_DIR, `sweep-${today}.md`);
 // Discover route ids from the build manifest. They map 1:1 to URL paths.
 const handlersSrc = readFileSync(join(ROOT, 'scripts', 'build-routes.js'), 'utf8');
 const ROUTE_IDS = [...handlersSrc.matchAll(/id:\s*'([^']+)'/g)].map((m) => m[1]);
+if (ROUTE_IDS.length === 0) {
+  console.error('No routes found in scripts/build-routes.js — regex may be stale');
+  process.exit(1);
+}
 
 // Tools that are intentionally non-interactive on first paint.
 const STATIC_ROUTES = new Set(['caffeniate', 'dns-reference', 'port-reference', 'protocol-headers']);

@@ -16,8 +16,11 @@ const ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
 const ROUTES_DIR = join(ROOT, 'src', 'routes');
 const VENDOR_DIR = join(ROOT, 'dist', 'vendor');
 
-const SCRIPT_TAG_RE =
-  /(<script\s+src=["']\/vendor\/([^"']+)["']\s+integrity=["'])([^"']+)(["'])/g;
+// Two-step matching so attribute order does not matter.
+// Step 1: find any <script> tag whose src points into /vendor/.
+// Step 2: within that tag, locate and rewrite the integrity value.
+const VENDOR_SCRIPT_RE = /<script\s+[^>]*src=["']\/vendor\/([^"']+)["'][^>]*>/g;
+const INTEGRITY_RE = /(integrity=["'])([^"']+)(["'])/;
 
 let changedFiles = 0;
 let changedTags = 0;
@@ -29,17 +32,18 @@ for (const file of readdirSync(ROUTES_DIR)) {
   const original = readFileSync(fullPath, 'utf8');
 
   const updated = original.replace(
-    SCRIPT_TAG_RE,
-    (match, prefix, vendorFile, _oldHash, suffix) => {
+    VENDOR_SCRIPT_RE,
+    (fullTag, vendorFile) => {
       const vendorPath = join(VENDOR_DIR, vendorFile);
       if (!existsSync(vendorPath)) {
         skipped.push(`${file}: /vendor/${vendorFile} not found`);
-        return match;
+        return fullTag;
       }
+      if (!INTEGRITY_RE.test(fullTag)) return fullTag; // no integrity attr to update
       const fresh = computeSriSha384(vendorPath);
-      if (match.includes(fresh)) return match;
+      if (fullTag.includes(fresh)) return fullTag;
       changedTags += 1;
-      return `${prefix}${fresh}${suffix}`;
+      return fullTag.replace(INTEGRITY_RE, `$1${fresh}$3`);
     }
   );
 

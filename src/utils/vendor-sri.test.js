@@ -8,8 +8,9 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const ROUTES_DIR = join(ROOT, 'src', 'routes');
 const VENDOR_DIR = join(ROOT, 'dist', 'vendor');
 
-const SCRIPT_TAG_RE =
-  /<script\s+src=["']\/vendor\/([^"']+)["']\s+integrity=["']([^"']+)["']/g;
+// Two-step matching so attribute order does not matter.
+const VENDOR_SCRIPT_RE = /<script\s+[^>]*src=["']\/vendor\/([^"']+)["'][^>]*>/g;
+const INTEGRITY_RE = /integrity=["']([^"']+)["']/;
 
 function collectScriptTags() {
   const occurrences = [];
@@ -18,8 +19,13 @@ function collectScriptTags() {
     const fullPath = join(ROUTES_DIR, file);
     const src = readFileSync(fullPath, 'utf8');
     let match;
-    while ((match = SCRIPT_TAG_RE.exec(src)) !== null) {
-      occurrences.push({ file, vendorFile: match[1], integrity: match[2] });
+    while ((match = VENDOR_SCRIPT_RE.exec(src)) !== null) {
+      const fullTag = match[0];
+      const vendorFile = match[1];
+      const integrityMatch = fullTag.match(INTEGRITY_RE);
+      if (integrityMatch) {
+        occurrences.push({ file, vendorFile, integrity: integrityMatch[1] });
+      }
     }
   }
   return occurrences;
