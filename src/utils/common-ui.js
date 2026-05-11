@@ -1239,20 +1239,50 @@ export function getClipboardSafetyScript() {
 }
 
 /**
- * Create a tool header section
+ * Create a feature list definition list.
+ * @param {Array<{text: string, tooltip?: string}>} items - Feature items
+ * @returns {string} HTML markup
+ */
+export function createFeatureList(items = []) {
+  if (!items || !items.length) return '';
+  const itemsHTML = items.map(item => `<dd>${item.text}</dd>`).join('');
+  return `<dl data-feature-list>${itemsHTML}</dl>`;
+}
+
+/**
+ * Create a tool header section.
+ * Enforces single-pill policy: max 1 trust pill, rest demoted to feature list.
  */
 export function createToolHeader(icon, title, subtitle, badges = [], options = {}) {
   const { toolId } = typeof options === 'string' ? { toolId: options } : (options || {});
-  const badgesHTML = badges.map(badge => {
-    const tipAttr = badge.tooltip ? ` data-tooltip="${badge.tooltip}" cursor-help` : '';
-    const tipClass = badge.tooltip ? ' cursor-help' : '';
-    return `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300${tipClass}"${tipAttr}>
-       ${badge.text}
-     </span>`;
-  }).join('');
 
   const titleAttr = toolId ? ` data-i18n="tools.${toolId}.name"` : '';
   const subtitleAttr = toolId ? ` data-i18n="tools.${toolId}.desc"` : '';
+
+  // Single-pill policy: first badge is the trust pill, rest are demoted features
+  let trustPillHTML = '';
+  let demotedFeaturesHTML = '';
+
+  if (badges.length === 1) {
+    // Single pill: render as trust pill
+    const badge = badges[0];
+    const tipAttr = badge.tooltip ? ` data-tooltip="${badge.tooltip}" cursor-help` : '';
+    const tipClass = badge.tooltip ? ' cursor-help' : '';
+    trustPillHTML = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300${tipClass}" data-trust-pill="${badge.text}"${tipAttr}>
+       ${badge.text}
+     </span>`;
+  } else if (badges.length >= 2) {
+    // Multiple pills: first is trust pill, rest are demoted features
+    const trustBadge = badges[0];
+    const tipAttr = trustBadge.tooltip ? ` data-tooltip="${trustBadge.tooltip}" cursor-help` : '';
+    const tipClass = trustBadge.tooltip ? ' cursor-help' : '';
+    trustPillHTML = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300${tipClass}" data-trust-pill="${trustBadge.text}"${tipAttr}>
+       ${trustBadge.text}
+     </span>`;
+    demotedFeaturesHTML = createFeatureList(badges.slice(1));
+  } else if (badges.length === 0) {
+    // No pills: nothing to render
+  }
 
   return `
     <div class="mb-8 border-b border-surface-200 dark:border-surface-800 pb-8">
@@ -1262,11 +1292,12 @@ export function createToolHeader(icon, title, subtitle, badges = [], options = {
              <span class="text-3xl">${icon.emoji || '🛠️'}</span>
           </div>
           <div>
-            <div class="flex items-center gap-3 mb-1">
+            <div class="flex items-center gap-3 mb-1 flex-wrap">
               <h1 class="text-2xl sm:text-3xl font-bold text-surface-900 dark:text-surface-50 tracking-tight"${titleAttr}>${title}</h1>
-              ${badgesHTML}
+              ${trustPillHTML}
             </div>
             <p class="text-surface-600 dark:text-surface-400 text-sm sm:text-base max-w-2xl"${subtitleAttr}>${subtitle}</p>
+            ${demotedFeaturesHTML}
           </div>
         </div>
       </div>
