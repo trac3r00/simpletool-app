@@ -215,6 +215,7 @@ chmod 600 ~/.ssh/authorized_keys</pre>
       const publicKeyEl = document.getElementById('public-key');
       const privateKeyEl = document.getElementById('private-key');
       const fingerprintEl = document.getElementById('fingerprint');
+      const textEncoder = new TextEncoder();
 
       // Show/hide RSA options
       keyTypeInputs.forEach(input => {
@@ -226,6 +227,9 @@ chmod 600 ~/.ssh/authorized_keys</pre>
       // Generate key pair
       generateBtn.addEventListener('click', async () => {
         const keyType = document.querySelector('input[name="keyType"]:checked').value;
+        const errEl = document.getElementById('keygen-error');
+        errEl.classList.add('hidden');
+        errEl.textContent = '';
 
         // Disable button and show loading
         generateBtn.disabled = true;
@@ -244,7 +248,6 @@ chmod 600 ~/.ssh/authorized_keys</pre>
             resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }
         } catch (error) {
-          const errEl = document.getElementById('keygen-error');
           errEl.textContent = _t('tools.ssh-key-generator.js.text2', 'Error generating key pair: ') + error.message;
           errEl.classList.remove('hidden');
           console.error(error);
@@ -262,19 +265,20 @@ chmod 600 ~/.ssh/authorized_keys</pre>
            ['sign', 'verify']
          );
 
-         const publicKeyRaw = await window.crypto.subtle.exportKey('spki', keyPair.publicKey);
+         const publicKeyRaw = new Uint8Array(await window.crypto.subtle.exportKey('raw', keyPair.publicKey));
          const privateKeyRaw = await window.crypto.subtle.exportKey('pkcs8', keyPair.privateKey);
 
-         const publicKeyPEM = arrayBufferToPEM(publicKeyRaw, 'PUBLIC KEY');
-         const privateKeyPEM = arrayBufferToPEM(privateKeyRaw, 'PRIVATE KEY');
+         if (publicKeyRaw.length !== 65 || publicKeyRaw[0] !== 0x04) {
+           throw new Error('Unexpected ECDSA public key format');
+         }
 
-         const comment = keyComment.value.trim() || 'generated-by-simpletool';
-         const publicKeySSH = convertToSSHPublicKey(publicKeyRaw, 'ecdsa-sha2-nistp256', comment);
-         const privateKeySSH = convertToSSHPrivateKey(privateKeyRaw, publicKeyRaw, 'ecdsa-sha2-nistp256');
+         const x = publicKeyRaw.slice(1, 33);
+         const y = publicKeyRaw.slice(33, 65);
+         const comment = keyComment.value.trim() || 'user@simpletool';
+         const { key: publicKeySSH, wireBytes } = encodeECDSAPublicKey(x, y, comment);
+         const privateKeySSH = arrayBufferToPEM(privateKeyRaw, 'PRIVATE KEY');
+         const fingerprint = await calculateFingerprint(wireBytes);
 
-         const fingerprint = await calculateFingerprint(publicKeyRaw);
-
-         document.getElementById('keygen-error').classList.add('hidden');
          publicKeyEl.value = publicKeySSH;
          privateKeyEl.value = privateKeySSH;
          fingerprintEl.textContent = fingerprint;
@@ -293,16 +297,20 @@ chmod 600 ~/.ssh/authorized_keys</pre>
            ['sign', 'verify']
          );
 
-         const publicKeyRaw = await window.crypto.subtle.exportKey('spki', keyPair.publicKey);
+         const publicKeyJwk = await window.crypto.subtle.exportKey('jwk', keyPair.publicKey);
          const privateKeyRaw = await window.crypto.subtle.exportKey('pkcs8', keyPair.privateKey);
 
-         const comment = keyComment.value.trim() || 'generated-by-simpletool';
-         const publicKeySSH = convertToSSHPublicKey(publicKeyRaw, 'ssh-rsa', comment);
-         const privateKeySSH = convertToSSHPrivateKey(privateKeyRaw, publicKeyRaw, 'ssh-rsa');
+         if (!publicKeyJwk.e || !publicKeyJwk.n) {
+           throw new Error('Unexpected RSA public key format');
+         }
 
-         const fingerprint = await calculateFingerprint(publicKeyRaw);
+         const exponentBytes = decodeBase64UrlToBytes(publicKeyJwk.e);
+         const modulusBytes = decodeBase64UrlToBytes(publicKeyJwk.n);
+         const comment = keyComment.value.trim() || 'user@simpletool';
+         const { key: publicKeySSH, wireBytes } = encodeRSAPublicKey(exponentBytes, modulusBytes, comment);
+         const privateKeySSH = arrayBufferToPEM(privateKeyRaw, 'PRIVATE KEY');
+         const fingerprint = await calculateFingerprint(wireBytes);
 
-         document.getElementById('keygen-error').classList.add('hidden');
          publicKeyEl.value = publicKeySSH;
          privateKeyEl.value = privateKeySSH;
          fingerprintEl.textContent = fingerprint;
@@ -323,20 +331,100 @@ chmod 600 ~/.ssh/authorized_keys</pre>
         return btoa(binary);
       }
 
-      function convertToSSHPublicKey(publicKeyRaw, algorithm, comment) {
-        const base64Key = arrayBufferToBase64(publicKeyRaw);
-        return \`\${algorithm} \${base64Key} \${comment}\`;
+      function toUtf8Bytes(value) {
+        return textEncoder.encode(value);
       }
 
-      function convertToSSHPrivateKey(privateKeyRaw, publicKeyRaw, algorithm) {
-        return arrayBufferToPEM(privateKeyRaw, 'PRIVATE KEY');
+      function concat(...arrays) {
+        const total = arrays.reduce((sum, array) => sum + array.length, 0);
+        const out = new Uint8Array(total);
+        let offset = 0;
+        for (const array of arrays) {
+          out.set(array, offset);
+          offset += array.length;
+        }
+        return out;
       }
 
-      async function calculateFingerprint(publicKeyRaw) {
-        const hash = await crypto.subtle.digest('SHA-256', publicKeyRaw);
+      function writeUint32(value) {
+        const bytes = new Uint8Array(4);
+        new DataView(bytes.buffer).setUint32(0, value, false);
+        return bytes;
+      }
+
+      function writeString(bytes) {
+        return concat(writeUint32(bytes.length), bytes);
+      }
+
+      function writeMpint(bytes) {
+        let start = 0;
+        while (start < bytes.length - 1 && bytes[start] === 0) {
+          start += 1;
+        }
+
+        let payload = bytes.slice(start);
+        if (payload.length === 0) {
+          payload = new Uint8Array([0]);
+        }
+
+        if ((payload[0] & 0x80) !== 0) {
+          payload = concat(new Uint8Array([0]), payload);
+        }
+
+        return concat(writeUint32(payload.length), payload);
+      }
+
+      function toBase64(bytes) {
+        let binary = '';
+        const chunkSize = 8192;
+        for (let index = 0; index < bytes.length; index += chunkSize) {
+          binary += String.fromCharCode(...bytes.subarray(index, index + chunkSize));
+        }
+        return btoa(binary);
+      }
+
+      function encodeECDSAPublicKey(x, y, comment) {
+        const wireBytes = concat(
+          writeString(toUtf8Bytes('ecdsa-sha2-nistp256')),
+          writeString(toUtf8Bytes('nistp256')),
+          writeString(concat(new Uint8Array([0x04]), x, y))
+        );
+
+        return {
+          key: \`ecdsa-sha2-nistp256 \${toBase64(wireBytes)} \${comment}\`,
+          wireBytes
+        };
+      }
+
+      function encodeRSAPublicKey(exponentBytes, modulusBytes, comment) {
+        const wireBytes = concat(
+          writeString(toUtf8Bytes('ssh-rsa')),
+          writeMpint(exponentBytes),
+          writeMpint(modulusBytes)
+        );
+
+        return {
+          key: \`ssh-rsa \${toBase64(wireBytes)} \${comment}\`,
+          wireBytes
+        };
+      }
+
+      function decodeBase64UrlToBytes(value) {
+        const normalized = value.replace(/-/g, '+').replace(/_/g, '/');
+        const padded = normalized + '='.repeat((4 - (normalized.length % 4)) % 4);
+        const binary = atob(padded);
+        const bytes = new Uint8Array(binary.length);
+        for (let index = 0; index < binary.length; index++) {
+          bytes[index] = binary.charCodeAt(index);
+        }
+        return bytes;
+      }
+
+      async function calculateFingerprint(publicKeyBytes) {
+        const hash = await crypto.subtle.digest('SHA-256', publicKeyBytes);
         const hashArray = Array.from(new Uint8Array(hash));
         const hashBase64 = btoa(String.fromCharCode(...hashArray));
-        return 'SHA256:' + hashBase64;
+        return 'SHA256:' + hashBase64.replace(/=+$/g, '');
       }
 
        // Copy/Download Helpers
