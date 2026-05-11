@@ -29,6 +29,7 @@ import {
   RATE_LIMIT_WINDOW_MS
 } from './utils/security.js';
 import { respondJSON, respondText, respond404, respond429 } from './utils/respond.js';
+import { tryLegacyRedirect } from './utils/redirects.js';
 import { bundledStyles, bundledStylesHash } from './utils/bundled-styles.js';
 import { setAdConfig, setAnalyticsToken, setSiteUrl } from './utils/common-ui.js';
 import { resolveRequestLanguage } from './utils/i18n.js';
@@ -401,57 +402,21 @@ const worker = {
 
       // Tool routes - path-based
 
-      // Redirects for removed/merged tools
-      if (path === '/encoder-decoder' || path.startsWith('/encoder-decoder/')) {
-        return Response.redirect(new URL('/encoding-workbench', request.url).href, 301);
+      // Legacy tool redirects (map-driven) — before /tools/ prefix so single-hop works
+      const legacyRedirect = tryLegacyRedirect(url);
+      if (legacyRedirect) return legacyRedirect;
+
+      // Legacy routing compatibility: older docs/links used the /tools/<tool-id> prefix.
+      if (path === '/tools') {
+        const redirectUrl = new URL(request.url);
+        redirectUrl.pathname = '/';
+        return Response.redirect(redirectUrl.href, 301);
       }
 
-      if (path === '/regex-tester' || path.startsWith('/regex-tester/')) {
-        return Response.redirect(new URL('/regex-visualizer', request.url).href, 301);
-      }
-
-      if (path === '/lorem-ipsum' || path.startsWith('/lorem-ipsum/')) {
-        return Response.redirect(new URL('/mock-data-generator', request.url).href, 301);
-      }
-
-      if (path === '/domain-status' || path.startsWith('/domain-status/')) {
-        return Response.redirect(new URL('/', request.url).href, 301);
-      }
-
-      // Consolidated tool redirects (JWT+JWK → Token Studio, Hash+Decoder → Encoding Workbench)
-      if (path === '/jwt-decoder' || path.startsWith('/jwt-decoder/')) {
-        const dest = new URL('/token-studio', request.url); dest.search = url.search;
-        return Response.redirect(dest.href, 301);
-      }
-      if (path === '/jwk-jwks-studio' || path.startsWith('/jwk-jwks-studio/')) {
-        const dest = new URL('/token-studio', request.url); dest.search = url.search;
-        return Response.redirect(dest.href, 301);
-      }
-      if (path === '/hash-calculator' || path.startsWith('/hash-calculator/')) {
-        const dest = new URL('/encoding-workbench', request.url); dest.search = url.search;
-        return Response.redirect(dest.href, 301);
-      }
-      if (path === '/universal-decoder' || path.startsWith('/universal-decoder/')) {
-        const dest = new URL('/encoding-workbench', request.url); dest.search = url.search;
-        return Response.redirect(dest.href, 301);
-      }
-      if (path === '/hash-generator' || path.startsWith('/hash-generator/')) {
-        const dest = new URL('/encoding-workbench', request.url); dest.search = url.search;
-        return Response.redirect(dest.href, 301);
-      }
-      if (path === '/jwt-inspector' || path.startsWith('/jwt-inspector/')) {
-        const dest = new URL('/token-studio', request.url); dest.search = url.search;
-        return Response.redirect(dest.href, 301);
-      }
-      if (path === '/layered-decoder' || path.startsWith('/layered-decoder/')) {
-        const dest = new URL('/encoding-workbench', request.url); dest.search = url.search;
-        return Response.redirect(dest.href, 301);
-      }
-      // Filename-vs-route alias: route file is css-gradient-generator.js but registered at /css-gradient.
-      // Anyone guessing the URL from the filename should land on the canonical path, not 404.
-      if (path === '/css-gradient-generator' || path.startsWith('/css-gradient-generator/')) {
-        const dest = new URL('/css-gradient', request.url); dest.search = url.search;
-        return Response.redirect(dest.href, 301);
+      if (path.startsWith('/tools/')) {
+        const redirectUrl = new URL(request.url);
+        redirectUrl.pathname = path.slice('/tools'.length).replace(/^\/+/, '/');
+        return Response.redirect(redirectUrl.href, 301);
       }
 
       // Pipe Mode
