@@ -1,6 +1,6 @@
 /**
  * SSH Key Generator Tool
- * Generate ED25519 and RSA key pairs securely in the browser using Web Crypto API
+ * Generate ECDSA and RSA key pairs securely in the browser using Web Crypto API
  * All processing happens client-side - keys never leave your browser
  */
 
@@ -187,14 +187,13 @@ chmod 600 ~/.ssh/authorized_keys</pre>
             <tr><th data-i18n="tools.ssh-key-generator.ui.th7">Algorithm</th><th data-i18n="tools.ssh-key-generator.ui.th8">Key Size</th><th data-i18n="tools.ssh-key-generator.ui.th9">Security</th><th data-i18n="tools.ssh-key-generator.ui.th10">Use Case</th></tr>
             <tr><td><code>RSA</code></td><td>2048/4096-bit</td><td>✅ Secure</td><td>General purpose, widest compatibility</td></tr>
             <tr><td><code>ECDSA</code></td><td>P-256</td><td>✅ Secure</td><td>Modern systems, compact keys</td></tr>
-            <tr><td><code>Ed25519</code></td><td>256-bit</td><td>✅ Best</td><td>Best performance (if supported)</td></tr>
           </table>` },
         { heading: 'Common Commands', content: `
           <table>
             <tr><th data-i18n="tools.ssh-key-generator.ui.th11">Command</th><th data-i18n="tools.ssh-key-generator.ui.th12">Description</th></tr>
-            <tr><td><code>ssh-keygen -t ed25519</code></td><td>Generate Ed25519 key</td></tr>
+            <tr><td><code>ssh-keygen -t ecdsa -b 256</code></td><td>Generate ECDSA key (P-256)</td></tr>
+            <tr><td><code>ssh-keygen -t rsa -b 4096</code></td><td>Generate RSA key (4096-bit)</td></tr>
             <tr><td><code>ssh-copy-id user@host</code></td><td>Copy public key to server</td></tr>
-            <tr><td><code>ssh-add ~/.ssh/id_ed25519</code></td><td>Add key to SSH agent</td></tr>
             <tr><td><code>chmod 600 ~/.ssh/id_*</code></td><td>Set correct permissions</td></tr>
           </table>` }
       ])}
