@@ -47,4 +47,56 @@ test.describe('Page sweep 2026-05-11 regressions', () => {
     await expect(page.locator('#entry-output')).not.toContainText('No entry yet.');
     await expect(page.locator('#history-body')).toContainText('admin');
   });
+
+  test('home search: json query filters cards correctly', async ({ page }) => {
+    await page.goto('http://localhost:8787/');
+    const search = page.locator('#tool-search');
+    await expect(search).toBeVisible();
+
+    await search.fill('json');
+    await page.waitForTimeout(300);
+
+    const jsonCard = page.locator('[data-tool-id="json-formatter"]');
+    await expect(jsonCard).toBeVisible();
+
+    const irrelevantIds = ['ladder-game', 'token-studio', 'caffeniate', 'bandwidth'];
+    for (const id of irrelevantIds) {
+      const card = page.locator(`[data-tool-id="${id}"]`);
+      if (await card.count() > 0) {
+        await expect(card).toBeHidden();
+      }
+    }
+
+    await search.fill('');
+    await page.waitForTimeout(300);
+    await expect(jsonCard).toBeVisible();
+  });
+
+  test('home search: empty state shows when no tools match', async ({ page }) => {
+    await page.goto('http://localhost:8787/');
+    const search = page.locator('#tool-search');
+    await search.fill('xyznomatch12345');
+    await page.waitForTimeout(300);
+
+    const emptyState = page.locator('#search-empty-state');
+    await expect(emptyState).toBeVisible();
+
+    await search.fill('');
+    await page.waitForTimeout(300);
+    await expect(emptyState).toBeHidden();
+  });
+
+  test('home: clicking nav-search-btn focuses hero search', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto('http://localhost:8787/');
+    const heroSearch = page.locator('#tool-search');
+    await expect(heroSearch).toBeVisible();
+
+    await page.locator('#tool-search').evaluate(el => el.blur());
+    await page.locator('#nav-search-btn').click();
+    await page.waitForTimeout(200);
+
+    const focused = await page.evaluate(() => document.activeElement && document.activeElement.id);
+    expect(focused).toBe('tool-search');
+  });
 });
