@@ -28,9 +28,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
     title,
     description,
     [
-      { text: translation?.ui?.badge41 || 'Client-Side Keys', color: 'green', tooltip: 'All private keys generated locally in your browser using libsodium.js. Keys never leave your device.' },
-      { text: translation?.ui?.badge42 || 'QR Export', color: 'purple', tooltip: 'Export configs as QR codes for easy mobile import.' },
-      { text: translation?.ui?.badge43 || 'Template Wizard', color: 'blue', tooltip: 'Quick-start templates for common network topologies.' }
+      { text: translation?.ui?.badge41 || 'Client-Side Keys', tooltip: 'All private keys generated locally in your browser using libsodium.js. Keys never leave your device.' }
     ],
     { toolId: 'wireguard-config' }
   );
@@ -90,19 +88,6 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
       <div class="tool-card">
 
         ${toolHeader}
-
-        <!-- Security Notice -->
-        <div class="mb-6 p-4 bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-800 rounded-lg">
-          <div class="flex items-start gap-3">
-            <span class="text-2xl">🔐</span>
-            <div>
-              <h2 class="text-sm font-bold text-success-900 dark:text-success-300 mb-1" data-i18n="tools.wireguard-config.ui.heading0">100% Client-Side Key Generation</h2>
-              <p class="text-xs text-success-800 dark:text-success-200" data-i18n="tools.wireguard-config.ui.desc0">
-                Private keys are generated using libsodium.js directly in your browser. Keys never leave your device.
-              </p>
-            </div>
-          </div>
-        </div>
 
         <!-- Key Generation Section -->
         <div class="mb-8 p-5 bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-800 rounded-xl">

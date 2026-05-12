@@ -22,9 +22,7 @@ function renderLogMaskerPage(lang = DEFAULT_LANGUAGE) {
     translation?.name || title,
     translation?.desc || description,
     [
-      { text: translation?.ui?.badge13 || 'PII Redaction', tooltip: 'Redact emails, IPs, credit cards, and other sensitive strings in place.' },
-      { text: translation?.ui?.badge14 || 'Local Only', tooltip: 'Runs entirely in the browser — no data is sent to any server.' },
-      { text: translation?.ui?.badge15 || 'Secure', tooltip: 'Masks sensitive fields before displaying results to keep logs private.' }
+      { text: translation?.ui?.badge13 || 'PII Redaction', tooltip: 'Redact emails, IPs, credit cards, and other sensitive strings in place.' }
     ],
     { toolId: 'log-masker' }
   );
