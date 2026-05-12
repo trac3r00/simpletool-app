@@ -550,7 +550,7 @@ export async function handleCronBuilderRoutes(request) {
         }
 
 function renderGrid(part, start, end, labelFn) {
-          const container = document.getElementById(`${part}-grid`);
+          const container = document.getElementById(\`\${part}-grid\`);
           container.innerHTML = '';
           container.setAttribute('role', 'grid');
           container.setAttribute('aria-label', 'Minute selector');
@@ -578,14 +578,6 @@ function renderGrid(part, start, end, labelFn) {
                 label.classList.remove('bg-primary-50', 'dark:bg-primary-900/30', 'border-primary-200', 'dark:border-primary-800');
                 label.setAttribute('aria-selected', 'false');
               }
-              updatePartFromGrid(part);
-            });
-
-            label.appendChild(input);
-            label.appendChild(span);
-            container.appendChild(label);
-          }
-        }
               updatePartFromGrid(part);
             });
 
