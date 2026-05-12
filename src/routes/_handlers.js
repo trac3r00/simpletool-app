@@ -31,7 +31,7 @@ import { handleCurlStudioRoutes as curl_studio } from './curl-studio.js';
 import { handleLogMaskerRoutes as log_masker } from './log-masker.js';
 import { handleMermaidStudioRoutes as mermaid_studio } from './mermaid-studio.js';
 import { handleJsonSchemaStudioRoutes as json_schema_studio } from './json-schema-studio.js';
-import { handleCaffeniateRoutes as caffeniate } from './caffeniate.js';
+import { handleCaffeinateRoutes as caffeinate } from './caffeinate.js';
 import { handleEmailAnalyzerRoutes as email_analyzer } from './email-analyzer.js';
 import { handleTokenCounterRoutes as token_counter } from './token-counter.js';
 import { handlePromptTemplateBuilderRoutes as prompt_template_builder } from './prompt-template-builder.js';
@@ -82,7 +82,7 @@ export const handlersById = {
   'log-masker': log_masker,
   'mermaid-studio': mermaid_studio,
   'json-schema-studio': json_schema_studio,
-  'caffeniate': caffeniate,
+  'caffeinate': caffeinate,
   'email-analyzer': email_analyzer,
   'token-counter': token_counter,
   'prompt-template-builder': prompt_template_builder,
