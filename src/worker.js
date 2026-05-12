@@ -7,6 +7,7 @@ import { renderHomePage } from './ui/home.js';
 import * as Sentry from '@sentry/cloudflare';
 import { handlersById } from './routes/_handlers.js';
 import { handlePipeRoutes } from './routes/pipe.js';
+import { handleMarkdownEditorRoutes } from './routes/markdown-editor.js';
 import { getToolsForEnvironment } from './utils/tool-registry.js';
 import {
   renderTermsPage,
@@ -423,6 +424,12 @@ const worker = {
       if (path === '/pipe' || path === '/pipe/') {
         const pipeResponse = await handlePipeRoutes(request, url);
         if (pipeResponse) return pipeResponse;
+      }
+
+      // Markdown Editor
+      if (path === '/markdown-editor' || path === '/markdown-editor/') {
+        const mdResponse = await handleMarkdownEditorRoutes(request, url);
+        if (mdResponse) return mdResponse;
       }
 
       // Active tool routes (registry-driven)
