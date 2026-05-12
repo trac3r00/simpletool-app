@@ -22,8 +22,6 @@ function renderJsonSchemaStudioPage(lang = DEFAULT_LANGUAGE) {
     title,
     translation?.desc || 'Turn any JSON sample into a valid JSON Schema instantly. Use it for validation, documentation, or code generation.',
     [
-      { text: translation?.ui?.badge6 || 'Auto-Generator', tooltip: 'Automatically infers a JSON Schema from your sample JSON input.' },
-      { text: translation?.ui?.badge7 || 'JSON Schema', tooltip: 'Produces schemas that comply with the JSON Schema specification.' },
       { text: translation?.ui?.badge9 || 'Client-Side Only', tooltip: 'All processing happens in your browser — no data is sent to any server.' }
     ],
     { toolId: 'json-schema-studio' }

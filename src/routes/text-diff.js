@@ -38,7 +38,6 @@ function renderTextDiffPage(lang = DEFAULT_LANGUAGE) {
     translation?.name || 'Text Diff',
     translation?.desc || 'Compare two texts side-by-side and highlight differences',
     [
-      { text: translation?.ui?.badge7 || 'Client-Side Only', color: 'blue', tooltip: 'All processing happens in your browser — no data is sent to any server.' },
       { text: translation?.ui?.badge8 || 'Privacy First', color: 'blue', tooltip: 'All processing happens in your browser — no data is sent to any server.' }
     ],
     { toolId: 'text-diff' }

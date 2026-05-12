@@ -17,9 +17,7 @@ export async function handleRegexVisualizerRoutes(request) {
     { emoji: '🧩' },
     title,
     'Understand, test, and debug regular expressions with interactive visualizations and real-time explanations.',
-    [{ text: translation?.ui?.badge18 || 'Visualizer', tooltip: 'Renders interactive railroad diagrams so you can explore the regex structure.' },
-     { text: translation?.ui?.badge19 || 'Tester', tooltip: 'Run the regex against example text instantly to validate matches.' },
-     { text: translation?.ui?.badge20 || 'Code Gen', tooltip: 'Generate ready-to-use snippets showing how to use the pattern in code.' }],
+    [],
     { toolId: 'regex-visualizer' }
   );
 
