@@ -31,9 +31,7 @@ function renderMarkdownPreviewPage(lang = DEFAULT_LANGUAGE) {
     { emoji: '📝' },
     translation?.name || 'Markdown Editor',
     translation?.desc || 'Live Markdown editor with split-pane preview, Mermaid diagrams, and export tools.',
-    [{ text: translation?.ui?.badge11 || 'Live Preview', tooltip: 'Updates the rendered preview instantly as you edit markdown.' },
-     { text: translation?.ui?.badge12 || 'Mermaid', tooltip: 'Supports Mermaid.js diagram syntax directly inside the editor.' },
-     { text: translation?.ui?.badge13 || 'Export', tooltip: 'Export Markdown, HTML, or other formats without leaving the page.' }],
+    [],
     { toolId: 'markdown-preview' }
   );
 

@@ -21,11 +21,7 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
     { emoji: '🦈' },
     title,
     description,
-    [
-      { text: translation?.ui?.badge49 || 'Display Filters', tooltip: 'Build Wireshark display filters for analyzing captured traffic' },
-      { text: translation?.ui?.badge50 || 'BPF Capture', tooltip: 'Create Berkeley Packet Filter expressions for capture-time filtering' },
-      { text: translation?.ui?.badge51 || 'Protocol Reference', tooltip: 'Quick reference for protocol fields and filter syntax' }
-    ],
+    [],
     { toolId: 'wireshark-filter' }
   );
 

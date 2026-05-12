@@ -18,11 +18,7 @@ export async function handleMermaidStudioRoutes(request, url) {
     { emoji: '🧜‍♀️' },
     title,
     description,
-    [
-      { text: translation?.ui?.badge6 || 'Live Preview', tooltip: 'Updates the rendered diagram instantly as you edit Mermaid code.' },
-      { text: translation?.ui?.badge7 || 'Flowcharts', tooltip: 'Tailored for creating flowcharts, sequence diagrams, and similar graphs.' },
-      { text: translation?.ui?.badge8 || 'SVG Export', tooltip: 'Download the rendered diagram as an SVG file for reuse.' }
-    ],
+    [{ text: translation?.ui?.badge9 || 'Client-Side Only', tooltip: 'Diagrams render entirely in your browser using Mermaid.js.' }],
     { toolId: 'mermaid-studio' }
   );
 

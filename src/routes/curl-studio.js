@@ -21,11 +21,7 @@ function renderCurlStudioPage(lang = DEFAULT_LANGUAGE) {
     { emoji: '🐚' },
     title,
     description,
-    [
-      { text: '<span data-i18n="tools.curl-studio.ui.badge12">Parser</span>', tooltip: 'Breaks curl commands into structured fields directly in your browser.' },
-      { text: '<span data-i18n="tools.curl-studio.ui.badge13">Generator</span>', tooltip: 'Build ready-to-run curl commands from form inputs without network calls.' },
-      { text: '<span data-i18n="tools.curl-studio.ui.badge14">Privacy-First</span>', tooltip: 'All processing happens in your browser — no data is sent to any server.' }
-    ],
+    [{ text: translation?.ui?.badge14 || 'Privacy-First', tooltip: 'All processing happens in your browser — no data is sent to any server.' }],
     { toolId: 'curl-studio' }
   );
 
