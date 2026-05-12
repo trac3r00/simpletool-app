@@ -8,6 +8,33 @@ import { DEFAULT_LANGUAGE, normalizeLanguage, resolveRequestLanguage } from '../
 
 const RELEASES = [
   {
+    version: '2.4.1',
+    date: '2026-05-11',
+    title: 'Post-QA & Page-sweep Fixes',
+    changes: [
+      { type: 'fix', text: 'JSON Formatter: fix max-depth and key counters; extract shared json-stats util' },
+      { type: 'fix', text: 'JSON Formatter: clear stale output and stats on parse/minify error' },
+      { type: 'fix', text: 'SRI: regenerate all vendor script integrity hashes; add scripts/update-sri.mjs tooling' },
+      { type: 'fix', text: 'Clipboard: global safety script catches NotAllowedError/SecurityError with toast' },
+      { type: 'fix', text: 'Routes: add 301 redirects for /jwt-inspector, /layered-decoder, /css-gradient-generator' },
+      { type: 'fix', text: 'CSS: fix .empty-state.hidden specificity so Tailwind hidden actually hides' },
+      { type: 'fix', text: 'pipe: resolve undefined title and render proper page' },
+      { type: 'fix', text: 'htpasswd-generator: Generate entry now produces output' },
+      { type: 'fix', text: 'ssh-key-generator: emit OpenSSH wire format (RFC 4253) for public keys' },
+      { type: 'fix', text: 'home: live search filter actually filters tool cards' },
+      { type: 'fix', text: '404: add inline search and popular-tools recovery' },
+      { type: 'fix', text: 'caffeinate: correct spelling, add 301 from /caffeniate' },
+      { type: 'fix', text: 'dns-reference: command-builder dropdown includes DKIM/SPF/DMARC' },
+      { type: 'fix', text: 'a11y: cron-builder minute grid uses proper grid/gridcell roles' },
+      { type: 'fix', text: 'a11y: qr aria-label, saml empty-pane, regex empty-counter' },
+      { type: 'fix', text: 'cron-builder: escape template literals in ARIA grid render' },
+      { type: 'refactor', text: 'Trust pills: shared createTrustPill component; demote redundant feature-pills across 12 routes' },
+      { type: 'refactor', text: 'markdown-preview → markdown-editor with 301 redirect' },
+      { type: 'refactor', text: 'uuid-generator: remove redundant GUID dropdown option (duplicate of v4)' },
+      { type: 'refactor', text: 'code-minifier: remove JSON tab, cross-link to JSON Formatter' },
+    ]
+  },
+  {
     version: '2.4.0',
     date: '2026-03-23',
     title: 'Production Readiness & Full i18n',
