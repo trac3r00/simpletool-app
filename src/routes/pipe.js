@@ -515,6 +515,12 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
   `;
 
   return respondHTML(
-    createPageTemplate('Pipe Mode — SimpleTool', content + script, { canonicalPath: '/pipe' })
+    createPageTemplate({
+      title: 'Pipe Mode — Chain Tools Together',
+      description: 'Chain multiple tools into a pipeline. Your data never leaves your browser.',
+      content: content + script,
+      path: '/pipe',
+      lang
+    })
   );
 }

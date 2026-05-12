@@ -20,6 +20,16 @@ test.describe('Page sweep 2026-05-11 regressions', () => {
     await expect(page.locator('#public-key')).toHaveValue(/^ssh-rsa AAAAB3NzaC1yc2E/);
   });
 
+  test('/pipe: renders valid page with proper title', async ({ page }) => {
+    const response = await page.goto('http://localhost:8787/pipe');
+    expect(response.status()).toBe(200);
+    const title = await page.title();
+    expect(title).not.toContain('undefined');
+    expect(title.length).toBeGreaterThan(5);
+    const h1 = await page.locator('h1').first().textContent();
+    expect(h1).toBeTruthy();
+  });
+
   test('htpasswd-generator: Generate entry produces bcrypt output', async ({ page }) => {
     await page.goto('http://localhost:8787/htpasswd-generator');
     await page.fill('input[name="username"], #username, #username-input, input[placeholder*="username" i]', 'admin');
