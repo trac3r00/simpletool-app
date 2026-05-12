@@ -36,9 +36,9 @@ describe('filterTools', () => {
     expect(results.some((t) => t.id === 'bandwidth-calculator')).toBe(false);
   });
 
-  it("'json' does NOT match markdown-preview", () => {
+  it("'json' does NOT match markdown-editor", () => {
     const results = filterTools(TOOLS, 'json');
-    expect(results.some((t) => t.id === 'markdown-preview')).toBe(false);
+    expect(results.some((t) => t.id === 'markdown-editor')).toBe(false);
   });
 
   it("'regex' matches regex-visualizer", () => {

@@ -4,14 +4,14 @@ import { TOOLS } from '../utils/tool-registry.js';
 import { createRelatedToolsSection } from '../utils/content-ui.js';
 import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
 
-export async function handleMarkdownPreviewRoutes(request, url) {
+export async function handleMarkdownEditorRoutes(request, url) {
   const { pathname } = url;
   const method = request.method;
 
   try {
-    if (pathname === '/markdown-preview' || pathname === '/markdown-preview/') {
+    if (pathname === '/markdown-editor' || pathname === '/markdown-editor/') {
       if (method === 'GET') {
-        return renderMarkdownPreviewPage(resolveRequestLanguage(request, url));
+        return renderMarkdownEditorPage(resolveRequestLanguage(request, url));
       }
     }
     return respondJSON({ error: 'Not found' }, { status: 404 });
@@ -24,18 +24,18 @@ export async function handleMarkdownPreviewRoutes(request, url) {
   }
 }
 
-function renderMarkdownPreviewPage(lang = DEFAULT_LANGUAGE) {
+function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('markdown-preview', currentLang);
+  const translation = getToolTranslation('markdown-editor', currentLang);
   const toolHeader = createToolHeader(
     { emoji: '📝' },
     translation?.name || 'Markdown Editor',
     translation?.desc || 'Live Markdown editor with split-pane preview, Mermaid diagrams, and export tools.',
     [],
-    { toolId: 'markdown-preview' }
+    { toolId: 'markdown-editor' }
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'markdown-preview');
+  const currentTool = TOOLS.find(t => t.id === 'markdown-editor');
     const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
 
 
@@ -784,7 +784,7 @@ function renderMarkdownPreviewPage(lang = DEFAULT_LANGUAGE) {
     createPageTemplate({
       title: translation?.name || 'Markdown Editor',
       description: translation?.desc || 'Split-pane Markdown editor with sync scroll and GFM support.',
-      path: '/markdown-preview',
+      path: '/markdown-editor',
       content,
       scripts,
       lang: currentLang

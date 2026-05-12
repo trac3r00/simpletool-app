@@ -125,7 +125,7 @@ export const TOOLS = [
     path: '/text-diff',
     category: 'utils',
     keywords: 'compare, changes, delta',
-    relatedTools: ['json-formatter', 'code-minifier', 'env-var-manager', 'markdown-preview']
+    relatedTools: ['json-formatter', 'code-minifier', 'env-var-manager', 'markdown-editor']
   },
   {
     id: 'regex-visualizer',
@@ -299,11 +299,11 @@ export const TOOLS = [
     relatedTools: ['json-formatter', 'json-schema-studio', 'uuid-generator', 'sql-formatter']
   },
   {
-    id: 'markdown-preview',
+    id: 'markdown-editor',
     name: 'Markdown Editor',
     icon: '👁️',
     description: 'Split-pane Markdown editor with sync scroll and GFM support.',
-    path: '/markdown-preview',
+    path: '/markdown-editor',
     category: 'utils',
     keywords: 'editor, text, html, gfm',
     relatedTools: ['text-diff', 'mermaid-studio', 'code-minifier', 'case-converter']
@@ -326,7 +326,7 @@ export const TOOLS = [
     path: '/case-converter',
     category: 'formatters',
     keywords: 'string, transform',
-    relatedTools: ['regex-visualizer', 'text-diff', 'code-minifier', 'markdown-preview']
+    relatedTools: ['regex-visualizer', 'text-diff', 'code-minifier', 'markdown-editor']
   },
   {
     id: 'code-minifier',
@@ -388,7 +388,7 @@ export const TOOLS = [
     path: '/mermaid-studio',
     category: 'utils',
     keywords: 'diagram, flowchart, sequence, visualization',
-    relatedTools: ['markdown-preview', 'svg-optimizer', 'json-schema-studio', 'mock-data-generator']
+    relatedTools: ['markdown-editor', 'svg-optimizer', 'json-schema-studio', 'mock-data-generator']
   },
   {
     id: 'json-schema-studio',
@@ -438,7 +438,7 @@ export const TOOLS = [
     path: '/prompt-template-builder',
     category: 'utils',
     keywords: 'prompt, template, gpt, claude, llama, system, user',
-    relatedTools: ['token-counter', 'markdown-preview', 'json-formatter', 'mock-data-generator']
+    relatedTools: ['token-counter', 'markdown-editor', 'json-formatter', 'mock-data-generator']
   },
   {
     id: 'sql-formatter',
