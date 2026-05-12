@@ -401,11 +401,11 @@ export const TOOLS = [
     relatedTools: ['json-formatter', 'yaml-toml-converter', 'mock-data-generator', 'sql-formatter']
   },
   {
-    id: 'caffeniate',
-    name: 'Caffeniate',
+    id: 'caffeinate',
+    name: 'Caffeinate',
     icon: '☕',
     description: 'Keep your device screen awake using the Wake Lock API.',
-    path: '/caffeniate',
+    path: '/caffeinate',
     category: 'utils',
     keywords: 'wake lock, screen, awake, sleep, caffeinate',
     relatedTools: ['timestamp-converter', 'cron-builder', 'token-counter']

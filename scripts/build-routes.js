@@ -50,7 +50,7 @@ const TOOL_HANDLERS = [
   { id: 'log-masker', file: 'log-masker.js', exp: 'handleLogMaskerRoutes' },
   { id: 'mermaid-studio', file: 'mermaid-studio.js', exp: 'handleMermaidStudioRoutes' },
   { id: 'json-schema-studio', file: 'json-schema-studio.js', exp: 'handleJsonSchemaStudioRoutes' },
-  { id: 'caffeniate', file: 'caffeniate.js', exp: 'handleCaffeniateRoutes' },
+  { id: 'caffeinate', file: 'caffeinate.js', exp: 'handleCaffeinateRoutes' },
   { id: 'email-analyzer', file: 'email-analyzer.js', exp: 'handleEmailAnalyzerRoutes' },
   { id: 'token-counter', file: 'token-counter.js', exp: 'handleTokenCounterRoutes' },
   { id: 'prompt-template-builder', file: 'prompt-template-builder.js', exp: 'handlePromptTemplateBuilderRoutes' },
