@@ -129,7 +129,11 @@ function renderDnsReferencePage(lang = DEFAULT_LANGUAGE) {
                 <option value="CAA">CAA</option>
                 <option value="DS">DS</option>
                 <option value="DNSKEY">DNSKEY</option>
+                <option value="DKIM">DKIM</option>
+                <option value="SPF">SPF</option>
+                <option value="DMARC">DMARC</option>
               </select>
+              <p class="text-xs text-surface-500 dark:text-surface-400 mt-1">DKIM/SPF/DMARC use TXT records at specific subdomains.</p>
             </div>
             <div>
               <label class="label" data-i18n="tools.dns-reference.ui.label1">Domain</label>
@@ -500,13 +504,35 @@ function renderDnsReferencePage(lang = DEFAULT_LANGUAGE) {
         const domain = cmdDomain.value.trim() || 'example.com';
         const server = cmdServer.value.trim();
 
-        let digCmd = server 
-          ? 'dig @' + server + ' ' + domain + ' ' + type
-          : 'dig ' + domain + ' ' + type;
-        
-        let nslookupCmd = 'nslookup -type=' + type + ' ' + domain;
-        if (server) {
-          nslookupCmd += ' ' + server;
+        let digCmd;
+        let nslookupCmd;
+
+        if (type === 'DMARC') {
+          const subdomain = '_dmarc.' + domain;
+          digCmd = server
+            ? 'dig @' + server + ' ' + subdomain + ' TXT'
+            : 'dig ' + subdomain + ' TXT';
+          nslookupCmd = 'nslookup -type=TXT ' + subdomain;
+          if (server) nslookupCmd += ' ' + server;
+        } else if (type === 'SPF') {
+          digCmd = server
+            ? 'dig @' + server + ' ' + domain + ' TXT'
+            : 'dig ' + domain + ' TXT';
+          nslookupCmd = 'nslookup -type=TXT ' + domain;
+          if (server) nslookupCmd += ' ' + server;
+        } else if (type === 'DKIM') {
+          const subdomain = 'default._domainkey.' + domain;
+          digCmd = server
+            ? 'dig @' + server + ' ' + subdomain + ' TXT'
+            : 'dig ' + subdomain + ' TXT';
+          nslookupCmd = 'nslookup -type=TXT ' + subdomain;
+          if (server) nslookupCmd += ' ' + server;
+        } else {
+          digCmd = server
+            ? 'dig @' + server + ' ' + domain + ' ' + type
+            : 'dig ' + domain + ' ' + type;
+          nslookupCmd = 'nslookup -type=' + type + ' ' + domain;
+          if (server) nslookupCmd += ' ' + server;
         }
 
         digOutput.textContent = digCmd;
