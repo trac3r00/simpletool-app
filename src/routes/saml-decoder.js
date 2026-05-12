@@ -84,7 +84,7 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
            <div id="saml-error" role="alert" class="hidden rounded-2xl border border-error-200 dark:border-error-800 bg-error-50 dark:bg-error-900/30 text-sm text-error-700 dark:text-error-200 px-4 py-3" data-i18n="tools.saml-decoder.ui.error0">Parsing error</div>
         </div>
 
-        <div class="space-y-6">
+        <div id="saml-summary-pane" class="space-y-6 hidden">
           <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-3xl shadow-xl p-6">
             <div class="flex items-center justify-between mb-4">
               <h2 class="text-lg font-bold text-surface-900 dark:text-white" data-i18n="tools.saml-decoder.ui.heading9">Quick summary</h2>
@@ -223,6 +223,7 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
         var prettyToggle = document.getElementById('pretty-toggle');
         var samlError = document.getElementById('saml-error');
         var decodedPanel = document.getElementById('decoded-panel');
+        var samlSummaryPane = document.getElementById('saml-summary-pane');
         var validityBadge = document.getElementById('validity-badge');
         var attributeBody = document.getElementById('attribute-body');
         var xmlOutput = document.getElementById('xml-output');
@@ -246,6 +247,7 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
           samlError.textContent = msg;
           samlError.classList.remove('hidden');
           decodedPanel.classList.add('hidden');
+          samlSummaryPane.classList.add('hidden');
         }
 
         function hideError() {
@@ -549,6 +551,7 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
           renderTabs(xmlString, samlData);
 
           decodedPanel.classList.remove('hidden');
+          samlSummaryPane.classList.remove('hidden');
           switchTab('xml');
           window._samlDecoded = { xml: xmlString, data: samlData };
         }
@@ -596,6 +599,7 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
           samlInput.value = '';
           hideError();
           decodedPanel.classList.add('hidden');
+          samlSummaryPane.classList.add('hidden');
           validityBadge.textContent = window._t ? window._t('tools.saml-decoder.ui.desc15', 'Awaiting input') : 'Awaiting input';
           validityBadge.className = 'text-xs font-semibold px-3 py-1 rounded-full bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-300';
           document.getElementById('summary-issuer').textContent = '—';

@@ -555,11 +555,17 @@ while ((m = regex.exec(str)) !== null) {
         highlightDisplay.innerHTML = '';
         groupsTableBody.innerHTML = '';
         
-        if (!pattern) {
-          highlightDisplay.textContent = text;
-          matchCount.textContent = _t('tools.regex-visualizer.js.text0', '0 matches');
-          return;
-        }
+if (!pattern) {
+           highlightDisplay.textContent = text;
+           matchCount.textContent = _t('tools.regex-visualizer.js.text0', '0 matches');
+           return;
+         }
+
+         if (!text) {
+           highlightDisplay.innerHTML = '';
+           matchCount.textContent = '—';
+           return;
+         }
 
         try {
           const regex = new RegExp(pattern, flags);
