@@ -4,7 +4,7 @@
  */
 
 import { respondHTML, respondJSON } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, getCopyToClipboardScript } from '../utils/common-ui.js';
+import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
 import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
 import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
@@ -246,7 +246,6 @@ function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
   `;
 
   const scripts = `
-    ${getCopyToClipboardScript()}
     <script>
       (function() {
         // ── PKCE Generator ──────────────────────────────────────────────

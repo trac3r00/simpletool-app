@@ -1,5 +1,5 @@
 import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, getCopyToClipboardScript } from '../utils/common-ui.js';
+import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
 import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
 import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
@@ -22,9 +22,7 @@ function renderLogMaskerPage(lang = DEFAULT_LANGUAGE) {
     translation?.name || title,
     translation?.desc || description,
     [
-      { text: translation?.ui?.badge13 || 'PII Redaction', tooltip: 'Redact emails, IPs, credit cards, and other sensitive strings in place.' },
-      { text: translation?.ui?.badge14 || 'Local Only', tooltip: 'Runs entirely in the browser — no data is sent to any server.' },
-      { text: translation?.ui?.badge15 || 'Secure', tooltip: 'Masks sensitive fields before displaying results to keep logs private.' }
+      { text: translation?.ui?.badge13 || 'PII Redaction', tooltip: 'Redact emails, IPs, credit cards, and other sensitive strings in place.' }
     ],
     { toolId: 'log-masker' }
   );
@@ -108,8 +106,7 @@ function renderLogMaskerPage(lang = DEFAULT_LANGUAGE) {
   `;
 
    const scripts = `
-     ${getCopyToClipboardScript()}
-     <script type="module">
+      <script type="module">
       // Local PII redaction implementation
       function redactPII(text, options = {}) {
         let result = text;

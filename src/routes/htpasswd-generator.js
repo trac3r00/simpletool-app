@@ -190,11 +190,406 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
     </div>
   `;
 
+  const scripts = `
+    <script src="/vendor/md5.min.js" integrity="sha384-JmVtRz6RWiXnA14QbIOJzPuU3MidULOpBP66deeLLyyoF4Tr/gZlbkHkL6vTthxH" crossorigin="anonymous"></script>
+    <script src="/vendor/bcrypt.min.js" integrity="sha384-qGFE4FIJLgCFuYs3nzg39XpCtvT5AZUhaBdjB3e1+vpKQa03AkyWOyBSFb9OcQ/g" crossorigin="anonymous"></script>
+    <script>
+      const usernameInput = document.getElementById('username-input');
+      const passwordInput = document.getElementById('password-input');
+      const algorithmSelect = document.getElementById('algorithm-select');
+      const costSlider = document.getElementById('cost-slider');
+      const costLabel = document.getElementById('cost-label');
+      const saltInput = document.getElementById('salt-input');
+      const bcryptOptions = document.getElementById('bcrypt-options');
+      const saltOptions = document.getElementById('salt-options');
+      const errorBox = document.getElementById('htpasswd-error');
+      const generateBtn = document.getElementById('generate-btn');
+      const entryOutput = document.getElementById('entry-output');
+      const copyEntryBtn = document.getElementById('copy-entry');
+      const downloadEntryBtn = document.getElementById('download-entry');
+      const clearHistoryBtn = document.getElementById('clear-history');
+      const historyBody = document.getElementById('history-body');
+      const togglePasswordBtn = document.getElementById('toggle-password');
+      const generatePasswordBtn = document.getElementById('generate-password');
+      const randomSaltBtn = document.getElementById('random-salt');
+
+      const APR1_ALPHABET = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+      const PASSWORD_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%^&*()-_=+[]{}';
+      const historyItems = [];
+      let currentEntry = '';
+
+      function translate(key, fallback) {
+        return window._t ? window._t(key, fallback) : fallback;
+      }
+
+      function escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, function(character) {
+          return {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+          }[character] || character;
+        });
+      }
+
+      function showError(message) {
+        errorBox.textContent = message;
+        errorBox.classList.remove('hidden');
+      }
+
+      function hideError() {
+        errorBox.textContent = '';
+        errorBox.classList.add('hidden');
+      }
+
+      function setButtonBusy(button, busy, busyLabel) {
+        if (!button) return;
+        if (!button.dataset.originalLabel) {
+          button.dataset.originalLabel = button.innerHTML;
+        }
+        button.disabled = busy;
+        button.innerHTML = busy ? busyLabel : button.dataset.originalLabel;
+      }
+
+      function randomFromCharset(charset, length) {
+        const bytes = crypto.getRandomValues(new Uint32Array(length));
+        let output = '';
+        for (let index = 0; index < length; index += 1) {
+          output += charset[bytes[index] % charset.length];
+        }
+        return output;
+      }
+
+      function generateStrongPassword() {
+        return randomFromCharset(PASSWORD_CHARS, 20);
+      }
+
+      function generateApr1Salt() {
+        return randomFromCharset(APR1_ALPHABET, 8);
+      }
+
+      function updateCostLabel() {
+        costLabel.textContent = costSlider.value + ' rounds';
+      }
+
+      function updateAlgorithmOptions() {
+        const algorithm = algorithmSelect.value;
+        bcryptOptions.classList.toggle('hidden', algorithm !== 'bcrypt');
+        saltOptions.classList.toggle('hidden', algorithm !== 'apr1');
+      }
+
+      function updateCurrentEntry(entry) {
+        currentEntry = entry;
+        entryOutput.textContent = entry || translate('tools.htpasswd-generator.ui.desc26', 'No entry yet.');
+        const hasEntry = Boolean(entry);
+        copyEntryBtn.disabled = !hasEntry;
+        downloadEntryBtn.disabled = !hasEntry;
+      }
+
+      function algorithmLabelFor(value) {
+        switch (value) {
+          case 'bcrypt':
+            return translate('tools.htpasswd-generator.ui.option13', 'Bcrypt (-B)');
+          case 'apr1':
+            return translate('tools.htpasswd-generator.ui.option14', 'Apache MD5 (-m)');
+          case 'sha':
+            return translate('tools.htpasswd-generator.ui.option15', 'SHA1 (-s)');
+          case 'plain':
+            return translate('tools.htpasswd-generator.ui.option16', 'Plaintext');
+          default:
+            return value;
+        }
+      }
+
+      function renderHistory() {
+        if (!historyItems.length) {
+          historyBody.innerHTML = '<tr><td class="py-3 text-surface-500" colspan="3">' + escapeHtml(translate('tools.htpasswd-generator.ui.desc27', 'Nothing generated yet.')) + '</td></tr>';
+          return;
+        }
+
+        historyBody.innerHTML = historyItems.map(function(item, index) {
+          return '<tr>' +
+            '<td class="py-3 font-medium">' + escapeHtml(item.username) + '</td>' +
+            '<td class="py-3">' + escapeHtml(item.algorithmLabel) + '</td>' +
+            '<td class="py-3">' +
+              '<button type="button" class="btn btn-ghost btn-xs history-copy" data-history-index="' + index + '">' +
+                escapeHtml(translate('tools.htpasswd-generator.ui.button4', 'Copy')) +
+              '</button>' +
+            '</td>' +
+          '</tr>';
+        }).join('');
+      }
+
+      async function copyText(text, button) {
+        await navigator.clipboard.writeText(text);
+        if (window.Toast) {
+          window.Toast.success(translate('common.copied', 'Copied!'));
+        }
+        if (!button) return;
+        const original = button.innerHTML;
+        button.innerHTML = translate('common.copied', 'Copied!');
+        window.setTimeout(function() {
+          button.innerHTML = original;
+        }, 1500);
+      }
+
+      function downloadEntry() {
+        if (!currentEntry) return;
+        const blob = new Blob([currentEntry + '\\n'], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = '.htpasswd';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.setTimeout(function() {
+          URL.revokeObjectURL(url);
+        }, 0);
+      }
+
+      function binaryStringFromBytes(bytes) {
+        let binary = '';
+        for (let index = 0; index < bytes.length; index += 1) {
+          binary += String.fromCharCode(bytes[index]);
+        }
+        return binary;
+      }
+
+      async function buildShaEntry(password) {
+        const digest = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(password));
+        return '{SHA}' + btoa(binaryStringFromBytes(new Uint8Array(digest)));
+      }
+
+      function md5Raw(value) {
+        if (typeof window.md5 !== 'function') {
+          throw new Error('MD5 library not available. Reload and try again.');
+        }
+        return window.md5(value, null, true);
+      }
+
+      function apr1To64(value, length) {
+        let output = '';
+        let remaining = length;
+        while (remaining > 0) {
+          output += APR1_ALPHABET[value & 0x3f];
+          value >>= 6;
+          remaining -= 1;
+        }
+        return output;
+      }
+
+      function buildApr1Entry(password, suppliedSalt) {
+        let salt = (suppliedSalt || generateApr1Salt()).split('$')[0].slice(0, 8);
+        if (!salt) {
+          salt = generateApr1Salt();
+        }
+        const magic = '$apr1$';
+        let context = password + magic + salt;
+        const alternate = md5Raw(password + salt + password);
+
+        for (let remaining = password.length; remaining > 0; remaining -= 16) {
+          context += alternate.substring(0, Math.min(16, remaining));
+        }
+
+        for (let remaining = password.length; remaining > 0; remaining >>= 1) {
+          context += (remaining & 1) ? String.fromCharCode(0) : password.charAt(0);
+        }
+
+        let final = md5Raw(context);
+        for (let index = 0; index < 1000; index += 1) {
+          let next = '';
+          next += (index & 1) ? password : final;
+          if (index % 3) next += salt;
+          if (index % 7) next += password;
+          next += (index & 1) ? final : password;
+          final = md5Raw(next);
+        }
+
+        const bytes = Array.from(final, function(character) {
+          return character.charCodeAt(0) & 0xff;
+        });
+
+        const encoded =
+          apr1To64((bytes[0] << 16) | (bytes[6] << 8) | bytes[12], 4) +
+          apr1To64((bytes[1] << 16) | (bytes[7] << 8) | bytes[13], 4) +
+          apr1To64((bytes[2] << 16) | (bytes[8] << 8) | bytes[14], 4) +
+          apr1To64((bytes[3] << 16) | (bytes[9] << 8) | bytes[15], 4) +
+          apr1To64((bytes[4] << 16) | (bytes[10] << 8) | bytes[5], 4) +
+          apr1To64(bytes[11], 2);
+
+        return magic + salt + '$' + encoded;
+      }
+
+      async function buildBcryptEntry(password) {
+        const bcryptLib = (window.dcodeIO && window.dcodeIO.bcrypt) || window.bcrypt;
+        if (!bcryptLib) {
+          throw new Error('bcrypt library not available. Reload and try again.');
+        }
+
+        const rounds = parseInt(costSlider.value, 10);
+
+        const hash = await new Promise(function(resolve, reject) {
+          bcryptLib.genSalt(rounds, function(saltError, salt) {
+            if (saltError) {
+              reject(saltError);
+              return;
+            }
+
+            bcryptLib.hash(password, salt, function(hashError, value) {
+              if (hashError) {
+                reject(hashError);
+                return;
+              }
+              resolve(value);
+            });
+          });
+        });
+
+        return hash.startsWith('$2a$') ? '$2y$' + hash.slice(4) : hash;
+      }
+
+      async function buildHash(password) {
+        switch (algorithmSelect.value) {
+          case 'bcrypt':
+            return buildBcryptEntry(password);
+          case 'apr1':
+            return buildApr1Entry(password, saltInput.value.trim());
+          case 'sha':
+            return buildShaEntry(password);
+          case 'plain':
+            return password;
+          default:
+            throw new Error('Unsupported algorithm.');
+        }
+      }
+
+      function pushHistoryItem(item) {
+        historyItems.unshift(item);
+        if (historyItems.length > 8) {
+          historyItems.length = 8;
+        }
+        renderHistory();
+      }
+
+      async function generateEntry() {
+        hideError();
+
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value;
+
+        if (!username) {
+          showError('Enter a username first.');
+          usernameInput.focus();
+          return;
+        }
+
+        if (/[:\\r\\n]/.test(username)) {
+          showError('Username cannot contain colons or line breaks.');
+          usernameInput.focus();
+          return;
+        }
+
+        if (!password) {
+          showError('Enter a password first.');
+          passwordInput.focus();
+          return;
+        }
+
+        const suppliedSalt = saltInput.value.trim();
+        if (algorithmSelect.value === 'apr1' && suppliedSalt && !/^[./0-9A-Za-z]{1,8}$/.test(suppliedSalt)) {
+          showError('Salt must be 1-8 characters using ./0-9A-Za-z.');
+          saltInput.focus();
+          return;
+        }
+
+        setButtonBusy(generateBtn, true, '<span>Generating…</span>');
+
+        try {
+          const hash = await buildHash(password);
+          const entry = username + ':' + hash;
+          updateCurrentEntry(entry);
+          pushHistoryItem({
+            username: username,
+            algorithmLabel: algorithmLabelFor(algorithmSelect.value),
+            entry: entry
+          });
+        } catch (error) {
+          showError(error instanceof Error ? error.message : 'Failed to generate entry.');
+        } finally {
+          setButtonBusy(generateBtn, false, '');
+        }
+      }
+
+      togglePasswordBtn.addEventListener('click', function() {
+        const isHidden = passwordInput.type === 'password';
+        passwordInput.type = isHidden ? 'text' : 'password';
+        const label = togglePasswordBtn.querySelector('span');
+        if (label) {
+          label.textContent = isHidden ? 'Hide' : translate('tools.htpasswd-generator.ui.button0', 'Show');
+        }
+      });
+
+      generatePasswordBtn.addEventListener('click', function() {
+        passwordInput.value = generateStrongPassword();
+        hideError();
+      });
+
+      randomSaltBtn.addEventListener('click', function() {
+        saltInput.value = generateApr1Salt();
+        hideError();
+      });
+
+      algorithmSelect.addEventListener('change', function() {
+        updateAlgorithmOptions();
+        hideError();
+      });
+
+      costSlider.addEventListener('input', updateCostLabel);
+      generateBtn.addEventListener('click', generateEntry);
+      copyEntryBtn.addEventListener('click', function() {
+        if (currentEntry) {
+          copyText(currentEntry, copyEntryBtn).catch(function() {
+            showError('Clipboard access failed. Copy the entry manually.');
+          });
+        }
+      });
+      downloadEntryBtn.addEventListener('click', downloadEntry);
+      clearHistoryBtn.addEventListener('click', function() {
+        historyItems.length = 0;
+        renderHistory();
+      });
+      historyBody.addEventListener('click', function(event) {
+        const button = event.target.closest('.history-copy');
+        if (!button) return;
+        const index = Number(button.getAttribute('data-history-index'));
+        const item = historyItems[index];
+        if (!item) return;
+        updateCurrentEntry(item.entry);
+        copyText(item.entry, button).catch(function() {
+          showError('Clipboard access failed. Copy the entry manually.');
+        });
+      });
+
+      usernameInput.addEventListener('input', hideError);
+      passwordInput.addEventListener('input', hideError);
+      saltInput.addEventListener('input', hideError);
+
+      updateCostLabel();
+      updateAlgorithmOptions();
+      saltInput.value = generateApr1Salt();
+      renderHistory();
+    </script>
+  `;
+
   return createPageTemplate({
     title,
     description,
     path: '/htpasswd-generator',
     content,
+    scripts,
     lang: currentLang
   });
 }

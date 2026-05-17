@@ -1,5 +1,5 @@
 import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createCheatsheet, getCopyToClipboardScript } from '../utils/common-ui.js';
+import { createPageTemplate, createToolHeader, createCheatsheet } from '../utils/common-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
 import { createRelatedToolsSection } from '../utils/content-ui.js';
 import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
@@ -21,11 +21,7 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
     { emoji: '🦈' },
     title,
     description,
-    [
-      { text: translation?.ui?.badge49 || 'Display Filters', tooltip: 'Build Wireshark display filters for analyzing captured traffic' },
-      { text: translation?.ui?.badge50 || 'BPF Capture', tooltip: 'Create Berkeley Packet Filter expressions for capture-time filtering' },
-      { text: translation?.ui?.badge51 || 'Protocol Reference', tooltip: 'Quick reference for protocol fields and filter syntax' }
-    ],
+    [],
     { toolId: 'wireshark-filter' }
   );
 
@@ -373,7 +369,6 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
   `;
 
   const scripts = `
-    ${getCopyToClipboardScript()}
     <script type="module">
       // Protocol fields mapping
       const PROTOCOL_FIELDS = {

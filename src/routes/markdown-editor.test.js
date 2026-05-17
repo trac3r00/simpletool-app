@@ -1,30 +1,30 @@
 
 // @vitest-environment node
 import { describe, it, expect } from 'vitest';
-import { handleMarkdownPreviewRoutes } from './markdown-preview.js';
+import { handleMarkdownEditorRoutes } from './markdown-editor.js';
 
-describe('handleMarkdownPreviewRoutes', () => {
+describe('handleMarkdownEditorRoutes', () => {
   it('should return 404 for unknown paths', async () => {
-    const url = new URL('http://localhost/markdown-preview/unknown');
+    const url = new URL('http://localhost/markdown-editor/unknown');
     const request = new Request(url, { method: 'GET' });
     
-    const response = await handleMarkdownPreviewRoutes(request, url);
+    const response = await handleMarkdownEditorRoutes(request, url);
     expect(response.status).toBe(404);
   });
 
-  it('should return 200 for GET /markdown-preview', async () => {
-    const url = new URL('http://localhost/markdown-preview');
+  it('should return 200 for GET /markdown-editor', async () => {
+    const url = new URL('http://localhost/markdown-editor');
     const request = new Request(url, { method: 'GET' });
     
-    const response = await handleMarkdownPreviewRoutes(request, url);
+    const response = await handleMarkdownEditorRoutes(request, url);
     expect(response.status).toBe(200);
   });
 
   it('should return HTML with split pane structure', async () => {
-    const url = new URL('http://localhost/markdown-preview');
+    const url = new URL('http://localhost/markdown-editor');
     const request = new Request(url, { method: 'GET' });
     
-    const response = await handleMarkdownPreviewRoutes(request, url);
+    const response = await handleMarkdownEditorRoutes(request, url);
     const text = await response.text();
     
     // Verify HTML structure
@@ -39,10 +39,10 @@ describe('handleMarkdownPreviewRoutes', () => {
   });
 
   it('should contain responsive split behavior CSS', async () => {
-    const url = new URL('http://localhost/markdown-preview');
+    const url = new URL('http://localhost/markdown-editor');
     const request = new Request(url, { method: 'GET' });
     
-    const response = await handleMarkdownPreviewRoutes(request, url);
+    const response = await handleMarkdownEditorRoutes(request, url);
     const text = await response.text();
     
     expect(text).toContain('grid-template-rows');
@@ -51,10 +51,10 @@ describe('handleMarkdownPreviewRoutes', () => {
   });
 
   it('should contain markdown input textarea', async () => {
-    const url = new URL('http://localhost/markdown-preview');
+    const url = new URL('http://localhost/markdown-editor');
     const request = new Request(url, { method: 'GET' });
     
-    const response = await handleMarkdownPreviewRoutes(request, url);
+    const response = await handleMarkdownEditorRoutes(request, url);
     const text = await response.text();
     
     expect(text).toContain('id="markdown-input"');
@@ -62,20 +62,20 @@ describe('handleMarkdownPreviewRoutes', () => {
   });
 
   it('should contain preview output container', async () => {
-    const url = new URL('http://localhost/markdown-preview');
+    const url = new URL('http://localhost/markdown-editor');
     const request = new Request(url, { method: 'GET' });
     
-    const response = await handleMarkdownPreviewRoutes(request, url);
+    const response = await handleMarkdownEditorRoutes(request, url);
     const text = await response.text();
     
     expect(text).toContain('id="preview-output"');
   });
 
   it('should contain view mode buttons', async () => {
-    const url = new URL('http://localhost/markdown-preview');
+    const url = new URL('http://localhost/markdown-editor');
     const request = new Request(url, { method: 'GET' });
     
-    const response = await handleMarkdownPreviewRoutes(request, url);
+    const response = await handleMarkdownEditorRoutes(request, url);
     const text = await response.text();
     
     expect(text).toContain('data-view-mode="split"');
@@ -84,10 +84,10 @@ describe('handleMarkdownPreviewRoutes', () => {
   });
 
   it('should contain export and utility buttons', async () => {
-    const url = new URL('http://localhost/markdown-preview');
+    const url = new URL('http://localhost/markdown-editor');
     const request = new Request(url, { method: 'GET' });
     
-    const response = await handleMarkdownPreviewRoutes(request, url);
+    const response = await handleMarkdownEditorRoutes(request, url);
     const text = await response.text();
     
     expect(text).toContain('id="open-md-btn"');
@@ -100,10 +100,10 @@ describe('handleMarkdownPreviewRoutes', () => {
   });
 
   it('should include vendor scripts for markdown processing', async () => {
-    const url = new URL('http://localhost/markdown-preview');
+    const url = new URL('http://localhost/markdown-editor');
     const request = new Request(url, { method: 'GET' });
     
-    const response = await handleMarkdownPreviewRoutes(request, url);
+    const response = await handleMarkdownEditorRoutes(request, url);
     const text = await response.text();
     
     expect(text).toContain('/vendor/marked.min.js');
@@ -112,18 +112,18 @@ describe('handleMarkdownPreviewRoutes', () => {
   });
 
   it('should return 404 for trailing slash with unknown path', async () => {
-    const url = new URL('http://localhost/markdown-preview/api');
+    const url = new URL('http://localhost/markdown-editor/api');
     const request = new Request(url, { method: 'GET' });
     
-    const response = await handleMarkdownPreviewRoutes(request, url);
+    const response = await handleMarkdownEditorRoutes(request, url);
     expect(response.status).toBe(404);
   });
 
   it('should handle trailing slash on main route', async () => {
-    const url = new URL('http://localhost/markdown-preview/');
+    const url = new URL('http://localhost/markdown-editor/');
     const request = new Request(url, { method: 'GET' });
     
-    const response = await handleMarkdownPreviewRoutes(request, url);
+    const response = await handleMarkdownEditorRoutes(request, url);
     expect(response.status).toBe(200);
     const text = await response.text();
     expect(text).toContain('id="md-preview-root"');

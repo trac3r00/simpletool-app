@@ -4,7 +4,7 @@
  * All processing happens client-side
  */
 
-import { createPageTemplate, createToolHeader, getCopyToClipboardScript, getDownloadFileScript } from '../utils/common-ui.js';
+import { createPageTemplate, createToolHeader, getDownloadFileScript } from '../utils/common-ui.js';
 import { respondHTML } from '../utils/respond.js';
 import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
@@ -196,7 +196,6 @@ function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
   `;
 
   const scripts = `
-    ${getCopyToClipboardScript()}
     <script>
       ${getDownloadFileScript()}
 

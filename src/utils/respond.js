@@ -159,6 +159,17 @@ export function respond404() {
           <p class="text-base text-surface-600 dark:text-surface-300 mb-8">
             We can't seem to find the page you're looking for. Double-check the URL or head back home.
           </p>
+          <div class="mb-8">
+            <input type="search" id="error-search" placeholder="Search tools..." class="input w-full max-w-sm mx-auto mb-6">
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 max-w-xl mx-auto">
+              <a href="/json-formatter" class="card p-4 hover:shadow-md transition-shadow text-center text-sm font-medium text-surface-700 dark:text-surface-200">JSON Formatter</a>
+              <a href="/password-generator" class="card p-4 hover:shadow-md transition-shadow text-center text-sm font-medium text-surface-700 dark:text-surface-200">Password Generator</a>
+              <a href="/uuid-generator" class="card p-4 hover:shadow-md transition-shadow text-center text-sm font-medium text-surface-700 dark:text-surface-200">UUID Generator</a>
+              <a href="/regex-visualizer" class="card p-4 hover:shadow-md transition-shadow text-center text-sm font-medium text-surface-700 dark:text-surface-200">Regex Studio</a>
+              <a href="/color-converter" class="card p-4 hover:shadow-md transition-shadow text-center text-sm font-medium text-surface-700 dark:text-surface-200">Color Converter</a>
+              <a href="/curl-studio" class="card p-4 hover:shadow-md transition-shadow text-center text-sm font-medium text-surface-700 dark:text-surface-200">Curl Studio</a>
+            </div>
+          </div>
           <div class="flex flex-wrap justify-center gap-3">
             <a href="/" class="btn btn-primary px-6 py-3">Go to Home</a>
             <a href="/contact" class="btn btn-secondary px-6 py-3">Contact Support</a>

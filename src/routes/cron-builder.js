@@ -1,5 +1,5 @@
 import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, getCopyToClipboardScript, createCheatsheet, infoHint } from '../utils/common-ui.js';
+import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
 import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
 import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
@@ -779,7 +779,7 @@ export async function handleCronBuilderRoutes(request) {
     description: translation?.desc || 'Visual cron editor with human-readable descriptions and next-run preview.',
     path: canonicalPath,
     content: content,
-    scripts: getCopyToClipboardScript(),
+    scripts: '',
     lang: normalizedLang
   }), {
     headers: {

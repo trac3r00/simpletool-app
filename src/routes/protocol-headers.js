@@ -21,9 +21,7 @@ function renderProtocolHeadersPage(lang = DEFAULT_LANGUAGE) {
     { emoji: '📡' },
     title,
     description,
-    [{ text: translation?.ui?.badge18 || 'Interactive', tooltip: 'Click fields to see detailed information and bit offsets.' },
-     { text: translation?.ui?.badge19 || '7 Protocols', tooltip: 'Ethernet II, IPv4, IPv6, TCP, UDP, ICMP, and ARP.' },
-     { text: translation?.ui?.badge20 || 'Hex Parser', tooltip: 'Parse hex dumps to visualize packet structure.' }],
+    [],
     { toolId: 'protocol-headers' }
   );
 

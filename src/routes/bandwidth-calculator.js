@@ -4,7 +4,7 @@
  * All processing happens client-side
  */
 
-import { createPageTemplate, createToolHeader, createCheatsheet, getCopyToClipboardScript } from '../utils/common-ui.js';
+import { createPageTemplate, createToolHeader, createCheatsheet } from '../utils/common-ui.js';
 import { respondHTML } from '../utils/respond.js';
 import { TOOLS } from '../utils/tool-registry.js';
 import { createRelatedToolsSection } from '../utils/content-ui.js';
@@ -377,7 +377,6 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
   `;
 
   const scripts = `
-    ${getCopyToClipboardScript()}
     <script>
       // Unit system management
       let useBinary = false;

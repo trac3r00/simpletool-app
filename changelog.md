@@ -2,6 +2,26 @@
 
 This changelog is a snapshot-style record of major changes in this workspace.
 
+## 2026-05-07 — v2.4.1 Post-QA sweep
+
+### Bug fixes
+
+- **JSON Formatter**: fix max-depth and key counters (off-by-one on nested objects, array indices inflating key count). Extract `countKeys` into shared `src/utils/json-stats.js` with unit tests.
+- **JSON Formatter**: clear stale output and stats on parse/minify error so the panel always reflects the current input.
+- **SRI integrity**: regenerate all vendor script integrity hashes; add `scripts/update-sri.mjs` tooling so hashes stay in sync. Fix 13 duplicate `integrity=` attributes produced by a buggy initial run.
+- **Clipboard**: add global `getClipboardSafetyScript()` to catch unhandled clipboard rejections (NotAllowedError / SecurityError) with a user-facing toast instead of uncaught page errors. Tighten matching to avoid swallowing non-clipboard errors.
+- **Clipboard**: promote `getCopyToClipboardScript()` to `createPageTemplate()` (global), remove redundant per-route calls from 12 route files.
+- **SRI crossorigin**: add `crossorigin="anonymous"` to 6 vendor script tags that had `integrity` without it.
+- **Routes**: add 301 redirects for `/jwt-inspector`, `/layered-decoder`, and `/css-gradient-generator` aliases.
+- **CSS**: fix `.empty-state.hidden` specificity so Tailwind's `hidden` utility actually hides empty-state placeholders.
+
+### Tooling
+
+- `scripts/update-sri.mjs` and `src/utils/vendor-sri.test.js`: make SRI regex attribute-order-independent (two-step matching).
+- `scripts/exhaustive-qa.mjs`: new button-mash QA harness that clicks every button on every route and captures page errors.
+- `scripts/sweep-routes.mjs`: route sweep script for console errors and structural checks.
+- Both QA scripts: add route-count assertion to prevent false-green signals.
+
 ## Before adding the 8 tools (baseline)
 
 - Tool count: **32**

@@ -126,6 +126,16 @@ export function renderHomePage({ isDev = false, lang = DEFAULT_LANGUAGE } = {}) 
     <div id="tools-categories-container" class="space-y-16">
       ${renderCategories(categories, currentLang)}
     </div>
+
+    <!-- Empty state when search query matches no tools -->
+    <div id="search-empty-state" class="hidden text-center py-16">
+      <div class="text-6xl mb-4" aria-hidden="true">🔍</div>
+      <p class="text-lg text-surface-700 dark:text-surface-300">
+        ${t('home.noResults', currentLang)}
+        <span id="search-empty-query" class="font-semibold text-surface-900 dark:text-surface-100"></span>
+      </p>
+      <p class="text-sm text-surface-500 dark:text-surface-500 mt-2" data-i18n="home.noResultsHint">Try a different search term.</p>
+    </div>
   </main>
 
   ${getAdSlotHTML('bottom', {
@@ -167,90 +177,91 @@ export function renderHomePage({ isDev = false, lang = DEFAULT_LANGUAGE } = {}) 
   ${getThemeScript()}
   ${getLanguageScript('', currentLang)}
   ${getSearchScript({ lang: currentLang })}
-   <script>
-     (function() {
-       const searchInput = document.getElementById('tool-search');
-       const resultsContainer = document.getElementById('search-results-container');
-       const resultsGrid = document.getElementById('search-results-grid');
-       const categoriesContainer = document.getElementById('tools-categories-container');
-       
-       // Conditionally autofocus on desktop only (viewport width > 640px)
-       if (window.innerWidth > 640) {
-         searchInput.focus();
-       }
-       
-       // Get tools from the global search script's context if possible, or we can just use the same data
-       // Since we want to find ALL tools, we'll use the same tools array that getSearchScript uses.
-       // We'll wait for the global script to be ready or just redefine the tools list here for simplicity
-       // but a better way is to expose it.
-      
-      function renderToolCard(tool) {
-        var _tr = (typeof window._i18nToolTranslations === 'function') ? window._i18nToolTranslations() : {};
-        var t = tool.id ? _tr[tool.id] : null;
-        var dName = (t && t.name) ? t.name : tool.name;
-        var dDesc = (t && t.desc) ? t.desc : tool.description;
-        return \`
-          <a href="\${tool.path}" 
-             class="tool-card group flex flex-col p-4 bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl hover:border-primary-400 dark:hover:border-primary-600 hover:shadow-md transition-all duration-200">
-            <div class="flex items-start justify-between mb-3">
-              <div class="text-3xl bg-surface-50 dark:bg-surface-800 p-2 rounded-lg border border-surface-100 dark:border-surface-700 group-hover:scale-110 transition-transform duration-200">
-                \${tool.icon}
-              </div>
-            </div>
-            <h3 class="tool-name font-bold text-surface-900 dark:text-surface-50 mb-1 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
-              \${dName}
-            </h3>
-            <p class="tool-desc text-sm text-surface-500 dark:text-surface-400 leading-relaxed line-clamp-2">
-              \${dDesc}
-            </p>
-          </a>
-        \`;
+  <script>
+    (function() {
+      const heroSearch = document.getElementById('tool-search');
+      const emptyState = document.getElementById('search-empty-state');
+      const emptyQueryEl = document.getElementById('search-empty-query');
+      const legacyResultsContainer = document.getElementById('search-results-container');
+
+      // Conditionally autofocus on desktop only (viewport width > 640px)
+      if (heroSearch && window.innerWidth > 640) {
+        heroSearch.focus();
       }
 
-      function filterTools(query) {
-        const term = query.trim();
-        
-        if (!term) {
-          resultsContainer.classList.add('hidden');
-          categoriesContainer.classList.remove('hidden');
-          return;
-        }
+      function filterCards(query) {
+        const q = (query || '').toLowerCase().trim();
+        const allCards = document.querySelectorAll('[data-tool-id]');
+        let visibleCount = 0;
 
-        // Use the fuzzySearch function defined in getSearchScript
-        if (typeof window.fuzzySearch !== 'function') return;
+        allCards.forEach(function(card) {
+          if (!q) {
+            card.classList.remove('hidden');
+            visibleCount++;
+            return;
+          }
+          const name = (card.dataset.toolName || '').toLowerCase();
+          const desc = (card.dataset.toolDesc || '').toLowerCase();
+          const tags = (card.dataset.toolTags || '').toLowerCase();
+          // Also match rendered text content (handles client-side i18n language switches)
+          const nameEl = card.querySelector('.tool-name');
+          const descEl = card.querySelector('.tool-desc');
+          const renderedName = nameEl ? nameEl.textContent.toLowerCase() : '';
+          const renderedDesc = descEl ? descEl.textContent.toLowerCase() : '';
+          const matches = name.indexOf(q) >= 0 || desc.indexOf(q) >= 0 || tags.indexOf(q) >= 0
+                       || renderedName.indexOf(q) >= 0 || renderedDesc.indexOf(q) >= 0;
+          card.classList.toggle('hidden', !matches);
+          if (matches) visibleCount++;
+        });
 
-        // We need the tools list. Since it's not exported from the closure in getSearchScript,
-        // we'll have to rely on the fact that we know what's in it or expose it.
-        // For now, let's assume we can get it from the DOM or just re-pass it.
-        // Actually, let's just use the tools we have in the registry.
-        const tools = ${JSON.stringify(tools.map(t => ({ id: t.id, name: t.name, path: withLanguageQuery(t.path, currentLang), icon: t.icon, description: t.description, keywords: t.keywords })))};
-        
-        const filtered = window.fuzzySearch(term, tools);
-
-        var countEl = document.getElementById('search-results-count');
-        countEl.textContent = filtered.length;
-
-        if (filtered.length > 0) {
-          resultsGrid.innerHTML = filtered.map(tool => renderToolCard(tool)).join('');
-          // Highlight matched terms in card names and descriptions
-          var escaped = term.replace(/[-.*+?^$|(){}[\\]\\\\]/g, '\\\\$&');
-          var re = new RegExp('(' + escaped + ')', 'gi');
-          resultsGrid.querySelectorAll('.tool-name, .tool-desc').forEach(function(el) {
-            var orig = el.textContent;
-            if (re.test(orig)) {
-              el.innerHTML = orig.replace(re, '<mark class="bg-warning-200 dark:bg-warning-800/60 text-inherit rounded px-0.5">$1</mark>');
+        document.querySelectorAll('.category-section, #favorites-section, #recent-section').forEach(function(section) {
+          if (!q) {
+            // Restore sections previously hidden by search
+            if (section.dataset.searchHidden === '1') {
+              section.classList.remove('hidden');
+              delete section.dataset.searchHidden;
             }
-          });
-          resultsContainer.classList.remove('hidden');
-          categoriesContainer.classList.add('hidden');
-        } else {
-          resultsGrid.innerHTML = '<p class="col-span-full text-center py-12 text-surface-500">${t('home.noResults', currentLang)}</p>';
-          resultsContainer.classList.remove('hidden');
-          categoriesContainer.classList.add('hidden');
+            return;
+          }
+          const visibleInSection = section.querySelectorAll('[data-tool-id]:not(.hidden)').length;
+          if (visibleInSection === 0) {
+            if (!section.classList.contains('hidden')) {
+              section.dataset.searchHidden = '1';
+              section.classList.add('hidden');
+            }
+          } else if (section.dataset.searchHidden === '1') {
+            section.classList.remove('hidden');
+            delete section.dataset.searchHidden;
+          }
+        });
+
+        if (legacyResultsContainer) legacyResultsContainer.classList.add('hidden');
+
+        if (emptyState) {
+          const showEmpty = !!q && visibleCount === 0;
+          emptyState.classList.toggle('hidden', !showEmpty);
+          if (showEmpty && emptyQueryEl) emptyQueryEl.textContent = '"' + query + '"';
         }
       }
 
-      searchInput.addEventListener('input', (e) => filterTools(e.target.value));
+      if (heroSearch) {
+        heroSearch.addEventListener('input', function(e) { filterCards(e.target.value); });
+      }
+
+      // Wire nav-search-btn click → focus hero search (capture-phase to override modal).
+      // The common-ui search script also binds a click listener that opens a modal;
+      // we intercept at the capture phase on the document so the modal handler never fires.
+      document.addEventListener('click', function(e) {
+        const target = e.target;
+        if (target && target.closest && target.closest('#nav-search-btn')) {
+          if (heroSearch && heroSearch.offsetParent !== null) {
+            e.stopImmediatePropagation();
+            e.preventDefault();
+            heroSearch.focus();
+            heroSearch.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }
+      }, true);
     })();
   </script>
   <script>
@@ -267,7 +278,7 @@ export function renderHomePage({ isDev = false, lang = DEFAULT_LANGUAGE } = {}) 
     (function() {
       var RECENT_KEY = 'simpletool-recent';
       var FAV_KEY = 'simpletool-favorites';
-      var allTools = ${JSON.stringify(tools.map(t => ({ id: t.id, name: t.name, path: withLanguageQuery(t.path, currentLang), icon: t.icon, description: t.description, badge: t.badge || '' })))};
+      var allTools = ${JSON.stringify(tools.map(t => ({ id: t.id, name: t.name, path: withLanguageQuery(t.path, currentLang), icon: t.icon, description: t.description, badge: t.badge || '', keywords: t.keywords || '' })))};
       var toolMap = {};
       allTools.forEach(function(t) { toolMap[t.id] = t; });
 
@@ -275,9 +286,14 @@ export function renderHomePage({ isDev = false, lang = DEFAULT_LANGUAGE } = {}) 
         try { var v = localStorage.getItem(key); return v ? JSON.parse(v) : []; } catch(e) { return []; }
       }
 
+      function escAttr(s) {
+        return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      }
+
       function renderCard(tool) {
         var badge = tool.badge ? '<span class="px-2 py-0.5 text-xs font-semibold bg-primary-100 text-primary-700 dark:bg-primary-900/40 dark:text-primary-400 rounded-full">' + tool.badge + '</span>' : '';
-        return '<a href="' + tool.path + '" class="tool-card group flex flex-col p-4 bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl hover:border-primary-400 dark:hover:border-primary-600 hover:shadow-md transition-all duration-200">' +
+        var dataAttrs = 'data-tool-id="' + escAttr(tool.id) + '" data-tool-name="' + escAttr(tool.name) + '" data-tool-desc="' + escAttr(tool.description) + '" data-tool-tags="' + escAttr(tool.keywords || '') + '"';
+        return '<a href="' + tool.path + '" ' + dataAttrs + ' class="tool-card group flex flex-col p-4 bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl hover:border-primary-400 dark:hover:border-primary-600 hover:shadow-md transition-all duration-200">' +
           '<div class="flex items-start justify-between mb-3"><div class="text-3xl bg-surface-50 dark:bg-surface-800 p-2 rounded-lg border border-surface-100 dark:border-surface-700 group-hover:scale-110 transition-transform duration-200">' + tool.icon + '</div>' + badge + '</div>' +
           '<h3 class="tool-name font-bold text-surface-900 dark:text-surface-50 mb-1 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">' + tool.name + '</h3>' +
           '<p class="tool-desc text-sm text-surface-500 dark:text-surface-400 leading-relaxed line-clamp-2">' + tool.description + '</p></a>';
@@ -319,13 +335,23 @@ function renderCategories(categories, lang = DEFAULT_LANGUAGE) {
   `).join('');
 }
 
+function escapeAttr(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
 function renderToolCard(tool, lang = DEFAULT_LANGUAGE) {
+  const tags = [tool.keywords || '', ...(tool.tags || [])].filter(Boolean).join(' ');
   return `
     <a href="${withLanguageQuery(tool.path, lang)}" 
        class="tool-card group flex flex-col p-4 bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl hover:border-primary-400 dark:hover:border-primary-600 hover:shadow-md transition-all duration-200"
-       data-tool-id="${tool.id}"
-       data-name="${tool.name}"
-       data-keywords="${tool.description} ${tool.keywords || ''}">
+       data-tool-id="${escapeAttr(tool.id)}"
+       data-tool-name="${escapeAttr(tool.name)}"
+       data-tool-desc="${escapeAttr(tool.description)}"
+       data-tool-tags="${escapeAttr(tags)}">
       <div class="flex items-start justify-between mb-3">
         <div class="text-3xl bg-surface-50 dark:bg-surface-800 p-2 rounded-lg border border-surface-100 dark:border-surface-700 group-hover:scale-110 transition-transform duration-200">
           ${tool.icon}

@@ -10,7 +10,7 @@ import { handleUUIDGeneratorRoutes as uuid_generator } from './uuid-generator.js
 import { handleTimestampConverterRoutes as timestamp_converter } from './timestamp-converter.js';
 import { handleColorConverterRoutes as color_converter } from './color-converter.js';
 import { handleUnitConverterRoutes as unit_converter } from './unit-converter.js';
-import { handleMarkdownPreviewRoutes as markdown_preview } from './markdown-preview.js';
+import { handleMarkdownEditorRoutes as markdown_editor } from './markdown-editor.js';
 import { handleTextDiffRoutes as text_diff } from './text-diff.js';
 import { handleCertificateDecoderRoutes as certificate_decoder } from './certificate-decoder.js';
 import { handleCaseConverterRoutes as case_converter } from './case-converter.js';
@@ -61,7 +61,7 @@ export const handlersById = {
   'timestamp-converter': timestamp_converter,
   'color-converter': color_converter,
   'unit-converter': unit_converter,
-  'markdown-preview': markdown_preview,
+  'markdown-editor': markdown_editor,
   'text-diff': text_diff,
   'certificate-decoder': certificate_decoder,
   'case-converter': case_converter,

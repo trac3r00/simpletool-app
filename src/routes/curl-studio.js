@@ -1,5 +1,5 @@
 import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createCheatsheet, getCopyToClipboardScript } from '../utils/common-ui.js';
+import { createPageTemplate, createToolHeader, createCheatsheet } from '../utils/common-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
 import { createRelatedToolsSection } from '../utils/content-ui.js';
 import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
@@ -21,11 +21,7 @@ function renderCurlStudioPage(lang = DEFAULT_LANGUAGE) {
     { emoji: '🐚' },
     title,
     description,
-    [
-      { text: '<span data-i18n="tools.curl-studio.ui.badge12">Parser</span>', tooltip: 'Breaks curl commands into structured fields directly in your browser.' },
-      { text: '<span data-i18n="tools.curl-studio.ui.badge13">Generator</span>', tooltip: 'Build ready-to-run curl commands from form inputs without network calls.' },
-      { text: '<span data-i18n="tools.curl-studio.ui.badge14">Privacy-First</span>', tooltip: 'All processing happens in your browser — no data is sent to any server.' }
-    ],
+    [{ text: translation?.ui?.badge14 || 'Privacy-First', tooltip: 'All processing happens in your browser — no data is sent to any server.' }],
     { toolId: 'curl-studio' }
   );
 
@@ -127,8 +123,7 @@ function renderCurlStudioPage(lang = DEFAULT_LANGUAGE) {
   `;
 
   const scripts = `
-     ${getCopyToClipboardScript()}
-     <script type="module">
+      <script type="module">
       // Local curl parser implementation
       function parseCurl(curlCommand) {
         const result = {

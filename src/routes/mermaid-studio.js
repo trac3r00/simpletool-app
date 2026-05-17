@@ -18,17 +18,12 @@ export async function handleMermaidStudioRoutes(request, url) {
     { emoji: '🧜‍♀️' },
     title,
     description,
-    [
-      { text: translation?.ui?.badge6 || 'Live Preview', tooltip: 'Updates the rendered diagram instantly as you edit Mermaid code.' },
-      { text: translation?.ui?.badge7 || 'Flowcharts', tooltip: 'Tailored for creating flowcharts, sequence diagrams, and similar graphs.' },
-      { text: translation?.ui?.badge8 || 'SVG Export', tooltip: 'Download the rendered diagram as an SVG file for reuse.' }
-    ],
+    [{ text: translation?.ui?.badge9 || 'Client-Side Only', tooltip: 'Diagrams render entirely in your browser using Mermaid.js.' }],
     { toolId: 'mermaid-studio' }
   );
 
   const currentTool = TOOLS.find(t => t.id === 'mermaid-studio');
   const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
-
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -94,7 +89,7 @@ export async function handleMermaidStudioRoutes(request, url) {
     <style>${getRichEditorStyles()}</style>
     ${getRichEditorScript()}
     ${getMobileTabScript()}
-    <script src="/vendor/mermaid.min.js" integrity="sha384-enVdc7lTHDGtpROV85t9+VqPC2EyyB0hsRD0MrvQnHUsHmTHIz2D8SPP4EnBkstH" crossorigin="anonymous"></script>
+    <script src="/vendor/mermaid.min.js" integrity="sha384-1CMXl090wj8Dd6YfnzSQUOgWbE6suWCaenYG7pox5AX7apTpY3PmJMeS2oPql4Gk" crossorigin="anonymous"></script>
     <script>
       const mermaid = window.mermaid;
 

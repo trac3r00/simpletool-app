@@ -5,7 +5,7 @@
  */
 
 import { respondHTML, respondJSON } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, getCopyToClipboardScript, createEmptyState } from '../utils/common-ui.js';
+import { createPageTemplate, createToolHeader, createEmptyState } from '../utils/common-ui.js';
 import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
 import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
@@ -301,9 +301,8 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
   `;
 
   const script = `
-    ${getCopyToClipboardScript()}
     <script src="/vendor/md5.min.js" integrity="sha384-JmVtRz6RWiXnA14QbIOJzPuU3MidULOpBP66deeLLyyoF4Tr/gZlbkHkL6vTthxH" crossorigin="anonymous"></script>
-    <script src="/vendor/bcrypt.min.js"></script>
+    <script src="/vendor/bcrypt.min.js" integrity="sha384-qGFE4FIJLgCFuYs3nzg39XpCtvT5AZUhaBdjB3e1+vpKQa03AkyWOyBSFb9OcQ/g" crossorigin="anonymous"></script>
     <style>
       .tab-btn { outline: none; }
       .tab-btn:focus-visible { box-shadow: 0 0 0 2px var(--color-primary-500); }

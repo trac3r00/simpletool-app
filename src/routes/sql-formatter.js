@@ -31,10 +31,7 @@ function renderSQLFormatterPage(lang = DEFAULT_LANGUAGE) {
     { emoji: '🗄️' },
     title,
     description,
-    [
-      { text: '<span data-i18n="tools.sql-formatter.ui.badge0">Formatter</span>', tooltip: 'Indent clauses, break lists, and normalize whitespace.' },
-      { text: '<span data-i18n="tools.sql-formatter.ui.badge1">Validator</span>', tooltip: 'Detect unclosed quotes/comments and unbalanced parentheses.' }
-    ],
+    [],
     { toolId: 'sql-formatter' }
   );
 

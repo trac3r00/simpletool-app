@@ -7,6 +7,7 @@ import { renderHomePage } from './ui/home.js';
 import * as Sentry from '@sentry/cloudflare';
 import { handlersById } from './routes/_handlers.js';
 import { handlePipeRoutes } from './routes/pipe.js';
+import { handleMarkdownEditorRoutes } from './routes/markdown-editor.js';
 import { getToolsForEnvironment } from './utils/tool-registry.js';
 import {
   renderTermsPage,
@@ -29,6 +30,7 @@ import {
   RATE_LIMIT_WINDOW_MS
 } from './utils/security.js';
 import { respondJSON, respondText, respond404, respond429 } from './utils/respond.js';
+import { tryLegacyRedirect } from './utils/redirects.js';
 import { bundledStyles, bundledStylesHash } from './utils/bundled-styles.js';
 import { setAdConfig, setAnalyticsToken, setSiteUrl } from './utils/common-ui.js';
 import { resolveRequestLanguage } from './utils/i18n.js';
@@ -401,49 +403,33 @@ const worker = {
 
       // Tool routes - path-based
 
-      // Redirects for removed/merged tools
-      if (path === '/encoder-decoder' || path.startsWith('/encoder-decoder/')) {
-        return Response.redirect(new URL('/encoding-workbench', request.url).href, 301);
+      // Legacy tool redirects (map-driven) — before /tools/ prefix so single-hop works
+      const legacyRedirect = tryLegacyRedirect(url);
+      if (legacyRedirect) return legacyRedirect;
+
+      // Legacy routing compatibility: older docs/links used the /tools/<tool-id> prefix.
+      if (path === '/tools') {
+        const redirectUrl = new URL(request.url);
+        redirectUrl.pathname = '/';
+        return Response.redirect(redirectUrl.href, 301);
       }
 
-      if (path === '/regex-tester' || path.startsWith('/regex-tester/')) {
-        return Response.redirect(new URL('/regex-visualizer', request.url).href, 301);
-      }
-
-      if (path === '/lorem-ipsum' || path.startsWith('/lorem-ipsum/')) {
-        return Response.redirect(new URL('/mock-data-generator', request.url).href, 301);
-      }
-
-      if (path === '/domain-status' || path.startsWith('/domain-status/')) {
-        return Response.redirect(new URL('/', request.url).href, 301);
-      }
-
-      // Consolidated tool redirects (JWT+JWK → Token Studio, Hash+Decoder → Encoding Workbench)
-      if (path === '/jwt-decoder' || path.startsWith('/jwt-decoder/')) {
-        const dest = new URL('/token-studio', request.url); dest.search = url.search;
-        return Response.redirect(dest.href, 301);
-      }
-      if (path === '/jwk-jwks-studio' || path.startsWith('/jwk-jwks-studio/')) {
-        const dest = new URL('/token-studio', request.url); dest.search = url.search;
-        return Response.redirect(dest.href, 301);
-      }
-      if (path === '/hash-calculator' || path.startsWith('/hash-calculator/')) {
-        const dest = new URL('/encoding-workbench', request.url); dest.search = url.search;
-        return Response.redirect(dest.href, 301);
-      }
-      if (path === '/universal-decoder' || path.startsWith('/universal-decoder/')) {
-        const dest = new URL('/encoding-workbench', request.url); dest.search = url.search;
-        return Response.redirect(dest.href, 301);
-      }
-      if (path === '/hash-generator' || path.startsWith('/hash-generator/')) {
-        const dest = new URL('/encoding-workbench', request.url); dest.search = url.search;
-        return Response.redirect(dest.href, 301);
+      if (path.startsWith('/tools/')) {
+        const redirectUrl = new URL(request.url);
+        redirectUrl.pathname = path.slice('/tools'.length).replace(/^\/+/, '/');
+        return Response.redirect(redirectUrl.href, 301);
       }
 
       // Pipe Mode
       if (path === '/pipe' || path === '/pipe/') {
         const pipeResponse = await handlePipeRoutes(request, url);
         if (pipeResponse) return pipeResponse;
+      }
+
+      // Markdown Editor
+      if (path === '/markdown-editor' || path === '/markdown-editor/') {
+        const mdResponse = await handleMarkdownEditorRoutes(request, url);
+        if (mdResponse) return mdResponse;
       }
 
       // Active tool routes (registry-driven)

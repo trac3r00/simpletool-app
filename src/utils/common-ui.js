@@ -137,17 +137,6 @@ export function getAnalyticsScript() {
  * Shared tool layout abstraction.
  * Provides consistent inner content structure for tool pages.
  * Modes: 'two-panel' (input/output grid), 'single-panel' (centered), 'custom' (pass-through).
- *
- * @param {Object} options
- * @param {string} options.mode - 'two-panel' | 'single-panel' | 'custom'
- * @param {string} options.toolHeader - HTML from createToolHeader()
- * @param {string} [options.controls] - Controls bar HTML (buttons, selectors)
- * @param {string} [options.leftPanel] - Left/input panel HTML (two-panel mode)
- * @param {string} [options.rightPanel] - Right/output panel HTML (two-panel mode)
- * @param {string} [options.content] - Main content HTML (single-panel or custom mode)
- * @param {string} [options.footer] - Additional sections below main (education, related tools)
- * @param {Object} [options.actionBar] - Action bar config { copy: bool, download: bool, share: bool, fullscreen: bool }
- * @returns {string} HTML string for tool page content
  */
 export function createToolLayout(options) {
   const {
@@ -196,8 +185,6 @@ export function createToolLayout(options) {
 
 /**
  * Universal action bar for tool output areas.
- * @param {Object} options - { copy: bool, download: bool, share: bool, fullscreen: bool, outputId: string }
- * @returns {string} HTML
  */
 export function getActionBarHTML(options = {}) {
   const { copy = true, download = false, share = false, fullscreen = false, outputId = 'output' } = options;
@@ -316,8 +303,7 @@ export function getAdConfig() {
 }
 
 /**
- * Google AdSense script tag
- * @returns {string} AdSense script tag HTML
+ * Google AdSense script tag (disabled by default).
  */
 export function getGtagScript() {
   // Disabled by default to avoid third-party requests in restrictive environments.
@@ -371,13 +357,6 @@ export function getAdSenseScript() {
 
 /**
  * Render an AdSense slot, if configured.
- * @param {string} slotKey - Slot key from ADSENSE_SLOTS mapping.
- * @param {Object} options
- * @param {string} [options.wrapperClassName=''] - Wrapper classes.
- * @param {string} [options.label='Sponsored'] - Label text.
- * @param {string} [options.format='auto'] - Ad format.
- * @param {boolean} [options.responsive=true] - Full width responsive flag.
- * @returns {string}
  */
 export function getAdSlotHTML(slotKey, options = {}) {
   if (!isAdsEnabled()) return '';
@@ -413,10 +392,6 @@ export function getAdSlotHTML(slotKey, options = {}) {
 
 /**
  * Shared theme toggle button markup with accessible defaults
- * @param {Object} options
- * @param {string} [options.id='theme-toggle'] - Element ID so scripts can find the button
- * @param {string} [options.label='Toggle dark mode'] - Accessible label announced by screen readers
- * @param {string} [options.className=''] - Extra utility classes to append
  */
 export function getThemeToggleButton(options = {}) {
   const {
@@ -463,9 +438,6 @@ export function getThemeToggleButton(options = {}) {
 
 /**
  * Get common navigation HTML
- * @param {Object} options - Navigation configuration options
- * @param {string} [options.pageTitle='Tool'] - Optional page title for navigation context
- * @param {string} [options.maxWidth='max-w-7xl'] - Maximum width container class
  */
 export function getNavigationHTML(options = {}) {
   const {
@@ -646,8 +618,7 @@ export function getThemeScript() {
 }
 
 /**
- * Get Global Search Script
- * Provides smart command palette search across all pages
+ * Global Search Script
  */
 export function getSearchScript(options = {}) {
   const {
@@ -876,8 +847,7 @@ export function getSearchScript(options = {}) {
 }
 
 /**
- * Get Global Toast System
- * Provides window.Toast object with show(), success(), error(), info() methods
+ * Global Toast System
  */
 export function getToastScript() {
   return `
@@ -1164,6 +1134,8 @@ export function createPageTemplate(options) {
    ${getToastScript()}
    ${getKeyboardShortcutsScript()}
    ${getCheatsheetToggleScript()}
+   ${getCopyToClipboardScript()}
+   ${getClipboardSafetyScript()}
    ${toolId ? getPersonalizationScript(toolId) : ''}
    ${scripts}
   ${isAdsEnabled() ? `<script>
@@ -1214,12 +1186,12 @@ export function getCopyToClipboardScript() {
       }).catch(err => {
         console.error('Copy failed:', err);
         button.innerText = 'Error';
-        
+
         // Show error toast
         if (window.Toast && typeof window.Toast.error === 'function') {
           window.Toast.error('Failed to copy to clipboard');
         }
-        
+
         setTimeout(() => button.innerText = 'Copy', 2000);
       });
     }
@@ -1228,20 +1200,89 @@ export function getCopyToClipboardScript() {
 }
 
 /**
- * Create a tool header section
+ * Global safety net for clipboard rejections.
+ *
+ * Many tool routes call `navigator.clipboard.writeText(...)` directly. The
+ * call can reject in plenty of contexts (insecure HTTP, iframe without
+ * write permission, denied user permission, no user activation). When
+ * those rejections aren't caught they surface as `unhandledrejection`
+ * page errors — which the exhaustive QA harness flagged on 9+ tools.
+ *
+ * This script swallows clipboard-only rejections and shows a single user-
+ * facing toast instead. It is intentionally narrow: it ONLY catches
+ * `NotAllowedError` / `SecurityError` thrown from the Clipboard API and
+ * forwards everything else, so we don't hide unrelated bugs.
+ */
+export function getClipboardSafetyScript() {
+  return `
+    <script>
+    (function () {
+      function isClipboardError(reason) {
+        if (!reason) return false;
+        if (typeof reason === 'string') return /clipboard/i.test(reason);
+        var name = reason.name || '';
+        var msg = reason.message || String(reason);
+        return /clipboard/i.test(msg) ||
+               ((name === 'NotAllowedError' || name === 'SecurityError') &&
+                /clipboard|write/i.test(msg));
+      }
+      window.addEventListener('unhandledrejection', function (e) {
+        if (!isClipboardError(e.reason)) return;
+        e.preventDefault();
+        if (window.Toast && typeof window.Toast.error === 'function') {
+          window.Toast.error('Could not copy — clipboard access denied. Please copy manually.');
+        }
+      });
+    })();
+    </script>
+  `;
+}
+
+/**
+ * Create a feature list definition list.
+ * @param {Array<{text: string, tooltip?: string}>} items - Feature items
+ * @returns {string} HTML markup
+ */
+export function createFeatureList(items = []) {
+  if (!items || !items.length) return '';
+  const itemsHTML = items.map(item => `<dd>${item.text}</dd>`).join('');
+  return `<dl data-feature-list>${itemsHTML}</dl>`;
+}
+
+/**
+ * Create a tool header section.
+ * Enforces single-pill policy: max 1 trust pill, rest demoted to feature list.
  */
 export function createToolHeader(icon, title, subtitle, badges = [], options = {}) {
   const { toolId } = typeof options === 'string' ? { toolId: options } : (options || {});
-  const badgesHTML = badges.map(badge => {
-    const tipAttr = badge.tooltip ? ` data-tooltip="${badge.tooltip}" cursor-help` : '';
-    const tipClass = badge.tooltip ? ' cursor-help' : '';
-    return `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300${tipClass}"${tipAttr}>
-       ${badge.text}
-     </span>`;
-  }).join('');
 
   const titleAttr = toolId ? ` data-i18n="tools.${toolId}.name"` : '';
   const subtitleAttr = toolId ? ` data-i18n="tools.${toolId}.desc"` : '';
+
+  // Single-pill policy: first badge is the trust pill, rest are demoted features
+  let trustPillHTML = '';
+  let demotedFeaturesHTML = '';
+
+  if (badges.length === 1) {
+    // Single pill: render as trust pill
+    const badge = badges[0];
+    const tipAttr = badge.tooltip ? ` data-tooltip="${badge.tooltip}" cursor-help` : '';
+    const tipClass = badge.tooltip ? ' cursor-help' : '';
+    trustPillHTML = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300${tipClass}" data-trust-pill="${badge.text}"${tipAttr}>
+       ${badge.text}
+     </span>`;
+  } else if (badges.length >= 2) {
+    // Multiple pills: first is trust pill, rest are demoted features
+    const trustBadge = badges[0];
+    const tipAttr = trustBadge.tooltip ? ` data-tooltip="${trustBadge.tooltip}" cursor-help` : '';
+    const tipClass = trustBadge.tooltip ? ' cursor-help' : '';
+    trustPillHTML = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300${tipClass}" data-trust-pill="${trustBadge.text}"${tipAttr}>
+       ${trustBadge.text}
+     </span>`;
+    demotedFeaturesHTML = createFeatureList(badges.slice(1));
+  } else if (badges.length === 0) {
+    // No pills: nothing to render
+  }
 
   return `
     <div class="mb-8 border-b border-surface-200 dark:border-surface-800 pb-8">
@@ -1251,11 +1292,12 @@ export function createToolHeader(icon, title, subtitle, badges = [], options = {
              <span class="text-3xl">${icon.emoji || '🛠️'}</span>
           </div>
           <div>
-            <div class="flex items-center gap-3 mb-1">
+            <div class="flex items-center gap-3 mb-1 flex-wrap">
               <h1 class="text-2xl sm:text-3xl font-bold text-surface-900 dark:text-surface-50 tracking-tight"${titleAttr}>${title}</h1>
-              ${badgesHTML}
+              ${trustPillHTML}
             </div>
             <p class="text-surface-600 dark:text-surface-400 text-sm sm:text-base max-w-2xl"${subtitleAttr}>${subtitle}</p>
+            ${demotedFeaturesHTML}
           </div>
         </div>
       </div>

@@ -393,6 +393,14 @@
   @apply flex flex-col items-center justify-center py-12 px-4 text-center;
 }
 
+/* Tailwind's `.hidden` lives in the utilities layer but `.empty-state` in
+ * the components layer ends up later in the compiled bundle, so a plain
+ * `class="empty-state hidden"` would still render. Bump specificity so the
+ * `hidden` class actually hides empty-state placeholders. */
+.empty-state.hidden {
+  display: none;
+}
+
 .empty-state-icon {
   @apply text-4xl mb-3 opacity-60;
 }

@@ -341,7 +341,7 @@ function renderRouletteWheelPage(lang = 'en') {
   `;
 
   const script = `
-    <script src="/vendor/game-utils.min.js"><\/script>
+    <script src="/vendor/game-utils.min.js" integrity="sha384-FsE7cAW0TeEx6c4IRfZ7KJ7b+qRrVYpJD+uwQSrEfw6r5F3nDtNprsKtKpnS8bH0" crossorigin="anonymous"><\/script>
     <script>
       (function() {
         'use strict';

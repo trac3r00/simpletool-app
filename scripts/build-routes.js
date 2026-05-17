@@ -29,7 +29,7 @@ const TOOL_HANDLERS = [
   { id: 'timestamp-converter', file: 'timestamp-converter.js', exp: 'handleTimestampConverterRoutes' },
   { id: 'color-converter', file: 'color-converter.js', exp: 'handleColorConverterRoutes' },
   { id: 'unit-converter', file: 'unit-converter.js', exp: 'handleUnitConverterRoutes' },
-  { id: 'markdown-preview', file: 'markdown-preview.js', exp: 'handleMarkdownPreviewRoutes' },
+  { id: 'markdown-editor', file: 'markdown-editor.js', exp: 'handleMarkdownEditorRoutes' },
   { id: 'text-diff', file: 'text-diff.js', exp: 'handleTextDiffRoutes' },
   { id: 'certificate-decoder', file: 'certificate-decoder.js', exp: 'handleCertificateDecoderRoutes' },
   { id: 'case-converter', file: 'case-converter.js', exp: 'handleCaseConverterRoutes' },

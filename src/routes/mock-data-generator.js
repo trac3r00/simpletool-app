@@ -30,8 +30,7 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
     translation?.name || 'Mock Data Generator',
     translation?.desc || 'Produce privacy-safe placeholder data for JSON, CSV, or SQL workflows. Perfect for demos, seeding, or QA.',
     [
-      { text: translation?.ui?.badge13 || 'Client-Side Only', tooltip: 'Runs entirely in your browser using Web APIs — your data never leaves your device.' },
-      { text: translation?.ui?.badge14 || 'Privacy First', tooltip: 'Runs entirely in your browser using Web APIs — your data never leaves your device.' }
+      { text: translation?.ui?.badge13 || 'Client-Side Only', tooltip: 'Runs entirely in your browser using Web APIs — your data never leaves your device.' }
     ],
     { toolId: 'mock-data-generator' }
   );

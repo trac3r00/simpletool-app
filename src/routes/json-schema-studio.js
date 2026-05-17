@@ -22,8 +22,6 @@ function renderJsonSchemaStudioPage(lang = DEFAULT_LANGUAGE) {
     title,
     translation?.desc || 'Turn any JSON sample into a valid JSON Schema instantly. Use it for validation, documentation, or code generation.',
     [
-      { text: translation?.ui?.badge6 || 'Auto-Generator', tooltip: 'Automatically infers a JSON Schema from your sample JSON input.' },
-      { text: translation?.ui?.badge7 || 'JSON Schema', tooltip: 'Produces schemas that comply with the JSON Schema specification.' },
       { text: translation?.ui?.badge9 || 'Client-Side Only', tooltip: 'All processing happens in your browser — no data is sent to any server.' }
     ],
     { toolId: 'json-schema-studio' }
@@ -85,7 +83,7 @@ function renderJsonSchemaStudioPage(lang = DEFAULT_LANGUAGE) {
   `;
 
   const scripts = `
-    <script src="/vendor/to-json-schema.min.js" integrity="sha384-SQtZqPfpn1uLbqIZ/C7YZy247iVhjHtJ9ZQNjmXtwPApoyZ0qWOpB7EcWNDfRt8H" crossorigin="anonymous"></script>
+    <script src="/vendor/to-json-schema.min.js" integrity="sha384-RFP9czE3KJcsSTKWpTlZLG1xuiVY/XphuDBSN4FM5UKiUSSPnZvgxiVO69J11GYe" crossorigin="anonymous"></script>
     <script>
       const toJsonSchemaFn = window.toJsonSchema;
 

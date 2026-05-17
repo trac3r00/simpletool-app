@@ -4,11 +4,12 @@
  */
 
 import { respondHTML, respondJSON } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createEmptyState, getCopyToClipboardScript } from '../utils/common-ui.js';
+import { createPageTemplate, createToolHeader, createEmptyState } from '../utils/common-ui.js';
 import { createRichEditorPane, getRichEditorStyles, getRichEditorScript } from '../utils/rich-editor.js';
 import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
 import { getToolTranslation, resolveRequestLanguage, t } from '../utils/i18n.js';
+import { countKeys } from '../utils/json-stats.js';
 
 export async function handleJSONFormatterRoutes(request, url) {
   const { pathname } = url;
@@ -144,12 +145,11 @@ function renderJSONFormatterPage(lang = 'en') {
   `;
 
    const script = `
-     <style>
-       ${getRichEditorStyles()}
-     </style>
-     ${getCopyToClipboardScript()}
-     ${getRichEditorScript()}
-      <script>
+      <style>
+        ${getRichEditorStyles()}
+      </style>
+      ${getRichEditorScript()}
+       <script>
         var inputEditor = new RichEditor('input');
         var outputEditor = new RichEditor('output');
         outputEditor.setHighlighter('json');
@@ -180,22 +180,9 @@ function renderJSONFormatterPage(lang = 'en') {
           }
         }
 
-        function countKeys(obj, depth) {
-          depth = depth || 0;
-          var count = 0;
-          var maxDepth = depth;
-          if (typeof obj === 'object' && obj !== null) {
-            for (var key in obj) {
-              count++;
-              if (typeof obj[key] === 'object' && obj[key] !== null) {
-                var result = countKeys(obj[key], depth + 1);
-                count += result.count;
-                maxDepth = Math.max(maxDepth, result.maxDepth);
-              }
-            }
-          }
-          return { count: count, maxDepth: maxDepth };
-        }
+        // Inlined from src/utils/json-stats.js — keep in sync via the import above.
+        // The same function powers the unit tests in src/utils/json-stats.test.js.
+        ${countKeys.toString()}
 
         function updateStats(jsonObj, formatted) {
           var result = countKeys(jsonObj);
@@ -204,6 +191,15 @@ function renderJSONFormatterPage(lang = 'en') {
           document.getElementById('stat-keys').textContent = result.count.toLocaleString();
           document.getElementById('stat-depth').textContent = result.maxDepth;
           statsEl.classList.remove('hidden');
+        }
+
+        // Drop the stale formatted output so an error never leaves the user
+        // staring at output that does not correspond to their current input.
+        function resetOutputPanel() {
+          outputEl.value = '';
+          outputEditor.clear(true);
+          statsEl.classList.add('hidden');
+          document.getElementById('json-empty-state').classList.remove('hidden');
         }
 
         document.getElementById('format-btn').addEventListener('click', function() {
@@ -219,7 +215,7 @@ function renderJSONFormatterPage(lang = 'en') {
              showStatus(_t('tools.json-formatter.js.status1', 'Formatted successfully'), 'success');
            } catch (error) {
              showStatus(error.message, 'error');
-             statsEl.classList.add('hidden');
+             resetOutputPanel();
            }
          });
 
@@ -236,6 +232,7 @@ function renderJSONFormatterPage(lang = 'en') {
              showStatus(_t('tools.json-formatter.js.status2', 'Minified successfully'), 'success');
            } catch (error) {
              showStatus(error.message, 'error');
+             resetOutputPanel();
            }
          });
 
@@ -248,6 +245,9 @@ function renderJSONFormatterPage(lang = 'en') {
             showStatus(_t('tools.json-formatter.js.status3', 'Valid JSON'), 'success');
           } catch (error) {
             showStatus(error.message, 'error');
+            // Validate does not write output, but it does surface stats on
+            // success — hide them on failure so the panel matches reality.
+            statsEl.classList.add('hidden');
           }
         });
 
