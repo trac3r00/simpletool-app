@@ -582,8 +582,11 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
           errorEl.classList.add('hidden');
         }
 
+        function escHtml(s) {
+          return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        }
         function formatClaimTime(ts) {
-          try { return new Date(ts * 1000).toISOString(); } catch(e) { return String(ts); }
+          try { return new Date(ts * 1000).toISOString(); } catch(e) { return escHtml(String(ts)); }
         }
 
         decodeBtn.addEventListener('click', function() {

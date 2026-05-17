@@ -494,7 +494,7 @@ const worker = {
         error: error?.message || String(error)
       });
       return respondJSON(
-        { error: 'Internal server error', message: error.message },
+        { error: 'Internal server error' },
         {
           status: 500,
           headers: { 'Cache-Control': 'no-store' }
