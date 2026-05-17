@@ -231,7 +231,12 @@ jobs:
           SHA: ${{ github.sha }}
           BRANCH: ${{ github.ref_name }}
         run: |
+          if [ -z "${WEBHOOK:-}" ]; then
+            echo "Discord webhook is not configured; skipping deploy notification."
+            exit 0
+          fi
+
           if [ "$STATUS" = "success" ]; then EMOJI="✅"; else EMOJI="❌"; fi
-          curl -H "Content-Type: application/json" \
+          curl --fail -H "Content-Type: application/json" \
             -d "{\"content\":\"$EMOJI Worker deploy **$STATUS**: **$REPO** @ $SHA (branch $BRANCH)\"}" \
-            "$WEBHOOK"
+            "$WEBHOOK" || echo "Discord deploy notification failed; preserving deploy job status."
