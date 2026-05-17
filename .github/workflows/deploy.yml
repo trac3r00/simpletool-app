@@ -75,6 +75,12 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      # Build is required: src/utils/common-ui.js imports bundled-styles.js,
+      # and vendor-sri.test.js checks files in dist/vendor/.
+      # The build artifact is only dist/; it does NOT include generated src/ files.
+      - name: Build (generate bundled-styles.js and dist/vendor files)
+        run: bun run build
+
       - name: Run unit tests
         run: bun run test
 
@@ -111,6 +117,13 @@ jobs:
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
+
+      # Build is required: src/utils/common-ui.js imports bundled-styles.js,
+      # and vendor-sri.test.js checks files in dist/vendor/.
+      # The downloadable artifact from the 'build' job only includes dist/;
+      # build:ui additionally writes to src/utils/bundled-styles.js.
+      - name: Build (generate bundled-styles.js and dist/vendor files)
+        run: bun run build
 
       - name: Download dist artifact (the build under test)
         uses: actions/download-artifact@v4
