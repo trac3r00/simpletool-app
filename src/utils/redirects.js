@@ -25,6 +25,7 @@ export const LEGACY_REDIRECTS = {
   '/caffeniate': '/caffeinate',
   '/wireguard': '/wireguard-config',
   '/mock-data': '/mock-data-generator',
+  '/yaml-converter': '/yaml-toml-converter',
 };
 
 /**
