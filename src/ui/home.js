@@ -28,7 +28,7 @@ export function renderHomePage({ isDev = false, lang = DEFAULT_LANGUAGE } = {}) 
   ${getAlternateLanguageLinks('/', currentLang)}
   <link rel="icon" type="image/svg+xml" href="/favicon.ico">
   <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#4f46e5">
+  <meta name="theme-color" content="#2563eb">
   <meta property="og:type" content="website">
   <meta property="og:url" content="${homeUrl}">
   <meta property="og:title" content="${homeTitle}">

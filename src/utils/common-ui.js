@@ -924,6 +924,9 @@ export function getToastScript() {
 export function getStylesheetLinks() {
     const version = bundledStylesHash || 'dev';
     return `
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
       <link rel="prefetch" as="font" type="font/woff2" href="/fonts/material-symbols.woff2" crossorigin>
       <style>
        @font-face {
@@ -1095,7 +1098,7 @@ export function createPageTemplate(options) {
   ${getAlternateLanguageLinks(pagePath, currentLang)}
   <link rel="icon" type="image/svg+xml" href="/favicon.ico">
   <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#4f46e5">
+  <meta name="theme-color" content="#2563eb">
   <meta property="og:type" content="website">
   <meta property="og:url" content="${pageUrl}">
   <meta property="og:title" content="${fullTitle}">
