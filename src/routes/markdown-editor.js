@@ -48,9 +48,9 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
         <div class="sticky top-16 z-20 flex flex-wrap items-center justify-between gap-3 bg-white/95 dark:bg-surface-900/90 backdrop-blur p-3 sm:p-4 rounded-xl border border-surface-200 dark:border-surface-800 shadow-sm">
           <div class="flex flex-wrap items-center gap-3">
             <div class="inline-flex items-center rounded-md border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-950 overflow-hidden">
-              <button type="button" class="view-btn px-3 py-1.5 text-sm font-medium text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-900 transition-colors" data-view-mode="split" aria-pressed="true" data-tooltip="Side-by-side editor and preview"><span data-i18n="tools.markdown-preview.ui.button0">Split</span></button>
-              <button type="button" class="view-btn px-3 py-1.5 text-sm font-medium text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-900 transition-colors" data-view-mode="edit" aria-pressed="false" data-tooltip="Full-width editor only"><span data-i18n="tools.markdown-preview.ui.button1">Editor</span></button>
-              <button type="button" class="view-btn px-3 py-1.5 text-sm font-medium text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-900 transition-colors" data-view-mode="preview" aria-pressed="false" data-tooltip="Full-width rendered preview only"><span data-i18n="tools.markdown-preview.ui.button2">Preview</span></button>
+              <button type="button" class="view-btn px-3 py-1.5 text-sm font-medium text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-900 transition-colors" data-view-mode="split" aria-pressed="true" data-tooltip="Side-by-side editor and preview"><span data-i18n="tools.markdown-editor.ui.button0">Split</span></button>
+              <button type="button" class="view-btn px-3 py-1.5 text-sm font-medium text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-900 transition-colors" data-view-mode="edit" aria-pressed="false" data-tooltip="Full-width editor only"><span data-i18n="tools.markdown-editor.ui.button1">Editor</span></button>
+              <button type="button" class="view-btn px-3 py-1.5 text-sm font-medium text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-900 transition-colors" data-view-mode="preview" aria-pressed="false" data-tooltip="Full-width rendered preview only"><span data-i18n="tools.markdown-editor.ui.button2">Preview</span></button>
             </div>
 
             <div class="hidden sm:flex items-center gap-2 text-sm text-surface-600 dark:text-surface-400">
@@ -60,9 +60,9 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
             </div>
 
             <div class="hidden md:block">
-              <label for="outline-select" class="sr-only"><span data-i18n="tools.markdown-preview.ui.label0">Jump to heading</span></label>
+              <label for="outline-select" class="sr-only"><span data-i18n="tools.markdown-editor.ui.label0">Jump to heading</span></label>
               <select id="outline-select" class="max-w-[220px] px-2.5 py-1.5 text-sm bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-700 rounded-md text-surface-700 dark:text-surface-200 focus:outline-none focus:ring-2 focus:ring-primary-500" disabled>
-                <option value="" data-i18n="tools.markdown-preview.ui.option9">Jump to heading...</option>
+                <option value="" data-i18n="tools.markdown-editor.ui.option9">Jump to heading...</option>
               </select>
             </div>
           </div>
@@ -76,7 +76,7 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
             </button>
 
             <button id="clear-md-btn" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-surface-700 dark:text-surface-200 bg-surface-100 dark:bg-surface-800 hover:bg-surface-200 dark:hover:bg-surface-700 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500">
-              <span data-i18n="tools.markdown-preview.ui.button3">Clear</span>
+              <span data-i18n="tools.markdown-editor.ui.button3">Clear</span>
             </button>
 
             <div class="h-4 w-px bg-surface-300 dark:bg-surface-700 mx-1 hidden sm:block"></div>
@@ -84,31 +84,31 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
             <div class="relative group">
               <button id="export-menu-btn" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-primary-700 dark:text-primary-300 bg-primary-50 dark:bg-primary-900/30 hover:bg-primary-100 dark:hover:bg-primary-900/50 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                <span data-i18n="tools.markdown-preview.ui.button11">Export</span>
+                <span data-i18n="tools.markdown-editor.ui.button11">Export</span>
                 <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
               </button>
               <div class="absolute right-0 mt-1 w-48 bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-10">
                 <button id="copy-md-btn" class="w-full text-left px-4 py-2 text-sm text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors flex items-center gap-2">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                  <span data-i18n="tools.markdown-preview.ui.button4">Copy MD</span>
+                  <span data-i18n="tools.markdown-editor.ui.button4">Copy MD</span>
                 </button>
                 <button id="copy-html-btn" class="w-full text-left px-4 py-2 text-sm text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors flex items-center gap-2">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                  <span data-i18n="tools.markdown-preview.ui.button5">Copy HTML</span>
+                  <span data-i18n="tools.markdown-editor.ui.button5">Copy HTML</span>
                 </button>
                 <div class="border-t border-surface-200 dark:border-surface-700"></div>
                 <button id="download-md-btn" class="w-full text-left px-4 py-2 text-sm text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors flex items-center gap-2">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                  <span data-i18n="tools.markdown-preview.ui.button6">Download .md</span>
+                  <span data-i18n="tools.markdown-editor.ui.button6">Download .md</span>
                 </button>
                 <button id="download-html-btn" class="w-full text-left px-4 py-2 text-sm text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors flex items-center gap-2">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                  <span data-i18n="tools.markdown-preview.ui.button7">Download .html</span>
+                  <span data-i18n="tools.markdown-editor.ui.button7">Download .html</span>
                 </button>
                 <div class="border-t border-surface-200 dark:border-surface-700"></div>
                 <button id="print-btn" class="w-full text-left px-4 py-2 text-sm text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors flex items-center gap-2">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6v-8z"></path></svg>
-                  <span data-i18n="tools.markdown-preview.ui.title8">Print</span>
+                  <span data-i18n="tools.markdown-editor.ui.title8">Print</span>
                 </button>
               </div>
             </div>
@@ -120,7 +120,7 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
           <div id="md-split" dir="ltr" class="h-full min-h-0 grid">
             <!-- Editor -->
             <div id="md-editor-pane" class="min-h-0 flex flex-col relative group">
-              <label for="markdown-input" class="sr-only"><span data-i18n="tools.markdown-preview.ui.label1">Markdown input</span></label>
+              <label for="markdown-input" class="sr-only"><span data-i18n="tools.markdown-editor.ui.label1">Markdown input</span></label>
               <textarea
                 id="markdown-input"
                 dir="auto"
@@ -129,7 +129,7 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
                 spellcheck="false"
               ></textarea>
               <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                <span class="text-xs text-surface-400 bg-surface-100 dark:bg-surface-800 px-2 py-1 rounded" data-i18n="tools.markdown-preview.ui.desc10">Markdown</span>
+                <span class="text-xs text-surface-400 bg-surface-100 dark:bg-surface-800 px-2 py-1 rounded" data-i18n="tools.markdown-editor.ui.desc10">Markdown</span>
               </div>
             </div>
 
@@ -146,7 +146,7 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
                 class="flex-grow w-full p-6 overflow-y-auto prose dark:prose-invert max-w-none prose-sm sm:prose-base prose-pre:bg-surface-100 dark:prose-pre:bg-surface-950 prose-pre:border prose-pre:border-surface-200 dark:prose-pre:border-surface-800"
               ></div>
               <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                <span class="text-xs text-surface-400 bg-surface-100 dark:bg-surface-800 px-2 py-1 rounded" data-i18n="tools.markdown-preview.ui.desc7">Preview</span>
+                <span class="text-xs text-surface-400 bg-surface-100 dark:bg-surface-800 px-2 py-1 rounded" data-i18n="tools.markdown-editor.ui.desc7">Preview</span>
               </div>
             </div>
           </div>
@@ -288,7 +288,7 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
       ${createCheatsheet('markdown-preview', 'Markdown Quick Reference', [
         { heading: 'Formatting', content: `
           <table>
-            <tr><th data-i18n="tools.markdown-preview.ui.th3">Syntax</th><th data-i18n="tools.markdown-preview.ui.th4">Result</th></tr>
+            <tr><th data-i18n="tools.markdown-editor.ui.th3">Syntax</th><th data-i18n="tools.markdown-editor.ui.th4">Result</th></tr>
             <tr><td><code>**bold**</code></td><td>Bold text</td></tr>
             <tr><td><code>*italic*</code></td><td>Italic text</td></tr>
             <tr><td><code>~~strike~~</code></td><td>Strikethrough</td></tr>
@@ -297,7 +297,7 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
           </table>` },
         { heading: 'Structure', content: `
           <table>
-            <tr><th data-i18n="tools.markdown-preview.ui.th3">Syntax</th><th data-i18n="tools.markdown-preview.ui.th5">Element</th></tr>
+            <tr><th data-i18n="tools.markdown-editor.ui.th3">Syntax</th><th data-i18n="tools.markdown-editor.ui.th5">Element</th></tr>
             <tr><td><code># H1</code> to <code>###### H6</code></td><td>Headings</td></tr>
             <tr><td><code>- item</code> or <code>* item</code></td><td>Unordered list</td></tr>
             <tr><td><code>1. item</code></td><td>Ordered list</td></tr>
@@ -306,7 +306,7 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
           </table>` },
         { heading: 'Links &amp; Media', content: `
           <table>
-            <tr><th data-i18n="tools.markdown-preview.ui.th3">Syntax</th><th data-i18n="tools.markdown-preview.ui.th4">Result</th></tr>
+            <tr><th data-i18n="tools.markdown-editor.ui.th3">Syntax</th><th data-i18n="tools.markdown-editor.ui.th4">Result</th></tr>
             <tr><td><code>[text](url)</code></td><td>Hyperlink</td></tr>
             <tr><td><code>![alt](url)</code></td><td>Image</td></tr>
             <tr><td><code>[text](url "title")</code></td><td>Link with tooltip</td></tr>
@@ -380,7 +380,7 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
 
         function buildOutline() {
           if (!outlineSelect) return;
-          outlineSelect.innerHTML = '<option value="" data-i18n="tools.markdown-preview.ui.option9">Jump to heading...</option>';
+          outlineSelect.innerHTML = '<option value="" data-i18n="tools.markdown-editor.ui.option9">Jump to heading...</option>';
 
           const headings = preview.querySelectorAll('h1, h2, h3, h4, h5, h6');
           const items = [];
@@ -439,12 +439,12 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
             const btn = document.createElement('button');
             btn.type = 'button';
             btn.className = 'md-codeblock-copy';
-            btn.textContent = _t('tools.markdown-preview.js.text0', 'Copy');
+            btn.textContent = _t('tools.markdown-editor.js.text0', 'Copy');
             btn.addEventListener('click', async () => {
               try {
                 await navigator.clipboard.writeText(code.textContent || '');
                 const old = btn.textContent;
-                btn.textContent = _t('tools.markdown-preview.js.text1', 'Copied');
+                btn.textContent = _t('tools.markdown-editor.js.text1', 'Copied');
                 if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
                 setTimeout(() => (btn.textContent = old), 1200);
               } catch (e) {
@@ -676,7 +676,7 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
           try {
             await navigator.clipboard.writeText(input.value || '');
             const originalText = copyMdBtn.textContent;
-            copyMdBtn.textContent = _t('tools.markdown-preview.js.text1', 'Copied');
+            copyMdBtn.textContent = _t('tools.markdown-editor.js.text1', 'Copied');
             if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
             setTimeout(() => { copyMdBtn.textContent = originalText; }, 1200);
           } catch (err) {
@@ -690,7 +690,7 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
           try {
             await navigator.clipboard.writeText(html);
             const originalText = copyHtmlBtn.textContent;
-            copyHtmlBtn.textContent = _t('tools.markdown-preview.js.text1', 'Copied');
+            copyHtmlBtn.textContent = _t('tools.markdown-editor.js.text1', 'Copied');
             if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
             setTimeout(() => { copyHtmlBtn.textContent = originalText; }, 1200);
           } catch (err) {

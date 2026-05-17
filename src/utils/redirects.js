@@ -23,6 +23,9 @@ export const LEGACY_REDIRECTS = {
   // Upcoming renames (Tasks 15, 16)
   '/markdown-preview': '/markdown-editor',
   '/caffeniate': '/caffeinate',
+  '/wireguard': '/wireguard-config',
+  '/mock-data': '/mock-data-generator',
+  '/yaml-converter': '/yaml-toml-converter',
 };
 
 /**

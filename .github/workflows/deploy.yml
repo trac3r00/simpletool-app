@@ -14,23 +14,26 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-          cache: "npm"
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
 
       - name: Install deps
-        run: npm ci
+        run: bun install --frozen-lockfile
 
       - name: Build (creates dist/)
-        run: npm run build
+        run: bun run build
 
       - name: Run unit tests
-        run: npm test
+        run: bun run test
 
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
+        run: bunx playwright install --with-deps chromium
 
       - name: Run E2E tests
         continue-on-error: true
-        run: npm run test:e2e
+        run: bun run test:e2e
 
       - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3

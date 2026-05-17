@@ -234,7 +234,7 @@ const worker = {
           status: 'healthy',
           uptime: now - workerStartedAt,
           timestamp: new Date().toISOString(),
-          version: '2.4.0'
+          version: '2.4.1'
         }, {
           headers: { 'Cache-Control': 'no-store' }
         });
@@ -494,7 +494,7 @@ const worker = {
         error: error?.message || String(error)
       });
       return respondJSON(
-        { error: 'Internal server error', message: error.message },
+        { error: 'Internal server error' },
         {
           status: 500,
           headers: { 'Cache-Control': 'no-store' }

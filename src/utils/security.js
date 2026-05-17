@@ -96,10 +96,10 @@ export function getSecurityHeaders(contentType = 'text/html; charset=utf-8', cac
   ].join(' ');
 
   if (nonce) {
-    csp = `default-src 'self'; script-src 'self' 'nonce-${nonce}' ${adScriptSrc}; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; media-src 'self' data: blob:; connect-src 'self' ${adConnectSrc}; font-src 'self' data:; frame-src 'self' ${adFrameSrc};`;
+    csp = `default-src 'self'; script-src 'self' 'nonce-${nonce}' ${adScriptSrc}; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: blob:; media-src 'self' data: blob:; connect-src 'self' ${adConnectSrc}; font-src 'self' data: https://fonts.gstatic.com; frame-src 'self' ${adFrameSrc};`;
   } else {
     // Fallback for non-HTML responses
-    csp = `default-src 'self'; script-src 'self' 'unsafe-inline' ${adScriptSrc}; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; media-src 'self' data: blob:; connect-src 'self' ${adConnectSrc}; font-src 'self' data:; frame-src 'self' ${adFrameSrc};`;
+    csp = `default-src 'self'; script-src 'self' 'unsafe-inline' ${adScriptSrc}; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: blob:; media-src 'self' data: blob:; connect-src 'self' ${adConnectSrc}; font-src 'self' data: https://fonts.gstatic.com; frame-src 'self' ${adFrameSrc};`;
   }
 
 

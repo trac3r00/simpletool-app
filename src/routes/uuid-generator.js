@@ -60,7 +60,6 @@ function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
                 <option value="v4" selected data-i18n="tools.uuid-generator.ui.option5">UUID v4 (Random)</option>
                 <option value="v1" data-i18n="tools.uuid-generator.ui.option6">UUID v1 (Timestamp)</option>
                 <option value="nil" data-i18n="tools.uuid-generator.ui.option7">NIL UUID (All zeros)</option>
-                <option value="guid" data-i18n="tools.uuid-generator.ui.option8">GUID (Microsoft)</option>
               </select>
               <p id="version-desc" class="text-xs text-surface-500 dark:text-surface-400 mt-2" data-i18n="tools.uuid-generator.ui.desc10">
                 Cryptographically strong random UUID
@@ -95,7 +94,8 @@ function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
                   <input type="radio" name="format" value="braces" class="w-4 h-4 text-primary-600 focus:ring-primary-500">
                   <span class="text-sm font-medium text-surface-900 dark:text-surface-100" data-i18n="tools.uuid-generator.ui.desc14">With braces {}</span>
                 </label>
-                </div>
+              </div>
+              <p class="text-xs text-surface-500 dark:text-surface-400 mt-2">Tip: A Microsoft GUID is a UUID v4 with <code>{}</code> braces — select UUID v4 + 'With braces {}' format.</p>
             </div>
 
             <!-- Generate Button -->
@@ -160,8 +160,7 @@ function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
       const descriptions = {
         v4: 'Cryptographically strong random UUID',
         v1: 'Timestamp-based UUID with system info',
-        nil: 'All-zero UUID used as null value',
-        guid: 'Microsoft GUID format (uppercase with braces)'
+        nil: 'All-zero UUID used as null value'
       };
 
       if (versionSelect) versionSelect.addEventListener('change', () => {
@@ -245,7 +244,7 @@ function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
         for (let i = 0; i < quantity; i++) {
           let uuid;
 
-          if (version === 'v4' || version === 'guid') {
+          if (version === 'v4') {
             uuid = generateUUIDv4();
           } else if (version === 'v1') {
             uuid = generateUUIDv1();
@@ -253,11 +252,7 @@ function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
             uuid = generateNIL();
           }
 
-          if (version === 'guid') {
-            uuid = '{' + uuid.toUpperCase() + '}';
-          } else {
-            uuid = formatUUID(uuid, format);
-          }
+          uuid = formatUUID(uuid, format);
 
           uuids.push(uuid);
         }

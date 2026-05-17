@@ -149,11 +149,197 @@ function renderDataConverterPage(lang = DEFAULT_LANGUAGE) {
   `;
 
 
+  const script = `
+    <script src="/vendor/js-yaml.min.js" integrity="sha384-ZeqCzuWczURac3RacSufGD7oSbzeaX7xxnnOr3PTcYTLx4Av0qBj0kBq7AeCtHLA" crossorigin="anonymous"></script>
+    <script src="/vendor/toml.min.js" integrity="sha384-Xct21wwhjNAssRKqsU7xoXtjUU2dxYftwzImANZHaEx1ad00LmZpXh+uGsaOwwgt" crossorigin="anonymous"></script>
+    <script>
+    (function() {
+      var inputEl = document.getElementById('format-input');
+      var formatSelect = document.getElementById('format-select');
+      var errorEl = document.getElementById('format-error');
+      var detectedEl = document.getElementById('detected-format');
+      var rootTypeEl = document.getElementById('root-type');
+      var keyCountEl = document.getElementById('key-count');
+      var jsonOut = document.getElementById('json-output');
+      var yamlOut = document.getElementById('yaml-output');
+      var tomlOut = document.getElementById('toml-output');
+
+      var SAMPLE = 'name: simpletool\\nversion: 1.0\\ndescription: A useful config file\\ntags:\\n  - web\\n  - api\\ndatabase:\\n  host: localhost\\n  port: 5432';
+
+      function showError(msg) {
+        errorEl.textContent = msg;
+        errorEl.classList.remove('hidden');
+      }
+      function clearError() {
+        errorEl.classList.add('hidden');
+        errorEl.textContent = '';
+      }
+
+      function detectFormat(src) {
+        var s = src.trim();
+        if (!s) return 'unknown';
+        if (s[0] === '{' || s[0] === '[') return 'json';
+        if (/^[a-zA-Z_][\\w.-]* *= */.test(s) && s.indexOf(':') === -1) return 'toml';
+        return 'yaml';
+      }
+
+      function parseInput(src) {
+        var fmt = formatSelect.value === 'auto' ? detectFormat(src) : formatSelect.value;
+        detectedEl.textContent = fmt;
+        if (fmt === 'json') {
+          return JSON.parse(src);
+        } else if (fmt === 'yaml') {
+          if (!window.jsyaml) throw new Error(_t('tools.yaml-toml-converter.js.text3', 'js-yaml not loaded.'));
+          return window.jsyaml.load(src);
+        } else if (fmt === 'toml') {
+          if (!window.toml) throw new Error('toml library not loaded.');
+          return window.toml.parse(src);
+        }
+        throw new Error('Unknown format');
+      }
+
+      function objToToml(obj, prefix) {
+        prefix = prefix || '';
+        var lines = [];
+        var tables = [];
+        Object.keys(obj).forEach(function(k) {
+          var v = obj[k];
+          var fullKey = prefix ? prefix + '.' + k : k;
+          if (v === null || v === undefined) {
+            return;
+          } else if (typeof v === 'boolean') {
+            lines.push(k + ' = ' + v);
+          } else if (typeof v === 'number') {
+            lines.push(k + ' = ' + v);
+          } else if (typeof v === 'string') {
+            lines.push(k + ' = ' + JSON.stringify(v));
+          } else if (Array.isArray(v)) {
+            var allPrimitive = v.every(function(item) {
+              return typeof item !== 'object' || item === null;
+            });
+            if (allPrimitive) {
+              lines.push(k + ' = [' + v.map(function(item) {
+                return typeof item === 'string' ? JSON.stringify(item) : String(item);
+              }).join(', ') + ']');
+            } else {
+              v.forEach(function(item) {
+                tables.push('[[' + fullKey + ']]');
+                tables.push(objToToml(item, ''));
+              });
+            }
+          } else if (typeof v === 'object') {
+            tables.push('[' + fullKey + ']');
+            tables.push(objToToml(v, fullKey));
+          }
+        });
+        return lines.concat(tables).join('\\n');
+      }
+
+      function countKeys(obj) {
+        if (!obj || typeof obj !== 'object') return 0;
+        return Object.keys(obj).length;
+      }
+
+      function updateOutputs(data) {
+        try {
+          jsonOut.textContent = JSON.stringify(data, null, 2);
+          document.querySelector('[data-copy="json"]').disabled = false;
+        } catch(e) {
+          jsonOut.textContent = _t('tools.yaml-toml-converter.js.text2', '⚠️ Cannot serialize to JSON:') + ' ' + e.message;
+        }
+        try {
+          if (!window.jsyaml) throw new Error(_t('tools.yaml-toml-converter.js.text3', 'js-yaml not loaded.'));
+          yamlOut.textContent = window.jsyaml.dump(data, { indent: 2 });
+          document.querySelector('[data-copy="yaml"]').disabled = false;
+        } catch(e) {
+          yamlOut.textContent = _t('tools.yaml-toml-converter.js.text4', '⚠️ YAML conversion failed:') + ' ' + e.message;
+        }
+        try {
+          tomlOut.textContent = objToToml(data, '');
+          document.querySelector('[data-copy="toml"]').disabled = false;
+        } catch(e) {
+          tomlOut.textContent = _t('tools.yaml-toml-converter.js.text6', '⚠️ TOML conversion failed:') + ' ' + e.message;
+        }
+        rootTypeEl.textContent = Array.isArray(data) ? 'array' : typeof data;
+        keyCountEl.textContent = countKeys(data);
+      }
+
+      function resetOutputs() {
+        var placeholder = _t('tools.yaml-toml-converter.js.tpl7', 'Await conversion.');
+        jsonOut.textContent = placeholder;
+        yamlOut.textContent = placeholder;
+        tomlOut.textContent = placeholder;
+        document.querySelectorAll('.copy-btn').forEach(function(b) { b.disabled = true; });
+        detectedEl.textContent = '\\u2014';
+        rootTypeEl.textContent = '\\u2014';
+        keyCountEl.textContent = '\\u2014';
+      }
+
+      document.querySelectorAll('.convert-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          clearError();
+          var src = inputEl.value.trim();
+          if (!src) { showError('Please enter some configuration data.'); return; }
+          try {
+            updateOutputs(parseInput(src));
+          } catch(e) {
+            showError(e.message);
+            resetOutputs();
+          }
+        });
+      });
+
+      document.getElementById('validate-btn').addEventListener('click', function() {
+        clearError();
+        var src = inputEl.value.trim();
+        if (!src) { showError('Please enter some configuration data.'); return; }
+        try {
+          parseInput(src);
+          errorEl.textContent = '\\u2713 Valid ' + (formatSelect.value === 'auto' ? detectFormat(src) : formatSelect.value).toUpperCase();
+          errorEl.classList.remove('hidden');
+        } catch(e) {
+          showError(e.message);
+        }
+      });
+
+      document.getElementById('load-sample').addEventListener('click', function() {
+        inputEl.value = SAMPLE;
+        formatSelect.value = 'yaml';
+        clearError();
+        resetOutputs();
+      });
+
+      document.querySelectorAll('.copy-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var fmt = btn.getAttribute('data-copy');
+          var el = document.getElementById(fmt + '-output');
+          var text = el ? el.textContent : '';
+          var awaitText = _t('tools.yaml-toml-converter.js.tpl7', 'Await conversion.');
+          if (!text || text === awaitText) return;
+          copyToClipboard(text, btn);
+        });
+      });
+
+      inputEl.addEventListener('input', function() {
+        var src = inputEl.value.trim();
+        if (src && formatSelect.value === 'auto') {
+          detectedEl.textContent = detectFormat(src);
+        } else if (!src) {
+          detectedEl.textContent = '\\u2014';
+          rootTypeEl.textContent = '\\u2014';
+          keyCountEl.textContent = '\\u2014';
+        }
+      });
+    })();
+    </script>
+  `;
+
   return createPageTemplate({
     title,
     description,
     path: '/yaml-toml-converter',
     content,
+    scripts: script,
     lang: currentLang
   });
 }

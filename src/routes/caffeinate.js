@@ -4,25 +4,25 @@ import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequest
 import { TOOLS } from '../utils/tool-registry.js';
 import { createRelatedToolsSection } from '../utils/content-ui.js';
 
-export async function handleCaffeniateRoutes(request, url) {
-  if (url.pathname === '/caffeniate' || url.pathname === '/caffeniate/') {
-    if (request.method === 'GET') return respondHTML(renderCaffeniatePage(resolveRequestLanguage(request, url)));
+export async function handleCaffeinateRoutes(request, url) {
+  if (url.pathname === '/caffeinate' || url.pathname === '/caffeinate/') {
+    if (request.method === 'GET') return respondHTML(renderCaffeinatePage(resolveRequestLanguage(request, url)));
   }
   return null;
 }
 
-function renderCaffeniatePage(lang = DEFAULT_LANGUAGE) {
+function renderCaffeinatePage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('caffeniate', currentLang);
+  const translation = getToolTranslation('caffeinate', currentLang);
   const toolHeader = createToolHeader(
     { emoji: '☕' },
-    translation?.name || 'Caffeniate',
+    translation?.name || 'Caffeinate',
     translation?.desc || 'Keep your device screen awake using the Wake Lock API. No downloads, fully client-side.',
     [{ text: translation?.ui?.badge0 || 'Client-Side Only', tooltip: 'Runs entirely in your browser using Web APIs — your data never leaves your device.' }],
-    { toolId: 'caffeniate' }
+    { toolId: 'caffeinate' }
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'caffeniate');
+  const currentTool = TOOLS.find(t => t.id === 'caffeinate');
     const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
 
 
@@ -34,8 +34,8 @@ function renderCaffeniatePage(lang = DEFAULT_LANGUAGE) {
         <!-- Status Panel -->
         <div id="status-panel" class="mt-6 p-5 rounded-lg bg-surface-50 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 text-center transition-all duration-300">
           <div id="status-icon" class="text-5xl mb-3" aria-hidden="true">💤</div>
-          <p id="status-text" class="text-surface-700 dark:text-surface-300 text-base" role="status" aria-live="polite" data-i18n="tools.caffeniate.ui.status0">
-            ${t('tools.caffeniate.ui.status0')}
+          <p id="status-text" class="text-surface-700 dark:text-surface-300 text-base" role="status" aria-live="polite" data-i18n="tools.caffeinate.ui.status0">
+            ${t('tools.caffeinate.ui.status0')}
           </p>
         </div>
 
@@ -45,33 +45,33 @@ function renderCaffeniatePage(lang = DEFAULT_LANGUAGE) {
         </div>
 
         <!-- Note -->
-        <p class="mt-4 text-sm text-center text-surface-500 dark:text-surface-400" data-i18n="tools.caffeniate.ui.desc0">
-          ${t('tools.caffeniate.ui.desc0')}
+        <p class="mt-4 text-sm text-center text-surface-500 dark:text-surface-400" data-i18n="tools.caffeinate.ui.desc0">
+          ${t('tools.caffeinate.ui.desc0')}
         </p>
 
         <!-- Action Button -->
         <div class="mt-6 flex justify-center">
-          <button id="toggle-btn" type="button" data-tooltip="Uses the Wake Lock API to prevent your screen from sleeping" class="btn btn-primary px-8 py-3 text-base font-semibold" data-i18n="tools.caffeniate.ui.button0">
-            ${t('tools.caffeniate.ui.button0')}
+          <button id="toggle-btn" type="button" data-tooltip="Uses the Wake Lock API to prevent your screen from sleeping" class="btn btn-primary px-8 py-3 text-base font-semibold" data-i18n="tools.caffeinate.ui.button0">
+            ${t('tools.caffeinate.ui.button0')}
           </button>
         </div>
 
         <!-- Stats -->
         <div id="stats-panel" class="hidden mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4">
           <div class="text-center p-3 rounded-lg bg-surface-50 dark:bg-surface-800">
-            <div class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide mb-1" data-i18n="tools.caffeniate.ui.label0">${t('tools.caffeniate.ui.label0')}</div>
+            <div class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide mb-1" data-i18n="tools.caffeinate.ui.label0">${t('tools.caffeinate.ui.label0')}</div>
             <div id="stat-mode" class="text-sm font-semibold text-surface-900 dark:text-surface-100">—</div>
           </div>
           <div class="text-center p-3 rounded-lg bg-surface-50 dark:bg-surface-800">
-            <div class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide mb-1" data-i18n="tools.caffeniate.ui.label1">${t('tools.caffeniate.ui.label1')}</div>
+            <div class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide mb-1" data-i18n="tools.caffeinate.ui.label1">${t('tools.caffeinate.ui.label1')}</div>
             <div id="stat-uptime" class="text-sm font-semibold text-surface-900 dark:text-surface-100">—</div>
           </div>
           <div class="text-center p-3 rounded-lg bg-surface-50 dark:bg-surface-800">
-            <div class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide mb-1" data-i18n="tools.caffeniate.ui.label2">${t('tools.caffeniate.ui.label2')}</div>
+            <div class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide mb-1" data-i18n="tools.caffeinate.ui.label2">${t('tools.caffeinate.ui.label2')}</div>
             <div id="stat-heartbeats" class="text-sm font-semibold text-surface-900 dark:text-surface-100">0</div>
           </div>
           <div class="text-center p-3 rounded-lg bg-surface-50 dark:bg-surface-800">
-            <div class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide mb-1" data-i18n="tools.caffeniate.ui.label3">${t('tools.caffeniate.ui.label3')}</div>
+            <div class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide mb-1" data-i18n="tools.caffeinate.ui.label3">${t('tools.caffeinate.ui.label3')}</div>
             <div id="stat-reactivations" class="text-sm font-semibold text-surface-900 dark:text-surface-100">0</div>
           </div>
         </div>
@@ -114,9 +114,9 @@ function renderCaffeniatePage(lang = DEFAULT_LANGUAGE) {
       function updateUI(icon, message, isActive, panelState) {
         statusIcon.textContent = icon;
         statusText.textContent = message;
-        var btnText = isActive ? (window._t ? window._t('tools.caffeniate.ui.button1') : 'Deactivate Wake Lock') : (window._t ? window._t('tools.caffeniate.ui.button0') : 'Activate Wake Lock');
+        var btnText = isActive ? (window._t ? window._t('tools.caffeinate.ui.button1') : 'Deactivate Wake Lock') : (window._t ? window._t('tools.caffeinate.ui.button0') : 'Activate Wake Lock');
         toggleBtn.textContent = btnText;
-        toggleBtn.setAttribute('data-i18n', isActive ? 'tools.caffeniate.ui.button1' : 'tools.caffeniate.ui.button0');
+        toggleBtn.setAttribute('data-i18n', isActive ? 'tools.caffeinate.ui.button1' : 'tools.caffeinate.ui.button0');
 
          statusPanel.classList.remove('border-primary-400', 'dark:border-primary-600', 'border-warning-400', 'dark:border-warning-600', 'border-error-400', 'dark:border-error-600');
          if (panelState === 'active') {
@@ -134,9 +134,9 @@ function renderCaffeniatePage(lang = DEFAULT_LANGUAGE) {
           return;
         }
         var labels = {
-          native: window._t ? window._t('tools.caffeniate.js.mode0') : 'Wake Lock API',
-          fallback: window._t ? window._t('tools.caffeniate.js.mode1') : 'Video Fallback',
-          basic: window._t ? window._t('tools.caffeniate.js.mode2') : 'Basic Fallback'
+          native: window._t ? window._t('tools.caffeinate.js.mode0') : 'Wake Lock API',
+          fallback: window._t ? window._t('tools.caffeinate.js.mode1') : 'Video Fallback',
+          basic: window._t ? window._t('tools.caffeinate.js.mode2') : 'Basic Fallback'
         };
         modeLabel.textContent = labels[mode] || mode;
         modeLabel.classList.remove('hidden');
@@ -209,7 +209,7 @@ function renderCaffeniatePage(lang = DEFAULT_LANGUAGE) {
 
       async function attemptReactivation(reason) {
         if (state.reactivationAttempts >= MAX_REACTIVATION_ATTEMPTS) {
-          var msg = (window._t ? window._t('tools.caffeniate.js.status2') : 'Wake lock failed: {{reason}}. Please reactivate manually.').replace('{{reason}}', reason);
+          var msg = (window._t ? window._t('tools.caffeinate.js.status2') : 'Wake lock failed: {{reason}}. Please reactivate manually.').replace('{{reason}}', reason);
           updateUI('❌', msg, false, 'error');
           showMode('none');
           return false;
@@ -218,7 +218,7 @@ function renderCaffeniatePage(lang = DEFAULT_LANGUAGE) {
         state.reactivationCount++;
         updateStats();
 
-        var msg = (window._t ? window._t('tools.caffeniate.js.status3') : 'Reactivating ({{attempt}}/{{max}})...').replace('{{attempt}}', state.reactivationAttempts).replace('{{max}}', MAX_REACTIVATION_ATTEMPTS);
+        var msg = (window._t ? window._t('tools.caffeinate.js.status3') : 'Reactivating ({{attempt}}/{{max}})...').replace('{{attempt}}', state.reactivationAttempts).replace('{{max}}', MAX_REACTIVATION_ATTEMPTS);
         updateUI('🔄', msg, false, 'warn');
 
         await new Promise(function(r) { setTimeout(r, REACTIVATION_DELAY); });
@@ -239,7 +239,7 @@ function renderCaffeniatePage(lang = DEFAULT_LANGUAGE) {
           state.lastActivity = Date.now();
 
           lock.addEventListener('release', handleRelease);
-          updateUI('☕', window._t ? window._t('tools.caffeniate.js.status0') : 'Native wake lock active. Your screen will stay awake.', true, 'active');
+          updateUI('☕', window._t ? window._t('tools.caffeinate.js.status0') : 'Native wake lock active. Your screen will stay awake.', true, 'active');
           showMode('native');
           startHeartbeat();
           startUptimeTimer();
@@ -272,7 +272,7 @@ function renderCaffeniatePage(lang = DEFAULT_LANGUAGE) {
           state.mode = 'fallback';
           state.active = true;
           state.lastActivity = Date.now();
-          updateUI('☕', window._t ? window._t('tools.caffeniate.js.status1') : 'Fallback wake lock active. Keep this tab in the foreground.', true, 'active');
+          updateUI('☕', window._t ? window._t('tools.caffeinate.js.status1') : 'Fallback wake lock active. Keep this tab in the foreground.', true, 'active');
           showMode('fallback');
           startHeartbeat();
           startUptimeTimer();
@@ -298,7 +298,7 @@ function renderCaffeniatePage(lang = DEFAULT_LANGUAGE) {
         var fb = await activateFallback();
         if (fb) return true;
 
-        updateUI('❌', window._t ? window._t('tools.caffeniate.js.status9') : 'Wake lock unavailable on this device. Check system power settings.', false, 'error');
+        updateUI('❌', window._t ? window._t('tools.caffeinate.js.status9') : 'Wake lock unavailable on this device. Check system power settings.', false, 'error');
         return false;
       }
 
@@ -321,7 +321,7 @@ function renderCaffeniatePage(lang = DEFAULT_LANGUAGE) {
 
         state.mode = 'none';
         state.active = false;
-        updateUI('💤', msg || (window._t ? window._t('tools.caffeniate.js.status4') : 'Wake lock deactivated.'), false, '');
+        updateUI('💤', msg || (window._t ? window._t('tools.caffeinate.js.status4') : 'Wake lock deactivated.'), false, '');
         showMode('none');
         updateStats();
       }
@@ -332,7 +332,7 @@ function renderCaffeniatePage(lang = DEFAULT_LANGUAGE) {
         state.mode = 'none';
 
         if (!state.intentActive) {
-          updateUI('💤', window._t ? window._t('tools.caffeniate.js.status5') : 'Wake lock released.', false, '');
+          updateUI('💤', window._t ? window._t('tools.caffeinate.js.status5') : 'Wake lock released.', false, '');
           showMode('none');
           stopHeartbeat();
           stopUptimeTimer();
@@ -340,7 +340,7 @@ function renderCaffeniatePage(lang = DEFAULT_LANGUAGE) {
         }
 
         if (document.visibilityState === 'visible' && document.hasFocus()) {
-          updateUI('🔄', window._t ? window._t('tools.caffeniate.js.status7') : 'Reactivating...', false, 'warn');
+          updateUI('🔄', window._t ? window._t('tools.caffeinate.js.status7') : 'Reactivating...', false, 'warn');
           setTimeout(async function() {
             if (state.intentActive) {
               var ok = await activateWakeLock();
@@ -348,7 +348,7 @@ function renderCaffeniatePage(lang = DEFAULT_LANGUAGE) {
             }
           }, 1000);
         } else {
-          updateUI('⏸️', window._t ? window._t('tools.caffeniate.js.status6') : 'Tab hidden. Wake lock paused — will restore when tab is active.', false, 'warn');
+          updateUI('⏸️', window._t ? window._t('tools.caffeinate.js.status6') : 'Tab hidden. Wake lock paused — will restore when tab is active.', false, 'warn');
         }
       }
 
@@ -377,7 +377,7 @@ function renderCaffeniatePage(lang = DEFAULT_LANGUAGE) {
         if (document.visibilityState === 'visible' && document.hasFocus()) {
           if (!state.active) {
             state.reactivationAttempts = 0;
-            updateUI('🔄', window._t ? window._t('tools.caffeniate.js.status7') : 'Reactivating...', false, 'warn');
+            updateUI('🔄', window._t ? window._t('tools.caffeinate.js.status7') : 'Reactivating...', false, 'warn');
             setTimeout(async function() {
               if (state.intentActive && document.visibilityState === 'visible') {
                 await activateWakeLock();
@@ -385,7 +385,7 @@ function renderCaffeniatePage(lang = DEFAULT_LANGUAGE) {
             }, 500);
           }
         } else if (state.active) {
-          updateUI('⏸️', window._t ? window._t('tools.caffeniate.js.status8') : 'Tab hidden. Wake lock effectiveness reduced.', true, 'warn');
+          updateUI('⏸️', window._t ? window._t('tools.caffeinate.js.status8') : 'Tab hidden. Wake lock effectiveness reduced.', true, 'warn');
         }
       });
 
@@ -413,10 +413,10 @@ function renderCaffeniatePage(lang = DEFAULT_LANGUAGE) {
   `;
 
   return createPageTemplate({
-    title: translation?.name || 'Caffeniate',
+    title: translation?.name || 'Caffeinate',
     description: translation?.desc || 'Keep your device screen awake using the Wake Lock API. No downloads, fully client-side.',
     content,
-    path: '/caffeniate',
+    path: '/caffeinate',
     lang: currentLang
   });
 }

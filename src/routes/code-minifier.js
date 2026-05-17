@@ -1,6 +1,6 @@
 /**
  * Code Minifier & Beautifier Tool
- * Minify and beautify JavaScript, CSS, HTML, and JSON code
+ * Minify and beautify JavaScript, CSS, and HTML code
  * All processing happens client-side
  */
 
@@ -19,7 +19,7 @@ function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
   const toolHeader = createToolHeader(
     { emoji: '📦' },
     translation?.name || 'Code Minifier',
-    translation?.desc || 'Minify and beautify JavaScript, CSS, HTML, and JSON code with one click. Optimize your code for production or improve readability.',
+    translation?.desc || 'Minify and beautify JavaScript, CSS, and HTML code with one click. Optimize your code for production or improve readability.',
     [{ text: translation?.ui?.badge16 || 'Client-Side Only', tooltip: 'Runs entirely in your browser using Web APIs — your code never leaves your device.' }],
     { toolId: 'code-minifier' }
   );
@@ -38,7 +38,6 @@ function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
           <button class="language-tab active" data-lang="javascript" data-tooltip="Minify JavaScript code" data-i18n-tooltip="tools.code-minifier.ui.tip0"><span data-i18n="tools.code-minifier.ui.button0">JavaScript</span></button>
           <button class="language-tab" data-lang="css" data-tooltip="Minify CSS stylesheets" data-i18n-tooltip="tools.code-minifier.ui.tip1"><span data-i18n="tools.code-minifier.ui.button6">CSS</span></button>
           <button class="language-tab" data-lang="html" data-tooltip="Minify HTML markup" data-i18n-tooltip="tools.code-minifier.ui.tip2"><span data-i18n="tools.code-minifier.ui.button7">HTML</span></button>
-          <button class="language-tab" data-lang="json" data-tooltip="Format or minify JSON data" data-i18n-tooltip="tools.code-minifier.ui.tip3"><span data-i18n="tools.code-minifier.ui.button8">JSON</span></button>
         </div>
       </div>
 
@@ -127,7 +126,7 @@ function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
         },
         {
           title: 'How to Use This Tool',
-          content: '<ol><li>Select the programming language (JavaScript, CSS, HTML, or JSON) from the tabs at the top.</li><li>Paste your source code into the "Input Code" text area on the left.</li><li>Click the "Minify Code" button to reduce the file size for production use.</li><li>Alternatively, click "Beautify Code" to add indentation and formatting for better readability.</li><li>View the results in the "Output Code" area and click "Copy" or "Download" to save your optimized code.</li></ol>'
+          content: '<ol><li>Select the programming language (JavaScript, CSS, or HTML) from the tabs at the top.</li><li>Paste your source code into the "Input Code" text area on the left.</li><li>Click the "Minify Code" button to reduce the file size for production use.</li><li>Alternatively, click "Beautify Code" to add indentation and formatting for better readability.</li><li>View the results in the "Output Code" area and click "Copy" or "Download" to save your optimized code.</li><li>Need to format or minify JSON? Use the <a href="/json-formatter" class="text-primary-600 dark:text-primary-400 underline">JSON Formatter</a> tool.</li></ol>'
         },
         {
           title: 'Common Use Cases',
@@ -257,10 +256,10 @@ function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
       document.getElementById('download-output-btn').addEventListener('click', function() {
         var text = document.getElementById('output-code').value;
         if (!text) return;
-        var extMap = { javascript: 'js', css: 'css', html: 'html', json: 'json' };
+        var extMap = { javascript: 'js', css: 'css', html: 'html' };
         var suffix = currentMode === 'minify' ? '.min' : '.formatted';
         var filename = 'output' + suffix + '.' + (extMap[currentLang] || 'txt');
-        var mimeMap = { javascript: 'text/javascript', css: 'text/css', html: 'text/html', json: 'application/json' };
+        var mimeMap = { javascript: 'text/javascript', css: 'text/css', html: 'text/html' };
         downloadFile(text, filename, mimeMap[currentLang] || 'text/plain');
       });
 
@@ -271,9 +270,7 @@ function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
 
         var output;
         try {
-          if (currentLang === 'json') {
-            output = processJSON(input, currentMode);
-          } else if (currentLang === 'javascript') {
+          if (currentLang === 'javascript') {
             output = currentMode === 'minify' ? minifyJS(input) : beautifyJS(input);
           } else if (currentLang === 'css') {
             output = currentMode === 'minify' ? minifyCSS(input) : beautifyCSS(input);
@@ -317,11 +314,7 @@ function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
         document.getElementById('output-stats').classList.remove('hidden');
       }
 
-      // ── JSON ──────────────────────────────────────────────────────────────
-      function processJSON(input, mode) {
-        var parsed = JSON.parse(input);
-        return mode === 'minify' ? JSON.stringify(parsed) : JSON.stringify(parsed, null, 2);
-      }
+      
 
       // ── JavaScript minifier ───────────────────────────────────────────────
       function minifyJS(code) {

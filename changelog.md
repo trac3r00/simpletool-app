@@ -22,6 +22,31 @@ This changelog is a snapshot-style record of major changes in this workspace.
 - `scripts/sweep-routes.mjs`: route sweep script for console errors and structural checks.
 - Both QA scripts: add route-count assertion to prevent false-green signals.
 
+### Page-sweep fixes (2026-05-11)
+
+- **Trust pills**: introduce shared `createTrustPill()` UI policy and demote redundant feature-pills across `curl-studio`, `mermaid-studio`, `markdown-editor`, `protocol-decoder`, `wireshark-filter`, `text-diff`, `sql-formatter`, `json-schema-studio`, `regex-studio`, `log-masker`, `wireguard`, and `mock-data-generator` — one privacy/trust pill per page.
+- **Routes**:
+  - Rename `/markdown-preview` → `/markdown-editor` (301 redirect from old slug); wire new route in `worker.js`.
+  - Fix `caffeniate` → `caffeinate` spelling; add 301 from `/caffeniate`; regenerate `_handlers.js`.
+  - Add tool-rename redirect helper (`src/utils/tool-rename.js`) for future renames.
+- **Home page**: extract `tool-search-filter` into pure function with unit tests; live search now actually filters tool cards instead of being a no-op.
+- **404 page**: add inline search bar and popular-tools recovery panel.
+- **Tool fixes**:
+  - `pipe`: resolve `<title>undefined</title>` and render proper page.
+  - `htpasswd-generator`: "Generate entry" button now produces output (was silently no-op).
+  - `ssh-key-generator`: emit OpenSSH wire format (RFC 4253) for public keys; add shared encoder util.
+  - `dns-reference`: command-builder dropdown now includes DKIM/SPF/DMARC.
+  - `uuid-generator`: remove redundant GUID dropdown option (duplicate of v4).
+  - `code-minifier`: remove JSON tab; cross-link to JSON Formatter to avoid duplicated functionality.
+- **A11y/UX**:
+  - `qr`: add accessible `aria-label` to canvas.
+  - `saml-decoder`: render empty-pane state correctly.
+  - `regex-studio`: fix empty-counter render.
+  - `cron-builder`: minute grid uses proper `role="grid"` / `role="gridcell"`; escape template literals in ARIA render to fix runtime errors.
+- **Docs**: align `ssh-key-generator` and `css-gradient-generator` educational copy with shipped features.
+- **Repo hygiene**: gitignore local dev artifacts (screenshots, draft tests, Claude config).
+- **Version bump**: footer link, `/health`, and changelog page now show **v2.4.1**.
+
 ## Before adding the 8 tools (baseline)
 
 - Tool count: **32**
