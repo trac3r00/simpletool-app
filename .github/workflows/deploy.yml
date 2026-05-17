@@ -4,9 +4,16 @@ on:
   push:
     branches: ["main"]
 
+# Serialize production deploys so an older SHA cannot overwrite a newer one.
+# cancel-in-progress: false → queue, do not cancel — we want order, not skip.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     steps:
       - uses: actions/checkout@v4
@@ -32,7 +39,6 @@ jobs:
         run: bunx playwright install --with-deps chromium
 
       - name: Run E2E tests
-        continue-on-error: true
         run: bun run test:e2e
 
       - name: Deploy to Cloudflare Workers
