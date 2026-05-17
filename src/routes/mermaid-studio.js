@@ -89,7 +89,7 @@ export async function handleMermaidStudioRoutes(request, url) {
     <style>${getRichEditorStyles()}</style>
     ${getRichEditorScript()}
     ${getMobileTabScript()}
-    <script src="/vendor/mermaid.min.js" integrity="sha384-1CMXl090wj8Dd6YfnzSQUOgWbE6suWCaenYG7pox5AX7apTpY3PmJMeS2oPql4Gk" crossorigin="anonymous"></script>
+    <script src="/vendor/mermaid.min.js" integrity="sha384-enVdc7lTHDGtpROV85t9+VqPC2EyyB0hsRD0MrvQnHUsHmTHIz2D8SPP4EnBkstH" crossorigin="anonymous"></script>
     <script>
       const mermaid = window.mermaid;
 
