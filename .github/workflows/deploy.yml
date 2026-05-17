@@ -200,6 +200,11 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      # Build is required: worker.js imports bundled-styles.js which is generated
+      # by build:ui. The dist/ artifact is downloaded next (overwrites local dist/).
+      - name: Build (generate bundled-styles.js and dist/vendor files)
+        run: bun run build
+
       - name: Download dist artifact (the exact build that passed tests)
         uses: actions/download-artifact@v4
         with:
