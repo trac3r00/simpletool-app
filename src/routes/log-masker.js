@@ -114,7 +114,7 @@ function renderLogMaskerPage(lang = DEFAULT_LANGUAGE) {
         // Redaction patterns
         const patterns = {
           email: {
-            regex: /\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b/g,
+            regex: /\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\\b/g,
             replacement: '[EMAIL_REDACTED]'
           },
           ipv4: {
