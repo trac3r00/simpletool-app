@@ -1,6 +1,25 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Page sweep 2026-05-11 regressions', () => {
+  for (const path of ['/', '/qr-code']) {
+    test(`${path} loads local Material Symbols font`, async ({ page }) => {
+      const fontResponses = [];
+      page.on('response', response => {
+        if (response.url().includes('/fonts/material-symbols.woff2')) {
+          fontResponses.push(response);
+        }
+      });
+
+      await page.goto(path);
+      await page.evaluate(() => document.fonts.load('24px "Material Symbols Rounded"'));
+      await page.waitForFunction(() => document.fonts.check('24px "Material Symbols Rounded"'));
+
+      expect(fontResponses.length).toBeGreaterThan(0);
+      expect(fontResponses.some(response => response.status() === 404)).toBe(false);
+      await expect.poll(() => page.evaluate(() => document.fonts.check('24px "Material Symbols Rounded"'))).toBe(true);
+    });
+  }
+
   test('ssh-key-generator: ECDSA produces OpenSSH wire format', async ({ page }) => {
     await page.goto('http://localhost:8787/ssh-key-generator');
     await page.locator('#generate-btn').click();
