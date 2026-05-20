@@ -45,11 +45,32 @@ describe('Security Utils', () => {
 });
 
 describe('getSecurityHeaders', () => {
+  const getCspDirective = (csp, name) => csp.split(';').find(directive => directive.trim().startsWith(name));
+
   it('returns edge cache headers for HTML', () => {
     const headers = getSecurityHeaders('text/html; charset=utf-8', null, 'test-nonce');
+    const csp = headers['Content-Security-Policy'];
+    const connectSrc = getCspDirective(csp, 'connect-src');
+    const frameSrc = getCspDirective(csp, 'frame-src');
+
     expect(headers['Cache-Control']).toBe('public, s-maxage=60, max-age=0, must-revalidate');
     expect(headers['Vary']).toBe('Accept-Encoding');
-    expect(headers['Content-Security-Policy']).toContain("nonce-test-nonce");
+    expect(csp).toContain("script-src 'self' 'nonce-test-nonce'");
+    expect(csp).not.toContain("script-src 'self' 'unsafe-inline'");
+    expect(connectSrc).toContain('https://*.adtrafficquality.google');
+    expect(frameSrc).toContain('https://*.adtrafficquality.google');
+  });
+
+  it('uses unsafe-inline fallback and adtrafficquality CSP without a nonce', () => {
+    const headers = getSecurityHeaders('text/html; charset=utf-8');
+    const csp = headers['Content-Security-Policy'];
+    const connectSrc = getCspDirective(csp, 'connect-src');
+    const frameSrc = getCspDirective(csp, 'frame-src');
+
+    expect(csp).toContain("script-src 'self' 'unsafe-inline'");
+    expect(csp).not.toContain("'nonce-");
+    expect(connectSrc).toContain('https://*.adtrafficquality.google');
+    expect(frameSrc).toContain('https://*.adtrafficquality.google');
   });
 
   it('returns no-store for JSON', () => {
