@@ -63,6 +63,7 @@ const TOOL_HANDLERS = [
   { id: 'secret-scanner', file: 'secret-scanner.js', exp: 'handleSecretScannerRoutes' },
   { id: 'dns-reference', file: 'dns-reference.js', exp: 'handleDNSReferenceRoutes' },
   { id: 'port-reference', file: 'port-reference.js', exp: 'handlePortReferenceRoutes' },
+  { id: 'http-status-reference', file: 'http-status-reference.js', exp: 'handleHTTPStatusReferenceRoutes' },
   { id: 'bandwidth-calculator', file: 'bandwidth-calculator.js', exp: 'handleBandwidthCalculatorRoutes' },
   { id: 'wireshark-filter', file: 'wireshark-filter.js', exp: 'handleWiresharkFilterRoutes' },
   { id: 'protocol-headers', file: 'protocol-headers.js', exp: 'handleProtocolHeadersRoutes' },

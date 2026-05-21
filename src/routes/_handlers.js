@@ -44,6 +44,7 @@ import { handleCSPBuilderRoutes as csp_builder } from './csp-builder.js';
 import { handleSecretScannerRoutes as secret_scanner } from './secret-scanner.js';
 import { handleDNSReferenceRoutes as dns_reference } from './dns-reference.js';
 import { handlePortReferenceRoutes as port_reference } from './port-reference.js';
+import { handleHTTPStatusReferenceRoutes as http_status_reference } from './http-status-reference.js';
 import { handleBandwidthCalculatorRoutes as bandwidth_calculator } from './bandwidth-calculator.js';
 import { handleWiresharkFilterRoutes as wireshark_filter } from './wireshark-filter.js';
 import { handleProtocolHeadersRoutes as protocol_headers } from './protocol-headers.js';
@@ -95,6 +96,7 @@ export const handlersById = {
   'secret-scanner': secret_scanner,
   'dns-reference': dns_reference,
   'port-reference': port_reference,
+  'http-status-reference': http_status_reference,
   'bandwidth-calculator': bandwidth_calculator,
   'wireshark-filter': wireshark_filter,
   'protocol-headers': protocol_headers,
