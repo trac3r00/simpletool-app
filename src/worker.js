@@ -326,7 +326,7 @@ const worker = {
         });
       }
 
-      if (path.startsWith('/vendor/') || path.startsWith('/fonts/') || path === '/manifest.json' || path === '/sw.js') {
+      if (path.startsWith('/vendor/') || path.startsWith('/fonts/') || path === '/manifest.json' || path === '/sw.js' || path === '/og-image.png') {
         if (env && env.ASSETS && typeof env.ASSETS.fetch === 'function') {
           const assetRequest = isDev ? stripConditionalHeaders(request) : request;
           let assetResponse = await env.ASSETS.fetch(assetRequest);
