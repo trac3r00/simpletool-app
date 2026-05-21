@@ -2,7 +2,7 @@
 
 ## Overview
 
-32 browser-based web tools served from a single Cloudflare Worker. All tool processing is client-side. Server renders HTML via template literals in route files. Supports 4 languages (en/ko/ja/es) via a client-side i18n system.
+49 browser-based web tools served from a single Cloudflare Worker. All tool processing is client-side. Server renders HTML via template literals in route files. Supports 4 languages (en/ko/ja/es) via a client-side i18n system.
 
 **Stack:** Cloudflare Workers (V8 isolates), Vanilla JS, Tailwind CSS 3, Vitest, Playwright.
 
@@ -14,14 +14,15 @@ npm run dev             # build + wrangler dev at localhost:8787
 npm run deploy          # build + wrangler deploy
 
 # Unit tests (Vitest) — fast, no browser
-npm test                                               # run all 26 unit tests
+npm test                                               # run all 403 unit tests (29 files)
 npx vitest run src/utils/security.test.js              # single file
 npx vitest run -t "rate limits after threshold"        # single test by name
 
 # E2E tests (Playwright) — dev server auto-started via webServer config
-npm run test:e2e                                       # all 143 E2E tests (6 suites)
-npx playwright test tests/deep-verification.spec.js    # single suite
-npx playwright test tests/e2e/all-tools.spec.js -g "home"  # grep by name
+npm run test:e2e                                       # all 200 E2E tests (5 spec files; 2 skipped locally)
+npx playwright test tests/e2e/games.spec.js            # single suite
+npx playwright test tests/e2e/all-tools-smoke.spec.js  # smoke suite
+npx playwright test tests/e2e/page-sweep-2026-05-11.spec.js -g "home"  # grep by name
 npx playwright test --headed                           # watch in browser
 ```
 
@@ -52,11 +53,11 @@ scripts/
 styles/input.css         # Tailwind source with design tokens (.btn, .card, .input, .label)
 dist/                    # Build output: styles.css, vendor/*.min.js
 tests/
-  e2e/all-tools.spec.js          # Navigation + UI functional tests
-  all-tools-smoke.spec.js        # JS error detection on every route
-  deep-verification.spec.js      # Per-tool interaction + assertion
-  responsive.spec.js             # Responsive layout tests
-  soak/soak-1000.spec.js         # 1000-iteration random stress test
+  e2e/games.spec.js              # Game tools (ladder, roulette, marble) UI + interaction tests
+  e2e/generators-utils-ui.spec.js # Generator & utility tools UI + interaction tests
+  e2e/network-tools.spec.js      # Network tools UI + interaction tests
+  e2e/page-sweep-2026-05-11.spec.js # Regression sweep for specific tool behaviors
+  e2e/all-tools-smoke.spec.js    # Every registered tool: HTTP 200 + zero page/console errors
   helpers/tool-suite.js          # Shared test actions per tool (TOOL_ACTIONS map)
 ```
 
