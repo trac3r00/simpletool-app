@@ -491,6 +491,16 @@ export const TOOLS = [
     relatedTools: ['log-masker', 'env-var-manager', 'password-generator', 'email-analyzer']
   },
   {
+    id: 'graphql-explorer',
+    name: 'GraphQL Explorer',
+    icon: '🔮',
+    description: 'Introspect GraphQL schemas and run queries against live endpoints.',
+    path: '/graphql-explorer',
+    category: 'network',
+    keywords: 'graphql, query, introspection, schema, api',
+    relatedTools: ['curl-studio', 'json-schema-studio', 'token-studio', 'encoding-workbench']
+  },
+  {
     id: 'ladder-game',
     name: 'Ladder Game',
     icon: '🪜',
