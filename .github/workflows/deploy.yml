@@ -4,6 +4,9 @@ on:
   push:
     branches: ["main"]
 
+permissions:
+  contents: read
+
 # Serialize production deploys so an older SHA cannot overwrite a newer one.
 # cancel-in-progress: false → queue, do not cancel — we want order, not skip.
 concurrency:
