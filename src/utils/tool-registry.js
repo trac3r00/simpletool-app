@@ -359,6 +359,17 @@ export const TOOLS = [
     relatedTools: ['color-converter', 'svg-optimizer', 'code-minifier', 'image-converter']
   },
   {
+    id: 'css-layout-playground',
+    name: 'CSS Layout Playground',
+    icon: '🎨',
+    description: 'Visual CSS Flexbox & Grid editor with live preview.',
+    path: '/css-layout-playground',
+    category: 'generators',
+    keywords: 'css, flexbox, grid, layout, design, style',
+    tip: 'Drag and drop elements to experiment with Flexbox and Grid layouts with live CSS output',
+    relatedTools: ['css-gradient', 'color-converter', 'svg-optimizer']
+  },
+  {
     id: 'curl-studio',
     name: 'Curl Studio',
     icon: '🐚',
