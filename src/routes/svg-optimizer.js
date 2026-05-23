@@ -163,7 +163,7 @@ function renderSVGOptimizerPage(lang = DEFAULT_LANGUAGE) {
   `;
 
   const scripts = String.raw`
-    <script src="/vendor/purify.min.js" integrity="sha384-pcBjnGbkyKeOXaoFkmJiuR9E08/6gkmus6/Strimnxtl3uk0Hx23v345pWyC/MMr" crossorigin="anonymous"></script>
+    <script src="/vendor/purify.min.js" integrity="sha384-7FXQySTrDscwsLx1i8RIqZM/JHoUVstx4CuL2b7tziI4Glhp3/3dm/j3qUTheVXE" crossorigin="anonymous"></script>
     <script>
       const t = (k, fb) => (window._t ? window._t('tools.svg-optimizer.js.' + k, fb) : (fb || k));
 
