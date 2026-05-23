@@ -52,6 +52,9 @@ import { handleMarbleRouletteRoutes as marble_roulette } from './marble-roulette
 import { handleTokenStudioRoutes as token_studio } from './token-studio.js';
 import { handleEncodingWorkbenchRoutes as encoding_workbench } from './encoding-workbench.js';
 import { handleOAuthDebuggerRoutes as oauth_debugger } from './oauth-debugger.js';
+import { handleGraphQLExplorerRoutes as graphql_explorer } from './graphql-explorer.js';
+import { handleWebhookDebuggerRoutes as webhook_debugger } from './webhook-debugger.js';
+import { handleCSSLayoutPlaygroundRoutes as css_layout_playground } from './css-layout-playground.js';
 
 export const handlersById = {
   'password-generator': password_generator,
@@ -103,4 +106,7 @@ export const handlersById = {
   'token-studio': token_studio,
   'encoding-workbench': encoding_workbench,
   'oauth-debugger': oauth_debugger,
+  'graphql-explorer': graphql_explorer,
+  'webhook-debugger': webhook_debugger,
+  'css-layout-playground': css_layout_playground,
 };

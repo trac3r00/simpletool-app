@@ -71,6 +71,9 @@ const TOOL_HANDLERS = [
   { id: 'token-studio', file: 'token-studio.js', exp: 'handleTokenStudioRoutes' },
   { id: 'encoding-workbench', file: 'encoding-workbench.js', exp: 'handleEncodingWorkbenchRoutes' },
   { id: 'oauth-debugger', file: 'oauth-debugger.js', exp: 'handleOAuthDebuggerRoutes' },
+  { id: 'graphql-explorer', file: 'graphql-explorer.js', exp: 'handleGraphQLExplorerRoutes' },
+  { id: 'webhook-debugger', file: 'webhook-debugger.js', exp: 'handleWebhookDebuggerRoutes' },
+  { id: 'css-layout-playground', file: 'css-layout-playground.js', exp: 'handleCSSLayoutPlaygroundRoutes' },
 ];
 
 const imports = [];
