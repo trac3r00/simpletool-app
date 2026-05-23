@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "build:css": "BROWSERSLIST_IGNORE_OLD_DATA=1 tailwindcss -i ./styles/input.css -o ./dist/styles.css --minify",
+    "build:fonts": "node scripts/download-fonts.js",
     "build:ui": "node scripts/build-ui.js",
     "build:vendor": "node scripts/build-vendor.js",
     "build:game-utils": "esbuild src/utils/game-utils.js --bundle --minify --outfile=dist/vendor/game-utils.min.js --format=iife --global-name=GameUtils",
     "build:routes": "node scripts/build-routes.js",
-    "build": "bun run build:routes && bun run build:css && bun run build:ui && bun run build:vendor && bun run build:game-utils",
+    "build": "bun run build:fonts && bun run build:routes && bun run build:css && bun run build:ui && bun run build:vendor && bun run build:game-utils",
     "dev": "bun run build && wrangler dev",
     "deploy": "bun run build && wrangler deploy",
     "test": "vitest run",

@@ -244,8 +244,38 @@ export function renderHomePage({ isDev = false, lang = DEFAULT_LANGUAGE } = {}) 
         }
       }
 
+      // Sync URL ?q= as user types (debounced)
+      var _qSyncTimer = null;
+      function syncQueryToURL(value) {
+        clearTimeout(_qSyncTimer);
+        _qSyncTimer = setTimeout(function() {
+          var url = new URL(window.location.href);
+          var v = (value || '').trim();
+          if (v) {
+            url.searchParams.set('q', v);
+          } else {
+            url.searchParams.delete('q');
+          }
+          if (url.search !== window.location.search) {
+            history.replaceState(null, '', url.toString());
+          }
+        }, 300);
+      }
+
+      // Honor deep-link ?q= parameter
+      var _urlQ = new URLSearchParams(window.location.search).get('q');
+      if (heroSearch && _urlQ) {
+        heroSearch.value = _urlQ;
+        filterCards(_urlQ);
+        var _len = heroSearch.value.length;
+        heroSearch.setSelectionRange(_len, _len);
+        if (window.innerWidth > 640) {
+          heroSearch.focus();
+        }
+      }
+
       if (heroSearch) {
-        heroSearch.addEventListener('input', function(e) { filterCards(e.target.value); });
+        heroSearch.addEventListener('input', function(e) { filterCards(e.target.value); syncQueryToURL(e.target.value); });
       }
 
       // Wire nav-search-btn click → focus hero search (capture-phase to override modal).

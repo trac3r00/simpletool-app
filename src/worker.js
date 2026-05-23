@@ -241,6 +241,11 @@ const worker = {
       }
 
       if (path === '/debug-sentry') {
+        // Dev-only Sentry wiring probe. In prod, must not throw/capture
+        // (would let anonymous clients flood Sentry quota — see issue #13).
+        if (!isDev) {
+          return respond404();
+        }
         throw new Error('Sentry test error');
       }
 
@@ -503,6 +508,8 @@ const worker = {
     }
   }
 };
+
+export { worker as __workerForTests };
 
 export default Sentry.withSentry(
   (env) => ({
