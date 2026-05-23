@@ -321,7 +321,7 @@ function renderHashCalculatorPage(lang = DEFAULT_LANGUAGE) {
   `;
 
   const script = `
-    <script src="/vendor/noble-hashes.min.js" integrity="sha384-wp5Gd3Ib+Tw8F7tawvozKi1PMyoYX4OY1xUuwDYiYs96rBWrq7aeXI98VmgtnqLA" crossorigin="anonymous"></script>
+    <script src="/vendor/noble-hashes.min.js" integrity="sha384-xN5jnfgKbQdbVRYIHdNg/sGnnAJdztAKuHPrAxztdwVv7Sw9zNSM/d3tGYkvy9ni" crossorigin="anonymous"></script>
     <script src="/vendor/md5.min.js" integrity="sha384-JmVtRz6RWiXnA14QbIOJzPuU3MidULOpBP66deeLLyyoF4Tr/gZlbkHkL6vTthxH" crossorigin="anonymous"></script>
     <script>
       // Tab Management

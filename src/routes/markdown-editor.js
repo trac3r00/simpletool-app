@@ -319,8 +319,8 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
 
   const scripts = `
     <script src="/vendor/marked.min.js" integrity="sha384-9Md4MlJk24bo2Ifubp0FbKhuES4/iAwyTGMeWpBG4RoHGTKygpEGEpOYhEQxbfa9" crossorigin="anonymous"></script>
-    <script src="/vendor/purify.min.js" integrity="sha384-ikETfzsmSTEkyr7smbhW6mdO8o44Zro09Sk1uC9pbG6ZTJA0wK6v37pwx8h+3VRC" crossorigin="anonymous"></script>
-    <script src="/vendor/mermaid.min.js" integrity="sha384-1CMXl090wj8Dd6YfnzSQUOgWbE6suWCaenYG7pox5AX7apTpY3PmJMeS2oPql4Gk" crossorigin="anonymous"></script>
+    <script src="/vendor/purify.min.js" integrity="sha384-eCz05P6PHhVK1N9YlA/YY0JLOp3wc37jUGRWexbZ3VZj66h7exte7mtRSD6QoOgZ" crossorigin="anonymous"></script>
+    <script src="/vendor/mermaid.min.js" integrity="sha384-qX9VvWkP79m/O121ZE6sOYp0nf/pldQgtvWDbkpzi+3mUo4Wn4Ix4cFzNPay3VaB" crossorigin="anonymous"></script>
 
     <script>
       document.addEventListener('DOMContentLoaded', () => {
