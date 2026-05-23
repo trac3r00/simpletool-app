@@ -71,6 +71,7 @@ const TOOL_HANDLERS = [
   { id: 'token-studio', file: 'token-studio.js', exp: 'handleTokenStudioRoutes' },
   { id: 'encoding-workbench', file: 'encoding-workbench.js', exp: 'handleEncodingWorkbenchRoutes' },
   { id: 'oauth-debugger', file: 'oauth-debugger.js', exp: 'handleOAuthDebuggerRoutes' },
+  { id: 'webhook-debugger', file: 'webhook-debugger.js', exp: 'handleWebhookDebuggerRoutes' },
 ];
 
 const imports = [];
