@@ -154,6 +154,7 @@ function renderWebhookDebuggerPage(lang = DEFAULT_LANGUAGE) {
     </main>
 
     <script>
+      (function() {
       // --- State ---
       var isListening = false;
       var requests = [];  // [{id, timestamp, method, url, headers, body, contentType}]
