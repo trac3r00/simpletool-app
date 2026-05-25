@@ -77,16 +77,16 @@ self.addEventListener('fetch', function(event) {
           if (response.ok) {
             var clone = response.clone();
             caches.open(CACHE_NAME).then(function(cache) {
-              cache.put(event.request, clone);
-            });
+              return cache.put(event.request, clone);
+            }).catch(function() {});
           }
           return response;
-        });
+        }).catch(function() { return new Response('Service unavailable', { status: 408 }); });
       })
     );
   } else {
     // Network-only for HTML pages — never cache because CSP nonces are per-request
     // Stale nonces from cache would block all inline scripts
-    event.respondWith(fetch(event.request));
+    event.respondWith(fetch(event.request).catch(function() { return new Response('Service unavailable', { status: 503 }); }));
   }
 });
