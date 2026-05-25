@@ -636,7 +636,7 @@ function renderSQLFormatterPage(lang = DEFAULT_LANGUAGE) {
         const kind = hasError ? 'error' : 'warn';
         const items = issues.slice(0, 12).map(i => {
           const where = 'L' + i.line + ':' + i.col;
-          return '<li><span class="font-mono text-xs" data-i18n="tools.sql-formatter.ui.desc14">' + where + '</span> — ' + escapeHtml(i.msg) + '</li>';
+          return '<li><span class="font-mono text-xs" data-i18n="tools.sql-formatter.ui.desc14">' + escapeHtml(where) + '</span> — ' + escapeHtml(i.msg) + '</li>';
         }).join('');
 	        const note = issues.length > 12 ? '<div class="mt-2 text-xs opacity-80">' + fmtVars(t('text8', 'Showing first {n} issues.'), { n: 12 }) + '</div>' : '';
         setIssues(kind, '<ul class="list-disc ml-5 space-y-1">' + items + '</ul>' + note);
