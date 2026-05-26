@@ -74,6 +74,17 @@ export const TOOLS = [
     relatedTools: ['cidr-calculator', 'curl-studio', 'dns-reference', 'csp-builder']
   },
   {
+    id: 'http-status-reference',
+    name: 'HTTP Status Reference',
+    icon: '📡',
+    description: 'Search HTTP status codes with usage, safety, idempotency, and cacheability guidance.',
+    path: '/http-status-reference',
+    category: 'network',
+    keywords: 'http, status, response, rfc 9110, cache, idempotent, rest, api',
+    tip: 'Search HTTP status codes by code, class, phrase, or when-to-use guidance',
+    relatedTools: ['curl-studio', 'protocol-headers', 'dns-reference', 'port-reference']
+  },
+  {
     id: 'bandwidth-calculator',
     name: 'Bandwidth Calculator',
     icon: '📊',

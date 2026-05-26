@@ -238,6 +238,61 @@ test.describe('DNS Record Reference', () => {
   });
 });
 
+test.describe('HTTP Status Reference', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/http-status-reference', { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('main')).toBeVisible();
+  });
+
+  test('page loads with correct title', async ({ page }) => {
+    await expect(page.locator('h1')).toContainText('HTTP Status Reference');
+  });
+
+  test('search input and class filters are visible', async ({ page }) => {
+    await expect(page.locator('#status-search')).toBeVisible();
+    await expect(page.locator('.class-filter')).toHaveCount(6);
+    await expect(page.locator('button.class-filter[data-class="all"]')).toBeVisible();
+    await expect(page.locator('button.class-filter[data-class="4xx"]')).toBeVisible();
+  });
+
+  test('search for status code shows results', async ({ page }) => {
+    await page.locator('#status-search').fill('404');
+    await expect(page.locator('#results-body')).toContainText('Not Found');
+    await expect(page.locator('#results-body')).toContainText('Default cacheable');
+  });
+
+  test('class filter narrows results', async ({ page }) => {
+    await page.locator('button.class-filter[data-class="5xx"]').click();
+    await expect(page.locator('#results-body')).toContainText('Internal Server Error');
+    await expect(page.locator('#results-body')).not.toContainText('Not Found');
+  });
+
+  test('clear button clears search', async ({ page }) => {
+    await page.locator('#status-search').fill('429');
+    await page.locator('#clear-search').click();
+    await expect(page.locator('#status-search')).toHaveValue('');
+  });
+
+  test('dark mode: tool renders in dark mode', async ({ page }) => {
+    await page.evaluate(() => document.documentElement.classList.add('dark'));
+    await expect(page.locator('main')).toBeVisible();
+    await expect(page.locator('#status-search')).toBeVisible();
+  });
+
+  test('mobile viewport: renders correctly', async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 667 });
+    await page.goto('/http-status-reference', { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('main')).toBeVisible();
+    await expect(page.locator('#status-search')).toBeVisible();
+  });
+
+  test('TOOL_ACTIONS smoke test', async ({ page }) => {
+    const actions = TOOL_ACTIONS['http-status-reference'];
+    await actions.action(page);
+    await actions.waitFor(page);
+  });
+});
+
 test.describe('CIDR Calculator', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/cidr-calculator', { waitUntil: 'domcontentloaded' });
