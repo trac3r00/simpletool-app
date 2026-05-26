@@ -491,6 +491,27 @@ export const TOOLS = [
     relatedTools: ['log-masker', 'env-var-manager', 'password-generator', 'email-analyzer']
   },
   {
+    id: 'pipe',
+    name: 'Pipe Mode',
+    icon: '⛓',
+    description: 'Chain tools together. Your data never leaves your browser.',
+    path: '/pipe',
+    category: 'utils',
+    keywords: 'chain, pipeline, tools, beta',
+    badge: 'BETA',
+    relatedTools: ['case-converter', 'json-formatter', 'encoding-workbench', 'text-diff']
+  },
+  {
+    id: 'changelog',
+    name: 'Changelog',
+    icon: '📋',
+    description: 'Release history and recent changes to SimpleTool.',
+    path: '/changelog',
+    category: 'utils',
+    keywords: 'releases, updates, changes, version history',
+    relatedTools: ['token-counter', 'markdown-editor', 'json-formatter']
+  },
+  {
     id: 'ladder-game',
     name: 'Ladder Game',
     icon: '🪜',
