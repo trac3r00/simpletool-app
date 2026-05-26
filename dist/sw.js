@@ -2,7 +2,7 @@
  * SimpleTool Service Worker
  * Cache strategy:
  * - Static assets (CSS, JS, fonts): cache-first
- * - Tool pages (HTML): network-first with stale-while-revalidate fallback
+ * - Tool pages (HTML): network-only (never cache because CSP nonces are per-request)
  * - Never cache: sitemap, robots.txt, ad scripts, analytics
  */
 
@@ -11,7 +11,9 @@ var CACHE_NAME = 'simpletool-v1';
 var STATIC_ASSETS = [
   '/styles.css',
   '/favicon.ico',
-  '/manifest.json'
+  '/manifest.json',
+  '/fonts/material-symbols.css',
+  '/fonts/material-symbols.woff2'
 ];
 
 var NEVER_CACHE = [
@@ -26,7 +28,13 @@ var NEVER_CACHE = [
 self.addEventListener('install', function(event) {
   event.waitUntil(
     caches.open(CACHE_NAME).then(function(cache) {
-      return cache.addAll(STATIC_ASSETS);
+      // Pre-cache assets; font fetch is best-effort — do not fail install if fonts are unavailable
+      return cache.addAll(STATIC_ASSETS).catch(function() {
+        var coreAssets = STATIC_ASSETS.filter(function(url) {
+          return url.indexOf('/fonts/') === -1;
+        });
+        return cache.addAll(coreAssets);
+      });
     }).then(function() {
       return self.skipWaiting();
     })
@@ -62,6 +70,11 @@ function isStaticAsset(url) {
          path.startsWith('/vendor/');
 }
 
+/** Return a minimal empty response so uncaught rejections never escape. */
+function fallbackResponse() {
+  return new Response('', { status: 404, statusText: 'Offline' });
+}
+
 self.addEventListener('fetch', function(event) {
   var url = event.request.url;
 
@@ -81,12 +94,18 @@ self.addEventListener('fetch', function(event) {
             });
           }
           return response;
+        }).catch(function() {
+          return fallbackResponse();
         });
       })
     );
   } else {
     // Network-only for HTML pages — never cache because CSP nonces are per-request
     // Stale nonces from cache would block all inline scripts
-    event.respondWith(fetch(event.request));
+    event.respondWith(
+      fetch(event.request).catch(function() {
+        return fallbackResponse();
+      })
+    );
   }
 });
