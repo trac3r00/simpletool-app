@@ -371,7 +371,7 @@ function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
             return \`
               <div>
                 <p class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400 font-bold">
-\${label}</p>
+\${escapeHtml(label)}</p>
                 <p class="mt-1 font-mono text-sm break-words text-surface-900 dark:text-surface-100">
 \${escapeHtml(attr.value || '—')}</p>
               </div>
@@ -444,7 +444,7 @@ function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
             return \`
               <div>
                 <p class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400 font-bold">
-\${label}</p>
+\${escapeHtml(label)}</p>
                 <p class="mt-1 font-mono text-sm text-surface-900 dark:text-surface-100 break-words">
 \${safeValue}</p>
               </div>
