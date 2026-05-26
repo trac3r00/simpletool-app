@@ -53,6 +53,7 @@ import { handleMarbleRouletteRoutes as marble_roulette } from './marble-roulette
 import { handleTokenStudioRoutes as token_studio } from './token-studio.js';
 import { handleEncodingWorkbenchRoutes as encoding_workbench } from './encoding-workbench.js';
 import { handleOAuthDebuggerRoutes as oauth_debugger } from './oauth-debugger.js';
+import { handleWebhookDebuggerRoutes as webhook_debugger } from './webhook-debugger.js';
 
 export const handlersById = {
   'password-generator': password_generator,
@@ -105,4 +106,5 @@ export const handlersById = {
   'token-studio': token_studio,
   'encoding-workbench': encoding_workbench,
   'oauth-debugger': oauth_debugger,
+  'webhook-debugger': webhook_debugger,
 };

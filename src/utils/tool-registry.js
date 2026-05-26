@@ -96,6 +96,17 @@ export const TOOLS = [
     relatedTools: ['cidr-calculator', 'curl-studio', 'user-agent-decoder']
   },
   {
+    id: 'webhook-debugger',
+    name: 'Webhook Debugger',
+    icon: '🪝',
+    description: 'Capture, inspect, and replay webhook payloads locally in your browser.',
+    path: '/webhook-debugger',
+    category: 'network',
+    keywords: 'webhook, hmac, signature, stripe, github webhook, payload, inspect, capture, replay',
+    tip: 'Inspect incoming webhook payloads — headers, body, HMAC signature verification, and replay as cURL',
+    relatedTools: ['curl-studio', 'json-formatter', 'log-viewer']
+  },
+  {
     id: 'wireguard-config',
     name: 'WireGuard Config Studio',
     icon: '🔒',
