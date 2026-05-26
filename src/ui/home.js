@@ -34,13 +34,14 @@ export function renderHomePage({ isDev = false, lang = DEFAULT_LANGUAGE } = {}) 
   <meta property="og:title" content="${homeTitle}">
   <meta property="og:description" content="${homeDescription}">
   <meta property="og:site_name" content="SimpleTool">
-  <meta property="og:image" content="https://simpletool.app/og-image.svg">
+  <meta property="og:image" content="https://simpletool.app/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${homeTitle}">
   <meta name="twitter:description" content="${homeDescription}">
-  <meta name="twitter:image" content="https://simpletool.app/og-image.svg">
+  <meta name="twitter:image" content="https://simpletool.app/og-image.png">
   <meta name="keywords" content="online tools, developer tools, JSON formatter, password generator, hash calculator, UUID generator, regex tester, base64 decoder, QR code generator, free tools, privacy tools"><!-- TODO: translate via t('home.meta.keywords', currentLang) once key is added to i18n files -->
   ${getThemeBootstrapScript()}
   ${getLanguageBootstrapScript(currentLang)}
