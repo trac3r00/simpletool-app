@@ -192,7 +192,7 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
 
   const scripts = `
     <script src="/vendor/md5.min.js" integrity="sha384-JmVtRz6RWiXnA14QbIOJzPuU3MidULOpBP66deeLLyyoF4Tr/gZlbkHkL6vTthxH" crossorigin="anonymous"></script>
-    <script src="/vendor/bcrypt.min.js" integrity="sha384-qGFE4FIJLgCFuYs3nzg39XpCtvT5AZUhaBdjB3e1+vpKQa03AkyWOyBSFb9OcQ/g" crossorigin="anonymous"></script>
+    <script src="/vendor/bcrypt.min.js" integrity="sha384-f1NR6kH8ccNxh9nal5W5FdbK0m8WrusZnHAjvzvDCiCkCakNyhvNL1tRfXfpv/0M" crossorigin="anonymous"></script>
     <script>
       const usernameInput = document.getElementById('username-input');
       const passwordInput = document.getElementById('password-input');

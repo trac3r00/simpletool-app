@@ -302,7 +302,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
 
   const script = `
     <script src="/vendor/md5.min.js" integrity="sha384-JmVtRz6RWiXnA14QbIOJzPuU3MidULOpBP66deeLLyyoF4Tr/gZlbkHkL6vTthxH" crossorigin="anonymous"></script>
-    <script src="/vendor/bcrypt.min.js" integrity="sha384-qGFE4FIJLgCFuYs3nzg39XpCtvT5AZUhaBdjB3e1+vpKQa03AkyWOyBSFb9OcQ/g" crossorigin="anonymous"></script>
+    <script src="/vendor/bcrypt.min.js" integrity="sha384-f1NR6kH8ccNxh9nal5W5FdbK0m8WrusZnHAjvzvDCiCkCakNyhvNL1tRfXfpv/0M" crossorigin="anonymous"></script>
     <style>
       .tab-btn { outline: none; }
       .tab-btn:focus-visible { box-shadow: 0 0 0 2px var(--color-primary-500); }
