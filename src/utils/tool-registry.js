@@ -11,6 +11,16 @@
 
 export const TOOLS = [
   {
+    id: 'github-automation',
+    name: 'GitHub Automation',
+    icon: '🤖',
+    description: 'Automate GitHub workflows and issue tracking with Trac3r00.',
+    path: '/github-automation',
+    category: 'utils',
+    keywords: 'github, automation, issues, trac3r00, kanban',
+    relatedTools: ['webhook-debugger', 'oauth-debugger', 'token-studio', 'changelog']
+  },
+  {
     id: 'json-formatter',
     name: 'JSON Formatter',
     icon: '📋',
