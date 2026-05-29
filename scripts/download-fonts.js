@@ -18,7 +18,8 @@ if (!fs.existsSync(DIST_FONTS_DIR)) {
 
 function fetch(url) {
   return new Promise((resolve, reject) => {
-    https.get(url, {
+    const req = https.get(url, {
+      timeout: 15000,
       headers: {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
       }
@@ -33,11 +34,18 @@ function fetch(url) {
         const buffer = Buffer.concat(chunks);
         resolve(buffer);
       });
-    }).on('error', reject);
+    });
+    req.on('timeout', () => { req.destroy(); reject(new Error('Request timeout')); });
+    req.on('error', reject);
   });
 }
 
 async function main() {
+  const fontPath = path.join(DIST_FONTS_DIR, TARGET_FONT_FILE);
+  if (fs.existsSync(fontPath) && fs.existsSync(TARGET_CSS_FILE)) {
+    console.log('Fonts already exist, skipping download.');
+    return;
+  }
   console.log('Fetching CSS...');
   const cssBuffer = await fetch(CSS_URL);
   let cssContent = cssBuffer.toString();
@@ -63,6 +71,6 @@ async function main() {
 }
 
 main().catch(err => {
-  console.error(err);
-  process.exit(1);
+  console.warn(`Warning: failed to download fonts (${err.message}). Building without local Material Symbols font.`);
+  process.exit(0);
 });
