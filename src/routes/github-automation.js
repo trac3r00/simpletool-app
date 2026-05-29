@@ -68,21 +68,7 @@ function renderGithubAutomationPage(lang = DEFAULT_LANGUAGE) {
             <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4" data-i18n="tools.github-automation.ui.heading1">Automation Settings</h2>
             <div class="space-y-4">
               <div>
-                <label class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2" data-i18n="tools.github-automation.ui.label3">Issue Creation</label>
-                <div class="space-y-2">
-                  <label class="flex items-center">
-                    <input type="checkbox" id="auto-create-issues" class="rounded border-surface-300 dark:border-surface-700 text-primary-600 focus:ring-primary-500">
-                    <span class="ml-2 text-sm text-surface-700 dark:text-surface-300" data-i18n="tools.github-automation.ui.checkbox0">Automatically create issues from Kanban tasks</span>
-                  </label>
-                  <label class="flex items-center">
-                    <input type="checkbox" id="use-trac3r00-template" class="rounded border-surface-300 dark:border-surface-700 text-primary-600 focus:ring-primary-500" checked>
-                    <span class="ml-2 text-sm text-surface-700 dark:text-surface-300" data-i18n="tools.github-automation.ui.checkbox1">Use Trac3r00 issue templates</span>
-                  </label>
-                </div>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2" data-i18n="tools.github-automation.ui.label4">Issue Labels</label>
+                <label class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2" data-i18n="tools.github-automation.ui.label3">Issue Labels</label>
                 <div class="flex flex-wrap gap-2">
                   <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800 dark:bg-primary-900 dark:text-primary-100">automation</span>
                   <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800 dark:bg-primary-900 dark:text-primary-100">trac3r00</span>
@@ -91,6 +77,23 @@ function renderGithubAutomationPage(lang = DEFAULT_LANGUAGE) {
                     placeholder="Add custom labels (comma separated)" data-i18n-placeholder="tools.github-automation.ui.placeholder3">
                 </div>
               </div>
+            </div>
+          </div>
+
+          <!-- Kanban Task Input Section -->
+          <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 p-5">
+            <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4" data-i18n="tools.github-automation.ui.heading6">Create from Kanban Task</h2>
+            <p class="text-sm text-surface-500 dark:text-surface-400 mb-3" data-i18n="tools.github-automation.ui.desc0">Paste a Kanban task (JSON) to auto-generate a GitHub issue with title, description, labels, and assignee.</p>
+            <div class="space-y-3">
+              <textarea id="kanban-task-input" rows="6"
+                class="w-full p-3 bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm font-mono resize-y"
+                placeholder='{"title": "Add dark mode toggle", "description": "Users need a manual toggle...", "assignee": "bob-fixer", "priority": 2, "labels": ["enhancement", "ui"]}'
+                data-i18n-placeholder="tools.github-automation.ui.placeholder6"></textarea>
+              <div class="flex gap-2">
+                <button id="parse-kanban-btn" class="btn btn-secondary flex-1" data-i18n="tools.github-automation.ui.button2">Parse Kanban Task</button>
+                <button id="clear-kanban-btn" class="btn btn-ghost flex-1" data-i18n="tools.github-automation.ui.button3">Clear</button>
+              </div>
+              <div id="kanban-parse-status" class="text-xs hidden"></div>
             </div>
           </div>
         </div>
@@ -163,14 +166,23 @@ _Automatically generated issue. Please review and update with specific details a
       const statusMessage = document.getElementById('status-message');
       const issuesList = document.getElementById('issues-list');
       const issuesContainer = document.getElementById('issues-container');
+      const kanbanTaskInput = document.getElementById('kanban-task-input');
+      const parseKanbanBtn = document.getElementById('parse-kanban-btn');
+      const clearKanbanBtn = document.getElementById('clear-kanban-btn');
+      const kanbanParseStatus = document.getElementById('kanban-parse-status');
+      const issueTitleInput = document.getElementById('issue-title');
+      const issueBodyInput = document.getElementById('issue-body');
       
       // State
       let isConnected = false;
       let issues = [];
+      let parsedAssignee = null;
       
       // Event Listeners
       connectBtn.addEventListener('click', connectToGitHub);
       createIssueBtn.addEventListener('click', createIssue);
+      parseKanbanBtn.addEventListener('click', parseKanbanTask);
+      clearKanbanBtn.addEventListener('click', clearKanbanTask);
       
       // Functions
       async function connectToGitHub() {
@@ -251,6 +263,103 @@ _Automatically generated issue. Please review and update with specific details a
         issuesList.classList.remove('hidden');
       }
       
+      // Kanban Task Parsing
+      function parseKanbanTask() {
+        const rawInput = kanbanTaskInput.value.trim();
+        if (!rawInput) {
+          showKanbanStatus('Please paste a Kanban task JSON first.', 'error');
+          return;
+        }
+
+        let task;
+        try {
+          task = JSON.parse(rawInput);
+        } catch (e) {
+          showKanbanStatus('Invalid JSON. Please check the format and try again.', 'error');
+          return;
+        }
+
+        if (!task.title) {
+          showKanbanStatus('Kanban task must include a "title" field.', 'error');
+          return;
+        }
+
+        parsedAssignee = task.assignee || null;
+
+        // Build issue title: prefix with task id if present
+        let issueTitle = task.title;
+        if (task.id) {
+          issueTitle = '[' + task.id + '] ' + issueTitle;
+        }
+
+        // Build issue body with Kanban task details
+        const sections = [];
+        sections.push('## Kanban Task → GitHub Issue');
+        sections.push('');
+        const taskBody = task.body || task.description;
+        if (taskBody) {
+          sections.push('### Description\n' + taskBody);
+          sections.push('');
+        }
+
+        // Priority mapping
+        const priorityLabels = { 0: 'critical', 1: 'high', 2: 'medium', 3: 'low' };
+        if (task.priority !== undefined) {
+          const pLabel = priorityLabels[task.priority] || ('p' + task.priority);
+          sections.push('**Priority:** ' + pLabel + ' (' + task.priority + ')');
+          sections.push('');
+        }
+
+        if (task.assignee) {
+          sections.push('**Assignee:** @' + task.assignee);
+          sections.push('');
+        }
+
+        if (task.labels && Array.isArray(task.labels) && task.labels.length > 0) {
+          sections.push('**Suggested Labels:** ' + task.labels.join(', '));
+          sections.push('');
+        }
+
+        if (task.status) {
+          sections.push('**Kanban Status:** ' + task.status);
+          sections.push('');
+        }
+
+        sections.push('---');
+        sections.push('_This issue was auto-generated from a Kanban task via the GitHub Automation tool._');
+
+        // Populate the preview form
+        issueTitleInput.value = issueTitle;
+        issueBodyInput.value = sections.join('\\n');
+
+        // Auto-fill custom labels from Kanban task if provided
+        if (task.labels && Array.isArray(task.labels) && task.labels.length > 0) {
+          const customLabelsInput = document.getElementById('custom-labels');
+          if (customLabelsInput && task.labels.length > 0) {
+            customLabelsInput.value = task.labels.join(', ');
+          }
+        }
+
+        showKanbanStatus('Kanban task parsed successfully! Preview updated below.', 'success');
+
+        // Scroll preview into view
+        issueTitleInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
+      function clearKanbanTask() {
+        kanbanTaskInput.value = '';
+        kanbanParseStatus.classList.add('hidden');
+        kanbanParseStatus.textContent = '';
+      }
+
+      function showKanbanStatus(message, type) {
+        kanbanParseStatus.textContent = message;
+        var errorClass = 'text-xs text-red-600 dark:text-red-400';
+        var successClass = 'text-xs text-green-600 dark:text-green-400';
+        kanbanParseStatus.className = (type === 'error') ? errorClass : successClass;
+        kanbanParseStatus.classList.remove('hidden');
+      }
+
       async function createIssue() {
         if (!isConnected) {
           updateStatus('Please connect to GitHub first.', 'error');
@@ -272,6 +381,22 @@ _Automatically generated issue. Please review and update with specific details a
           createIssueBtn.disabled = true;
           createIssueBtn.textContent = _t('tools.github-automation.js.text1', 'Creating...');
           
+          const customLabels = document.getElementById('custom-labels').value
+            .split(',')
+            .map(l => l.trim())
+            .filter(l => l.length > 0);
+          const labels = ['automation', 'trac3r00', ...customLabels];
+          
+          const requestBody = {
+            title,
+            body,
+            labels
+          };
+          
+          if (parsedAssignee) {
+            requestBody.assignees = [parsedAssignee];
+          }
+          
           const response = await fetch(\`https://api.github.com/repos/\${owner}/\${name}/issues\`, {
             method: 'POST',
             headers: {
@@ -279,11 +404,7 @@ _Automatically generated issue. Please review and update with specific details a
               'Accept': 'application/vnd.github.v3+json',
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-              title,
-              body,
-              labels: ['automation', 'trac3r00']
-            })
+            body: JSON.stringify(requestBody)
           });
           
           if (!response.ok) {
