@@ -348,6 +348,7 @@ _Automatically generated issue. Please review and update with specific details a
 
       function clearKanbanTask() {
         kanbanTaskInput.value = '';
+        parsedAssignee = '';
         kanbanParseStatus.classList.add('hidden');
         kanbanParseStatus.textContent = '';
       }
