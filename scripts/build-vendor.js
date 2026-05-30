@@ -17,7 +17,7 @@ const vendorFiles = [
   { from: 'node_modules/jsqr/dist/jsQR.js', to: 'jsqr.min.js' },
   { from: 'node_modules/marked/marked.min.js', to: 'marked.min.js' },
   { from: 'node_modules/dompurify/dist/purify.min.js', to: 'purify.min.js' },
-  { from: 'node_modules/bcryptjs/dist/bcrypt.min.js', to: 'bcrypt.min.js' },
+  { from: 'node_modules/bcryptjs/umd/index.js', to: 'bcrypt.min.js' },
   { from: 'node_modules/blueimp-md5/js/md5.min.js', to: 'md5.min.js' },
   { from: 'node_modules/pako/dist/pako.min.js', to: 'pako.min.js' },
   { from: 'node_modules/js-yaml/dist/js-yaml.min.js', to: 'js-yaml.min.js' },
