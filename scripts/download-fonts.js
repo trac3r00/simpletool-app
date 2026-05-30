@@ -9,11 +9,24 @@ const __dirname = path.dirname(__filename);
 const CSS_URL = 'https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap';
 const DIST_FONTS_DIR = path.join(__dirname, '../dist/fonts');
 const TARGET_CSS_FILE = path.join(DIST_FONTS_DIR, 'material-symbols.css');
-const TARGET_FONT_FILE = 'material-symbols.woff2'; // Basename
+const TARGET_FONT_FILE = 'material-symbols.woff2';
 
-// Ensure dist/fonts exists
-if (!fs.existsSync(DIST_FONTS_DIR)) {
-  fs.mkdirSync(DIST_FONTS_DIR, { recursive: true });
+export function hasValidCache() {
+  const fontPath = path.join(DIST_FONTS_DIR, TARGET_FONT_FILE);
+  try {
+    return (
+      fs.existsSync(fontPath) && fs.statSync(fontPath).size > 0 &&
+      fs.existsSync(TARGET_CSS_FILE) && fs.statSync(TARGET_CSS_FILE).size > 0
+    );
+  } catch {
+    return false;
+  }
+}
+
+function ensureFontDir() {
+  if (!fs.existsSync(DIST_FONTS_DIR)) {
+    fs.mkdirSync(DIST_FONTS_DIR, { recursive: true });
+  }
 }
 
 function fetch(url) {
@@ -40,9 +53,9 @@ function fetch(url) {
   });
 }
 
-async function main() {
-  const fontPath = path.join(DIST_FONTS_DIR, TARGET_FONT_FILE);
-  if (fs.existsSync(fontPath) && fs.existsSync(TARGET_CSS_FILE)) {
+export async function main() {
+  ensureFontDir();
+  if (hasValidCache()) {
     console.log('Fonts already exist, skipping download.');
     return;
   }
@@ -50,7 +63,6 @@ async function main() {
   const cssBuffer = await fetch(CSS_URL);
   let cssContent = cssBuffer.toString();
 
-  // Extract WOFF2 URL
   const match = cssContent.match(/src:\s*url\(([^)]+)\)/);
   if (!match) {
     throw new Error('Could not find font URL in CSS');
@@ -63,14 +75,23 @@ async function main() {
   fs.writeFileSync(path.join(DIST_FONTS_DIR, TARGET_FONT_FILE), fontBuffer);
   console.log(`Saved font to ${path.join(DIST_FONTS_DIR, TARGET_FONT_FILE)}`);
 
-  // Update CSS to point to local file (keep font-display: swap for performance)
   let newCssContent = cssContent.replace(fontUrl, `./${TARGET_FONT_FILE}`);
 
   fs.writeFileSync(TARGET_CSS_FILE, newCssContent);
   console.log(`Saved CSS to ${TARGET_CSS_FILE}`);
 }
 
-main().catch(err => {
-  console.warn(`Warning: failed to download fonts (${err.message}). Building without local Material Symbols font.`);
-  process.exit(0);
-});
+const isMain = process.argv[1] && (
+  path.resolve(process.argv[1]) === path.resolve(__filename)
+);
+
+if (isMain) {
+  main().catch(err => {
+    if (hasValidCache()) {
+      console.warn(`Warning: failed to download fonts (${err.message}). Using cached fonts.`);
+      process.exit(0);
+    }
+    console.error(`Error: failed to download fonts (${err.message}).`);
+    process.exit(1);
+  });
+}
