@@ -119,6 +119,28 @@ describe('handleMarkdownEditorRoutes', () => {
     expect(response.status).toBe(404);
   });
 
+  it('should sanitize exported HTML with DOMPurify to prevent XSS', async () => {
+    const url = new URL('http://localhost/markdown-editor');
+    const request = new Request(url, { method: 'GET' });
+
+    const response = await handleMarkdownEditorRoutes(request, url);
+    const text = await response.text();
+
+    expect(text).toContain('window.DOMPurify ? window.DOMPurify.sanitize(preview.innerHTML) : preview.innerHTML');
+  });
+
+  it('should not write user-derived export HTML directly into the print popup', async () => {
+    const url = new URL('http://localhost/markdown-editor');
+    const request = new Request(url, { method: 'GET' });
+
+    const response = await handleMarkdownEditorRoutes(request, url);
+    const text = await response.text();
+
+    expect(text).not.toContain('w.document.write(htmlContent)');
+    expect(text).toContain("new DOMParser().parseFromString(htmlContent, 'text/html')");
+    expect(text).toContain('w.document.body.innerHTML = parsed.body ? parsed.body.innerHTML : htmlContent');
+  });
+
   it('should handle trailing slash on main route', async () => {
     const url = new URL('http://localhost/markdown-editor/');
     const request = new Request(url, { method: 'GET' });
