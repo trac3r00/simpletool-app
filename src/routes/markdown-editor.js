@@ -353,7 +353,7 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
           return String(text || '')
             .trim()
             .toLowerCase()
-            .replace(/[^a-z0-9\s-]/g, '')
+            .replace(/[^a-z0-9\\s-]/g, '')
             .replace(/\\s+/g, '-')
             .replace(/-+/g, '-')
             .replace(/^-|-$/g, '')
@@ -732,7 +732,7 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
             '  </style>',
             '</head>',
             '<body>',
-            preview.innerHTML,
+            window.DOMPurify ? window.DOMPurify.sanitize(preview.innerHTML) : preview.innerHTML,
             '</body>',
             '</html>'
           ];
@@ -753,17 +753,19 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
           URL.revokeObjectURL(url);
         });
 
-         // Print preview
-         printBtn?.addEventListener('click', () => {
-           const htmlContent = getExportHTML('Markdown Print');
-           const w = window.open('', '_blank', 'noopener,noreferrer');
-           if (!w) return;
-           w.document.open();
-           w.document.write(htmlContent);
-           w.document.close();
-           w.focus();
-           setTimeout(() => w.print(), 250);
-         });
+        // Print preview
+        printBtn?.addEventListener('click', () => {
+          const htmlContent = getExportHTML('Markdown Print');
+          const w = window.open('', '_blank', 'noopener,noreferrer');
+          if (!w) return;
+          w.document.open();
+          w.document.write('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Markdown Print</title><style>body{font-family:system-ui,-apple-system,sans-serif;line-height:1.6;max-width:800px;margin:0 auto;padding:2rem;color:#111827;}pre{background:#f4f4f5;padding:1rem;border-radius:0.5rem;overflow-x:auto;}code{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;}img{max-width:100%;}blockquote{border-left:4px solid #e5e7eb;margin:0;padding-left:1rem;color:#6b7280;}table{border-collapse:collapse;width:100%;margin:1rem 0;}th,td{border:1px solid #e5e7eb;padding:0.5rem;text-align:left;}.mermaid{border:1px solid #e5e7eb;border-radius:0.75rem;padding:1rem;background:#f8fafc;overflow-x:auto;}@media print{body{padding:0;}}</style></head><body></body></html>');
+          w.document.close();
+          const bodyMatch = htmlContent.match(/<body>([\\s\\S]*?)<\\/body>/i);
+          w.document.body.innerHTML = bodyMatch ? bodyMatch[1] : htmlContent;
+          w.focus();
+          setTimeout(() => w.print(), 250);
+        });
 
          // Close export dropdown on click outside
          document.addEventListener('click', (e) => {
