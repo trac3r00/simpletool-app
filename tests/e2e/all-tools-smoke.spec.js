@@ -21,7 +21,10 @@ test.describe('All tools smoke', () => {
       const consoleErrors = [];
 
       page.on('pageerror', (error) => {
-        pageErrors.push(error.message || String(error));
+        pageErrors.push({
+          message: error.message || String(error),
+          stack: error.stack || 'no stack',
+        });
       });
 
       page.on('console', (msg) => {
@@ -40,7 +43,11 @@ test.describe('All tools smoke', () => {
       const response = await page.goto(tool.path);
       expect(response, `Expected response for ${tool.path} to be non-null`).not.toBeNull();
       expect(response.status(), `Expected ${tool.path} to return HTTP 200`).toBe(200);
-      expect(pageErrors, `Expected zero page errors on ${tool.path}`).toEqual([]);
+      if (pageErrors.length > 0) {
+        console.error('PAGE ERRORS DETAIL:', JSON.stringify(pageErrors, null, 2));
+      }
+      const pageErrorMessages = pageErrors.map(e => e.message);
+      expect(pageErrorMessages, `Expected zero page errors on ${tool.path}`).toEqual([]);
       expect(consoleErrors, `Expected zero console errors on ${tool.path}`).toEqual([]);
     });
   }
