@@ -111,6 +111,17 @@ describe('handleMarkdownEditorRoutes', () => {
     expect(text).toContain('/vendor/mermaid.min.js');
   });
 
+  it('should preserve client-side regex escapes in the rendered script', async () => {
+    const url = new URL('http://localhost/markdown-editor');
+    const request = new Request(url, { method: 'GET' });
+
+    const response = await handleMarkdownEditorRoutes(request, url);
+    const text = await response.text();
+
+    expect(text).toContain('.replace(/[^a-z0-9\\s-]/g, \'\')');
+    expect(text).toContain('.replace(/\\s+/g, \'-\')');
+  });
+
   it('should return 404 for trailing slash with unknown path', async () => {
     const url = new URL('http://localhost/markdown-editor/api');
     const request = new Request(url, { method: 'GET' });
