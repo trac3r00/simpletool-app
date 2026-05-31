@@ -44,6 +44,7 @@
     "@playwright/test": "^1.58.0",
     "@tailwindcss/typography": "^0.5.19",
     "autoprefixer": "^10.4.16",
+    "axe-core": "^4.11.1",
     "baseline-browser-mapping": "^2.9.18",
     "esbuild": "^0.25.0",
     "lighthouse": "^13.0.3",
