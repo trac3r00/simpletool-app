@@ -145,6 +145,25 @@ test.describe('Generator and utility tools UI interactions', () => {
     await expect(page.locator('#copy-system')).toBeEnabled();
   });
 
+  test('kanban-demand-analyzer extracts refs, themes, and proposal', async ({ page }) => {
+    await openTool(page, '/kanban-demand-analyzer');
+
+    await page.locator('#input-text').fill([
+      'Fixes #74 in trac3r00/simpletool-app and related to trac3r00/simpletool-app#34.',
+      'Security compliance audit requested for recurring automation backlog items.',
+      'High priority because blocked issues affect product triage speed.'
+    ].join('\n'));
+    await page.locator('#analyze-btn').click();
+
+    await expect(page.locator('#results-area')).toBeVisible();
+    await expect(page.locator('#references-output')).toContainText('trac3r00/simpletool-app');
+    await expect(page.locator('#references-output')).toContainText('#74');
+    await expect(page.locator('#themes-output')).toContainText('security');
+    await expect(page.locator('#value-output')).toContainText('Total Score');
+    await expect(page.locator('#proposal-output')).toContainText('TRIAGE PROPOSAL');
+    await expect(page.locator('#proposal-output')).toContainText('Priority: Medium');
+  });
+
   // QUARANTINED: pre-existing failure surfaced when CI first ran (PR #11).
   // `#svg-output` never receives `<svg`-prefixed value (toHaveValue fails after 3 retries).
   // Likely cause: regression in src/routes/svg-optimizer.js (currently has

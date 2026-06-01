@@ -118,5 +118,16 @@ export const TOOL_ACTIONS = {
     async waitFor(page) {
       await expect(page.locator('#results-body')).toContainText('Not Found');
     }
+  },
+
+  'kanban-demand-analyzer': {
+    async action(page) {
+      await page.locator('#input-text').fill('Fixes #42 in org/repo. Add user auth feature, security compliance required.');
+      await page.locator('#analyze-btn').click();
+    },
+    async waitFor(page) {
+      await expect(page.locator('#results-area')).not.toHaveClass(/hidden/);
+      await expect(page.locator('#proposal-output')).not.toBeEmpty();
+    }
   }
 };

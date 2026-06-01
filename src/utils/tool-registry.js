@@ -524,6 +524,18 @@ export const TOOLS = [
     relatedTools: ['case-converter', 'json-formatter', 'encoding-workbench', 'text-diff']
   },
   {
+    id: 'kanban-demand-analyzer',
+    name: 'Kanban Demand Analyzer',
+    icon: '📋',
+    description: 'Paste Kanban/backlog issue text to extract repository references, themes, score product value, and produce a triage-ready automation proposal.',
+    path: '/kanban-demand-analyzer',
+    category: 'utils',
+    keywords: 'kanban, backlog, triage, issue, reference, automation, proposal, priority, product value',
+    tip: 'Paste issue text from GitHub, GitLab, or any Kanban board — the analyzer extracts repo refs, themes, and suggests automation patterns',
+    badge: 'NEW',
+    relatedTools: ['token-counter', 'prompt-template-builder', 'markdown-editor', 'secret-scanner']
+  },
+  {
     id: 'changelog',
     name: 'Changelog',
     icon: '📋',
