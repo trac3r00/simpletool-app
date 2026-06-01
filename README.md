@@ -133,6 +133,18 @@ npm run dev
 # Visit http://localhost:8787
 ```
 
+### Registry-Driven Failure Test Plan
+
+```bash
+# Audit registry→route wiring, metadata, a11y readiness, e2e coverage, and build prerequisites
+npm run test:failure-plan
+
+# Treat missing E2E action coverage as a blocking failure
+node scripts/failure-test-plan.js --strict-e2e
+```
+
+This command runs `scripts/failure-test-plan.js`, which imports the live tool registry and produces an actionable checklist for every registered tool. It exits non-zero for structural problems such as duplicate IDs/paths, missing route handlers, or missing required metadata fields. E2E action coverage is reported as an advisory lane by default; pass `--strict-e2e` to treat missing `TOOL_ACTIONS` entries as blocking.
+
 ### Deployment
 
 ```bash
