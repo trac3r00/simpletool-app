@@ -13,6 +13,7 @@ export function renderHomePage({ isDev = false, lang = DEFAULT_LANGUAGE } = {}) 
   const categories = groupToolsByCategory(tools);
   const homeTitle = t('home.meta.title', currentLang);
   const homeDescription = t('home.meta.description', currentLang);
+  const homeKeywords = t('home.meta.keywords', currentLang);
   const homePath = withLanguageQuery('/', currentLang);
   const homeUrl = `https://simpletool.app${homePath}`;
   const searchTarget = `https://simpletool.app${withLanguageQuery('/?q={search_term_string}', currentLang)}`;
@@ -42,7 +43,7 @@ export function renderHomePage({ isDev = false, lang = DEFAULT_LANGUAGE } = {}) 
   <meta name="twitter:title" content="${homeTitle}">
   <meta name="twitter:description" content="${homeDescription}">
   <meta name="twitter:image" content="https://simpletool.app/og-image.png">
-  <meta name="keywords" content="online tools, developer tools, JSON formatter, password generator, hash calculator, UUID generator, regex tester, base64 decoder, QR code generator, free tools, privacy tools"><!-- TODO: translate via t('home.meta.keywords', currentLang) once key is added to i18n files -->
+  <meta name="keywords" content="${homeKeywords}">
   ${getThemeBootstrapScript()}
   ${getLanguageBootstrapScript(currentLang)}
   ${getGtagScript()}
