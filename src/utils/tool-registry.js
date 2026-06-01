@@ -524,6 +524,17 @@ export const TOOLS = [
     relatedTools: ['case-converter', 'json-formatter', 'encoding-workbench', 'text-diff']
   },
   {
+    id: 'automation-planner',
+    name: 'Automation Planner',
+    icon: '🤖',
+    description: 'Paste backlog text to extract themes, blockers, and suggested automation actions.',
+    path: '/automation-planner',
+    category: 'utils',
+    keywords: 'backlog, triage, automation, kanban, github, issues, planning',
+    tip: 'Paste GitHub issue text or Kanban card descriptions to get a triage-ready automation plan',
+    relatedTools: ['token-counter', 'prompt-template-builder', 'markdown-editor', 'pipe']
+  },
+  {
     id: 'changelog',
     name: 'Changelog',
     icon: '📋',

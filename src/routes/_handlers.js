@@ -54,6 +54,7 @@ import { handleTokenStudioRoutes as token_studio } from './token-studio.js';
 import { handleEncodingWorkbenchRoutes as encoding_workbench } from './encoding-workbench.js';
 import { handleOAuthDebuggerRoutes as oauth_debugger } from './oauth-debugger.js';
 import { handleWebhookDebuggerRoutes as webhook_debugger } from './webhook-debugger.js';
+import { handleAutomationPlannerRoutes as automation_planner } from './automation-planner.js';
 import { handlePipeRoutes as pipe } from './pipe.js';
 import { handleChangelogRoutes as changelog } from './changelog.js';
 
@@ -109,6 +110,7 @@ export const handlersById = {
   'encoding-workbench': encoding_workbench,
   'oauth-debugger': oauth_debugger,
   'webhook-debugger': webhook_debugger,
+  'automation-planner': automation_planner,
   'pipe': pipe,
   'changelog': changelog,
 };

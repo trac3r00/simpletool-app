@@ -118,5 +118,16 @@ export const TOOL_ACTIONS = {
     async waitFor(page) {
       await expect(page.locator('#results-body')).toContainText('Not Found');
     }
+  },
+
+  'automation-planner': {
+    async action(page) {
+      await page.locator('#ap-sample-btn').click();
+      await page.locator('#ap-analyze-btn').click();
+    },
+    async waitFor(page) {
+      await expect(page.locator('#ap-results')).not.toHaveClass(/hidden/);
+      await expect(page.locator('#ap-readiness')).not.toHaveText('');
+    }
   }
 };
