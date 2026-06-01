@@ -3,6 +3,8 @@ import { describe, it, expect } from 'vitest';
 import { TOOLS } from '../utils/tool-registry.js';
 import { handlersById } from './_handlers.js';
 import { handleGithubAutomationRoutes } from './github-automation.js';
+import en from '../i18n/en.js';
+import ko from '../i18n/ko.js';
 
 describe('github-automation registration', () => {
   it('is registered in tool registry', () => {
@@ -94,5 +96,17 @@ describe('github-automation source requirements', () => {
     const text = await response.text();
     expect(text).toContain('const templateToggle = document.getElementById("use-trac3r00-template")');
     expect(text).toContain('templateToggle && !templateToggle.checked');
+  });
+
+  it('includes PAT helper tooltip with i18n key and translation', async () => {
+    const url = new URL('http://localhost/github-automation');
+    const request = new Request(url, { method: 'GET' });
+    const response = await handleGithubAutomationRoutes(request, url);
+    const text = await response.text();
+    expect(text).toContain('data-i18n="tools.github-automation.ui.tip0"');
+
+    expect(en.tools?.['github-automation']?.ui?.tip0).toBeDefined();
+    expect(ko.tools?.['github-automation']?.ui?.tip0).toBeDefined();
+    expect(en.tools['github-automation'].ui.tip0).toBe('Token requires repo scope for issue management');
   });
 });
