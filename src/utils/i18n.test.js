@@ -14,6 +14,31 @@ import {
   getLanguageSelectorHTML
 } from './i18n.js';
 
+// Import locale modules directly to test raw translations (no fallback)
+import enCatalog from '../i18n/en.js';
+import koCatalog from '../i18n/ko.js';
+import jaCatalog from '../i18n/ja.js';
+import esCatalog from '../i18n/es.js';
+import zhCNCatalog from '../i18n/zh-CN.js';
+import zhTWCatalog from '../i18n/zh-TW.js';
+import frCatalog from '../i18n/fr.js';
+import deCatalog from '../i18n/de.js';
+import ptCatalog from '../i18n/pt.js';
+import viCatalog from '../i18n/vi.js';
+
+const localeCatalogs = {
+  en: enCatalog,
+  ko: koCatalog,
+  ja: jaCatalog,
+  es: esCatalog,
+  'zh-CN': zhCNCatalog,
+  'zh-TW': zhTWCatalog,
+  fr: frCatalog,
+  de: deCatalog,
+  pt: ptCatalog,
+  vi: viCatalog,
+};
+
 describe('SUPPORTED_LANGUAGES', () => {
   it('contains 10 languages', () => {
     expect(Object.keys(SUPPORTED_LANGUAGES)).toHaveLength(10);
@@ -286,4 +311,34 @@ describe('getLanguageSelectorHTML', () => {
     const html = getLanguageSelectorHTML('ko');
     expect(html).toContain('font-semibold');
   });
+});
+
+describe('quality-tracer translations across all supported languages', () => {
+  for (const [lang, catalog] of Object.entries(localeCatalogs)) {
+    it(`has quality-tracer name and desc in ${lang}`, () => {
+      const qt = catalog.tools?.['quality-tracer'];
+      expect(qt).toBeDefined();
+      expect(typeof qt.name).toBe('string');
+      expect(typeof qt.desc).toBe('string');
+      expect(qt.name.length).toBeGreaterThan(0);
+      expect(qt.desc.length).toBeGreaterThan(0);
+    });
+
+    it(`has quality-tracer ui object in ${lang}`, () => {
+      const qt = catalog.tools?.['quality-tracer'];
+      expect(qt).toBeDefined();
+      expect(typeof qt.ui).toBe('object');
+      expect(Object.keys(qt.ui).length).toBeGreaterThan(0);
+    });
+
+    it(`has quality-tracer js object with action0 and action6 in ${lang}`, () => {
+      const qt = catalog.tools?.['quality-tracer'];
+      expect(qt).toBeDefined();
+      expect(typeof qt.js).toBe('object');
+      expect(typeof qt.js.action0).toBe('string');
+      expect(typeof qt.js.action6).toBe('string');
+      expect(qt.js.action0.length).toBeGreaterThan(0);
+      expect(qt.js.action6.length).toBeGreaterThan(0);
+    });
+  }
 });

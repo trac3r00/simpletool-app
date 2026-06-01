@@ -50,4 +50,27 @@ describe('quality-tracer route', () => {
     const bad = 'Str' + 'ing(text';
     expect(text).not.toContain(bad);
   });
+
+  it('internationalizes dynamic runtime strings in the client-side script', async () => {
+    const url = new URL('http://localhost/quality-tracer');
+    const request = new Request(url, { method: 'GET' });
+    const response = await handleQualityTracerRoutes(request, url);
+    const text = await response.text();
+
+    const scriptMatch = text.match(/<script[^>]*>([\s\S]*?)<\/script>/g);
+    expect(scriptMatch).toBeTruthy();
+    const scriptText = scriptMatch.join('\n');
+
+    expect(scriptText).toContain("_t('text0'");
+    expect(scriptText).toContain("_t('text1'");
+    expect(scriptText).toContain("_t('text2'");
+    expect(scriptText).toContain("_t('action0'");
+    expect(scriptText).toContain("_t('action1'");
+    expect(scriptText).toContain("_t('action2'");
+    expect(scriptText).toContain("_t('action3'");
+    expect(scriptText).toContain("_t('action4'");
+    expect(scriptText).toContain("_t('action5'");
+    expect(scriptText).toContain("_t('action6'");
+    expect(scriptText).toContain("'tools.quality-tracer.js.'");
+  });
 });
