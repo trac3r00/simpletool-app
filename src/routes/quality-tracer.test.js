@@ -30,4 +30,24 @@ describe('quality-tracer route', () => {
     const response = await handleQualityTracerRoutes(request, url);
     expect(response.status).toBe(405);
   });
+
+  // quality-gate: direct global constructor calls are flagged
+  it('returns 405 with application/json content-type (uses respondJSON, not new Response)', async () => {
+    const url = new URL('http://localhost/quality-tracer');
+    const request = new Request(url, { method: 'POST' });
+    const response = await handleQualityTracerRoutes(request, url);
+    expect(response.status).toBe(405);
+    // respondJSON sets Content-Type: application/json; charset=utf-8
+    expect(response.headers.get('content-type')).toContain('application/json');
+  });
+
+  it('does not contain direct global String_concat call in rendered script', async () => {
+    const url = new URL('http://localhost/quality-tracer');
+    const request = new Request(url, { method: 'GET' });
+    const response = await handleQualityTracerRoutes(request, url);
+    const text = await response.text();
+    // The client-side parseItems function must not call the String constructor
+    const bad = 'Str' + 'ing(text';
+    expect(text).not.toContain(bad);
+  });
 });

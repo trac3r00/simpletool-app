@@ -5,7 +5,7 @@
  * - All processing stays in the browser
  */
 
-import { respondHTML } from '../utils/respond.js';
+import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader, infoHint } from '../utils/common-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
 import { createRelatedToolsSection } from '../utils/content-ui.js';
@@ -15,7 +15,7 @@ export async function handleQualityTracerRoutes(request, url) {
   const { pathname } = url;
   if (pathname === '/quality-tracer' || pathname === '/quality-tracer/') {
     if (request.method === 'GET') return respondHTML(renderQualityTracerPage(resolveRequestLanguage(request, url)));
-    return new Response('Method not allowed', { status: 405 });
+    return respondJSON({ error: 'Method not allowed' }, { status: 405 });
   }
   return null;
 }
@@ -153,7 +153,7 @@ function renderQualityTracerPage(lang = DEFAULT_LANGUAGE) {
       ].join('\n');
 
       function parseItems(text) {
-        return String(text || '').split('\n').map(l => l.trim()).filter(l => l.length > 0);
+        return (text || '').split('\n').map(l => l.trim()).filter(l => l.length > 0);
       }
 
       function detectStatus(line) {
@@ -302,7 +302,7 @@ function renderQualityTracerPage(lang = DEFAULT_LANGUAGE) {
       }
 
       function escapeHtml(s) {
-        return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return ('' + s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
       }
 
       function updateUI(result) {

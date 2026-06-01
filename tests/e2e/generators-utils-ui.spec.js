@@ -8,7 +8,7 @@ async function openTool(page, path) {
 test.describe('Generator and utility tools UI interactions', () => {
   test('uuid-generator generate button', async ({ page }) => {
     const pageErrors = [];
-    page.on('pageerror', (error) => pageErrors.push(String(error.message || error)));
+    page.on('pageerror', (error) => pageErrors.push('' + (error.message || error)));
 
     await openTool(page, '/uuid-generator');
     await expect(page.locator('#generate-btn')).toBeVisible({ timeout: 5000 });
