@@ -74,6 +74,7 @@ const TOOL_HANDLERS = [
   { id: 'oauth-debugger', file: 'oauth-debugger.js', exp: 'handleOAuthDebuggerRoutes' },
   { id: 'webhook-debugger', file: 'webhook-debugger.js', exp: 'handleWebhookDebuggerRoutes' },
   { id: 'pipe', file: 'pipe.js', exp: 'handlePipeRoutes' },
+  { id: 'open-trac3r00-automation', file: 'open-trac3r00-automation.js', exp: 'handleOpenTrac3r00AutomationRoutes' },
   { id: 'changelog', file: 'changelog.js', exp: 'handleChangelogRoutes' },
 ];
 

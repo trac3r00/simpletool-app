@@ -524,6 +524,16 @@ export const TOOLS = [
     relatedTools: ['case-converter', 'json-formatter', 'encoding-workbench', 'text-diff']
   },
   {
+    id: 'open-trac3r00-automation',
+    name: 'Open Trac3r00 Automation',
+    icon: '🤖',
+    description: 'Convert issue text and Kanban demand snippets into concise automation briefs with references, labels, counts, and prioritized action checklists.',
+    path: '/open-trac3r00-automation',
+    category: 'utils',
+    keywords: 'trac3r00, issue parser, automation, kanban, action checklist, github references',
+    relatedTools: ['json-formatter', 'markdown-editor', 'token-counter', 'prompt-template-builder']
+  },
+  {
     id: 'changelog',
     name: 'Changelog',
     icon: '📋',

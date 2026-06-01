@@ -55,6 +55,7 @@ import { handleEncodingWorkbenchRoutes as encoding_workbench } from './encoding-
 import { handleOAuthDebuggerRoutes as oauth_debugger } from './oauth-debugger.js';
 import { handleWebhookDebuggerRoutes as webhook_debugger } from './webhook-debugger.js';
 import { handlePipeRoutes as pipe } from './pipe.js';
+import { handleOpenTrac3r00AutomationRoutes as open_trac3r00_automation } from './open-trac3r00-automation.js';
 import { handleChangelogRoutes as changelog } from './changelog.js';
 
 export const handlersById = {
@@ -110,5 +111,6 @@ export const handlersById = {
   'oauth-debugger': oauth_debugger,
   'webhook-debugger': webhook_debugger,
   'pipe': pipe,
+  'open-trac3r00-automation': open_trac3r00_automation,
   'changelog': changelog,
 };

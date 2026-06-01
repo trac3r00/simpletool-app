@@ -118,5 +118,15 @@ export const TOOL_ACTIONS = {
     async waitFor(page) {
       await expect(page.locator('#results-body')).toContainText('Not Found');
     }
+  },
+
+  'open-trac3r00-automation': {
+    async action(page) {
+      await page.locator('#ota-sample-btn').click();
+    },
+    async waitFor(page) {
+      await expect(page.locator('#ota-ref-count')).not.toHaveText('0');
+      await expect(page.locator('#ota-results')).not.toHaveClass(/hidden/);
+    }
   }
 };
