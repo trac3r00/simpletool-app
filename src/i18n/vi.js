@@ -45,8 +45,9 @@ export default {
     searchResultsLabel: "Kết quả tìm kiếm",
     noResults: "Không tìm thấy công cụ phù hợp.",
     meta: {
-      "title": "SimpleTool - Công cụ miễn phí cho nhà phát triển",
-      "description": "Công cụ trực tuyến miễn phí, ưu tiên quyền riêng tư cho nhà phát triển. Định dạng JSON, tạo mật khẩu, Marble Roulette và nhiều tiện ích khác.",
+      "title": "SimpleTool - Công cụ phát triển miễn phí trực tuyến",
+      "description": "Các công cụ trực tuyến miễn phí và ưu tiên quyền riêng tư dành cho nhà phát triển. Bao gồm định dạng JSON, tạo mật khẩu, Marble Roulette và nhiều tiện ích khác.",
+      "keywords": "công cụ trực tuyến, công cụ dành cho nhà phát triển, công cụ định dạng JSON, trình tạo mật khẩu, máy tính băm, trình tạo UUID, trình kiểm tra regex, bộ giải mã base64, trình tạo mã QR, công cụ miễn phí, công cụ bảo mật quyền riêng tư",
     },
     cat: {
       "formatters": "🔄 Định dạng & Chuyển đổi",

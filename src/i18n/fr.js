@@ -47,6 +47,7 @@ export default {
     meta: {
       "title": "SimpleTool - Outils développeur en ligne gratuits",
       "description": "Outils en ligne gratuits et axés sur la confidentialité pour les développeurs. Formatage JSON, générateur de mots de passe, roulette à billes et bien plus.",
+      "keywords": "outils en ligne, outils développeur, formateur JSON, générateur de mots de passe, calculateur de hash, générateur d'UUID, testeur regex, décodeur base64, générateur de QR code, outils gratuits, outils confidentialité",
     },
     cat: {
       "formatters": "🔄 Formateurs et Convertisseurs",
