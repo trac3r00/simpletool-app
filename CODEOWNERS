@@ -1,6 +1,9 @@
 # Global fallback — Minseo (product owner) owns everything not matched below
 * @trac3r00
 
+# Core utilities and shared logic
+src/utils/ @trac3r00
+
 # Security-critical files — reviewed by the maintainer on any change
 src/utils/security.js @trac3r00
 src/worker.js @trac3r00
@@ -8,9 +11,6 @@ src/worker.js @trac3r00
 # Route layer and UI — owned by the product maintainer
 src/routes/ @trac3r00
 src/ui/ @trac3r00
-
-# Core utilities and shared logic
-src/utils/ @trac3r00
 
 # Build, CI/CD, and deployment configuration
 .github/ @trac3r00
