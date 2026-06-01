@@ -500,7 +500,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
                 <span class="px-2 py-1 bg-secondary-100 dark:bg-secondary-900/30 text-secondary-700 dark:text-secondary-300 rounded text-xs font-mono">[Peer]</span>
                 <span class="peer-number">Peer \${peerId}</span>
               </h4>
-              <button class="remove-peer-btn btn btn-ghost btn-xs text-error-600 dark:text-error-400" data-peer-id="${peerId}" aria-label="Remove peer">
+              <button class="remove-peer-btn btn btn-ghost btn-xs text-error-600 dark:text-error-400" data-peer-id="\${peerId}" aria-label="Remove peer">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
