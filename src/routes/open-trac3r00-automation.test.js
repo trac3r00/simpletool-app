@@ -45,6 +45,17 @@ describe('open-trac3r00-automation route rendering', () => {
     expect(text).toContain('Generate automation plan');
   });
 
+  it('should include the issue 63 recurring Kanban demand as the sample backlog', async () => {
+    const url = new URL('http://localhost/open-trac3r00-automation');
+    const request = new Request(url, { method: 'GET' });
+    const response = await handleOpenTrac3r00AutomationRoutes(request, url);
+    const text = await response.text();
+    expect(text).toContain('Build a simpletool-app open trac3r00 automation tool from recurring Kanban demand');
+    expect(text).toContain('[simpletool-app#34] [proposal] Add registry-driven accessibility audit for all tools');
+    expect(text).toContain('[simpletool-app#48] Resolve merge conflict: changelog & pipe routes');
+    expect(text).toContain('Product Value Score: 0.88');
+  });
+
   it('should include Signal summary output section', async () => {
     const url = new URL('http://localhost/open-trac3r00-automation');
     const request = new Request(url, { method: 'GET' });

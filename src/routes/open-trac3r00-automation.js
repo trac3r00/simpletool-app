@@ -132,13 +132,12 @@ function renderOpenTrac3r00AutomationPage(lang = DEFAULT_LANGUAGE) {
       };
 
       const SAMPLE = [
-        '- Fix login redirect loop after OAuth',
-        '- Add dark mode toggle to settings page',
-        '- Update README with local dev steps',
-        '- Write E2E tests for checkout flow',
-        '- Refactor caching layer to use Redis',
-        '- Bump dependencies (security patches)',
-        '- Clean up stale feature flags',
+        'Build a simpletool-app open trac3r00 automation tool from recurring Kanban demand',
+        '[simpletool-app#34] [proposal] Add registry-driven accessibility audit for all tools',
+        '[simpletool-app#48] Resolve merge conflict: changelog & pipe routes',
+        'Product Value Score: 0.88',
+        'Common theme: simpletool-app open trac3r00',
+        'Requires human triage before fixer-lane implementation',
       ].join('\n');
 
       function slugify(text) {
