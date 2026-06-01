@@ -22,6 +22,7 @@ const ROUTES_DIR = join(ROOT, 'src', 'routes');
 const OUTPUT = join(ROUTES_DIR, '_handlers.js');
 
 const TOOL_HANDLERS = [
+  { id: 'trac3r00-automation', file: 'trac3r00-automation.js', exp: 'handleTrac3r00AutomationRoutes' },
   { id: 'password-generator', file: 'password-generator.js', exp: 'handlePasswordGeneratorRoutes' },
   { id: 'json-formatter', file: 'json-formatter.js', exp: 'handleJSONFormatterRoutes' },
   { id: 'qr-code', file: 'qr-code.js', exp: 'handleQRCodeRoutes' },

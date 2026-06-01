@@ -3,6 +3,7 @@
  * Do not edit. Re-generate: node scripts/build-routes.js
  */
 
+import { handleTrac3r00AutomationRoutes as trac3r00_automation } from './trac3r00-automation.js';
 import { handlePasswordGeneratorRoutes as password_generator } from './password-generator.js';
 import { handleJSONFormatterRoutes as json_formatter } from './json-formatter.js';
 import { handleQRCodeRoutes as qr_code } from './qr-code.js';
@@ -58,6 +59,7 @@ import { handlePipeRoutes as pipe } from './pipe.js';
 import { handleChangelogRoutes as changelog } from './changelog.js';
 
 export const handlersById = {
+  'trac3r00-automation': trac3r00_automation,
   'password-generator': password_generator,
   'json-formatter': json_formatter,
   'qr-code': qr_code,

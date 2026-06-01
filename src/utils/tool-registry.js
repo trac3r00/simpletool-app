@@ -11,6 +11,16 @@
 
 export const TOOLS = [
   {
+    id: 'trac3r00-automation',
+    name: 'Trac3r00 Automation',
+    icon: '🤖',
+    description: 'Convert Kanban tasks to GitHub issues for trac3r00/simpletool-app.',
+    path: '/trac3r00-automation',
+    category: 'utils',
+    keywords: 'github, automation, issues, kanban, trac3r00',
+    relatedTools: ['webhook-debugger', 'oauth-debugger', 'changelog']
+  },
+  {
     id: 'json-formatter',
     name: 'JSON Formatter',
     icon: '📋',

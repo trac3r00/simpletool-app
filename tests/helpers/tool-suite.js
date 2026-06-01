@@ -111,6 +111,17 @@ export const TOOL_ACTIONS = {
     }
   },
 
+  'trac3r00-automation': {
+    async action(page) {
+      const kanbanJson = `{"title": "Add dark mode","body": "Users need a manual toggle","assignee": "bob","labels": ["enhancement","ui"]}`;
+      await page.locator('#kanban-task-input').fill(kanbanJson);
+      await page.locator('#parse-kanban-btn').click();
+    },
+    async waitFor(page) {
+      await expect(page.locator('#issue-title')).toHaveValue(/Add dark mode/);
+    }
+  },
+
   'http-status-reference': {
     async action(page) {
       await page.locator('#status-search').fill('404');
