@@ -69,13 +69,13 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
         <div id="tab-transfer" class="tab-content" role="tabpanel" aria-labelledby="tab-trigger-transfer">
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div class="space-y-6">
-              <h3 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.bandwidth-calculator.ui.heading0">Calculate Transfer Time</h3>
+              <h2 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.bandwidth-calculator.ui.heading0">Calculate Transfer Time</h2>
               
               <div>
                 <label class="label" data-i18n="tools.bandwidth-calculator.ui.label5">File Size</label>
                 <div class="flex gap-2">
                   <input type="number" id="transfer-size" min="0" step="any" placeholder="1" class="input flex-1" data-i18n-placeholder="tools.bandwidth-calculator.ui.placeholder0">
-                  <select id="transfer-size-unit" class="input w-28">
+                  <select id="transfer-size-unit" class="input w-28" aria-label="File size unit">
                     <option value="B">B</option>
                     <option value="KB">KB</option>
                     <option value="MB" selected>MB</option>
@@ -89,7 +89,7 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
                 <label class="label" data-i18n="tools.bandwidth-calculator.ui.label6">Bandwidth</label>
                 <div class="flex gap-2">
                   <input type="number" id="transfer-bandwidth" min="0" step="any" placeholder="100" class="input flex-1" data-i18n-placeholder="tools.bandwidth-calculator.ui.placeholder1">
-                  <select id="transfer-bandwidth-unit" class="input w-28">
+                  <select id="transfer-bandwidth-unit" class="input w-28" aria-label="Bandwidth unit">
                     <option value="bps" data-i18n="tools.bandwidth-calculator.ui.option15">bps</option>
                     <option value="Kbps" data-i18n="tools.bandwidth-calculator.ui.option16">Kbps</option>
                     <option value="Mbps" selected data-i18n="tools.bandwidth-calculator.ui.option17">Mbps</option>
@@ -142,13 +142,13 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
         <div id="tab-bandwidth" class="tab-content hidden" role="tabpanel" aria-labelledby="tab-trigger-bandwidth">
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div class="space-y-6">
-              <h3 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.bandwidth-calculator.ui.heading2">Calculate Required Bandwidth</h3>
+              <h2 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.bandwidth-calculator.ui.heading2">Calculate Required Bandwidth</h2>
               
               <div>
                 <label class="label" data-i18n="tools.bandwidth-calculator.ui.label8">File Size</label>
                 <div class="flex gap-2">
                   <input type="number" id="bw-size" min="0" step="any" placeholder="1" class="input flex-1" data-i18n-placeholder="tools.bandwidth-calculator.ui.placeholder2">
-                  <select id="bw-size-unit" class="input w-28">
+                  <select id="bw-size-unit" class="input w-28" aria-label="File size unit">
                     <option value="B">B</option>
                     <option value="KB">KB</option>
                     <option value="MB" selected>MB</option>
@@ -203,13 +203,13 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
         <div id="tab-capacity" class="tab-content hidden" role="tabpanel" aria-labelledby="tab-trigger-capacity">
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div class="space-y-6">
-              <h3 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.bandwidth-calculator.ui.heading4">Calculate Data Capacity</h3>
+              <h2 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.bandwidth-calculator.ui.heading4">Calculate Data Capacity</h2>
               
               <div>
                 <label class="label" data-i18n="tools.bandwidth-calculator.ui.label10">Bandwidth</label>
                 <div class="flex gap-2">
                   <input type="number" id="cap-bandwidth" min="0" step="any" placeholder="100" class="input flex-1" data-i18n-placeholder="tools.bandwidth-calculator.ui.placeholder6">
-                  <select id="cap-bandwidth-unit" class="input w-28">
+                  <select id="cap-bandwidth-unit" class="input w-28" aria-label="Bandwidth unit">
                     <option value="bps" data-i18n="tools.bandwidth-calculator.ui.option15">bps</option>
                     <option value="Kbps" data-i18n="tools.bandwidth-calculator.ui.option16">Kbps</option>
                     <option value="Mbps" selected data-i18n="tools.bandwidth-calculator.ui.option17">Mbps</option>
@@ -263,13 +263,13 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
         <div id="tab-tcp" class="tab-content hidden" role="tabpanel" aria-labelledby="tab-trigger-tcp">
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div class="space-y-6">
-              <h3 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.bandwidth-calculator.ui.heading6">TCP Bandwidth-Delay Product</h3>
+              <h2 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.bandwidth-calculator.ui.heading6">TCP Bandwidth-Delay Product</h2>
               
               <div>
                 <label class="label" data-i18n="tools.bandwidth-calculator.ui.label12">Bandwidth</label>
                 <div class="flex gap-2">
                   <input type="number" id="tcp-bandwidth" min="0" step="any" placeholder="1" class="input flex-1" data-i18n-placeholder="tools.bandwidth-calculator.ui.placeholder10">
-                  <select id="tcp-bandwidth-unit" class="input w-28">
+                  <select id="tcp-bandwidth-unit" class="input w-28" aria-label="Bandwidth unit">
                     <option value="bps" data-i18n="tools.bandwidth-calculator.ui.option15">bps</option>
                     <option value="Kbps" data-i18n="tools.bandwidth-calculator.ui.option16">Kbps</option>
                     <option value="Mbps" data-i18n="tools.bandwidth-calculator.ui.option17">Mbps</option>
@@ -282,7 +282,7 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
                 <label class="label" data-i18n="tools.bandwidth-calculator.ui.label13">Round Trip Time (RTT)</label>
                 <div class="flex gap-2">
                   <input type="number" id="tcp-rtt" min="0" step="any" placeholder="50" class="input flex-1" data-i18n-placeholder="tools.bandwidth-calculator.ui.placeholder11">
-                  <select id="tcp-rtt-unit" class="input w-28">
+                  <select id="tcp-rtt-unit" class="input w-28" aria-label="RTT unit">
                     <option value="ms" selected data-i18n="tools.bandwidth-calculator.ui.option19">ms</option>
                     <option value="s">s</option>
                   </select>

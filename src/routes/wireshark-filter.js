@@ -51,7 +51,7 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
               <div class="space-y-4">
                 <div>
                   <label class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label0">Protocol</label>
-                  <select id="df-protocol" class="w-full bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500">
+                  <select id="df-protocol" class="w-full bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500" aria-label="Protocol">
                     <option value="">-- Select Protocol --</option>
                     <option value="ip">IP</option>
                     <option value="tcp">TCP</option>
@@ -74,14 +74,14 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
 
                 <div>
                   <label class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label1">Field</label>
-                  <select id="df-field" class="w-full bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500">
+                  <select id="df-field" class="w-full bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500" aria-label="Field">
                     <option value="" data-i18n="tools.wireshark-filter.ui.option0">-- Select Field --</option>
                   </select>
                 </div>
 
                 <div>
                   <label class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label2">Operator</label>
-                  <select id="df-operator" class="w-full bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500">
+                  <select id="df-operator" class="w-full bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500" aria-label="Operator">
                     <option value="==" data-i18n="tools.wireshark-filter.ui.option22">== (equals)</option>
                     <option value="!=" data-i18n="tools.wireshark-filter.ui.option23">!= (not equals)</option>
                     <option value=">" data-i18n="tools.wireshark-filter.ui.option24">&gt; (greater than)</option>
@@ -131,7 +131,7 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
               <div class="space-y-4">
                 <div>
                   <label class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label6">Primitive</label>
-                  <select id="bpf-primitive" class="w-full bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500">
+                  <select id="bpf-primitive" class="w-full bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500" aria-label="Primitive">
                     <option value="host" data-i18n="tools.wireshark-filter.ui.option28">host</option>
                     <option value="net" data-i18n="tools.wireshark-filter.ui.option29">net</option>
                     <option value="port" data-i18n="tools.wireshark-filter.ui.option30">port</option>
@@ -142,7 +142,7 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
 
                 <div>
                   <label class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label7">Direction</label>
-                  <select id="bpf-direction" class="w-full bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500">
+                  <select id="bpf-direction" class="w-full bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500" aria-label="Direction">
                     <option value="" data-i18n="tools.wireshark-filter.ui.option33">src or dst (either)</option>
                     <option value="src" data-i18n="tools.wireshark-filter.ui.option34">src (source only)</option>
                     <option value="dst" data-i18n="tools.wireshark-filter.ui.option35">dst (destination only)</option>
@@ -156,7 +156,7 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
 
                 <div>
                   <label class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label9">Protocol</label>
-                  <select id="bpf-protocol" class="w-full bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500">
+                  <select id="bpf-protocol" class="w-full bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500" aria-label="Protocol">
                     <option value="" data-i18n="tools.wireshark-filter.ui.option36">Any</option>
                     <option value="tcp">tcp</option>
                     <option value="udp" data-i18n="tools.wireshark-filter.ui.option37">udp</option>

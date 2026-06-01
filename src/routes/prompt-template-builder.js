@@ -54,7 +54,7 @@ function renderPromptTemplateBuilderPage(lang = DEFAULT_LANGUAGE) {
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label class="label" data-i18n="tools.prompt-template-builder.ui.label0">Target</label>
+                <label for="target" class="label" data-i18n="tools.prompt-template-builder.ui.label0">Target</label>
                 <select id="target" class="input">
                   <option value="gpt" data-i18n="tools.prompt-template-builder.ui.option0">GPT / Chat Completions</option>
                   <option value="claude" data-i18n="tools.prompt-template-builder.ui.option1">Claude (XML style)</option>
@@ -62,11 +62,11 @@ function renderPromptTemplateBuilderPage(lang = DEFAULT_LANGUAGE) {
                 </select>
               </div>
               <div>
-                <label class="label flex items-center gap-2">
-                  <span data-i18n="tools.prompt-template-builder.ui.label1">Output format</span>
-                  ${infoHint('Controls the output section: JSON, Markdown, checklist, etc. Use “Custom” for exact constraints.', 'Help', { i18nKey: 'tools.prompt-template-builder.ui.desc0' })}
-                </label>
-                <select id="out-format" class="input">
+                  <label for="out-format" class="label flex items-center gap-2">
+                    <span data-i18n="tools.prompt-template-builder.ui.label1">Output format</span>
+                    ${infoHint('Controls the output section: JSON, Markdown, checklist, etc. Use "Custom" for exact constraints.', 'Help', { i18nKey: 'tools.prompt-template-builder.ui.desc0' })}
+                  </label>
+                  <select id="out-format" class="input">
                   <option value="markdown" data-i18n="tools.prompt-template-builder.ui.option3">Markdown (recommended)</option>
                   <option value="json" data-i18n="tools.prompt-template-builder.ui.option4">JSON</option>
                   <option value="checklist" data-i18n="tools.prompt-template-builder.ui.option5">Checklist</option>
@@ -105,7 +105,7 @@ function renderPromptTemplateBuilderPage(lang = DEFAULT_LANGUAGE) {
                 <input id="vars" class="input font-mono" placeholder="e.g., incident_summary, logs" data-i18n-placeholder="tools.prompt-template-builder.ui.placeholder3" />
               </div>
               <div>
-                <label class="label" data-i18n="tools.prompt-template-builder.ui.label6">Tone</label>
+                <label for="tone" class="label" data-i18n="tools.prompt-template-builder.ui.label6">Tone</label>
                 <select id="tone" class="input">
                   <option value="neutral" data-i18n="tools.prompt-template-builder.ui.option7">Neutral, direct</option>
                   <option value="concise" data-i18n="tools.prompt-template-builder.ui.option8">Concise, high-signal</option>
@@ -152,12 +152,12 @@ function renderPromptTemplateBuilderPage(lang = DEFAULT_LANGUAGE) {
               </div>
 
               <div id="system-wrap" class="space-y-2">
-                <label class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" data-i18n="tools.prompt-template-builder.ui.label11">System</label>
+                <label for="system" class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" data-i18n="tools.prompt-template-builder.ui.label11">System</label>
                 <textarea id="system" rows="8" class="input-mono resize-y" readonly></textarea>
               </div>
 
               <div id="user-wrap" class="space-y-2 mt-4">
-                <label class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" data-i18n="tools.prompt-template-builder.ui.label12">User</label>
+                <label for="user" class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" data-i18n="tools.prompt-template-builder.ui.label12">User</label>
                 <textarea id="user" rows="14" class="input-mono resize-y" readonly></textarea>
               </div>
 

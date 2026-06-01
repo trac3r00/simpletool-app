@@ -45,14 +45,14 @@ function renderDataConverterPage(lang = DEFAULT_LANGUAGE) {
               <span class="text-xl">🧪</span>
               <div>
                 <p class="font-semibold" data-i18n="tools.yaml-toml-converter.ui.feat0">Schema-less validation</p>
-                <p class="text-surface-500 dark:text-surface-400" data-i18n="tools.yaml-toml-converter.ui.desc11">Instant parse feedback.</p>
+                <p class="text-surface-600 dark:text-surface-400" data-i18n="tools.yaml-toml-converter.ui.desc11">Instant parse feedback.</p>
               </div>
             </div>
              <div class="flex items-center gap-3 bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-800 rounded-2xl px-4 py-3">
               <span class="text-xl">🔒</span>
               <div>
                 <p class="font-semibold" data-i18n="tools.yaml-toml-converter.ui.feat1">Offline friendly</p>
-                <p class="text-surface-500 dark:text-surface-400" data-i18n="tools.yaml-toml-converter.ui.desc12">Everything stays local.</p>
+                <p class="text-surface-600 dark:text-surface-400" data-i18n="tools.yaml-toml-converter.ui.desc12">Everything stays local.</p>
               </div>
             </div>
           </div>
@@ -80,7 +80,7 @@ function renderDataConverterPage(lang = DEFAULT_LANGUAGE) {
              <button data-convert="toml" class="convert-btn btn btn-secondary" data-tooltip="Convert to TOML format"><span data-i18n="tools.yaml-toml-converter.ui.button4">→ TOML</span></button>
           </div>
            <div id="format-error" class="hidden rounded-2xl border border-error-200 dark:border-error-800 bg-error-50 dark:bg-error-900/30 text-sm text-error-700 dark:text-error-200 px-4 py-3">Parser error</div>
-          <div class="text-sm text-surface-500 dark:text-surface-400">Detected: <span id="detected-format" class="font-semibold">—</span> · Root type: <span id="root-type">—</span> · Keys: <span id="key-count">—</span></div>
+          <div class="text-sm text-surface-600 dark:text-surface-400">Detected: <span id="detected-format" class="font-semibold">—</span> · Root type: <span id="root-type">—</span> · Keys: <span id="key-count">—</span></div>
         </div>
 
         <div class="space-y-6">

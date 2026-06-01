@@ -240,7 +240,7 @@ function renderCaseConverterPage(lang = DEFAULT_LANGUAGE) {
           <div class="bg-surface-50 dark:bg-surface-950 rounded-lg p-4 border border-surface-200 dark:border-surface-800 shadow-sm hover:shadow-md transition-all group">
             <div class="flex items-center justify-between mb-2">
               <div class="flex items-center gap-2">
-                <h3 class="text-xs font-bold text-surface-500 dark:text-surface-400 uppercase tracking-wide">\${config.name}</h3>
+                <h2 class="text-xs font-bold text-surface-500 dark:text-surface-400 uppercase tracking-wide">\${config.name}</h2>
               </div>
               <button data-copy-result="\${encodeURIComponent(result)}" class="copy-result-btn text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
                 <span class="material-symbols-rounded text-sm" data-i18n="tools.case-converter.ui.desc4">content_copy</span>

@@ -46,30 +46,30 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
           <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 md:p-8 space-y-8">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="space-y-2">
-              <label for="row-count" class="text-xs font-semibold text-surface-500 dark:text-surface-400 uppercase tracking-[0.2em]"><span data-i18n="tools.mock-data-generator.ui.label2">Rows</span> ${infoHint('Generate 10-500 rows; higher counts run longer but stay inside the browser.')}</label>
+              <label for="row-count" class="text-xs font-semibold text-surface-600 dark:text-surface-400 uppercase tracking-[0.2em]"><span data-i18n="tools.mock-data-generator.ui.label2">Rows</span> ${infoHint('Generate 10-500 rows; higher counts run longer but stay inside the browser.')}</label>
               <input id="row-count" type="number" data-tooltip="Number of data rows to generate (10-500)" data-i18n-tooltip="tools.mock-data-generator.ui.tip0" min="10" max="500" value="25" class="w-full px-4 py-3 rounded-lg border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-950 text-base text-surface-900 dark:text-surface-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:border-primary-500" />
-              <p class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.mock-data-generator.ui.desc8">Generate between 10 and 500 records.</p>
+              <p class="text-xs text-surface-600 dark:text-surface-400" data-i18n="tools.mock-data-generator.ui.desc8">Generate between 10 and 500 records.</p>
             </div>
             <div class="space-y-2">
-              <label for="output-format" class="text-xs font-semibold text-surface-500 dark:text-surface-400 uppercase tracking-[0.2em]"><span data-i18n="tools.mock-data-generator.ui.label3">Format</span></label>
+              <label for="output-format" class="text-xs font-semibold text-surface-600 dark:text-surface-400 uppercase tracking-[0.2em]"><span data-i18n="tools.mock-data-generator.ui.label3">Format</span></label>
               <select id="output-format" data-tooltip="Choose output format for generated data" data-i18n-tooltip="tools.mock-data-generator.ui.tip1" class="w-full px-4 py-3 rounded-lg border border-surface-200 dark:border-surface-700 bg-white dark:bg-surface-950 text-base text-surface-900 dark:text-surface-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:border-primary-500" aria-label="Output format">
                 <option value="json">JSON</option>
                 <option value="csv">CSV</option>
                 <option value="sql" data-i18n="tools.mock-data-generator.ui.option5">SQL INSERT</option>
               </select>
-              <p class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.mock-data-generator.ui.desc9">Switch formats instantly.</p>
+              <p class="text-xs text-surface-600 dark:text-surface-400" data-i18n="tools.mock-data-generator.ui.desc9">Switch formats instantly.</p>
             </div>
             <div id="sql-options" class="hidden space-y-2">
-              <label for="table-name" class="text-xs font-semibold text-surface-500 dark:text-surface-400 uppercase tracking-[0.2em]"><span data-i18n="tools.mock-data-generator.ui.label4">Table Name</span> ${infoHint('Used by SQL output; keep it alphanumeric and lowercase if you plan to import it.')}</label>
+              <label for="table-name" class="text-xs font-semibold text-surface-600 dark:text-surface-400 uppercase tracking-[0.2em]"><span data-i18n="tools.mock-data-generator.ui.label4">Table Name</span> ${infoHint('Used by SQL output; keep it alphanumeric and lowercase if you plan to import it.')}</label>
               <input id="table-name" type="text" value="mock_data" class="w-full px-4 py-3 rounded-lg border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-950 text-base text-surface-900 dark:text-surface-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:border-primary-500" />
-              <p class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.mock-data-generator.ui.desc10">For INSERT statements.</p>
+              <p class="text-xs text-surface-600 dark:text-surface-400" data-i18n="tools.mock-data-generator.ui.desc10">For INSERT statements.</p>
             </div>
           </div>
 
           <div class="space-y-4">
             <div class="flex items-center justify-between border-b border-surface-100 dark:border-surface-800 pb-2">
-              <p class="text-xs font-semibold text-surface-500 dark:text-surface-400 uppercase tracking-[0.2em]" data-i18n="tools.mock-data-generator.ui.desc11">Fields</p>
-              <span class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.mock-data-generator.ui.desc12">Select columns to include</span>
+              <p class="text-xs font-semibold text-surface-600 dark:text-surface-400 uppercase tracking-[0.2em]" data-i18n="tools.mock-data-generator.ui.desc11">Fields</p>
+              <span class="text-xs text-surface-600 dark:text-surface-400" data-i18n="tools.mock-data-generator.ui.desc12">Select columns to include</span>
             </div>
             <div id="field-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3"></div>
           </div>
@@ -89,7 +89,7 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
             <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 flex flex-col h-[600px]">
               <div class="flex items-center justify-between mb-4">
                 <h2 class="text-lg font-bold text-surface-900 dark:text-white flex items-center gap-2">
-                  <span class="p-1.5 bg-surface-100 dark:bg-surface-800 rounded-lg text-surface-500">📥</span>
+                  <span class="p-1.5 bg-surface-100 dark:bg-surface-800 rounded-lg text-surface-600">📥</span>
                   <span data-i18n="tools.mock-data-generator.ui.heading2">Output</span>
                 </h2>
                 <div class="flex gap-2">
@@ -106,19 +106,19 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
             <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 flex flex-col h-[600px]">
               <div class="flex items-center justify-between mb-4">
                 <h2 class="text-lg font-bold text-surface-900 dark:text-white flex items-center gap-2">
-                  <span class="p-1.5 bg-surface-100 dark:bg-surface-800 rounded-lg text-surface-500">👁️</span>
-                  <span data-i18n="tools.mock-data-generator.ui.heading3">Preview</span> <span class="text-xs font-normal text-surface-500 ml-1" data-i18n="tools.mock-data-generator.ui.desc13">(First 5 rows)</span>
+                  <span class="p-1.5 bg-surface-100 dark:bg-surface-800 rounded-lg text-surface-600">👁️</span>
+                  <span data-i18n="tools.mock-data-generator.ui.heading3">Preview</span> <span class="text-xs font-normal text-surface-600 ml-1" data-i18n="tools.mock-data-generator.ui.desc13">(First 5 rows)</span>
                 </h2>
               </div>
               <div class="flex-1 min-h-0 overflow-auto border border-surface-100 dark:border-surface-800 rounded-lg">
                 <table class="w-full text-sm text-left border-collapse">
                   <thead class="sticky top-0 bg-surface-50 dark:bg-surface-800/80 backdrop-blur z-10">
                     <tr id="preview-head">
-                        <th class="p-4 text-surface-400 font-normal italic" data-i18n="tools.mock-data-generator.ui.th6">Fields will appear here...</th>
+                        <th class="p-4 text-surface-600 font-normal italic" data-i18n="tools.mock-data-generator.ui.th6">Fields will appear here...</th>
                     </tr>
                   </thead>
                   <tbody id="preview-body" class="divide-y divide-surface-100 dark:divide-surface-800 text-surface-700 dark:text-surface-300">
-                    <tr><td class="p-4 text-surface-400" data-i18n="tools.mock-data-generator.ui.desc15">No data generated yet.</td></tr>
+                    <tr><td class="p-4 text-surface-600" data-i18n="tools.mock-data-generator.ui.desc15">No data generated yet.</td></tr>
                   </tbody>
                 </table>
               </div>
@@ -275,7 +275,7 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
         function renderPreview(rows, fields) {
           if (!rows.length) {
             previewHead.innerHTML = '';
-            previewBody.innerHTML = '<tr><td class="py-3 text-surface-500">' + (window._t ? window._t('tools.mock-data-generator.js.text2', 'No rows to preview.') : 'No rows to preview.') + '</td></tr>';
+            previewBody.innerHTML = '<tr><td class="py-3 text-surface-600">' + (window._t ? window._t('tools.mock-data-generator.js.text2', 'No rows to preview.') : 'No rows to preview.') + '</td></tr>';
             return;
           }
           previewHead.innerHTML = '<tr>' + fields.map(field => '<th class="py-2 pr-4 text-left" data-i18n="tools.mock-data-generator.ui.th7">' + labelFor(field) + '</th>').join('') + '</tr>';

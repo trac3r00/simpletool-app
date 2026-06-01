@@ -156,7 +156,7 @@ function renderSSHKeyGeneratorPage(lang = DEFAULT_LANGUAGE) {
 
             <!-- Fingerprint -->
             <div class="p-3 bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-800 rounded-lg">
-              <h2 class="text-xs font-semibold text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.ssh-key-generator.ui.heading12">Fingerprint (SHA-256)</h2>
+              <h2 class="text-xs font-semibold text-surface-600 dark:text-surface-400 uppercase mb-1" data-i18n="tools.ssh-key-generator.ui.heading12">Fingerprint (SHA-256)</h2>
               <code id="fingerprint" class="text-xs font-mono text-surface-900 dark:text-surface-100 break-all"></code>
             </div>
 

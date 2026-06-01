@@ -81,7 +81,7 @@ export function renderHomePage({ isDev = false, lang = DEFAULT_LANGUAGE } = {}) 
                 aria-label="${t('nav.search', currentLang)}"
                 data-autofocus-desktop>
         <div class="absolute inset-y-0 right-0 pr-4 flex items-center">
-          <span class="text-xs text-surface-400 border border-surface-200 dark:border-surface-700 rounded px-1.5 py-0.5 hidden sm:block">⌘K</span>
+          <span class="text-xs text-surface-600 border border-surface-200 dark:border-surface-700 rounded px-1.5 py-0.5 hidden sm:block">⌘K</span>
         </div>
       </div>
     </div>
@@ -99,7 +99,7 @@ export function renderHomePage({ isDev = false, lang = DEFAULT_LANGUAGE } = {}) 
       <div class="flex items-center gap-3">
         <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-lg bg-warning-100 text-warning-700 dark:bg-warning-900/30 dark:text-warning-300">⭐</span>
         <h2 class="text-xl font-bold text-surface-900 dark:text-surface-100 uppercase tracking-wide" data-i18n="home.favorites">${t('home.favorites', currentLang)}</h2>
-        <span id="favorites-count" class="text-xs font-medium text-surface-400 bg-surface-100 dark:bg-surface-800 dark:text-surface-500 px-2 py-0.5 rounded-full">0</span>
+        <span id="favorites-count" class="text-xs font-medium text-surface-600 bg-surface-100 dark:bg-surface-800 dark:text-surface-500 px-2 py-0.5 rounded-full">0</span>
       </div>
       <div id="favorites-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
     </div>
@@ -109,7 +109,7 @@ export function renderHomePage({ isDev = false, lang = DEFAULT_LANGUAGE } = {}) 
       <div class="flex items-center gap-3">
         <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-lg bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300">🕐</span>
         <h2 class="text-xl font-bold text-surface-900 dark:text-surface-100 uppercase tracking-wide" data-i18n="home.recentlyUsed">${t('home.recentlyUsed', currentLang)}</h2>
-        <span id="recent-count" class="text-xs font-medium text-surface-400 bg-surface-100 dark:bg-surface-800 dark:text-surface-500 px-2 py-0.5 rounded-full">0</span>
+        <span id="recent-count" class="text-xs font-medium text-surface-600 bg-surface-100 dark:bg-surface-800 dark:text-surface-500 px-2 py-0.5 rounded-full">0</span>
       </div>
       <div id="recent-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
     </div>
@@ -117,7 +117,7 @@ export function renderHomePage({ isDev = false, lang = DEFAULT_LANGUAGE } = {}) 
     <div id="search-results-container" class="hidden space-y-8">
       <h2 id="search-results-heading" class="text-lg font-bold text-surface-900 dark:text-surface-100 mb-6 flex items-center gap-2 uppercase tracking-wide">
         🔍 <span id="search-results-label" data-i18n="home.searchResultsLabel">${t('home.searchResultsLabel', currentLang)}</span>
-        <span id="search-results-count" class="text-xs font-medium text-surface-400 bg-surface-100 dark:bg-surface-800 dark:text-surface-500 px-2 py-0.5 rounded-full"></span>
+        <span id="search-results-count" class="text-xs font-medium text-surface-600 bg-surface-100 dark:bg-surface-800 dark:text-surface-500 px-2 py-0.5 rounded-full"></span>
       </h2>
       <div id="search-results-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <!-- Search results injected here -->
@@ -357,7 +357,7 @@ function renderCategories(categories, lang = DEFAULT_LANGUAGE) {
         <h2 class="text-xl font-bold text-surface-900 dark:text-surface-100 uppercase tracking-wide" data-i18n="home.cat.${key}">
           ${t('home.cat.' + key, lang)}
         </h2>
-        <span class="text-xs font-medium text-surface-400 bg-surface-100 dark:bg-surface-800 dark:text-surface-500 px-2 py-0.5 rounded-full">${section.tools.length}</span>
+        <span class="text-xs font-medium text-surface-600 bg-surface-100 dark:bg-surface-800 dark:text-surface-500 px-2 py-0.5 rounded-full">${section.tools.length}</span>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         ${section.tools.map(tool => renderToolCard(tool, lang)).join('')}
@@ -392,7 +392,7 @@ function renderToolCard(tool, lang = DEFAULT_LANGUAGE) {
       <h3 class="tool-name font-bold text-surface-900 dark:text-surface-50 mb-1 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
         ${tool.name}
       </h3>
-      <p class="tool-desc text-sm text-surface-500 dark:text-surface-400 leading-relaxed line-clamp-2">
+      <p class="tool-desc text-sm text-surface-600 dark:text-surface-400 leading-relaxed line-clamp-2">
         ${tool.description}
       </p>
     </a>

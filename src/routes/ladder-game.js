@@ -212,7 +212,7 @@ function renderLadderGamePage(lang = 'en') {
                 <button id="decrement-count" type="button" class="btn btn-secondary w-14 h-14 text-2xl" aria-label="Decrease player count" data-i18n-aria="tools.ladder-game.ui.aria0">−</button>
                 <div class="relative">
                   <input type="number" id="player-count" value="4" min="2" max="24" class="input w-24 text-center text-2xl font-bold py-3" aria-label="Player count" data-i18n-aria="tools.ladder-game.ui.label0">
-                  <span class="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.ladder-game.ui.text1">${tr('tools.ladder-game.ui.text1', 'players')}</span>
+                  <span class="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs text-surface-600 dark:text-surface-400" data-i18n="tools.ladder-game.ui.text1">${tr('tools.ladder-game.ui.text1', 'players')}</span>
                 </div>
                 <button id="increment-count" type="button" class="btn btn-secondary w-14 h-14 text-2xl" aria-label="Increase player count" data-i18n-aria="tools.ladder-game.ui.aria1">+</button>
               </div>
@@ -227,7 +227,7 @@ function renderLadderGamePage(lang = 'en') {
                   <button type="button" class="mode-tab" data-mode="tournament" data-i18n="tools.ladder-game.ui.modeTournament">${tr('tools.ladder-game.ui.modeTournament', 'Tournament')}</button>
                   <button type="button" class="mode-tab" data-mode="team" data-i18n="tools.ladder-game.ui.modeTeam">${tr('tools.ladder-game.ui.modeTeam', 'Team')}</button>
                 </div>
-                <p id="mode-desc" class="mt-2 text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.ladder-game.ui.modeDescClassic">${tr('tools.ladder-game.ui.modeDescClassic', 'Trace one path at a time to reveal results.')}</p>
+                <p id="mode-desc" class="mt-2 text-xs text-surface-600 dark:text-surface-400" data-i18n="tools.ladder-game.ui.modeDescClassic">${tr('tools.ladder-game.ui.modeDescClassic', 'Trace one path at a time to reveal results.')}</p>
               </div>
 
               <!-- Theme Selection -->
@@ -272,11 +272,11 @@ function renderLadderGamePage(lang = 'en') {
               <summary class="px-4 py-3 text-sm font-medium cursor-pointer select-none text-surface-700 dark:text-surface-300" data-i18n="tools.ladder-game.ui.importLabel">${tr('tools.ladder-game.ui.importLabel', 'Bulk Import (CSV / paste)')}</summary>
               <div class="px-4 pb-4 pt-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label class="text-xs text-surface-500 mb-1 block" data-i18n="tools.ladder-game.ui.importPlayersLabel">${tr('tools.ladder-game.ui.importPlayersLabel', 'Player Names')}</label>
+                  <label class="text-xs text-surface-600 mb-1 block" data-i18n="tools.ladder-game.ui.importPlayersLabel">${tr('tools.ladder-game.ui.importPlayersLabel', 'Player Names')}</label>
                   <textarea id="import-players" class="input resize-none text-sm" rows="4" data-i18n-placeholder="tools.ladder-game.ui.importPlayersPH" placeholder="${tr('tools.ladder-game.ui.importPlayersPH', 'Alice, Bob, Charlie\nor one per line')}"></textarea>
                 </div>
                 <div>
-                  <label class="text-xs text-surface-500 mb-1 block" data-i18n="tools.ladder-game.ui.importResultsLabel">${tr('tools.ladder-game.ui.importResultsLabel', 'Results')}</label>
+                  <label class="text-xs text-surface-600 mb-1 block" data-i18n="tools.ladder-game.ui.importResultsLabel">${tr('tools.ladder-game.ui.importResultsLabel', 'Results')}</label>
                   <textarea id="import-results" class="input resize-none text-sm" rows="4" data-i18n-placeholder="tools.ladder-game.ui.importResultsPH" placeholder="${tr('tools.ladder-game.ui.importResultsPH', 'Prize A, Prize B\nor one per line')}"></textarea>
                 </div>
                 <div class="sm:col-span-2">
@@ -298,7 +298,7 @@ function renderLadderGamePage(lang = 'en') {
                 <input id="secret-results-toggle" type="checkbox" class="mt-1 rounded border-surface-300 text-primary-600 focus:ring-primary-500">
                 <span>
                   <span class="font-medium block" data-i18n="tools.ladder-game.ui.secretLabel">${tr('tools.ladder-game.ui.secretLabel', 'Hide bottom results until reveal')}</span>
-                  <span class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.ladder-game.ui.secretHint">${tr('tools.ladder-game.ui.secretHint', 'Keep result labels hidden until someone traces or reveals the ladder.')}</span>
+                  <span class="text-xs text-surface-600 dark:text-surface-400" data-i18n="tools.ladder-game.ui.secretHint">${tr('tools.ladder-game.ui.secretHint', 'Keep result labels hidden until someone traces or reveals the ladder.')}</span>
                 </span>
               </label>
             </div>
@@ -316,7 +316,7 @@ function renderLadderGamePage(lang = 'en') {
               <div>
                 <div class="flex items-center justify-between mb-2">
                   <h3 class="label" data-i18n="tools.ladder-game.ui.label2">${tr('tools.ladder-game.ui.label2', 'Players (Top)')}</h3>
-                  <span class="text-xs text-surface-400 dark:text-surface-500" data-i18n="tools.ladder-game.ui.dragHint">${tr('tools.ladder-game.ui.dragHint', 'Drag to reorder')}</span>
+                  <span class="text-xs text-surface-600 dark:text-surface-400" data-i18n="tools.ladder-game.ui.dragHint">${tr('tools.ladder-game.ui.dragHint', 'Drag to reorder')}</span>
                 </div>
                 <div id="players-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
                   <!-- Dynamically populated -->
@@ -327,7 +327,7 @@ function renderLadderGamePage(lang = 'en') {
               <div>
                 <div class="flex items-center justify-between mb-2">
                   <h3 class="label" data-i18n="tools.ladder-game.ui.label3">${tr('tools.ladder-game.ui.label3', 'Results (Bottom)')}</h3>
-                  <button id="btn-undo-rung" type="button" class="text-xs text-surface-400 hover:text-surface-600 dark:text-surface-500 dark:hover:text-surface-300 disabled:opacity-40 disabled:cursor-not-allowed" disabled data-i18n="tools.ladder-game.ui.undoBtn">${tr('tools.ladder-game.ui.undoBtn', 'Undo Last Randomize')}</button>
+                  <button id="btn-undo-rung" type="button" class="text-xs text-surface-600 hover:text-surface-800 dark:text-surface-400 dark:hover:text-surface-300 disabled:opacity-40 disabled:cursor-not-allowed" disabled data-i18n="tools.ladder-game.ui.undoBtn">${tr('tools.ladder-game.ui.undoBtn', 'Undo Last Randomize')}</button>
                 </div>
                 <div id="results-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
                   <!-- Dynamically populated -->
@@ -830,7 +830,7 @@ function renderLadderGamePage(lang = 'en') {
             pWrap.dataset.dragIndex = i;
             pWrap.dataset.dragType = 'player';
             pWrap.innerHTML =
-              '<label class="text-xs text-surface-500 dark:text-surface-400 mb-1 flex items-center gap-1">' +
+              '<label class="text-xs text-surface-600 dark:text-surface-400 mb-1 flex items-center gap-1">' +
               '<span class="cursor-grab text-surface-300 dark:text-surface-600 select-none" aria-hidden="true">&#9776;</span>' +
               '<span data-i18n="tools.ladder-game.ui.label6">' + (window._t ? window._t('tools.ladder-game.js.tpl0', 'Player') : 'Player') + ' ' + (i + 1) + '</span></label>' +
               '<div class="flex gap-1 items-center">' +
@@ -843,7 +843,7 @@ function renderLadderGamePage(lang = 'en') {
             const rWrap = document.createElement('div');
             rWrap.className = 'flex flex-col';
             rWrap.innerHTML =
-              '<label class="text-xs text-surface-500 dark:text-surface-400 mb-1"><span data-i18n="tools.ladder-game.ui.label7">' + (window._t ? window._t('tools.ladder-game.js.tpl1', 'Result') : 'Result') + ' ' + (i + 1) + '</span></label>' +
+              '<label class="text-xs text-surface-600 dark:text-surface-400 mb-1"><span data-i18n="tools.ladder-game.ui.label7">' + (window._t ? window._t('tools.ladder-game.js.tpl1', 'Result') : 'Result') + ' ' + (i + 1) + '</span></label>' +
               '<input type="text" class="input result-input" data-index="' + i + '" value="' + escapeHtml(state.results[i]) + '" placeholder="' + (window._t ? window._t('tools.ladder-game.ui.placeholder1', 'Result') : 'Result') + '" data-i18n-placeholder="tools.ladder-game.ui.placeholder1">';
             elResultsContainer.appendChild(rWrap);
           }
@@ -1623,7 +1623,7 @@ function renderLadderGamePage(lang = 'en') {
               '<span>' + escapeHtml(state.players[playerIdx]) + '</span>' +
               teamBadge +
               '</div>' +
-              '<div class="text-xs text-surface-500 dark:text-surface-400">' + (window._t ? window._t('tools.ladder-game.js.text4', 'gets') : 'gets') + '</div>' +
+              '<div class="text-xs text-surface-600 dark:text-surface-400">' + (window._t ? window._t('tools.ladder-game.js.text4', 'gets') : 'gets') + '</div>' +
               '</div>' +
               '<div class="font-semibold text-primary-600 dark:text-primary-400">' + escapeHtml(state.results[resultIdx]) + '</div>';
             elResultsList.appendChild(item);

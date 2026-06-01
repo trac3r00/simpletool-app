@@ -116,7 +116,7 @@ function renderDnsReferencePage(lang = DEFAULT_LANGUAGE) {
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             <div>
               <label class="label" data-i18n="tools.dns-reference.ui.label0">Record Type</label>
-              <select id="cmd-record-type" class="input w-full">
+              <select id="cmd-record-type" class="input w-full" aria-label="Record type">
                 <option value="A">A</option>
                 <option value="AAAA">AAAA</option>
                 <option value="CNAME">CNAME</option>

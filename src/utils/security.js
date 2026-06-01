@@ -94,6 +94,7 @@ export function getSecurityHeaders(contentType = 'text/html; charset=utf-8', cac
     'https://www.googletagmanager.com',
     'https://analytics.google.com',
     'https://cloudflareinsights.com',
+    'https://fonts.googleapis.com',
     'https://*.adtrafficquality.google'
   ].join(' ');
 

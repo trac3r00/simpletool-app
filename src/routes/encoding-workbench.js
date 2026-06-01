@@ -99,7 +99,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
 
           <!-- Decode Chain Visualization -->
           <div id="decode-chain" class="hidden mb-6">
-            <p class="text-xs font-semibold uppercase tracking-wide text-surface-500 dark:text-surface-400 mb-3" data-i18n="tools.encoding-workbench.ui.chainLabel">Detected Encoding Layers</p>
+            <p class="text-xs font-semibold uppercase tracking-wide text-surface-600 dark:text-surface-400 mb-3" data-i18n="tools.encoding-workbench.ui.chainLabel">Detected Encoding Layers</p>
             <div id="chain-steps" class="flex flex-wrap items-center gap-2"></div>
             <div class="mt-4 flex gap-2">
               <button id="decode-all-btn" class="btn btn-primary btn-sm" data-i18n="tools.encoding-workbench.ui.decodeAll">⚡ Decode All Layers</button>
@@ -167,7 +167,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
                     <span class="text-3xl">📁</span>
                   </div>
                   <p class="text-sm font-semibold text-surface-700 dark:text-surface-300" data-i18n="tools.encoding-workbench.ui.dropFile">Drop file here or click to browse</p>
-                  <p class="text-xs text-surface-500 dark:text-surface-400 mt-1" data-i18n="tools.encoding-workbench.ui.dropFileHint">Processed entirely in your browser</p>
+                  <p class="text-xs text-surface-600 dark:text-surface-400 mt-1" data-i18n="tools.encoding-workbench.ui.dropFileHint">Processed entirely in your browser</p>
                 </div>
                 <div id="hash-file-info" class="hidden mt-3 px-4 py-3 rounded-lg bg-info-50 dark:bg-info-900/20 border border-info-200 dark:border-info-800 flex items-center justify-between">
                   <div class="flex items-center gap-2 min-w-0">
@@ -785,7 +785,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
           }
 
           if (!resultsHTML) {
-            resultsHTML = '<p class="text-sm text-surface-500 dark:text-surface-400" data-i18n="tools.encoding-workbench.ui.desc41">No algorithms selected.</p>';
+            resultsHTML = '<p class="text-sm text-surface-600 dark:text-surface-400" data-i18n="tools.encoding-workbench.ui.desc41">No algorithms selected.</p>';
           }
           document.getElementById('hash-results').innerHTML = '<div class="divide-y divide-surface-100 dark:divide-surface-800">' + resultsHTML + '</div>';
         } catch(e) {
@@ -906,7 +906,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
           return '<div class="flex items-center justify-between py-3 border-b border-surface-100 dark:border-surface-800 last:border-0">' +
             '<div class="flex items-center gap-3">' +
               '<span class="text-sm font-semibold text-surface-900 dark:text-surface-100">' + escapeHTML(c.algo) + '</span>' +
-              '<span class="text-xs text-surface-500 dark:text-surface-400 capitalize">' + c.type + '</span>' +
+              '<span class="text-xs text-surface-600 dark:text-surface-400 capitalize">' + c.type + '</span>' +
             '</div>' +
             '<div class="flex items-center gap-2">' +
               '<span class="identify-badge ' + badgeClass + '">' + c.confidence + '</span>' +

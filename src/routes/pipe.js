@@ -29,7 +29,7 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
             Pipe Mode
             <span class="text-xs font-medium bg-teal-100 text-teal-700 dark:bg-teal-900/40 dark:text-teal-300 px-2 py-0.5 rounded-full">BETA</span>
           </h1>
-          <p class="text-sm text-surface-500 dark:text-surface-400 mt-1">Chain tools together. Your data never leaves your browser.</p>
+          <p class="text-sm text-surface-600 dark:text-surface-400 mt-1">Chain tools together. Your data never leaves your browser.</p>
         </div>
         <div class="flex gap-2">
           <button id="share-btn" class="btn btn-ghost text-xs" title="Share pipeline (no data included)">Share</button>
@@ -44,7 +44,7 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
           <div class="sticky top-20 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-lg p-3">
             <input type="text" id="palette-search" placeholder="Search tools..."
               class="w-full px-2 py-1.5 text-xs border border-surface-200 dark:border-surface-700 rounded bg-white dark:bg-surface-800 text-surface-900 dark:text-surface-100 mb-3"
-              role="search" aria-label="Search tools">
+              aria-label="Search tools">
             <div id="palette-list" class="space-y-0.5 text-sm max-h-[60vh] overflow-y-auto"></div>
           </div>
         </aside>
@@ -53,7 +53,7 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
         <div class="flex-1 min-w-0">
           <!-- Input -->
           <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-lg p-4 mb-0">
-            <label class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wider mb-2 block">Input</label>
+            <label class="text-xs font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider mb-2 block">Input</label>
             <textarea id="pipe-input" rows="3"
               placeholder="Paste your data here, or try a recipe below..."
               class="w-full px-3 py-2 border border-surface-200 dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-800 text-surface-900 dark:text-surface-100 font-mono text-sm resize-y"
@@ -85,7 +85,7 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
 
           <!-- Recipe Gallery (empty state / inspiration) -->
           <div id="recipe-gallery" class="mt-8">
-            <h2 class="text-xs font-semibold text-surface-500 dark:text-surface-400 uppercase tracking-wider mb-3">Try a recipe</h2>
+            <h2 class="text-xs font-semibold text-surface-600 dark:text-surface-400 uppercase tracking-wider mb-3">Try a recipe</h2>
             <div class="flex gap-3 overflow-x-auto pb-2" id="recipe-list"></div>
           </div>
         </div>
@@ -97,7 +97,7 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
         <div class="absolute bottom-0 left-0 right-0 bg-white dark:bg-surface-900 rounded-t-xl p-4 max-h-[70vh] overflow-y-auto">
           <div class="flex justify-between items-center mb-3">
             <span class="font-semibold text-sm">Add a step</span>
-            <button id="close-mobile-palette" class="text-surface-400 hover:text-surface-600 text-lg">&times;</button>
+            <button id="close-mobile-palette" class="text-surface-600 hover:text-surface-800 dark:text-surface-400 text-lg">&times;</button>
           </div>
           <input type="text" id="mobile-palette-search" placeholder="Search tools..."
             class="w-full px-3 py-2 text-sm border border-surface-200 dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-800 mb-3">
@@ -213,7 +213,7 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
           });
           if (matching.length === 0) continue;
           const catEl = document.createElement('div');
-          catEl.className = 'text-[11px] font-semibold text-surface-400 dark:text-surface-500 uppercase tracking-wider mt-3 mb-1 first:mt-0';
+          catEl.className = 'text-[11px] font-semibold text-surface-600 dark:text-surface-400 uppercase tracking-wider mt-3 mb-1 first:mt-0';
           catEl.textContent = cat;
           container.appendChild(catEl);
           for (const id of matching) {
@@ -225,7 +225,7 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
           }
         }
         if (container.children.length === 0) {
-          container.innerHTML = '<div class="text-xs text-surface-400 py-2">No tools match</div>';
+          container.innerHTML = '<div class="text-xs text-surface-600 py-2">No tools match</div>';
         }
       }
 
@@ -280,13 +280,13 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
           header.className = 'flex items-center justify-between px-3 py-2 bg-surface-50 dark:bg-surface-800 border-b border-surface-200 dark:border-surface-700';
           header.innerHTML = \`
             <div class="flex items-center gap-2 text-sm">
-              <span class="cursor-grab text-surface-400 select-none" title="Drag to reorder">⋮⋮</span>
+              <span class="cursor-grab text-surface-600 dark:text-surface-400 select-none" title="Drag to reorder">⋮⋮</span>
               <span class="font-medium text-surface-800 dark:text-surface-200">\${contract.name}</span>
               <a href="\${contract.id === 'line-sort' ? '#' : '/'+contract.id}" class="text-[11px] text-teal-600 dark:text-teal-400 hover:underline">\${contract.id === 'line-sort' ? '' : 'Open full tool'}</a>
             </div>
             <div class="flex items-center gap-1">
-              <button class="move-up text-surface-400 hover:text-surface-600 dark:hover:text-surface-300 text-xs px-1" title="Move up (Alt+Up)" \${i===0?'disabled':''}>&uarr;</button>
-              <button class="move-down text-surface-400 hover:text-surface-600 dark:hover:text-surface-300 text-xs px-1" title="Move down (Alt+Down)" \${i===pipeSteps.length-1?'disabled':''}>&darr;</button>
+              <button class="move-up text-surface-600 hover:text-surface-800 dark:text-surface-400 dark:hover:text-surface-300 text-xs px-1" title="Move up (Alt+Up)" \${i===0?'disabled':''}>&uarr;</button>
+              <button class="move-down text-surface-600 hover:text-surface-800 dark:text-surface-400 dark:hover:text-surface-300 text-xs px-1" title="Move down (Alt+Down)" \${i===pipeSteps.length-1?'disabled':''}>&darr;</button>
               <button class="remove-step text-red-400 hover:text-red-600 text-xs px-1" aria-label="Remove \${contract.name} step">&times;</button>
             </div>
           \`;
@@ -297,7 +297,7 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
             optionsHtml = '<div class="px-3 py-2 border-b border-surface-100 dark:border-surface-700 flex gap-3 flex-wrap">';
             for (const opt of contract.options) {
               if (opt.type === 'select' && opt.values) {
-                optionsHtml += \`<label class="text-xs text-surface-500"><span class="mr-1">\${opt.id}:</span>
+                optionsHtml += \`<label class="text-xs text-surface-600"><span class="mr-1">\${opt.id}:</span>
                   <select class="opt-select text-xs border border-surface-200 dark:border-surface-700 rounded px-1 py-0.5 bg-white dark:bg-surface-800 text-surface-800 dark:text-surface-200" data-opt="\${opt.id}">
                     \${opt.values.map(v => \`<option value="\${v}" \${step.options[opt.id]===v?'selected':''}>\${v}</option>\`).join('')}
                   </select></label>\`;
@@ -308,7 +308,7 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
 
           // Output area
           const outputDiv = document.createElement('div');
-          outputDiv.className = 'step-output px-3 py-2 font-mono text-xs text-surface-500 dark:text-surface-400 whitespace-pre-wrap break-all max-h-32 overflow-auto';
+          outputDiv.className = 'step-output px-3 py-2 font-mono text-xs text-surface-600 dark:text-surface-400 whitespace-pre-wrap break-all max-h-32 overflow-auto';
           outputDiv.setAttribute('aria-live', 'polite');
           outputDiv.textContent = 'Waiting...';
 
@@ -357,7 +357,7 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
           } catch (err) {
             card.className = 'pipe-step border border-red-300 dark:border-red-800 rounded-lg overflow-hidden bg-red-50 dark:bg-red-900/20';
             outputEl.textContent = 'Error: ' + (err.message || err);
-            outputEl.className = outputEl.className.replace('text-surface-500', 'text-red-600').replace('text-surface-400', 'text-red-400');
+            outputEl.className = outputEl.className.replace('text-surface-600', 'text-red-600').replace('text-surface-400', 'text-red-400');
             failed = true;
           }
         });
@@ -387,7 +387,7 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
           card.className = 'shrink-0 bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-lg px-4 py-3 text-left hover:border-teal-400 transition-colors min-w-[200px]';
           card.innerHTML = \`
             <div class="font-medium text-sm text-surface-800 dark:text-surface-200 mb-1">\${recipe.name}</div>
-            <div class="text-xs text-surface-400">\${recipe.steps.map(s => CONTRACTS[s.id]?.name || s.id).join(' → ')}</div>
+            <div class="text-xs text-surface-600 dark:text-surface-400">\${recipe.steps.map(s => CONTRACTS[s.id]?.name || s.id).join(' → ')}</div>
             <div class="text-xs text-teal-600 dark:text-teal-400 mt-2">Try it →</div>
           \`;
           card.onclick = () => {

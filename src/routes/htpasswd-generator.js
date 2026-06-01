@@ -45,14 +45,14 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
                <span class="text-xl">🛡️</span>
                <div>
                  <p class="font-semibold" data-i18n="tools.htpasswd-generator.ui.desc24">Zero trust by design</p>
-                 <p class="text-surface-500 dark:text-surface-400" data-i18n="tools.htpasswd-generator.ui.desc22">No network calls.</p>
+                 <p class="text-surface-600 dark:text-surface-400" data-i18n="tools.htpasswd-generator.ui.desc22">No network calls.</p>
                </div>
              </div>
              <div class="flex items-center gap-3 bg-info-50 dark:bg-info-900/20 border border-info-200 dark:border-info-800 rounded-2xl px-4 py-3">
                <span class="text-xl">⚙️</span>
                <div>
                  <p class="font-semibold" data-i18n="tools.htpasswd-generator.ui.desc25">Multiple algorithms</p>
-                 <p class="text-surface-500 dark:text-surface-400" data-i18n="tools.htpasswd-generator.ui.desc23">Bcrypt, apr1, SHA, plain.</p>
+                 <p class="text-surface-600 dark:text-surface-400" data-i18n="tools.htpasswd-generator.ui.desc23">Bcrypt, apr1, SHA, plain.</p>
                </div>
              </div>
            </div>
@@ -69,7 +69,7 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
           <div class="space-y-2">
              <div class="flex items-center justify-between">
                <label for="password-input" class="text-sm font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide"><span data-i18n="tools.htpasswd-generator.ui.label8">Password</span></label>
-              <div class="flex gap-2 text-xs text-surface-500 dark:text-surface-400">
+              <div class="flex gap-2 text-xs text-surface-600 dark:text-surface-400">
                    <button id="toggle-password" type="button" class="btn btn-ghost btn-xs"><span data-i18n="tools.htpasswd-generator.ui.button0">Show</span></button>
                    <button id="generate-password" type="button" class="btn btn-ghost btn-xs text-primary-600 dark:text-primary-400"><span data-i18n="tools.htpasswd-generator.ui.button1">Generate strong</span></button>
                  </div>
@@ -127,7 +127,7 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
              </div>
             <div class="overflow-x-auto">
               <table class="min-w-full text-sm">
-                <thead class="text-xs uppercase tracking-widest text-surface-500">
+                <thead class="text-xs uppercase tracking-widest text-surface-600">
                   <tr>
                     <th class="py-2 text-left" data-i18n="tools.htpasswd-generator.ui.th6">Username</th>
                     <th class="py-2 text-left" data-i18n="tools.htpasswd-generator.ui.th7">Algorithm</th>
@@ -135,7 +135,7 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
                   </tr>
                 </thead>
                 <tbody id="history-body" class="divide-y divide-surface-100 dark:divide-surface-800 text-surface-700 dark:text-surface-200">
-                  <tr><td class="py-3 text-surface-500" colspan="3" data-i18n="tools.htpasswd-generator.ui.desc27">Nothing generated yet.</td></tr>
+                  <tr><td class="py-3 text-surface-600" colspan="3" data-i18n="tools.htpasswd-generator.ui.desc27">Nothing generated yet.</td></tr>
                 </tbody>
               </table>
             </div>
@@ -305,7 +305,7 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
 
       function renderHistory() {
         if (!historyItems.length) {
-          historyBody.innerHTML = '<tr><td class="py-3 text-surface-500" colspan="3">' + escapeHtml(translate('tools.htpasswd-generator.ui.desc27', 'Nothing generated yet.')) + '</td></tr>';
+          historyBody.innerHTML = '<tr><td class="py-3 text-surface-600" colspan="3">' + escapeHtml(translate('tools.htpasswd-generator.ui.desc27', 'Nothing generated yet.')) + '</td></tr>';
           return;
         }
 

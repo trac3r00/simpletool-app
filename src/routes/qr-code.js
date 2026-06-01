@@ -125,7 +125,7 @@ function renderQRCodePage(lang = DEFAULT_LANGUAGE) {
             <!-- Right: Preview & Download -->
             <div class="space-y-4">
               <div id="qr-preview" class="flex items-center justify-center min-h-[256px] rounded-xl border-2 border-dashed border-surface-300 dark:border-surface-600 bg-surface-50 dark:bg-surface-950" aria-label="QR code preview (awaiting input)">
-                <div class="text-center text-surface-400 dark:text-surface-600">
+                <div class="text-center text-surface-600 dark:text-surface-400">
                   <span class="material-symbols-rounded text-5xl">qr_code_2</span>
                   <p class="mt-2 text-sm" data-i18n="tools.qr-code.ui.previewPlaceholder">Your QR code will appear here</p>
                 </div>
@@ -158,7 +158,7 @@ function renderQRCodePage(lang = DEFAULT_LANGUAGE) {
               </div>
 
               <div id="decode-preview" class="flex items-center justify-center min-h-[200px] rounded-xl border-2 border-dashed border-surface-300 dark:border-surface-600 bg-surface-50 dark:bg-surface-950">
-                <div class="text-center text-surface-400 dark:text-surface-600">
+                <div class="text-center text-surface-600 dark:text-surface-400">
                   <span class="material-symbols-rounded text-5xl">image</span>
                   <p class="mt-2 text-sm" data-i18n="tools.qr-code.ui.decodePlaceholder">Upload an image to decode</p>
                 </div>

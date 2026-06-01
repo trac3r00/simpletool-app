@@ -552,19 +552,17 @@ export async function handleCronBuilderRoutes(request) {
 function renderGrid(part, start, end, labelFn) {
           const container = document.getElementById(\`\${part}-grid\`);
           container.innerHTML = '';
-          container.setAttribute('role', 'grid');
           container.setAttribute('aria-label', 'Minute selector');
 
           for (let i = start; i <= end; i++) {
             const label = document.createElement('label');
             label.className = 'flex items-center justify-center w-8 h-8 border border-surface-200 dark:border-surface-700 rounded-full cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors select-none text-sm';
-            label.setAttribute('role', 'gridcell');
             label.setAttribute('aria-selected', 'false');
 
             const input = document.createElement('input');
             input.type = 'checkbox';
             input.value = i;
-            input.className = 'hidden peer';
+            input.className = 'sr-only peer';
 
             const span = document.createElement('span');
             span.textContent = labelFn(i);

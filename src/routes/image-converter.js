@@ -55,7 +55,7 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
               <p class="text-lg font-semibold text-surface-700 dark:text-surface-300 mb-2" data-i18n="tools.image-converter.ui.desc19">
                 Drop image here or click to browse
               </p>
-              <p class="text-sm text-surface-500 dark:text-surface-400" data-i18n="tools.image-converter.ui.desc20">
+              <p class="text-sm text-surface-600 dark:text-surface-400" data-i18n="tools.image-converter.ui.desc20">
                 Supports: PNG, JPG, WebP, GIF
               </p>
             </div>
@@ -83,25 +83,25 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
               <div class="format-option selected" data-format="png">
                 <div class="text-center">
                   <p class="font-bold text-surface-900 dark:text-surface-50">PNG</p>
-                  <p class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.image-converter.ui.desc21">Lossless</p>
+                  <p class="text-xs text-surface-600 dark:text-surface-400" data-i18n="tools.image-converter.ui.desc21">Lossless</p>
                 </div>
               </div>
               <div class="format-option" data-format="jpeg">
                 <div class="text-center">
                   <p class="font-bold text-surface-900 dark:text-surface-50">JPG</p>
-                  <p class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.image-converter.ui.desc22">Smaller size</p>
+                  <p class="text-xs text-surface-600 dark:text-surface-400" data-i18n="tools.image-converter.ui.desc22">Smaller size</p>
                 </div>
               </div>
               <div class="format-option" data-format="webp">
                 <div class="text-center">
                   <p class="font-bold text-surface-900 dark:text-surface-50">WebP</p>
-                  <p class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.image-converter.ui.desc23">Modern</p>
+                  <p class="text-xs text-surface-600 dark:text-surface-400" data-i18n="tools.image-converter.ui.desc23">Modern</p>
                 </div>
               </div>
               <div class="format-option" data-format="gif">
                 <div class="text-center">
                   <p class="font-bold text-surface-900 dark:text-surface-50">GIF</p>
-                  <p class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.image-converter.ui.desc24">Animation</p>
+                  <p class="text-xs text-surface-600 dark:text-surface-400" data-i18n="tools.image-converter.ui.desc24">Animation</p>
                 </div>
               </div>
             </div>
@@ -113,7 +113,7 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
               </label>
               <input type="range" id="quality-slider" min="1" max="100" value="90"
                 class="w-full h-2 bg-surface-200 rounded-lg appearance-none cursor-pointer dark:bg-surface-700" />
-              <p class="text-xs text-surface-500 dark:text-surface-400 mt-1" data-i18n="tools.image-converter.ui.desc25">
+              <p class="text-xs text-surface-600 dark:text-surface-400 mt-1" data-i18n="tools.image-converter.ui.desc25">
                 Lower quality = smaller file size
               </p>
             </div>
@@ -193,7 +193,7 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
           <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm p-6">
             <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50 mb-4" data-i18n="tools.image-converter.ui.heading14">📷 Original Image</h2>
             <div class="preview-container">
-              <div id="original-placeholder" class="text-center text-surface-400 dark:text-surface-500">
+              <div id="original-placeholder" class="text-center text-surface-600 dark:text-surface-400">
                 <svg class="w-24 h-24 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                 </svg>
@@ -207,7 +207,7 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
           <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm p-6">
             <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50 mb-4" data-i18n="tools.image-converter.ui.heading15">✨ Converted Image</h2>
             <div class="preview-container">
-              <div id="converted-placeholder" class="text-center text-surface-400 dark:text-surface-500">
+              <div id="converted-placeholder" class="text-center text-surface-600 dark:text-surface-400">
                 <svg class="w-24 h-24 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                 </svg>

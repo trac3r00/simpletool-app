@@ -46,14 +46,14 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
                <span class="text-xl">🔐</span>
                <div>
                  <p class="font-semibold" data-i18n="tools.saml-decoder.ui.heading11">Client-side only</p>
-                 <p class="text-surface-500 dark:text-surface-400" data-i18n="tools.saml-decoder.ui.desc13">Nothing leaves your browser.</p>
+                 <p class="text-surface-600 dark:text-surface-400" data-i18n="tools.saml-decoder.ui.desc13">Nothing leaves your browser.</p>
                </div>
              </div>
              <div class="flex items-center gap-3 bg-info-50 dark:bg-info-900/20 border border-info-200 dark:border-info-800 rounded-2xl px-4 py-3">
                <span class="text-xl">⚡</span>
                <div>
                  <p class="font-semibold" data-i18n="tools.saml-decoder.ui.heading12">Redirect & POST aware</p>
-                 <p class="text-surface-500 dark:text-surface-400" data-i18n="tools.saml-decoder.ui.desc14">Base64 + optional deflate.</p>
+                 <p class="text-surface-600 dark:text-surface-400" data-i18n="tools.saml-decoder.ui.desc14">Base64 + optional deflate.</p>
                </div>
              </div>
           </div>

@@ -507,11 +507,10 @@
 }
 
 .empty-state-title {
-  @apply text-sm font-semibold text-surface-500 dark:text-surface-400 mb-1;
+  @apply text-sm font-semibold text-surface-600 dark:text-surface-300 mb-1;
 }
-
 .empty-state-desc {
-  @apply text-xs text-surface-400 dark:text-surface-500 max-w-xs;
+  @apply text-xs text-surface-600 dark:text-surface-300 max-w-xs;
 }
 
 /* Rich Editor — textarea + highlighted pre overlay */

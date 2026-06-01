@@ -133,7 +133,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
         <!-- Template Quick Start -->
         <div class="mb-8">
           <label class="label mb-2" data-i18n="tools.wireguard-config.ui.label2">Template Quick Start</label>
-          <select id="template-select" class="input">
+          <select id="template-select" class="input" aria-label="Template">
             <option value="" data-i18n="tools.wireguard-config.ui.option0">-- Select a template --</option>
             <option value="p2p-client" data-i18n="tools.wireguard-config.ui.option1">Point-to-Point (Client)</option>
             <option value="p2p-server" data-i18n="tools.wireguard-config.ui.option2">Point-to-Point (Server)</option>
@@ -264,7 +264,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
                 <button id="generate-qr-btn" class="btn btn-primary btn-sm" data-i18n="tools.wireguard-config.ui.button7">Generate QR</button>
               </div>
               <div id="qr-container" class="flex items-center justify-center p-8 bg-white rounded-lg">
-                <p class="text-surface-400 text-sm" data-i18n="tools.wireguard-config.ui.desc2">Generate a config to create QR code</p>
+                <p class="text-surface-600 text-sm" data-i18n="tools.wireguard-config.ui.desc2">Generate a config to create QR code</p>
               </div>
               <p class="mt-3 text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.wireguard-config.ui.desc3">Scan with the WireGuard mobile app to import configuration.</p>
             </div>
@@ -500,7 +500,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
                 <span class="px-2 py-1 bg-secondary-100 dark:bg-secondary-900/30 text-secondary-700 dark:text-secondary-300 rounded text-xs font-mono">[Peer]</span>
                 <span class="peer-number">Peer \${peerId}</span>
               </h4>
-              <button class="remove-peer-btn btn btn-ghost btn-xs text-error-600 dark:text-error-400" data-peer-id="\${peerId}">
+              <button class="remove-peer-btn btn btn-ghost btn-xs text-error-600 dark:text-error-400" data-peer-id="${peerId}" aria-label="Remove peer">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
@@ -514,7 +514,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
               </div>
               
               <div>
-                <label class="label">PresharedKey <span class="text-xs text-surface-400">(optional)</span></label>
+                <label class="label">PresharedKey <span class="text-xs text-surface-600">(optional)</span></label>
                 <input type="text" class="peer-preshared-key input font-mono text-sm" placeholder="Additional symmetric key..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder21" value="\${peerData.presharedKey}">
               </div>
               

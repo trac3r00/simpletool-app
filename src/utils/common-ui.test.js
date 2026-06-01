@@ -14,7 +14,7 @@ describe('createFeatureList', () => {
 
   it('renders single item as definition list', () => {
     const result = createFeatureList([{ text: 'Feature One' }]);
-    expect(result).toBe('<dl data-feature-list><dd>Feature One</dd></dl>');
+    expect(result).toBe('<dl data-feature-list><dt class="sr-only">Feature</dt><dd>Feature One</dd></dl>');
   });
 
   it('renders multiple items as definition list', () => {

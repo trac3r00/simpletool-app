@@ -81,15 +81,15 @@ function renderTokenCounterPage(lang = DEFAULT_LANGUAGE) {
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div class="p-4 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
-                <label class="label flex items-center gap-2">
+                <label for="out-tokens" class="label flex items-center gap-2">
                   <span data-i18n="tools.token-counter.ui.label1">Expected output tokens</span>
-                  ${infoHint('If you don’t have an actual completion, set an expected output budget to estimate total cost.', 'Help', { i18nKey: 'tools.token-counter.ui.desc6' })}
+                  ${infoHint('If you don\'t have an actual completion, set an expected output budget to estimate total cost.', 'Help', { i18nKey: 'tools.token-counter.ui.desc6' })}
                 </label>
                 <input id="out-tokens" type="number" min="0" step="1" value="0" class="input font-mono" />
               </div>
               <div class="p-4 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
                 <label class="label" data-i18n="tools.token-counter.ui.label2">Estimate mode</label>
-                <select id="mode" class="input">
+                <select id="mode" class="input" aria-label="Mode">
                   <option value="balanced" data-i18n="tools.token-counter.ui.option0">Balanced</option>
                   <option value="conservative" data-i18n="tools.token-counter.ui.option1">Conservative (+10%)</option>
                 </select>

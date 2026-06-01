@@ -63,7 +63,7 @@ function renderSQLFormatterPage(lang = DEFAULT_LANGUAGE) {
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
                 <label class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" data-i18n="tools.sql-formatter.ui.label1">Dialect</label>
-                <select id="dialect" class="input">
+                <select id="dialect" class="input" aria-label="SQL dialect">
                   <option value="postgres" data-i18n="tools.sql-formatter.ui.option0">Postgres</option>
                   <option value="mysql" data-i18n="tools.sql-formatter.ui.option1">MySQL</option>
                   <option value="bigquery" data-i18n="tools.sql-formatter.ui.option6">BigQuery</option>
@@ -74,7 +74,7 @@ function renderSQLFormatterPage(lang = DEFAULT_LANGUAGE) {
               </div>
               <div>
                 <label class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" data-i18n="tools.sql-formatter.ui.label2">Keyword case</label>
-                <select id="kwcase" class="input">
+                <select id="kwcase" class="input" aria-label="Keyword case">
                   <option value="upper" data-i18n="tools.sql-formatter.ui.option2">UPPER</option>
                   <option value="lower" data-i18n="tools.sql-formatter.ui.option3">lower</option>
                   <option value="keep" data-i18n="tools.sql-formatter.ui.option4">keep</option>
@@ -82,7 +82,7 @@ function renderSQLFormatterPage(lang = DEFAULT_LANGUAGE) {
               </div>
               <div>
                 <label class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" data-i18n="tools.sql-formatter.ui.label3">Indent</label>
-                <select id="indent" class="input">
+                <select id="indent" class="input" aria-label="Indentation">
                   <option value="2" data-i18n="tools.sql-formatter.ui.option5">2 spaces</option>
                   <option value="4" data-i18n="tools.sql-formatter.ui.option6">4 spaces</option>
                 </select>

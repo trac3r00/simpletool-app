@@ -101,9 +101,9 @@ function renderCSPBuilderPage(lang = DEFAULT_LANGUAGE) {
             </div>
 
             <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
-              <label class="label flex items-center gap-2">
+              <label for="csp-output" class="label flex items-center gap-2">
                 <span data-i18n="tools.csp-builder.ui.label2">Header output</span>
-                ${infoHint('Copy this into your server response headers. For testing, prefer “Content-Security-Policy-Report-Only”.', 'Help', { i18nKey: 'tools.csp-builder.ui.desc3' })}
+                ${infoHint('Copy this into your server response headers. For testing, prefer "Content-Security-Policy-Report-Only".', 'Help', { i18nKey: 'tools.csp-builder.ui.desc3' })}
               </label>
               <textarea id="csp-output" rows="7" class="input-mono resize-y bg-surface-50 dark:bg-surface-950" readonly></textarea>
               <div class="mt-2 text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.csp-builder.ui.desc4">This tool does not validate your site behavior — always test in a staging environment.</div>

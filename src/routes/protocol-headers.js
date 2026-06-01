@@ -415,7 +415,7 @@ function renderProtocolHeadersPage(lang = DEFAULT_LANGUAGE) {
             <div class="flex gap-1 mb-1">
               \${rowHtml}
             </div>
-            <div class="text-[10px] text-surface-400 mb-2 font-mono">\${offsetText}</div>
+            <div class="text-[10px] text-surface-600 mb-2 font-mono">\${offsetText}</div>
           \`;
         }).join('');
 

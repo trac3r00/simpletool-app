@@ -188,7 +188,7 @@ function renderRouletteWheelPage(lang = 'en') {
                 <input type="checkbox" id="sound-toggle">
                 <span data-i18n="tools.roulette-wheel.ui.sound-toggle">${t('tools.roulette-wheel.ui.sound-toggle', lang)}</span>
               </label>
-              <select id="sound-theme-select" class="rw-mode-input" style="width:auto;">
+              <select id="sound-theme-select" class="rw-mode-input" style="width:auto;" aria-label="Sound theme">
                 ${rouletteBootConfig.soundThemes.map(st => `<option value="${st.id}">${st.fallbackLabel}</option>`).join('')}
               </select>
               <button id="clear-stats-btn" class="btn btn-ghost btn-sm" data-i18n="tools.roulette-wheel.ui.clear-stats">${t('tools.roulette-wheel.ui.clear-stats', lang)}</button>
@@ -277,7 +277,7 @@ function renderRouletteWheelPage(lang = 'en') {
                     <button id="save-preset-btn" class="btn btn-secondary btn-sm" data-i18n="tools.roulette-wheel.ui.save-preset">${t('tools.roulette-wheel.ui.save-preset', lang)}</button>
                   </div>
                   <div class="rw-preset-row">
-                    <select id="preset-select" class="rw-preset-select">
+                    <select id="preset-select" class="rw-preset-select" aria-label="Preset">
                       <option value="" data-i18n="tools.roulette-wheel.ui.select-preset">${t('tools.roulette-wheel.ui.select-preset', lang)}</option>
                     </select>
                     <button id="load-preset-btn" class="btn btn-primary btn-sm" data-i18n="tools.roulette-wheel.ui.load-preset">${t('tools.roulette-wheel.ui.load-preset', lang)}</button>
@@ -297,7 +297,7 @@ function renderRouletteWheelPage(lang = 'en') {
               <div class="rw-section-content">
                 <div class="rw-section-inner">
                   <div class="rw-mode-row">
-                    <input type="number" id="series-count" class="rw-mode-input" value="10" min="1" max="50">
+                    <label for="series-count" class="sr-only">Series count</label><input type="number" id="series-count" class="rw-mode-input" value="10" min="1" max="50">
                     <button id="start-series-btn" class="btn btn-primary btn-sm" data-i18n="tools.roulette-wheel.ui.start-series">${t('tools.roulette-wheel.ui.start-series', lang)}</button>
                     <button id="stop-series-btn" class="btn btn-ghost btn-sm" disabled data-i18n="tools.roulette-wheel.ui.stop-series">${t('tools.roulette-wheel.ui.stop-series', lang)}</button>
                   </div>

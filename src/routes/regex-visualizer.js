@@ -37,7 +37,7 @@ export async function handleRegexVisualizerRoutes(request) {
            <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 p-5">
              <div class="flex justify-between items-center mb-2">
                <label for="regex-input" class="block text-sm font-medium text-surface-700 dark:text-surface-300"><span data-i18n="tools.regex-visualizer.ui.label3">Regular Expression</span> ${infoHint('Use JS regex syntax; escape backslashes (\\\\) and omit surrounding / delimiters.')}</label>
-               <select id="preset-select" class="text-xs px-2 py-1 rounded-md bg-surface-100 dark:bg-surface-800 text-surface-700 dark:text-surface-300 border border-surface-300 dark:border-surface-700 focus:ring-2 focus:ring-primary-500">
+               <select id="preset-select" class="text-xs px-2 py-1 rounded-md bg-surface-100 dark:bg-surface-800 text-surface-700 dark:text-surface-300 border border-surface-300 dark:border-surface-700 focus:ring-2 focus:ring-primary-500" aria-label="Preset">
                  <option value="" data-i18n="tools.regex-visualizer.ui.option2">Presets</option>
                  <option value="email" data-i18n="tools.regex-visualizer.ui.option3">Email</option>
                  <option value="url" data-i18n="tools.regex-visualizer.ui.option8">URL</option>
@@ -150,7 +150,7 @@ while ((m = regex.exec(str)) !== null) {
             
             <!-- Highlighted Text Display -->
             <div class="relative mb-6">
-              <div id="highlight-display" class="w-full p-4 bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg font-mono text-sm whitespace-pre-wrap break-all min-h-[100px] max-h-[300px] overflow-y-auto text-surface-800 dark:text-surface-200"></div>
+              <div id="highlight-display" class="w-full p-4 bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg font-mono text-sm whitespace-pre-wrap break-all min-h-[100px] max-h-[300px] overflow-y-auto text-surface-800 dark:text-surface-200" tabindex="0"></div>
             </div>
 
             <!-- Groups Table -->

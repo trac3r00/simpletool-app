@@ -40,7 +40,7 @@ export async function handleMermaidStudioRoutes(request, url) {
               <button id="sample-btn" data-tooltip="Load a sample diagram to get started" class="btn btn-secondary btn-xs"><span data-i18n="tools.mermaid-studio.ui.button0">Load Sample</span></button>
             </div>
           </div>
-          ${createRichEditorPane({ id: 'mermaid-input', mode: 'textarea', rows: 22, placeholder: "graph TD\\nA[Start] --> B{Is it working?}\\nB -- Yes --> C[Great!]\\nB -- No --> D[Debug]", wrapClass: 'flex-1' })}
+          ${createRichEditorPane({ id: 'mermaid-input', mode: 'textarea', rows: 22, placeholder: "graph TD\\nA[Start] --> B{Is it working?}\\nB -- Yes --> C[Great!]\\nB -- No --> D[Debug]", wrapClass: 'flex-1', ariaLabel: 'Mermaid code' })}
         </div>
 
         <!-- Preview -->

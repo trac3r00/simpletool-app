@@ -475,7 +475,7 @@ export function getNavigationHTML(options = {}) {
              <!-- Desktop search input (readonly, triggers modal on click/focus) -->
              <div class="hidden md:flex items-center mr-2 relative">
                  <svg class="absolute left-3 w-3.5 h-3.5 text-surface-400 dark:text-surface-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                 <input type="text" readonly id="nav-search-btn" placeholder="${t('nav.search', currentLang)}" data-i18n-placeholder="nav.search" class="w-48 lg:w-64 pl-8 pr-3 py-1.5 bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-md text-xs text-surface-500 dark:text-surface-400 placeholder-surface-500 dark:placeholder-surface-400 hover:border-surface-300 dark:hover:border-surface-600 cursor-pointer transition-all focus:outline-none focus:ring-2 focus:ring-primary-500" aria-label="${t('nav.searchTools', currentLang)}" />
+                 <input type="text" readonly id="nav-search-btn" placeholder="${t('nav.search', currentLang)}" data-i18n-placeholder="nav.search" class="w-48 lg:w-64 pl-8 pr-3 py-1.5 bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-md text-xs text-surface-600 dark:text-surface-400 placeholder-surface-500 dark:placeholder-surface-400 hover:border-surface-300 dark:hover:border-surface-600 cursor-pointer transition-all focus:outline-none focus:ring-2 focus:ring-primary-500" aria-label="${t('nav.searchTools', currentLang)}" />
              </div>
              ${getLanguageSelectorHTML(currentLang)}
              ${getThemeToggleButton({ currentLang })}
@@ -992,7 +992,7 @@ export function getFooterHTML(options = {}) {
                <span class="font-bold text-lg text-surface-900 dark:text-surface-50">SimpleTool</span>
              </div>
              <p class="text-sm text-surface-600 dark:text-surface-400 mb-4" data-i18n="footer.tagline">${t('footer.tagline', currentLang)}</p>
-              <p class="text-xs text-surface-500 dark:text-surface-500">© ${new Date().getFullYear()} SimpleTool · <a href="/changelog" class="hover:text-primary-500 transition-colors">v2.4.1</a></p>
+              <p class="text-xs text-surface-500 dark:text-surface-500">© ${new Date().getFullYear()} SimpleTool · <a href="/changelog" class="underline hover:text-primary-500 transition-colors">v2.4.1</a></p>
            </div>
            
            <!-- Column 2: Top Tools -->
@@ -1046,7 +1046,7 @@ export function getFooterHTML(options = {}) {
          <!-- Divider -->
          <div class="border-t border-surface-200 dark:border-surface-800 pt-6">
            <p class="text-xs text-surface-500 dark:text-surface-500 text-center">
-             ${t('footer.privacyNote', currentLang)} <a href="${withLanguageQuery('/privacy', currentLang)}" class="text-primary-600 dark:text-primary-400 hover:underline" data-i18n="footer.learnMore">${t('footer.learnMore', currentLang)}</a>
+             ${t('footer.privacyNote', currentLang)} <a href="${withLanguageQuery('/privacy', currentLang)}" class="text-primary-600 dark:text-primary-400 underline hover:underline" data-i18n="footer.learnMore">${t('footer.learnMore', currentLang)}</a>
            </p>
          </div>
        </div>
@@ -1249,7 +1249,7 @@ export function getClipboardSafetyScript() {
  */
 export function createFeatureList(items = []) {
   if (!items || !items.length) return '';
-  const itemsHTML = items.map(item => `<dd>${item.text}</dd>`).join('');
+  const itemsHTML = items.map(item => `<dt class="sr-only">Feature</dt><dd>${item.text}</dd>`).join('');
   return `<dl data-feature-list>${itemsHTML}</dl>`;
 }
 

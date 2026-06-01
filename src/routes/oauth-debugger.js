@@ -70,7 +70,7 @@ function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
                 </div>
                 <div>
                   <label class="block text-xs font-semibold uppercase tracking-wide text-surface-500 dark:text-surface-400 mb-1" data-i18n="tools.oauth-debugger.ui.label2">code_challenge_method</label>
-                  <input readonly value="S256" class="w-40 p-3 font-mono text-sm bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg text-surface-900 dark:text-surface-100" />
+                  <input readonly value="S256" aria-label="PKCE Code Challenge Method" class="w-40 p-3 font-mono text-sm bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg text-surface-900 dark:text-surface-100" />
                 </div>
               </div>
             </div>

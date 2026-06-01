@@ -82,11 +82,11 @@ function renderPortReferencePage(lang = DEFAULT_LANGUAGE) {
             <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4" data-i18n="tools.port-reference.ui.heading1">Quick Stats</h2>
             <div class="grid grid-cols-2 gap-4">
               <div class="bg-surface-50 dark:bg-surface-950 rounded-lg p-3">
-                <p class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.port-reference.ui.desc0">Total Ports</p>
+                <p class="text-xs text-surface-600 dark:text-surface-400" data-i18n="tools.port-reference.ui.desc0">Total Ports</p>
                 <p class="text-2xl font-bold text-surface-900 dark:text-white" id="total-ports">0</p>
               </div>
               <div class="bg-surface-50 dark:bg-surface-950 rounded-lg p-3">
-                <p class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.port-reference.ui.desc1">Filtered</p>
+                <p class="text-xs text-surface-600 dark:text-surface-400" data-i18n="tools.port-reference.ui.desc1">Filtered</p>
                 <p class="text-2xl font-bold text-primary-600 dark:text-primary-400" id="filtered-count">0</p>
               </div>
             </div>
@@ -103,7 +103,7 @@ function renderPortReferencePage(lang = DEFAULT_LANGUAGE) {
             
             <div id="results-container" class="overflow-x-auto">
               <table class="min-w-full text-sm text-left">
-                <thead class="text-xs uppercase tracking-widest text-surface-500 border-b border-surface-200 dark:border-surface-700">
+                <thead class="text-xs uppercase tracking-widest text-surface-600 border-b border-surface-200 dark:border-surface-700">
                   <tr>
                     <th class="py-2 pr-4 font-normal" data-i18n="tools.port-reference.ui.th0">Port</th>
                     <th class="py-2 pr-4 font-normal" data-i18n="tools.port-reference.ui.th1">Service</th>
@@ -114,7 +114,7 @@ function renderPortReferencePage(lang = DEFAULT_LANGUAGE) {
                 </thead>
                 <tbody id="results-body" class="divide-y divide-surface-100 dark:divide-surface-800">
                   <tr>
-                    <td colspan="5" class="py-8 text-center text-surface-500 dark:text-surface-400" data-i18n="tools.port-reference.ui.text0">
+                    <td colspan="5" class="py-8 text-center text-surface-600 dark:text-surface-400" data-i18n="tools.port-reference.ui.text0">
                       Start typing to search for ports...
                     </td>
                   </tr>
@@ -124,7 +124,7 @@ function renderPortReferencePage(lang = DEFAULT_LANGUAGE) {
             
             <div id="pagination" class="mt-4 flex justify-between items-center hidden">
               <button id="prev-page" class="btn btn-ghost btn-xs" disabled data-i18n="tools.port-reference.ui.button8">Previous</button>
-              <span id="page-info" class="text-sm text-surface-500 dark:text-surface-400" data-i18n="tools.port-reference.ui.desc22">Page 1 of 1</span>
+              <span id="page-info" class="text-sm text-surface-600 dark:text-surface-400" data-i18n="tools.port-reference.ui.desc22">Page 1 of 1</span>
               <button id="next-page" class="btn btn-ghost btn-xs" disabled data-i18n="tools.port-reference.ui.button9">Next</button>
             </div>
           </div>
@@ -846,7 +846,7 @@ function renderPortReferencePage(lang = DEFAULT_LANGUAGE) {
         // Render results table
         function renderResults() {
           if (filteredPorts.length === 0) {
-            resultsBody.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-surface-500 dark:text-surface-400">No ports found matching your search.</td></tr>';
+            resultsBody.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-surface-600 dark:text-surface-400">No ports found matching your search.</td></tr>';
             paginationEl.classList.add('hidden');
             return;
           }
@@ -862,7 +862,7 @@ function renderPortReferencePage(lang = DEFAULT_LANGUAGE) {
               <td class="py-2 pr-4 \${getProtocolColor(port.protocol)}">\${port.protocol}</td>
               <td class="py-2 pr-4 text-surface-600 dark:text-surface-400">
                 \${port.description}
-                \${port.tags ? '<span class="ml-2 text-xs text-surface-400">[' + port.tags.join(', ') + ']</span>' : ''}
+                \${port.tags ? '<span class="ml-2 text-xs text-surface-600">[' + port.tags.join(', ') + ']</span>' : ''}
               </td>
               <td class="py-2">
                 <span class="px-2 py-1 rounded text-xs font-medium \${getRiskColor(port.risk)}">\${port.risk.toUpperCase()}</span>
@@ -890,7 +890,7 @@ function renderPortReferencePage(lang = DEFAULT_LANGUAGE) {
               <button class="top-port-btn p-2 bg-surface-50 dark:bg-surface-800 rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900 transition-colors text-left"
                       data-port="\${port}">
                 <span class="font-mono font-bold text-surface-900 dark:text-white">\${port}</span>
-                <span class="block text-xs text-surface-500 dark:text-surface-400 truncate">\${portData ? portData.service : 'Unknown'}</span>
+                <span class="block text-xs text-surface-600 dark:text-surface-400 truncate">\${portData ? portData.service : 'Unknown'}</span>
               </button>
             \`;
           }).join('');
