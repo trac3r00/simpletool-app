@@ -145,6 +145,27 @@ test.describe('Generator and utility tools UI interactions', () => {
     await expect(page.locator('#copy-system')).toBeEnabled();
   });
 
+  test('quality-tracer analyzes backlog text and shows themes, blockers, actions, and score', async ({ page }) => {
+    await openTool(page, '/quality-tracer');
+
+    const sample = [
+      'TODO: Fix login bug',
+      'DOING: Refactor auth module',
+      'BLOCKED: Waiting for API keys',
+      'DONE: Setup CI/CD',
+      'BUG: Memory leak in parser',
+      'TODO: Write docs'
+    ].join('\n');
+
+    await page.locator('#backlog-input').fill(sample);
+    await page.locator('#analyze-btn').click();
+
+    await expect(page.locator('#themes-panel')).toContainText('Bug', { timeout: 5000 });
+    await expect(page.locator('#blockers-panel')).toContainText('BLOCKED');
+    await expect(page.locator('#actions-panel')).not.toBeEmpty();
+    await expect(page.locator('#score-value')).not.toHaveText('--');
+  });
+
   // QUARANTINED: pre-existing failure surfaced when CI first ran (PR #11).
   // `#svg-output` never receives `<svg`-prefixed value (toHaveValue fails after 3 retries).
   // Likely cause: regression in src/routes/svg-optimizer.js (currently has

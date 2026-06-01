@@ -524,6 +524,17 @@ export const TOOLS = [
     relatedTools: ['case-converter', 'json-formatter', 'encoding-workbench', 'text-diff']
   },
   {
+    id: 'quality-tracer',
+    name: 'Quality Tracer',
+    icon: '🔍',
+    description: 'Analyze Kanban/backlog dumps locally to surface quality themes, readiness blockers, next actions, and a product-value score.',
+    path: '/quality-tracer',
+    category: 'utils',
+    keywords: 'kanban, backlog, quality, audit, readiness, blocker, score',
+    badge: 'NEW',
+    relatedTools: ['text-diff', 'log-viewer', 'token-counter', 'prompt-template-builder']
+  },
+  {
     id: 'changelog',
     name: 'Changelog',
     icon: '📋',

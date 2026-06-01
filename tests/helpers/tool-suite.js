@@ -118,5 +118,22 @@ export const TOOL_ACTIONS = {
     async waitFor(page) {
       await expect(page.locator('#results-body')).toContainText('Not Found');
     }
+  },
+
+  'quality-tracer': {
+    async action(page) {
+      const sample = [
+        'TODO: Fix login bug',
+        'DOING: Refactor auth module',
+        'BLOCKED: Waiting for API keys',
+        'DONE: Setup CI/CD',
+        'BUG: Memory leak in parser'
+      ].join('\n');
+      await page.locator('#backlog-input').fill(sample);
+      await page.locator('#analyze-btn').click();
+    },
+    async waitFor(page) {
+      await expect(page.locator('#score-value')).not.toHaveText('--');
+    }
   }
 };

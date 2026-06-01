@@ -56,6 +56,7 @@ import { handleOAuthDebuggerRoutes as oauth_debugger } from './oauth-debugger.js
 import { handleWebhookDebuggerRoutes as webhook_debugger } from './webhook-debugger.js';
 import { handlePipeRoutes as pipe } from './pipe.js';
 import { handleChangelogRoutes as changelog } from './changelog.js';
+import { handleQualityTracerRoutes as quality_tracer } from './quality-tracer.js';
 
 export const handlersById = {
   'password-generator': password_generator,
@@ -111,4 +112,5 @@ export const handlersById = {
   'webhook-debugger': webhook_debugger,
   'pipe': pipe,
   'changelog': changelog,
+  'quality-tracer': quality_tracer,
 };
