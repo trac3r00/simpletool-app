@@ -534,6 +534,16 @@ export const TOOLS = [
     relatedTools: ['token-counter', 'markdown-editor', 'json-formatter']
   },
   {
+    id: 'github-automation',
+    name: 'GitHub Automation',
+    icon: '🤖',
+    description: 'Automate GitHub workflows and issue tracking with Trac3r00.',
+    path: '/github-automation',
+    category: 'utils',
+    keywords: 'github, automation, issue, kanban, trac3r00, workflow',
+    relatedTools: ['webhook-debugger', 'secret-scanner', 'token-studio', 'env-var-manager']
+  },
+  {
     id: 'ladder-game',
     name: 'Ladder Game',
     icon: '🪜',
