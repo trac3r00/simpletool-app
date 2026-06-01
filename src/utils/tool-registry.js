@@ -568,6 +568,16 @@ export const TOOLS = [
     hiddenInProduction: true,
     badge: 'NEW',
     relatedTools: ['ladder-game', 'roulette-wheel', 'mock-data-generator']
+  },
+  {
+    id: 'open-trac3r00-automation',
+    name: 'Open Trac3r00 Automation',
+    icon: '🤖',
+    description: 'Parse pasted Kanban / GitHub backlog text into an offline automation plan with counts, labels, and next steps.',
+    path: '/open-trac3r00-automation',
+    category: 'utils',
+    keywords: 'kanban github automation',
+    relatedTools: ['prompt-template-builder', 'markdown-editor', 'text-diff']
   }
 ];
 

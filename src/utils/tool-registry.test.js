@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { TOOLS, CATEGORIES, getToolsForEnvironment } from './tool-registry.js';
+import { handlersById } from '../routes/_handlers.js';
 
 describe('TOOLS', () => {
   it('is a non-empty array', () => {
@@ -101,5 +102,34 @@ describe('getToolsForEnvironment', () => {
     const defaultTools = getToolsForEnvironment();
     const prodTools = getToolsForEnvironment(false);
     expect(defaultTools.length).toBe(prodTools.length);
+  });
+});
+
+describe('open-trac3r00-automation registry entry', () => {
+  it('has a tool entry with id open-trac3r00-automation', () => {
+    const tool = TOOLS.find((t) => t.id === 'open-trac3r00-automation');
+    expect(tool).toBeDefined();
+  });
+
+  it('has path /open-trac3r00-automation', () => {
+    const tool = TOOLS.find((t) => t.id === 'open-trac3r00-automation');
+    expect(tool).toBeDefined();
+    expect(tool.path).toBe('/open-trac3r00-automation');
+  });
+
+  it('includes kanban, github, and automation keywords', () => {
+    const tool = TOOLS.find((t) => t.id === 'open-trac3r00-automation');
+    expect(tool).toBeDefined();
+    const keywords = (tool.keywords || '').toLowerCase();
+    expect(keywords).toContain('kanban');
+    expect(keywords).toContain('github');
+    expect(keywords).toContain('automation');
+  });
+});
+
+describe('open-trac3r00-automation handler registration', () => {
+  it('has a handler in handlersById', () => {
+    expect(handlersById).toHaveProperty('open-trac3r00-automation');
+    expect(typeof handlersById['open-trac3r00-automation']).toBe('function');
   });
 });

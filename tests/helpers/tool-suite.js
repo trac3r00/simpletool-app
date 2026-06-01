@@ -118,5 +118,18 @@ export const TOOL_ACTIONS = {
     async waitFor(page) {
       await expect(page.locator('#results-body')).toContainText('Not Found');
     }
+  },
+
+  'open-trac3r00-automation': {
+    async action(page) {
+      await page.locator('[data-testid="backlog-input"], #backlog-input, textarea').first().fill('Recurring Kanban: automate issue triage');
+      await page.locator('[data-testid="repo-slug"], #repo-slug, input').first().fill('my-org/my-repo');
+      await page.locator('button:has-text("Generate automation plan"), [data-testid="generate-plan-btn"], #generate-plan-btn').first().click();
+    },
+    async waitFor(page) {
+      await expect(page.locator('[data-testid="signal-summary"], #signal-summary').first()).toBeVisible();
+      await expect(page.locator('[data-testid="automation-plan"], #automation-plan').first()).toBeVisible();
+      await expect(page.locator('[data-testid="github-next-steps"], #github-next-steps').first()).toBeVisible();
+    }
   }
 };
