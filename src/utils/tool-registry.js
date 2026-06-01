@@ -524,6 +524,16 @@ export const TOOLS = [
     relatedTools: ['case-converter', 'json-formatter', 'encoding-workbench', 'text-diff']
   },
   {
+    id: 'kanban-automation',
+    name: 'Kanban Open Automation',
+    icon: '🤖',
+    description: 'Turn pasted Kanban / GitHub backlog text into an actionable triage brief with issue extraction, theme detection, and proposal generation.',
+    path: '/kanban-automation',
+    category: 'utils',
+    keywords: 'kanban, github, backlog, triage, automation, issues, themes, proposal',
+    relatedTools: ['markdown-editor', 'text-diff', 'token-counter', 'prompt-template-builder']
+  },
+  {
     id: 'changelog',
     name: 'Changelog',
     icon: '📋',

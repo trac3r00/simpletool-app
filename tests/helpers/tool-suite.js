@@ -118,5 +118,17 @@ export const TOOL_ACTIONS = {
     async waitFor(page) {
       await expect(page.locator('#results-body')).toContainText('Not Found');
     }
+  },
+
+  'kanban-automation': {
+    async action(page) {
+      await page.locator('#kanban-input').fill('simpletool-app#34 and simpletool-app#48 are recurring security issues. We need to fix authentication and performance problems.');
+      await page.locator('#analyze-btn').click();
+    },
+    async waitFor(page) {
+      await expect(page.locator('#proposal-output')).toContainText('Triage Brief');
+      await expect(page.locator('#issue-count')).toHaveText('2');
+      await expect(page.locator('#score-value')).not.toHaveText('—');
+    }
   }
 };
