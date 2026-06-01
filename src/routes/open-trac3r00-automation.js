@@ -180,6 +180,20 @@ function renderOpenTrac3r00AutomationPage(lang = DEFAULT_LANGUAGE) {
         return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
       }
 
+      function escapeShell(str) {
+        const s = String(str ?? '');
+        return s
+          .replace(/\\\\/g, '\\\\\\\\')
+          .replace(/\"/g, '\\\\"')
+          .replace(/\\$/g, '\\\\$')
+          .replace(new RegExp(String.fromCharCode(96), 'g'), '\\\\' + String.fromCharCode(96));
+      }
+
+      function escapeMdPipe(str) {
+        const s = String(str ?? '');
+        return s.replace(/\|/g, '\\|');
+      }
+
       function generatePlan() {
         const repo = els.repoSlug.value.trim();
         const items = parseBacklog(els.backlog.value);
@@ -211,7 +225,7 @@ function renderOpenTrac3r00AutomationPage(lang = DEFAULT_LANGUAGE) {
         const nextHTML = items.map((item, idx) => {
           const branch = branchName(item, idx);
           const title = escapeHtml(item.text);
-          const prTitle = escapeHtml(item.type === 'bug' ? 'Fix: ' + item.text : item.type === 'feature' ? 'Feat: ' + item.text : 'Chore: ' + item.text);
+          const prTitle = escapeHtml(escapeShell(item.type === 'bug' ? 'Fix: ' + item.text : item.type === 'feature' ? 'Feat: ' + item.text : 'Chore: ' + item.text));
           const lines = [
             '<div class="p-3 bg-surface-50 dark:bg-surface-950 rounded-lg border border-surface-200 dark:border-surface-800">',
             '  <div class="text-sm font-semibold text-surface-900 dark:text-surface-50 mb-1">' + (idx + 1) + '. ' + title + '</div>',
@@ -243,15 +257,15 @@ function renderOpenTrac3r00AutomationPage(lang = DEFAULT_LANGUAGE) {
           '|---|------|-------|--------|',
         ];
         items.forEach((item, idx) => {
-          lines.push('| ' + (idx + 1) + ' | ' + labelForType(item.type) + ' | ' + item.text + ' | ' + branchName(item, idx) + ' |');
+          lines.push('| ' + (idx + 1) + ' | ' + labelForType(item.type) + ' | ' + escapeMdPipe(item.text) + ' | ' + branchName(item, idx) + ' |');
         });
         lines.push('');
         lines.push('## GitHub Next Steps');
         lines.push('');
         items.forEach((item, idx) => {
           const branch = branchName(item, idx);
-          const title = item.type === 'bug' ? 'Fix: ' + item.text : item.type === 'feature' ? 'Feat: ' + item.text : 'Chore: ' + item.text;
-          lines.push((idx + 1) + '. **' + item.text + '**');
+          const title = escapeShell(item.type === 'bug' ? 'Fix: ' + item.text : item.type === 'feature' ? 'Feat: ' + item.text : 'Chore: ' + item.text);
+          lines.push((idx + 1) + '. **' + escapeMdPipe(item.text) + '**');
           lines.push('   \`\`\`bash');
           lines.push('   git checkout -b ' + branch);
           if (repo) {

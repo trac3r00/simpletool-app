@@ -109,6 +109,49 @@ describe('open-trac3r00-automation route rendering', () => {
     expect(text).toContain('escapeHtml(');
   });
 
+  it('should include escapeShell function for shell command safety', async () => {
+    const url = new URL('http://localhost/open-trac3r00-automation');
+    const request = new Request(url, { method: 'GET' });
+    const response = await handleOpenTrac3r00AutomationRoutes(request, url);
+    const text = await response.text();
+    expect(text).toContain('function escapeShell');
+    expect(text).toContain('replace(new RegExp(String.fromCharCode(96)');
+    expect(text).toContain('escapeShell(item.type');
+  });
+
+  it('should include escapeMdPipe function for markdown table safety', async () => {
+    const url = new URL('http://localhost/open-trac3r00-automation');
+    const request = new Request(url, { method: 'GET' });
+    const response = await handleOpenTrac3r00AutomationRoutes(request, url);
+    const text = await response.text();
+    expect(text).toContain('function escapeMdPipe');
+    expect(text).toContain('.replace(/\\|/g,');
+  });
+
+  it('should apply escapeShell to prTitle before escapeHtml in next steps', async () => {
+    const url = new URL('http://localhost/open-trac3r00-automation');
+    const request = new Request(url, { method: 'GET' });
+    const response = await handleOpenTrac3r00AutomationRoutes(request, url);
+    const text = await response.text();
+    expect(text).toContain('escapeHtml(escapeShell(');
+  });
+
+  it('should use escapeMdPipe in markdown table rows', async () => {
+    const url = new URL('http://localhost/open-trac3r00-automation');
+    const request = new Request(url, { method: 'GET' });
+    const response = await handleOpenTrac3r00AutomationRoutes(request, url);
+    const text = await response.text();
+    expect(text).toContain('escapeMdPipe(item.text)');
+  });
+
+  it('should use escapeShell in markdown gh pr create command', async () => {
+    const url = new URL('http://localhost/open-trac3r00-automation');
+    const request = new Request(url, { method: 'GET' });
+    const response = await handleOpenTrac3r00AutomationRoutes(request, url);
+    const text = await response.text();
+    expect(text).toContain('escapeShell(item.type');
+  });
+
   it('should use dark mode Tailwind variants', async () => {
     const url = new URL('http://localhost/open-trac3r00-automation');
     const request = new Request(url, { method: 'GET' });

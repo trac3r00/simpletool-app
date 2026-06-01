@@ -127,9 +127,10 @@ export const TOOL_ACTIONS = {
       await page.locator('button:has-text("Generate automation plan"), [data-testid="generate-plan-btn"], #generate-plan-btn').first().click();
     },
     async waitFor(page) {
-      await expect(page.locator('[data-testid="signal-summary"], #signal-summary').first()).toBeVisible();
-      await expect(page.locator('[data-testid="automation-plan"], #automation-plan').first()).toBeVisible();
-      await expect(page.locator('[data-testid="github-next-steps"], #github-next-steps').first()).toBeVisible();
+      await expect(page.locator('#stat-items')).not.toHaveText('0');
+      await expect(page.locator('#plan-output')).toContainText('chore');
+      await expect(page.locator('#next-steps-output')).toContainText('git checkout -b');
+      await expect(page.locator('#next-steps-output')).toContainText('gh pr create');
     }
   }
 };
