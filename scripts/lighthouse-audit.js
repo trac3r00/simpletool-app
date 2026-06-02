@@ -18,6 +18,7 @@ import * as chromeLauncher from 'chrome-launcher';
 import { writeFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { getToolsForEnvironment } from '../src/utils/tool-registry.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -26,68 +27,35 @@ const __dirname = dirname(__filename);
 const BASE_URL = 'http://localhost:8787';
 const OUTPUT_PATH = join(__dirname, 'lighthouse-report.json');
 
-// All pages to audit
-const PAGES = [
-  // Core pages
+const STATIC_PAGES = [
   { path: '/', name: 'Home' },
-
-  // Tools - Encoding & Crypto
-  { path: '/json-formatter', name: 'JSON Formatter' },
-  { path: '/jwt-decoder', name: 'JWT Decoder' },
-  { path: '/uuid-generator', name: 'UUID Generator' },
-  { path: '/password-generator', name: 'Password Generator' },
-  { path: '/hash-calculator', name: 'Hash Calculator' },
-
-  // Tools - Network & Development
-  { path: '/cidr-calculator', name: 'CIDR Calculator' },
-  { path: '/text-diff', name: 'Text Diff' },
-  { path: '/regex-visualizer', name: 'Regex Visualizer' },
-  { path: '/universal-decoder', name: 'Universal Decoder' },
-  { path: '/cron-builder', name: 'Cron Builder' },
-
-  // Tools - Security & Keys
-  { path: '/ssh-key-generator', name: 'SSH Key Generator' },
-  { path: '/certificate-decoder', name: 'Certificate Decoder' },
-  { path: '/saml-decoder', name: 'SAML Decoder' },
-  { path: '/user-agent-decoder', name: 'User Agent Decoder' },
-  { path: '/qr-code', name: 'QR Code' },
-
-  // Tools - Converters
-  { path: '/timestamp-converter', name: 'Timestamp Converter' },
-  { path: '/color-converter', name: 'Color Converter' },
-  { path: '/unit-converter', name: 'Unit Converter' },
-  { path: '/yaml-toml-converter', name: 'YAML/TOML Converter' },
-  { path: '/htpasswd-generator', name: 'Htpasswd Generator' },
-
-  // Tools - Data & Development
-  { path: '/mock-data-generator', name: 'Mock Data Generator' },
-  { path: '/markdown-preview', name: 'Markdown Preview' },
-  { path: '/log-viewer', name: 'Log Viewer' },
-  { path: '/case-converter', name: 'Case Converter' },
-  { path: '/code-minifier', name: 'Code Minifier' },
-
-  // Tools - Visual & Advanced
-  { path: '/image-converter', name: 'Image Converter' },
-  { path: '/css-gradient', name: 'CSS Gradient' },
-  { path: '/curl-studio', name: 'Curl Studio' },
-  { path: '/log-masker', name: 'Log Masker' },
-  { path: '/mermaid-studio', name: 'Mermaid Studio' },
-  { path: '/json-schema-studio', name: 'JSON Schema Studio' },
-  { path: '/caffeniate', name: 'Caffeniate' },
-
-  // Static pages
   { path: '/terms', name: 'Terms of Service' },
   { path: '/privacy', name: 'Privacy Policy' },
   { path: '/about', name: 'About' },
   { path: '/contact', name: 'Contact' },
   { path: '/security', name: 'Security' },
   { path: '/careers', name: 'Careers' },
+];
 
-  // Meta files
+const META_PAGES = [
   { path: '/ads.txt', name: 'Ads.txt' },
   { path: '/robots.txt', name: 'Robots.txt' },
   { path: '/sitemap.xml', name: 'Sitemap' },
 ];
+
+/**
+ * Build the list of pages to audit from the tool registry.
+ * @param {boolean} isDev - If true, include hiddenInProduction tools.
+ * @returns {Array<{path: string, name: string}>}
+ */
+export function getAuditPages(isDev = false) {
+  const tools = getToolsForEnvironment(isDev);
+  const toolPages = tools.map(tool => ({
+    path: tool.path,
+    name: tool.name,
+  }));
+  return [...STATIC_PAGES, ...toolPages, ...META_PAGES];
+}
 
 // Lighthouse configuration
 const LIGHTHOUSE_CONFIG = {
@@ -346,9 +314,10 @@ function generateSummary(results) {
  * Main execution
  */
 async function main() {
+  const pages = getAuditPages();
   console.log('🚀 Starting Lighthouse Audit for SimpleTool App');
   console.log(`📍 Base URL: ${BASE_URL}`);
-  console.log(`📄 Total pages to audit: ${PAGES.length}`);
+  console.log(`📄 Total pages to audit: ${pages.length}`);
   console.log(`⚙️  Categories: Performance, Accessibility, Best Practices, SEO`);
 
   let chrome;
@@ -363,7 +332,7 @@ async function main() {
 
     // Run audits sequentially
     const results = [];
-    for (const page of PAGES) {
+    for (const page of pages) {
       const url = `${BASE_URL}${page.path}`;
       const result = await auditPage(chrome, url, page.name);
       results.push(result);
@@ -376,7 +345,7 @@ async function main() {
     const reportData = {
       baseUrl: BASE_URL,
       timestamp: new Date().toISOString(),
-      totalPages: PAGES.length,
+      totalPages: pages.length,
       results,
     };
 
@@ -398,8 +367,11 @@ async function main() {
   }
 }
 
-// Run the audit
-main().catch(error => {
-  console.error('Unhandled error:', error);
-  process.exit(1);
-});
+// Run the audit only when this module is executed directly
+const isMain = import.meta.url === `file://${process.argv[1]}`;
+if (isMain) {
+  main().catch(error => {
+    console.error('Unhandled error:', error);
+    process.exit(1);
+  });
+}
