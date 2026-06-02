@@ -205,7 +205,7 @@ _Automatically generated issue. Please review and update with specific details a
           });
           
           if (!response.ok) {
-            throw new Error(\`GitHub API error: \${response.status} \${response.statusText}\`);
+            throw new window.Error(\`GitHub API error: \${response.status} \${response.statusText}\`);
           }
           
           isConnected = true;
@@ -229,7 +229,7 @@ _Automatically generated issue. Please review and update with specific details a
           });
           
           if (!response.ok) {
-            throw new Error(\`Failed to load issues: \${response.status} \${response.statusText}\`);
+            throw new window.Error(\`Failed to load issues: \${response.status} \${response.statusText}\`);
           }
           
           issues = await response.json();
@@ -247,7 +247,7 @@ _Automatically generated issue. Please review and update with specific details a
             <div class="bg-surface-50 dark:bg-surface-900 rounded-lg p-3 border border-surface-200 dark:border-surface-800">
               <div class="flex justify-between">
                 <a href="\${issue.html_url}" target="_blank" class="text-sm font-medium text-primary-600 hover:text-primary-800 dark:text-primary-400 dark:hover:text-primary-300">#\${issue.number} \${issue.title}</a>
-                <span class="text-xs text-surface-500 dark:text-surface-400">\${new Date(issue.created_at).toLocaleDateString()}</span>
+                <span class="text-xs text-surface-500 dark:text-surface-400">\${new window.Date(issue.created_at).toLocaleDateString()}</span>
               </div>
               <div class="mt-1 flex flex-wrap gap-1">
                 \${issue.labels.map(label => \`
@@ -415,7 +415,7 @@ _Automatically generated issue. Please review and update with specific details a
           });
           
           if (!response.ok) {
-            throw new Error(\`Failed to create issue: \${response.status} \${response.statusText}\`);
+            throw new window.Error(\`Failed to create issue: \${response.status} \${response.statusText}\`);
           }
           
           const newIssue = await response.json();

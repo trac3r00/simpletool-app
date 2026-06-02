@@ -52,6 +52,32 @@ describe('github-automation route rendering', () => {
   });
 });
 
+describe('github-automation inline script — no bare Date/Error constructors', () => {
+  it('does not contain bare global Date/Error constructor calls in inline scripts', async () => {
+    const url = new URL('http://localhost/github-automation');
+    const request = new Request(url, { method: 'GET' });
+    const response = await handleGithubAutomationRoutes(request, url);
+    const text = await response.text();
+
+    const scriptBlocks = text.match(/<script[^>]*>([\s\S]*?)<\/script>/g);
+    expect(scriptBlocks).not.toBeNull();
+
+    for (const block of scriptBlocks) {
+      const code = block.replace(/<\/?script[^>]*>/g, '').trim();
+      if (!code) continue;
+      if (code.startsWith('{') || code.startsWith('[')) continue;
+
+      // Bare Date/Error constructors not preceded by a dot (i.e., not window.Date or globalThis.Date)
+      const openParen = String.fromCharCode(40);
+      const barePattern = new RegExp(`(?<!\\.)\\b(?:Date|Error)\\s*\\${openParen}`, 'g');
+      const matches = code.match(barePattern);
+      if (matches) {
+        expect(`Bare constructor(s) found: ${matches.join(', ')}`).toBe('no bare constructors');
+      }
+    }
+  });
+});
+
 describe('github-automation source requirements', () => {
   it('uses task.body fallback before task.description', async () => {
     const url = new URL('http://localhost/github-automation');
