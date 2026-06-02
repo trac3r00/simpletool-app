@@ -61,16 +61,30 @@ describe('quality-tracer route', () => {
     expect(scriptMatch).toBeTruthy();
     const scriptText = scriptMatch.join('\n');
 
-    expect(scriptText).toContain("_t('text0'");
-    expect(scriptText).toContain("_t('text1'");
-    expect(scriptText).toContain("_t('text2'");
-    expect(scriptText).toContain("_t('action0'");
-    expect(scriptText).toContain("_t('action1'");
-    expect(scriptText).toContain("_t('action2'");
-    expect(scriptText).toContain("_t('action3'");
-    expect(scriptText).toContain("_t('action4'");
-    expect(scriptText).toContain("_t('action5'");
-    expect(scriptText).toContain("_t('action6'");
+    expect(scriptText).toContain("translateQualityTracer('text0'");
+    expect(scriptText).toContain("translateQualityTracer('text1'");
+    expect(scriptText).toContain("translateQualityTracer('text2'");
+    expect(scriptText).toContain("translateQualityTracer('action0'");
+    expect(scriptText).toContain("translateQualityTracer('action1'");
+    expect(scriptText).toContain("translateQualityTracer('action2'");
+    expect(scriptText).toContain("translateQualityTracer('action3'");
+    expect(scriptText).toContain("translateQualityTracer('action4'");
+    expect(scriptText).toContain("translateQualityTracer('action5'");
+    expect(scriptText).toContain("translateQualityTracer('action6'");
     expect(scriptText).toContain("'tools.quality-tracer.js.'");
+  });
+
+  it('avoids quality-gate ambiguous bare helper calls in the rendered script', async () => {
+    const url = new URL('http://localhost/quality-tracer');
+    const request = new Request(url, { method: 'GET' });
+    const response = await handleQualityTracerRoutes(request, url);
+    const text = await response.text();
+
+    const scriptMatch = text.match(/<script[^>]*>([\s\S]*?)<\/script>/g);
+    expect(scriptMatch).toBeTruthy();
+    const scriptText = scriptMatch.join('\n');
+
+    expect(scriptText).not.toMatch(/(?<![\w$.])_t\s*\(/);
+    expect(scriptText).not.toMatch(/(?<![\w$.])analyze\s*\(/);
   });
 });

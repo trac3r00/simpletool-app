@@ -120,7 +120,10 @@ function renderQualityTracerPage(lang = DEFAULT_LANGUAGE) {
   const scripts = String.raw`
     <script>
       const $ = (id) => document.getElementById(id);
-      const _t = (k, fb) => (window._t ? window._t('tools.quality-tracer.js.' + k, fb) : (fb || k));
+      const translateQualityTracer = (k, fb) => {
+        const i18nTranslate = window._t;
+        return typeof i18nTranslate === 'function' ? i18nTranslate('tools.quality-tracer.js.' + k, fb) : (fb || k);
+      };
 
       const els = {
         input: $('backlog-input'),
@@ -186,7 +189,7 @@ function renderQualityTracerPage(lang = DEFAULT_LANGUAGE) {
         return themes;
       }
 
-      function analyze(text) {
+      function traceQualityBacklog(text) {
         const lines = parseItems(text);
         const total = lines.length;
         const statuses = [];
@@ -243,27 +246,27 @@ function renderQualityTracerPage(lang = DEFAULT_LANGUAGE) {
         // Actions
         const actions = [];
         if (blockers.length > 0) {
-          actions.push(_t('action0', 'Unblock {{count}} item(s) before shipping.').replace('{{count}}', blockers.length));
+          actions.push(translateQualityTracer('action0', 'Unblock {{count}} item(s) before shipping.').replace('{{count}}', blockers.length));
         }
         if (done / total < 0.3 && total > 0) {
-          actions.push(_t('action1', 'Low completion ratio — focus on finishing in-progress work before starting new items.'));
+          actions.push(translateQualityTracer('action1', 'Low completion ratio — focus on finishing in-progress work before starting new items.'));
         }
         if (bugs > 0) {
-          actions.push(_t('action2', 'Schedule a bug-fix pass ({{count}} bug-related item(s) detected).').replace('{{count}}', bugs));
+          actions.push(translateQualityTracer('action2', 'Schedule a bug-fix pass ({{count}} bug-related item(s) detected).').replace('{{count}}', bugs));
         }
         const hasTest = themeCounts['Test'] || 0;
         const hasDocs = themeCounts['Docs'] || 0;
         if (hasTest === 0 && total > 3) {
-          actions.push(_t('action3', 'Add testing coverage — no test-related items found.'));
+          actions.push(translateQualityTracer('action3', 'Add testing coverage — no test-related items found.'));
         }
         if (hasDocs === 0 && total > 3) {
-          actions.push(_t('action4', 'Add documentation tasks — no doc-related items found.'));
+          actions.push(translateQualityTracer('action4', 'Add documentation tasks — no doc-related items found.'));
         }
         if (actions.length === 0 && total > 0) {
-          actions.push(_t('action5', 'Backlog looks healthy. Prepare a release checklist and do a final review.'));
+          actions.push(translateQualityTracer('action5', 'Backlog looks healthy. Prepare a release checklist and do a final review.'));
         }
         if (total === 0) {
-          actions.push(_t('action6', 'Paste a backlog to get suggestions.'));
+          actions.push(translateQualityTracer('action6', 'Paste a backlog to get suggestions.'));
         }
 
         return {
@@ -281,24 +284,24 @@ function renderQualityTracerPage(lang = DEFAULT_LANGUAGE) {
       function renderThemes(themeCounts) {
         const keys = Object.entries(themeCounts).sort((a, b) => b[1] - a[1]);
         if (keys.length === 0) {
-          return '<span class="text-sm text-surface-500 dark:text-surface-400">' + _t('text0', 'No clear themes detected.') + '</span>';
+          return '<span class="text-sm text-surface-500 dark:text-surface-400">' + translateQualityTracer('text0', 'No clear themes detected.') + '</span>';
         }
         return keys.map(([name, count]) => {
-          const label = _t('theme' + name.replace(/[^a-zA-Z0-9]/g, ''), name);
+          const label = translateQualityTracer('theme' + name.replace(/[^a-zA-Z0-9]/g, ''), name);
           return '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300 border border-primary-100 dark:border-primary-800">' + label + ' <span class="ml-1 text-primary-500 dark:text-primary-400">' + count + '</span></span>';
         }).join('');
       }
 
       function renderBlockers(blockers) {
         if (blockers.length === 0) {
-          return '<li class="text-sm text-surface-500 dark:text-surface-400">' + _t('text1', 'No blockers detected.') + '</li>';
+          return '<li class="text-sm text-surface-500 dark:text-surface-400">' + translateQualityTracer('text1', 'No blockers detected.') + '</li>';
         }
         return blockers.map(b => '<li class="flex items-start gap-2"><span class="text-warning-500 mt-0.5" aria-hidden="true">⚠️</span><span>' + escapeHtml(b) + '</span></li>').join('');
       }
 
       function renderActions(actions) {
         if (actions.length === 0) {
-          return '<li class="text-sm text-surface-500 dark:text-surface-400">' + _t('text2', 'No suggestions yet.') + '</li>';
+          return '<li class="text-sm text-surface-500 dark:text-surface-400">' + translateQualityTracer('text2', 'No suggestions yet.') + '</li>';
         }
         return actions.map(a => '<li>' + escapeHtml(a) + '</li>').join('');
       }
@@ -324,23 +327,23 @@ function renderQualityTracerPage(lang = DEFAULT_LANGUAGE) {
       }
 
       els.analyzeBtn.addEventListener('click', () => {
-        const result = analyze(els.input.value);
+        const result = traceQualityBacklog(els.input.value);
         updateUI(result);
       });
 
       els.loadSample.addEventListener('click', () => {
         els.input.value = SAMPLE;
-        const result = analyze(SAMPLE);
+        const result = traceQualityBacklog(SAMPLE);
         updateUI(result);
       });
 
       els.clear.addEventListener('click', () => {
         els.input.value = '';
-        updateUI({ total: 0, done: 0, blocked: 0, bugs: 0, themeCounts: {}, blockers: [], actions: [_t('action6', 'Paste a backlog to get suggestions.')], score: 0 });
+        updateUI({ total: 0, done: 0, blocked: 0, bugs: 0, themeCounts: {}, blockers: [], actions: [translateQualityTracer('action6', 'Paste a backlog to get suggestions.')], score: 0 });
       });
 
       // Initial empty state
-      updateUI({ total: 0, done: 0, blocked: 0, bugs: 0, themeCounts: {}, blockers: [], actions: [_t('action6', 'Paste a backlog to get suggestions.')], score: 0 });
+      updateUI({ total: 0, done: 0, blocked: 0, bugs: 0, themeCounts: {}, blockers: [], actions: [translateQualityTracer('action6', 'Paste a backlog to get suggestions.')], score: 0 });
     </script>
   `;
 
