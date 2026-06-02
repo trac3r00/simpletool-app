@@ -135,4 +135,15 @@ describe('github-automation source requirements', () => {
     expect(ko.tools?.['github-automation']?.ui?.tip0).toBeDefined();
     expect(en.tools['github-automation'].ui.tip0).toBe('Token requires repo scope for issue management');
   });
+
+  it('retries issue creation without labels on 422 and shows label fallback status', async () => {
+    const url = new URL('http://localhost/github-automation');
+    const request = new Request(url, { method: 'GET' });
+    const response = await handleGithubAutomationRoutes(request, url);
+    const text = await response.text();
+
+    expect(text).toContain('status === 422');
+    expect(text).toContain('delete fallbackBody.labels');
+    expect(text).toContain('label fallback');
+  });
 });

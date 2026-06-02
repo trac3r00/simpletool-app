@@ -404,7 +404,7 @@ _Automatically generated issue. Please review and update with specific details a
             requestBody.assignees = [parsedAssignee];
           }
           
-          const response = await fetch(\`https://api.github.com/repos/\${owner}/\${name}/issues\`, {
+          let response = await fetch(\`https://api.github.com/repos/\${owner}/\${name}/issues\`, {
             method: 'POST',
             headers: {
               'Authorization': \`Bearer \${token}\`,
@@ -413,14 +413,35 @@ _Automatically generated issue. Please review and update with specific details a
             },
             body: JSON.stringify(requestBody)
           });
-          
+
+          if (!response.ok && response.status === 422) {
+            const fallbackBody = Object.assign({}, requestBody);
+            delete fallbackBody.labels;
+            response = await fetch(\`https://api.github.com/repos/\${owner}/\${name}/issues\`, {
+              method: 'POST',
+              headers: {
+                'Authorization': \`Bearer \${token}\`,
+                'Accept': 'application/vnd.github.v3+json',
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(fallbackBody)
+            });
+
+            if (response.ok) {
+              const newIssue = await response.json();
+              updateStatus(\`Issue created successfully (label fallback: labels omitted due to missing definitions): <a href="\${newIssue.html_url}" target="_blank" class="text-primary-600 hover:text-primary-800 dark:text-primary-400 dark:hover:text-primary-300">#\${newIssue.number} \${newIssue.title}</a>\`, 'success');
+              loadRecentIssues(token, owner, name);
+              return;
+            }
+          }
+
           if (!response.ok) {
             throw new window.Error(\`Failed to create issue: \${response.status} \${response.statusText}\`);
           }
-          
+
           const newIssue = await response.json();
           updateStatus(\`Issue created successfully: <a href="\${newIssue.html_url}" target="_blank" class="text-primary-600 hover:text-primary-800 dark:text-primary-400 dark:hover:text-primary-300">#\${newIssue.number} \${newIssue.title}</a>\`, 'success');
-          
+
           // Reload issues
           loadRecentIssues(token, owner, name);
         } catch (error) {
