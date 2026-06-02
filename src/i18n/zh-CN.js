@@ -47,6 +47,7 @@ export default {
     meta: {
       "title": "SimpleTool - 免费在线开发者工具",
       "description": "面向开发者的免费隐私优先在线工具。JSON格式化、密码生成器、弹珠轮盘等众多实用工具。",
+      "keywords": "在线工具, 开发者工具, JSON格式化, 密码生成器, 哈希计算器, UUID生成器, 正则表达式测试, base64解码器, QR码生成器, 免费工具, 隐私工具",
     },
     cat: {
       "formatters": "🔄 格式化与转换",

@@ -46,7 +46,8 @@ export default {
       noResults: '검색 결과가 없습니다.',
       meta: {
         title: 'SimpleTool - 무료 온라인 개발자 도구',
-        description: '개발자를 위한 무료 개인정보 보호 도구 모음입니다. JSON 정리기, 비밀번호 생성기, 마블 룰렛 등 다양한 유틸리티를 제공합니다.'
+        description: '개발자를 위한 무료 개인정보 보호 도구 모음입니다. JSON 정리기, 비밀번호 생성기, 마블 룰렛 등 다양한 유틸리티를 제공합니다.',
+        keywords: '온라인 도구, 개발자 도구, JSON 정리기, 비밀번호 생성기, 해시 계산기, UUID 생성기, 정규식 테스터, base64 디코더, QR 코드 생성기, 무료 도구, 개인정보 보호'
       },
       cat: {
         formatters: '🔄 정리 & 변환',

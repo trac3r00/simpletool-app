@@ -47,6 +47,7 @@ export default {
     meta: {
       "title": "SimpleTool - Kostenlose Online-Entwicklertools",
       "description": "Kostenlose, datenschutzorientierte Online-Tools für Entwickler. JSON-Formatter, Passwortgenerator, Marble Roulette und viele weitere.",
+      "keywords": "Online-Tools, Entwicklertools, JSON-Formatter, Passwortgenerator, Hash-Rechner, UUID-Generator, Regex-Tester, Base64-Decoder, QR-Code-Generator, kostenlose Tools, Datenschutz",
     },
     cat: {
       "formatters": "🔄 Formatierer & Konverter",
