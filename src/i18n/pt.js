@@ -47,6 +47,7 @@ export default {
     meta: {
       "title": "SimpleTool - Ferramentas online gratuitas para devs",
       "description": "Ferramentas online gratuitas e focadas em privacidade para desenvolvedores. Formatador JSON, gerador de senhas, Marble Roulette e muito mais.",
+      "keywords": "ferramentas online, ferramentas para desenvolvedores, formatador JSON, gerador de senhas, calculadora hash, gerador UUID, testador regex, decodificador base64, gerador de código QR, ferramentas gratuitas, privacidade",
     },
     cat: {
       "formatters": "🔄 Formatadores e Conversores",

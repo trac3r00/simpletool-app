@@ -47,6 +47,7 @@ export default {
     meta: {
       "title": "SimpleTool - Công cụ miễn phí cho nhà phát triển",
       "description": "Công cụ trực tuyến miễn phí, ưu tiên quyền riêng tư cho nhà phát triển. Định dạng JSON, tạo mật khẩu, Marble Roulette và nhiều tiện ích khác.",
+      "keywords": "công cụ trực tuyến, công cụ phát triển, định dạng JSON, tạo mật khẩu, tính băm, tạo UUID, kiểm tra regex, giải mã base64, tạo mã QR, công cụ miễn phí, quyền riêng tư",
     },
     cat: {
       "formatters": "🔄 Định dạng & Chuyển đổi",
