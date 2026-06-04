@@ -139,4 +139,18 @@ describe('trac3r00-automation route', () => {
     // Check no unescaped \d etc in backtick context
     expect(text).not.toContain('\\d');
   });
+
+  it('should reset isConnected and disable createIssueBtn on failed connect', async () => {
+    const url = new URL('http://localhost/trac3r00-automation');
+    const request = new Request(url, { method: 'GET' });
+    const response = await handleTrac3r00AutomationRoutes(request, url);
+    const text = await response.text();
+    // After a successful connect sets isConnected=true and enables createIssueBtn,
+    // a later failed connect must reset stale state in the catch block.
+    const catchIdx = text.indexOf('.catch(function(error)');
+    expect(catchIdx).toBeGreaterThan(-1);
+    const catchBlock = text.slice(catchIdx, catchIdx + 400);
+    expect(catchBlock).toContain('isConnected = false');
+    expect(catchBlock).toContain('createIssueBtn.disabled = true');
+  });
 });

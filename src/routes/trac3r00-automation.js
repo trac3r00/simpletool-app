@@ -219,6 +219,8 @@ function renderTrac3r00AutomationPage(lang = DEFAULT_LANGUAGE) {
             createIssueBtn.disabled = false;
           })
           .catch(function(error) {
+            isConnected = false;
+            createIssueBtn.disabled = true;
             updateStatus('Connection failed: ' + error.message, 'error');
           });
         });
