@@ -524,6 +524,16 @@ export const TOOLS = [
     relatedTools: ['case-converter', 'json-formatter', 'encoding-workbench', 'text-diff']
   },
   {
+    id: 'github-automation',
+    name: 'GitHub Automation',
+    icon: '🐙',
+    description: 'Convert Hermes Kanban tasks into GitHub issues.',
+    path: '/github-automation',
+    category: 'utils',
+    keywords: 'github, issue, kanban, automation, hermes, export',
+    relatedTools: ['token-counter', 'markdown-editor', 'json-formatter']
+  },
+  {
     id: 'changelog',
     name: 'Changelog',
     icon: '📋',

@@ -73,6 +73,7 @@ const TOOL_HANDLERS = [
   { id: 'encoding-workbench', file: 'encoding-workbench.js', exp: 'handleEncodingWorkbenchRoutes' },
   { id: 'oauth-debugger', file: 'oauth-debugger.js', exp: 'handleOAuthDebuggerRoutes' },
   { id: 'webhook-debugger', file: 'webhook-debugger.js', exp: 'handleWebhookDebuggerRoutes' },
+  { id: 'github-automation', file: 'github-automation.js', exp: 'handleGithubAutomationRoutes' },
   { id: 'pipe', file: 'pipe.js', exp: 'handlePipeRoutes' },
   { id: 'changelog', file: 'changelog.js', exp: 'handleChangelogRoutes' },
 ];
