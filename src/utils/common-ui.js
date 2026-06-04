@@ -1107,10 +1107,11 @@ export function createPageTemplate(options) {
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${fullTitle}">
   <meta name="twitter:description" content="${description}">
-  <meta property="og:image" content="https://simpletool.app/og-image.svg">
+  <meta property="og:image" content="https://simpletool.app/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta name="twitter:image" content="https://simpletool.app/og-image.svg">
+  <meta property="og:image:type" content="image/png">
+  <meta name="twitter:image" content="https://simpletool.app/og-image.png">
   ${getThemeBootstrapScript()}
   ${getLanguageBootstrapScript(currentLang)}
   ${getGtagScript()}

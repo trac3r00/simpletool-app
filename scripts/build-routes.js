@@ -63,6 +63,7 @@ const TOOL_HANDLERS = [
   { id: 'secret-scanner', file: 'secret-scanner.js', exp: 'handleSecretScannerRoutes' },
   { id: 'dns-reference', file: 'dns-reference.js', exp: 'handleDNSReferenceRoutes' },
   { id: 'port-reference', file: 'port-reference.js', exp: 'handlePortReferenceRoutes' },
+  { id: 'http-status-reference', file: 'http-status-reference.js', exp: 'handleHTTPStatusReferenceRoutes' },
   { id: 'bandwidth-calculator', file: 'bandwidth-calculator.js', exp: 'handleBandwidthCalculatorRoutes' },
   { id: 'wireshark-filter', file: 'wireshark-filter.js', exp: 'handleWiresharkFilterRoutes' },
   { id: 'protocol-headers', file: 'protocol-headers.js', exp: 'handleProtocolHeadersRoutes' },
@@ -71,6 +72,7 @@ const TOOL_HANDLERS = [
   { id: 'token-studio', file: 'token-studio.js', exp: 'handleTokenStudioRoutes' },
   { id: 'encoding-workbench', file: 'encoding-workbench.js', exp: 'handleEncodingWorkbenchRoutes' },
   { id: 'oauth-debugger', file: 'oauth-debugger.js', exp: 'handleOAuthDebuggerRoutes' },
+  { id: 'webhook-debugger', file: 'webhook-debugger.js', exp: 'handleWebhookDebuggerRoutes' },
   { id: 'pipe', file: 'pipe.js', exp: 'handlePipeRoutes' },
   { id: 'changelog', file: 'changelog.js', exp: 'handleChangelogRoutes' },
 ];

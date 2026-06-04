@@ -44,6 +44,7 @@ import { handleCSPBuilderRoutes as csp_builder } from './csp-builder.js';
 import { handleSecretScannerRoutes as secret_scanner } from './secret-scanner.js';
 import { handleDNSReferenceRoutes as dns_reference } from './dns-reference.js';
 import { handlePortReferenceRoutes as port_reference } from './port-reference.js';
+import { handleHTTPStatusReferenceRoutes as http_status_reference } from './http-status-reference.js';
 import { handleBandwidthCalculatorRoutes as bandwidth_calculator } from './bandwidth-calculator.js';
 import { handleWiresharkFilterRoutes as wireshark_filter } from './wireshark-filter.js';
 import { handleProtocolHeadersRoutes as protocol_headers } from './protocol-headers.js';
@@ -52,6 +53,7 @@ import { handleMarbleRouletteRoutes as marble_roulette } from './marble-roulette
 import { handleTokenStudioRoutes as token_studio } from './token-studio.js';
 import { handleEncodingWorkbenchRoutes as encoding_workbench } from './encoding-workbench.js';
 import { handleOAuthDebuggerRoutes as oauth_debugger } from './oauth-debugger.js';
+import { handleWebhookDebuggerRoutes as webhook_debugger } from './webhook-debugger.js';
 import { handlePipeRoutes as pipe } from './pipe.js';
 import { handleChangelogRoutes as changelog } from './changelog.js';
 
@@ -97,6 +99,7 @@ export const handlersById = {
   'secret-scanner': secret_scanner,
   'dns-reference': dns_reference,
   'port-reference': port_reference,
+  'http-status-reference': http_status_reference,
   'bandwidth-calculator': bandwidth_calculator,
   'wireshark-filter': wireshark_filter,
   'protocol-headers': protocol_headers,
@@ -105,6 +108,7 @@ export const handlersById = {
   'token-studio': token_studio,
   'encoding-workbench': encoding_workbench,
   'oauth-debugger': oauth_debugger,
+  'webhook-debugger': webhook_debugger,
   'pipe': pipe,
   'changelog': changelog,
 };

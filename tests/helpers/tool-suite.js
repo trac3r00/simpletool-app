@@ -109,5 +109,14 @@ export const TOOL_ACTIONS = {
     async waitFor(page) {
       await expect(page.locator('#config-preview')).toContainText('10.0.0.1/24');
     }
+  },
+
+  'http-status-reference': {
+    async action(page) {
+      await page.locator('#status-search').fill('404');
+    },
+    async waitFor(page) {
+      await expect(page.locator('#results-body')).toContainText('Not Found');
+    }
   }
 };
