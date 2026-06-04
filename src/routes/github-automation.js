@@ -189,15 +189,7 @@ function renderGithubAutomationPage(lang = DEFAULT_LANGUAGE) {
           errorDisplay.classList.add('hidden');
         }
 
-        function parseKanbanTask(raw) {
-          var mdMatch = raw.match(/^\\s*# Kanban task\\s+(t_[a-zA-Z0-9_]+):\\s*(.+?)\\s*(?:\\r?\\n){2,}([\\s\\S]+)/m);
-          if (mdMatch) {
-            return { id: mdMatch[1].trim(), title: mdMatch[2].trim(), body: mdMatch[3].trim() };
-          }
-          var match = raw.match(/^Task #(\\d+)\\nTitle: (.+)\\nBody: ([\\s\\S]+)$/m);
-          if (!match) return null;
-          return { id: match[1].trim(), title: match[2].trim(), body: match[3].trim() };
-        }
+        ${parseKanbanTask.toString()}
 
         function buildGitHubIssueTitle(task) {
           return '[#' + task.id + '] ' + task.title;

@@ -7,6 +7,7 @@ import {
   getRecommendedLabels,
   buildGitHubNewIssueURL,
   buildGitHubIssuePayload,
+  handleGithubAutomationRoutes,
 } from './github-automation.js';
 
 describe('parseKanbanTask', () => {
@@ -80,6 +81,26 @@ Body: Test`;
     const result2 = parseKanbanTask(raw);
     expect(result1).toEqual(result2);
     expect(result1).not.toBe(result2); // new object each call
+  });
+});
+
+describe('github-automation live route parser', () => {
+  it('uses the exported Kanban parser in the rendered client script to avoid UI/helper drift', async () => {
+    const request = new Request('https://example.com/github-automation');
+    const response = await handleGithubAutomationRoutes(request, new URL(request.url));
+    const html = await response.text();
+
+    expect(html).toContain(parseKanbanTask.toString());
+    expect(html).not.toContain('^Task #(\\\\d+)\\\\nTitle: (.+)\\\\nBody:');
+  });
+
+  it('keeps CRLF and spacing-tolerant Task parsing behavior covered by the shared parser', () => {
+    const raw = '  Task   #76  \r\n  Title:   Spaced title   \r\n  Body:   Body line 1\r\nBody line 2';
+    expect(parseKanbanTask(raw)).toEqual({
+      id: '76',
+      title: 'Spaced title',
+      body: 'Body line 1\r\nBody line 2',
+    });
   });
 });
 
