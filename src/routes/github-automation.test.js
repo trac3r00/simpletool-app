@@ -101,12 +101,9 @@ describe('github-automation route rendering', () => {
     // Status/error messages inside the script should use _t() with i18n keys
     const scriptContent = getMainScript(text);
     if (scriptContent) {
-      // updateStatus function should use _t() for messages
-      expect(scriptContent).toContain("_t('tools.github-automation.js.");
-      // connectToGitHub error messages should use _t()
-      expect(scriptContent).toContain("_t('tools.github-automation.js.");
-      // parseKanbanTask messages should use _t()
-      expect(scriptContent).toContain("_t('tools.github-automation.js.");
+      expect(scriptContent).toContain("_t('tools.github-automation.js.text10");
+      expect(scriptContent).toContain("_t('tools.github-automation.js.text1");
+      expect(scriptContent).toContain("_t('tools.github-automation.js.text6");
     }
   });
 
