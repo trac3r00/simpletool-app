@@ -56,6 +56,7 @@ import { handleOAuthDebuggerRoutes as oauth_debugger } from './oauth-debugger.js
 import { handleWebhookDebuggerRoutes as webhook_debugger } from './webhook-debugger.js';
 import { handlePipeRoutes as pipe } from './pipe.js';
 import { handleChangelogRoutes as changelog } from './changelog.js';
+import { handleGithubIssuePlannerRoutes as github_issue_planner } from './github-issue-planner.js';
 
 export const handlersById = {
   'password-generator': password_generator,
@@ -111,4 +112,5 @@ export const handlersById = {
   'webhook-debugger': webhook_debugger,
   'pipe': pipe,
   'changelog': changelog,
+  'github-issue-planner': github_issue_planner,
 };

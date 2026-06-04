@@ -534,6 +534,16 @@ export const TOOLS = [
     relatedTools: ['token-counter', 'markdown-editor', 'json-formatter']
   },
   {
+    id: 'github-issue-planner',
+    name: 'GitHub Issue / Kanban Automation Planner',
+    icon: '📋',
+    description: 'Categorize open issues and generate automation prompts for trac3r00 backlogs.',
+    path: '/github-issue-planner',
+    category: 'utils',
+    keywords: 'github, issue, kanban, trac3r00, backlog, automation, planner, project',
+    relatedTools: ['cron-builder', 'markdown-editor', 'prompt-template-builder']
+  },
+  {
     id: 'ladder-game',
     name: 'Ladder Game',
     icon: '🪜',

@@ -75,6 +75,7 @@ const TOOL_HANDLERS = [
   { id: 'webhook-debugger', file: 'webhook-debugger.js', exp: 'handleWebhookDebuggerRoutes' },
   { id: 'pipe', file: 'pipe.js', exp: 'handlePipeRoutes' },
   { id: 'changelog', file: 'changelog.js', exp: 'handleChangelogRoutes' },
+  { id: 'github-issue-planner', file: 'github-issue-planner.js', exp: 'handleGithubIssuePlannerRoutes' },
 ];
 
 const imports = [];
