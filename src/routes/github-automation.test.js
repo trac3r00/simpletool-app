@@ -109,6 +109,20 @@ describe('github-automation route rendering', () => {
       expect(scriptContent).toContain("_t('tools.github-automation.js.");
     }
   });
+
+  it('should filter out pull requests in loadRecentIssues', async () => {
+    const url = new URL('http://localhost/github-automation');
+    const request = new Request(url, { method: 'GET' });
+    const response = await handleGithubAutomationRoutes(request, url);
+    const text = await response.text();
+
+    const scriptContent = getMainScript(text);
+    if (scriptContent) {
+      // GitHub /issues endpoint returns both issues and PRs; PRs have a pull_request property
+      expect(scriptContent).toContain('!issue.pull_request');
+      expect(scriptContent).toContain('.filter(');
+    }
+  });
 });
 
 describe('Kanban task parser behavior (client-side logic rendered)', () => {

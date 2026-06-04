@@ -225,7 +225,7 @@ function renderGithubAutomationPage(lang = DEFAULT_LANGUAGE) {
             throw new Error(errMsg + ' ' + response.status + ' ' + response.statusText);
           }
 
-          issues = await response.json();
+          issues = (await response.json()).filter(function(issue) { return !issue.pull_request; });
           displayIssues();
         } catch (error) {
           var errMsg = _t('tools.github-automation.js.text14', 'Failed to load issues:');
