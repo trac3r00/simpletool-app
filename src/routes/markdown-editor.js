@@ -319,8 +319,8 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
 
   const scripts = `
     <script src="/vendor/marked.min.js" integrity="sha384-9Md4MlJk24bo2Ifubp0FbKhuES4/iAwyTGMeWpBG4RoHGTKygpEGEpOYhEQxbfa9" crossorigin="anonymous"></script>
-    <script src="/vendor/purify.min.js" integrity="sha384-pcBjnGbkyKeOXaoFkmJiuR9E08/6gkmus6/Strimnxtl3uk0Hx23v345pWyC/MMr" crossorigin="anonymous"></script>
-    <script src="/vendor/mermaid.min.js" integrity="sha384-enVdc7lTHDGtpROV85t9+VqPC2EyyB0hsRD0MrvQnHUsHmTHIz2D8SPP4EnBkstH" crossorigin="anonymous"></script>
+    <script src="/vendor/purify.min.js" integrity="sha384-jrsBdrv4eDpEYIq32u13DPbvB6tRmqIDnA6UlgFBoexpetaiWi7g/VbfMEL1WVen" crossorigin="anonymous"></script>
+    <script src="/vendor/mermaid.min.js" integrity="sha384-qX9VvWkP79m/O121ZE6sOYp0nf/pldQgtvWDbkpzi+3mUo4Wn4Ix4cFzNPay3VaB" crossorigin="anonymous"></script>
 
     <script>
       document.addEventListener('DOMContentLoaded', () => {
@@ -353,7 +353,7 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
           return String(text || '')
             .trim()
             .toLowerCase()
-            .replace(/[^a-z0-9\s-]/g, '')
+            .replace(/[^a-z0-9\\s-]/g, '')
             .replace(/\\s+/g, '-')
             .replace(/-+/g, '-')
             .replace(/^-|-$/g, '')
@@ -753,13 +753,12 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
           URL.revokeObjectURL(url);
         });
 
-         // Print preview
+// Print preview
          printBtn?.addEventListener('click', () => {
            const htmlContent = getExportHTML('Markdown Print');
            const w = window.open('', '_blank', 'noopener,noreferrer');
            if (!w) return;
            const parsed = new DOMParser().parseFromString(htmlContent, 'text/html');
-           w.document.open();
            w.document.write('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Markdown Print</title><style>body{font-family:system-ui,-apple-system,sans-serif;line-height:1.6;max-width:800px;margin:0 auto;padding:2rem;color:#111827;}pre{background:#f4f4f5;padding:1rem;border-radius:0.5rem;overflow-x:auto;}code{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;}img{max-width:100%;}blockquote{border-left:4px solid #e5e7eb;margin:0;padding-left:1rem;color:#6b7280;}table{border-collapse:collapse;width:100%;margin:1rem 0;}th,td{border:1px solid #e5e7eb;padding:0.5rem;text-align:left;}.mermaid{border:1px solid #e5e7eb;border-radius:0.75rem;padding:1rem;background:#f8fafc;overflow-x:auto;}@media print{body{padding:0;}}</style></head><body></body></html>');
            w.document.close();
            w.document.body.innerHTML = parsed.body ? parsed.body.innerHTML : htmlContent;

@@ -122,10 +122,10 @@ describe('handleMarkdownEditorRoutes', () => {
   it('should sanitize exported HTML with DOMPurify to prevent XSS', async () => {
     const url = new URL('http://localhost/markdown-editor');
     const request = new Request(url, { method: 'GET' });
-
-    const response = await handleMarkdownEditorRoutes(request, url);
+const response = await handleMarkdownEditorRoutes(request, url);
     const text = await response.text();
 
+    // Export HTML must use DOMPurify.sanitize on preview.innerHTML
     expect(text).toContain('window.DOMPurify ? window.DOMPurify.sanitize(preview.innerHTML) : preview.innerHTML');
   });
 
@@ -136,8 +136,11 @@ describe('handleMarkdownEditorRoutes', () => {
     const response = await handleMarkdownEditorRoutes(request, url);
     const text = await response.text();
 
+    // Must not write untrusted content via document.write
     expect(text).not.toContain('w.document.write(htmlContent)');
+    // Must parse exported HTML safely with DOMParser
     expect(text).toContain("new DOMParser().parseFromString(htmlContent, 'text/html')");
+    // Must assign parsed body content, not raw HTML
     expect(text).toContain('w.document.body.innerHTML = parsed.body ? parsed.body.innerHTML : htmlContent');
   });
 
