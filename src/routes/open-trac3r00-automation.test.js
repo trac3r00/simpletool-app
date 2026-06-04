@@ -56,6 +56,15 @@ describe('open-trac3r00-automation route rendering', () => {
     expect(text).toContain('Product Value Score: 0.88');
   });
 
+  it('should include issue 69 recurring Kanban demand in the sample backlog', async () => {
+    const url = new URL('http://localhost/open-trac3r00-automation');
+    const request = new Request(url, { method: 'GET' });
+    const response = await handleOpenTrac3r00AutomationRoutes(request, url);
+    const text = await response.text();
+    expect(text).toContain('[simpletool-app#69]');
+    expect(text).toContain('recurring Kanban demand');
+  });
+
   it('should include Signal summary output section', async () => {
     const url = new URL('http://localhost/open-trac3r00-automation');
     const request = new Request(url, { method: 'GET' });
