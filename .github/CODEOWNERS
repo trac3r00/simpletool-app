@@ -1,0 +1,9 @@
+# Default fallback owner for everything else
+* @trac3r00
+
+# Security-critical files
+src/utils/security.js @trac3r00
+src/worker.js @trac3r00
+
+# Core routes
+src/routes/ @trac3r00
