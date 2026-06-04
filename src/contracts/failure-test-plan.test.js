@@ -1,5 +1,14 @@
 import { describe, it, expect } from 'vitest';
+import { spawnSync } from 'child_process';
+import { renameSync, existsSync } from 'fs';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 import { buildFailureTestPlan } from '../../scripts/failure-test-plan.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const ROOT = join(__dirname, '..', '..');
+const HANDLERS_PATH = join(ROOT, 'src', 'routes', '_handlers.js');
+const HANDLERS_BACKUP_PATH = join(ROOT, 'src', 'routes', '_handlers.js.bak');
 
 describe('failure-test-plan automation', () => {
   it('enumerates all registered tools from the real registry', () => {
@@ -103,5 +112,32 @@ describe('failure-test-plan automation', () => {
     expect(tool.lanes.routeSmoke.ok).toBe(true);
     expect(tool.lanes.e2eCoverage.ok).toBe(true);
     expect(plan.summary.ok).toBe(true);
+  });
+
+  it('reports MISSING build artifact for absent _handlers.js instead of ERR_MODULE_NOT_FOUND', () => {
+    if (existsSync(HANDLERS_PATH)) {
+      renameSync(HANDLERS_PATH, HANDLERS_BACKUP_PATH);
+    }
+
+    let stdout = '';
+    let stderr = '';
+    let status = 0;
+    try {
+      const result = spawnSync('node', ['scripts/failure-test-plan.js'], {
+        cwd: ROOT,
+        encoding: 'utf8',
+      });
+      stdout = result.stdout;
+      stderr = result.stderr;
+      status = result.status;
+    } finally {
+      if (existsSync(HANDLERS_BACKUP_PATH)) {
+        renameSync(HANDLERS_BACKUP_PATH, HANDLERS_PATH);
+      }
+    }
+
+    expect(status).not.toBe(0);
+    expect(stdout).toContain('MISSING build artifact: src/routes/_handlers.js');
+    expect(stderr).not.toContain('ERR_MODULE_NOT_FOUND');
   });
 });

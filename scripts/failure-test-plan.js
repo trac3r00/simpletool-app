@@ -18,13 +18,13 @@
  */
 
 import { TOOLS } from '../src/utils/tool-registry.js';
-import { handlersById } from '../src/routes/_handlers.js';
 import { readFileSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
+let handlersById;
 
 /* ------------------------------------------------------------------ */
 // Helpers
@@ -75,7 +75,7 @@ function checkBuildPrerequisites() {
 
 export function buildFailureTestPlan(options = {}) {
   const tools = options.overrideTools ?? TOOLS;
-  const handlers = options.overrideHandlers ?? handlersById;
+  const handlers = options.overrideHandlers ?? handlersById ?? {};
   const toolActionIds = options.overrideToolActions
     ? Object.keys(options.overrideToolActions)
     : getToolActionIds();
@@ -231,8 +231,19 @@ function printPlan(plan) {
 // Main
 /* ------------------------------------------------------------------ */
 
-function main() {
+async function main() {
   const strictE2E = process.argv.includes('--strict-e2e');
+
+  const buildPrereqs = checkBuildPrerequisites();
+  if (!buildPrereqs.ok) {
+    const plan = buildFailureTestPlan({ strictE2E });
+    printPlan(plan);
+    process.exit(1);
+  }
+
+  const mod = await import('../src/routes/_handlers.js');
+  handlersById = mod.handlersById;
+
   const plan = buildFailureTestPlan({ strictE2E });
   printPlan(plan);
   process.exit(plan.summary.ok ? 0 : 1);
@@ -240,5 +251,8 @@ function main() {
 
 // Run when executed directly (not imported)
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  main();
+  main().catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
 }
