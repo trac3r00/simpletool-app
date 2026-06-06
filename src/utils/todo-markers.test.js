@@ -12,9 +12,14 @@ const EXCLUDED_PATHS = [
   '.git/',
   'TODO.md',
   'todo-markers.test.js',
+  'scripts/vendor/',
+  'src/utils/bundled-styles.js',
+  'coverage/',
+  '.wrangler/',
 ];
 
-const MARKER_RE = /(?:\/\/|<!--|#|\/\*|\*)\s*.*(TODO|FIXME|HACK)\b/;
+const MARKER_RE = /(?:^|\s|>)(?:\/\/|<!--|#|\/\*|\*\s)\s*.*(TODO|FIXME|HACK)\b/i;
+const TEST_FIXME_RE = /test\.fixme\s*\(/;
 
 function getTrackedSourceFiles() {
   try {
@@ -29,7 +34,7 @@ function getTrackedSourceFiles() {
 }
 
 describe('tracked source files', () => {
-  it('contain no TODO/FIXME/HACK markers', () => {
+  it('contain no TODO/FIXME/HACK markers or test.fixme calls', () => {
     const files = getTrackedSourceFiles();
     expect(files.length).toBeGreaterThan(0);
 
@@ -44,7 +49,7 @@ describe('tracked source files', () => {
       }
       const lines = content.split('\n');
       for (let i = 0; i < lines.length; i++) {
-        if (MARKER_RE.test(lines[i])) {
+        if (MARKER_RE.test(lines[i]) || TEST_FIXME_RE.test(lines[i])) {
           violations.push(`${file}:${i + 1}: ${lines[i].trim()}`);
         }
       }
