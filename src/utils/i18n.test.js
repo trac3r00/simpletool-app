@@ -13,6 +13,27 @@ import {
   getLanguageBootstrapScript,
   getLanguageSelectorHTML
 } from './i18n.js';
+import ko from '../i18n/ko.js';
+import ja from '../i18n/ja.js';
+import es from '../i18n/es.js';
+import zhCN from '../i18n/zh-CN.js';
+import zhTW from '../i18n/zh-TW.js';
+import fr from '../i18n/fr.js';
+import de from '../i18n/de.js';
+import pt from '../i18n/pt.js';
+import vi from '../i18n/vi.js';
+
+const NON_ENGLISH_TRANSLATIONS = {
+  ko,
+  ja,
+  es,
+  'zh-CN': zhCN,
+  'zh-TW': zhTW,
+  fr,
+  de,
+  pt,
+  vi
+};
 
 describe('SUPPORTED_LANGUAGES', () => {
   it('contains 10 languages', () => {
@@ -285,5 +306,22 @@ describe('getLanguageSelectorHTML', () => {
   it('marks current language as active', () => {
     const html = getLanguageSelectorHTML('ko');
     expect(html).toContain('font-semibold');
+  });
+});
+
+describe('open-trac3r00-automation i18n coverage', () => {
+  it('should have translations in all supported non-English languages', () => {
+    for (const [lang, catalog] of Object.entries(NON_ENGLISH_TRANSLATIONS)) {
+      expect(catalog.tools?.['open-trac3r00-automation'], `missing open-trac3r00-automation in ${lang}`).toBeDefined();
+    }
+  });
+
+  it('should have ui and js keys in all non-English translations', () => {
+    for (const [lang, catalog] of Object.entries(NON_ENGLISH_TRANSLATIONS)) {
+      const tool = catalog.tools?.['open-trac3r00-automation'];
+      expect(tool, `missing open-trac3r00-automation in ${lang}`).toBeDefined();
+      expect(tool.ui, `missing ui in ${lang}`).toBeDefined();
+      expect(tool.js, `missing js in ${lang}`).toBeDefined();
+    }
   });
 });
