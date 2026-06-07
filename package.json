@@ -44,7 +44,7 @@
     "@tailwindcss/typography": "^0.5.19",
     "autoprefixer": "^10.4.16",
     "baseline-browser-mapping": "^2.9.18",
-    "esbuild": "^0.25.0",
+    "esbuild": "^0.28.0",
     "lighthouse": "^13.0.3",
     "postcss": "^8.4.32",
     "tailwindcss": "^3.4.19",
