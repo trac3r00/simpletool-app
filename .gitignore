@@ -65,6 +65,7 @@ Thumbs.db
 
 # Tests
 tests/*
+!tests/e2e/
 test-results/*
 
 # Opencode
