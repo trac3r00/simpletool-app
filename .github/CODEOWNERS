@@ -1,0 +1,12 @@
+# Default fallback owner for everything else
+* @trac3r00
+
+# Core utilities blanket
+src/utils/ @trac3r00
+
+# Security-critical files (explicit override after utils blanket)
+src/utils/security.js @trac3r00
+src/worker.js @trac3r00
+
+# Core routes owned by the main product owner
+src/routes/ @trac3r00
