@@ -1,0 +1,60 @@
+import { describe, it, expect } from 'vitest';
+import { execSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
+
+const EXCLUDED_PATHS = [
+  'node_modules/',
+  'dist/',
+  '.git/',
+  'TODO.md',
+  'todo-markers.test.js',
+  'scripts/vendor/',
+  'src/utils/bundled-styles.js',
+  'coverage/',
+  '.wrangler/',
+];
+
+const MARKER_RE = /(?:^|\s|>)(?:\/\/|<!--|#|\/\*|\*\s)\s*.*(TODO|FIXME|HACK)\b/i;
+const TEST_FIXME_RE = /test\.fixme\s*\(/;
+
+function getTrackedSourceFiles() {
+  try {
+    const output = execSync('git ls-files', { cwd: ROOT, encoding: 'utf8' });
+    return output
+      .split('\n')
+      .filter(Boolean)
+      .filter((f) => !EXCLUDED_PATHS.some((ex) => f.includes(ex)));
+  } catch {
+    return [];
+  }
+}
+
+describe('tracked source files', () => {
+  it('contain no TODO/FIXME/HACK markers or test.fixme calls', () => {
+    const files = getTrackedSourceFiles();
+    expect(files.length).toBeGreaterThan(0);
+
+    const violations = [];
+    for (const file of files) {
+      const fullPath = join(ROOT, file);
+      let content;
+      try {
+        content = readFileSync(fullPath, 'utf8');
+      } catch {
+        continue;
+      }
+      const lines = content.split('\n');
+      for (let i = 0; i < lines.length; i++) {
+        if (MARKER_RE.test(lines[i]) || TEST_FIXME_RE.test(lines[i])) {
+          violations.push(`${file}:${i + 1}: ${lines[i].trim()}`);
+        }
+      }
+    }
+
+    expect(violations).toEqual([]);
+  });
+});

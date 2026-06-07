@@ -46,7 +46,8 @@ export default {
       noResults: 'No se encontraron herramientas.',
       meta: {
         title: 'SimpleTool - Herramientas gratuitas para desarrolladores',
-        description: 'Herramientas online gratuitas y centradas en la privacidad para desarrolladores. Incluye JSON, generadores, Marble Roulette y muchas utilidades más.'
+        description: 'Herramientas online gratuitas y centradas en la privacidad para desarrolladores. Incluye JSON, generadores, Marble Roulette y muchas utilidades más.',
+        keywords: 'herramientas online, herramientas para desarrolladores, formateador JSON, generador de contraseñas, calculadora hash, generador UUID, probador regex, decodificador base64, generador de códigos QR, herramientas gratuitas, privacidad'
       },
       cat: {
         formatters: '🔄 Formateadores y Convertidores',

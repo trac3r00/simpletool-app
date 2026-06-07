@@ -46,7 +46,8 @@ export default {
       noResults: "No tools found matching your search.",
       meta: {
         "title": "SimpleTool - Free Online Developer Tools",
-        "description": "Free, privacy-focused online tools for developers. JSON formatter, password generator, marble roulette, and dozens more utilities."
+        "description": "Free, privacy-focused online tools for developers. JSON formatter, password generator, marble roulette, and dozens more utilities.",
+        "keywords": "online tools, developer tools, JSON formatter, password generator, hash calculator, UUID generator, regex tester, base64 decoder, QR code generator, free tools, privacy tools"
       },
       cat: {
         "formatters": "🔄 Formatters & Converters",
