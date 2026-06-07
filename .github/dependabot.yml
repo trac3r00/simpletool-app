@@ -18,6 +18,7 @@ updates:
     commit-message:
       prefix: "chore(deps)"
       include: "scope"
+    rebase-strategy: "disabled"
     ignore:
       # Cloudflare Workers runtime packages are managed by Wrangler
       - dependency-name: "wrangler"
