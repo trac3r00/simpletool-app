@@ -5,5 +5,8 @@
 src/utils/security.js @trac3r00
 src/worker.js @trac3r00
 
+# Core utilities
+src/utils/ @trac3r00
+
 # Core routes
 src/routes/ @trac3r00
