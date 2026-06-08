@@ -62,7 +62,6 @@ const BASELINE_VIOLATIONS = {
   '/css-gradient': [
     { id: 'color-contrast', impact: 'serious' },
     { id: 'link-in-text-block', impact: 'serious' },
-    { id: 'scrollable-region-focusable', impact: 'serious' },
   ],
   '/curl-studio': [
     { id: 'color-contrast', impact: 'serious' },
@@ -303,6 +302,8 @@ function normalizeViolations(violations) {
     .map((v) => ({
       id: v.id,
       impact: v.impact,
+      helpUrl: v.helpUrl,
+      nodeCount: v.nodes ? v.nodes.length : undefined,
     }))
     .sort((a, b) => a.id.localeCompare(b.id));
 }
@@ -311,7 +312,10 @@ function normalizeViolations(violations) {
  * Serialise a single normalised violation to a one-line string.
  */
 function violationLine(v) {
-  return `  · ${v.id}  [impact: ${v.impact}]`;
+  let line = `  · ${v.id}  [impact: ${v.impact}]`;
+  if (v.nodeCount != null) line += `  (${v.nodeCount} node${v.nodeCount === 1 ? '' : 's'})`;
+  if (v.helpUrl) line += `  ${v.helpUrl}`;
+  return line;
 }
 
 /**
@@ -329,7 +333,10 @@ function formatDiffBlock(route, newViolations, changedViolations, missingViolati
   if (changedViolations.length > 0) {
     parts.push(`  CHANGED impact level:`);
     for (const c of changedViolations) {
-      parts.push(`  · ${c.id}  [${c.before} → ${c.after}]`);
+      let line = `  · ${c.id}  [${c.before} → ${c.after}]`;
+      if (c.nodeCount != null) line += `  (${c.nodeCount} node${c.nodeCount === 1 ? '' : 's'})`;
+      if (c.helpUrl) line += `  ${c.helpUrl}`;
+      parts.push(line);
     }
   }
 
@@ -380,7 +387,7 @@ function diffViolations(actual, baseline) {
     if (!match) {
       extra.push(v);
     } else if (match.impact !== v.impact) {
-      changed.push({ id: v.id, before: match.impact, after: v.impact });
+      changed.push({ id: v.id, before: match.impact, after: v.impact, helpUrl: v.helpUrl, nodeCount: v.nodeCount });
     }
   }
 
@@ -446,7 +453,55 @@ test.describe('Accessibility audit', () => {
     expect(staleKeys).toEqual([]);
   });
 
-  // ── 2. Home page audit ───────────────────────────────────────
+  // ── 2. Formatter output ───────────────────────────────────────
+
+  test('violationLine includes rule id, impact, help URL, and affected node count', () => {
+    const v = {
+      id: 'color-contrast',
+      impact: 'serious',
+      helpUrl: 'https://dequeuniversity.com/rules/axe/4.9/color-contrast',
+      nodeCount: 3,
+    };
+    const line = violationLine(v);
+    expect(line).toContain('color-contrast');
+    expect(line).toContain('serious');
+    expect(line).toContain('https://dequeuniversity.com/rules/axe/4.9/color-contrast');
+    expect(line).toContain('3');
+  });
+
+  test('violationLine omits optional fields when absent', () => {
+    const v = { id: 'heading-order', impact: 'moderate' };
+    const line = violationLine(v);
+    expect(line).toBe('  · heading-order  [impact: moderate]');
+  });
+
+  test('formatDiffBlock includes help URL and affected node count for new violations', () => {
+    const block = formatDiffBlock(
+      '/test',
+      [{ id: 'label', impact: 'critical', helpUrl: 'https://example.com/label', nodeCount: 2 }],
+      [],
+      []
+    );
+    expect(block).toContain('label');
+    expect(block).toContain('critical');
+    expect(block).toContain('https://example.com/label');
+    expect(block).toContain('2');
+  });
+
+  test('formatDiffBlock includes help URL and affected node count for changed violations', () => {
+    const block = formatDiffBlock(
+      '/test',
+      [],
+      [{ id: 'color-contrast', before: 'serious', after: 'critical', helpUrl: 'https://example.com/cc', nodeCount: 5 }],
+      []
+    );
+    expect(block).toContain('color-contrast');
+    expect(block).toContain('serious → critical');
+    expect(block).toContain('https://example.com/cc');
+    expect(block).toContain('5');
+  });
+
+  // ── 3. Home page audit ───────────────────────────────────────
 
   test('home page meets baseline', async ({ page }) => {
     const baseline = BASELINE_VIOLATIONS['/'] || [];
@@ -461,7 +516,7 @@ test.describe('Accessibility audit', () => {
     expect(result.missing).toEqual([]);
   });
 
-  // ── 3. Per-tool audit ────────────────────────────────────────
+  // ── 4. Per-tool audit ────────────────────────────────────────
 
   for (const tool of tools) {
     test(`${tool.id}: ${tool.path} meets baseline`, async ({ page }) => {
