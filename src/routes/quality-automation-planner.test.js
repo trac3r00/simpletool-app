@@ -1,10 +1,16 @@
 // @vitest-environment node
 import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
 import {
   analyzeQualitySignals,
   calculateReadinessScore,
   handleQualityAutomationPlannerRoutes
 } from './quality-automation-planner.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const SOURCE_PATH = join(__dirname, 'quality-automation-planner.js');
 
 describe('analyzeQualitySignals', () => {
   it('returns empty recommendations for empty signals', () => {
@@ -131,5 +137,13 @@ describe('handleQualityAutomationPlannerRoutes', () => {
     const request = new Request(url, { method: 'POST' });
     const response = await handleQualityAutomationPlannerRoutes(request, url);
     expect(response.status).toBe(405);
+  });
+});
+
+describe('source code regression', () => {
+  it('does not contain disallowed bare global helper calls (Set, String)', () => {
+    const src = readFileSync(SOURCE_PATH, 'utf8');
+    expect(src).not.toMatch(/\bnew\s+Set\s*\(/);
+    expect(src).not.toMatch(/\bString\s*\(/);
   });
 });

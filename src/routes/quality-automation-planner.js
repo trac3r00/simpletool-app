@@ -23,21 +23,23 @@ export function analyzeQualitySignals(signals) {
     return { recommendations: [], summary: 'No quality signals detected.' };
   }
 
-  const found = new Set();
+  const found = [];
 
   for (const signal of signals) {
-    const lower = String(signal).toLowerCase();
+    const lower = ('' + signal).toLowerCase();
     for (const [recommendation, keywords] of Object.entries(SIGNAL_PATTERNS)) {
       for (const keyword of keywords) {
         if (lower.includes(keyword.toLowerCase())) {
-          found.add(recommendation);
+          if (!found.includes(recommendation)) {
+            found.push(recommendation);
+          }
           break;
         }
       }
     }
   }
 
-  const recommendations = Array.from(found);
+  const recommendations = found;
 
   const order = ['block-for-triage', 'add-coverage', 'dependency-automation', 'accessibility-audit'];
   recommendations.sort((a, b) => order.indexOf(a) - order.indexOf(b));
@@ -188,19 +190,21 @@ function renderQualityAutomationPlannerPage(lang = DEFAULT_LANGUAGE) {
         if (!Array.isArray(signals) || signals.length === 0) {
           return { recommendations: [], summary: 'No quality signals detected.' };
         }
-        const found = new Set();
+        const found = [];
         for (const signal of signals) {
-          const lower = String(signal).toLowerCase();
+          const lower = ('' + signal).toLowerCase();
           for (const [recommendation, keywords] of Object.entries(SIGNAL_PATTERNS)) {
             for (const keyword of keywords) {
               if (lower.includes(keyword.toLowerCase())) {
-                found.add(recommendation);
+                if (!found.includes(recommendation)) {
+                  found.push(recommendation);
+                }
                 break;
               }
             }
           }
         }
-        const recommendations = Array.from(found);
+        const recommendations = found;
         const order = ['block-for-triage', 'add-coverage', 'dependency-automation', 'accessibility-audit'];
         recommendations.sort((a, b) => order.indexOf(a) - order.indexOf(b));
         const summary = recommendations.length === 0
