@@ -33,6 +33,7 @@ import { handleMermaidStudioRoutes as mermaid_studio } from './mermaid-studio.js
 import { handleJsonSchemaStudioRoutes as json_schema_studio } from './json-schema-studio.js';
 import { handleCaffeinateRoutes as caffeinate } from './caffeinate.js';
 import { handleEmailAnalyzerRoutes as email_analyzer } from './email-analyzer.js';
+import { handleBranchDecisionRoutes as branch_decision } from './branch-decision.js';
 import { handleTokenCounterRoutes as token_counter } from './token-counter.js';
 import { handlePromptTemplateBuilderRoutes as prompt_template_builder } from './prompt-template-builder.js';
 import { handleSQLFormatterRoutes as sql_formatter } from './sql-formatter.js';
@@ -88,6 +89,7 @@ export const handlersById = {
   'json-schema-studio': json_schema_studio,
   'caffeinate': caffeinate,
   'email-analyzer': email_analyzer,
+  'branch-decision': branch_decision,
   'token-counter': token_counter,
   'prompt-template-builder': prompt_template_builder,
   'sql-formatter': sql_formatter,

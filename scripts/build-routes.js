@@ -52,6 +52,7 @@ const TOOL_HANDLERS = [
   { id: 'json-schema-studio', file: 'json-schema-studio.js', exp: 'handleJsonSchemaStudioRoutes' },
   { id: 'caffeinate', file: 'caffeinate.js', exp: 'handleCaffeinateRoutes' },
   { id: 'email-analyzer', file: 'email-analyzer.js', exp: 'handleEmailAnalyzerRoutes' },
+  { id: 'branch-decision', file: 'branch-decision.js', exp: 'handleBranchDecisionRoutes' },
   { id: 'token-counter', file: 'token-counter.js', exp: 'handleTokenCounterRoutes' },
   { id: 'prompt-template-builder', file: 'prompt-template-builder.js', exp: 'handlePromptTemplateBuilderRoutes' },
   { id: 'sql-formatter', file: 'sql-formatter.js', exp: 'handleSQLFormatterRoutes' },

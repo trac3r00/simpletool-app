@@ -443,6 +443,16 @@ export const TOOLS = [
     relatedTools: ['saml-decoder', 'log-masker', 'secret-scanner', 'user-agent-decoder']
   },
   {
+    id: 'branch-decision',
+    name: 'Branch Decision Helper',
+    icon: '🌿',
+    description: 'Decide whether to reuse an existing PR/branch, block for triage, or create a new branch.',
+    path: '/branch-decision',
+    category: 'utils',
+    keywords: 'git, branch, pr, automation, triage, reuse, backlog',
+    relatedTools: ['prompt-template-builder', 'text-diff', 'changelog', 'token-counter']
+  },
+  {
     id: 'token-counter',
     name: 'Token Counter & Cost Estimator',
     icon: '🧮',
