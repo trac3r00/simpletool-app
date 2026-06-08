@@ -118,5 +118,15 @@ export const TOOL_ACTIONS = {
     async waitFor(page) {
       await expect(page.locator('#results-body')).toContainText('Not Found');
     }
+  },
+
+  'quality-automation-planner': {
+    async action(page) {
+      await page.locator('#load-sample').click();
+    },
+    async waitFor(page) {
+      await expect(page.locator('#score-badge')).not.toHaveText('—');
+      await expect(page.locator('#recommendations-list')).toContainText('Block for Triage');
+    }
   }
 };

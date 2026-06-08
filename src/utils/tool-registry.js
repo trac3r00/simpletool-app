@@ -568,6 +568,16 @@ export const TOOLS = [
     hiddenInProduction: true,
     badge: 'NEW',
     relatedTools: ['ladder-game', 'roulette-wheel', 'mock-data-generator']
+  },
+  {
+    id: 'quality-automation-planner',
+    name: 'Quality Automation Planner',
+    icon: '🛡️',
+    description: 'Turn backlog and proposal signals into deterministic quality automation recommendations and a readiness score.',
+    path: '/quality-automation-planner',
+    category: 'utils',
+    keywords: 'quality, automation, backlog, triage, coverage, dependency, accessibility, readiness',
+    relatedTools: ['secret-scanner', 'log-masker', 'env-var-manager', 'csp-builder']
   }
 ];
 

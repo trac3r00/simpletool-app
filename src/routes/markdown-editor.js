@@ -319,7 +319,7 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
 
   const scripts = `
     <script src="/vendor/marked.min.js" integrity="sha384-ZD0fTOwPMHi7zM6WTVIWJR21I07lq0ccnqz3J6WMvQKG9thh4y7TA1QE6PJu0Af8" crossorigin="anonymous"></script>
-    <script src="/vendor/purify.min.js" integrity="sha384-pcBjnGbkyKeOXaoFkmJiuR9E08/6gkmus6/Strimnxtl3uk0Hx23v345pWyC/MMr" crossorigin="anonymous"></script>
+    <script src="/vendor/purify.min.js" integrity="sha384-jrsBdrv4eDpEYIq32u13DPbvB6tRmqIDnA6UlgFBoexpetaiWi7g/VbfMEL1WVen" crossorigin="anonymous"></script>
     <script src="/vendor/mermaid.min.js" integrity="sha384-yQ4mmBBT+vhTAwjFH0toJXNYJ6O4usWnt6EPIdWwrRvx2V/n5lXuDZQwQFeSFydF" crossorigin="anonymous"></script>
 
     <script>
