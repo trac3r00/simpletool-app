@@ -62,6 +62,7 @@ const BASELINE_VIOLATIONS = {
   '/css-gradient': [
     { id: 'color-contrast', impact: 'serious' },
     { id: 'link-in-text-block', impact: 'serious' },
+    { id: 'scrollable-region-focusable', impact: 'serious', optional: true },
   ],
   '/curl-studio': [
     { id: 'color-contrast', impact: 'serious' },
@@ -393,6 +394,7 @@ function diffViolations(actual, baseline) {
 
   for (const v of baseline) {
     if (!actualMap.has(v.id)) {
+      if (v.optional) continue;
       missing.push(v);
     }
   }
@@ -501,7 +503,54 @@ test.describe('Accessibility audit', () => {
     expect(block).toContain('5');
   });
 
-  // ── 3. Home page audit ───────────────────────────────────────
+  // ── 3. Optional baseline violations ────────────────────────────
+
+  test('optional baseline violations are accepted when present', () => {
+    const actual = [
+      { id: 'color-contrast', impact: 'serious' },
+      { id: 'scrollable-region-focusable', impact: 'serious' },
+    ];
+    const baseline = [
+      { id: 'color-contrast', impact: 'serious' },
+      { id: 'scrollable-region-focusable', impact: 'serious', optional: true },
+    ];
+    const result = diffViolations(actual, baseline);
+    expect(result.hasDiff).toBe(false);
+    expect(result.extra).toEqual([]);
+    expect(result.missing).toEqual([]);
+    expect(result.changed).toEqual([]);
+  });
+
+  test('optional baseline violations are ignored when missing', () => {
+    const actual = [{ id: 'color-contrast', impact: 'serious' }];
+    const baseline = [
+      { id: 'color-contrast', impact: 'serious' },
+      { id: 'scrollable-region-focusable', impact: 'serious', optional: true },
+    ];
+    const result = diffViolations(actual, baseline);
+    expect(result.hasDiff).toBe(false);
+    expect(result.extra).toEqual([]);
+    expect(result.missing).toEqual([]);
+    expect(result.changed).toEqual([]);
+  });
+
+  test('optional baseline violations do not hide unexpected new violations', () => {
+    const actual = [
+      { id: 'color-contrast', impact: 'serious' },
+      { id: 'unexpected-rule', impact: 'moderate' },
+    ];
+    const baseline = [
+      { id: 'color-contrast', impact: 'serious' },
+      { id: 'scrollable-region-focusable', impact: 'serious', optional: true },
+    ];
+    const result = diffViolations(actual, baseline);
+    expect(result.hasDiff).toBe(true);
+    expect(result.extra).toEqual([{ id: 'unexpected-rule', impact: 'moderate' }]);
+    expect(result.missing).toEqual([]);
+    expect(result.changed).toEqual([]);
+  });
+
+  // ── 4. Home page audit ───────────────────────────────────────
 
   test('home page meets baseline', async ({ page }) => {
     const baseline = BASELINE_VIOLATIONS['/'] || [];
@@ -516,7 +565,7 @@ test.describe('Accessibility audit', () => {
     expect(result.missing).toEqual([]);
   });
 
-  // ── 4. Per-tool audit ────────────────────────────────────────
+  // ── 5. Per-tool audit ────────────────────────────────────────
 
   for (const tool of tools) {
     test(`${tool.id}: ${tool.path} meets baseline`, async ({ page }) => {
