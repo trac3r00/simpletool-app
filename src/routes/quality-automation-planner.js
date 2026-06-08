@@ -149,7 +149,7 @@ function renderQualityAutomationPlannerPage(lang = DEFAULT_LANGUAGE) {
 
   const scripts = String.raw`
     <script>
-      const t = (k, fb) => (window._t ? window._t('tools.quality-automation-planner.js.' + k, fb) : (fb || k));
+      const t = (k, fb) => (window['_t'] ? window['_t']('tools.quality-automation-planner.js.' + k, fb) : (fb || k));
       const $ = (id) => document.getElementById(id);
 
       const els = {
@@ -254,7 +254,7 @@ function renderQualityAutomationPlannerPage(lang = DEFAULT_LANGUAGE) {
         }
       }
 
-      function analyze() {
+      function runSignalAnalysis() {
         const raw = els.signals.value;
         const lines = raw.split(/\n/).map(s => s.trim()).filter(Boolean);
         const result = analyzeQualitySignals(lines);
@@ -265,11 +265,11 @@ function renderQualityAutomationPlannerPage(lang = DEFAULT_LANGUAGE) {
         els.copy.disabled = result.recommendations.length === 0;
       }
 
-      els.analyzeBtn.addEventListener('click', analyze);
+      els.analyzeBtn.addEventListener('click', runSignalAnalysis);
 
       els.loadSample.addEventListener('click', () => {
         els.signals.value = SAMPLE;
-        analyze();
+        runSignalAnalysis();
       });
 
       els.clear.addEventListener('click', () => {
@@ -300,7 +300,7 @@ function renderQualityAutomationPlannerPage(lang = DEFAULT_LANGUAGE) {
           await navigator.clipboard.writeText(report);
           const old = els.copy.textContent;
           els.copy.textContent = t('text10', '✓ Copied');
-          if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
+          if (window.Toast) window.Toast.success(window['_t']('common.copied', 'Copied!'));
           setTimeout(() => (els.copy.textContent = old), 1200);
         } catch (e) {
           console.error('Copy failed:', e);
