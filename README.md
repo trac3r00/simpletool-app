@@ -379,8 +379,27 @@ SimpleTool App is actively working toward WCAG 2.1 Level AA compliance. Each rel
 **Remaining improvements:**
 - [ ] Further increase contrast for some tool icon headers in dark mode
 - [ ] Add skip-to-content link for keyboard users
-- [ ] Re-test all tools in Lighthouse and publish updated accessibility scores
+- [x] Registry-driven automated accessibility audit via Playwright + axe-core (`npm run test:a11y`)
 - [ ] Implement focus-trap in modal dialogs (if any are added)
+
+### Automated Accessibility Regression
+
+`npm run test:a11y` runs an axe-core audit for **every registered tool route** (including the home page) via Playwright. The test uses the same `src/utils/tool-registry.js` source of truth that the app itself uses, so new tools are automatically audited as soon as they are registered.
+
+```bash
+# Run the full accessibility audit (all tools + home page)
+npm run test:a11y
+
+# Run the audit in headed mode to watch the browser
+npx playwright test tests/e2e/accessibility-audit.spec.js --headed
+```
+
+Failures are printed with:
+- tool id and route
+- axe-core rule id, impact level, and help URL
+- number of affected DOM nodes
+
+The audit currently runs **locally** as a pre-release gate. CI integration is deferred to a separate scheduled job because iterating 52+ routes adds significant wall-clock time to pull-request builds.
 
 ### Lighthouse Testing
 
@@ -479,9 +498,10 @@ Win + Ctrl + Enter
 ### Accessibility Testing Tools
 
 **Automated Testing:**
+- **Built-in audit** — `npm run test:a11y` runs axe-core via Playwright against every registered tool route (see Automated Accessibility Regression above)
+- [axe DevTools](https://www.deque.com/axe/devtools/) - Browser extension for ad-hoc WCAG checks
+- [Lighthouse](https://developers.google.com/web/tools/lighthouse) - Recommended for periodic deep audits and performance profiling
 - [WAVE Browser Extension](https://wave.webaim.org/extension/) - Visual accessibility testing
-- [axe DevTools](https://www.deque.com/axe/devtools/) - Automated WCAG checks
-- [Lighthouse](https://developers.google.com/web/tools/lighthouse) - Google's audit tool
 - [Pa11y](https://pa11y.org/) - Command-line accessibility testing
 
 **Manual Testing:**
