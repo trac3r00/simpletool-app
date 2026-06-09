@@ -15,7 +15,8 @@ export const SIGNAL_PATTERNS = {
   'block-for-triage': ['bug', 'crash', 'error', 'failure', 'triage', 'critical', 'block', 'regression', 'incident', 'outage', 'broken', 'defect'],
   'add-coverage': ['test', 'coverage', 'unit', 'spec', 'jest', 'vitest', 'missing test', 'untested', 'no tests', 'untested code'],
   'dependency-automation': ['dependency', 'npm', 'outdated', 'cve', 'vulnerability', 'dependabot', 'audit', 'package', 'upgrade', 'patch', 'security advisory'],
-  'accessibility-audit': ['accessibility', 'a11y', 'screen reader', 'wcag', 'contrast', 'aria', 'keyboard', 'focus', 'alt text', 'semantic', 'colorblind', 'screenreader']
+  'accessibility-audit': ['accessibility', 'a11y', 'screen reader', 'wcag', 'contrast', 'aria', 'keyboard', 'focus', 'alt text', 'semantic', 'colorblind', 'screenreader'],
+  'quality-automation-roadmap': ['kanban', 'recurring', 'proposal', 'innovation', 'quality automation', 'automation tool', 'existing automation tool']
 };
 
 export function analyzeQualitySignals(signals) {
@@ -40,8 +41,7 @@ export function analyzeQualitySignals(signals) {
   }
 
   const recommendations = found;
-
-  const order = ['block-for-triage', 'add-coverage', 'dependency-automation', 'accessibility-audit'];
+  const order = ['block-for-triage', 'add-coverage', 'dependency-automation', 'accessibility-audit', 'quality-automation-roadmap'];
   recommendations.sort((a, b) => order.indexOf(a) - order.indexOf(b));
 
   const summary = recommendations.length === 0
@@ -52,19 +52,11 @@ export function analyzeQualitySignals(signals) {
 }
 
 export function calculateReadinessScore(recommendations) {
-  if (!Array.isArray(recommendations) || recommendations.length === 0) {
-    return 100;
-  }
-
+  if (!Array.isArray(recommendations) || recommendations.length === 0) return 100;
   let score = 100;
   for (const rec of recommendations) {
-    if (rec === 'block-for-triage') {
-      score -= 20;
-    } else {
-      score -= 15;
-    }
+    score -= (rec === 'block-for-triage' ? 20 : 15);
   }
-
   return Math.max(0, score);
 }
 
@@ -176,14 +168,16 @@ function renderQualityAutomationPlannerPage(lang = DEFAULT_LANGUAGE) {
         'block-for-triage': ['bug', 'crash', 'error', 'failure', 'triage', 'critical', 'block', 'regression', 'incident', 'outage', 'broken', 'defect'],
         'add-coverage': ['test', 'coverage', 'unit', 'spec', 'jest', 'vitest', 'missing test', 'untested', 'no tests', 'untested code'],
         'dependency-automation': ['dependency', 'npm', 'outdated', 'cve', 'vulnerability', 'dependabot', 'audit', 'package', 'upgrade', 'patch', 'security advisory'],
-        'accessibility-audit': ['accessibility', 'a11y', 'screen reader', 'wcag', 'contrast', 'aria', 'keyboard', 'focus', 'alt text', 'semantic', 'colorblind', 'screenreader']
+        'accessibility-audit': ['accessibility', 'a11y', 'screen reader', 'wcag', 'contrast', 'aria', 'keyboard', 'focus', 'alt text', 'semantic', 'colorblind', 'screenreader'],
+        'quality-automation-roadmap': ['kanban', 'recurring', 'proposal', 'innovation', 'quality automation', 'automation tool', 'existing automation tool']
       };
 
       const REC_LABELS = {
         'block-for-triage': { label: 'Block for Triage', color: 'bg-danger-100 text-danger-700 dark:bg-danger-900/30 dark:text-danger-300 border-danger-200 dark:border-danger-800' },
         'add-coverage': { label: 'Add Coverage', color: 'bg-warning-100 text-warning-700 dark:bg-warning-900/30 dark:text-warning-300 border-warning-200 dark:border-warning-800' },
         'dependency-automation': { label: 'Dependency Automation', color: 'bg-info-100 text-info-700 dark:bg-info-900/30 dark:text-info-300 border-info-200 dark:border-info-800' },
-        'accessibility-audit': { label: 'Accessibility Audit', color: 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300 border-primary-200 dark:border-primary-800' }
+        'accessibility-audit': { label: 'Accessibility Audit', color: 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300 border-primary-200 dark:border-primary-800' },
+        'quality-automation-roadmap': { label: 'Quality Automation Roadmap', color: 'bg-success-100 text-success-700 dark:bg-success-900/30 dark:text-success-300 border-success-200 dark:border-success-800' }
       };
 
       function analyzeQualitySignals(signals) {
@@ -205,7 +199,7 @@ function renderQualityAutomationPlannerPage(lang = DEFAULT_LANGUAGE) {
           }
         }
         const recommendations = found;
-        const order = ['block-for-triage', 'add-coverage', 'dependency-automation', 'accessibility-audit'];
+        const order = ['block-for-triage', 'add-coverage', 'dependency-automation', 'accessibility-audit', 'quality-automation-roadmap'];
         recommendations.sort((a, b) => order.indexOf(a) - order.indexOf(b));
         const summary = recommendations.length === 0
           ? 'No actionable quality signals detected.'
@@ -230,7 +224,7 @@ function renderQualityAutomationPlannerPage(lang = DEFAULT_LANGUAGE) {
         els.recommendationsList.innerHTML = recommendations.map(rec => {
           const meta = REC_LABELS[rec] || { label: rec, color: '' };
           return '<div class="flex items-center gap-3 p-3 rounded-lg border ' + meta.color + '">' +
-            '<span class="text-lg">' + (rec === 'block-for-triage' ? '🚫' : rec === 'add-coverage' ? '📈' : rec === 'dependency-automation' ? '📦' : '♿') + '</span>' +
+            '<span class="text-lg">' + (rec === 'block-for-triage' ? '🚫' : rec === 'add-coverage' ? '📈' : rec === 'dependency-automation' ? '📦' : rec === 'accessibility-audit' ? '♿' : '🗺️') + '</span>' +
             '<span class="font-semibold text-sm">' + meta.label + '</span>' +
             '</div>';
         }).join('');

@@ -70,6 +70,14 @@ describe('analyzeQualitySignals', () => {
     const result = analyzeQualitySignals(['Test coverage missing', 'Accessibility issue']);
     expect(result.summary).toContain('2');
   });
+
+  it('detects quality signals from recurring Kanban innovation proposals (refs #34 accessibility, #394 Dependabot)', () => {
+    const result = analyzeQualitySignals([
+      '[Innovation Proposal] Build a never quality existing automation tool from recurring Kanban demand'
+    ]);
+    expect(result.recommendations).toEqual(['quality-automation-roadmap']);
+    expect(result.summary).toBe('1 recommendation identified.');
+  });
 });
 
 describe('calculateReadinessScore', () => {
