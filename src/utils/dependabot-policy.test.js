@@ -63,10 +63,40 @@ describe('dependabot.yml policy', () => {
       expect(block).toMatch(/include: "scope"/);
     });
 
+    it('should disable automatic rebase to reduce CI churn', () => {
+      expect(block).toMatch(/rebase-strategy:\s*"disabled"/);
+    });
+
     it('should ignore wrangler and tailwindcss v4', () => {
       expect(block).toMatch(/dependency-name: "wrangler"/);
       expect(block).toMatch(/dependency-name: "tailwindcss"/);
       expect(block).toMatch(/versions:\s*\[\s*"4\.x"\s*\]/s);
+    });
+
+    it('should guard major updates with version-constrained ignore entries', () => {
+      // Every ignore entry must carry either a versions constraint on a major
+      // range (e.g. "4.x") or an explicit comment explaining full-ignore
+      // rationale — this proves major-update protection is intentional.
+      const ignoreSection = block.match(/ignore:[\s\S]*?(?=\n\s+groups:|\n\s+package-ecosystem:|$)/);
+      expect(ignoreSection).toBeTruthy();
+
+      const entries = [...block.matchAll(/-\s+dependency-name:\s*"([^"]+)"[\s\S]*?(?=-\s+dependency-name|\n\s+groups:|\n\s+package-ecosystem:|$)/g)];
+
+      // Must have at least one ignore entry (guard is present)
+      expect(entries.length).toBeGreaterThanOrEqual(1);
+
+      // Each ignore entry should either specify a versions constraint
+      // (scoped major-version guard) or the dependency-name must be "wrangler"
+      // which is fully-ignored because it's a managed runtime package.
+      for (const entry of entries) {
+        const fullMatch = entry[0];
+        const hasVersionConstraint = /versions:\s*\[/.test(fullMatch);
+        const isManagedRuntime = /dependency-name:\s*"wrangler"/.test(fullMatch);
+        expect(
+          hasVersionConstraint || isManagedRuntime,
+          `Ignore entry for "${entry[1]}" must have a versions constraint or be a managed runtime package`
+        ).toBe(true);
+      }
     });
 
     it('should separate production and development dependency groups', () => {
