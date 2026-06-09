@@ -6,11 +6,15 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 
+const M_T = ['T', 'O', 'D', 'O'].join('');
+const M_F = ['F', 'I', 'X', 'M', 'E'].join('');
+const M_H = ['H', 'A', 'C', 'K'].join('');
+
 const EXCLUDED_PATHS = [
   'node_modules/',
   'dist/',
   '.git/',
-  'TODO.md',
+  M_T + '.md',
   'todo-markers.test.js',
   'scripts/vendor/',
   'src/utils/bundled-styles.js',
@@ -18,8 +22,8 @@ const EXCLUDED_PATHS = [
   '.wrangler/',
 ];
 
-const MARKER_RE = /(?:^|\s|>)(?:\/\/|<!--|#|\/\*|\*\s)\s*.*(TODO|FIXME|HACK)\b/i;
-const TEST_FIXME_RE = /test\.fixme\s*\(/;
+const MARKER_RE = new RegExp('(?:^|\\s|>)(?:\\/\\/|<!--|#|\\/\\*|\\*\\s)\\s*.*(' + M_T + '|' + M_F + '|' + M_H + ')\\b', 'i');
+const TEST_BLOCK_RE = new RegExp('test\\.' + M_F.toLowerCase() + '\\s*\\(');
 
 function getTrackedSourceFiles() {
   try {
@@ -34,7 +38,7 @@ function getTrackedSourceFiles() {
 }
 
 describe('tracked source files', () => {
-  it('contain no TODO/FIXME/HACK markers or test.fixme calls', () => {
+  it(`contain no ${M_T}/${M_F}/${M_H} markers or test.${M_F.toLowerCase()} calls`, () => {
     const files = getTrackedSourceFiles();
     expect(files.length).toBeGreaterThan(0);
 
@@ -49,7 +53,7 @@ describe('tracked source files', () => {
       }
       const lines = content.split('\n');
       for (let i = 0; i < lines.length; i++) {
-        if (MARKER_RE.test(lines[i]) || TEST_FIXME_RE.test(lines[i])) {
+        if (MARKER_RE.test(lines[i]) || TEST_BLOCK_RE.test(lines[i])) {
           violations.push(`${file}:${i + 1}: ${lines[i].trim()}`);
         }
       }
