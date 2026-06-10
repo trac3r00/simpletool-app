@@ -239,7 +239,7 @@ while ((m = regex.exec(str)) !== null) {
 
   const scripts = `
     <!-- Load Railroad Diagrams Library -->
-    <script src="/vendor/railroad-diagrams.min.js" integrity="sha384-M10gI7D4aT8+mWMpaNz3obIduaOQ235N0WLkY93+gcnVpD5FP/ht9cLYKYp3Begx" crossorigin="anonymous" defer></script>
+    <script src="/vendor/railroad-diagrams.min.js" integrity="sha384-YdMeBSsZY+jPBk0rvaqrK8azzGbq4/u4q0mUM0hvkB2lwutweqQcwoVyiM8hhz6G" crossorigin="anonymous" defer></script>
     <style>
       svg.railroad-diagram {
           background-color: hsl(30,20%,95%);
