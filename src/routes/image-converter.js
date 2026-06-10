@@ -181,7 +181,7 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
 
            <!-- Convert Button -->
            <button id="convert-btn" disabled data-tooltip="Convert image to the selected format and size" data-i18n-tooltip="tools.image-converter.ui.tip2"
-             class="w-full py-4 px-6 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+             class="btn btn-primary w-full py-4 px-6 disabled:opacity-50 disabled:cursor-not-allowed">
              <span id="convert-spinner" class="spinner-sm hidden" style="display:inline-block;vertical-align:middle;margin-right:6px;border-color:rgba(255,255,255,0.3);border-top-color:#fff;"></span>
              <span data-i18n="tools.image-converter.ui.button0">🔄 Convert & Resize Image</span>
            </button>
@@ -236,7 +236,7 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
 
             <!-- Download Button -->
             <button id="download-btn" disabled
-              class="w-full mt-4 py-3 px-6 bg-gradient-to-r from-green-500 to-emerald-500 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+              class="btn btn-secondary w-full mt-4 py-3 px-6 disabled:opacity-50 disabled:cursor-not-allowed">
               <span data-i18n="tools.image-converter.ui.button1">💾 Download Converted Image</span>
             </button>
           </div>
