@@ -59,7 +59,8 @@ describe('dependabot.yml policy', () => {
     });
 
     it('should preserve commit-message prefix and scope', () => {
-      expect(block).toMatch(/prefix: "chore\(deps\)"/);
+      expect(block).toMatch(/prefix: "chore"/);
+      expect(block).not.toMatch(/prefix: "chore\(deps\)"/);
       expect(block).toMatch(/include: "scope"/);
     });
 
@@ -158,7 +159,8 @@ describe('dependabot.yml policy', () => {
     });
 
     it('should preserve commit-message prefix and scope', () => {
-      expect(block).toMatch(/prefix: "chore\(deps\)"/);
+      expect(block).toMatch(/prefix: "chore"/);
+      expect(block).not.toMatch(/prefix: "chore\(deps\)"/);
       expect(block).toMatch(/include: "scope"/);
     });
 
