@@ -6,6 +6,10 @@
 
 **Stack:** Cloudflare Workers (V8 isolates), Vanilla JS, Tailwind CSS 3, Vitest, Playwright.
 
+## Merge & Release Policy
+
+See `docs/RELEASING.md` — merge checklist (CI green + complete PR body + one-logical-change), 15-min soak rule between deploy-affecting merges, no direct pushes to main, semver tagging, hotfix flow.
+
 ## Build / Test / Deploy
 
 ```bash
