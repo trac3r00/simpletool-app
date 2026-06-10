@@ -62,7 +62,7 @@ export async function handleLogViewerRoutes(request, url) {
              <button id="toggle-info" data-tooltip="Show/hide INFO level messages" data-i18n-tooltip="tools.log-viewer.ui.tip2" class="flex-1 px-3 py-2 rounded-lg text-xs font-medium bg-info-100 text-info-800 dark:bg-info-900/30 dark:text-info-300 border border-transparent hover:border-info-300 transition-all ring-2 ring-info-500 ring-offset-1 dark:ring-offset-surface-900" data-active="true">INFO</button>
              <button id="toggle-warn" class="flex-1 px-3 py-2 rounded-lg text-xs font-medium bg-warning-100 text-warning-800 dark:bg-warning-900/30 dark:text-warning-300 border border-transparent hover:border-warning-300 transition-all ring-2 ring-warning-500 ring-offset-1 dark:ring-offset-surface-900" data-active="true">WARN</button>
              <button id="toggle-error" class="flex-1 px-3 py-2 rounded-lg text-xs font-medium bg-error-100 text-error-800 dark:bg-error-900/30 dark:text-error-300 border border-transparent hover:border-error-300 transition-all ring-2 ring-error-500 ring-offset-1 dark:ring-offset-surface-900" data-active="true">ERR</button>
-            <button id="toggle-other" class="flex-1 px-3 py-2 rounded-lg text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300 border border-transparent hover:border-gray-300 transition-all ring-2 ring-gray-500 ring-offset-1 dark:ring-offset-surface-900" data-active="true">OTHER</button>
+            <button id="toggle-other" class="flex-1 px-3 py-2 rounded-lg text-xs font-medium bg-surface-100 text-surface-800 dark:bg-surface-800 dark:text-surface-300 border border-transparent hover:border-surface-300 transition-all ring-2 ring-surface-500 ring-offset-1 dark:ring-offset-surface-900" data-active="true">OTHER</button>
           </div>
         </div>
         
@@ -93,7 +93,7 @@ export async function handleLogViewerRoutes(request, url) {
         </div>
 
         <!-- Virtual Scroll Container -->
-        <div id="log-container" class="flex-1 overflow-y-auto relative custom-scrollbar bg-[#1e1e1e] text-gray-300 font-mono text-sm leading-6">
+        <div id="log-container" class="flex-1 overflow-y-auto relative custom-scrollbar bg-[#1e1e1e] text-surface-300 font-mono text-sm leading-6">
           <div id="log-phantom" class="absolute top-0 left-0 w-full h-px"></div>
           <div id="log-content" class="absolute top-0 left-0 w-full">
             <!-- Rows injected here -->
