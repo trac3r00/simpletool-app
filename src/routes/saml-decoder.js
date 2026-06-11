@@ -33,8 +33,8 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
   const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
 
   const content = `
-    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
-      <header class="bg-white/90 dark:bg-surface-900/80 border border-surface-200 dark:border-surface-800 rounded-3xl shadow-xl p-8">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
+      <header class="bg-white/90 dark:bg-surface-900/80 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-8">
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
           <div>
             <p class="text-xs font-semibold uppercase tracking-[0.35em] text-primary-600 dark:text-primary-300 mb-3" data-i18n="tools.saml-decoder.ui.desc11">Enterprise SSO</p>
@@ -42,14 +42,14 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
             <p class="text-lg text-surface-600 dark:text-surface-300 max-w-2xl" data-i18n="tools.saml-decoder.ui.desc12">Paste a Base64 SAML response or raw XML to inspect issuers, subjects, attributes, and validity windows instantly—no network requests.</p>
           </div>
           <div class="flex flex-col gap-3 text-sm text-surface-600 dark:text-surface-300">
-             <div class="flex items-center gap-3 bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-800 rounded-2xl px-4 py-3">
+             <div class="flex items-center gap-3 bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-800 rounded-xl px-4 py-3">
                <span class="text-xl">🔐</span>
                <div>
                  <p class="font-semibold" data-i18n="tools.saml-decoder.ui.heading11">Client-side only</p>
                  <p class="text-surface-500 dark:text-surface-400" data-i18n="tools.saml-decoder.ui.desc13">Nothing leaves your browser.</p>
                </div>
              </div>
-             <div class="flex items-center gap-3 bg-info-50 dark:bg-info-900/20 border border-info-200 dark:border-info-800 rounded-2xl px-4 py-3">
+             <div class="flex items-center gap-3 bg-info-50 dark:bg-info-900/20 border border-info-200 dark:border-info-800 rounded-xl px-4 py-3">
                <span class="text-xl">⚡</span>
                <div>
                  <p class="font-semibold" data-i18n="tools.saml-decoder.ui.heading12">Redirect & POST aware</p>
@@ -61,12 +61,12 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
       </header>
 
       <section class="grid gap-6 lg:grid-cols-2">
-        <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-3xl shadow-xl p-6 space-y-4">
+        <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 space-y-4">
           <div class="flex items-center justify-between">
             <label for="saml-input" class="text-sm font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide"><span data-i18n="tools.saml-decoder.ui.label7">SAML response</span> ${infoHint('Paste Base64 SAMLResponse or raw XML; toggle inflate for redirect payloads.')}</label>
             <button id="clear-btn" type="button" class="btn btn-ghost btn-sm"><span data-i18n="tools.saml-decoder.ui.button0">Clear</span></button>
           </div>
-          <textarea id="saml-input" data-tooltip="Paste Base64-encoded SAML request or response" data-i18n-tooltip="tools.saml-decoder.ui.tip0" class="w-full min-h-[220px] rounded-2xl border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-950 px-4 py-3 font-mono text-sm text-surface-900 dark:text-surface-100" placeholder="Paste the Base64 value of SAMLResponse or raw XML here" data-i18n-placeholder="tools.saml-decoder.ui.placeholder8"></textarea>
+          <textarea id="saml-input" data-tooltip="Paste Base64-encoded SAML request or response" data-i18n-tooltip="tools.saml-decoder.ui.tip0" class="w-full min-h-[220px] rounded-xl border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-950 px-4 py-3 font-mono text-sm text-surface-900 dark:text-surface-100" placeholder="Paste the Base64 value of SAMLResponse or raw XML here" data-i18n-placeholder="tools.saml-decoder.ui.placeholder8"></textarea>
           <div class="flex flex-wrap gap-4 text-sm text-surface-600 dark:text-surface-400">
             <label class="inline-flex items-center gap-2">
               <input id="inflate-toggle" type="checkbox" data-tooltip="Decompress deflated SAML messages" data-i18n-tooltip="tools.saml-decoder.ui.tip1" class="accent-purple-600" checked />
@@ -81,11 +81,11 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
              <button id="decode-btn" data-tooltip="Decode and parse the SAML message" data-i18n-tooltip="tools.saml-decoder.ui.tip3" class="btn btn-primary"><span data-i18n="tools.saml-decoder.ui.button7">Decode response</span><span aria-hidden="true">→</span></button>
              <button id="sample-btn" type="button" class="btn btn-secondary"><span data-i18n="tools.saml-decoder.ui.button1">Load sample</span></button>
           </div>
-           <div id="saml-error" role="alert" class="hidden rounded-2xl border border-error-200 dark:border-error-800 bg-error-50 dark:bg-error-900/30 text-sm text-error-700 dark:text-error-200 px-4 py-3" data-i18n="tools.saml-decoder.ui.error0">Parsing error</div>
+           <div id="saml-error" role="alert" class="hidden rounded-xl border border-error-200 dark:border-error-800 bg-error-50 dark:bg-error-900/30 text-sm text-error-700 dark:text-error-200 px-4 py-3" data-i18n="tools.saml-decoder.ui.error0">Parsing error</div>
         </div>
 
         <div id="saml-summary-pane" class="space-y-6 hidden">
-          <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-3xl shadow-xl p-6">
+          <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6">
             <div class="flex items-center justify-between mb-4">
               <h2 class="text-lg font-bold text-surface-900 dark:text-white" data-i18n="tools.saml-decoder.ui.heading9">Quick summary</h2>
               <span id="validity-badge" class="text-xs font-semibold px-3 py-1 rounded-full bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-300" data-i18n="tools.saml-decoder.ui.desc15">Awaiting input</span>
@@ -100,7 +100,7 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
             </div>
           </div>
 
-          <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-3xl shadow-xl p-6">
+          <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6">
             <div class="flex items-center justify-between mb-4">
               <h2 class="text-lg font-bold text-surface-900 dark:text-white" data-i18n="tools.saml-decoder.ui.heading10">Attributes</h2>
               <button id="copy-attributes" class="btn btn-ghost btn-xs" disabled><span data-i18n="tools.saml-decoder.ui.button2">Copy JSON</span></button>
@@ -117,7 +117,7 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
       </section>
 
       <section id="decoded-panel" class="hidden space-y-6">
-        <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-3xl shadow-xl p-6">
+        <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6">
           <div class="flex flex-wrap gap-3 border-b border-surface-200 dark:border-surface-800 pb-3 mb-4" role="tablist">
             <button class="tab-button active" data-panel="xml"><span data-i18n="tools.saml-decoder.ui.button3">Pretty XML</span></button>
             <button class="tab-button" data-panel="assertion"><span data-i18n="tools.saml-decoder.ui.button4">Assertion details</span></button>
@@ -125,7 +125,7 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
           </div>
           <div id="panel-xml" class="tab-panel space-y-3">
             <div class="flex justify-end"><button id="copy-xml" class="btn btn-ghost btn-xs"><span data-i18n="tools.saml-decoder.ui.button6">Copy XML</span></button></div>
-            <pre id="xml-output" class="bg-surface-900 text-surface-100 p-4 rounded-2xl overflow-x-auto text-sm">—</pre>
+            <pre id="xml-output" class="bg-surface-900 text-surface-100 p-4 rounded-xl overflow-x-auto text-sm">—</pre>
           </div>
           <div id="panel-assertion" class="tab-panel hidden space-y-3 text-sm text-surface-700 dark:text-surface-200">
             <div class="grid gap-4">
@@ -145,7 +145,7 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
           </div>
           <div id="panel-json" class="tab-panel hidden">
             <div class="flex justify-end mb-2"><button id="copy-json" class="btn btn-ghost btn-xs"><span data-i18n="tools.saml-decoder.ui.button2">Copy JSON</span></button></div>
-            <pre id="json-output" class="bg-surface-900 text-surface-100 p-4 rounded-2xl overflow-x-auto text-sm">—</pre>
+            <pre id="json-output" class="bg-surface-900 text-surface-100 p-4 rounded-xl overflow-x-auto text-sm">—</pre>
           </div>
         </div>
       </section>
@@ -163,7 +163,7 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
           </table>` }
       ])}
     </main>
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
       ${createEducationalSection([
         {
           title: 'What is SAML?',
