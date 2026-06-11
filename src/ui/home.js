@@ -55,7 +55,7 @@ export function renderHomePage({ isDev = false, lang = DEFAULT_LANGUAGE } = {}) 
   ${getNavigationHTML({ maxWidth: 'max-w-7xl', lang: currentLang })}
 
   <!-- Hero Section -->
-  <div id="main-content"></div>
+  <div id="main-content" tabindex="-1"></div>
   <header class="pt-16 pb-12 sm:pt-24 sm:pb-16 bg-white dark:bg-surface-950 border-b border-surface-200 dark:border-surface-800 hexagon-pattern">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
       <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-surface-900 dark:text-surface-50 mb-6">
