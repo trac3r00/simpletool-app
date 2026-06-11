@@ -1,12 +1,34 @@
 # Default fallback owner for everything else
 * @trac3r00
 
-# Core utilities blanket
+# Repository governance and automation
+.github/CODEOWNERS @trac3r00
+.github/dependabot.yml @trac3r00
+.github/workflows/ @trac3r00
+.github/PULL_REQUEST_TEMPLATE.md @trac3r00
+
+# Package manifests and dependency lockfiles
+package.json @trac3r00
+bun.lock @trac3r00
+.npmrc @trac3r00
+
+# Deploy, release, and publish configuration
+wrangler.toml @trac3r00
+.wranglerignore @trac3r00
+docs/RELEASING.md @trac3r00
+
+# Infrastructure and security documentation
+docs/adsense-integration.md @trac3r00
+docs/adsense-rollout-checklist.md @trac3r00
+docs/content-safety-checklist.md @trac3r00
+docs/monetization-content-safety.md @trac3r00
+
+# Worker entry point, routes, and shared runtime utilities
+src/worker.js @trac3r00
+src/routes/ @trac3r00
 src/utils/ @trac3r00
 
-# Security-critical files (explicit override after utils blanket)
+# Security-sensitive utilities
 src/utils/security.js @trac3r00
-src/worker.js @trac3r00
-
-# Core routes owned by the main product owner
-src/routes/ @trac3r00
+src/utils/rate-limiter-do.js @trac3r00
+src/utils/vendor-sri.js @trac3r00
