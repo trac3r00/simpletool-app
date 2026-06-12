@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { handleJSONFormatterRoutes } from '../../src/routes/json-formatter.js';
 import { getToolsForEnvironment } from '../../src/utils/tool-registry.js';
 
 const tools = getToolsForEnvironment(true);
@@ -453,6 +454,21 @@ test.describe('Accessibility audit', () => {
     const auditedSet = new Set(AUDITED_ROUTES);
     const staleKeys = Object.keys(BASELINE_VIOLATIONS).filter((r) => !auditedSet.has(r));
     expect(staleKeys).toEqual([]);
+  });
+
+  test('skip link moves keyboard focus to the main content region', async ({ page }) => {
+    const url = new URL('https://simpletool.test/json-formatter');
+    const response = await handleJSONFormatterRoutes(new Request(url, { method: 'GET' }), url);
+    await page.setContent(await response.text(), { waitUntil: 'domcontentloaded' });
+
+    await page.keyboard.press('Tab');
+
+    const skipLink = page.getByRole('link', { name: 'Skip to main content' });
+    await expect(skipLink).toBeFocused();
+
+    await page.keyboard.press('Enter');
+
+    await expect(page.locator('#main-content')).toBeFocused();
   });
 
   // ── 2. Formatter output ───────────────────────────────────────

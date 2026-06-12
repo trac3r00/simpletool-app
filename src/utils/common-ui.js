@@ -1123,7 +1123,7 @@ export function createPageTemplate(options) {
   ${getNavigationHTML({ lang: currentLang })}
   <div class="flex-grow" role="presentation">
     <div class="flex">
-      <div id="main-content" class="flex-1 min-w-0 overflow-x-hidden">
+      <div id="main-content" tabindex="-1" class="flex-1 min-w-0 overflow-x-hidden">
         ${content}
       </div>
       ${sidebarAd}

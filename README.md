@@ -358,7 +358,7 @@ SimpleTool App is actively working toward WCAG 2.1 Level AA compliance. Each rel
 **Shared UX patterns across tools:**
 - Consistent navigation and theming
 - Predictable UI patterns with mirrored layouts
-- Skip-to-content links (planned) and preserved heading order
+- Skip-to-content links and preserved heading order
 - Resizable text without loss of functionality
 
 ### Current Accessibility Status & Fixes (2025-11-20 update)
@@ -378,7 +378,7 @@ SimpleTool App is actively working toward WCAG 2.1 Level AA compliance. Each rel
 
 **Remaining improvements:**
 - [ ] Further increase contrast for some tool icon headers in dark mode
-- [ ] Add skip-to-content link for keyboard users
+- [x] Add skip-to-content link for keyboard users
 - [x] Registry-driven automated accessibility audit via Playwright + axe-core (`npm run test:a11y`)
 - [ ] Implement focus-trap in modal dialogs (if any are added)
 
