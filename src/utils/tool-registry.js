@@ -463,6 +463,17 @@ export const TOOLS = [
     relatedTools: ['token-counter', 'markdown-editor', 'json-formatter', 'mock-data-generator']
   },
   {
+    id: 'public-repos-yml-builder',
+    name: 'Public Repos YAML Builder',
+    icon: '📦',
+    description: 'Generate repos.yml inventories and audit snippets for public repo automation.',
+    path: '/public-repos-yml-builder',
+    category: 'utils',
+    keywords: 'repos.yml, public repositories, github actions, kanban, automation, branch protection, sha pinning',
+    badge: 'NEW',
+    relatedTools: ['yaml-toml-converter', 'secret-scanner', 'env-var-manager', 'markdown-editor']
+  },
+  {
     id: 'sql-formatter',
     name: 'SQL Formatter & Validator',
     icon: '🗄️',

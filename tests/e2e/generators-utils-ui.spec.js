@@ -145,6 +145,20 @@ test.describe('Generator and utility tools UI interactions', () => {
     await expect(page.locator('#copy-system')).toBeEnabled();
   });
 
+  test('public-repos-yml-builder generates YAML, audit workflow, and findings', async ({ page }) => {
+    await openTool(page, '/public-repos-yml-builder');
+
+    await page.locator('#repo-input').fill('trac3r00/simpletool-app team=maintainers cadence=weekly sha=missing branch=protected secrets=ok monetization=todo');
+    await page.locator('#policy-monetization-readiness').check();
+    await page.locator('#build-inventory').click();
+
+    await expect(page.locator('#repos-yaml-output')).toHaveValue(/slug: trac3r00\/simpletool-app/);
+    await expect(page.locator('#repos-yaml-output')).toHaveValue(/monetization_readiness: todo/);
+    await expect(page.locator('#actions-output')).toHaveValue(/github\/codeql-action\/init@v3/);
+    await expect(page.locator('#findings-list')).toContainText('SHA pinning');
+    await expect(page.locator('#findings-list')).toContainText('monetization readiness');
+  });
+
   // QUARANTINED: pre-existing failure surfaced when CI first ran (PR #11).
   // `#svg-output` never receives `<svg`-prefixed value (toHaveValue fails after 3 retries).
   // Likely cause: regression in src/routes/svg-optimizer.js (currently has
