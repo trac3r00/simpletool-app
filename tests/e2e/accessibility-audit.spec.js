@@ -145,7 +145,6 @@ const BASELINE_VIOLATIONS = {
   ],
   '/public-repos-yml-builder': [
     { id: 'color-contrast', impact: 'serious' },
-    { id: 'definition-list', impact: 'serious' },
     { id: 'link-in-text-block', impact: 'serious' },
   ],
   '/qr-code': [

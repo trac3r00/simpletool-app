@@ -28,8 +28,7 @@ function renderPublicReposYmlBuilderPage(lang = DEFAULT_LANGUAGE) {
     title,
     description,
     [
-      { text: '<span data-i18n="tools.public-repos-yml-builder.ui.badge0">Client-Side Only</span>', tooltip: 'All parsing and YAML generation runs in your browser.' },
-      { text: '<span data-i18n="tools.public-repos-yml-builder.ui.badge1">Kanban Automation</span>', tooltip: 'Build inventories for recurring public repository audits.' }
+      { text: '<span data-i18n="tools.public-repos-yml-builder.ui.badge0">Client-Side Only</span>', tooltip: 'All parsing and YAML generation runs in your browser.' }
     ],
     { toolId: 'public-repos-yml-builder' }
   );
@@ -55,6 +54,7 @@ function renderPublicReposYmlBuilderPage(lang = DEFAULT_LANGUAGE) {
                 <button id="load-sample" class="btn btn-ghost btn-xs" type="button" data-i18n="tools.public-repos-yml-builder.ui.button0">Sample</button>
               </div>
               <textarea id="repo-input" rows="13" class="input-mono resize-y" placeholder="${sampleRepos}" data-i18n-placeholder="tools.public-repos-yml-builder.ui.placeholder0"></textarea>
+              <p class="mt-3 text-xs font-semibold uppercase tracking-wide text-surface-700 dark:text-surface-300" data-i18n="tools.public-repos-yml-builder.ui.badge1">Kanban Automation</p>
               <p class="mt-2 text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.public-repos-yml-builder.ui.desc1">Accepted metadata: team, cadence, topic, sha, branch, secrets, monetization, notes.</p>
             </div>
 
