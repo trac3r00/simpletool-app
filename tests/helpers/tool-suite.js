@@ -111,6 +111,18 @@ export const TOOL_ACTIONS = {
     }
   },
 
+  'public-repos-yml-builder': {
+    async action(page) {
+      await page.locator('#repo-input').fill('trac3r00/simpletool-app team=maintainers sha=missing branch=protected secrets=ok');
+      await page.locator('#build-inventory').click();
+    },
+    async waitFor(page) {
+      await expect(page.locator('#repos-yaml-output')).toHaveValue(/trac3r00\/simpletool-app/);
+      await expect(page.locator('#actions-output')).toHaveValue(/Public repos audit/);
+      await expect(page.locator('#findings-list')).toContainText('SHA pinning');
+    }
+  },
+
   'http-status-reference': {
     async action(page) {
       await page.locator('#status-search').fill('404');

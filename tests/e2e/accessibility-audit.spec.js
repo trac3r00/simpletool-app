@@ -143,6 +143,10 @@ const BASELINE_VIOLATIONS = {
     { id: 'heading-order', impact: 'moderate' },
     { id: 'link-in-text-block', impact: 'serious' },
   ],
+  '/public-repos-yml-builder': [
+    { id: 'color-contrast', impact: 'serious' },
+    { id: 'link-in-text-block', impact: 'serious' },
+  ],
   '/qr-code': [
     { id: 'color-contrast', impact: 'serious' },
     { id: 'link-in-text-block', impact: 'serious' },
