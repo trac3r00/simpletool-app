@@ -133,6 +133,15 @@ npm run dev
 # Visit http://localhost:8787
 ```
 
+### Contributing, Merging, and Releases
+
+Before opening or merging a PR, read [docs/RELEASING.md](docs/RELEASING.md).
+It is the source of truth for required merge gates, the production deploy
+policy, hotfix handling, semver tagging, and changelog/release-note
+expectations. The pull request template in
+[.github/PULL_REQUEST_TEMPLATE.md](.github/PULL_REQUEST_TEMPLATE.md) lists the
+evidence contributors must provide for review.
+
 ### Deployment
 
 ```bash
@@ -232,14 +241,14 @@ Example `ADSENSE_SLOTS`:
 - Added regression tests to ensure each new endpoint responds with CSP-hardened HTML.
 
 **Documentation clarity**
-- README now carries only the latest highlights (full history lives in `CHANGELOG.md`), Accessibility "Expected Metrics" → **Target Metrics**, and the rate-limit note explicitly calls out that throttling happens at the Cloudflare edge while tools remain 100% client-side.
+- README now carries only the latest highlights (full history lives in `changelog.md`), Accessibility "Expected Metrics" → **Target Metrics**, and the rate-limit note explicitly calls out that throttling happens at the Cloudflare edge while tools remain 100% client-side.
 - Modern Design section emphasizes that Tailwind CSS is pre-bundled into the worker—no external CDN dependency.
 
-> Need previous release notes? See [CHANGELOG.md](CHANGELOG.md) for the full history.
+> Need previous release notes? See [changelog.md](changelog.md) for the full history.
 
 ## Changelog
 
-See [CHANGELOG.md](CHANGELOG.md) for detailed version history and changes.
+See [changelog.md](changelog.md) for detailed version history and changes.
 
 ---
 

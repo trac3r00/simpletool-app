@@ -34,6 +34,12 @@ Closes #
 - Risk:
 - Rollback: revert this commit / 
 
+## Merge & release policy
+
+<!-- See docs/RELEASING.md for merge gates, deploy soak rules, hotfixes, semver tags, and changelog expectations. -->
+
+- [ ] I reviewed `docs/RELEASING.md` for the merge/release policy that applies to this PR
+
 ## Checklist
 
 - [ ] Regex in template literals double-escaped (`\\d` not `\d`)
