@@ -154,7 +154,7 @@ test.describe('Generator and utility tools UI interactions', () => {
 
     await expect(page.locator('#repos-yaml-output')).toHaveValue(/slug: trac3r00\/simpletool-app/);
     await expect(page.locator('#repos-yaml-output')).toHaveValue(/monetization_readiness: todo/);
-    await expect(page.locator('#actions-output')).toHaveValue(/github\/codeql-action\/init@v3/);
+    await expect(page.locator('#actions-output')).toHaveValue(/github\/codeql-action\/init@<codeql_action_init_commit_sha>/);
     await expect(page.locator('#findings-list')).toContainText('SHA pinning');
     await expect(page.locator('#findings-list')).toContainText('monetization readiness');
   });

@@ -33,7 +33,10 @@ describe('public-repos-yml-builder route rendering', () => {
     expect(text).toContain('branch protection');
     expect(text).toContain('secrets posture');
     expect(text).toContain('monetization readiness');
-    expect(text).toContain('github/codeql-action/init@');
+    expect(text).toContain('github/codeql-action/init@<codeql_action_init_commit_sha>');
+    expect(text).toContain('actions/checkout@<actions_checkout_commit_sha>');
+    expect(text).not.toContain('github/codeql-action/init@v3');
+    expect(text).not.toContain('actions/checkout@v4');
     expect(text).toContain('jsyaml.dump');
     expect(text).not.toContain('alert(');
   });
