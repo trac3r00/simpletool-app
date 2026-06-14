@@ -12,19 +12,21 @@ describe('createFeatureList', () => {
     expect(createFeatureList(undefined)).toBe('');
   });
 
-  it('renders single item as definition list', () => {
+  it('renders single item as a semantic feature list', () => {
     const result = createFeatureList([{ text: 'Feature One' }]);
-    expect(result).toBe('<dl data-feature-list><dd>Feature One</dd></dl>');
+    expect(result).toBe('<ul data-feature-list class="mt-2 flex flex-wrap gap-2 text-xs text-surface-600 dark:text-surface-400"><li>Feature One</li></ul>');
   });
 
-  it('renders multiple items as definition list', () => {
+  it('renders multiple items as semantic feature list items', () => {
     const result = createFeatureList([
       { text: 'Feature One' },
       { text: 'Feature Two' }
     ]);
     expect(result).toContain('data-feature-list');
-    expect(result).toContain('<dd>Feature One</dd>');
-    expect(result).toContain('<dd>Feature Two</dd>');
+    expect(result).not.toContain('<dl');
+    expect(result).not.toContain('<dd>');
+    expect(result).toContain('<li>Feature One</li>');
+    expect(result).toContain('<li>Feature Two</li>');
   });
 });
 
@@ -40,7 +42,7 @@ describe('createToolHeader', () => {
     expect(html).not.toContain('data-feature-list');
   });
 
-  it('renders with 1 pill - exactly 1 data-trust-pill attribute', () => {
+  it('renders with 1 pill - exactly 1 data-trust-pill marker attribute', () => {
     const html = createToolHeader(
       { emoji: '🔧' },
       'Test Tool',
@@ -48,13 +50,27 @@ describe('createToolHeader', () => {
       [{ text: 'Privacy First' }]
     );
     // Count occurrences of data-trust-pill attribute
-    const matches = html.match(/data-trust-pill="[^"]*"/g) || [];
+    const matches = html.match(/data-trust-pill(?:=|\s|>)/g) || [];
     expect(matches.length).toBe(1);
-    expect(html).toContain('data-trust-pill="Privacy First"');
+    expect(html).toContain('data-trust-pill');
+    expect(html).toContain('Privacy First');
     expect(html).not.toContain('data-feature-list');
   });
 
-  it('renders with 3 pills - 1 trust pill + feature list with 2 dd entries', () => {
+  it('renders HTML badge content without nesting markup inside attributes', () => {
+    const html = createToolHeader(
+      { emoji: '🔧' },
+      'Test Tool',
+      'Test description',
+      [{ text: '<span data-i18n="tools.test-tool.ui.badge0">Privacy First</span>' }]
+    );
+
+    expect(html).toContain('data-trust-pill');
+    expect(html).toContain('<span data-i18n="tools.test-tool.ui.badge0">Privacy First</span>');
+    expect(html).not.toContain('data-trust-pill="<span');
+  });
+
+  it('renders with 3 pills - 1 trust pill + feature list with 2 li entries', () => {
     const html = createToolHeader(
       { emoji: '🔧' },
       'Test Tool',
@@ -66,16 +82,19 @@ describe('createToolHeader', () => {
       ]
     );
     // Exactly 1 trust pill
-    const trustPills = html.match(/data-trust-pill="[^"]*"/g) || [];
+    const trustPills = html.match(/data-trust-pill(?:=|\s|>)/g) || [];
     expect(trustPills.length).toBe(1);
-    expect(html).toContain('data-trust-pill="Trust Pill"');
+    expect(html).toContain('data-trust-pill');
+    expect(html).toContain('Trust Pill');
 
     // Feature list with 2 demoted items
     expect(html).toContain('data-feature-list');
-    const ddMatches = html.match(/<dd>/g) || [];
-    expect(ddMatches.length).toBe(2);
-    expect(html).toContain('<dd>Feature Two</dd>');
-    expect(html).toContain('<dd>Feature Three</dd>');
+    const liMatches = html.match(/<li>/g) || [];
+    expect(liMatches.length).toBe(2);
+    expect(html).not.toContain('<dl');
+    expect(html).not.toContain('<dd>');
+    expect(html).toContain('<li>Feature Two</li>');
+    expect(html).toContain('<li>Feature Three</li>');
   });
 
   it('preserves existing Tailwind classes on pill', () => {
@@ -100,11 +119,14 @@ describe('createToolHeader', () => {
         { text: 'Demoted Feature' }
       ]
     );
-    expect(html).toContain('data-trust-pill="Trust Pill"');
+    expect(html).toContain('data-trust-pill');
+    expect(html).toContain('Trust Pill');
     expect(html).toContain('data-feature-list');
-    const ddMatches = html.match(/<dd>/g) || [];
-    expect(ddMatches.length).toBe(1);
-    expect(html).toContain('<dd>Demoted Feature</dd>');
+    const liMatches = html.match(/<li>/g) || [];
+    expect(liMatches.length).toBe(1);
+    expect(html).not.toContain('<dl');
+    expect(html).not.toContain('<dd>');
+    expect(html).toContain('<li>Demoted Feature</li>');
   });
 
   it('accepts toolId option correctly', () => {

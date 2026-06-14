@@ -37,6 +37,20 @@ describe('public-repos-not-automation route rendering', () => {
     expect(text).not.toContain('alert(');
   });
 
+  it('keeps both header badges without malformed definition-list feature markup', async () => {
+    const url = new URL('http://localhost/public-repos-not-automation');
+    const request = new Request(url, { method: 'GET' });
+    const response = await handlePublicReposNotAutomationRoutes(request, url);
+
+    const text = await response.text();
+    expect(text).toContain('tools.public-repos-not-automation.ui.badge0');
+    expect(text).toContain('Client-Side Only');
+    expect(text).toContain('tools.public-repos-not-automation.ui.badge1');
+    expect(text).toContain('Manual Stewardship');
+    expect(text).toContain('data-feature-list');
+    expect(text).not.toMatch(/<dl\b[^>]*data-feature-list[^>]*>\s*<dd>/);
+  });
+
   it('returns null for unmatched routes and 405 for unsupported methods', async () => {
     const missUrl = new URL('http://localhost/not-public-repos-not-automation');
     const missRequest = new Request(missUrl, { method: 'GET' });
