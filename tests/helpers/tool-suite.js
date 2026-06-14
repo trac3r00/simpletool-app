@@ -123,6 +123,18 @@ export const TOOL_ACTIONS = {
     }
   },
 
+  'public-repos-not-automation': {
+    async action(page) {
+      await page.locator('#repo-task-input').fill('repo: trac3r00/simpletool-app\ntask: public stale issue automation\nowner: maintainers');
+      await page.locator('#reason-low-frequency').check();
+      await page.locator('#build-decision').click();
+    },
+    async waitFor(page) {
+      await expect(page.locator('#decision-output')).toHaveValue(/Do not automate yet/);
+      await expect(page.locator('#checklist-output')).toHaveValue(/Keep automation disabled/);
+    }
+  },
+
   'http-status-reference': {
     async action(page) {
       await page.locator('#status-search').fill('404');

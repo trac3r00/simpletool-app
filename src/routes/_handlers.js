@@ -36,6 +36,7 @@ import { handleEmailAnalyzerRoutes as email_analyzer } from './email-analyzer.js
 import { handleTokenCounterRoutes as token_counter } from './token-counter.js';
 import { handlePromptTemplateBuilderRoutes as prompt_template_builder } from './prompt-template-builder.js';
 import { handlePublicReposYmlBuilderRoutes as public_repos_yml_builder } from './public-repos-yml-builder.js';
+import { handlePublicReposNotAutomationRoutes as public_repos_not_automation } from './public-repos-not-automation.js';
 import { handleSQLFormatterRoutes as sql_formatter } from './sql-formatter.js';
 import { handleEnvVarManagerRoutes as env_var_manager } from './env-var-manager.js';
 import { handleLadderGameRoutes as ladder_game } from './ladder-game.js';
@@ -92,6 +93,7 @@ export const handlersById = {
   'token-counter': token_counter,
   'prompt-template-builder': prompt_template_builder,
   'public-repos-yml-builder': public_repos_yml_builder,
+  'public-repos-not-automation': public_repos_not_automation,
   'sql-formatter': sql_formatter,
   'env-var-manager': env_var_manager,
   'ladder-game': ladder_game,
