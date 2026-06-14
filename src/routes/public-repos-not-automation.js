@@ -144,7 +144,7 @@ function renderPublicReposNotAutomationPage(lang = DEFAULT_LANGUAGE) {
           owner: $('decision-owner'),
           review: $('review-window'),
           threshold: $('automation-threshold'),
-          build: $('build-decision'),
+          decisionButton: $('build-decision'),
           clear: $('clear-decision'),
           sample: $('load-sample'),
           decision: $('decision-output'),
@@ -182,7 +182,8 @@ function renderPublicReposNotAutomationPage(lang = DEFAULT_LANGUAGE) {
         }
 
         function parseTaskInput(value) {
-          const lines = String(value || '').split(/\n+/).map((line) => line.trim()).filter(Boolean);
+          const text = value ? value.toString() : '';
+          const lines = text.split(/\n+/).map((line) => line.trim()).filter(Boolean);
           const fields = {};
           const freeform = [];
           lines.forEach((line) => {
@@ -260,12 +261,12 @@ function renderPublicReposNotAutomationPage(lang = DEFAULT_LANGUAGE) {
         }
 
         function updateStats(selected) {
-          els.reasonCount.textContent = String(selected.length);
+          els.reasonCount.textContent = selected.length.toLocaleString();
           els.decisionState.textContent = selected.length ? tr('manual', 'Manual') : tr('needsReason', 'Needs reason');
           els.reviewState.textContent = els.review.value;
         }
 
-        function build() {
+        function composeDecision() {
           clearError();
           const selected = selectedReasons();
           const input = els.task.value.trim();
@@ -308,10 +309,10 @@ function renderPublicReposNotAutomationPage(lang = DEFAULT_LANGUAGE) {
           }
         }
 
-        els.build.addEventListener('click', build);
+        els.decisionButton.addEventListener('click', composeDecision);
         els.sample.addEventListener('click', () => {
           els.task.value = sample;
-          build();
+          composeDecision();
         });
         els.clear.addEventListener('click', () => {
           els.task.value = '';
@@ -327,7 +328,7 @@ function renderPublicReposNotAutomationPage(lang = DEFAULT_LANGUAGE) {
         els.review.addEventListener('change', () => updateStats(selectedReasons()));
 
         els.task.value = sample;
-        build();
+        composeDecision();
       })();
     </script>
   `;
