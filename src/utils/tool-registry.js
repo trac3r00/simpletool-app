@@ -474,6 +474,17 @@ export const TOOLS = [
     relatedTools: ['yaml-toml-converter', 'secret-scanner', 'env-var-manager', 'markdown-editor']
   },
   {
+    id: 'public-repos-not-automation',
+    name: 'Public Repos Not Automation',
+    icon: '🛑',
+    description: 'Decide which public repository tasks should stay manual and generate a no-automation decision record.',
+    path: '/public-repos-not-automation',
+    category: 'utils',
+    keywords: 'public repositories, no automation, kanban, maintainers, manual stewardship, decision record, checklist',
+    badge: 'NEW',
+    relatedTools: ['public-repos-yml-builder', 'markdown-editor', 'secret-scanner', 'prompt-template-builder']
+  },
+  {
     id: 'sql-formatter',
     name: 'SQL Formatter & Validator',
     icon: '🗄️',

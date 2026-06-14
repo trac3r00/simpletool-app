@@ -191,6 +191,27 @@ test.describe('Generator and utility tools UI interactions', () => {
     await expect(page.locator('#actions-output')).toHaveValue(/actions\/checkout@<actions_checkout_commit_sha>/);
   });
 
+  test('public-repos-not-automation builds a manual decision record and checklist', async ({ page }) => {
+    await openTool(page, '/public-repos-not-automation');
+
+    await page.locator('#repo-task-input').fill([
+      'repo: trac3r00/simpletool-app',
+      'task: auto-close stale public issues from recurring Kanban demand',
+      'owner: maintainers',
+      'cadence: monthly',
+      'risk: high'
+    ].join('\n'));
+    await page.locator('#reason-low-frequency').check();
+    await page.locator('#automation-threshold').fill('Three manual runs, written policy, dry-run logs, and rollback owner.');
+    await page.locator('#build-decision').click();
+
+    await expect(page.locator('#decision-output')).toHaveValue(/Decision: Do not automate yet/);
+    await expect(page.locator('#decision-output')).toHaveValue(/Repository: trac3r00\/simpletool-app/);
+    await expect(page.locator('#decision-output')).toHaveValue(/Manual stewardship/);
+    await expect(page.locator('#checklist-output')).toHaveValue(/Keep automation disabled/);
+    await expect(page.locator('#checklist-output')).toHaveValue(/Three manual runs/);
+  });
+
   // QUARANTINED: pre-existing failure surfaced when CI first ran (PR #11).
   // `#svg-output` never receives `<svg`-prefixed value (toHaveValue fails after 3 retries).
   // Likely cause: regression in src/routes/svg-optimizer.js (currently has

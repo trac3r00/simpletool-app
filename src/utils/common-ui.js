@@ -1243,14 +1243,14 @@ export function getClipboardSafetyScript() {
 }
 
 /**
- * Create a feature list definition list.
+ * Create a semantic feature list for badges demoted from the header pill.
  * @param {Array<{text: string, tooltip?: string}>} items - Feature items
  * @returns {string} HTML markup
  */
 export function createFeatureList(items = []) {
   if (!items || !items.length) return '';
-  const itemsHTML = items.map(item => `<dd>${item.text}</dd>`).join('');
-  return `<dl data-feature-list>${itemsHTML}</dl>`;
+  const itemsHTML = items.map(item => `<li>${item.text}</li>`).join('');
+  return `<ul data-feature-list class="mt-2 flex flex-wrap gap-2 text-xs text-surface-600 dark:text-surface-400">${itemsHTML}</ul>`;
 }
 
 /**
@@ -1272,7 +1272,7 @@ export function createToolHeader(icon, title, subtitle, badges = [], options = {
     const badge = badges[0];
     const tipAttr = badge.tooltip ? ` data-tooltip="${badge.tooltip}" cursor-help` : '';
     const tipClass = badge.tooltip ? ' cursor-help' : '';
-    trustPillHTML = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300${tipClass}" data-trust-pill="${badge.text}"${tipAttr}>
+    trustPillHTML = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300${tipClass}" data-trust-pill${tipAttr}>
        ${badge.text}
      </span>`;
   } else if (badges.length >= 2) {
@@ -1280,7 +1280,7 @@ export function createToolHeader(icon, title, subtitle, badges = [], options = {
     const trustBadge = badges[0];
     const tipAttr = trustBadge.tooltip ? ` data-tooltip="${trustBadge.tooltip}" cursor-help` : '';
     const tipClass = trustBadge.tooltip ? ' cursor-help' : '';
-    trustPillHTML = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300${tipClass}" data-trust-pill="${trustBadge.text}"${tipAttr}>
+    trustPillHTML = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300${tipClass}" data-trust-pill${tipAttr}>
        ${trustBadge.text}
      </span>`;
     demotedFeaturesHTML = createFeatureList(badges.slice(1));
