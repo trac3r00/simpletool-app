@@ -159,6 +159,38 @@ test.describe('Generator and utility tools UI interactions', () => {
     await expect(page.locator('#findings-list')).toContainText('monetization readiness');
   });
 
+  test('public-repos-yml-builder imports GitHub public repos API JSON', async ({ page }) => {
+    await openTool(page, '/public-repos-yml-builder');
+
+    await page.locator('#repo-input').fill(JSON.stringify([
+      {
+        full_name: 'trac3r00/simpletool-app',
+        name: 'simpletool-app',
+        owner: { login: 'trac3r00' },
+        description: 'Browser tools',
+        language: 'JavaScript',
+        homepage: 'https://simpletool.io',
+        archived: false,
+        fork: false
+      },
+      {
+        html_url: 'https://github.com/trac3r00/docs-site',
+        archived: true,
+        fork: false
+      }
+    ]));
+    await page.locator('#build-inventory').click();
+
+    await expect(page.locator('#repos-yaml-output')).toHaveValue(/slug: trac3r00\/simpletool-app/);
+    await expect(page.locator('#repos-yaml-output')).toHaveValue(/details:\n\s+description: Browser tools/);
+    await expect(page.locator('#repos-yaml-output')).toHaveValue(/language: JavaScript/);
+    await expect(page.locator('#repos-yaml-output')).toHaveValue(/homepage: https:\/\/simpletool\.io/);
+    await expect(page.locator('#repos-yaml-output')).toHaveValue(/archived: false/);
+    await expect(page.locator('#repos-yaml-output')).toHaveValue(/slug: trac3r00\/docs-site/);
+    await expect(page.locator('#repos-yaml-output')).toHaveValue(/archived: true/);
+    await expect(page.locator('#actions-output')).toHaveValue(/actions\/checkout@<actions_checkout_commit_sha>/);
+  });
+
   // QUARANTINED: pre-existing failure surfaced when CI first ran (PR #11).
   // `#svg-output` never receives `<svg`-prefixed value (toHaveValue fails after 3 retries).
   // Likely cause: regression in src/routes/svg-optimizer.js (currently has
