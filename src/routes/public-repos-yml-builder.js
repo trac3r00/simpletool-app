@@ -15,6 +15,253 @@ export async function handlePublicReposYmlBuilderRoutes(request, url) {
   return null;
 }
 
+function coerceText(value) {
+  return value == null ? '' : '' + value;
+}
+
+export function normalizeRepoToken(token, fallbackOwner = '') {
+  const value = coerceText(token).trim();
+  if (!value) return null;
+  let match = value.match(/^https?:\/\/github\.com\/([^/\s]+)\/([^/\s#?]+)(?:[/#?].*)?$/i);
+  if (match) return { owner: match[1], name: match[2].replace(/\.git$/i, '') };
+  match = value.match(/^git@github\.com:([^/\s]+)\/([^/\s#?]+?)(?:\.git)?$/i);
+  if (match) return { owner: match[1], name: match[2].replace(/\.git$/i, '') };
+  match = value.match(/^([^/\s]+)\/([^/\s]+)$/);
+  if (match) return { owner: match[1], name: match[2].replace(/\.git$/i, '') };
+  if (/^[A-Za-z0-9._-]+$/.test(value) && fallbackOwner) return { owner: fallbackOwner, name: value.replace(/\.git$/i, '') };
+  return null;
+}
+
+export function parsePublicRepoMetadata(parts) {
+  const metadata = {};
+  parts.forEach((part) => {
+    const match = coerceText(part).match(/^([A-Za-z][A-Za-z0-9_-]*)=(.*)$/);
+    if (!match) return;
+    metadata[match[1].replace(/-/g, '_').toLowerCase()] = match[2];
+  });
+  return metadata;
+}
+
+export function createPublicRepoEntry(repo, metadata = {}, options = {}) {
+  return {
+    slug: repo.owner + '/' + repo.name,
+    owner: repo.owner,
+    name: repo.name,
+    visibility: 'public',
+    automation: {
+      cadence: metadata.cadence || options.cadence || 'weekly',
+      kanban: true,
+      recurring_demand: true
+    },
+    stewardship: {
+      team: metadata.team || 'maintainers',
+      topic: metadata.topic || 'public-repo-audit'
+    },
+    policy: {
+      sha_pinning: metadata.sha || 'review',
+      branch_protection: metadata.branch || 'review',
+      secrets_posture: metadata.secrets || 'review',
+      monetization_readiness: metadata.monetization || 'review'
+    },
+    notes: metadata.notes || ''
+  };
+}
+
+export function parseLinePublicRepo(line, index, options = {}) {
+  const raw = coerceText(line).replace(/\s+#.*$/, '').trim();
+  if (!raw) return null;
+  const parts = raw.split(/[,\s]+/).filter(Boolean);
+  const repo = normalizeRepoToken(parts[0], options.fallbackOwner || '');
+  if (!repo) {
+    return { invalid: true, line: index + 1, raw, reason: 'invalid_repo' };
+  }
+  return createPublicRepoEntry(repo, parsePublicRepoMetadata(parts.slice(1)), options);
+}
+
+export function publicRepoDetailsFromApiObject(item) {
+  const details = {};
+  ['description', 'language', 'homepage'].forEach((key) => {
+    if (typeof item[key] === 'string' && item[key].trim()) {
+      details[key] = item[key].trim();
+    }
+  });
+  ['archived', 'fork'].forEach((key) => {
+    if (typeof item[key] === 'boolean') {
+      details[key] = item[key];
+    }
+  });
+  return details;
+}
+
+export function parseJsonPublicRepo(item, index, options = {}) {
+  if (!item || typeof item !== 'object' || Array.isArray(item)) {
+    return { invalid: true, line: index + 1, raw: '', reason: 'invalid_json_repo' };
+  }
+
+  const ownerValue = typeof item.owner === 'string' ? item.owner : item.owner?.login;
+  const candidates = [
+    item.full_name,
+    item.html_url,
+    ownerValue && item.name ? ownerValue + '/' + item.name : ''
+  ];
+  const repo = candidates.map((candidate) => normalizeRepoToken(candidate, options.fallbackOwner || '')).find(Boolean);
+  if (!repo) {
+    return { invalid: true, line: index + 1, raw: JSON.stringify(item), reason: 'invalid_json_repo' };
+  }
+
+  const entry = createPublicRepoEntry(repo, {}, options);
+  const details = publicRepoDetailsFromApiObject(item);
+  if (Object.keys(details).length > 0) {
+    entry.details = details;
+  }
+  return entry;
+}
+
+export function parsePublicReposInput(input, options = {}) {
+  const value = coerceText(input);
+  const trimmed = value.trim();
+  if (trimmed.startsWith('[')) {
+    let parsed;
+    try {
+      parsed = JSON.parse(trimmed);
+    } catch {
+      return [{ invalid: true, line: 1, raw: trimmed, reason: 'invalid_json' }];
+    }
+    if (!Array.isArray(parsed)) {
+      return [{ invalid: true, line: 1, raw: trimmed, reason: 'invalid_json' }];
+    }
+    return parsed.map((item, index) => parseJsonPublicRepo(item, index, options)).filter(Boolean);
+  }
+
+  return value.split(/\n+/).map((line, index) => parseLinePublicRepo(line, index, options)).filter(Boolean);
+}
+
+const publicReposParserScript = String.raw`
+        function coerceText(value) {
+          return value == null ? '' : '' + value;
+        }
+
+        function createPublicRepoEntry(repo, metadata, options) {
+          const safeMetadata = metadata || {};
+          const safeOptions = options || {};
+          return {
+            slug: repo.owner + '/' + repo.name,
+            owner: repo.owner,
+            name: repo.name,
+            visibility: 'public',
+            automation: {
+              cadence: safeMetadata.cadence || safeOptions.cadence || 'weekly',
+              kanban: true,
+              recurring_demand: true
+            },
+            stewardship: {
+              team: safeMetadata.team || 'maintainers',
+              topic: safeMetadata.topic || 'public-repo-audit'
+            },
+            policy: {
+              sha_pinning: safeMetadata.sha || 'review',
+              branch_protection: safeMetadata.branch || 'review',
+              secrets_posture: safeMetadata.secrets || 'review',
+              monetization_readiness: safeMetadata.monetization || 'review'
+            },
+            notes: safeMetadata.notes || ''
+          };
+        }
+
+        function parsePublicRepoMetadata(parts) {
+          const metadata = {};
+          parts.forEach((part) => {
+            const match = coerceText(part).match(/^([A-Za-z][A-Za-z0-9_-]*)=(.*)$/);
+            if (!match) return;
+            metadata[match[1].replace(/-/g, '_').toLowerCase()] = match[2];
+          });
+          return metadata;
+        }
+
+        function normalizeRepoToken(token, fallbackOwner) {
+          const value = coerceText(token).trim();
+          if (!value) return null;
+          let match = value.match(/^https?:\/\/github\.com\/([^/\s]+)\/([^/\s#?]+)(?:[/#?].*)?$/i);
+          if (match) return { owner: match[1], name: match[2].replace(/\.git$/i, '') };
+          match = value.match(/^git@github\.com:([^/\s]+)\/([^/\s#?]+?)(?:\.git)?$/i);
+          if (match) return { owner: match[1], name: match[2].replace(/\.git$/i, '') };
+          match = value.match(/^([^/\s]+)\/([^/\s]+)$/);
+          if (match) return { owner: match[1], name: match[2].replace(/\.git$/i, '') };
+          if (/^[A-Za-z0-9._-]+$/.test(value) && fallbackOwner) return { owner: fallbackOwner, name: value.replace(/\.git$/i, '') };
+          return null;
+        }
+
+        function parseLinePublicRepo(line, index, options) {
+          const raw = coerceText(line).replace(/\s+#.*$/, '').trim();
+          if (!raw) return null;
+          const parts = raw.split(/[,\s]+/).filter(Boolean);
+          const repo = normalizeRepoToken(parts[0], options.fallbackOwner || '');
+          if (!repo) {
+            return { invalid: true, line: index + 1, raw, reason: 'invalid_repo' };
+          }
+          return createPublicRepoEntry(repo, parsePublicRepoMetadata(parts.slice(1)), options);
+        }
+
+        function publicRepoDetailsFromApiObject(item) {
+          const details = {};
+          ['description', 'language', 'homepage'].forEach((key) => {
+            if (typeof item[key] === 'string' && item[key].trim()) {
+              details[key] = item[key].trim();
+            }
+          });
+          ['archived', 'fork'].forEach((key) => {
+            if (typeof item[key] === 'boolean') {
+              details[key] = item[key];
+            }
+          });
+          return details;
+        }
+
+        function parseJsonPublicRepo(item, index, options) {
+          if (!item || typeof item !== 'object' || Array.isArray(item)) {
+            return { invalid: true, line: index + 1, raw: '', reason: 'invalid_json_repo' };
+          }
+
+          const ownerValue = typeof item.owner === 'string' ? item.owner : item.owner?.login;
+          const candidates = [
+            item.full_name,
+            item.html_url,
+            ownerValue && item.name ? ownerValue + '/' + item.name : ''
+          ];
+          const repo = candidates.map((candidate) => normalizeRepoToken(candidate, options.fallbackOwner || '')).find(Boolean);
+          if (!repo) {
+            return { invalid: true, line: index + 1, raw: JSON.stringify(item), reason: 'invalid_json_repo' };
+          }
+
+          const entry = createPublicRepoEntry(repo, {}, options);
+          const details = publicRepoDetailsFromApiObject(item);
+          if (Object.keys(details).length > 0) {
+            entry.details = details;
+          }
+          return entry;
+        }
+
+        function parsePublicReposInput(input, options) {
+          const safeOptions = options || {};
+          const value = coerceText(input);
+          const trimmed = value.trim();
+          if (trimmed.startsWith('[')) {
+            let parsed;
+            try {
+              parsed = JSON.parse(trimmed);
+            } catch {
+              return [{ invalid: true, line: 1, raw: trimmed, reason: 'invalid_json' }];
+            }
+            if (!Array.isArray(parsed)) {
+              return [{ invalid: true, line: 1, raw: trimmed, reason: 'invalid_json' }];
+            }
+            return parsed.map((item, index) => parseJsonPublicRepo(item, index, safeOptions)).filter(Boolean);
+          }
+
+          return value.split(/\n+/).map((line, index) => parseLinePublicRepo(line, index, safeOptions)).filter(Boolean);
+        }
+`;
+
 function renderPublicReposYmlBuilderPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
   const translation = getToolTranslation('public-repos-yml-builder', currentLang);
@@ -160,6 +407,8 @@ function renderPublicReposYmlBuilderPage(lang = DEFAULT_LANGUAGE) {
           'https://github.com/trac3r00/docs-site team=docs cadence=monthly sha=ok branch=protected secrets=ok monetization=todo'
         ].join('\n');
 
+${publicReposParserScript}
+
         function selectedPolicies() {
           return {
             sha_pinning: $('policy-sha-pinning').checked,
@@ -169,74 +418,21 @@ function renderPublicReposYmlBuilderPage(lang = DEFAULT_LANGUAGE) {
           };
         }
 
-        function normalizeRepoToken(token, fallbackOwner) {
-          const value = String(token || '').trim();
-          if (!value) return null;
-          let match = value.match(/^https?:\/\/github\.com\/([^\/\s]+)\/([^\/\s#?]+)(?:[\/#?].*)?$/i);
-          if (match) return { owner: match[1], name: match[2].replace(/\.git$/i, '') };
-          match = value.match(/^git@github\.com:([^\/\s]+)\/([^\/\s#?]+?)(?:\.git)?$/i);
-          if (match) return { owner: match[1], name: match[2].replace(/\.git$/i, '') };
-          match = value.match(/^([^\/\s]+)\/([^\/\s]+)$/);
-          if (match) return { owner: match[1], name: match[2].replace(/\.git$/i, '') };
-          if (/^[A-Za-z0-9._-]+$/.test(value) && fallbackOwner) return { owner: fallbackOwner, name: value.replace(/\.git$/i, '') };
-          return null;
-        }
-
-        function parseMetadata(parts) {
-          const metadata = {};
-          parts.forEach((part) => {
-            const match = String(part).match(/^([A-Za-z][A-Za-z0-9_-]*)=(.*)$/);
-            if (!match) return;
-            metadata[match[1].replace(/-/g, '_').toLowerCase()] = match[2];
-          });
-          return metadata;
-        }
-
-        function parseRepositories() {
-          const fallbackOwner = els.owner.value.trim();
-          return String(els.repoInput.value || '').split(/\n+/).map((line, index) => {
-            const raw = line.replace(/\s+#.*$/, '').trim();
-            if (!raw) return null;
-            const parts = raw.split(/[,\s]+/).filter(Boolean);
-            const repo = normalizeRepoToken(parts[0], fallbackOwner);
-            if (!repo) {
-              return { invalid: true, line: index + 1, raw };
-            }
-            const metadata = parseMetadata(parts.slice(1));
-            return {
-              slug: repo.owner + '/' + repo.name,
-              owner: repo.owner,
-              name: repo.name,
-              visibility: 'public',
-              automation: {
-                cadence: metadata.cadence || els.cadence.value,
-                kanban: true,
-                recurring_demand: true
-              },
-              stewardship: {
-                team: metadata.team || 'maintainers',
-                topic: metadata.topic || 'public-repo-audit'
-              },
-              policy: {
-                sha_pinning: metadata.sha || 'review',
-                branch_protection: metadata.branch || 'review',
-                secrets_posture: metadata.secrets || 'review',
-                monetization_readiness: metadata.monetization || 'review'
-              },
-              notes: metadata.notes || ''
-            };
-          }).filter(Boolean);
-        }
 
         function isOk(value, allowed) {
-          return allowed.indexOf(String(value || '').toLowerCase()) !== -1;
+          return allowed.indexOf(coerceText(value).toLowerCase()) !== -1;
         }
 
         function validateRepos(repos, policies) {
           const findings = [];
           repos.forEach((repo) => {
             if (repo.invalid) {
-              findings.push({ level: 'high', repo: 'line ' + repo.line, text: tr('invalidRepo', 'Could not parse repository slug or GitHub URL.') });
+              const message = repo.reason === 'invalid_json'
+                ? tr('invalidJson', 'Could not parse GitHub public repos JSON array.')
+                : repo.reason === 'invalid_json_repo'
+                  ? tr('invalidJsonRepo', 'Could not map GitHub API object to a repository slug or URL.')
+                  : tr('invalidRepo', 'Could not parse repository slug or GitHub URL.');
+              findings.push({ level: 'high', repo: 'line ' + repo.line, text: message });
               return;
             }
             if (policies.sha_pinning && !isOk(repo.policy.sha_pinning, ['ok', 'pinned', 'sha', 'true'])) {
@@ -271,7 +467,8 @@ function renderPublicReposYmlBuilderPage(lang = DEFAULT_LANGUAGE) {
               topic: repo.stewardship.topic,
               automation: repo.automation,
               policy: repo.policy,
-              notes: repo.notes
+              notes: repo.notes,
+              ...(repo.details ? { details: repo.details } : {})
             }))
           };
         }
@@ -349,15 +546,18 @@ function renderPublicReposYmlBuilderPage(lang = DEFAULT_LANGUAGE) {
         function updateStats(repos, findings, policies) {
           const validRepos = repos.filter((repo) => !repo.invalid);
           const repoSlugsWithFindings = new Set(findings.map((finding) => finding.repo).filter((repo) => repo.indexOf('/') > 0));
-          els.repoCount.textContent = String(validRepos.length);
-          els.findingCount.textContent = String(findings.length);
-          els.readyCount.textContent = String(validRepos.length - repoSlugsWithFindings.size);
-          els.policyCount.textContent = String(Object.values(policies).filter(Boolean).length);
+          els.repoCount.textContent = coerceText(validRepos.length);
+          els.findingCount.textContent = coerceText(findings.length);
+          els.readyCount.textContent = coerceText(validRepos.length - repoSlugsWithFindings.size);
+          els.policyCount.textContent = coerceText(Object.values(policies).filter(Boolean).length);
           els.status.textContent = findings.length ? tr('needsReview', 'Needs review') : tr('ready', 'Ready');
         }
 
         function build() {
-          const repos = parseRepositories();
+          const repos = parsePublicReposInput(els.repoInput.value, {
+            fallbackOwner: els.owner.value.trim(),
+            cadence: els.cadence.value
+          });
           const policies = selectedPolicies();
           const findings = validateRepos(repos, policies);
           const validRepos = repos.filter((repo) => !repo.invalid);
@@ -374,8 +574,8 @@ function renderPublicReposYmlBuilderPage(lang = DEFAULT_LANGUAGE) {
             const old = button.textContent;
             button.textContent = tr('copied', 'Copied');
             setTimeout(() => { button.textContent = old; }, 1200);
-          } catch (error) {
-            console.error('Copy failed:', error);
+          } catch {
+            console.error('Copy failed');
           }
         }
 
