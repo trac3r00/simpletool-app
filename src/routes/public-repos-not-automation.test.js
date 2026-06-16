@@ -57,6 +57,21 @@ describe('public-repos-not-automation route rendering', () => {
     expect(text).not.toMatch(/<dl\b[^>]*data-feature-list[^>]*>\s*<dd>/);
   });
 
+  it('renders browser script intent to compose artifacts for every GitHub JSON repo', async () => {
+    const url = new URL('http://localhost/public-repos-not-automation');
+    const request = new Request(url, { method: 'GET' });
+    const response = await handlePublicReposNotAutomationRoutes(request, url);
+
+    const text = await response.text();
+    expect(text).toContain('return parsed.map(parseJsonTask).filter(Boolean);');
+    expect(text).toContain('if (Array.isArray(parsed))');
+    expect(text).toContain('const tasks = parseTaskInput(input);');
+    expect(text).toContain('tasks.map((task) => buildDecisionRecord(task, selected, threshold)).join');
+    expect(text).toContain('tasks.map((task) => buildChecklist(task, selected, threshold)).join');
+    expect(text).not.toContain('parsed.find((entry)');
+    expect(text).not.toContain("return [createTask({ task: trimmed })];");
+  });
+
   it('returns null for unmatched routes and 405 for unsupported methods', async () => {
     const missUrl = new URL('http://localhost/not-public-repos-not-automation');
     const missRequest = new Request(missUrl, { method: 'GET' });
