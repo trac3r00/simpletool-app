@@ -378,7 +378,7 @@ function renderPublicReposYmlBuilderPage(lang = DEFAULT_LANGUAGE) {
   `;
 
   const scripts = String.raw`
-    <script src="/vendor/js-yaml.min.js" integrity="sha384-ZeqCzuWczURac3RacSufGD7oSbzeaX7xxnnOr3PTcYTLx4Av0qBj0kBq7AeCtHLA" crossorigin="anonymous"></script>
+    <script src="/vendor/js-yaml.min.js" integrity="sha384-DrPu+BeZLo6V7/5zznxmd0rvFRUQ1TSsrViKUsRBWGonzRQtD+LQAU5GhTslfJTK" crossorigin="anonymous"></script>
     <script>
       (function() {
         const tr = (key, fallback) => (window._t ? window._t('tools.public-repos-yml-builder.js.' + key, fallback) : fallback);
