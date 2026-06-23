@@ -418,6 +418,20 @@ function renderPublicReposNotAutomationPage(lang = DEFAULT_LANGUAGE) {
           return item;
         }
 
+        function parseJsonTask(item) {
+          if (!item || typeof item !== 'object' || Array.isArray(item)) return null;
+          const ownerValue = typeof item.owner === 'string' ? item.owner : item.owner?.login;
+          const repo = repoSlugFromToken(item.full_name) || repoSlugFromToken(item.html_url) || (ownerValue && item.name ? ownerValue + '/' + item.name : '');
+          if (!repo) return null;
+          return createTask({
+            repo,
+            description: item.description,
+            language: item.language,
+            archived: item.archived,
+            fork: item.fork
+          });
+        }
+
         function parseTaskInput(value) {
           const text = value ? value.toString() : '';
           const trimmed = text.trim();
@@ -425,23 +439,11 @@ function renderPublicReposNotAutomationPage(lang = DEFAULT_LANGUAGE) {
             try {
               const parsed = JSON.parse(trimmed);
               if (Array.isArray(parsed)) {
-                const item = parsed.find((entry) => entry && typeof entry === 'object' && !Array.isArray(entry));
-                if (item) {
-                  const ownerValue = typeof item.owner === 'string' ? item.owner : item.owner?.login;
-                  const repo = repoSlugFromToken(item.full_name) || repoSlugFromToken(item.html_url) || (ownerValue && item.name ? ownerValue + '/' + item.name : '');
-                  if (repo) {
-                    return createTask({
-                      repo,
-                      description: item.description,
-                      language: item.language,
-                      archived: item.archived,
-                      fork: item.fork
-                    });
-                  }
-                }
+                return parsed.map(parseJsonTask).filter(Boolean);
               }
+              return [];
             } catch (error) {
-              return createTask({ task: trimmed });
+              return [];
             }
           }
           const lines = text.split(/\n+/).map((line) => line.trim()).filter(Boolean);
@@ -458,10 +460,10 @@ function renderPublicReposNotAutomationPage(lang = DEFAULT_LANGUAGE) {
           });
           if (!Object.keys(fields).length && freeform.length === 1) {
             const slug = repoSlugFromToken(freeform[0]);
-            if (slug) return createTask({ repo: slug });
+            if (slug) return [createTask({ repo: slug })];
           }
           if (!fields.task && freeform.length > 0) fields.task = freeform.join(' ');
-          return createTask(fields);
+          return [createTask(fields)];
         }
 
         function showError(message) {
@@ -550,10 +552,14 @@ function renderPublicReposNotAutomationPage(lang = DEFAULT_LANGUAGE) {
             showError(tr('missingReasons', 'Select at least one reason not to automate yet.'));
             return;
           }
-          const task = parseTaskInput(input);
+          const tasks = parseTaskInput(input);
+          if (tasks.length === 0) {
+            showError(tr('missingRepos', 'Paste at least one valid public GitHub repository.'));
+            return;
+          }
           const threshold = els.threshold.value.trim();
-          els.decision.value = buildDecisionRecord(task, selected, threshold);
-          els.checklist.value = buildChecklist(task, selected, threshold);
+          els.decision.value = tasks.map((task) => buildDecisionRecord(task, selected, threshold)).join('\n\n---\n\n');
+          els.checklist.value = tasks.map((task) => buildChecklist(task, selected, threshold)).join('\n\n---\n\n');
           els.copyDecision.disabled = false;
           els.copyChecklist.disabled = false;
           updateStats(selected);
