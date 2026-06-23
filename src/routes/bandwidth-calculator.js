@@ -32,6 +32,25 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
       <div class="tool-card">
         ${toolHeader}
 
+        <style>
+          body[data-tool-page-id="bandwidth-calculator"] footer p a {
+            text-decoration-line: underline;
+            text-underline-offset: 0.15em;
+          }
+
+          body[data-tool-page-id="bandwidth-calculator"] footer .text-surface-500 {
+            color: rgb(82 82 91);
+          }
+
+          body[data-tool-page-id="bandwidth-calculator"] #nav-search-btn {
+            color: rgb(82 82 91);
+          }
+
+          .dark body[data-tool-page-id="bandwidth-calculator"] footer .dark\\:text-surface-500 {
+            color: rgb(212 212 216);
+          }
+        </style>
+
         <!-- Unit System Toggle -->
         <div class="mb-6 flex items-center justify-between flex-wrap gap-4">
           <div class="flex items-center gap-3">
@@ -69,13 +88,13 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
         <div id="tab-transfer" class="tab-content" role="tabpanel" aria-labelledby="tab-trigger-transfer">
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div class="space-y-6">
-              <h3 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.bandwidth-calculator.ui.heading0">Calculate Transfer Time</h3>
+              <h2 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.bandwidth-calculator.ui.heading0">Calculate Transfer Time</h2>
               
               <div>
                 <label class="label" data-i18n="tools.bandwidth-calculator.ui.label5">File Size</label>
                 <div class="flex gap-2">
                   <input type="number" id="transfer-size" min="0" step="any" placeholder="1" class="input flex-1" data-i18n-placeholder="tools.bandwidth-calculator.ui.placeholder0">
-                  <select id="transfer-size-unit" class="input w-28">
+                  <select id="transfer-size-unit" class="input w-28" aria-label="File size unit">
                     <option value="B">B</option>
                     <option value="KB">KB</option>
                     <option value="MB" selected>MB</option>
@@ -89,7 +108,7 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
                 <label class="label" data-i18n="tools.bandwidth-calculator.ui.label6">Bandwidth</label>
                 <div class="flex gap-2">
                   <input type="number" id="transfer-bandwidth" min="0" step="any" placeholder="100" class="input flex-1" data-i18n-placeholder="tools.bandwidth-calculator.ui.placeholder1">
-                  <select id="transfer-bandwidth-unit" class="input w-28">
+                  <select id="transfer-bandwidth-unit" class="input w-28" aria-label="Bandwidth unit">
                     <option value="bps" data-i18n="tools.bandwidth-calculator.ui.option15">bps</option>
                     <option value="Kbps" data-i18n="tools.bandwidth-calculator.ui.option16">Kbps</option>
                     <option value="Mbps" selected data-i18n="tools.bandwidth-calculator.ui.option17">Mbps</option>
@@ -117,19 +136,19 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
             </div>
 
             <div class="bg-surface-50 dark:bg-surface-950 rounded-xl p-6 border border-surface-200 dark:border-surface-700">
-              <h4 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-4" data-i18n="tools.bandwidth-calculator.ui.heading1">Result</h4>
+              <h3 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-4" data-i18n="tools.bandwidth-calculator.ui.heading1">Result</h3>
               <div class="space-y-4">
                 <div>
-                  <p class="text-xs text-surface-500 dark:text-surface-400 mb-1" data-i18n="tools.bandwidth-calculator.ui.desc0">Estimated Time</p>
+                  <p class="text-xs text-surface-600 dark:text-surface-300 mb-1" data-i18n="tools.bandwidth-calculator.ui.desc0">Estimated Time</p>
                   <p id="transfer-result" class="text-3xl font-bold text-primary-600 dark:text-primary-400">--</p>
                 </div>
                 <div class="grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <p class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.bandwidth-calculator.ui.desc1">In Seconds</p>
+                    <p class="text-xs text-surface-600 dark:text-surface-300" data-i18n="tools.bandwidth-calculator.ui.desc1">In Seconds</p>
                     <p id="transfer-seconds" class="font-mono text-surface-700 dark:text-surface-300">--</p>
                   </div>
                   <div>
-                    <p class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.bandwidth-calculator.ui.desc2">In Minutes</p>
+                    <p class="text-xs text-surface-600 dark:text-surface-300" data-i18n="tools.bandwidth-calculator.ui.desc2">In Minutes</p>
                     <p id="transfer-minutes" class="font-mono text-surface-700 dark:text-surface-300">--</p>
                   </div>
                 </div>
@@ -142,13 +161,13 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
         <div id="tab-bandwidth" class="tab-content hidden" role="tabpanel" aria-labelledby="tab-trigger-bandwidth">
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div class="space-y-6">
-              <h3 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.bandwidth-calculator.ui.heading2">Calculate Required Bandwidth</h3>
+              <h2 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.bandwidth-calculator.ui.heading2">Calculate Required Bandwidth</h2>
               
               <div>
                 <label class="label" data-i18n="tools.bandwidth-calculator.ui.label8">File Size</label>
                 <div class="flex gap-2">
                   <input type="number" id="bw-size" min="0" step="any" placeholder="1" class="input flex-1" data-i18n-placeholder="tools.bandwidth-calculator.ui.placeholder2">
-                  <select id="bw-size-unit" class="input w-28">
+                  <select id="bw-size-unit" class="input w-28" aria-label="File size unit">
                     <option value="B">B</option>
                     <option value="KB">KB</option>
                     <option value="MB" selected>MB</option>
@@ -163,34 +182,34 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
                 <div class="grid grid-cols-3 gap-2">
                   <div>
                     <input type="number" id="bw-hours" min="0" placeholder="0" class="input w-full" data-i18n-placeholder="tools.bandwidth-calculator.ui.placeholder3">
-                    <span class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.bandwidth-calculator.ui.desc3">hours</span>
+                    <span class="text-xs text-surface-600 dark:text-surface-300" data-i18n="tools.bandwidth-calculator.ui.desc3">hours</span>
                   </div>
                   <div>
                     <input type="number" id="bw-minutes" min="0" max="59" placeholder="0" class="input w-full" data-i18n-placeholder="tools.bandwidth-calculator.ui.placeholder4">
-                    <span class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.bandwidth-calculator.ui.desc4">minutes</span>
+                    <span class="text-xs text-surface-600 dark:text-surface-300" data-i18n="tools.bandwidth-calculator.ui.desc4">minutes</span>
                   </div>
                   <div>
                     <input type="number" id="bw-seconds" min="0" max="59" placeholder="0" class="input w-full" data-i18n-placeholder="tools.bandwidth-calculator.ui.placeholder5">
-                    <span class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.bandwidth-calculator.ui.desc5">seconds</span>
+                    <span class="text-xs text-surface-600 dark:text-surface-300" data-i18n="tools.bandwidth-calculator.ui.desc5">seconds</span>
                   </div>
                 </div>
               </div>
             </div>
 
             <div class="bg-surface-50 dark:bg-surface-950 rounded-xl p-6 border border-surface-200 dark:border-surface-700">
-              <h4 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-4" data-i18n="tools.bandwidth-calculator.ui.heading3">Required Bandwidth</h4>
+              <h3 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-4" data-i18n="tools.bandwidth-calculator.ui.heading3">Required Bandwidth</h3>
               <div class="space-y-4">
                 <div>
-                  <p class="text-xs text-surface-500 dark:text-surface-400 mb-1" data-i18n="tools.bandwidth-calculator.ui.desc6">Minimum Bandwidth</p>
+                  <p class="text-xs text-surface-600 dark:text-surface-300 mb-1" data-i18n="tools.bandwidth-calculator.ui.desc6">Minimum Bandwidth</p>
                   <p id="bw-result" class="text-3xl font-bold text-primary-600 dark:text-primary-400">--</p>
                 </div>
                 <div class="grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <p class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.bandwidth-calculator.ui.desc7">In Mbps</p>
+                    <p class="text-xs text-surface-600 dark:text-surface-300" data-i18n="tools.bandwidth-calculator.ui.desc7">In Mbps</p>
                     <p id="bw-mbps" class="font-mono text-surface-700 dark:text-surface-300">--</p>
                   </div>
                   <div>
-                    <p class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.bandwidth-calculator.ui.desc8">In Gbps</p>
+                    <p class="text-xs text-surface-600 dark:text-surface-300" data-i18n="tools.bandwidth-calculator.ui.desc8">In Gbps</p>
                     <p id="bw-gbps" class="font-mono text-surface-700 dark:text-surface-300">--</p>
                   </div>
                 </div>
@@ -203,13 +222,13 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
         <div id="tab-capacity" class="tab-content hidden" role="tabpanel" aria-labelledby="tab-trigger-capacity">
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div class="space-y-6">
-              <h3 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.bandwidth-calculator.ui.heading4">Calculate Data Capacity</h3>
+              <h2 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.bandwidth-calculator.ui.heading4">Calculate Data Capacity</h2>
               
               <div>
                 <label class="label" data-i18n="tools.bandwidth-calculator.ui.label10">Bandwidth</label>
                 <div class="flex gap-2">
                   <input type="number" id="cap-bandwidth" min="0" step="any" placeholder="100" class="input flex-1" data-i18n-placeholder="tools.bandwidth-calculator.ui.placeholder6">
-                  <select id="cap-bandwidth-unit" class="input w-28">
+                  <select id="cap-bandwidth-unit" class="input w-28" aria-label="Bandwidth unit">
                     <option value="bps" data-i18n="tools.bandwidth-calculator.ui.option15">bps</option>
                     <option value="Kbps" data-i18n="tools.bandwidth-calculator.ui.option16">Kbps</option>
                     <option value="Mbps" selected data-i18n="tools.bandwidth-calculator.ui.option17">Mbps</option>
@@ -223,34 +242,34 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
                 <div class="grid grid-cols-3 gap-2">
                   <div>
                     <input type="number" id="cap-hours" min="0" placeholder="0" class="input w-full" data-i18n-placeholder="tools.bandwidth-calculator.ui.placeholder7">
-                    <span class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.bandwidth-calculator.ui.desc9">hours</span>
+                    <span class="text-xs text-surface-600 dark:text-surface-300" data-i18n="tools.bandwidth-calculator.ui.desc9">hours</span>
                   </div>
                   <div>
                     <input type="number" id="cap-minutes" min="0" max="59" placeholder="0" class="input w-full" data-i18n-placeholder="tools.bandwidth-calculator.ui.placeholder8">
-                    <span class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.bandwidth-calculator.ui.desc10">minutes</span>
+                    <span class="text-xs text-surface-600 dark:text-surface-300" data-i18n="tools.bandwidth-calculator.ui.desc10">minutes</span>
                   </div>
                   <div>
                     <input type="number" id="cap-seconds" min="0" max="59" placeholder="0" class="input w-full" data-i18n-placeholder="tools.bandwidth-calculator.ui.placeholder9">
-                    <span class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.bandwidth-calculator.ui.desc11">seconds</span>
+                    <span class="text-xs text-surface-600 dark:text-surface-300" data-i18n="tools.bandwidth-calculator.ui.desc11">seconds</span>
                   </div>
                 </div>
               </div>
             </div>
 
             <div class="bg-surface-50 dark:bg-surface-950 rounded-xl p-6 border border-surface-200 dark:border-surface-700">
-              <h4 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-4" data-i18n="tools.bandwidth-calculator.ui.heading5">Maximum Transferable Data</h4>
+              <h3 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-4" data-i18n="tools.bandwidth-calculator.ui.heading5">Maximum Transferable Data</h3>
               <div class="space-y-4">
                 <div>
-                  <p class="text-xs text-surface-500 dark:text-surface-400 mb-1" data-i18n="tools.bandwidth-calculator.ui.desc12">Total Data</p>
+                  <p class="text-xs text-surface-600 dark:text-surface-300 mb-1" data-i18n="tools.bandwidth-calculator.ui.desc12">Total Data</p>
                   <p id="cap-result" class="text-3xl font-bold text-primary-600 dark:text-primary-400">--</p>
                 </div>
                 <div class="grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <p class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.bandwidth-calculator.ui.desc13">In Megabytes</p>
+                    <p class="text-xs text-surface-600 dark:text-surface-300" data-i18n="tools.bandwidth-calculator.ui.desc13">In Megabytes</p>
                     <p id="cap-mb" class="font-mono text-surface-700 dark:text-surface-300">--</p>
                   </div>
                   <div>
-                    <p class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.bandwidth-calculator.ui.desc14">In Gigabytes</p>
+                    <p class="text-xs text-surface-600 dark:text-surface-300" data-i18n="tools.bandwidth-calculator.ui.desc14">In Gigabytes</p>
                     <p id="cap-gb" class="font-mono text-surface-700 dark:text-surface-300">--</p>
                   </div>
                 </div>
@@ -263,13 +282,13 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
         <div id="tab-tcp" class="tab-content hidden" role="tabpanel" aria-labelledby="tab-trigger-tcp">
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div class="space-y-6">
-              <h3 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.bandwidth-calculator.ui.heading6">TCP Bandwidth-Delay Product</h3>
+              <h2 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.bandwidth-calculator.ui.heading6">TCP Bandwidth-Delay Product</h2>
               
               <div>
                 <label class="label" data-i18n="tools.bandwidth-calculator.ui.label12">Bandwidth</label>
                 <div class="flex gap-2">
                   <input type="number" id="tcp-bandwidth" min="0" step="any" placeholder="1" class="input flex-1" data-i18n-placeholder="tools.bandwidth-calculator.ui.placeholder10">
-                  <select id="tcp-bandwidth-unit" class="input w-28">
+                  <select id="tcp-bandwidth-unit" class="input w-28" aria-label="Bandwidth unit">
                     <option value="bps" data-i18n="tools.bandwidth-calculator.ui.option15">bps</option>
                     <option value="Kbps" data-i18n="tools.bandwidth-calculator.ui.option16">Kbps</option>
                     <option value="Mbps" data-i18n="tools.bandwidth-calculator.ui.option17">Mbps</option>
@@ -282,7 +301,7 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
                 <label class="label" data-i18n="tools.bandwidth-calculator.ui.label13">Round Trip Time (RTT)</label>
                 <div class="flex gap-2">
                   <input type="number" id="tcp-rtt" min="0" step="any" placeholder="50" class="input flex-1" data-i18n-placeholder="tools.bandwidth-calculator.ui.placeholder11">
-                  <select id="tcp-rtt-unit" class="input w-28">
+                  <select id="tcp-rtt-unit" class="input w-28" aria-label="Round trip time unit">
                     <option value="ms" selected data-i18n="tools.bandwidth-calculator.ui.option19">ms</option>
                     <option value="s">s</option>
                   </select>
@@ -295,28 +314,28 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
                   <input type="number" id="tcp-mss" min="1" step="1" placeholder="1460" class="input flex-1" data-i18n-placeholder="tools.bandwidth-calculator.ui.placeholder12">
                   <span class="input w-28 flex items-center justify-center bg-surface-100 dark:bg-surface-800">bytes</span>
                 </div>
-                <p class="text-xs text-surface-500 dark:text-surface-400 mt-1" data-i18n="tools.bandwidth-calculator.ui.desc15">Typical: 1460 bytes (Ethernet MTU 1500 - 40 byte headers)</p>
+                <p class="text-xs text-surface-600 dark:text-surface-300 mt-1" data-i18n="tools.bandwidth-calculator.ui.desc15">Typical: 1460 bytes (Ethernet MTU 1500 - 40 byte headers)</p>
               </div>
             </div>
 
             <div class="bg-surface-50 dark:bg-surface-950 rounded-xl p-6 border border-surface-200 dark:border-surface-700">
-              <h4 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-4" data-i18n="tools.bandwidth-calculator.ui.heading7">TCP Analysis</h4>
+              <h3 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-4" data-i18n="tools.bandwidth-calculator.ui.heading7">TCP Analysis</h3>
               <div class="space-y-4">
                 <div>
-                  <p class="text-xs text-surface-500 dark:text-surface-400 mb-1" data-i18n="tools.bandwidth-calculator.ui.desc16">Bandwidth-Delay Product (BDP)</p>
+                  <p class="text-xs text-surface-600 dark:text-surface-300 mb-1" data-i18n="tools.bandwidth-calculator.ui.desc16">Bandwidth-Delay Product (BDP)</p>
                   <p id="tcp-bdp" class="text-2xl font-bold text-primary-600 dark:text-primary-400">--</p>
-                  <p class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.bandwidth-calculator.ui.desc17">Optimal window size needed</p>
+                  <p class="text-xs text-surface-600 dark:text-surface-300" data-i18n="tools.bandwidth-calculator.ui.desc17">Optimal window size needed</p>
                 </div>
                 <div>
-                  <p class="text-xs text-surface-500 dark:text-surface-400 mb-1" data-i18n="tools.bandwidth-calculator.ui.desc18">Required TCP Window Size</p>
+                  <p class="text-xs text-surface-600 dark:text-surface-300 mb-1" data-i18n="tools.bandwidth-calculator.ui.desc18">Required TCP Window Size</p>
                   <p id="tcp-window" class="text-lg font-semibold text-surface-700 dark:text-surface-300">--</p>
                 </div>
                 <div>
-                  <p class="text-xs text-surface-500 dark:text-surface-400 mb-1" data-i18n="tools.bandwidth-calculator.ui.desc19">Theoretical Max Throughput</p>
+                  <p class="text-xs text-surface-600 dark:text-surface-300 mb-1" data-i18n="tools.bandwidth-calculator.ui.desc19">Theoretical Max Throughput</p>
                   <p id="tcp-throughput" class="text-lg font-semibold text-surface-700 dark:text-surface-300">--</p>
                 </div>
                 <div class="pt-4 border-t border-surface-200 dark:border-surface-700">
-                  <p class="text-xs text-surface-500 dark:text-surface-400 mb-1" data-i18n="tools.bandwidth-calculator.ui.desc20">Window Scale Option Needed?</p>
+                  <p class="text-xs text-surface-600 dark:text-surface-300 mb-1" data-i18n="tools.bandwidth-calculator.ui.desc20">Window Scale Option Needed?</p>
                   <p id="tcp-scale-needed" class="text-sm font-medium">--</p>
                 </div>
               </div>

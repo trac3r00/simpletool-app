@@ -24,12 +24,6 @@ const BASELINE_VIOLATIONS = {
     { id: 'link-in-text-block', impact: 'serious' },
   ],
 
-  '/bandwidth-calculator': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'heading-order', impact: 'moderate' },
-    { id: 'link-in-text-block', impact: 'serious' },
-    { id: 'select-name', impact: 'critical' },
-  ],
   '/case-converter': [
     { id: 'color-contrast', impact: 'serious' },
     { id: 'heading-order', impact: 'moderate' },
