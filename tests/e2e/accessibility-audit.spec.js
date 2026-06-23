@@ -225,11 +225,6 @@ const BASELINE_VIOLATIONS = {
     { id: 'color-contrast', impact: 'serious' },
     { id: 'link-in-text-block', impact: 'serious' },
   ],
-  '/csp-builder': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'label', impact: 'critical' },
-    { id: 'link-in-text-block', impact: 'serious' },
-  ],
   '/email-analyzer': [
     { id: 'color-contrast', impact: 'serious' },
     { id: 'link-in-text-block', impact: 'serious' },

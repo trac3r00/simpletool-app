@@ -42,6 +42,34 @@ function renderCSPBuilderPage(lang = DEFAULT_LANGUAGE) {
 
 
   const content = `
+    <style>
+      body[data-tool-page-id="csp-builder"] footer p.text-xs {
+        color: var(--surface-600);
+      }
+      html.dark body[data-tool-page-id="csp-builder"] footer p.text-xs {
+        color: var(--surface-300);
+      }
+      body[data-tool-page-id="csp-builder"] footer p.text-xs a {
+        color: var(--primary-700);
+        text-decoration-line: underline;
+        text-decoration-thickness: 0.08em;
+        text-underline-offset: 0.16em;
+      }
+      html.dark body[data-tool-page-id="csp-builder"] footer p.text-xs a {
+        color: var(--primary-400);
+      }
+      body[data-tool-page-id="csp-builder"] #nav-search-btn {
+        color: var(--surface-600);
+      }
+      body[data-tool-page-id="csp-builder"] #nav-search-btn::placeholder {
+        color: var(--surface-600);
+        opacity: 1;
+      }
+      html.dark body[data-tool-page-id="csp-builder"] #nav-search-btn,
+      html.dark body[data-tool-page-id="csp-builder"] #nav-search-btn::placeholder {
+        color: var(--surface-300);
+      }
+    </style>
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
         ${header}
@@ -56,24 +84,24 @@ function renderCSPBuilderPage(lang = DEFAULT_LANGUAGE) {
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div class="space-y-4">
             <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
-              <label class="label flex items-center gap-2">
+              <label for="csp-input" class="label flex items-center gap-2">
                 <span data-i18n="tools.csp-builder.ui.label0">Existing CSP (optional)</span>
                 ${infoHint('Paste only the policy value (everything after “Content-Security-Policy:”). Then click Parse.', 'Help', { i18nKey: 'tools.csp-builder.ui.desc0' })}
               </label>
               <textarea id="csp-input" rows="6" class="input-mono resize-y" placeholder="default-src 'self'; script-src 'self' 'nonce-{{nonce}}'; object-src 'none'; base-uri 'none';" data-i18n-placeholder="tools.csp-builder.ui.placeholder0"></textarea>
               <div class="mt-3 flex items-center justify-between gap-3">
-                <label class="inline-flex items-center gap-2 cursor-pointer text-sm text-surface-700 dark:text-surface-300">
+                <label for="report-only" class="inline-flex items-center gap-2 cursor-pointer text-sm text-surface-700 dark:text-surface-300">
                   <input id="report-only" type="checkbox" class="w-4 h-4 rounded border-surface-300 text-primary-600 focus:ring-primary-500">
                   <span data-i18n="tools.csp-builder.ui.label1">Report-Only header</span>
                 </label>
-                <div class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.csp-builder.ui.desc1">Tip: Use Report-Only to test safely in production.</div>
+                <div class="text-xs text-surface-600 dark:text-surface-300" data-i18n="tools.csp-builder.ui.desc1">Tip: Use Report-Only to test safely in production.</div>
               </div>
             </div>
 
             <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
               <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400 mb-3" data-i18n="tools.csp-builder.ui.heading0">Warnings</h2>
               <div id="warnings" class="text-sm text-surface-700 dark:text-surface-200">
-                <p class="text-surface-500 dark:text-surface-400" data-i18n="tools.csp-builder.ui.desc2">No warnings yet.</p>
+                <p class="text-surface-600 dark:text-surface-300" data-i18n="tools.csp-builder.ui.desc2">No warnings yet.</p>
               </div>
             </div>
           </div>
@@ -82,7 +110,7 @@ function renderCSPBuilderPage(lang = DEFAULT_LANGUAGE) {
             <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
               <div class="flex items-center justify-between mb-3">
                 <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400" data-i18n="tools.csp-builder.ui.heading1">Directives</h2>
-                <span class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.csp-builder.ui.text0">Space-separated sources</span>
+                <span class="text-xs text-surface-600 dark:text-surface-300" data-i18n="tools.csp-builder.ui.text0">Space-separated sources</span>
               </div>
 
               <div class="space-y-3">
@@ -101,12 +129,12 @@ function renderCSPBuilderPage(lang = DEFAULT_LANGUAGE) {
             </div>
 
             <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
-              <label class="label flex items-center gap-2">
+              <label for="csp-output" class="label flex items-center gap-2">
                 <span data-i18n="tools.csp-builder.ui.label2">Header output</span>
                 ${infoHint('Copy this into your server response headers. For testing, prefer “Content-Security-Policy-Report-Only”.', 'Help', { i18nKey: 'tools.csp-builder.ui.desc3' })}
               </label>
               <textarea id="csp-output" rows="7" class="input-mono resize-y bg-surface-50 dark:bg-surface-950" readonly></textarea>
-              <div class="mt-2 text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.csp-builder.ui.desc4">This tool does not validate your site behavior — always test in a staging environment.</div>
+              <div class="mt-2 text-xs text-surface-600 dark:text-surface-300" data-i18n="tools.csp-builder.ui.desc4">This tool does not validate your site behavior — always test in a staging environment.</div>
             </div>
           </div>
         </div>
@@ -225,7 +253,7 @@ function renderCSPBuilderPage(lang = DEFAULT_LANGUAGE) {
 
         if (!els.warnings.childElementCount) {
           const p = document.createElement('p');
-          p.className = 'text-surface-500 dark:text-surface-400';
+          p.className = 'text-surface-600 dark:text-surface-300';
           p.textContent = t('text9', 'No warnings detected for basic checks.');
           els.warnings.appendChild(p);
         }
@@ -279,7 +307,7 @@ function renderCSPBuilderPage(lang = DEFAULT_LANGUAGE) {
         els.reportOnly.checked = false;
         els.output.value = '';
         els.copy.disabled = true;
-        els.warnings.innerHTML = '<p class="text-surface-500 dark:text-surface-400" data-i18n="tools.csp-builder.ui.desc5">' + t('text10', 'No warnings yet.') + '</p>';
+        els.warnings.innerHTML = '<p class="text-surface-600 dark:text-surface-300" data-i18n="tools.csp-builder.ui.desc5">' + t('text10', 'No warnings yet.') + '</p>';
       });
 
       els.copy.addEventListener('click', async () => {
@@ -322,7 +350,7 @@ function directiveRow(name, help, placeholder) {
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-start">
       <div class="sm:col-span-1">
         <label for="${id}" class="text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide">${name}</label>
-        <div class="text-xs text-surface-500 dark:text-surface-400 mt-1" data-i18n="${helpKey}">${help}</div>
+        <div class="text-xs text-surface-600 dark:text-surface-300 mt-1" data-i18n="${helpKey}">${help}</div>
       </div>
       <div class="sm:col-span-2">
         <input id="${id}" class="input font-mono" placeholder="${placeholder}" data-i18n-placeholder="${phKey}" />
