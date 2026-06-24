@@ -52,13 +52,7 @@ const BASELINE_VIOLATIONS = {
     { id: 'color-contrast', impact: 'serious' },
     { id: 'link-in-text-block', impact: 'serious' },
   ],
-  '/cron-builder': [
-    { id: 'aria-allowed-role', impact: 'minor' },
-    { id: 'aria-required-children', impact: 'critical' },
-    { id: 'aria-required-parent', impact: 'critical' },
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
-  ],
+  '/cron-builder': [],
   '/css-gradient': [
     { id: 'color-contrast', impact: 'serious' },
     { id: 'link-in-text-block', impact: 'serious' },
