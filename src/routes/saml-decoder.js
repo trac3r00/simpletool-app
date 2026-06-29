@@ -212,7 +212,7 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
   `;
 
   const script = `
-    <script src="/vendor/pako.min.js" integrity="sha384-rNlaE5fs9dGIjmxWDALQh/RBAaGRYT5ChrzHo6tRfgrZ36iRFAiquP5g41Jsv+0j" crossorigin="anonymous"></script>
+    <script src="/vendor/pako.min.js" integrity="sha384-SOKq5nI1KT/1aHGKGCSjD46LOyeO/LcL8TAC8JLlwecpKClaN4q2iUaJTID0OTA1" crossorigin="anonymous"></script>
     <script>
       (function () {
         var samlInput = document.getElementById('saml-input');
