@@ -49,11 +49,17 @@ function renderCaffeinatePage(lang = DEFAULT_LANGUAGE) {
           ${t('tools.caffeinate.ui.desc0')}
         </p>
 
-        <!-- Action Button -->
-        <div class="mt-6 flex justify-center">
+        <!-- Action Buttons -->
+        <div class="mt-6 flex flex-col items-center gap-3">
           <button id="toggle-btn" type="button" data-tooltip="Uses the Wake Lock API to prevent your screen from sleeping" class="btn btn-primary px-8 py-3 text-base font-semibold" data-i18n="tools.caffeinate.ui.button0">
             ${t('tools.caffeinate.ui.button0')}
           </button>
+          <button id="pip-btn" type="button" class="hidden btn btn-secondary px-6 py-2 text-sm font-medium">
+            📌 Pin to Screen (PiP)
+          </button>
+          <p id="pip-hint" class="hidden text-xs text-surface-400 dark:text-surface-500 text-center max-w-sm">
+            Opens a small floating window so the wake lock stays active even when this tab is in the background.
+          </p>
         </div>
 
         <!-- Stats -->
@@ -101,7 +107,13 @@ function renderCaffeinatePage(lang = DEFAULT_LANGUAGE) {
         reactivationAttempts: 0,
         heartbeatCount: 0,
         reactivationCount: 0,
-        supportsWakeLock: 'wakeLock' in navigator
+        supportsWakeLock: 'wakeLock' in navigator,
+        pipCanvas: null,
+        pipVideo: null,
+        pipWindow: null,
+        pipAnimFrame: null,
+        silentAudioCtx: null,
+        silentOscillator: null
       };
 
       var statusPanel = document.getElementById('status-panel');
@@ -135,7 +147,11 @@ function renderCaffeinatePage(lang = DEFAULT_LANGUAGE) {
         }
         var labels = {
           native: window._t ? window._t('tools.caffeinate.js.mode0') : 'Wake Lock API',
-          fallback: window._t ? window._t('tools.caffeinate.js.mode1') : 'Video Fallback',
+          'native+pip': 'Wake Lock + PiP',
+          'native+background': 'Wake Lock + Background Safe',
+          fallback: 'Background Safe Mode',
+          'fallback+pip': 'Video Fallback + PiP',
+          pip: 'Picture-in-Picture',
           basic: window._t ? window._t('tools.caffeinate.js.mode2') : 'Basic Fallback'
         };
         modeLabel.textContent = labels[mode] || mode;
@@ -252,27 +268,57 @@ function renderCaffeinatePage(lang = DEFAULT_LANGUAGE) {
 
       async function activateFallback() {
         try {
+          // ── Strategy 1: Silent mp4 video loop (NoSleep.js proven technique) ──
+          // This base64 mp4 contains an actual audio track — browsers treat it
+          // as real media playback so the tab stays "active" even when backgrounded.
+          // The video has an empty audio track and a single transparent frame.
+          var SILENT_MP4 = 'data:video/mp4;base64,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';
+
           var video = document.createElement('video');
           video.setAttribute('playsinline', '');
-          video.muted = true;
+          video.muted = false;  // must NOT be muted for background playback
           video.loop = true;
-          video.style.cssText = 'position:absolute;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none';
+          video.volume = 0.001; // near-silent but not muted
+          video.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0.01;pointer-events:none;z-index:-1';
           video.setAttribute('aria-hidden', 'true');
-
-          var canvas = document.createElement('canvas');
-          canvas.width = 1; canvas.height = 1;
-          var ctx = canvas.getContext('2d');
-          ctx.fillRect(0, 0, 1, 1);
-          video.src = canvas.toDataURL('image/png');
+          video.src = SILENT_MP4;
 
           document.body.appendChild(video);
           await video.play();
 
           state.fallbackVideo = video;
+
+          // ── Strategy 2: Web Audio API silent oscillator (timer anti-throttle) ──
+          try {
+            var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            var oscillator = audioCtx.createOscillator();
+            var gainNode = audioCtx.createGain();
+            gainNode.gain.value = 0.001; // inaudible
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            oscillator.start();
+            state.silentAudioCtx = audioCtx;
+            state.silentOscillator = oscillator;
+          } catch (audioErr) {
+            // Web Audio not available — video alone is still valuable
+          }
+
+          // ── Strategy 3: Media Session API — register as "playing" with OS ──
+          try {
+            if ('mediaSession' in navigator) {
+              navigator.mediaSession.metadata = new MediaMetadata({
+                title: 'Caffeinate — Screen Awake',
+                artist: 'SimpleTool',
+                album: 'Wake Lock Active'
+              });
+              navigator.mediaSession.playbackState = 'playing';
+            }
+          } catch (msErr) {}
+
           state.mode = 'fallback';
           state.active = true;
           state.lastActivity = Date.now();
-          updateUI('☕', window._t ? window._t('tools.caffeinate.js.status1') : 'Fallback wake lock active. Keep this tab in the foreground.', true, 'active');
+          updateUI('☕', 'Wake lock active (background-safe mode). Your screen will stay awake.', true, 'active');
           showMode('fallback');
           startHeartbeat();
           startUptimeTimer();
@@ -288,15 +334,154 @@ function renderCaffeinatePage(lang = DEFAULT_LANGUAGE) {
           try { state.fallbackVideo.pause(); state.fallbackVideo.remove(); } catch (e) {}
           state.fallbackVideo = null;
         }
+        if (state.silentOscillator) {
+          try { state.silentOscillator.stop(); } catch (e) {}
+          state.silentOscillator = null;
+        }
+        if (state.silentAudioCtx) {
+          try { state.silentAudioCtx.close(); } catch (e) {}
+          state.silentAudioCtx = null;
+        }
+        try {
+          if ('mediaSession' in navigator) {
+            navigator.mediaSession.playbackState = 'none';
+          }
+        } catch (e) {}
+      }
+
+      // ── Picture-in-Picture: keeps tab "visible" even when backgrounded ──
+
+      var pipBtn = document.getElementById('pip-btn');
+      var pipHint = document.getElementById('pip-hint');
+      var supportsPiP = (typeof HTMLVideoElement !== 'undefined' && 'requestPictureInPicture' in HTMLVideoElement.prototype);
+
+      function renderPipFrame() {
+        if (!state.pipCanvas || !state.intentActive) return;
+        var ctx = state.pipCanvas.getContext('2d');
+        var w = state.pipCanvas.width;
+        var h = state.pipCanvas.height;
+
+        // dark background
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(0, 0, w, h);
+
+        // coffee icon
+        ctx.font = '48px serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('☕', w / 2, 65);
+
+        // uptime
+        var secs = state.startedAt ? Math.floor((Date.now() - state.startedAt) / 1000) : 0;
+        var hh = Math.floor(secs / 3600);
+        var mm = Math.floor((secs % 3600) / 60);
+        var ss = secs % 60;
+        var timeStr = (hh > 0 ? hh + 'h ' : '') + (mm > 0 ? mm + 'm ' : '') + ss + 's';
+
+        ctx.fillStyle = '#e2e8f0';
+        ctx.font = 'bold 22px system-ui, sans-serif';
+        ctx.fillText(timeStr, w / 2, 105);
+
+        // status dot
+        ctx.fillStyle = state.active ? '#22c55e' : '#ef4444';
+        ctx.beginPath();
+        ctx.arc(w / 2, 130, 6, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '12px system-ui, sans-serif';
+        ctx.fillText(state.active ? 'AWAKE' : 'INACTIVE', w / 2, 150);
+
+        state.pipAnimFrame = requestAnimationFrame(renderPipFrame);
+      }
+
+      async function activatePiP() {
+        if (!supportsPiP) return false;
+        try {
+          // Create canvas with timer animation
+          var canvas = document.createElement('canvas');
+          canvas.width = 200;
+          canvas.height = 160;
+          state.pipCanvas = canvas;
+
+          // Create video from canvas stream
+          var video = document.createElement('video');
+          video.muted = true;
+          video.setAttribute('playsinline', '');
+          video.style.cssText = 'position:absolute;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none';
+          video.setAttribute('aria-hidden', 'true');
+          video.srcObject = canvas.captureStream(30);
+          document.body.appendChild(video);
+          await video.play();
+          state.pipVideo = video;
+
+          // Start rendering frames
+          renderPipFrame();
+
+          // Enter PiP
+          state.pipWindow = await video.requestPictureInPicture();
+
+          state.pipWindow.addEventListener('leavepictureinpicture', function() {
+            cleanupPiP();
+            if (state.intentActive) {
+              // Fell back — update mode label
+              state.mode = state.wakeLock ? 'native' : (state.fallbackVideo ? 'fallback' : state.mode);
+              showMode(state.mode);
+              pipBtn.textContent = '📌 Pin to Screen (PiP)';
+            }
+          });
+
+          // Update mode to show PiP is active
+          if (state.mode === 'native') {
+            state.mode = 'native+pip';
+          } else if (state.mode === 'fallback') {
+            state.mode = 'fallback+pip';
+          } else {
+            state.mode = 'pip';
+          }
+          showMode(state.mode);
+          pipBtn.textContent = '📌 PiP Active — Click to Close';
+
+          return true;
+        } catch (e) {
+          cleanupPiP();
+          return false;
+        }
+      }
+
+      function cleanupPiP() {
+        if (state.pipAnimFrame) {
+          cancelAnimationFrame(state.pipAnimFrame);
+          state.pipAnimFrame = null;
+        }
+        if (document.pictureInPictureElement === state.pipVideo) {
+          try { document.exitPictureInPicture(); } catch (e) {}
+        }
+        if (state.pipVideo) {
+          try { state.pipVideo.pause(); state.pipVideo.remove(); } catch (e) {}
+          state.pipVideo = null;
+        }
+        state.pipCanvas = null;
+        state.pipWindow = null;
       }
 
       async function activateWakeLock() {
+        // Always start the background-safe fallback (video + audio) first.
+        // Even if native Wake Lock works, the fallback keeps the screen on
+        // when the tab goes to the background and the native lock is released.
+        var fbOk = await activateFallback();
+
         if (state.supportsWakeLock) {
-          var ok = await activateNative();
-          if (ok) return true;
+          var nativeOk = await activateNative();
+          if (nativeOk) {
+            // Both native + fallback active = best coverage
+            state.mode = 'native+background';
+            showMode(state.mode);
+            return true;
+          }
         }
-        var fb = await activateFallback();
-        if (fb) return true;
+
+        // Native failed or unavailable — fallback alone
+        if (fbOk) return true;
 
         updateUI('❌', window._t ? window._t('tools.caffeinate.js.status9') : 'Wake lock unavailable on this device. Check system power settings.', false, 'error');
         return false;
@@ -318,6 +503,7 @@ function renderCaffeinatePage(lang = DEFAULT_LANGUAGE) {
           state.wakeLock = null;
         }
         cleanupFallback();
+        cleanupPiP();
 
         state.mode = 'none';
         state.active = false;
@@ -358,6 +544,9 @@ function renderCaffeinatePage(lang = DEFAULT_LANGUAGE) {
           if (state.intentActive) {
             await deactivateWakeLock('Wake lock deactivated.', true);
             statsPanel.classList.add('hidden');
+            pipBtn.classList.add('hidden');
+            pipHint.classList.add('hidden');
+            pipBtn.textContent = '📌 Pin to Screen (PiP)';
             return;
           }
           state.intentActive = true;
@@ -366,9 +555,34 @@ function renderCaffeinatePage(lang = DEFAULT_LANGUAGE) {
           statsPanel.classList.remove('hidden');
           updateStats();
           var ok = await activateWakeLock();
-          if (!ok) state.intentActive = false;
+          if (!ok) {
+            state.intentActive = false;
+          } else if (supportsPiP) {
+            pipBtn.classList.remove('hidden');
+            pipHint.classList.remove('hidden');
+          }
         } finally {
           toggleBtn.disabled = false;
+        }
+      });
+
+      pipBtn.addEventListener('click', async function() {
+        pipBtn.disabled = true;
+        try {
+          if (state.pipWindow) {
+            // PiP is active — close it
+            cleanupPiP();
+            state.mode = state.wakeLock ? 'native' : (state.fallbackVideo ? 'fallback' : 'none');
+            showMode(state.mode);
+            pipBtn.textContent = '📌 Pin to Screen (PiP)';
+          } else {
+            var ok = await activatePiP();
+            if (!ok) {
+              pipHint.textContent = 'PiP not available on this browser.';
+            }
+          }
+        } finally {
+          pipBtn.disabled = false;
         }
       });
 
@@ -402,6 +616,7 @@ function renderCaffeinatePage(lang = DEFAULT_LANGUAGE) {
         state.intentActive = false;
         stopHeartbeat();
         stopUptimeTimer();
+        cleanupPiP();
         if (state.wakeLock) {
           state.wakeLock.removeEventListener('release', handleRelease);
           state.wakeLock.release().catch(function(){});
