@@ -31,6 +31,7 @@ import {
 } from './utils/security.js';
 import { respondJSON, respondText, respond404, respond429 } from './utils/respond.js';
 import { tryLegacyRedirect } from './utils/redirects.js';
+import { handleApiV1 } from './api/v1.js';
 import { bundledStyles, bundledStylesHash } from './utils/bundled-styles.js';
 import { setAdConfig, setAnalyticsToken, setSiteUrl } from './utils/common-ui.js';
 import { resolveRequestLanguage } from './utils/i18n.js';
@@ -238,6 +239,11 @@ const worker = {
         }, {
           headers: { 'Cache-Control': 'no-store' }
         });
+      }
+
+      // Public REST API v1
+      if (path.startsWith('/api/v1')) {
+        return handleApiV1(request, url);
       }
 
       if (path === '/debug-sentry') {
