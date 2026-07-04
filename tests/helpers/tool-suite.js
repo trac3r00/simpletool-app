@@ -142,5 +142,18 @@ export const TOOL_ACTIONS = {
     async waitFor(page) {
       await expect(page.locator('#results-body')).toContainText('Not Found');
     }
+  },
+
+  'review-description-generator': {
+    async action(page) {
+      await page.locator('#template-select').selectOption('dependency');
+      await page.locator('#field-pkg-name').fill('actions/checkout');
+      await page.locator('#field-old-version').fill('6.0.3');
+      await page.locator('#field-new-version').fill('7.0.0');
+      await page.locator('#generate-btn').click();
+    },
+    async waitFor(page) {
+      await expect(page.locator('#output-preview')).toContainText('actions/checkout');
+    }
   }
 };

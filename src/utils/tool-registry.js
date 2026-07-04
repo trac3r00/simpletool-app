@@ -485,6 +485,17 @@ export const TOOLS = [
     relatedTools: ['public-repos-yml-builder', 'markdown-editor', 'secret-scanner', 'prompt-template-builder']
   },
   {
+    id: 'review-description-generator',
+    name: 'Review Description Generator',
+    icon: '📝',
+    description: 'Generate structured PR review and comment descriptions from commits, diffs, or notes.',
+    path: '/review-description-generator',
+    category: 'utils',
+    keywords: 'review, pr, pull request, description, comment, template, dependency bump, changelog',
+    badge: 'NEW',
+    relatedTools: ['markdown-editor', 'text-diff', 'prompt-template-builder', 'public-repos-yml-builder']
+  },
+  {
     id: 'sql-formatter',
     name: 'SQL Formatter & Validator',
     icon: '🗄️',
