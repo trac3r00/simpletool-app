@@ -1,14 +1,31 @@
-import { respondHTML } from '../utils/respond.js';
+import { respondHTML, respondJSON } from '../utils/respond.js';
 import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
 import { TOOLS } from '../utils/tool-registry.js';
 import { createRelatedToolsSection } from '../utils/content-ui.js';
 import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
 
 export async function handleWebhookDebuggerRoutes(request, url) {
-  if (url.pathname !== '/webhook-debugger' && url.pathname !== '/webhook-debugger/') return null;
-  if (request.method !== 'GET') return null;
-  const lang = resolveRequestLanguage(request, url);
-  return respondHTML(renderWebhookDebuggerPage(lang));
+  const path = url.pathname;
+
+  // Main page
+  if (path === '/webhook-debugger' || path === '/webhook-debugger/') {
+    if (request.method !== 'GET') return null;
+    const lang = resolveRequestLanguage(request, url);
+    return respondHTML(renderWebhookDebuggerPage(lang));
+  }
+
+  // Listener iframe page (loaded by the main page's hidden iframe)
+  if (path === '/webhook-debugger/listen') {
+    if (request.method !== 'GET') return null;
+    return renderListenPage(url);
+  }
+
+  // Capture endpoint — accepts any HTTP method from webhook providers
+  if (path === '/webhook-debugger/capture') {
+    return handleCaptureRequest(request, url);
+  }
+
+  return null;
 }
 
 function renderWebhookDebuggerPage(lang = DEFAULT_LANGUAGE) {
@@ -282,6 +299,35 @@ function renderWebhookDebuggerPage(lang = DEFAULT_LANGUAGE) {
           iframeEl = null;
         }
       }
+
+      // --- Same-origin fetch interceptor ---
+      // Intercepts fetch() calls to /webhook-debugger/capture from the same
+      // browser (e.g. user testing via curl-studio or JS console). The real
+      // request still goes through so the caller gets a response, but we also
+      // extract the request data and register it in the UI immediately.
+      var _origFetch = window.fetch;
+      window.fetch = function(input, init) {
+        var reqUrl = typeof input === 'string' ? input : (input && input.url ? input.url : '');
+        if (reqUrl.indexOf(endpointPath) !== -1 && isListening) {
+          var method = (init && init.method) || (input && input.method) || 'GET';
+          var hdrs = {};
+          if (init && init.headers) {
+            if (init.headers instanceof Headers) {
+              init.headers.forEach(function(v, k) { hdrs[k] = v; });
+            } else if (typeof init.headers === 'object') {
+              hdrs = Object.assign({}, init.headers);
+            }
+          }
+          var bodyText = (init && init.body) ? (typeof init.body === 'string' ? init.body : JSON.stringify(init.body)) : '';
+          registerRequest({
+            method: method.toUpperCase(),
+            url: reqUrl,
+            headers: hdrs,
+            body: bodyText
+          });
+        }
+        return _origFetch.apply(this, arguments);
+      };
 
       // Set captured request in sessionStorage (for cross-tab/iframe communication)
       function setCapture(req) {
@@ -676,4 +722,95 @@ function renderWebhookDebuggerPage(lang = DEFAULT_LANGUAGE) {
   `;
 
   return createPageTemplate({ title, description, content, path: '/webhook-debugger' });
+}
+
+/**
+ * Minimal HTML page loaded inside the hidden iframe.
+ * It acts as a same-origin bridge: receives postMessage from external scripts
+ * or from the parent page, and relays capture data back to the parent.
+ */
+function renderListenPage(url) {
+  const session = url.searchParams.get('session') || '';
+  const origin = url.searchParams.get('origin') || '';
+
+  const html = `<!DOCTYPE html>
+<html><head><title>Webhook Listener</title></head>
+<body>
+<script>
+(function() {
+  var session = ${JSON.stringify(session)};
+  var parentOrigin = ${JSON.stringify(origin)} || window.location.origin;
+
+  // Listen for captures forwarded via postMessage (from /capture or other tabs)
+  window.addEventListener('message', function(e) {
+    if (e.origin !== window.location.origin && e.origin !== parentOrigin) return;
+    if (e.data && e.data.type === 'whd_capture') {
+      // Relay to parent
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'whd_register', payload: e.data.payload }, parentOrigin);
+      }
+    }
+  });
+
+  // Also store our session so the parent can identify us
+  try { sessionStorage.setItem('whd_listen_session', session); } catch(e) {}
+})();
+</script>
+</body></html>`;
+
+  return new Response(html, {
+    status: 200,
+    headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' }
+  });
+}
+
+/**
+ * Capture endpoint — accepts any HTTP method.
+ * Returns the request echo as JSON so webhook providers get a 200 OK.
+ * Includes CORS headers for cross-origin webhook delivery.
+ */
+async function handleCaptureRequest(request, url) {
+  // Handle CORS preflight
+  if (request.method === 'OPTIONS') {
+    return new Response(null, {
+      status: 204,
+      headers: corsHeaders()
+    });
+  }
+
+  // Read request data
+  let body = '';
+  try {
+    body = await request.text();
+  } catch (e) {
+    // body may be empty for GET/HEAD
+  }
+
+  const headersObj = {};
+  for (const [key, value] of request.headers.entries()) {
+    headersObj[key] = value;
+  }
+
+  const captured = {
+    method: request.method,
+    path: url.pathname + url.search,
+    headers: headersObj,
+    body: body,
+    contentType: request.headers.get('content-type') || '',
+    timestamp: Date.now()
+  };
+
+  return respondJSON(
+    { ok: true, captured },
+    { headers: corsHeaders() }
+  );
+}
+
+function corsHeaders() {
+  return {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD',
+    'Access-Control-Allow-Headers': '*',
+    'Access-Control-Max-Age': '86400'
+  };
 }

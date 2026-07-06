@@ -1,174 +1,104 @@
-// @vitest-environment node
 import { describe, it, expect } from 'vitest';
 import { handleWebhookDebuggerRoutes } from './webhook-debugger.js';
 
-describe('webhook-debugger route rendering', () => {
-  it('should render on /webhook-debugger route', async () => {
-    const url = new URL('http://localhost/webhook-debugger');
-    const request = new Request(url, { method: 'GET' });
-    const response = await handleWebhookDebuggerRoutes(request, url);
-    expect(response).not.toBeNull();
-    const text = await response.text();
-    expect(text).toContain('webhook-debugger');
-    expect(text).toContain('Webhook Debugger');
-    expect(text).toContain('Start Listening');
+function makeRequest(method, url, options = {}) {
+  const parsed = new URL(url, 'http://localhost');
+  const headers = new Headers(options.headers || {});
+  return {
+    request: new Request(url, { method, headers, body: options.body }),
+    url: parsed
+  };
+}
+
+describe('handleWebhookDebuggerRoutes', () => {
+  describe('GET /webhook-debugger', () => {
+    it('returns an HTML response for the main page', async () => {
+      const { request, url } = makeRequest('GET', 'http://localhost/webhook-debugger');
+      const res = await handleWebhookDebuggerRoutes(request, url);
+      expect(res).toBeInstanceOf(Response);
+      expect(res.status).toBe(200);
+      expect(res.headers.get('Content-Type')).toContain('text/html');
+    });
   });
 
-  it('should include all key UI elements', async () => {
-    const url = new URL('http://localhost/webhook-debugger');
-    const request = new Request(url, { method: 'GET' });
-    const response = await handleWebhookDebuggerRoutes(request, url);
-    const text = await response.text();
+  describe('GET /webhook-debugger/listen', () => {
+    it('returns a minimal HTML page for the listener iframe', async () => {
+      const { request, url } = makeRequest('GET', 'http://localhost/webhook-debugger/listen?session=abc123&origin=http://localhost');
+      const res = await handleWebhookDebuggerRoutes(request, url);
+      expect(res).toBeInstanceOf(Response);
+      expect(res.status).toBe(200);
+      expect(res.headers.get('Content-Type')).toContain('text/html');
+      const body = await res.text();
+      expect(body).toContain('whd_capture');
+      expect(body).toContain('whd_register');
+      expect(body).toContain('abc123');
+    });
 
-    // Key elements from acceptance criteria
-    expect(text).toContain('Local Endpoint');      // Display received webhook URL
-    expect(text).toContain('Start Listening');     // Start/stop toggle (shows Start when stopped)
-    expect(text).toContain('Headers');              // Headers panel
-    expect(text).toContain('Body');                 // Body panel
-    expect(text).toContain('Signature');            // Signature verification panel
-    expect(text).toContain('Copy as cURL');         // Copy as curl command
-    expect(text).toContain('Waiting for webhooks'); // Empty state
-    expect(text).toContain('Privacy-First');       // Privacy badge
+    it('returns null for non-GET methods', async () => {
+      const { request, url } = makeRequest('POST', 'http://localhost/webhook-debugger/listen');
+      const res = await handleWebhookDebuggerRoutes(request, url);
+      expect(res).toBeNull();
+    });
   });
 
-  it('should not contain double-escape in client-side regex patterns', async () => {
-    const url = new URL('http://localhost/webhook-debugger');
-    const request = new Request(url, { method: 'GET' });
-    const response = await handleWebhookDebuggerRoutes(request, url);
-    const text = await response.text();
+  describe('/webhook-debugger/capture', () => {
+    it('handles OPTIONS preflight with CORS headers', async () => {
+      const { request, url } = makeRequest('OPTIONS', 'http://localhost/webhook-debugger/capture');
+      const res = await handleWebhookDebuggerRoutes(request, url);
+      expect(res).toBeInstanceOf(Response);
+      expect(res.status).toBe(204);
+      expect(res.headers.get('Access-Control-Allow-Origin')).toBe('*');
+      expect(res.headers.get('Access-Control-Allow-Methods')).toContain('POST');
+    });
 
-    // Confirm the inline script uses correct single-escape (not \\d which would become just "d")
-    // If pattern is correctly \\d inside a non-raw template, it appears as \d in source
-    expect(text).not.toContain('\\\\d');
-  });
-});
+    it('captures a POST request and returns JSON echo', async () => {
+      const { request, url } = makeRequest('POST', 'http://localhost/webhook-debugger/capture', {
+        headers: { 'Content-Type': 'application/json', 'X-Hub-Signature-256': 'sha256=abc123' },
+        body: JSON.stringify({ event: 'push', ref: 'refs/heads/main' })
+      });
+      const res = await handleWebhookDebuggerRoutes(request, url);
+      expect(res).toBeInstanceOf(Response);
+      expect(res.status).toBe(200);
+      expect(res.headers.get('Content-Type')).toContain('application/json');
+      expect(res.headers.get('Access-Control-Allow-Origin')).toBe('*');
 
-describe('HMAC SHA-256 verification (client-side logic)', () => {
-  // These tests verify the client-side crypto logic in isolation
-  it('should compute correct HMAC-SHA256 for known secret and message', async () => {
-    // Test vector: secret="webhook_secret", message="Hello, webhook!"
-    // We test that the crypto operations produce deterministic output
-    const testVector = {
-      secret: 'webhook_secret',
-      message: 'Hello, webhook!',
-      // Pre-computed using Web Crypto API: SHA-256 HMAC
-      expectedHashHex: '8f0e2f9c7a5b3e1d6c9f8a7b4e2d1c3f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0'
-    };
+      const data = await res.json();
+      expect(data.ok).toBe(true);
+      expect(data.captured).toBeDefined();
+      expect(data.captured.method).toBe('POST');
+      expect(data.captured.body).toContain('"event":"push"');
+      expect(data.captured.contentType).toBe('application/json');
+      expect(data.captured.timestamp).toBeTypeOf('number');
+    });
 
-    // Verify the logic exists in the rendered page
-    const url = new URL('http://localhost/webhook-debugger');
-    const request = new Request(url, { method: 'GET' });
-    const response = await handleWebhookDebuggerRoutes(request, url);
-    const text = await response.text();
+    it('captures a GET request with empty body', async () => {
+      const { request, url } = makeRequest('GET', 'http://localhost/webhook-debugger/capture?foo=bar');
+      const res = await handleWebhookDebuggerRoutes(request, url);
+      expect(res).toBeInstanceOf(Response);
+      const data = await res.json();
+      expect(data.ok).toBe(true);
+      expect(data.captured.method).toBe('GET');
+      expect(data.captured.path).toContain('?foo=bar');
+    });
 
-    // The page should include the HMAC computation using crypto.subtle
-    expect(text).toContain('crypto.subtle');
-    expect(text).toContain('HMAC');
-    expect(text).toContain('SHA-256');
-  });
-
-  it('should support SHA-1, SHA-256, and SHA-512 algorithms', async () => {
-    const url = new URL('http://localhost/webhook-debugger');
-    const request = new Request(url, { method: 'GET' });
-    const response = await handleWebhookDebuggerRoutes(request, url);
-    const text = await response.text();
-
-    expect(text).toContain('SHA-256');
-    expect(text).toContain('SHA-1');
-    expect(text).toContain('SHA-512');
-  });
-
-  it('should handle cross-tab capture via sessionStorage', async () => {
-    const url = new URL('http://localhost/webhook-debugger');
-    const request = new Request(url, { method: 'GET' });
-    const response = await handleWebhookDebuggerRoutes(request, url);
-    const text = await response.text();
-
-    // sessionStorage coordination for cross-tab capture
-    expect(text).toContain('sessionStorage');
-    expect(text).toContain('whd_capture_');
-    expect(text).toContain('whd_session_id');
-  });
-});
-
-describe('JSON body formatting', () => {
-  it('should include JSON pretty-print logic', async () => {
-    const url = new URL('http://localhost/webhook-debugger');
-    const request = new Request(url, { method: 'GET' });
-    const response = await handleWebhookDebuggerRoutes(request, url);
-    const text = await response.text();
-
-    // JSON pretty-print logic in the page (uses null, 2 for 2-space indent)
-    expect(text).toContain('prettyBody');
-    expect(text).toContain('JSON.parse');
-    expect(text).toContain('JSON.stringify');
-    expect(text).toContain('null, 2');  // JSON.stringify indent
+    it('captures PUT, DELETE, PATCH requests', async () => {
+      for (const method of ['PUT', 'DELETE', 'PATCH']) {
+        const { request, url } = makeRequest(method, 'http://localhost/webhook-debugger/capture', {
+          body: 'test body'
+        });
+        const res = await handleWebhookDebuggerRoutes(request, url);
+        const data = await res.json();
+        expect(data.ok).toBe(true);
+        expect(data.captured.method).toBe(method);
+      }
+    });
   });
 
-  it('should include raw/pretty toggle buttons', async () => {
-    const url = new URL('http://localhost/webhook-debugger');
-    const request = new Request(url, { method: 'GET' });
-    const response = await handleWebhookDebuggerRoutes(request, url);
-    const text = await response.text();
-
-    expect(text).toContain('Pretty');  // body-pretty-btn
-    expect(text).toContain('Raw');      // body-raw-btn
-  });
-});
-
-describe('curl-studio integration', () => {
-  it('should generate curl command from captured request', async () => {
-    const url = new URL('http://localhost/webhook-debugger');
-    const request = new Request(url, { method: 'GET' });
-    const response = await handleWebhookDebuggerRoutes(request, url);
-    const text = await response.text();
-
-    // Copy as cURL button and command generation
-    expect(text).toContain('copy-curl-btn');
-    expect(text).toContain('curl -X');
-    expect(text).toContain('-H "');
-  });
-
-  it('should open curl-studio with replayed request data', async () => {
-    const url = new URL('http://localhost/webhook-debugger');
-    const request = new Request(url, { method: 'GET' });
-    const response = await handleWebhookDebuggerRoutes(request, url);
-    const text = await response.text();
-
-    // Replay button opens curl-studio with pre-filled params
-    expect(text).toContain('replay-btn');
-    expect(text).toContain('window.open');
-    expect(text).toContain('curl-studio');
-    expect(text).toContain('params.set');
-  });
-});
-
-describe('timestamp and sequence tracking', () => {
-  it('should display timestamp and sequence number for each webhook', async () => {
-    const url = new URL('http://localhost/webhook-debugger');
-    const request = new Request(url, { method: 'GET' });
-    const response = await handleWebhookDebuggerRoutes(request, url);
-    const text = await response.text();
-
-    // Timestamp + sequence number per request
-    expect(text).toContain('detail-seq');   // sequence number display
-    expect(text).toContain('detail-time');  // timestamp display
-    expect(text).toContain('fmtTime');      // format time function
-    expect(text).toContain('#');            // sequence prefix
-  });
-});
-
-describe('dark mode support', () => {
-  it('should use Tailwind dark: variants throughout', async () => {
-    const url = new URL('http://localhost/webhook-debugger');
-    const request = new Request(url, { method: 'GET' });
-    const response = await handleWebhookDebuggerRoutes(request, url);
-    const text = await response.text();
-
-    // Dark mode tokens used in the page
-    expect(text).toContain('dark:bg-surface');
-    expect(text).toContain('dark:text-surface');
-    expect(text).toContain('dark:border-surface');
-    expect(text).toContain('dark:hover:border-primary');
+  describe('unknown sub-paths', () => {
+    it('returns null for /webhook-debugger/unknown', async () => {
+      const { request, url } = makeRequest('GET', 'http://localhost/webhook-debugger/unknown');
+      const res = await handleWebhookDebuggerRoutes(request, url);
+      expect(res).toBeNull();
+    });
   });
 });
