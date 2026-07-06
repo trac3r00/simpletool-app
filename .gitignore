@@ -17,9 +17,10 @@ TODO.md
 .dev.vars
 
 # Build outputs
-dist/
+dist/*
 !dist/manifest.json
 !dist/sw.js
+!dist/fonts/
 src/utils/bundled-styles.js
 
 # Environment variables

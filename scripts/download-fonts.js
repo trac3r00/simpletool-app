@@ -38,6 +38,11 @@ function fetch(url) {
 }
 
 async function main() {
+  const fontPath = path.join(DIST_FONTS_DIR, TARGET_FONT_FILE);
+  if (fs.existsSync(fontPath) && fs.existsSync(TARGET_CSS_FILE)) {
+    console.log('Material Symbols font already present, skipping download.');
+    return;
+  }
   console.log('Fetching CSS...');
   const cssBuffer = await fetch(CSS_URL);
   let cssContent = cssBuffer.toString();
