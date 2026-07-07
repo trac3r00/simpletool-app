@@ -160,6 +160,11 @@ const BASELINE_VIOLATIONS = {
     { id: 'scrollable-region-focusable', impact: 'serious' },
     { id: 'select-name', impact: 'critical' },
   ],
+  '/review-description-generator': [
+    { id: 'color-contrast', impact: 'serious' },
+    { id: 'heading-order', impact: 'moderate' },
+    { id: 'link-in-text-block', impact: 'serious' },
+  ],
   '/saml-decoder': [
     { id: 'color-contrast', impact: 'serious' },
     { id: 'heading-order', impact: 'moderate' },

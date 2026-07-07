@@ -56,6 +56,7 @@ const TOOL_HANDLERS = [
   { id: 'prompt-template-builder', file: 'prompt-template-builder.js', exp: 'handlePromptTemplateBuilderRoutes' },
   { id: 'public-repos-yml-builder', file: 'public-repos-yml-builder.js', exp: 'handlePublicReposYmlBuilderRoutes' },
   { id: 'public-repos-not-automation', file: 'public-repos-not-automation.js', exp: 'handlePublicReposNotAutomationRoutes' },
+  { id: 'review-description-generator', file: 'review-description-generator.js', exp: 'handleReviewDescriptionGeneratorRoutes' },
   { id: 'sql-formatter', file: 'sql-formatter.js', exp: 'handleSQLFormatterRoutes' },
   { id: 'env-var-manager', file: 'env-var-manager.js', exp: 'handleEnvVarManagerRoutes' },
   { id: 'ladder-game', file: 'ladder-game.js', exp: 'handleLadderGameRoutes' },
