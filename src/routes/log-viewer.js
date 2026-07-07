@@ -140,6 +140,8 @@ export async function handleLogViewerRoutes(request, url) {
         let activeLevels = { INFO: true, WARN: true, ERROR: true, DEBUG: true, OTHER: true };
         const ROW_HEIGHT = 24;
         const BUFFER_SIZE = 20;
+        const MAX_REGEX_LEN = 200;
+        const MAX_MATCHES_PER_ROW = 1000;
         
         // DOM Elements
         const fileInput = document.getElementById('file-input');
@@ -219,6 +221,10 @@ export async function handleLogViewerRoutes(request, url) {
           let regex = null;
           
           if (query) {
+            if (isRegex && query.length > MAX_REGEX_LEN) {
+              searchInput.classList.add('border-error-500', 'focus:border-error-500', 'focus:ring-error-500');
+              return; // Regex too long — ReDoS guard
+            }
             try {
                regex = isRegex ? new RegExp(query, 'i') : new RegExp(query.replace(/[.*+?^$\{\}()|[\]\\]/g, '\\$&'), 'i');
                searchInput.classList.remove('border-error-500', 'focus:border-error-500', 'focus:ring-error-500');
@@ -268,21 +274,17 @@ export async function handleLogViewerRoutes(request, url) {
           
           content.style.transform = 'translateY(' + offsetY + 'px)';
           
-          // Highlight search term
+          // Highlight search term — guard against ReDoS
           const query = searchInput.value;
-          let highlightRegex = null;
-          if (query) {
+          let globalHighlightRegex = null;
+          if (query && query.length <= MAX_REGEX_LEN) {
              try {
                 const escapedQuery = query.replace(/[.*+?^$\{\}()|[\]\\]/g, '\\$&');
-               highlightRegex = isRegex ? new RegExp('(' + query + ')', 'gi') : new RegExp('(' + escapedQuery + ')', 'gi');
+               globalHighlightRegex = isRegex ? new RegExp('(' + query + ')', 'gi') : new RegExp('(' + escapedQuery + ')', 'gi');
              } catch(e) {}
           }
 
           const fragment = document.createDocumentFragment();
-          const highlightFlags = highlightRegex ? highlightRegex.flags : '';
-          const globalHighlightRegex = highlightRegex && !highlightFlags.includes('g')
-            ? new RegExp(highlightRegex.source, highlightFlags + 'g')
-            : highlightRegex;
 
           visibleLogs.forEach(log => {
             const row = document.createElement('div');
@@ -308,8 +310,10 @@ export async function handleLogViewerRoutes(request, url) {
               let lastIndex = 0;
               globalHighlightRegex.lastIndex = 0;
               let match;
+              let matchCount = 0;
 
               while ((match = globalHighlightRegex.exec(text)) !== null) {
+                if (++matchCount > MAX_MATCHES_PER_ROW) break;
                 const start = match.index;
                 const end = start + match[0].length;
 
