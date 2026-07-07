@@ -762,7 +762,11 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
           w.document.write('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Markdown Print</title><style>body{font-family:system-ui,-apple-system,sans-serif;line-height:1.6;max-width:800px;margin:0 auto;padding:2rem;color:#111827;}pre{background:#f4f4f5;padding:1rem;border-radius:0.5rem;overflow-x:auto;}code{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;}img{max-width:100%;}blockquote{border-left:4px solid #e5e7eb;margin:0;padding-left:1rem;color:#6b7280;}table{border-collapse:collapse;width:100%;margin:1rem 0;}th,td{border:1px solid #e5e7eb;padding:0.5rem;text-align:left;}.mermaid{border:1px solid #e5e7eb;border-radius:0.75rem;padding:1rem;background:#f8fafc;overflow-x:auto;}@media print{body{padding:0;}}</style></head><body></body></html>');
           w.document.close();
           const bodyMatch = htmlContent.match(/<body>([\\s\\S]*?)<\\/body>/i);
-          w.document.body.innerHTML = bodyMatch ? bodyMatch[1] : htmlContent;
+          const rawBody = bodyMatch ? bodyMatch[1] : htmlContent;
+          w.document.body.innerHTML = DOMPurify.sanitize(rawBody, {
+            ADD_TAGS: ['input'],
+            ADD_ATTR: ['checked', 'disabled', 'type']
+          });
           w.focus();
           setTimeout(() => w.print(), 250);
         });
