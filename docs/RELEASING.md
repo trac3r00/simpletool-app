@@ -37,7 +37,7 @@ A PR is merged only when ALL of the following hold:
    - Exception: docs-only / CI-config-only PRs may batch freely.
 6. **Dependabot:** patch/minor dev-deps may auto-merge after CI. Major bumps
    and anything in `dependencies` (shipped code) require a manual review of
-   the changelog and one local `npm run build && npm test` run.
+   the changelog and one local `bun run build && bun run test` run.
 
 ## Direct pushes to main
 
@@ -67,7 +67,7 @@ rollback anchors on top of that continuous deployment flow.
   as Features / Fixes / Dependencies / Docs. Every note line links its PR.
 - **Tags:** tag the exact SHA that passed the pre-tag check. Use `vX.Y.Z`
   format so release tags sort consistently.
-- **Pre-tag check:** `npm run build && npm test && npm run test:e2e` locally
+- **Pre-tag check:** `bun run build && bun run test && bun run test:e2e` locally
   or via CI on the exact tagged SHA.
 
 ## Hotfix flow

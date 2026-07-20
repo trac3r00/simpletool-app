@@ -4,11 +4,11 @@ This project supports manual AdSense slot injection with server-side config pars
 
 ## Current implementation
 
-- Env parsing lives in [src/worker.js](/Users/cminseo/Documents/scripts/HTML-Sites/simpletool-app/src/worker.js).
-- Ad script/slot rendering lives in [src/utils/common-ui.js](/Users/cminseo/Documents/scripts/HTML-Sites/simpletool-app/src/utils/common-ui.js).
-- HTML injection fallback for tool pages lives in [src/utils/respond.js](/Users/cminseo/Documents/scripts/HTML-Sites/simpletool-app/src/utils/respond.js).
+- Environment parsing lives in [`src/worker.js`](../src/worker.js).
+- Ad script and slot rendering live in [`src/utils/common-ui.js`](../src/utils/common-ui.js).
+- The HTML injection fallback for pages without an explicit slot lives in [`src/utils/respond.js`](../src/utils/respond.js).
 
-## Required env vars
+## Configuration variables
 
 - `ADSENSE_CLIENT`
   - Format: `ca-pub-<digits>`
@@ -46,9 +46,9 @@ Example:
 ## Page behavior
 
 - Home page renders explicit `home` and `bottom` slots.
-- Tool pages can render explicit slots or receive a fallback `tool` slot injected by `respond.js`.
-- Legal/content pages use `legal` and may also inherit tool-slot behavior depending on page composition.
-- Sidebar layouts can use `sidebar` where shared page templates include it.
+- Pages built with `createPageTemplate()` include `sidebar` and `bottom` placements when those keys are configured.
+- `respondHTML()` appends a `tool` placement only when the page does not already contain an ad slot.
+- Legal, FAQ, and blog pages explicitly render `legal` placements and suppress their template-level `tool` placement.
 
 ## Runtime behavior
 
@@ -62,7 +62,7 @@ Example:
 
 Use these checks before enabling production ads:
 
-1. Confirm `ADSENSE_CLIENT` matches `^ca-pub-\\d+$`.
+1. Confirm `ADSENSE_CLIENT` matches `^ca-pub-\d+$`.
 2. Confirm each expected slot key resolves to a non-empty string.
 3. Load `/`, one representative tool route, and one legal/info page with ads enabled.
 4. Load the same pages with ads disabled and confirm layout stays intact.
@@ -74,24 +74,23 @@ Use these checks before enabling production ads:
 | Page type | Slot keys used | Notes |
 |-----------|----------------|-------|
 | Home (`/`) | `home`, `bottom` | `home` renders in the hero area; `bottom` renders below footer fold |
-| Tool pages | `tool`, `sidebar`, `bottom` | `tool` injected by `respond.js` fallback; `sidebar` shown at `xl` breakpoint only; `bottom` after content |
-| Legal/info pages | `legal` | May inherit `tool` slot via `respond.js` depending on page composition |
+| Tool pages | `tool`, `sidebar`, `bottom` | `tool` is the fallback for pages without an explicit slot; `sidebar` is shown at the `xl` breakpoint; `bottom` follows the main content. |
+| Legal, FAQ, and blog pages | `legal`, `sidebar`, `bottom` | These pages render `legal` explicitly and remove the template-level `tool` slot. |
 | Game pages | reviewed separately | See `docs/monetization-content-safety.md` before enabling |
 
 Ad placement rule: **Do not place ads between educational content section panels** (cheatsheet, reference tables, step-by-step guides). Place only before or after the complete educational block.
 
-## Test mode setup
+## Test setup
 
-To test AdSense rendering without live traffic:
+Localhost and loopback hosts always use development mode, which disables ads. Use the local Worker to verify the disabled-ad layout. To exercise configured slots, use a non-production Cloudflare deployment with a non-local hostname and test AdSense credentials.
 
-1. Set `ADSENSE_CLIENT` to your real publisher ID in a non-production environment.
-2. Set `ADSENSE_SLOTS` to a JSON object with at least one slot key pointing to a real slot ID.
-3. Add `?adtest=on` to the page URL — Google's ad server will serve test ads that do not generate revenue or policy violations.
-4. Verify that `window.adsbygoogle` is defined after the 2-second load delay.
-5. Confirm `data-ad-container` elements become visible after ad fill is confirmed.
-6. Test with the slot deliberately missing (empty string value) to confirm no empty shells render.
+1. Set `ADSENSE_CLIENT` to the publisher ID used for testing.
+2. Set `ADSENSE_SLOTS` to a JSON object with at least one test slot ID.
+3. Verify that only one AdSense loader is present.
+4. Confirm configured `data-ad-container` elements become visible only after fill is detected.
+5. Remove one slot key and confirm the corresponding page renders no empty ad shell.
 
-To simulate a disabled-ads environment locally, set `ENVIRONMENT=development` in your local `.dev.vars` file — the `getAdSenseScript()` and `getAdSlotHTML()` functions will both return empty strings.
+To verify the disabled-ad path explicitly, set `ENVIRONMENT=development`, `dev`, or `local`. The Worker clears its ad configuration in those environments, so `getAdSenseScript()` and `getAdSlotHTML()` both return empty strings.
 
 ## CLS prevention
 

@@ -3,7 +3,7 @@
 ## Preflight
 
 - Confirm the site is deployable without ads enabled.
-- Confirm [docs/adsense-integration.md](/Users/cminseo/Documents/scripts/HTML-Sites/simpletool-app/docs/adsense-integration.md) matches current implementation.
+- Confirm [`docs/adsense-integration.md`](adsense-integration.md) matches the current implementation.
 - Confirm privacy/legal copy mentions third-party ads and cookie-like technologies.
 - Confirm game visibility and AdSense enablement are tracked as separate go/no-go decisions.
 
@@ -50,7 +50,7 @@
 
 ## Release gate
 
-- `npm run build` passes on the release candidate.
+- `bun run build` passes on the release candidate.
 - Targeted route verification passes with ads enabled.
 - Targeted route verification passes with ads disabled.
 - Release note or ops note records:
