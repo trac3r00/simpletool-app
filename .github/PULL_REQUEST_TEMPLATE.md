@@ -18,9 +18,9 @@ Closes #
 
 <!-- Paste real command output or CI evidence. "It works" is not verification. -->
 
-- [ ] `npm run build` passes
-- [ ] `npm test` passes (unit)
-- [ ] `npm run test:e2e` passes (or N/A — explain)
+- [ ] `bun run build` passes
+- [ ] `bun run test` passes (unit)
+- [ ] `bun run test:e2e` passes (or N/A — explain)
 - [ ] Manually exercised the affected route(s)
 
 ```text

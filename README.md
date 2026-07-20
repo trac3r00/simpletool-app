@@ -1,727 +1,213 @@
-# SimpleTool App - Unified Cloudflare Worker
+# SimpleTool
 
-> **Privacy-focused, ad-supported web tools running entirely in your browser**
-> Client-side processing | Free to use | Ads help fund maintenance
+Browser-based developer and everyday utilities served from a single Cloudflare Worker.
 
----
+[![CI](https://github.com/Trac3r00/simpletool-app/actions/workflows/ci.yml/badge.svg)](https://github.com/Trac3r00/simpletool-app/actions/workflows/ci.yml)
+[![JavaScript](https://img.shields.io/badge/JavaScript-ES%20modules-F7DF1E?logo=javascript&logoColor=000)](https://developer.mozilla.org/docs/Web/JavaScript/Guide/Modules)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](#license)
 
 ## Overview
 
-SimpleTool App is a collection of free, privacy-focused web utilities that run entirely client-side. All computations happen in your browser—we never see, collect, or store your data.
+SimpleTool is a collection of web utilities for formatting data, inspecting security artifacts, working with network formats, generating values, and transforming text or media. The Cloudflare Worker renders and routes the pages; tool input and output are processed in the browser.
 
-### Available Tools
-
-#### Power-User Essentials
-- **📊 Log Viewer** - Analyze large log files locally with filtering and visualization
-- **#️⃣ Hash Calculator** - Compute SHA256, MD5, and other hashes
-- **📦 Code Minifier** - Minify JS, CSS, and HTML code
-- **📝 Text Diff** - Compare two text files for differences
-- **📜 X.509 Certificate Inspector** - Parse X.509 certificates and CSRs
-- **🕸️ IP Subnet Planner** - Calculate IPv4/IPv6 subnets and ranges
-- **🛡️ SAML Inspector** - Decode SAML requests and responses
-- **🔮 Layered Decoder** - Auto-detect and unwrap layered encodings (Base64, URL, Hex, and more)
-- **🗝️ SSH Key Generator** - Generate RSA and ECDSA SSH keys
-- **🕵️ User-Agent Parser** - Parse and analyze User-Agent strings
-- **🐚 Curl Studio** - Parse and generate curl commands
-- **🎭 Log Masker** - Redact PII from logs locally
-- **🧜‍♀️ Mermaid Studio** - Live Mermaid.js diagram editor
-- **📋 JSON Schema Studio** - Generate JSON Schema from JSON
-
-#### Privacy-First Tools
-- **🔐 Password Generator** - Create secure, random passwords
-- **📋 JSON Formatter** - Validate, format, and minify JSON data
-- **📱 QR Code Studio** - Generate QR codes for URLs and text
-- **🧩 Regex Studio** - Visualize, explain, and test regular expressions with real-time diagrams
-- **🔑 UUID Generator** - Generate standard UUIDs (v1, v4)
-- **⏳ Timestamp Converter** - Convert Unix timestamps to human dates
-- **🎨 Color Converter** - Convert HEX, RGB, and HSL colors
-- **👁️ Markdown Editor** - Split-pane Markdown editor with sync scroll and GFM support
-- **Aa Text Case Converter** - Convert text case (camel, snake, etc)
-- **🔒 Htpasswd Entry Generator** - Generate apache htpasswd entries
-- **⚙️ Config Converter** - Convert between YAML, TOML, and JSON
-- **⏰ Cron Builder** - Visual cron editor with human-readable descriptions and next-run preview
-- **📊 Mock Data Generator** - Generate random JSON/CSV data
-- **🖼️ Image Converter** - Convert and resize images locally
-- **🌈 Gradient Generator** - Generate CSS gradients visually
-- **⚖️ Unit Converter** - Convert length, weight, and more
-
----
+The production catalog contains 53 tools. Three additional game tools are available when the Worker runs in a development environment.
 
 ## Features
 
-### 🔒 Privacy First
-- **Client-side processing** - Tool inputs stay in your browser
-- **No accounts** - Use everything without signing up
-- **No first-party analytics** - We don't run our own tracking pixels
-- **Minimal storage** - Theme toggles are session-only
-- **Ad-supported** - Third-party ads may use cookies or similar tech
-- **GDPR/CCPA mindful** - Tool inputs aren't processed server-side
+- Browser-side processing for tool data, with no application accounts or server-side tool-data storage.
+- Utilities for JSON, YAML, TOML, SQL, Markdown, regular expressions, text diffs, images, SVG, colors, timestamps, and units.
+- Security and inspection tools for passwords, SSH keys, X.509 certificates, SAML, OAuth/PKCE, tokens, CSP, secrets, and environment files.
+- Network references and builders for CIDR, DNS records, ports, HTTP status codes, protocol headers, Wireshark filters, WireGuard, webhooks, and curl.
+- Registry-driven routing, home-page discovery, related-tool links, and production visibility.
+- Responsive light and dark themes built with Tailwind CSS.
+- Localization for English, Korean, Japanese, Spanish, Simplified Chinese, Traditional Chinese, French, German, Portuguese, and Vietnamese.
+- Nonce-based Content Security Policy headers and IP-based rate limiting, backed by a Durable Object with an in-memory fallback.
+- Unit tests with Vitest, browser tests with Playwright, and automated accessibility checks with axe-core.
 
-### 🛡️ Security
-- **Cryptographically secure** - Uses `crypto.getRandomValues()` for true randomness
-- **Privacy-by-design** - Architecture designed with SOC 2 principles in mind
-- **Worker-level rate limiting** - Cloudflare edge enforces 120 req/min per IP to protect access to the worker while all tool processing remains 100% client-side
-- **HTTPS only** - All connections encrypted (TLS 1.3+)
+## Architecture
 
-> **Note on Compliance:** While this tool is designed with privacy principles similar to SOC 2 controls, "SOC-II aligned" refers to architectural design choices, not formal certification. No formal SOC 2 audit has been conducted. For organizational compliance requirements, consult your security team. Ad partners and hosting providers have their own privacy policies.
+```text
+Browser
+  |  HTTP request
+  v
+Cloudflare Worker (src/worker.js)
+  |-- static and metadata routes
+  |-- legal, blog, FAQ, and changelog pages
+  |-- registry-driven tool routing
+  |     `-- route modules render HTML and browser-side JavaScript
+  |-- security headers and rate limiting
+  `-- Workers Assets binding
+         `-- generated CSS, fonts, vendor bundles, manifest, service worker
 
-### 🎨 Modern Design
-- **Bundled Tailwind CSS** - Clean, modern interface served directly from the worker (no external CDN dependency)
-- **Dark mode** - Automatic or manual theme switching with fixed tab visibility
-- **Responsive** - Works on mobile, tablet, and desktop
-- **Accessible** - WCAG compliant
-- **Universal Components** - Shared navigation, theme management, and UI utilities
-
----
-
-## Project Structure
-
-```
-cloudflare-worker/
-├── wrangler.toml              # Cloudflare Worker configuration
-├── package.json               # Dependencies and scripts
-├── README.md                  # This file
-└── src/
-    ├── worker.js              # Main worker entry point & routing
-    ├── routes/                # Individual tool route handlers
-    │   ├── caffeniate.js      # Caffeniate tool
-    │   ├── password-generator.js  # Password generator (client-side only)
-    │   ├── hash-calculator.js # Hash calculator with file upload support
-    │   └── log-viewer.js      # Enterprise log viewer with parsing
-    ├── ui/                    # UI rendering modules
-    │   ├── home.js            # Home page renderer
-    │   └── legal-pages.js     # Terms, Privacy, About, Contact pages
-    ├── services/              # Business logic (client-side helpers)
-    │   ├── generators.js      # Password/username/passphrase generators
-    │   ├── cyberchef.js       # CyberChef text operations
-    │   └── qr.js              # QR code generation
-    └── utils/                 # Utility functions
-        ├── security.js        # Rate limiting & security headers
-        ├── respond.js         # Response helpers
-        └── common-ui.js       # Universal UI components & styling
+Browser executes each tool locally
+  `-- user-provided tool data remains in the browser
 ```
 
----
+`src/utils/tool-registry.js` is the source of truth for the tool catalog. `scripts/build-routes.js` generates the route-handler map, and the remaining build scripts compile Tailwind CSS, bundle browser dependencies, generate the Open Graph image, and prepare static assets in `dist/`.
 
-## Getting Started
+## Requirements
 
-### Prerequisites
+The CI environment uses:
 
-- Node.js 18+ and npm
-- Cloudflare account (for deployment)
-- Wrangler CLI: `npm install -g wrangler`
+- Node.js 22
+- [Bun](https://bun.sh/)
+- Chromium for Playwright browser tests
+- A Cloudflare account only when deploying
 
-### Installation
+## Installation
 
 ```bash
-# Navigate to the worker directory
-cd cloudflare-worker
-
-# Install dependencies
-npm install
-
-# Login to Cloudflare
-wrangler login
+git clone https://github.com/Trac3r00/simpletool-app.git
+cd simpletool-app
+bun install --frozen-lockfile
 ```
 
-### Development
+Install the Playwright browser before running E2E or accessibility tests:
 
 ```bash
-# Run locally with hot reload
-npm run dev
-
-# Visit http://localhost:8787
+bunx playwright install chromium
 ```
 
-### Contributing, Merging, and Releases
+## Usage
 
-Before opening or merging a PR, read [docs/RELEASING.md](docs/RELEASING.md).
-It is the source of truth for required merge gates, the production deploy
-policy, hotfix handling, semver tagging, and changelog/release-note
-expectations. The pull request template in
-[.github/PULL_REQUEST_TEMPLATE.md](.github/PULL_REQUEST_TEMPLATE.md) lists the
-evidence contributors must provide for review.
-
-### Deployment
+Build the generated routes and browser assets, then start the local Worker:
 
 ```bash
-# Deploy to Cloudflare Workers
-npm run deploy
+bun run dev
 ```
 
-**Configure custom domain in Cloudflare Dashboard:**
-1. Go to Workers & Pages
-2. Select your worker
-3. Add custom domain (e.g., `simpletool.app`)
+Wrangler serves the application at `http://localhost:8787` by default.
 
-### Configuration
+Useful commands:
 
-- `ADSENSE_CLIENT`: AdSense publisher ID (e.g., `ca-pub-...`).
-- `ADSENSE_SLOT`: Single fallback ad slot ID applied to home/tool/legal slots.
-- `ADSENSE_SLOTS`: JSON map for slot IDs (overrides `ADSENSE_SLOT` per key).
+| Command | Purpose |
+| --- | --- |
+| `bun run build` | Generate routes, CSS, embedded styles, fonts, vendor bundles, game utilities, and the Open Graph image. |
+| `bun run dev` | Build the project and start `wrangler dev`. |
+| `bun run deploy` | Build and deploy with Wrangler. |
+| `bun run test` | Run the Vitest unit suite once. |
+| `bun run test:watch` | Run Vitest in watch mode. |
+| `bun run test:coverage` | Run Vitest with coverage enabled. |
+| `bun run test:e2e` | Run the Playwright suite; the test configuration starts a local Worker automatically. |
+| `bun run test:e2e:ui` | Open Playwright's interactive test UI. |
+| `bun run test:e2e:headed` | Run Playwright with a visible browser. |
+| `bun run test:a11y` | Audit the home page and registered tool routes with Playwright and axe-core. |
 
-Example `ADSENSE_SLOTS`:
-
-```json
-{
-  "home": "1234567890",
-  "tool": "2345678901",
-  "legal": "3456789012"
-}
-```
-
----
-
-## Available Routes
-
-### Pages
-| Route | Description |
-|-------|-------------|
-| `/` | Home page with tool grid |
-| `/password-generator` | Create secure, random passwords |
-| `/json-formatter` | Validate, format, and minify JSON data |
-| `/qr-code` | Generate QR codes for URLs and text |
-| `/layered-decoder` | Auto-detect and unwrap layered encodings |
-| `/regex-studio` | Visualize, explain, and test regular expressions |
-| `/uuid-generator` | Generate standard UUIDs (v1, v4) |
-| `/timestamp-converter` | Convert Unix timestamps to human dates |
-| `/color-converter` | Convert HEX, RGB, and HSL colors |
-| `/markdown-editor` | Split-pane Markdown editor |
-| `/text-diff` | Compare two text files for differences |
-| `/jwt-inspector` | Inspect and decode JSON Web Tokens |
-| `/hash-calculator` | Compute SHA256, MD5, and other hashes |
-| `/ip-subnet-planner` | Calculate IPv4/IPv6 subnets and ranges |
-| `/x509-certificate-inspector` | Parse X.509 certificates and CSRs |
-| `/saml-inspector` | Decode SAML requests and responses |
-| `/text-case-converter` | Convert text case (camel, snake, etc) |
-| `/htpasswd-entry-generator` | Generate apache htpasswd entries |
-| `/config-converter` | Convert between YAML, TOML, and JSON |
-| `/cron-builder` | Visual cron editor |
-| `/mock-data-generator` | Generate random JSON/CSV data |
-| `/log-viewer` | Analyze large log files locally |
-| `/user-agent-parser` | Parse and analyze User-Agent strings |
-| `/ssh-key-generator` | Generate RSA and ECDSA SSH keys |
-| `/image-converter` | Convert and resize images locally |
-| `/gradient-generator` | Generate CSS gradients visually |
-| `/code-minifier` | Minify JS, CSS, and HTML code |
-| `/unit-converter` | Convert length, weight, and more |
-| `/curl-studio` | Parse and generate curl commands |
-| `/log-masker` | Redact PII from logs locally |
-| `/mermaid-studio` | Live Mermaid.js diagram editor |
-| `/json-schema-studio` | Generate JSON Schema from JSON |
-| `/terms` | Terms of Service |
-| `/privacy` | Privacy Policy |
-| `/about` | About page |
-| `/contact` | Contact information |
-| `/security` | Security policy |
-| `/careers` | Careers |
-
-**Note:** Legacy routes with the `/tools/` prefix (e.g., `/tools/password-generator`) are supported via 301 redirect for backwards compatibility.
-
-### API Endpoints
-| Route | Description |
-|-------|-------------|
-| `/health` | Health check (JSON) |
-| `/robots.txt` | SEO robots file |
-| `/.well-known/security.txt` | Security contact info |
-
-**Note:** API endpoints for password generation are disabled. All tools operate client-side for privacy.
-
-## Recent Updates
-
-### What's New in v2.3.0 (2025-12-01)
-
-**New power-user tools**
-- **🧪 Magic Universal Decoder** quickly unwraps stacked encodings (Base64, URL, Hex, JWT, HTML entities) and shows provenance for each layer.
-- **🧩 RegEx Visualizer** renders railroad-style diagrams, token explanations, and live match previews so complex patterns are easier to audit.
-- **🗝️ SSH Key Generator** delivers ECDSA (P-256) and RSA key pairs entirely via Web Crypto with copy/download helpers plus usage playbooks.
-
-**Navigation & verification**
-- Home grid, worker routes, and automated tests now include Universal Decoder, Regex Visualizer, SSH Key Generator, and the existing User-Agent Decoder so every tool is one click away.
-- Added regression tests to ensure each new endpoint responds with CSP-hardened HTML.
-
-**Documentation clarity**
-- README now carries only the latest highlights (full history lives in `changelog.md`), Accessibility "Expected Metrics" → **Target Metrics**, and the rate-limit note explicitly calls out that throttling happens at the Cloudflare edge while tools remain 100% client-side.
-- Modern Design section emphasizes that Tailwind CSS is pre-bundled into the worker—no external CDN dependency.
-
-> Need previous release notes? See [changelog.md](changelog.md) for the full history.
-
-## Changelog
-
-See [changelog.md](changelog.md) for detailed version history and changes.
-
----
-
-## Privacy Commitment
-
-SimpleTool App respects your privacy:
-
-- **Tool inputs stay local** - We don't store tool inputs or outputs on our servers
-- **No accounts** - No login, registration, or user profiles
-- **Client-side processing** - Everything runs in your browser using Web Crypto API
-- **Minimal storage** - Theme toggle is session-only (no persistent storage)
-- **Ad-supported** - Third-party ads may use cookies or similar technologies
-- **Limited operational logs** - Cloudflare may log minimal request metadata for security
-
-### Compliance & Transparency
-
-- **Privacy by design** - Tool inputs are not processed server-side
-- **Third-party policies** - Cloudflare and AdSense have their own privacy policies
-- **No first-party analytics** - We don't run our own tracking pixels
-
-**Important Caveats:**
-- **Cloudflare Logging:** When using the hosted version at simpletool.app, Cloudflare may log minimal metadata (IP addresses, timestamps) as part of their edge network. See [Cloudflare's Privacy Policy](https://www.cloudflare.com/privacypolicy/) for details.
-- **Advertising:** Google AdSense may use cookies or similar tech to serve and measure ads. You can manage personalization in Google Ads Settings.
-- **Browser Storage:** No persistent browser storage is used; theme toggles reset when you leave the page.
-- **Clipboard & Extensions:** Data copied to clipboard may be accessible to browser extensions. Be cautious with sensitive information.
-
-### Self-Hosting for Enterprise
-
-For complete control and to eliminate all third-party dependencies, you can self-host this project:
-- Deploy to your own infrastructure (Node.js, Docker, or other serverless platforms)
-- Full source code available under MIT License
-- No external API dependencies
-- See [Deployment](#deployment) section for instructions
-
----
-
-## Technology Stack
-
-- **Runtime:** Cloudflare Workers (serverless edge computing)
-- **Frontend:** Vanilla JavaScript + Tailwind CSS
-- **Encryption:** Web Crypto API (`crypto.getRandomValues()`, `crypto.subtle.digest()`)
-- **Libraries:** QRCode.js, jsQR, Mermaid.js (for diagrams)
-- **Architecture:** Universal UI components with shared styling system
-- **No frameworks** - Lightweight and fast
-
----
-
-## Security Features
-
-### Built-in Protections
-- **Rate limiting** - 120 requests/minute per IP with deterministic cleanup mechanism
-- **Security headers** - CSP with nonce-based script execution, HSTS, X-Frame-Options, X-Content-Type-Options
-- **CSP Compliance** - Strict Content Security Policy without `unsafe-inline` (all event handlers use delegation)
-- **Input validation** - All inputs sanitized
-- **Web Crypto API** - Cryptographically secure randomness (`crypto.getRandomValues()`, `crypto.subtle`)
-- **No server-side storage** - Stateless architecture
-- **HTTPS enforcement** - All HTTP redirected to HTTPS (TLS 1.3+)
-- **Method validation** - Proper HTTP method handling with 405 responses for invalid methods
-
-### Security Best Practices for Users
-
-**When Handling Sensitive Data:**
-1. **Use Incognito/Private Mode** - Reduces browser history persistence
-2. **Verify HTTPS Connection** - Look for the padlock icon in your browser
-3. **Disable Browser Extensions** - Extensions can access page content and clipboard
-4. **Clear Clipboard After Use** - Sensitive data may persist in clipboard history
-5. **Use Dedicated Browser** - Consider a separate browser profile for sensitive work
-6. **Avoid Public WiFi** - Use VPN when accessing tools on untrusted networks
-
-**Algorithm Security Warnings:**
-- ⚠️ **MD5 & SHA-1 are DEPRECATED** - Cryptographically broken. See Hash Calculator warnings.
-- ✓ Use **SHA-256 or SHA-512** for any security-sensitive operations
-
-### Known Limitations
-- **Rate limiting** is IP-based and may not prevent sophisticated distributed attacks
-- **No CAPTCHA** - Automated abuse possible (trade-off for privacy)
-- **Browser environment** - Client-side code is visible and can be modified by users
-- **No server-side validation** - All validation happens client-side
-
-For enterprise deployments requiring enhanced security, consider self-hosting with additional protections (WAF, advanced rate limiting, etc.).
-
----
-
-## For Enterprises
-
-SimpleTool App is suitable for enterprise use:
-
-- **Compliance-Friendly** - Tool inputs are not stored on our servers
-- **Privacy-by-Design** - Architecture designed with SOC 2 principles in mind (not formally certified)
-- **GDPR/CCPA Mindful** - Tool inputs aren't processed server-side
-- **Zero Trust** - All processing happens client-side
-- **Auditable** - Open source, fully transparent
-- **No vendor lock-in** - Tools work offline, self-hostable
-
-For enterprise deployments, we recommend self-hosting to eliminate all third-party dependencies and maintain complete control over your infrastructure.
-
----
-
-## Accessibility Goals & Roadmap
-
-SimpleTool App is actively working toward WCAG 2.1 Level AA compliance. Each release includes automated + manual testing, and we publish remaining gaps so the roadmap stays transparent.
-
-### Accessibility Foundations (Shipped)
-
-**Core safeguards already implemented:**
-- **Semantic HTML** - Proper heading hierarchy, landmark regions, and ARIA labels
-- **Keyboard Navigation** - All interactive elements accessible via keyboard (Tab, Enter, Space)
-- **Screen Reader Support** - ARIA labels, alt text, and descriptive button names
-- **Color Contrast** - Targeting WCAG AA contrast ratios (4.5:1 for text, 3:1 for UI components) with dark-mode tweaks in progress
-- **Focus Indicators** - Visible focus states on all interactive elements
-- **Responsive Design** - Works on all screen sizes and zoom levels (up to 200%)
-- **Dark Mode** - High contrast theme option for visual comfort
-- **No Time Limits** - Tools never timeout or expire user input
-- **Error Identification** - Clear error messages with suggestions for correction
-
-**Shared UX patterns across tools:**
-- Consistent navigation and theming
-- Predictable UI patterns with mirrored layouts
-- Skip-to-content links and preserved heading order
-- Resizable text without loss of functionality
-
-### Current Accessibility Status & Fixes (2025-11-20 update)
-
-- Source: `lighthouse-report.json` (Chrome 142 using `wrangler dev`)
-- Previous Scores: Performance 100, Accessibility **77**, Best Practices 100, SEO 100
-- Target: Accessibility 90+ for WCAG 2.1 AA compliance
-
-**Recent fixes implemented (v2.3.1):**
-- [x] Add an accessible name + `aria-pressed` state to the global theme toggle so screen readers announce it correctly
-- [x] Enhanced focus indicators across all interactive elements (4px ring with proper offset)
-- [x] Improved dark-mode contrast for UI components to meet ≥3:1 ratio
-- [x] Better ARIA labels on navigation and mobile menu toggle
-- [x] Tool cards now have proper aria-label attributes
-- [x] Enhanced keyboard navigation with aria-expanded states
-- [x] Tailwind CSS pre-bundled into worker (no external CDN dependency)
-
-**Remaining improvements:**
-- [ ] Further increase contrast for some tool icon headers in dark mode
-- [x] Add skip-to-content link for keyboard users
-- [x] Registry-driven automated accessibility audit via Playwright + axe-core (`npm run test:a11y`)
-- [ ] Implement focus-trap in modal dialogs (if any are added)
-
-### Automated Accessibility Regression
-
-`npm run test:a11y` runs an axe-core audit for **every registered tool route** (including the home page) via Playwright. The test uses the same `src/utils/tool-registry.js` source of truth that the app itself uses, so new tools are automatically audited as soon as they are registered.
+To deploy interactively, authenticate Wrangler first:
 
 ```bash
-# Run the full accessibility audit (all tools + home page)
-npm run test:a11y
-
-# Run the audit in headed mode to watch the browser
-npx playwright test tests/e2e/accessibility-audit.spec.js --headed
+bunx wrangler login
+bun run deploy
 ```
 
-Failures are printed with:
-- tool id and route
-- axe-core rule id, impact level, and help URL
-- number of affected DOM nodes
+Production deployment is also automated by `.github/workflows/deploy.yml` for pushes to `main`. The workflow builds, runs unit and E2E tests, performs a Wrangler dry run, deploys, and smoke-tests representative routes.
 
-The audit currently runs **locally** as a pre-release gate. CI integration is deferred to a separate scheduled job because iterating 52+ routes adds significant wall-clock time to pull-request builds.
+## Configuration
 
-### Lighthouse Testing
+Cloudflare Worker settings are defined in `wrangler.toml`. The checked-in defaults disable AdSense, Sentry reporting, and Cloudflare Web Analytics until their values are configured.
 
-We recommend using Chrome DevTools Lighthouse for accessibility audits:
+### Runtime variables
 
-**Run Lighthouse Audit:**
+| Variable | Purpose |
+| --- | --- |
+| `ENVIRONMENT` | Set to `development`, `dev`, or `local` to disable ads and production rate limiting and to include development-only tools. |
+| `SITE_URL` | Base URL used for canonical links; defaults to `https://simpletool.app`. |
+| `ADSENSE_CLIENT` | AdSense publisher client ID in `ca-pub-<digits>` format. |
+| `ADSENSE_SLOT` | Optional fallback slot ID for any missing supported placement. |
+| `ADSENSE_SLOTS` | JSON object containing `home`, `tool`, `legal`, `sidebar`, and/or `bottom` slot IDs. |
+| `SENTRY_DSN` | Enables Sentry error reporting when non-empty. |
+| `CF_ANALYTICS_TOKEN` | Enables the Cloudflare Web Analytics beacon when non-empty. |
+
+For local overrides, place values in the ignored `.dev.vars` file. Do not commit credentials or private deployment values.
+
+Example non-secret local configuration:
+
+```dotenv
+ENVIRONMENT=development
+SITE_URL=http://localhost:8787
+ADSENSE_SLOTS={}
+```
+
+### Bindings
+
+| Binding | Source | Purpose |
+| --- | --- | --- |
+| `ASSETS` | `[assets]` | Serves generated files from `dist/`. |
+| `CF_VERSION_METADATA` | `[version_metadata]` | Supplies the deployed version identifier to Sentry releases. |
+| `RATE_LIMITER` | `[durable_objects]` | Stores per-IP rate-limit state in the `RateLimiter` Durable Object. |
+
+See [AdSense integration](docs/adsense-integration.md) for slot behavior and [the rollout checklist](docs/adsense-rollout-checklist.md) before enabling advertising.
+
+### Playwright variables
+
+`playwright.config.js` supports these test-runner variables:
+
+| Variable | Behavior |
+| --- | --- |
+| `PW_BASE_URL` | Overrides the URL used by browser tests. |
+| `PW_PORT` | Overrides the local Worker port; defaults to `8787`. |
+| `PW_NO_WEB_SERVER=1` | Prevents Playwright from starting its managed local Worker. |
+| `PW_SKIP_BUILD=1` | Skips the build in Playwright's managed server command. CI uses this when testing a prepared build artifact. |
+| `PW_USE_SYSTEM_CHROME=1` | Runs tests with the installed Chrome channel instead of bundled Chromium. |
+
+## Development
+
+Run a build before unit tests that import route or shared UI modules because `bun run build` generates `src/routes/_handlers.js`, `src/utils/bundled-styles.js`, and files under `dist/`.
+
 ```bash
-# Open Chrome DevTools (F12)
-# Navigate to Lighthouse tab
-# Select "Accessibility" category
-# Click "Generate report"
+bun run build
+bun run test
+bun run test:e2e
 ```
 
-**Target Metrics:**
+Focused examples:
 
-> Targets we design toward each release. Actual Lighthouse scores (currently Accessibility 77) are published in the status table above so deltas stay transparent.
-```
-Performance:     90-100 (static content, client-side processing)
-Accessibility:   90-100 (WCAG 2.1 AA compliant)
-Best Practices:  90-100 (HTTPS, security headers, no console errors)
-SEO:             90-100 (meta tags, semantic HTML, robots.txt)
-```
-
-**Command Line Lighthouse:**
 ```bash
-# Install Lighthouse CLI
-npm install -g lighthouse
-
-# Run audit on deployed site
-lighthouse https://simpletool.app --view
-
-# Run audit on specific tool
-lighthouse https://simpletool.app/tools/password-generator --view
-
-# Export JSON report
-lighthouse https://simpletool.app --output json --output-path ./report.json
+bunx vitest run src/utils/security.test.js
+bunx playwright test tests/e2e/network-tools.spec.js
+bunx playwright test tests/e2e/all-tools-smoke.spec.js
 ```
 
-> See **Current Accessibility Status & Fixes** above for the latest Lighthouse scores and action items we are tracking from each run.
+The CI workflow runs build, unit-test, and E2E jobs for pull requests targeting `main`, pushes to non-`main` branches, and manual workflow dispatches. Review [the release and merge policy](docs/RELEASING.md) before opening or merging a pull request.
 
-### WCAG 2.1 Coverage Progress
+### Adding a tool
 
-**Level A (maintained each release):**
-- Text alternatives for non-text content
-- (N/A) No multimedia yet, but captions documented for future additions
-- Adaptable content structure with semantic regions
-- Distinguishable visual design (color + contrast guardrails)
-- Keyboard accessible functionality and logical tab order
-- No time limits, no flashing content, predictable navigation
-- Input assistance and descriptive error states
+1. Add a route module under `src/routes/`.
+2. Register its metadata in `src/utils/tool-registry.js`.
+3. Add its handler export to `scripts/build-routes.js`.
+4. Add or update the corresponding browser test action in `tests/helpers/tool-suite.js` when the tool needs interaction coverage.
+5. Run `bun run build` to regenerate `src/routes/_handlers.js` and the browser assets.
 
-**Level AA (validation in progress):**
-- Enhanced color contrast rules enforced in light mode, dark-mode updates underway
-- Text remains usable at 200% zoom without horizontal scrolling
-- Multiple ways to locate content (nav, search soon, keyboard shortcuts planned)
-- Headings and labels describe topic/purpose; aria-label coverage audited quarterly
-- Focus indicators visible in all interaction states
-- Error suggestions provided in high-risk flows (hash verification, uploads)
-- Error prevention safeguards for destructive or irreversible actions
+Route pages are HTML template literals. Regular-expression backslashes inside those templates must be doubled so the browser receives the intended expression. Files using `String.raw` are the exception.
 
-### Manual Testing Checklist
+## Project structure
 
-**Keyboard Navigation:**
-```
-1. Tab through all interactive elements
-2. Verify focus indicators are visible
-3. Test Enter/Space on buttons and controls
-4. Ensure no keyboard traps
-5. Check tab order is logical
+```text
+src/
+  worker.js               Worker entry point, routing, runtime config, and rate limiting
+  routes/                 Tool route modules and generated handler map
+  ui/                     Home, legal, blog, and FAQ rendering
+  utils/                  Shared UI, i18n, security, responses, registry, and helpers
+  i18n/                   Per-language translation catalogs
+  games/                  Browser-side game configuration and runtime modules
+scripts/                  Build, translation, simulation, and QA scripts
+styles/input.css          Tailwind source and shared design tokens
+tests/e2e/                Playwright browser and accessibility tests
+docs/                     Release, advertising, safety, architecture, and handoff documentation
+dist/                     Generated browser assets
+wrangler.toml             Cloudflare Worker configuration and bindings
 ```
 
-**Screen Reader Testing:**
-```bash
-# macOS VoiceOver
-Cmd + F5
+## Privacy and security notes
 
-# Windows Narrator
-Win + Ctrl + Enter
+- Tool inputs and outputs are handled by browser-side code. Requests for pages and static assets still pass through Cloudflare and may produce normal infrastructure logs.
+- AdSense and Cloudflare Web Analytics can make third-party requests when configured in production.
+- The Worker applies CSP, HSTS, clickjacking, MIME-sniffing, referrer, permissions, and cross-origin headers.
+- The default request limit is 120 requests per minute per IP, or 240 for recognized shared-IP networks. Rate limiting is disabled in development environments.
+- Algorithms such as MD5 and SHA-1 remain available for compatibility and inspection workflows; they should not be used for new security-sensitive designs.
 
-# Test checklist:
-- All images have alt text
-- Form inputs have labels
-- Buttons have descriptive names
-- Error messages are announced
-- Page structure is clear
-```
-
-**Visual Testing:**
-```
-1. Zoom to 200% - verify no content loss
-2. Toggle dark mode - verify contrast
-3. Reduce motion (system settings) - verify animations respect preference
-4. Test on mobile devices (touch targets ≥ 44x44px)
-```
-
-### Accessibility Testing Tools
-
-**Automated Testing:**
-- **Built-in audit** — `npm run test:a11y` runs axe-core via Playwright against every registered tool route (see Automated Accessibility Regression above)
-- [axe DevTools](https://www.deque.com/axe/devtools/) - Browser extension for ad-hoc WCAG checks
-- [Lighthouse](https://developers.google.com/web/tools/lighthouse) - Recommended for periodic deep audits and performance profiling
-- [WAVE Browser Extension](https://wave.webaim.org/extension/) - Visual accessibility testing
-- [Pa11y](https://pa11y.org/) - Command-line accessibility testing
-
-**Manual Testing:**
-- macOS VoiceOver (built-in screen reader)
-- NVDA (Windows, free screen reader)
-- JAWS (Windows, commercial screen reader)
-- Browser zoom and text resize
-- Keyboard-only navigation
-
-### Continuous Improvement
-
-We continuously improve accessibility through:
-- Regular Lighthouse audits before each release
-- User feedback from assistive technology users
-- Following WCAG 2.1 updates and WCAG 3.0 working drafts
-- Testing with actual screen readers and assistive devices
-
-**Report Accessibility Issues:**
-If you encounter any accessibility barriers, please email: accessibility@simpletool.app
-
-We aim to respond within 48 hours and resolve issues in the next release cycle.
-
----
-
-## Adding New Tools
-
-1. **Create route handler** in `src/routes/your-tool.js`
-2. **Register the tool** in `src/utils/tool-registry.js`
-3. **Add route** to `src/worker.js`
-4. **Add tool card** to home page in `src/ui/home.js`
-5. **Follow privacy-first principles** - keep processing client-side
-
-See existing tools for examples.
-
----
-
-## Troubleshooting
-
-### Development Issues
-
-**Port already in use:**
-```bash
-# Change port in wrangler dev
-npx wrangler dev --port 8788
-```
-
-**Module not found:**
-```bash
-# Clear node_modules and reinstall
-rm -rf node_modules package-lock.json
-npm install
-```
-
-**Build fails:**
-- Ensure Node.js 18+ is installed: `node --version`
-- Clear npm cache: `npm cache clean --force`
-- Check for syntax errors in JavaScript files
-
-**Wrangler command not found:**
-```bash
-# Install wrangler globally
-npm install -g wrangler
-# Or use npx
-npx wrangler --version
-```
-
-### Deployment Issues
-
-**Login fails:**
-```bash
-# Logout and login again
-npx wrangler logout
-npx wrangler login
-```
-
-**Custom domain not working:**
-1. Check DNS settings in Cloudflare dashboard
-2. Ensure CNAME record points to `<your-worker>.workers.dev`
-3. Wait 5-10 minutes for DNS propagation
-4. Verify SSL/TLS encryption mode is "Full" or "Full (strict)"
-
-**404 errors after deployment:**
-- Verify routes in `wrangler.toml` match your code
-- Check that route patterns use wildcards correctly: `*simpletool.app/*`
-- Ensure worker is deployed to correct zone
-
-**Worker exceeds CPU time limits:**
-- Cloudflare Workers have a 10ms CPU time limit (free plan) or 50ms (paid)
-- Large file processing should use streams or chunking
-- Consider using Web Workers for heavy computations
-- Profile your code to find bottlenecks
-
-**KV namespace errors:**
-```bash
-# List KV namespaces
-npx wrangler kv:namespace list
-
-# Create new namespace
-npx wrangler kv:namespace create "MY_NAMESPACE"
-
-# Add binding to wrangler.toml
-```
-
-**CORS errors:**
-- Ensure security headers in `src/utils/security.js` include proper CORS headers
-- Check `Access-Control-Allow-Origin` header configuration
-- Verify preflight OPTIONS requests are handled
-
-**Rate limiting triggering for legitimate users:**
-- Increase rate limit in `src/utils/security.js`
-- Implement more sophisticated rate limiting (e.g., tiered limits)
-- Consider using Cloudflare's built-in rate limiting rules
-
-**Large file uploads failing:**
-- Cloudflare Workers have a 100MB request body limit (paid plan)
-- Free plan has lower limits (~10MB)
-- For larger files, consider chunked uploads or direct browser processing
-- All current tools (Hash Calculator, Log Viewer) process files client-side to avoid this limit
-
-**Memory limit exceeded:**
-- Workers have 128MB memory limit
-- Avoid loading entire large files into memory
-- Use streaming where possible
-- Process data in chunks
-
-### Common Errors & Solutions
-
-**Error: "no such file or directory"**
-- Check file paths are correct
-- Ensure imports use correct relative paths
-- Verify file exists in repository
-
-**Error: "Module is not defined"**
-- Use ES modules syntax (`import`/`export`) instead of CommonJS
-- Ensure `type: "javascript"` in `wrangler.toml`
-
-**Error: "Bindings are not available"**
-- Check `wrangler.toml` for correct binding configuration
-- Ensure environment variables are set in Cloudflare dashboard
-- Use `npx wrangler secret put` for sensitive values
-
-**Tailwind CSS not loading:**
-- Using CDN version - no build step required
-- Check browser console for CSP errors
-- Verify internet connection (CDN requires network access)
-
-### Performance Optimization
-
-**Slow initial load:**
-- Minimize JavaScript bundle size
-- Use code splitting for large tools
-- Leverage Cloudflare's edge caching
-- Consider inlining critical CSS
-
-**High bandwidth usage:**
-- Enable Cloudflare's Auto Minify (JS, CSS, HTML)
-- Use Brotli compression
-- Optimize images and assets
-- Implement resource caching headers
-
-### Self-Hosting Troubleshooting
-
-**Docker build fails:**
-- See [DOCKER.md](DOCKER.md) for detailed Docker setup
-- Ensure Docker daemon is running
-- Check Dockerfile syntax
-
-**Node.js deployment issues:**
-- Cloudflare Workers use V8 isolates, not Node.js
-- Some Node.js APIs not available (fs, path, etc.)
-- Use Web APIs instead (fetch, crypto.subtle, etc.)
-
----
-
-## Legal
-
-### Terms of Service
-See [/terms](/terms) for complete Terms of Service.
-
-**Summary:** Use at your own risk. We provide tools as-is without warranty. You're responsible for securely storing generated passwords.
-
-### Privacy Policy
-See [/privacy](/privacy) for complete Privacy Policy.
-
-**Summary:** Tool inputs stay client-side and aren't stored on our servers. Ads are served by third-party providers; see the Privacy Policy for details.
-
----
-
-## Support & Contact
-
-- **General:** hello@simpletool.app
-- **Security Issues:** security@simpletool.app
-- **Enterprise/Business:** business@simpletool.app
-
----
+Report security issues using the contact published at `/.well-known/security.txt` or the instructions on the hosted `/security` page.
 
 ## License
 
-MIT License - Use freely for personal and commercial projects.
-
----
-
-## Acknowledgments
-
-- **Tailwind CSS** - Beautiful utility-first CSS
-- **Cloudflare Workers** - Lightning-fast edge computing
-- **QRCode.js & jsQR** - QR code generation and scanning
-- **Community** - All users and contributors
-
----
-
-**Built with privacy in mind 🔒**
-
-Client-side tools, minimal storage, and transparent policies.
+The project is distributed under the MIT License, as declared in `package.json`.

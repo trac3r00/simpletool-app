@@ -53,7 +53,7 @@ Extra review required for these tool categories:
 ## i18n compliance
 
 - [ ] Ad-adjacent labels (e.g. "Sponsored") appear in the correct locale or are locale-neutral
-- [ ] Privacy and terms ad disclosure text exists for all active languages (en, ko, ja, es)
+- [ ] Privacy and terms ad disclosure text exists for every language listed in `SUPPORTED_LANGUAGES` in `src/utils/i18n.js`.
 - [ ] No locale shows a visible ad label that is untranslated while the rest of the page is localized
 
 ## Pre-release sign-off
