@@ -151,7 +151,7 @@ function renderDataConverterPage(lang = DEFAULT_LANGUAGE) {
 
   const script = `
     <script src="/vendor/js-yaml.min.js" integrity="sha384-DrPu+BeZLo6V7/5zznxmd0rvFRUQ1TSsrViKUsRBWGonzRQtD+LQAU5GhTslfJTK" crossorigin="anonymous"></script>
-    <script src="/vendor/toml.min.js" integrity="sha384-WysAXSvsIwNxEIWZZZRI/WNTw01u5gH1LxExIUPrNIAmcSkxcmJymQUvwoqmf2av" crossorigin="anonymous"></script>
+    <script src="/vendor/toml.min.js" integrity="sha384-FQluw/ZZSwzePbxbBRu35r09w9/xq8wrYqu9WDTGBzSVYO1RfH4I43IzxvGH+t2X" crossorigin="anonymous"></script>
     <script>
     (function() {
       var inputEl = document.getElementById('format-input');
