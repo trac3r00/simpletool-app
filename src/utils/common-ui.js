@@ -27,7 +27,7 @@ export function createCheatsheet(toolId, title, sections) {
   const id = `cheatsheet-${toolId}`;
   const prefix = `tools.${toolId}.cheatsheet`;
   const sectionsHTML = sections.map((s, i) =>
-    `${s.heading ? `<h3 data-i18n="${prefix}.h${i}">${s.heading}</h3>` : ''}` +
+    `${s.heading ? `<h2 data-i18n="${prefix}.h${i}">${s.heading}</h2>` : ''}` +
     `<div data-i18n-html="${prefix}.c${i}">${s.content}</div>`
   ).join('');
 
@@ -927,13 +927,13 @@ export function getStylesheetLinks() {
       <link rel="preconnect" href="https://fonts.googleapis.com">
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
       <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
-      <link rel="prefetch" as="font" type="font/woff2" href="/fonts/material-symbols.woff2" crossorigin>
+      <link rel="preload" as="font" type="font/woff2" href="/fonts/material-symbols.woff2" crossorigin>
       <style>
        @font-face {
          font-family: 'Material Symbols Rounded';
         font-style: normal;
         font-weight: 100 700;
-         font-display: swap;
+         font-display: block;
         src: url(/fonts/material-symbols.woff2) format('woff2');
       }
       .material-symbols-rounded {
@@ -949,10 +949,12 @@ export function getStylesheetLinks() {
         word-wrap: normal;
         direction: ltr;
         -webkit-font-feature-settings: 'liga';
+        font-feature-settings: 'liga';
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         -webkit-font-smoothing: antialiased;
       }
       /* i18n overflow protection for longer translations (de, fr, pt) */
-      [data-i18n], [data-i18n-html] { overflow-wrap: break-word; word-break: break-word; }
+      [data-i18n], [data-i18n-html] { overflow-wrap: break-word; word-break: normal; }
       .btn, [role="menuitem"] { overflow: hidden; text-overflow: ellipsis; }
       .language-dropdown { scrollbar-width: thin; }
       .language-dropdown::-webkit-scrollbar { width: 6px; }
@@ -997,7 +999,7 @@ export function getFooterHTML(options = {}) {
            
            <!-- Column 2: Top Tools -->
            <div class="flex flex-col">
-             <h3 class="font-semibold text-surface-900 dark:text-surface-50 mb-4 text-sm uppercase tracking-wide" data-i18n="footer.popularTools">${t('footer.popularTools', currentLang)}</h3>
+             <h2 class="font-semibold text-surface-900 dark:text-surface-50 mb-4 text-sm uppercase tracking-wide" data-i18n="footer.popularTools">${t('footer.popularTools', currentLang)}</h2>
              <ul class="space-y-2 flex-1">
                ${toolsHTML}
                <li class="pt-2 border-t border-surface-200 dark:border-surface-800">
@@ -1008,7 +1010,7 @@ export function getFooterHTML(options = {}) {
            
             <!-- Column 3: Resources -->
             <div class="flex flex-col">
-              <h3 class="font-semibold text-surface-900 dark:text-surface-50 mb-4 text-sm uppercase tracking-wide" data-i18n="footer.resources">${t('footer.resources', currentLang)}</h3>
+              <h2 class="font-semibold text-surface-900 dark:text-surface-50 mb-4 text-sm uppercase tracking-wide" data-i18n="footer.resources">${t('footer.resources', currentLang)}</h2>
               <ul class="space-y-2">
                 <li>
                  <a href="${withLanguageQuery('/blog', currentLang)}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.blog">${t('footer.blog', currentLang)}</a>
@@ -1021,7 +1023,7 @@ export function getFooterHTML(options = {}) {
             
             <!-- Column 4: Legal & Support -->
             <div class="flex flex-col">
-              <h3 class="font-semibold text-surface-900 dark:text-surface-50 mb-4 text-sm uppercase tracking-wide" data-i18n="footer.legal">${t('footer.legal', currentLang)}</h3>
+              <h2 class="font-semibold text-surface-900 dark:text-surface-50 mb-4 text-sm uppercase tracking-wide" data-i18n="footer.legal">${t('footer.legal', currentLang)}</h2>
              <ul class="space-y-2">
                <li>
                  <a href="${withLanguageQuery('/about', currentLang)}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.about">${t('footer.about', currentLang)}</a>
@@ -1052,6 +1054,90 @@ export function getFooterHTML(options = {}) {
        </div>
      </footer>
    `;
+}
+
+function getFormControlAccessibilityScript() {
+  return `<script>
+    (function() {
+      const selector = 'input:not([type="hidden"]):not([type="button"]):not([type="submit"]), select, textarea';
+
+      function cleanLabelText(label) {
+        if (!label) return '';
+        const clone = label.cloneNode(true);
+        clone.querySelectorAll('button, [aria-hidden="true"], .material-symbols-rounded').forEach(function(node) {
+          node.remove();
+        });
+        return (clone.textContent || '').replace(/\\s+/g, ' ').trim();
+      }
+
+      function directLabel(container) {
+        if (!container) return null;
+        const labels = Array.from(container.children).filter(function(child) {
+          return child.tagName === 'LABEL';
+        });
+        return labels.length === 1 ? labels[0] : null;
+      }
+
+      function findVisualLabel(control) {
+        if (control.id) {
+          const explicit = Array.from(document.querySelectorAll('label[for]')).find(function(label) {
+            return label.htmlFor === control.id;
+          });
+          if (explicit) return explicit;
+        }
+
+        const wrapping = control.closest('label');
+        if (wrapping) return wrapping;
+        if (control.previousElementSibling && control.previousElementSibling.tagName === 'LABEL') {
+          return control.previousElementSibling;
+        }
+
+        let container = control.parentElement;
+        for (let depth = 0; container && depth < 3; depth += 1) {
+          const label = directLabel(container);
+          if (label) return label;
+          container = container.parentElement;
+        }
+        return null;
+      }
+
+      function fallbackName(control) {
+        const visualLabel = cleanLabelText(findVisualLabel(control));
+        if (visualLabel) return visualLabel;
+
+        const source = control.id || Array.from(control.classList).find(function(name) {
+          return /(?:input|select|textarea|field)/i.test(name);
+        }) || control.getAttribute('placeholder') || control.type || control.tagName.toLowerCase();
+        return String(source)
+          .replace(/^re-/, '')
+          .replace(/[-_]+/g, ' ')
+          .replace(/([a-z])([A-Z])/g, '$1 $2')
+          .replace(/\\s+/g, ' ')
+          .trim()
+          .replace(/^./, function(character) { return character.toUpperCase(); });
+      }
+
+      function labelControl(control) {
+        const labels = control.labels ? Array.from(control.labels) : [];
+        if (labels.length || control.hasAttribute('aria-label') || control.hasAttribute('aria-labelledby')) return;
+        const name = fallbackName(control);
+        if (name) control.setAttribute('aria-label', name);
+      }
+
+      function scan(root) {
+        if (root.nodeType !== 1) return;
+        if (root.matches && root.matches(selector)) labelControl(root);
+        if (root.querySelectorAll) root.querySelectorAll(selector).forEach(labelControl);
+      }
+
+      scan(document.body);
+      new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          mutation.addedNodes.forEach(scan);
+        });
+      }).observe(document.body, { childList: true, subtree: true });
+    })();
+  </script>`;
 }
 
 /**
@@ -1140,8 +1226,9 @@ export function createPageTemplate(options) {
    ${getCheatsheetToggleScript()}
    ${getCopyToClipboardScript()}
    ${getClipboardSafetyScript()}
-   ${toolId ? getPersonalizationScript(toolId) : ''}
-   ${scripts}
+	   ${toolId ? getPersonalizationScript(toolId) : ''}
+	   ${scripts}
+	   ${getFormControlAccessibilityScript()}
   ${isAdsEnabled() ? `<script>
     (function(){
       function showAds(){document.querySelectorAll('[data-ad-container]').forEach(function(el){el.style.display=''});}

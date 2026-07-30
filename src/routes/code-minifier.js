@@ -34,7 +34,7 @@ function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
 
       <!-- Language Tabs -->
       <div class="flex justify-center mb-6 border-b-2 border-surface-200 dark:border-surface-700">
-        <div class="flex gap-2">
+        <div class="grid grid-cols-3 gap-2 w-full sm:w-auto">
           <button class="language-tab active" data-lang="javascript" data-tooltip="Minify JavaScript code" data-i18n-tooltip="tools.code-minifier.ui.tip0"><span data-i18n="tools.code-minifier.ui.button0">JavaScript</span></button>
           <button class="language-tab" data-lang="css" data-tooltip="Minify CSS stylesheets" data-i18n-tooltip="tools.code-minifier.ui.tip1"><span data-i18n="tools.code-minifier.ui.button6">CSS</span></button>
           <button class="language-tab" data-lang="html" data-tooltip="Minify HTML markup" data-i18n-tooltip="tools.code-minifier.ui.tip2"><span data-i18n="tools.code-minifier.ui.button7">HTML</span></button>
@@ -152,11 +152,17 @@ function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
       }
 
       .language-tab {
-        padding: 0.75rem 1.5rem;
+        min-width: 0;
+        padding: 0.75rem 0.5rem;
         border: 1px solid transparent;
         border-bottom: none;
         border-radius: 8px 8px 0 0;
         font-weight: 600;
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
         transition: all 0.2s;
         cursor: pointer;
         background: #f4f4f5;
@@ -170,16 +176,20 @@ function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
 
       .language-tab.active {
         background: white;
-        color: #4f46e5;
+        color: #2563eb;
         border-color: #e4e4e7;
         border-bottom-color: white;
       }
 
       .dark .language-tab.active {
         background: #18181b;
-        color: #818cf8;
+        color: #60a5fa;
         border-color: #3f3f46;
         border-bottom-color: #18181b;
+      }
+
+      @media (min-width: 640px) {
+        .language-tab { padding-inline: 1.5rem; }
       }
 
       .mode-btn {

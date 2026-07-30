@@ -69,7 +69,7 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
         <div id="tab-transfer" class="tab-content" role="tabpanel" aria-labelledby="tab-trigger-transfer">
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div class="space-y-6">
-              <h3 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.bandwidth-calculator.ui.heading0">Calculate Transfer Time</h3>
+              <h2 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.bandwidth-calculator.ui.heading0">Calculate Transfer Time</h2>
               
               <div>
                 <label class="label" data-i18n="tools.bandwidth-calculator.ui.label5">File Size</label>
@@ -117,7 +117,7 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
             </div>
 
             <div class="bg-surface-50 dark:bg-surface-950 rounded-xl p-6 border border-surface-200 dark:border-surface-700">
-              <h4 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-4" data-i18n="tools.bandwidth-calculator.ui.heading1">Result</h4>
+              <h3 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-4" data-i18n="tools.bandwidth-calculator.ui.heading1">Result</h3>
               <div class="space-y-4">
                 <div>
                   <p class="text-xs text-surface-500 dark:text-surface-400 mb-1" data-i18n="tools.bandwidth-calculator.ui.desc0">Estimated Time</p>
@@ -142,7 +142,7 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
         <div id="tab-bandwidth" class="tab-content hidden" role="tabpanel" aria-labelledby="tab-trigger-bandwidth">
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div class="space-y-6">
-              <h3 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.bandwidth-calculator.ui.heading2">Calculate Required Bandwidth</h3>
+              <h2 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.bandwidth-calculator.ui.heading2">Calculate Required Bandwidth</h2>
               
               <div>
                 <label class="label" data-i18n="tools.bandwidth-calculator.ui.label8">File Size</label>
@@ -178,7 +178,7 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
             </div>
 
             <div class="bg-surface-50 dark:bg-surface-950 rounded-xl p-6 border border-surface-200 dark:border-surface-700">
-              <h4 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-4" data-i18n="tools.bandwidth-calculator.ui.heading3">Required Bandwidth</h4>
+              <h3 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-4" data-i18n="tools.bandwidth-calculator.ui.heading3">Required Bandwidth</h3>
               <div class="space-y-4">
                 <div>
                   <p class="text-xs text-surface-500 dark:text-surface-400 mb-1" data-i18n="tools.bandwidth-calculator.ui.desc6">Minimum Bandwidth</p>
@@ -203,7 +203,7 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
         <div id="tab-capacity" class="tab-content hidden" role="tabpanel" aria-labelledby="tab-trigger-capacity">
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div class="space-y-6">
-              <h3 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.bandwidth-calculator.ui.heading4">Calculate Data Capacity</h3>
+              <h2 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.bandwidth-calculator.ui.heading4">Calculate Data Capacity</h2>
               
               <div>
                 <label class="label" data-i18n="tools.bandwidth-calculator.ui.label10">Bandwidth</label>
@@ -238,7 +238,7 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
             </div>
 
             <div class="bg-surface-50 dark:bg-surface-950 rounded-xl p-6 border border-surface-200 dark:border-surface-700">
-              <h4 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-4" data-i18n="tools.bandwidth-calculator.ui.heading5">Maximum Transferable Data</h4>
+              <h3 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-4" data-i18n="tools.bandwidth-calculator.ui.heading5">Maximum Transferable Data</h3>
               <div class="space-y-4">
                 <div>
                   <p class="text-xs text-surface-500 dark:text-surface-400 mb-1" data-i18n="tools.bandwidth-calculator.ui.desc12">Total Data</p>
@@ -263,7 +263,7 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
         <div id="tab-tcp" class="tab-content hidden" role="tabpanel" aria-labelledby="tab-trigger-tcp">
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div class="space-y-6">
-              <h3 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.bandwidth-calculator.ui.heading6">TCP Bandwidth-Delay Product</h3>
+              <h2 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.bandwidth-calculator.ui.heading6">TCP Bandwidth-Delay Product</h2>
               
               <div>
                 <label class="label" data-i18n="tools.bandwidth-calculator.ui.label12">Bandwidth</label>
@@ -300,7 +300,7 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
             </div>
 
             <div class="bg-surface-50 dark:bg-surface-950 rounded-xl p-6 border border-surface-200 dark:border-surface-700">
-              <h4 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-4" data-i18n="tools.bandwidth-calculator.ui.heading7">TCP Analysis</h4>
+              <h3 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-4" data-i18n="tools.bandwidth-calculator.ui.heading7">TCP Analysis</h3>
               <div class="space-y-4">
                 <div>
                   <p class="text-xs text-surface-500 dark:text-surface-400 mb-1" data-i18n="tools.bandwidth-calculator.ui.desc16">Bandwidth-Delay Product (BDP)</p>

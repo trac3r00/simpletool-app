@@ -160,7 +160,7 @@ export function respond404() {
             We can't seem to find the page you're looking for. Double-check the URL or head back home.
           </p>
           <div class="mb-8">
-            <input type="search" id="error-search" placeholder="Search tools..." class="input w-full max-w-sm mx-auto mb-6">
+            <input type="search" id="error-search" aria-label="Search tools" placeholder="Search tools..." class="input w-full max-w-sm mx-auto mb-6">
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 max-w-xl mx-auto">
               <a href="/json-formatter" class="card p-4 hover:shadow-md transition-shadow text-center text-sm font-medium text-surface-700 dark:text-surface-200">JSON Formatter</a>
               <a href="/password-generator" class="card p-4 hover:shadow-md transition-shadow text-center text-sm font-medium text-surface-700 dark:text-surface-200">Password Generator</a>

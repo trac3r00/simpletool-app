@@ -51,20 +51,20 @@ function renderWebhookDebuggerPage(lang = DEFAULT_LANGUAGE) {
 
       <!-- Webhook URL display + start/stop -->
       <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 p-5 mb-6">
-        <div class="flex flex-wrap items-center justify-between gap-4">
-          <div class="flex-1 min-w-0">
+        <div class="flex flex-col sm:flex-row sm:flex-wrap sm:items-center sm:justify-between gap-4">
+          <div class="w-full sm:flex-1 min-w-0">
             <label class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1"><span data-i18n="tools.webhook-debugger.ui.label0">Local Endpoint</span></label>
             <div class="flex items-center gap-2">
               <code id="webhook-url" class="flex-1 font-mono text-sm bg-surface-100 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg px-3 py-2 text-surface-800 dark:text-surface-200 truncate select-all"></code>
               <button id="copy-url-btn" data-tooltip="Copy endpoint URL" data-i18n-tooltip="tools.webhook-debugger.ui.tip0" class="btn btn-ghost btn-sm shrink-0"><span data-i18n="tools.webhook-debugger.ui.button0">Copy</span></button>
             </div>
           </div>
-          <div class="flex items-center gap-3">
+          <div class="flex w-full sm:w-auto items-center justify-between gap-3">
             <div id="status-indicator" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-400 text-sm font-medium">
               <span id="status-dot" class="w-2.5 h-2.5 rounded-full bg-surface-400"></span>
               <span id="status-label" data-i18n="tools.webhook-debugger.ui.desc0">Stopped</span>
             </div>
-            <button id="toggle-listen-btn" data-tooltip="Start/stop webhook listener" data-i18n-tooltip="tools.webhook-debugger.ui.tip1" class="btn btn-primary"><span data-i18n="tools.webhook-debugger.ui.button1">Start Listening</span></button>
+            <button id="toggle-listen-btn" data-tooltip="Start/stop webhook listener" data-i18n-tooltip="tools.webhook-debugger.ui.tip1" class="btn btn-primary flex-1 sm:flex-none"><span data-i18n="tools.webhook-debugger.ui.button1">Start Listening</span></button>
           </div>
         </div>
       </div>

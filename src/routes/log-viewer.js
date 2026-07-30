@@ -58,7 +58,7 @@ export async function handleLogViewerRoutes(request, url) {
           </div>
 
           <!-- Level Filters -->
-          <div class="md:col-span-3 flex gap-2">
+          <div class="md:col-span-12 lg:col-span-3 grid grid-cols-2 sm:grid-cols-4 gap-2">
              <button id="toggle-info" data-tooltip="Show/hide INFO level messages" data-i18n-tooltip="tools.log-viewer.ui.tip2" class="flex-1 px-3 py-2 rounded-lg text-xs font-medium bg-info-100 text-info-800 dark:bg-info-900/30 dark:text-info-300 border border-transparent hover:border-info-300 transition-all ring-2 ring-info-500 ring-offset-1 dark:ring-offset-surface-900" data-active="true">INFO</button>
              <button id="toggle-warn" class="flex-1 px-3 py-2 rounded-lg text-xs font-medium bg-warning-100 text-warning-800 dark:bg-warning-900/30 dark:text-warning-300 border border-transparent hover:border-warning-300 transition-all ring-2 ring-warning-500 ring-offset-1 dark:ring-offset-surface-900" data-active="true">WARN</button>
              <button id="toggle-error" class="flex-1 px-3 py-2 rounded-lg text-xs font-medium bg-error-100 text-error-800 dark:bg-error-900/30 dark:text-error-300 border border-transparent hover:border-error-300 transition-all ring-2 ring-error-500 ring-offset-1 dark:ring-offset-surface-900" data-active="true">ERR</button>

@@ -93,9 +93,9 @@ export function createBlogArticleCard(article, options = {}) {
         ${article.category ? `<span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300">${article.category}</span>` : ''}
         ${article.readingTime ? `<span class="text-xs text-surface-500 dark:text-surface-400">${article.readingTime}</span>` : ''}
       </div>
-      <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-50 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-200 mb-2">
+      <h2 class="text-lg font-semibold text-surface-900 dark:text-surface-50 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-200 mb-2">
         ${article.title}
-      </h3>
+      </h2>
       <p class="text-sm text-surface-600 dark:text-surface-400 leading-relaxed mb-3">
         ${article.description}
       </p>

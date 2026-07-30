@@ -71,10 +71,10 @@ function renderProtocolHeadersPage(lang = DEFAULT_LANGUAGE) {
 
           <!-- Field Detail Panel -->
           <div class="tool-card">
-            <h3 class="text-sm font-semibold text-surface-900 dark:text-white mb-3 flex items-center gap-2">
+            <h2 class="text-sm font-semibold text-surface-900 dark:text-white mb-3 flex items-center gap-2">
               <svg class="w-4 h-4 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
               <span data-i18n="tools.protocol-headers.ui.heading0">Field Details</span>
-            </h3>
+            </h2>
             <div id="field-detail" class="space-y-3">
               <p class="text-sm text-surface-500 dark:text-surface-400 italic" data-i18n="tools.protocol-headers.ui.text1">Click on any field in the diagram to see details.</p>
             </div>
@@ -133,7 +133,7 @@ function renderProtocolHeadersPage(lang = DEFAULT_LANGUAGE) {
 
           <!-- Parsed Hex Output -->
           <div id="parsed-output-section" class="tool-card hidden">
-            <h3 class="text-sm font-semibold text-surface-900 dark:text-white mb-3" data-i18n="tools.protocol-headers.ui.heading1">Parsed Packet Data</h3>
+            <h2 class="text-sm font-semibold text-surface-900 dark:text-white mb-3" data-i18n="tools.protocol-headers.ui.heading1">Parsed Packet Data</h2>
             <div id="parsed-output" class="space-y-2">
               <!-- Parsed fields injected here -->
             </div>

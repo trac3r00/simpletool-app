@@ -26,18 +26,14 @@ const BASELINE_VIOLATIONS = {
 
   '/bandwidth-calculator': [
     { id: 'color-contrast', impact: 'serious' },
-    { id: 'heading-order', impact: 'moderate' },
     { id: 'link-in-text-block', impact: 'serious' },
-    { id: 'select-name', impact: 'critical' },
   ],
   '/case-converter': [
     { id: 'color-contrast', impact: 'serious' },
-    { id: 'heading-order', impact: 'moderate' },
     { id: 'link-in-text-block', impact: 'serious' },
   ],
   '/certificate-decoder': [
     { id: 'color-contrast', impact: 'serious' },
-    { id: 'heading-order', impact: 'moderate' },
     { id: 'link-in-text-block', impact: 'serious' },
   ],
   '/cidr-calculator': [
@@ -71,7 +67,6 @@ const BASELINE_VIOLATIONS = {
   '/dns-reference': [
     { id: 'color-contrast', impact: 'serious' },
     { id: 'link-in-text-block', impact: 'serious' },
-    { id: 'select-name', impact: 'critical' },
   ],
   '/encoding-workbench': [
     { id: 'color-contrast', impact: 'serious' },
@@ -107,13 +102,11 @@ const BASELINE_VIOLATIONS = {
   ],
   '/markdown-editor': [
     { id: 'color-contrast', impact: 'serious' },
-    { id: 'heading-order', impact: 'moderate' },
     { id: 'link-in-text-block', impact: 'serious' },
   ],
   '/mermaid-studio': [
     { id: 'aria-required-parent', impact: 'critical' },
     { id: 'color-contrast', impact: 'serious' },
-    { id: 'heading-order', impact: 'moderate' },
     { id: 'link-in-text-block', impact: 'serious' },
   ],
   '/mock-data-generator': [
@@ -122,7 +115,6 @@ const BASELINE_VIOLATIONS = {
   ],
   '/oauth-debugger': [
     { id: 'color-contrast', impact: 'serious' },
-    { id: 'label', impact: 'critical' },
     { id: 'link-in-text-block', impact: 'serious' },
   ],
   '/password-generator': [
@@ -135,7 +127,6 @@ const BASELINE_VIOLATIONS = {
   ],
   '/protocol-headers': [
     { id: 'color-contrast', impact: 'serious' },
-    { id: 'heading-order', impact: 'moderate' },
     { id: 'link-in-text-block', impact: 'serious' },
   ],
   '/public-repos-not-automation': [
@@ -158,7 +149,6 @@ const BASELINE_VIOLATIONS = {
     { id: 'color-contrast', impact: 'serious' },
     { id: 'link-in-text-block', impact: 'serious' },
     { id: 'scrollable-region-focusable', impact: 'serious' },
-    { id: 'select-name', impact: 'critical' },
   ],
   '/review-description-generator': [
     { id: 'color-contrast', impact: 'serious' },
@@ -167,7 +157,6 @@ const BASELINE_VIOLATIONS = {
   ],
   '/saml-decoder': [
     { id: 'color-contrast', impact: 'serious' },
-    { id: 'heading-order', impact: 'moderate' },
     { id: 'link-in-text-block', impact: 'serious' },
   ],
   '/ssh-key-generator': [
@@ -203,15 +192,12 @@ const BASELINE_VIOLATIONS = {
     { id: 'link-in-text-block', impact: 'serious' },
   ],
   '/wireguard-config': [
-    { id: 'button-name', impact: 'critical' },
     { id: 'color-contrast', impact: 'serious' },
     { id: 'link-in-text-block', impact: 'serious' },
-    { id: 'select-name', impact: 'critical' },
   ],
   '/wireshark-filter': [
     { id: 'color-contrast', impact: 'serious' },
     { id: 'link-in-text-block', impact: 'serious' },
-    { id: 'select-name', impact: 'critical' },
   ],
   '/yaml-toml-converter': [
     { id: 'color-contrast', impact: 'serious' },
@@ -232,7 +218,6 @@ const BASELINE_VIOLATIONS = {
   ],
   '/csp-builder': [
     { id: 'color-contrast', impact: 'serious' },
-    { id: 'label', impact: 'critical' },
     { id: 'link-in-text-block', impact: 'serious' },
   ],
   '/email-analyzer': [
@@ -258,17 +243,12 @@ const BASELINE_VIOLATIONS = {
   ],
   '/prompt-template-builder': [
     { id: 'color-contrast', impact: 'serious' },
-    { id: 'label', impact: 'critical' },
     { id: 'link-in-text-block', impact: 'serious' },
-    { id: 'select-name', impact: 'critical' },
   ],
   '/roulette-wheel': [
     { id: 'color-contrast', impact: 'serious' },
-    { id: 'heading-order', impact: 'moderate' },
-    { id: 'label', impact: 'critical' },
     { id: 'link-in-text-block', impact: 'serious' },
     { id: 'nested-interactive', impact: 'serious' },
-    { id: 'select-name', impact: 'critical' },
   ],
   '/secret-scanner': [
     { id: 'color-contrast', impact: 'serious' },
@@ -276,9 +256,7 @@ const BASELINE_VIOLATIONS = {
   ],
   '/sql-formatter': [
     { id: 'color-contrast', impact: 'serious' },
-    { id: 'heading-order', impact: 'moderate' },
     { id: 'link-in-text-block', impact: 'serious' },
-    { id: 'select-name', impact: 'critical' },
   ],
   '/svg-optimizer': [
     { id: 'color-contrast', impact: 'serious' },
@@ -286,9 +264,7 @@ const BASELINE_VIOLATIONS = {
   ],
   '/token-counter': [
     { id: 'color-contrast', impact: 'serious' },
-    { id: 'label', impact: 'critical' },
     { id: 'link-in-text-block', impact: 'serious' },
-    { id: 'select-name', impact: 'critical' },
   ],
 };
 

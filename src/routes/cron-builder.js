@@ -28,21 +28,21 @@ export async function handleCronBuilderRoutes(request) {
         <!-- Left Column: Visual Builder (Editor) -->
         <div class="flex-1 flex flex-col min-h-0 bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 overflow-hidden">
           <div class="border-b border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-950/50">
-            <nav class="flex -mb-px" aria-label="Tabs" id="builder-tabs">
-              <button class="tab-btn active group inline-flex items-center py-4 px-6 border-b-2 font-medium text-sm transition-colors border-primary-500 text-primary-600 dark:text-primary-400 focus:outline-none" data-target="minute" data-tooltip="0-59, which minutes to run">
-                <span data-i18n="tools.cron-builder.ui.button0">Minute</span>
+            <nav class="grid grid-cols-5 -mb-px" aria-label="Tabs" id="builder-tabs">
+              <button class="tab-btn active group min-w-0 inline-flex justify-center items-center py-4 px-2 sm:px-6 border-b-2 font-medium text-xs sm:text-sm transition-colors border-primary-500 text-primary-600 dark:text-primary-400 focus:outline-none" data-target="minute" data-tooltip="0-59, which minutes to run">
+                <span class="whitespace-nowrap" data-i18n="tools.cron-builder.ui.button0">Minute</span>
               </button>
-              <button class="tab-btn group inline-flex items-center py-4 px-6 border-b-2 border-transparent font-medium text-sm text-surface-500 hover:text-surface-700 hover:border-surface-300 dark:text-surface-400 dark:hover:text-surface-300 focus:outline-none" data-target="hour" data-tooltip="0-23, which hours to run">
-                <span data-i18n="tools.cron-builder.ui.button1">Hour</span>
+              <button class="tab-btn group min-w-0 inline-flex justify-center items-center py-4 px-2 sm:px-6 border-b-2 border-transparent font-medium text-xs sm:text-sm text-surface-500 hover:text-surface-700 hover:border-surface-300 dark:text-surface-400 dark:hover:text-surface-300 focus:outline-none" data-target="hour" data-tooltip="0-23, which hours to run">
+                <span class="whitespace-nowrap" data-i18n="tools.cron-builder.ui.button1">Hour</span>
               </button>
-              <button class="tab-btn group inline-flex items-center py-4 px-6 border-b-2 border-transparent font-medium text-sm text-surface-500 hover:text-surface-700 hover:border-surface-300 dark:text-surface-400 dark:hover:text-surface-300 focus:outline-none" data-target="dom" data-tooltip="1-31, which days of the month">
-                <span data-i18n="tools.cron-builder.ui.button2">Day</span>
+              <button class="tab-btn group min-w-0 inline-flex justify-center items-center py-4 px-2 sm:px-6 border-b-2 border-transparent font-medium text-xs sm:text-sm text-surface-500 hover:text-surface-700 hover:border-surface-300 dark:text-surface-400 dark:hover:text-surface-300 focus:outline-none" data-target="dom" data-tooltip="1-31, which days of the month">
+                <span class="whitespace-nowrap" data-i18n="tools.cron-builder.ui.button2">Day</span>
               </button>
-              <button class="tab-btn group inline-flex items-center py-4 px-6 border-b-2 border-transparent font-medium text-sm text-surface-500 hover:text-surface-700 hover:border-surface-300 dark:text-surface-400 dark:hover:text-surface-300 focus:outline-none" data-target="month" data-tooltip="1-12, which months">
-                <span data-i18n="tools.cron-builder.ui.button3">Month</span>
+              <button class="tab-btn group min-w-0 inline-flex justify-center items-center py-4 px-2 sm:px-6 border-b-2 border-transparent font-medium text-xs sm:text-sm text-surface-500 hover:text-surface-700 hover:border-surface-300 dark:text-surface-400 dark:hover:text-surface-300 focus:outline-none" data-target="month" data-tooltip="1-12, which months">
+                <span class="whitespace-nowrap" data-i18n="tools.cron-builder.ui.button3">Month</span>
               </button>
-              <button class="tab-btn group inline-flex items-center py-4 px-6 border-b-2 border-transparent font-medium text-sm text-surface-500 hover:text-surface-700 hover:border-surface-300 dark:text-surface-400 dark:hover:text-surface-300 focus:outline-none" data-target="dow" data-tooltip="0-6 (Sun-Sat), which days of week">
-                <span data-i18n="tools.cron-builder.ui.button4">Week</span>
+              <button class="tab-btn group min-w-0 inline-flex justify-center items-center py-4 px-2 sm:px-6 border-b-2 border-transparent font-medium text-xs sm:text-sm text-surface-500 hover:text-surface-700 hover:border-surface-300 dark:text-surface-400 dark:hover:text-surface-300 focus:outline-none" data-target="dow" data-tooltip="0-6 (Sun-Sat), which days of week">
+                <span class="whitespace-nowrap" data-i18n="tools.cron-builder.ui.button4">Week</span>
               </button>
             </nav>
           </div>

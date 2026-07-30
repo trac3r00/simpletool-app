@@ -22,6 +22,14 @@
 // Server-side: HTML pane generator
 // ---------------------------------------------------------------------------
 
+function escapeAttribute(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
 /**
  * Create the HTML for an editor pane (textarea or readonly pre).
  *
@@ -52,15 +60,16 @@ export function createRichEditorPane(opts = {}) {
   const extraWrap = wrapClass ? ` ${wrapClass}` : '';
 
   if (mode === 'textarea') {
-    const phAttr = placeholder ? ` placeholder="${placeholder}"` : '';
+    const phAttr = placeholder ? ` placeholder="${escapeAttribute(placeholder)}"` : '';
+    const ariaAttr = ariaLabel ? ` aria-label="${escapeAttribute(ariaLabel)}"` : '';
     return `<div id="${wrapId}" class="re-wrap${extraWrap}${hiddenClass}">` +
       `<div id="${lineId}" class="re-line-numbers" aria-hidden="true">1</div>` +
-      `<textarea id="re-${id}" rows="${rows}" spellcheck="false"${phAttr} class="input-mono resize-none re-textarea"></textarea>` +
+      `<textarea id="re-${id}" rows="${rows}" spellcheck="false"${phAttr}${ariaAttr} class="input-mono resize-none re-textarea"></textarea>` +
       `</div>`;
   }
 
   // mode === 'pre'
-  const ariaAttr = ariaLabel ? ` aria-label="${ariaLabel}"` : '';
+  const ariaAttr = ariaLabel ? ` aria-label="${escapeAttribute(ariaLabel)}"` : '';
   return `<div id="${wrapId}" class="re-wrap${extraWrap}${hiddenClass}">` +
     `<div id="${lineId}" class="re-line-numbers" aria-hidden="true">1</div>` +
     `<pre id="re-${id}" class="re-highlighted" tabindex="0" role="region"${ariaAttr}></pre>` +

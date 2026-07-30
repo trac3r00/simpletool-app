@@ -74,6 +74,10 @@ test-results/*
 .opencode/
 .gstack/
 
+# Bob worker orchestration artifacts
+.bob-worker-worktrees/
+.bob-worker.lock
+
 # Claude Code project config
 .claude/
 

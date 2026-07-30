@@ -90,9 +90,9 @@ function renderReviewDescriptionGeneratorPage(lang = DEFAULT_LANGUAGE) {
 
         <!-- Info -->
         <div class="mt-8 p-6 bg-primary-50 dark:bg-primary-900/20 rounded-xl border border-primary-100 dark:border-primary-800">
-          <h3 class="text-lg font-semibold text-primary-800 dark:text-primary-200 mb-3">
+          <h2 class="text-lg font-semibold text-primary-800 dark:text-primary-200 mb-3">
             <span data-i18n="tools.review-description-generator.ui.heading0">How It Works</span>
-          </h3>
+          </h2>
           <ul class="space-y-2 text-sm text-surface-600 dark:text-surface-400">
             <li data-i18n="tools.review-description-generator.ui.text0">Choose a template that matches your review type (dependency bump, bug fix, feature, etc.).</li>
             <li data-i18n="tools.review-description-generator.ui.text1">Fill in the context fields — the tool provides sensible defaults and guidance for each template.</li>

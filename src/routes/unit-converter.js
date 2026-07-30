@@ -59,7 +59,7 @@ function renderUnitConverterPage(lang = DEFAULT_LANGUAGE) {
           <!-- Swap Button -->
           <div class="flex justify-center md:pt-6">
             <button id="swap-btn" data-tooltip="Swap input and output units" data-i18n-tooltip="tools.unit-converter.ui.tip1" class="p-3 rounded-full bg-surface-100 dark:bg-surface-800 hover:bg-primary-100 dark:hover:bg-primary-900/30 text-surface-600 dark:text-surface-300 hover:text-primary-600 dark:hover:text-primary-400 transition-all group" title="Swap Units" data-i18n-title="tools.unit-converter.ui.title3">
-              <span class="material-symbols-rounded transform rotate-90 md:rotate-0 transition-transform group-hover:scale-110">swap_horiz</span>
+              <span class="material-symbols-rounded transform rotate-90 md:rotate-0 transition-transform group-hover:scale-110" aria-hidden="true">swap_horiz</span>
             </button>
           </div>
 
@@ -256,6 +256,31 @@ function renderUnitConverterPage(lang = DEFAULT_LANGUAGE) {
         }
       ];
 
+      const JAPANESE_CATEGORY_LABELS = {
+        length: '長さ', weight: '重さ', temperature: '温度', volume: '体積', area: '面積',
+        speed: '速度', time: '時間', data: 'データ', pressure: '圧力', energy: 'エネルギー'
+      };
+      const JAPANESE_UNIT_LABELS = {
+        length: { m: 'メートル (m)', km: 'キロメートル (km)', cm: 'センチメートル (cm)', mm: 'ミリメートル (mm)', nm: 'ナノメートル (nm)', mi: 'マイル (mi)', yd: 'ヤード (yd)', ft: 'フィート (ft)', in: 'インチ (in)' },
+        weight: { kg: 'キログラム (kg)', g: 'グラム (g)', mg: 'ミリグラム (mg)', ton: 'メートルトン (t)', lb: 'ポンド (lb)', oz: 'オンス (oz)', st: 'ストーン (st)' },
+        temperature: { c: '摂氏 (°C)', f: '華氏 (°F)', k: 'ケルビン (K)' },
+        volume: { l: 'リットル (L)', ml: 'ミリリットル (mL)', m3: '立方メートル (m³)', gal: 'ガロン (US gal)', qt: 'クォート (US qt)', pt: 'パイント (US pt)', cup: 'カップ (US cup)', floz: '液量オンス (fl oz)' },
+        area: { m2: '平方メートル (m²)', km2: '平方キロメートル (km²)', cm2: '平方センチメートル (cm²)', ha: 'ヘクタール (ha)', acre: 'エーカー (acre)', mi2: '平方マイル (mi²)', ft2: '平方フィート (ft²)', in2: '平方インチ (in²)' },
+        speed: { ms: 'メートル/秒 (m/s)', kmh: 'キロメートル/時 (km/h)', mph: 'マイル/時 (mph)', kn: 'ノット (kn)', fts: 'フィート/秒 (ft/s)' },
+        time: { s: '秒 (s)', ms: 'ミリ秒 (ms)', min: '分 (min)', hr: '時間 (hr)', day: '日 (day)', week: '週 (week)', month: '月 (month)', year: '年 (year)' },
+        data: { B: 'バイト (B)', KB: 'キロバイト (KB)', MB: 'メガバイト (MB)', GB: 'ギガバイト (GB)', TB: 'テラバイト (TB)', PB: 'ペタバイト (PB)' },
+        pressure: { Pa: 'パスカル (Pa)', kPa: 'キロパスカル (kPa)', bar: 'バール (bar)', atm: '気圧 (atm)', psi: 'PSI (psi)', mmHg: '水銀柱ミリメートル (mmHg)' },
+        energy: { J: 'ジュール (J)', kJ: 'キロジュール (kJ)', cal: 'カロリー (cal)', kcal: 'キロカロリー (kcal)', Wh: 'ワット時 (Wh)', kWh: 'キロワット時 (kWh)', BTU: '英熱量 (BTU)', eV: '電子ボルト (eV)' }
+      };
+      if (window._i18nGetLang && window._i18nGetLang() === 'ja') {
+        CATEGORIES.forEach(category => {
+          category.label = JAPANESE_CATEGORY_LABELS[category.id] || category.label;
+          category.units.forEach(unit => {
+            unit.label = JAPANESE_UNIT_LABELS[category.id]?.[unit.id] || unit.label;
+          });
+        });
+      }
+
       /* ===== State ===== */
       let currentCategoryId = CATEGORIES[0].id;
 
@@ -341,7 +366,7 @@ function renderUnitConverterPage(lang = DEFAULT_LANGUAGE) {
             (cat.id === currentCategoryId
               ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
               : 'border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 text-surface-600 dark:text-surface-400 hover:border-primary-300 dark:hover:border-primary-700 hover:text-primary-600 dark:hover:text-primary-400');
-          btn.innerHTML = '<span class="material-symbols-rounded text-lg">' + cat.icon + '</span>' +
+          btn.innerHTML = '<span class="material-symbols-rounded text-lg" aria-hidden="true">' + cat.icon + '</span>' +
             '<span>' + cat.label + '</span>';
           btn.addEventListener('click', () => selectCategory(cat.id));
           grid.appendChild(btn);
