@@ -18,7 +18,7 @@ permissions:
 jobs:
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64, pve-ci]
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -55,7 +55,7 @@ jobs:
 
   unit-tests:
     name: Unit Tests (Vitest)
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64, pve-ci]
     needs: build
     timeout-minutes: 10
     steps:
@@ -92,7 +92,7 @@ jobs:
 
   e2e-tests:
     name: E2E Tests (Playwright)
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64, pve-ci]
     needs: build
     timeout-minutes: 30
     env:
