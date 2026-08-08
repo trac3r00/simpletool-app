@@ -27,6 +27,12 @@ jobs:
 
       - name: Add user-space unzip shim
         run: |
+          for bun_binary in "$HOME/.bun/bin/bun" "$HOME/.bun/bin/bunx"; do
+            if { [ -e "$bun_binary" ] || [ -L "$bun_binary" ]; } && [ ! -x "$bun_binary" ]; then
+              rm -f -- "$bun_binary"
+            fi
+          done
+
           unzip_dir="${RUNNER_TEMP}/unzip-shim"
           mkdir -p "$unzip_dir"
           cat > "$unzip_dir/unzip" <<'PY'
@@ -91,6 +97,12 @@ jobs:
 
       - name: Add user-space unzip shim
         run: |
+          for bun_binary in "$HOME/.bun/bin/bun" "$HOME/.bun/bin/bunx"; do
+            if { [ -e "$bun_binary" ] || [ -L "$bun_binary" ]; } && [ ! -x "$bun_binary" ]; then
+              rm -f -- "$bun_binary"
+            fi
+          done
+
           unzip_dir="${RUNNER_TEMP}/unzip-shim"
           mkdir -p "$unzip_dir"
           cat > "$unzip_dir/unzip" <<'PY'
@@ -160,6 +172,12 @@ jobs:
 
       - name: Add user-space unzip shim
         run: |
+          for bun_binary in "$HOME/.bun/bin/bun" "$HOME/.bun/bin/bunx"; do
+            if { [ -e "$bun_binary" ] || [ -L "$bun_binary" ]; } && [ ! -x "$bun_binary" ]; then
+              rm -f -- "$bun_binary"
+            fi
+          done
+
           unzip_dir="${RUNNER_TEMP}/unzip-shim"
           mkdir -p "$unzip_dir"
           cat > "$unzip_dir/unzip" <<'PY'
@@ -268,6 +286,12 @@ jobs:
 
       - name: Add user-space unzip shim
         run: |
+          for bun_binary in "$HOME/.bun/bin/bun" "$HOME/.bun/bin/bunx"; do
+            if { [ -e "$bun_binary" ] || [ -L "$bun_binary" ]; } && [ ! -x "$bun_binary" ]; then
+              rm -f -- "$bun_binary"
+            fi
+          done
+
           unzip_dir="${RUNNER_TEMP}/unzip-shim"
           mkdir -p "$unzip_dir"
           cat > "$unzip_dir/unzip" <<'PY'

@@ -32,12 +32,16 @@ function getSetupBunPrerequisites() {
 }
 
 describe('workflow prerequisites', () => {
-  it('adds a non-privileged user-space unzip shim before all seven setup-bun steps', () => {
+  it('cleans stale Bun binaries and adds a non-privileged unzip shim before all seven setup-bun steps', () => {
     const violations = [];
     const prerequisites = getSetupBunPrerequisites();
 
     for (const { command, location } of prerequisites) {
       const requiredFragments = [
+        '$HOME/.bun/bin/bun',
+        '$HOME/.bun/bin/bunx',
+        '! -x',
+        'rm -f',
         'RUNNER_TEMP',
         '#!/usr/bin/env python3',
         'import os, sys, zipfile',
@@ -60,6 +64,57 @@ describe('workflow prerequisites', () => {
 
     expect(prerequisites).toHaveLength(7);
     expect(violations).toEqual([]);
+  });
+
+  it('removes non-executable Bun leftovers without deleting a healthy Bun executable', () => {
+    const [{ command }] = getSetupBunPrerequisites();
+    const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'workflow-bun-cleanup-'));
+    const home = path.join(tempRoot, 'home');
+    const bunDirectory = path.join(home, '.bun', 'bin');
+    const bunPath = path.join(bunDirectory, 'bun');
+    const bunxPath = path.join(bunDirectory, 'bunx');
+    const githubPath = path.join(tempRoot, 'github-path');
+
+    try {
+      fs.mkdirSync(bunDirectory, { recursive: true });
+      fs.writeFileSync(bunPath, 'stale bun');
+      fs.writeFileSync(bunxPath, 'stale bunx');
+      fs.chmodSync(bunPath, 0o644);
+      fs.chmodSync(bunxPath, 0o644);
+
+      const staleCleanup = spawnSync('bash', ['-euo', 'pipefail', '-c', command], {
+        encoding: 'utf8',
+        env: {
+          ...process.env,
+          GITHUB_PATH: githubPath,
+          HOME: home,
+          RUNNER_TEMP: tempRoot,
+        },
+      });
+      expect(staleCleanup.stderr).toBe('');
+      expect(staleCleanup.status).toBe(0);
+      expect(fs.existsSync(bunPath)).toBe(false);
+      expect(fs.existsSync(bunxPath)).toBe(false);
+
+      fs.writeFileSync(bunPath, '#!/bin/sh\nexit 0\n');
+      fs.chmodSync(bunPath, 0o755);
+
+      const healthyCleanup = spawnSync('bash', ['-euo', 'pipefail', '-c', command], {
+        encoding: 'utf8',
+        env: {
+          ...process.env,
+          GITHUB_PATH: githubPath,
+          HOME: home,
+          RUNNER_TEMP: tempRoot,
+        },
+      });
+      expect(healthyCleanup.stderr).toBe('');
+      expect(healthyCleanup.status).toBe(0);
+      expect(fs.readFileSync(bunPath, 'utf8')).toBe('#!/bin/sh\nexit 0\n');
+      expect(fs.statSync(bunPath).mode & 0o777).toBe(0o755);
+    } finally {
+      fs.rmSync(tempRoot, { recursive: true, force: true });
+    }
   });
 
   it('supports setup-bun unzip -o -q invocation and preserves Unix modes', () => {
