@@ -31,15 +31,22 @@ jobs:
           mkdir -p "$unzip_dir"
           cat > "$unzip_dir/unzip" <<'PY'
           #!/usr/bin/env python3
-          import sys
-          import zipfile
+          import os, sys, zipfile
 
           arguments = [argument for argument in sys.argv[1:] if argument not in {"-o", "-q"}]
           if len(arguments) != 1:
               raise SystemExit("usage: unzip -o -q archive.zip")
 
+          extracted_entries = []
           with zipfile.ZipFile(arguments[0]) as archive:
-              archive.extractall()
+              for member in archive.infolist():
+                  extracted_path = archive.extract(member)
+                  if member.create_system == 3:
+                      permissions = (member.external_attr >> 16) & 0o777
+                      extracted_entries.append((extracted_path, permissions))
+
+          for extracted_path, permissions in extracted_entries:
+              os.chmod(extracted_path, permissions)
           PY
           chmod +x "$unzip_dir/unzip"
           echo "$unzip_dir" >> "$GITHUB_PATH"
@@ -88,15 +95,22 @@ jobs:
           mkdir -p "$unzip_dir"
           cat > "$unzip_dir/unzip" <<'PY'
           #!/usr/bin/env python3
-          import sys
-          import zipfile
+          import os, sys, zipfile
 
           arguments = [argument for argument in sys.argv[1:] if argument not in {"-o", "-q"}]
           if len(arguments) != 1:
               raise SystemExit("usage: unzip -o -q archive.zip")
 
+          extracted_entries = []
           with zipfile.ZipFile(arguments[0]) as archive:
-              archive.extractall()
+              for member in archive.infolist():
+                  extracted_path = archive.extract(member)
+                  if member.create_system == 3:
+                      permissions = (member.external_attr >> 16) & 0o777
+                      extracted_entries.append((extracted_path, permissions))
+
+          for extracted_path, permissions in extracted_entries:
+              os.chmod(extracted_path, permissions)
           PY
           chmod +x "$unzip_dir/unzip"
           echo "$unzip_dir" >> "$GITHUB_PATH"
@@ -150,15 +164,22 @@ jobs:
           mkdir -p "$unzip_dir"
           cat > "$unzip_dir/unzip" <<'PY'
           #!/usr/bin/env python3
-          import sys
-          import zipfile
+          import os, sys, zipfile
 
           arguments = [argument for argument in sys.argv[1:] if argument not in {"-o", "-q"}]
           if len(arguments) != 1:
               raise SystemExit("usage: unzip -o -q archive.zip")
 
+          extracted_entries = []
           with zipfile.ZipFile(arguments[0]) as archive:
-              archive.extractall()
+              for member in archive.infolist():
+                  extracted_path = archive.extract(member)
+                  if member.create_system == 3:
+                      permissions = (member.external_attr >> 16) & 0o777
+                      extracted_entries.append((extracted_path, permissions))
+
+          for extracted_path, permissions in extracted_entries:
+              os.chmod(extracted_path, permissions)
           PY
           chmod +x "$unzip_dir/unzip"
           echo "$unzip_dir" >> "$GITHUB_PATH"
@@ -251,15 +272,22 @@ jobs:
           mkdir -p "$unzip_dir"
           cat > "$unzip_dir/unzip" <<'PY'
           #!/usr/bin/env python3
-          import sys
-          import zipfile
+          import os, sys, zipfile
 
           arguments = [argument for argument in sys.argv[1:] if argument not in {"-o", "-q"}]
           if len(arguments) != 1:
               raise SystemExit("usage: unzip -o -q archive.zip")
 
+          extracted_entries = []
           with zipfile.ZipFile(arguments[0]) as archive:
-              archive.extractall()
+              for member in archive.infolist():
+                  extracted_path = archive.extract(member)
+                  if member.create_system == 3:
+                      permissions = (member.external_attr >> 16) & 0o777
+                      extracted_entries.append((extracted_path, permissions))
+
+          for extracted_path, permissions in extracted_entries:
+              os.chmod(extracted_path, permissions)
           PY
           chmod +x "$unzip_dir/unzip"
           echo "$unzip_dir" >> "$GITHUB_PATH"
