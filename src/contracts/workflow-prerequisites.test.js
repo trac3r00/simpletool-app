@@ -40,9 +40,12 @@ describe('workflow prerequisites', () => {
       const requiredFragments = [
         'RUNNER_TEMP',
         '#!/usr/bin/env python3',
-        'import zipfile',
+        'import os, sys, zipfile',
         'zipfile.ZipFile',
-        'extractall()',
+        'archive.infolist()',
+        'archive.extract(member)',
+        'member.external_attr >> 16',
+        'os.chmod',
         'chmod +x',
         'GITHUB_PATH',
       ];
@@ -59,7 +62,7 @@ describe('workflow prerequisites', () => {
     expect(violations).toEqual([]);
   });
 
-  it('supports setup-bun unzip -o -q invocation from the destination cwd', () => {
+  it('supports setup-bun unzip -o -q invocation and preserves Unix modes', () => {
     const [{ command }] = getSetupBunPrerequisites();
     const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'workflow-unzip-shim-'));
     const githubPath = path.join(tempRoot, 'github-path');
@@ -84,7 +87,19 @@ describe('workflow prerequisites', () => {
         'python3',
         [
           '-c',
-          'import sys, zipfile\nwith zipfile.ZipFile(sys.argv[1], "w") as archive:\n    archive.writestr("nested/file.txt", "shim works")',
+          [
+            'import sys, zipfile',
+            'with zipfile.ZipFile(sys.argv[1], "w") as archive:',
+            '    directory = zipfile.ZipInfo("nested/")',
+            '    directory.create_system = 3',
+            '    directory.external_attr = 0o40750 << 16',
+            '    archive.writestr(directory, "")',
+            '    executable = zipfile.ZipInfo("nested/bun")',
+            '    executable.create_system = 3',
+            '    executable.external_attr = 0o100755 << 16',
+            '    archive.writestr(executable, \'#!/bin/sh\\nprintf "shim works"\\n\')',
+            '    archive.writestr("../escape.txt", "stays contained")',
+          ].join('\n'),
           archivePath,
         ],
         { stdio: 'inherit' }
@@ -96,7 +111,14 @@ describe('workflow prerequisites', () => {
         stdio: 'inherit',
       });
 
-      expect(fs.readFileSync(path.join(destination, 'nested/file.txt'), 'utf8')).toBe('shim works');
+      const extractedDirectory = path.join(destination, 'nested');
+      const extractedExecutable = path.join(extractedDirectory, 'bun');
+
+      expect(fs.statSync(extractedExecutable).mode & 0o777).toBe(0o755);
+      expect(fs.statSync(extractedDirectory).mode & 0o777).toBe(0o750);
+      expect(execFileSync(extractedExecutable, { encoding: 'utf8' })).toBe('shim works');
+      expect(fs.readFileSync(path.join(destination, 'escape.txt'), 'utf8')).toBe('stays contained');
+      expect(fs.existsSync(path.join(tempRoot, 'escape.txt'))).toBe(false);
     } finally {
       fs.rmSync(tempRoot, { recursive: true, force: true });
     }
