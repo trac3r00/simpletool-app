@@ -31,6 +31,30 @@ function getSetupBunPrerequisites() {
   return prerequisites;
 }
 
+function getSelfHostedE2ePlaywrightInstallCommands() {
+  const installCommands = [];
+
+  for (const workflowPath of workflowPaths) {
+    const workflow = load(fs.readFileSync(new URL(workflowPath, import.meta.url), 'utf8'));
+
+    for (const [jobName, job] of Object.entries(workflow.jobs)) {
+      const runnerLabels = Array.isArray(job['runs-on']) ? job['runs-on'] : [job['runs-on']];
+      if (!runnerLabels.includes('self-hosted') || !jobName.includes('e2e')) continue;
+
+      for (const step of job.steps) {
+        if (typeof step.run !== 'string' || !step.run.includes('bunx playwright install')) continue;
+
+        installCommands.push({
+          command: step.run.trim(),
+          location: `${workflowPath}:${jobName}:${step.name}`,
+        });
+      }
+    }
+  }
+
+  return installCommands;
+}
+
 describe('workflow prerequisites', () => {
   it('cleans stale Bun binaries and adds a non-privileged unzip shim before all seven setup-bun steps', () => {
     const violations = [];
@@ -63,6 +87,19 @@ describe('workflow prerequisites', () => {
     }
 
     expect(prerequisites).toHaveLength(7);
+    expect(violations).toEqual([]);
+  });
+
+  it('installs Playwright browsers without privileged dependency installation in self-hosted E2E jobs', () => {
+    const installCommands = getSelfHostedE2ePlaywrightInstallCommands();
+    const violations = installCommands
+      .filter(({ command }) => (
+        /\bsudo\b|--with-deps|\binstall-deps\b/.test(command)
+        || command !== 'bunx playwright install chromium'
+      ))
+      .map(({ location }) => location);
+
+    expect(installCommands).toHaveLength(4);
     expect(violations).toEqual([]);
   });
 
