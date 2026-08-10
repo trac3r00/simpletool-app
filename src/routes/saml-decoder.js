@@ -3,21 +3,35 @@
  * Decode Base64/deflated SAML payloads entirely in-browser
  */
 
-import { respondHTML, respondJSON } from '../utils/respond.js';
-import { createPageTemplate, createCheatsheet, infoHint } from '../utils/common-ui.js';
-import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML, respondJSON } from "../utils/respond.js";
+import {
+  createPageTemplate,
+  createCheatsheet,
+  infoHint,
+} from "../utils/common-ui.js";
+import {
+  createEducationalSection,
+  createRelatedToolsSection,
+} from "../utils/content-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleSamlDecoderRoutes(request, url) {
   const { pathname } = url;
 
-  if (pathname === '/saml-decoder' || pathname === '/saml-decoder/') {
-    if (request.method === 'GET') {
-      return respondHTML(renderSamlDecoderPage(resolveRequestLanguage(request, url)));
+  if (pathname === "/saml-decoder" || pathname === "/saml-decoder/") {
+    if (request.method === "GET") {
+      return respondHTML(
+        renderSamlDecoderPage(resolveRequestLanguage(request, url)),
+      );
     }
 
-    return respondJSON({ error: 'Method not allowed' }, { status: 405 });
+    return respondJSON({ error: "Method not allowed" }, { status: 405 });
   }
 
   return null;
@@ -25,12 +39,16 @@ export async function handleSamlDecoderRoutes(request, url) {
 
 function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('saml-decoder', currentLang);
-  const title = translation?.name || 'SAML Inspector';
-  const description = translation?.desc || 'Decode SAML requests and responses.';
+  const translation = getToolTranslation("saml-decoder", currentLang);
+  const title = translation?.name || "SAML Inspector";
+  const description =
+    translation?.desc || "Decode SAML requests and responses.";
 
-  const currentTool = TOOLS.find(t => t.id === 'saml-decoder');
-  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+  const currentTool = TOOLS.find((t) => t.id === "saml-decoder");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
@@ -63,7 +81,7 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
       <section class="grid gap-6 lg:grid-cols-2">
         <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 space-y-4">
           <div class="flex items-center justify-between">
-            <label for="saml-input" class="text-sm font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide"><span data-i18n="tools.saml-decoder.ui.label7">SAML response</span> ${infoHint('Paste Base64 SAMLResponse or raw XML; toggle inflate for redirect payloads.')}</label>
+            <label for="saml-input" class="text-sm font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide"><span data-i18n="tools.saml-decoder.ui.label7">SAML response</span> ${infoHint("Paste Base64 SAMLResponse or raw XML; toggle inflate for redirect payloads.")}</label>
             <button id="clear-btn" type="button" class="btn btn-ghost btn-sm"><span data-i18n="tools.saml-decoder.ui.button0">Clear</span></button>
           </div>
           <textarea id="saml-input" data-tooltip="Paste Base64-encoded SAML request or response" data-i18n-tooltip="tools.saml-decoder.ui.tip0" class="w-full min-h-[220px] rounded-xl border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-950 px-4 py-3 font-mono text-sm text-surface-900 dark:text-surface-100" placeholder="Paste the Base64 value of SAMLResponse or raw XML here" data-i18n-placeholder="tools.saml-decoder.ui.placeholder8"></textarea>
@@ -150,9 +168,15 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
         </div>
       </section>
 
-      ${createCheatsheet('saml-decoder', 'SAML Quick Reference', [
-        { heading: 'SAML Flow', content: '<p>1. User requests resource → 2. SP sends AuthnRequest to IdP → 3. IdP authenticates user → 4. IdP sends Response with Assertion → 5. SP grants access</p>' },
-        { heading: 'Key Elements', content: `
+      ${createCheatsheet("saml-decoder", "SAML Quick Reference", [
+        {
+          heading: "SAML Flow",
+          content:
+            "<p>1. User requests resource → 2. SP sends AuthnRequest to IdP → 3. IdP authenticates user → 4. IdP sends Response with Assertion → 5. SP grants access</p>",
+        },
+        {
+          heading: "Key Elements",
+          content: `
           <table>
             <tr><th data-i18n="tools.saml-decoder.ui.th1">Element</th><th data-i18n="tools.saml-decoder.ui.th2">Purpose</th></tr>
             <tr><td><code>AuthnRequest</code></td><td>SP → IdP login request</td></tr>
@@ -160,21 +184,23 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
             <tr><td><code>Assertion</code></td><td>Claims about the user</td></tr>
             <tr><td><code>NameID</code></td><td>User identifier</td></tr>
             <tr><td><code>Attribute</code></td><td>User properties (email, role)</td></tr>
-          </table>` }
+          </table>`,
+        },
       ])}
     </main>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-      ${createEducationalSection([
-        {
-          title: 'What is SAML?',
-          content: `
+      ${createEducationalSection(
+        [
+          {
+            title: "What is SAML?",
+            content: `
             <p>Security Assertion Markup Language (SAML) is an XML-based open standard for exchanging authentication and authorization data between parties, in particular, between an Identity Provider (IdP) and a Service Provider (SP). SAML is the backbone of many Enterprise Single Sign-On (SSO) solutions, allowing users to access multiple applications with a single set of credentials.</p>
             <p>The most common version is SAML 2.0, which uses security tokens containing "assertions" to pass information about a principal (usually a user) between the IdP and the SP.</p>
-          `
-        },
-        {
-          title: 'How to Use This Tool',
-          content: `
+          `,
+          },
+          {
+            title: "How to Use This Tool",
+            content: `
             <ol>
               <li><strong>Paste your payload:</strong> Copy the Base64-encoded SAMLResponse or raw XML and paste it into the input field.</li>
               <li><strong>Configure options:</strong> Toggle "Attempt to inflate" if you are decoding a Redirect binding payload (which is often compressed).</li>
@@ -183,30 +209,33 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
               <li><strong>Inspect Attributes:</strong> View the decoded user attributes (email, roles, etc.) in the Attributes table.</li>
               <li><strong>Explore Details:</strong> Use the tabs below to see the Pretty XML, Assertion details, or a JSON representation of the claims.</li>
             </ol>
-          `
-        },
-        {
-          title: 'Common Use Cases',
-          content: `
+          `,
+          },
+          {
+            title: "Common Use Cases",
+            content: `
             <ul>
               <li><strong>SSO Troubleshooting:</strong> Diagnosing why a user cannot log in by checking for expired assertions or audience mismatches.</li>
               <li><strong>Integration Testing:</strong> Verifying that your Identity Provider is sending the correct attributes required by your application.</li>
               <li><strong>Security Auditing:</strong> Inspecting the raw XML to ensure that assertions are properly signed and encrypted where necessary.</li>
               <li><strong>Development:</strong> Quickly viewing the contents of a SAML message during the development of a Service Provider integration.</li>
             </ul>
-          `
-        },
-        {
-          title: 'Pro Tips',
-          content: `
+          `,
+          },
+          {
+            title: "Pro Tips",
+            content: `
             <ul>
               <li><strong>Redirect vs. POST:</strong> SAML messages sent via HTTP-Redirect are usually deflated (compressed) before being Base64 encoded. If your decode fails, try toggling the "Attempt to inflate" checkbox.</li>
               <li><strong>Check the Audience:</strong> Ensure the <code>AudienceRestriction</code> matches your SP's Entity ID. This is a common cause of "Invalid SAML" errors.</li>
               <li><strong>Clock Skew:</strong> If a response is marked as invalid, check the <code>NotBefore</code> and <code>NotOnOrAfter</code> times. Small differences between the IdP and SP clocks can cause valid assertions to be rejected.</li>
             </ul>
-          `
-        }
-      ], 'saml-decoder', currentLang)}
+          `,
+          },
+        ],
+        "saml-decoder",
+        currentLang,
+      )}
     ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;
@@ -627,9 +656,9 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
   return createPageTemplate({
     title,
     description,
-    path: '/saml-decoder',
+    path: "/saml-decoder",
     content,
     scripts: script,
-    lang: currentLang
+    lang: currentLang,
   });
 }

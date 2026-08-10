@@ -3,52 +3,76 @@
  * All processing happens client-side for privacy
  */
 
-import { respondHTML, respondJSON } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createEmptyState } from '../utils/common-ui.js';
-import { createRichEditorPane, getRichEditorStyles, getRichEditorScript } from '../utils/rich-editor.js';
-import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { getToolTranslation, resolveRequestLanguage, t } from '../utils/i18n.js';
-import { countKeys } from '../utils/json-stats.js';
+import { respondHTML, respondJSON } from "../utils/respond.js";
+import {
+  createPageTemplate,
+  createToolHeader,
+  createEmptyState,
+} from "../utils/common-ui.js";
+import {
+  createRichEditorPane,
+  getRichEditorStyles,
+  getRichEditorScript,
+} from "../utils/rich-editor.js";
+import {
+  createEducationalSection,
+  createRelatedToolsSection,
+} from "../utils/content-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import {
+  getToolTranslation,
+  resolveRequestLanguage,
+  t,
+} from "../utils/i18n.js";
+import { countKeys } from "../utils/json-stats.js";
 
 export async function handleJSONFormatterRoutes(request, url) {
   const { pathname } = url;
   const method = request.method;
 
   try {
-    if (pathname === '/json-formatter' || pathname === '/json-formatter/') {
-      if (method === 'GET') {
+    if (pathname === "/json-formatter" || pathname === "/json-formatter/") {
+      if (method === "GET") {
         return renderJSONFormatterPage(resolveRequestLanguage(request, url));
       }
     }
 
-    return respondJSON({ error: 'Not found' }, { status: 404 });
+    return respondJSON({ error: "Not found" }, { status: 404 });
   } catch (error) {
-    console.error('JSON Formatter Route Error:', error);
+    console.error("JSON Formatter Route Error:", error);
     return respondJSON(
-      { error: 'Internal server error', message: error.message },
-      { status: 500 }
+      { error: "Internal server error", message: error.message },
+      { status: 500 },
     );
   }
 }
 
-function renderJSONFormatterPage(lang = 'en') {
-  const toolTranslation = getToolTranslation('json-formatter', lang);
+function renderJSONFormatterPage(lang = "en") {
+  const toolTranslation = getToolTranslation("json-formatter", lang);
   const tr = (key, fallback) => {
     const value = t(key, lang);
     return value === key ? fallback : value;
   };
   const toolHeader = createToolHeader(
-    { emoji: '📋' },
-    toolTranslation?.name || 'JSON Formatter',
-    toolTranslation?.desc || 'Format, validate, and beautify JSON data',
-    [{ text: tr('tools.json-formatter.ui.badge12', 'Privacy First'), color: 'green', tooltip: 'All processing happens in your browser — no data is sent to any server.' }],
-    { toolId: 'json-formatter' }
+    { emoji: "📋" },
+    toolTranslation?.name || "JSON Formatter",
+    toolTranslation?.desc || "Format, validate, and beautify JSON data",
+    [
+      {
+        text: tr("tools.json-formatter.ui.badge12", "Privacy First"),
+        color: "green",
+        tooltip:
+          "All processing happens in your browser — no data is sent to any server.",
+      },
+    ],
+    { toolId: "json-formatter" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'json-formatter');
-    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
-
+  const currentTool = TOOLS.find((t) => t.id === "json-formatter");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -80,7 +104,7 @@ function renderJSONFormatterPage(lang = 'en') {
           <!-- Input -->
           <div class="flex flex-col gap-2">
             <label class="label"><span data-i18n="tools.json-formatter.ui.label5">Input JSON</span></label>
-            ${createRichEditorPane({ id: 'input', mode: 'textarea', placeholder: '{"name": "SimpleTool", "version": "2.0", "tools": ["JSON Formatter", "Password Generator"]}' })}
+            ${createRichEditorPane({ id: "input", mode: "textarea", placeholder: '{"name": "SimpleTool", "version": "2.0", "tools": ["JSON Formatter", "Password Generator"]}' })}
           </div>
 
            <!-- Output -->
@@ -89,8 +113,8 @@ function renderJSONFormatterPage(lang = 'en') {
                  <label class="label"><span data-i18n="tools.json-formatter.ui.label6">Formatted Output</span></label>
                  <span id="status-indicator" class="text-xs font-mono hidden"></span>
               </div>
-             ${createEmptyState({ icon: '📋', title: 'No output yet', description: 'Paste JSON on the left, then click Format or Minify.', id: 'json-empty-state', i18nTitle: 'tools.json-formatter.ui.desc13', i18nDesc: 'tools.json-formatter.ui.desc14' })}
-             ${createRichEditorPane({ id: 'output', mode: 'pre', ariaLabel: 'JSON output', hidden: true })}
+             ${createEmptyState({ icon: "📋", title: "No output yet", description: "Paste JSON on the left, then click Format or Minify.", id: "json-empty-state", i18nTitle: "tools.json-formatter.ui.desc13", i18nDesc: "tools.json-formatter.ui.desc14" })}
+             ${createRichEditorPane({ id: "output", mode: "pre", ariaLabel: "JSON output", hidden: true })}
              <textarea id="json-output" class="hidden" readonly aria-hidden="true"></textarea>
            </div>
         </div>
@@ -122,29 +146,37 @@ function renderJSONFormatterPage(lang = 'en') {
       </div>
     </main>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-      ${createEducationalSection([
-        {
-          title: 'What is JSON?',
-          content: '<p>JSON (JavaScript Object Notation) is a lightweight data-interchange format that is easy for humans to read and write and easy for machines to parse and generate. It is based on a subset of the JavaScript Programming Language Standard. JSON is a text format that is completely language independent but uses conventions that are familiar to programmers of the C-family of languages, including C, C++, C#, Java, JavaScript, Perl, Python, and many others.</p><p>These properties make JSON an ideal data-interchange language for web applications, APIs, and configuration files. It represents data as name/value pairs and ordered lists of values. It has become the de facto standard for data exchange on the web, largely replacing XML due to its smaller footprint and better performance.</p>'
-        },
-        {
-          title: 'How to Use This Tool',
-          content: '<ol><li>Paste your raw or messy JSON data into the "Input JSON" editor on the left.</li><li>Click the "Format" button to beautify the code with proper indentation and syntax highlighting.</li><li>Alternatively, use the "Minify" button to remove all whitespace for production use.</li><li>Check the "Status" indicator to ensure your JSON is valid; if there\'s an error, the tool will highlight the exact line.</li><li>Click "Copy" to save the formatted result to your clipboard or "Clear" to start over.</li></ol>'
-        },
-        {
-          title: 'Common Use Cases',
-          content: '<ul><li><strong>API Debugging:</strong> Quickly format unreadable JSON responses from REST APIs to inspect data structures.</li><li><strong>Config Validation:</strong> Ensure your <code>package.json</code>, <code>tsconfig.json</code>, or other configuration files are syntactically correct.</li><li><strong>Data Preparation:</strong> Minify JSON data before embedding it in code or sending it over a network to save bandwidth.</li><li><strong>Learning & Documentation:</strong> Use the beautified output to create clear examples for technical documentation or tutorials.</li></ul>'
-        },
-        {
-          title: 'Pro Tips',
-          content: '<ul><li>Use the "Validate" button if you only want to check for syntax errors without changing the formatting of your input.</li><li>Pay attention to the "Max Depth" statistic to identify overly complex or deeply nested structures that might cause performance issues.</li><li>Always use double quotes for keys and string values, as single quotes are invalid in standard JSON.</li></ul>'
-        }
-      ], 'json-formatter', lang)}
+      ${createEducationalSection(
+        [
+          {
+            title: "What is JSON?",
+            content:
+              "<p>JSON (JavaScript Object Notation) is a lightweight data-interchange format that is easy for humans to read and write and easy for machines to parse and generate. It is based on a subset of the JavaScript Programming Language Standard. JSON is a text format that is completely language independent but uses conventions that are familiar to programmers of the C-family of languages, including C, C++, C#, Java, JavaScript, Perl, Python, and many others.</p><p>These properties make JSON an ideal data-interchange language for web applications, APIs, and configuration files. It represents data as name/value pairs and ordered lists of values. It has become the de facto standard for data exchange on the web, largely replacing XML due to its smaller footprint and better performance.</p>",
+          },
+          {
+            title: "How to Use This Tool",
+            content:
+              '<ol><li>Paste your raw or messy JSON data into the "Input JSON" editor on the left.</li><li>Click the "Format" button to beautify the code with proper indentation and syntax highlighting.</li><li>Alternatively, use the "Minify" button to remove all whitespace for production use.</li><li>Check the "Status" indicator to ensure your JSON is valid; if there\'s an error, the tool will highlight the exact line.</li><li>Click "Copy" to save the formatted result to your clipboard or "Clear" to start over.</li></ol>',
+          },
+          {
+            title: "Common Use Cases",
+            content:
+              "<ul><li><strong>API Debugging:</strong> Quickly format unreadable JSON responses from REST APIs to inspect data structures.</li><li><strong>Config Validation:</strong> Ensure your <code>package.json</code>, <code>tsconfig.json</code>, or other configuration files are syntactically correct.</li><li><strong>Data Preparation:</strong> Minify JSON data before embedding it in code or sending it over a network to save bandwidth.</li><li><strong>Learning & Documentation:</strong> Use the beautified output to create clear examples for technical documentation or tutorials.</li></ul>",
+          },
+          {
+            title: "Pro Tips",
+            content:
+              '<ul><li>Use the "Validate" button if you only want to check for syntax errors without changing the formatting of your input.</li><li>Pay attention to the "Max Depth" statistic to identify overly complex or deeply nested structures that might cause performance issues.</li><li>Always use double quotes for keys and string values, as single quotes are invalid in standard JSON.</li></ul>',
+          },
+        ],
+        "json-formatter",
+        lang,
+      )}
     ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;
 
-   const script = `
+  const script = `
       <style>
         ${getRichEditorStyles()}
       </style>
@@ -269,12 +301,16 @@ function renderJSONFormatterPage(lang = 'en') {
       </script>
    `;
 
-  return respondHTML(createPageTemplate({
-    title: toolTranslation?.name || 'JSON Formatter',
-    description: toolTranslation?.desc || 'Format, validate, minify and beautify JSON data with syntax highlighting and error detection.',
-    path: '/json-formatter',
-    content,
-    scripts: script,
-    lang
-  }));
+  return respondHTML(
+    createPageTemplate({
+      title: toolTranslation?.name || "JSON Formatter",
+      description:
+        toolTranslation?.desc ||
+        "Format, validate, minify and beautify JSON data with syntax highlighting and error detection.",
+      path: "/json-formatter",
+      content,
+      scripts: script,
+      lang,
+    }),
+  );
 }

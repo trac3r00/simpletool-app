@@ -1,30 +1,46 @@
-import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { createRelatedToolsSection } from '../utils/content-ui.js';
-import { getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML } from "../utils/respond.js";
+import { createPageTemplate, createToolHeader } from "../utils/common-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import { createRelatedToolsSection } from "../utils/content-ui.js";
+import {
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleLogViewerRoutes(request, url) {
-  if (url.pathname !== '/log-viewer' && url.pathname !== '/log-viewer/') return null;
-  if (request.method !== 'GET') return null;
+  if (url.pathname !== "/log-viewer" && url.pathname !== "/log-viewer/")
+    return null;
+  if (request.method !== "GET") return null;
   const currentLang = resolveRequestLanguage(request, url);
-  const translation = getToolTranslation('log-viewer', currentLang);
+  const translation = getToolTranslation("log-viewer", currentLang);
 
-  const currentTool = TOOLS.find(t => t.id === 'log-viewer');
-  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
-
+  const currentTool = TOOLS.find((t) => t.id === "log-viewer");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       ${createToolHeader(
-        { emoji: '📃' },
-        translation?.name || 'Enterprise Log Viewer',
-        translation?.desc || 'Analyze massive log files locally with virtual scrolling, filtering, and density visualization.',
+        { emoji: "📃" },
+        translation?.name || "Enterprise Log Viewer",
+        translation?.desc ||
+          "Analyze massive log files locally with virtual scrolling, filtering, and density visualization.",
         [
-          { text: translation?.ui?.badge10 || 'Client-Side Only', tooltip: 'Runs entirely in your browser using Web APIs — your data never leaves your device.' },
-          { text: translation?.ui?.badge11 || '100k+ Lines', tooltip: 'Designed to handle and visualize very large log files without server streaming.' }
+          {
+            text: translation?.ui?.badge10 || "Client-Side Only",
+            tooltip:
+              "Runs entirely in your browser using Web APIs — your data never leaves your device.",
+          },
+          {
+            text: translation?.ui?.badge11 || "100k+ Lines",
+            tooltip:
+              "Designed to handle and visualize very large log files without server streaming.",
+          },
         ],
-        { toolId: 'log-viewer' }
+        { toolId: "log-viewer" },
       )}
 
       <!-- Controls -->
@@ -447,11 +463,15 @@ export async function handleLogViewerRoutes(request, url) {
     </script>
   `;
 
-  return respondHTML(createPageTemplate({
-    title: translation?.name || 'Log Viewer',
-    description: translation?.desc || 'Client-side enterprise log viewer with virtual scrolling and filtering.',
-    path: '/log-viewer',
-    content: content,
-    lang: normalizeLanguage(currentLang)
-  }));
+  return respondHTML(
+    createPageTemplate({
+      title: translation?.name || "Log Viewer",
+      description:
+        translation?.desc ||
+        "Client-side enterprise log viewer with virtual scrolling and filtering.",
+      path: "/log-viewer",
+      content: content,
+      lang: normalizeLanguage(currentLang),
+    }),
+  );
 }

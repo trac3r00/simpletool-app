@@ -1,35 +1,61 @@
-import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createCheatsheet } from '../utils/common-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { createRelatedToolsSection } from '../utils/content-ui.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML } from "../utils/respond.js";
+import {
+  createPageTemplate,
+  createToolHeader,
+  createCheatsheet,
+} from "../utils/common-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import { createRelatedToolsSection } from "../utils/content-ui.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleDNSReferenceRoutes(request, url) {
-  if (url.pathname !== '/dns-reference' && url.pathname !== '/dns-reference/') return null;
-  if (request.method !== 'GET') return null;
+  if (url.pathname !== "/dns-reference" && url.pathname !== "/dns-reference/")
+    return null;
+  if (request.method !== "GET") return null;
   const lang = resolveRequestLanguage(request, url);
   return respondHTML(renderDnsReferencePage(lang));
 }
 
 function renderDnsReferencePage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('dns-reference', currentLang);
-  const title = translation?.name || 'DNS Record Reference';
-  const description = translation?.desc || 'Interactive reference for DNS record types with syntax, examples, and command builders.';
+  const translation = getToolTranslation("dns-reference", currentLang);
+  const title = translation?.name || "DNS Record Reference";
+  const description =
+    translation?.desc ||
+    "Interactive reference for DNS record types with syntax, examples, and command builders.";
 
   const header = createToolHeader(
-    { emoji: '📇' },
+    { emoji: "📇" },
     title,
     description,
     [
-      { text: translation?.ui?.badge13 || '<span data-i18n="tools.dns-reference.ui.badge0">Interactive</span>', tooltip: 'Click any record type to see detailed information and examples.' },
-      { text: translation?.ui?.badge14 || '<span data-i18n="tools.dns-reference.ui.badge1">Command Builder</span>', tooltip: 'Generate dig and nslookup commands with one click.' }
+      {
+        text:
+          translation?.ui?.badge13 ||
+          '<span data-i18n="tools.dns-reference.ui.badge0">Interactive</span>',
+        tooltip:
+          "Click any record type to see detailed information and examples.",
+      },
+      {
+        text:
+          translation?.ui?.badge14 ||
+          '<span data-i18n="tools.dns-reference.ui.badge1">Command Builder</span>',
+        tooltip: "Generate dig and nslookup commands with one click.",
+      },
     ],
-    { toolId: 'dns-reference' }
+    { toolId: "dns-reference" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'dns-reference');
-  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+  const currentTool = TOOLS.find((t) => t.id === "dns-reference");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -163,28 +189,35 @@ function renderDnsReferencePage(lang = DEFAULT_LANGUAGE) {
           </div>
         </div>
 
-        ${createCheatsheet('dns-reference', '<span data-i18n="tools.dns-reference.ui.heading7">DNS Hierarchy</span>', [
-          {
-            heading: '<span data-i18n="tools.dns-reference.ui.heading8">Root Zone</span>',
-            content: `
+        ${createCheatsheet(
+          "dns-reference",
+          '<span data-i18n="tools.dns-reference.ui.heading7">DNS Hierarchy</span>',
+          [
+            {
+              heading:
+                '<span data-i18n="tools.dns-reference.ui.heading8">Root Zone</span>',
+              content: `
               <p data-i18n="tools.dns-reference.ui.desc0">The DNS hierarchy starts at the root (.) — 13 logical root name servers (a.root-servers.net through m.root-servers.net) handle queries for top-level domains.</p>
-            `
-          },
-          {
-            heading: '<span data-i18n="tools.dns-reference.ui.heading9">Top-Level Domains (TLDs)</span>',
-            content: `
+            `,
+            },
+            {
+              heading:
+                '<span data-i18n="tools.dns-reference.ui.heading9">Top-Level Domains (TLDs)</span>',
+              content: `
               <p data-i18n="tools.dns-reference.ui.desc1">Managed by registries. Examples: .com, .org, .net (generic), .uk, .de (country-code), .app, .dev (new gTLDs). TLD servers delegate to authoritative name servers for each domain.</p>
-            `
-          },
-          {
-            heading: '<span data-i18n="tools.dns-reference.ui.heading10">Authoritative Name Servers</span>',
-            content: `
+            `,
+            },
+            {
+              heading:
+                '<span data-i18n="tools.dns-reference.ui.heading10">Authoritative Name Servers</span>',
+              content: `
               <p data-i18n="tools.dns-reference.ui.desc2">These servers hold the actual DNS records for a domain. NS records point to them. They're the final authority for queries about that domain's records.</p>
-            `
-          },
-          {
-            heading: '<span data-i18n="tools.dns-reference.ui.heading11">DNS Resolution Flow</span>',
-            content: `
+            `,
+            },
+            {
+              heading:
+                '<span data-i18n="tools.dns-reference.ui.heading11">DNS Resolution Flow</span>',
+              content: `
               <ol class="list-decimal ml-6 space-y-1">
                 <li data-i18n="tools.dns-reference.ui.desc3">Stub resolver checks local cache</li>
                 <li data-i18n="tools.dns-reference.ui.desc4">Query recursive resolver (ISP or public DNS like 8.8.8.8)</li>
@@ -194,9 +227,10 @@ function renderDnsReferencePage(lang = DEFAULT_LANGUAGE) {
                 <li data-i18n="tools.dns-reference.ui.desc8">Authoritative server returns the record</li>
                 <li data-i18n="tools.dns-reference.ui.desc9">Result is cached at each level</li>
               </ol>
-            `
-          }
-        ])}
+            `,
+            },
+          ],
+        )}
       </div>
       ${createRelatedToolsSection(relatedToolsData)}
     </main>
@@ -561,37 +595,41 @@ function renderDnsReferencePage(lang = DEFAULT_LANGUAGE) {
     title,
     description,
     lang: currentLang,
-    path: '/dns-reference',
+    path: "/dns-reference",
     content,
-    scripts
+    scripts,
   });
 }
 
 function recordTypeCards() {
   const records = [
-    { type: 'A', icon: '🌐', category: 'Address' },
-    { type: 'AAAA', icon: '🌍', category: 'Address' },
-    { type: 'CNAME', icon: '🔗', category: 'Alias' },
-    { type: 'MX', icon: '📧', category: 'Mail' },
-    { type: 'TXT', icon: '📝', category: 'Text' },
-    { type: 'NS', icon: '🖥️', category: 'Infrastructure' },
-    { type: 'SOA', icon: '📋', category: 'Infrastructure' },
-    { type: 'PTR', icon: '🔙', category: 'Reverse' },
-    { type: 'SRV', icon: '🎯', category: 'Service' },
-    { type: 'CAA', icon: '🔒', category: 'Security' },
-    { type: 'DKIM', icon: '✉️', category: 'Email Security' },
-    { type: 'SPF', icon: '🛡️', category: 'Email Security' },
-    { type: 'DMARC', icon: '📊', category: 'Email Security' },
-    { type: 'DS', icon: '🔐', category: 'DNSSEC' },
-    { type: 'DNSKEY', icon: '🔑', category: 'DNSSEC' }
+    { type: "A", icon: "🌐", category: "Address" },
+    { type: "AAAA", icon: "🌍", category: "Address" },
+    { type: "CNAME", icon: "🔗", category: "Alias" },
+    { type: "MX", icon: "📧", category: "Mail" },
+    { type: "TXT", icon: "📝", category: "Text" },
+    { type: "NS", icon: "🖥️", category: "Infrastructure" },
+    { type: "SOA", icon: "📋", category: "Infrastructure" },
+    { type: "PTR", icon: "🔙", category: "Reverse" },
+    { type: "SRV", icon: "🎯", category: "Service" },
+    { type: "CAA", icon: "🔒", category: "Security" },
+    { type: "DKIM", icon: "✉️", category: "Email Security" },
+    { type: "SPF", icon: "🛡️", category: "Email Security" },
+    { type: "DMARC", icon: "📊", category: "Email Security" },
+    { type: "DS", icon: "🔐", category: "DNSSEC" },
+    { type: "DNSKEY", icon: "🔑", category: "DNSSEC" },
   ];
 
-  return records.map(r => `
+  return records
+    .map(
+      (r) => `
     <button class="record-card bg-surface-50 dark:bg-surface-950 hover:bg-primary-50 dark:hover:bg-primary-900/20 border border-surface-200 dark:border-surface-800 hover:border-primary-300 dark:hover:border-primary-700 rounded-lg p-4 text-center transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-500"
       data-type="${r.type}" data-category="${r.category}" data-i18n-title="tools.dns-reference.ui.title.${r.type}" title="Click to view ${r.type} details">
       <div class="text-2xl mb-1">${r.icon}</div>
       <div class="font-bold text-surface-900 dark:text-white">${r.type}</div>
       <div class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.dns-reference.ui.category.${r.type}">${r.category}</div>
     </button>
-  `).join('');
+  `,
+    )
+    .join("");
 }

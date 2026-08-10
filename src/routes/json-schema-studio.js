@@ -1,34 +1,57 @@
-import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createCheatsheet } from '../utils/common-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { createRelatedToolsSection } from '../utils/content-ui.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML } from "../utils/respond.js";
+import {
+  createPageTemplate,
+  createToolHeader,
+  createCheatsheet,
+} from "../utils/common-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import { createRelatedToolsSection } from "../utils/content-ui.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleJsonSchemaStudioRoutes(request, url) {
-  if (url.pathname !== '/json-schema-studio' && url.pathname !== '/json-schema-studio/') return null;
-  if (request.method !== 'GET') return null;
+  if (
+    url.pathname !== "/json-schema-studio" &&
+    url.pathname !== "/json-schema-studio/"
+  )
+    return null;
+  if (request.method !== "GET") return null;
 
   return renderJsonSchemaStudioPage(resolveRequestLanguage(request, url));
 }
 
 function renderJsonSchemaStudioPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('json-schema-studio', currentLang);
-  const title = translation?.name || 'JSON Schema Studio';
-  const description = translation?.desc || 'Generate a JSON Schema from JSON input automatically. Fast, private, and perfect for API documentation.';
+  const translation = getToolTranslation("json-schema-studio", currentLang);
+  const title = translation?.name || "JSON Schema Studio";
+  const description =
+    translation?.desc ||
+    "Generate a JSON Schema from JSON input automatically. Fast, private, and perfect for API documentation.";
 
   const header = createToolHeader(
-    { emoji: '📋' },
+    { emoji: "📋" },
     title,
-    translation?.desc || 'Turn any JSON sample into a valid JSON Schema instantly. Use it for validation, documentation, or code generation.',
+    translation?.desc ||
+      "Turn any JSON sample into a valid JSON Schema instantly. Use it for validation, documentation, or code generation.",
     [
-      { text: translation?.ui?.badge9 || 'Client-Side Only', tooltip: 'All processing happens in your browser — no data is sent to any server.' }
+      {
+        text: translation?.ui?.badge9 || "Client-Side Only",
+        tooltip:
+          "All processing happens in your browser — no data is sent to any server.",
+      },
     ],
-    { toolId: 'json-schema-studio' }
+    { toolId: "json-schema-studio" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'json-schema-studio');
-  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+  const currentTool = TOOLS.find((t) => t.id === "json-schema-studio");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -60,23 +83,29 @@ function renderJsonSchemaStudioPage(lang = DEFAULT_LANGUAGE) {
         </div>
       </div>
 
-      ${createCheatsheet('json-schema-studio', 'JSON Schema Keywords', [
-        { heading: 'Type Keywords', content: `
+      ${createCheatsheet("json-schema-studio", "JSON Schema Keywords", [
+        {
+          heading: "Type Keywords",
+          content: `
           <table>
             <tr><th data-i18n="tools.json-schema-studio.ui.th0">Keyword</th><th data-i18n="tools.json-schema-studio.ui.th1">Description</th></tr>
             <tr><td><code>type</code></td><td>Data type (string, number, integer, boolean, object, array, null)</td></tr>
             <tr><td><code>enum</code></td><td>Allowed values list</td></tr>
             <tr><td><code>const</code></td><td>Single allowed value</td></tr>
             <tr><td><code>$ref</code></td><td>Reference another schema</td></tr>
-          </table>` },
-        { heading: 'Validation Keywords', content: `
+          </table>`,
+        },
+        {
+          heading: "Validation Keywords",
+          content: `
           <table>
             <tr><th data-i18n="tools.json-schema-studio.ui.th2">Type</th><th data-i18n="tools.json-schema-studio.ui.th3">Keywords</th></tr>
             <tr><td>String</td><td><code>minLength</code>, <code>maxLength</code>, <code>pattern</code>, <code>format</code></td></tr>
             <tr><td>Number</td><td><code>minimum</code>, <code>maximum</code>, <code>multipleOf</code>, <code>exclusiveMinimum</code></td></tr>
             <tr><td>Object</td><td><code>required</code>, <code>properties</code>, <code>additionalProperties</code>, <code>minProperties</code></td></tr>
             <tr><td>Array</td><td><code>items</code>, <code>minItems</code>, <code>maxItems</code>, <code>uniqueItems</code></td></tr>
-          </table>` }
+          </table>`,
+        },
       ])}
     ${createRelatedToolsSection(relatedToolsData)}
     </main>
@@ -152,12 +181,14 @@ function renderJsonSchemaStudioPage(lang = DEFAULT_LANGUAGE) {
     </script>
   `;
 
-  return respondHTML(createPageTemplate({
-    title,
-    description,
-    path: '/json-schema-studio',
-    content,
-    scripts,
-    lang: currentLang
-  }));
+  return respondHTML(
+    createPageTemplate({
+      title,
+      description,
+      path: "/json-schema-studio",
+      content,
+      scripts,
+      lang: currentLang,
+    }),
+  );
 }

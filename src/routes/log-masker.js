@@ -1,35 +1,51 @@
-import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
-import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML } from "../utils/respond.js";
+import { createPageTemplate, createToolHeader } from "../utils/common-ui.js";
+import {
+  createEducationalSection,
+  createRelatedToolsSection,
+} from "../utils/content-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleLogMaskerRoutes(request, url) {
-  if (url.pathname !== '/log-masker' && url.pathname !== '/log-masker/') return null;
-  if (request.method !== 'GET') return null;
+  if (url.pathname !== "/log-masker" && url.pathname !== "/log-masker/")
+    return null;
+  if (request.method !== "GET") return null;
   const lang = resolveRequestLanguage(request, url);
   return renderLogMaskerPage(lang);
 }
 
 function renderLogMaskerPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('log-masker', currentLang);
-  const title = 'Log Masker';
-  const description = 'Redact PII and sensitive data from logs locally. Emails, IPs, and custom patterns are masked in your browser.';
+  const translation = getToolTranslation("log-masker", currentLang);
+  const title = "Log Masker";
+  const description =
+    "Redact PII and sensitive data from logs locally. Emails, IPs, and custom patterns are masked in your browser.";
 
   const header = createToolHeader(
-    { emoji: '🎭' },
+    { emoji: "🎭" },
     translation?.name || title,
     translation?.desc || description,
     [
-      { text: translation?.ui?.badge13 || 'PII Redaction', tooltip: 'Redact emails, IPs, credit cards, and other sensitive strings in place.' }
+      {
+        text: translation?.ui?.badge13 || "PII Redaction",
+        tooltip:
+          "Redact emails, IPs, credit cards, and other sensitive strings in place.",
+      },
     ],
-    { toolId: 'log-masker' }
+    { toolId: "log-masker" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'log-masker');
-  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
-
+  const currentTool = TOOLS.find((t) => t.id === "log-masker");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -83,29 +99,37 @@ function renderLogMaskerPage(lang = DEFAULT_LANGUAGE) {
       </div>
     </main>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-      ${createEducationalSection([
-        {
-          title: 'What is PII?',
-          content: '<p>Personally Identifiable Information (PII) is any data that can be used to identify a specific individual. This includes direct identifiers like names, email addresses, and phone numbers, as well as indirect identifiers like IP addresses, physical locations, and credit card numbers. In the context of server logs, PII often appears in request parameters, headers, or error messages.</p><p>Protecting PII is a critical part of modern data security and is required by various legal frameworks around the world.</p>'
-        },
-        {
-          title: 'Compliance Requirements (GDPR/CCPA)',
-          content: '<p>Regulations like the General Data Protection Regulation (GDPR) in Europe and the California Consumer Privacy Act (CCPA) in the United States impose strict rules on how personal data is handled. These laws require organizations to implement "privacy by design" and to minimize the collection and storage of personal data.</p><p>Sharing raw logs containing PII with third-party support teams or developers can lead to compliance violations. Masking or redacting this data before it leaves your secure environment is a key step in maintaining regulatory compliance.</p>'
-        },
-        {
-          title: 'Masking Strategies',
-          content: '<p>There are several ways to handle sensitive data in logs:</p><ul><li><strong>Redaction:</strong> Replacing the sensitive value with a generic placeholder like <code>[EMAIL_REDACTED]</code>. This is the most common approach for sharing logs.</li><li><strong>Anonymization:</strong> Irreversibly transforming data so the individual can no longer be identified.</li><li><strong>Pseudonymization:</strong> Replacing identifiers with a consistent alias (like a hash) so you can still correlate events without knowing the user\'s identity.</li></ul><p>Our tool focuses on redaction, using pattern matching to find and replace common PII formats instantly.</p>'
-        },
-        {
-          title: 'Pro Tips',
-          content: '<ul><li>Use the <strong>"Custom Keywords"</strong> field to redact internal identifiers like API keys, session tokens, or proprietary project names that aren\'t covered by standard patterns.</li><li>Always perform masking <strong>locally</strong> (as this tool does) to ensure sensitive data never touches a third-party server during the scrubbing process.</li><li>If you are correlating logs across multiple systems, consider using a consistent "salt" with a hashing tool instead of simple redaction to maintain traceability.</li><li>Regularly audit your application code to prevent PII from being logged in the first place; "log at the source" is the best defense.</li></ul>'
-        }
-      ], 'log-masker', currentLang)}
+      ${createEducationalSection(
+        [
+          {
+            title: "What is PII?",
+            content:
+              "<p>Personally Identifiable Information (PII) is any data that can be used to identify a specific individual. This includes direct identifiers like names, email addresses, and phone numbers, as well as indirect identifiers like IP addresses, physical locations, and credit card numbers. In the context of server logs, PII often appears in request parameters, headers, or error messages.</p><p>Protecting PII is a critical part of modern data security and is required by various legal frameworks around the world.</p>",
+          },
+          {
+            title: "Compliance Requirements (GDPR/CCPA)",
+            content:
+              '<p>Regulations like the General Data Protection Regulation (GDPR) in Europe and the California Consumer Privacy Act (CCPA) in the United States impose strict rules on how personal data is handled. These laws require organizations to implement "privacy by design" and to minimize the collection and storage of personal data.</p><p>Sharing raw logs containing PII with third-party support teams or developers can lead to compliance violations. Masking or redacting this data before it leaves your secure environment is a key step in maintaining regulatory compliance.</p>',
+          },
+          {
+            title: "Masking Strategies",
+            content:
+              "<p>There are several ways to handle sensitive data in logs:</p><ul><li><strong>Redaction:</strong> Replacing the sensitive value with a generic placeholder like <code>[EMAIL_REDACTED]</code>. This is the most common approach for sharing logs.</li><li><strong>Anonymization:</strong> Irreversibly transforming data so the individual can no longer be identified.</li><li><strong>Pseudonymization:</strong> Replacing identifiers with a consistent alias (like a hash) so you can still correlate events without knowing the user's identity.</li></ul><p>Our tool focuses on redaction, using pattern matching to find and replace common PII formats instantly.</p>",
+          },
+          {
+            title: "Pro Tips",
+            content:
+              '<ul><li>Use the <strong>"Custom Keywords"</strong> field to redact internal identifiers like API keys, session tokens, or proprietary project names that aren\'t covered by standard patterns.</li><li>Always perform masking <strong>locally</strong> (as this tool does) to ensure sensitive data never touches a third-party server during the scrubbing process.</li><li>If you are correlating logs across multiple systems, consider using a consistent "salt" with a hashing tool instead of simple redaction to maintain traceability.</li><li>Regularly audit your application code to prevent PII from being logged in the first place; "log at the source" is the best defense.</li></ul>',
+          },
+        ],
+        "log-masker",
+        currentLang,
+      )}
     ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;
 
-   const scripts = `
+  const scripts = `
       <script type="module">
       // Local PII redaction implementation
       function redactPII(text, options = {}) {
@@ -203,12 +227,14 @@ function renderLogMaskerPage(lang = DEFAULT_LANGUAGE) {
     </script>
   `;
 
-  return respondHTML(createPageTemplate({
-    title: translation?.name || title,
-    description: translation?.desc || description,
-    path: '/log-masker',
-    content,
-    scripts,
-    lang: currentLang
-  }));
+  return respondHTML(
+    createPageTemplate({
+      title: translation?.name || title,
+      description: translation?.desc || description,
+      path: "/log-masker",
+      content,
+      scripts,
+      lang: currentLang,
+    }),
+  );
 }

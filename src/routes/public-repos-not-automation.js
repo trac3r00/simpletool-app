@@ -1,50 +1,68 @@
-import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, infoHint } from '../utils/common-ui.js';
-import { createRelatedToolsSection } from '../utils/content-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML } from "../utils/respond.js";
+import {
+  createPageTemplate,
+  createToolHeader,
+  infoHint,
+} from "../utils/common-ui.js";
+import { createRelatedToolsSection } from "../utils/content-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handlePublicReposNotAutomationRoutes(request, url) {
   const { pathname } = url;
-  if (pathname === '/public-repos-not-automation' || pathname === '/public-repos-not-automation/') {
-    if (request.method === 'GET') {
-      return respondHTML(renderPublicReposNotAutomationPage(resolveRequestLanguage(request, url)));
+  if (
+    pathname === "/public-repos-not-automation" ||
+    pathname === "/public-repos-not-automation/"
+  ) {
+    if (request.method === "GET") {
+      return respondHTML(
+        renderPublicReposNotAutomationPage(
+          resolveRequestLanguage(request, url),
+        ),
+      );
     }
-    return new Response('Method not allowed', { status: 405 });
+    return new Response("Method not allowed", { status: 405 });
   }
   return null;
 }
 
 function coerceText(value) {
-  return value == null ? '' : '' + value;
+  return value == null ? "" : "" + value;
 }
 
 function normalizeRepoToken(token) {
   const value = coerceText(token).trim();
   if (!value) return null;
-  let match = value.match(/^https?:\/\/github\.com\/([^/\s]+)\/([^/\s#?]+)(?:[/#?].*)?$/i);
-  if (match) return { owner: match[1], name: match[2].replace(/\.git$/i, '') };
+  let match = value.match(
+    /^https?:\/\/github\.com\/([^/\s]+)\/([^/\s#?]+)(?:[/#?].*)?$/i,
+  );
+  if (match) return { owner: match[1], name: match[2].replace(/\.git$/i, "") };
   match = value.match(/^git@github\.com:([^/\s]+)\/([^/\s#?]+?)(?:\.git)?$/i);
-  if (match) return { owner: match[1], name: match[2].replace(/\.git$/i, '') };
+  if (match) return { owner: match[1], name: match[2].replace(/\.git$/i, "") };
   match = value.match(/^([^/\s]+)\/([^/\s]+)$/);
-  if (match) return { owner: match[1], name: match[2].replace(/\.git$/i, '') };
+  if (match) return { owner: match[1], name: match[2].replace(/\.git$/i, "") };
   return null;
 }
 
 function repoSlugFromToken(token) {
   const repo = normalizeRepoToken(token);
-  return repo ? repo.owner + '/' + repo.name : '';
+  return repo ? repo.owner + "/" + repo.name : "";
 }
 
 function collectDetails(fields = {}) {
   const details = {};
-  ['description', 'language', 'notes'].forEach((key) => {
-    if (typeof fields[key] === 'string' && fields[key].trim()) {
+  ["description", "language", "notes"].forEach((key) => {
+    if (typeof fields[key] === "string" && fields[key].trim()) {
       details[key] = fields[key].trim();
     }
   });
-  ['archived', 'fork'].forEach((key) => {
-    if (typeof fields[key] === 'boolean') {
+  ["archived", "fork"].forEach((key) => {
+    if (typeof fields[key] === "boolean") {
       details[key] = fields[key];
     }
   });
@@ -52,18 +70,30 @@ function collectDetails(fields = {}) {
 }
 
 function createNoAutomationTask(fields = {}) {
-  const repo = repoSlugFromToken(fields.repo || fields.repository || fields.full_name || fields.html_url) || fields.repo || fields.repository || 'public repository';
-  const task = fields.task || fields.workflow || (repo !== 'public repository' ? 'Review public repository automation suitability for ' + repo : 'public repository task');
+  const repo =
+    repoSlugFromToken(
+      fields.repo || fields.repository || fields.full_name || fields.html_url,
+    ) ||
+    fields.repo ||
+    fields.repository ||
+    "public repository";
+  const task =
+    fields.task ||
+    fields.workflow ||
+    (repo !== "public repository"
+      ? "Review public repository automation suitability for " + repo
+      : "public repository task");
   const details = collectDetails(fields);
   const item = {
     repo,
     slug: repo,
     task,
-    owner: fields.owner || 'maintainers',
-    cadence: fields.cadence || 'unspecified',
-    risk: fields.risk || 'review',
-    reviewWindow: fields.reviewWindow || fields['review-window'] || '30 days',
-    nextReview: fields.nextReview || fields['next-review'] || fields.review || ''
+    owner: fields.owner || "maintainers",
+    cadence: fields.cadence || "unspecified",
+    risk: fields.risk || "review",
+    reviewWindow: fields.reviewWindow || fields["review-window"] || "30 days",
+    nextReview:
+      fields.nextReview || fields["next-review"] || fields.review || "",
   };
   if (Object.keys(details).length > 0) item.details = details;
   return item;
@@ -72,26 +102,44 @@ function createNoAutomationTask(fields = {}) {
 function parseKeyValueTask(block) {
   const fields = {};
   const freeform = [];
-  coerceText(block).split(/\n+/).forEach((line) => {
-    const trimmed = line.trim();
-    if (!trimmed) return;
-    const match = trimmed.match(/^([A-Za-z][A-Za-z0-9_-]*)\s*:\s*(.+)$/);
-    if (match) {
-      fields[match[1].toLowerCase()] = match[2].trim();
-    } else {
-      freeform.push(trimmed);
-    }
-  });
-  if (!fields.task && freeform.length > 0) fields.task = freeform.join(' ');
+  coerceText(block)
+    .split(/\n+/)
+    .forEach((line) => {
+      const trimmed = line.trim();
+      if (!trimmed) return;
+      const match = trimmed.match(/^([A-Za-z][A-Za-z0-9_-]*)\s*:\s*(.+)$/);
+      if (match) {
+        fields[match[1].toLowerCase()] = match[2].trim();
+      } else {
+        freeform.push(trimmed);
+      }
+    });
+  if (!fields.task && freeform.length > 0) fields.task = freeform.join(" ");
   return createNoAutomationTask(fields);
 }
 
 function hasTaskFieldLine(block) {
-  return coerceText(block).split(/\n+/).some((line) => {
-    const match = line.trim().match(/^([A-Za-z][A-Za-z0-9_-]*)\s*:/);
-    if (!match) return false;
-    return ['repo', 'repository', 'task', 'workflow', 'owner', 'cadence', 'risk', 'review', 'next-review', 'review-window', 'notes', 'description', 'language'].includes(match[1].toLowerCase());
-  });
+  return coerceText(block)
+    .split(/\n+/)
+    .some((line) => {
+      const match = line.trim().match(/^([A-Za-z][A-Za-z0-9_-]*)\s*:/);
+      if (!match) return false;
+      return [
+        "repo",
+        "repository",
+        "task",
+        "workflow",
+        "owner",
+        "cadence",
+        "risk",
+        "review",
+        "next-review",
+        "review-window",
+        "notes",
+        "description",
+        "language",
+      ].includes(match[1].toLowerCase());
+    });
 }
 
 function parseLineTask(line) {
@@ -103,18 +151,22 @@ function parseLineTask(line) {
 }
 
 function parseJsonNoAutomationTask(item) {
-  if (!item || typeof item !== 'object' || Array.isArray(item)) {
+  if (!item || typeof item !== "object" || Array.isArray(item)) {
     return null;
   }
-  const ownerValue = typeof item.owner === 'string' ? item.owner : item.owner?.login;
-  const repo = repoSlugFromToken(item.full_name) || repoSlugFromToken(item.html_url) || (ownerValue && item.name ? ownerValue + '/' + item.name : '');
+  const ownerValue =
+    typeof item.owner === "string" ? item.owner : item.owner?.login;
+  const repo =
+    repoSlugFromToken(item.full_name) ||
+    repoSlugFromToken(item.html_url) ||
+    (ownerValue && item.name ? ownerValue + "/" + item.name : "");
   if (!repo) return null;
   return createNoAutomationTask({
     repo,
     description: item.description,
     language: item.language,
     archived: item.archived,
-    fork: item.fork
+    fork: item.fork,
   });
 }
 
@@ -123,7 +175,7 @@ export function parsePublicReposNoAutomationInput(input) {
   const trimmed = value.trim();
   if (!trimmed) return [];
 
-  if (trimmed.startsWith('[')) {
+  if (trimmed.startsWith("[")) {
     try {
       const parsed = JSON.parse(trimmed);
       if (!Array.isArray(parsed)) return [];
@@ -133,7 +185,10 @@ export function parsePublicReposNoAutomationInput(input) {
     }
   }
 
-  const blocks = value.split(/\n\s*\n/).map((block) => block.trim()).filter(Boolean);
+  const blocks = value
+    .split(/\n\s*\n/)
+    .map((block) => block.trim())
+    .filter(Boolean);
   if (blocks.some(hasTaskFieldLine)) {
     return blocks.map(parseKeyValueTask);
   }
@@ -141,100 +196,137 @@ export function parsePublicReposNoAutomationInput(input) {
 }
 
 function reasonLabel(reason) {
-  if (typeof reason === 'string') return reason;
-  return reason?.label || reason?.text || '';
+  if (typeof reason === "string") return reason;
+  return reason?.label || reason?.text || "";
 }
 
 function taskDetailLines(task) {
   const details = task?.details || {};
   return Object.entries(details).map(([key, value]) => {
-    const label = key.replace(/[_-]/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
-    return label + ': ' + value;
+    const label = key
+      .replace(/[_-]/g, " ")
+      .replace(/\b\w/g, (char) => char.toUpperCase());
+    return label + ": " + value;
   });
 }
 
 export function buildNoAutomationDecisionRecord(task, options = {}) {
-  const selected = Array.isArray(options.reasons) ? options.reasons.map(reasonLabel).filter(Boolean) : [];
-  const reasonLines = selected.map((reason) => '- ' + reason).join('\n');
-  const owner = options.owner || task.owner || 'maintainers';
-  const reviewWindow = options.reviewWindow || task.reviewWindow || '30 days';
+  const selected = Array.isArray(options.reasons)
+    ? options.reasons.map(reasonLabel).filter(Boolean)
+    : [];
+  const reasonLines = selected.map((reason) => "- " + reason).join("\n");
+  const owner = options.owner || task.owner || "maintainers";
+  const reviewWindow = options.reviewWindow || task.reviewWindow || "30 days";
   const nextReview = options.nextReview || task.nextReview || reviewWindow;
-  const threshold = options.evidenceThreshold || options.threshold || '- Written policy, rollback owner, dry-run result, audit log, and repeated manual demand.';
-  const detailLines = taskDetailLines(task).map((line) => '- ' + line).join('\n');
+  const threshold =
+    options.evidenceThreshold ||
+    options.threshold ||
+    "- Written policy, rollback owner, dry-run result, audit log, and repeated manual demand.";
+  const detailLines = taskDetailLines(task)
+    .map((line) => "- " + line)
+    .join("\n");
   return [
-    '# No-Automation Decision Record',
-    '',
-    'Decision: Do not automate yet',
-    'Repository: ' + task.repo,
-    'Task: ' + task.task,
-    'Owner: ' + owner,
-    'Cadence: ' + task.cadence,
-    'Risk: ' + task.risk,
-    'Review window: ' + reviewWindow,
-    'Next review: ' + nextReview,
-    '',
-    '## Why this stays manual',
+    "# No-Automation Decision Record",
+    "",
+    "Decision: Do not automate yet",
+    "Repository: " + task.repo,
+    "Task: " + task.task,
+    "Owner: " + owner,
+    "Cadence: " + task.cadence,
+    "Risk: " + task.risk,
+    "Review window: " + reviewWindow,
+    "Next review: " + nextReview,
+    "",
+    "## Why this stays manual",
     reasonLines,
-    detailLines ? '\n## Repository details\n' + detailLines : '',
-    '',
-    '## Manual stewardship',
-    '- Keep the task visible in Kanban with a named owner.',
-    '- Record each manual execution and any exception that required judgment.',
-    '- Revisit automation only when the evidence threshold is met.',
-    '',
-    '## Evidence needed before automation',
-    threshold
-  ].filter((line) => line !== '').join('\n');
+    detailLines ? "\n## Repository details\n" + detailLines : "",
+    "",
+    "## Manual stewardship",
+    "- Keep the task visible in Kanban with a named owner.",
+    "- Record each manual execution and any exception that required judgment.",
+    "- Revisit automation only when the evidence threshold is met.",
+    "",
+    "## Evidence needed before automation",
+    threshold,
+  ]
+    .filter((line) => line !== "")
+    .join("\n");
 }
 
 export function buildNoAutomationChecklist(task, options = {}) {
-  const selected = Array.isArray(options.reasons) ? options.reasons.map(reasonLabel).filter(Boolean) : [];
-  const owner = options.owner || task.owner || 'maintainers';
-  const threshold = options.evidenceThreshold || options.threshold || 'written policy, observability, dry-run evidence, and repeated demand';
-  const reasonLines = selected.map((reason) => '- [ ] Re-check reason: ' + reason);
-  const detailLines = taskDetailLines(task).map((line) => '- [ ] Review repository detail: ' + line);
+  const selected = Array.isArray(options.reasons)
+    ? options.reasons.map(reasonLabel).filter(Boolean)
+    : [];
+  const owner = options.owner || task.owner || "maintainers";
+  const threshold =
+    options.evidenceThreshold ||
+    options.threshold ||
+    "written policy, observability, dry-run evidence, and repeated demand";
+  const reasonLines = selected.map(
+    (reason) => "- [ ] Re-check reason: " + reason,
+  );
+  const detailLines = taskDetailLines(task).map(
+    (line) => "- [ ] Review repository detail: " + line,
+  );
   return [
-    '# No-Automation Checklist',
-    '',
-    '- [ ] Confirm the repository is public: ' + task.repo,
-    '- [ ] Confirm the recurring task is still needed: ' + task.task,
-    '- [ ] Confirm manual owner: ' + owner,
-    '- [ ] Keep automation disabled until the decision record is reviewed.',
+    "# No-Automation Checklist",
+    "",
+    "- [ ] Confirm the repository is public: " + task.repo,
+    "- [ ] Confirm the recurring task is still needed: " + task.task,
+    "- [ ] Confirm manual owner: " + owner,
+    "- [ ] Keep automation disabled until the decision record is reviewed.",
     ...reasonLines,
     ...detailLines,
-    '- [ ] Capture manual run evidence in the linked Kanban item.',
-    '- [ ] Define rollback and public-communication steps before any automation trial.',
-    '- [ ] Required threshold: ' + threshold
-  ].join('\n');
+    "- [ ] Capture manual run evidence in the linked Kanban item.",
+    "- [ ] Define rollback and public-communication steps before any automation trial.",
+    "- [ ] Required threshold: " + threshold,
+  ].join("\n");
 }
 
 function renderPublicReposNotAutomationPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('public-repos-not-automation', currentLang);
-  const title = translation?.name || 'Public Repos Not Automation';
-  const description = translation?.desc || 'Decide which recurring public repository tasks should stay manual for now and generate a no-automation decision record.';
-  const currentTool = TOOLS.find((tool) => tool.id === 'public-repos-not-automation');
-  const relatedToolsData = currentTool?.relatedTools?.map((id) => TOOLS.find((tool) => tool.id === id)).filter(Boolean) || [];
+  const translation = getToolTranslation(
+    "public-repos-not-automation",
+    currentLang,
+  );
+  const title = translation?.name || "Public Repos Not Automation";
+  const description =
+    translation?.desc ||
+    "Decide which recurring public repository tasks should stay manual for now and generate a no-automation decision record.";
+  const currentTool = TOOLS.find(
+    (tool) => tool.id === "public-repos-not-automation",
+  );
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((tool) => tool.id === id))
+      .filter(Boolean) || [];
 
   const header = createToolHeader(
-    { emoji: '🛑' },
+    { emoji: "🛑" },
     title,
     description,
     [
-      { text: '<span data-i18n="tools.public-repos-not-automation.ui.badge0">Client-Side Only</span>', tooltip: 'All evaluation and record generation runs in your browser.' },
-      { text: '<span data-i18n="tools.public-repos-not-automation.ui.badge1">Manual Stewardship</span>', tooltip: 'Capture why automation is deferred and what evidence would change the decision.' }
+      {
+        text: '<span data-i18n="tools.public-repos-not-automation.ui.badge0">Client-Side Only</span>',
+        tooltip: "All evaluation and record generation runs in your browser.",
+      },
+      {
+        text: '<span data-i18n="tools.public-repos-not-automation.ui.badge1">Manual Stewardship</span>',
+        tooltip:
+          "Capture why automation is deferred and what evidence would change the decision.",
+      },
     ],
-    { toolId: 'public-repos-not-automation' }
+    { toolId: "public-repos-not-automation" },
   );
 
   const sampleTask = [
-    'repo: trac3r00/simpletool-app',
-    'task: auto-close stale public issues from recurring Kanban demand',
-    'owner: maintainers',
-    'cadence: monthly',
-    'risk: high',
-    'next-review: 2026-07-15'
-  ].join('&#10;');
+    "repo: trac3r00/simpletool-app",
+    "task: auto-close stale public issues from recurring Kanban demand",
+    "owner: maintainers",
+    "cadence: monthly",
+    "risk: high",
+    "next-review: 2026-07-15",
+  ].join("&#10;");
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -247,7 +339,7 @@ function renderPublicReposNotAutomationPage(lang = DEFAULT_LANGUAGE) {
               <div class="flex items-center justify-between gap-3 mb-3">
                 <label for="repo-task-input" class="label flex items-center gap-2">
                   <span data-i18n="tools.public-repos-not-automation.ui.label0">Repository task</span>
-                  ${infoHint('Use one key:value per line for repo, task, owner, cadence, risk, next-review, and notes. GitHub public repos JSON arrays and plain text are also accepted.', 'Help', { i18nKey: 'tools.public-repos-not-automation.ui.desc0' })}
+                  ${infoHint("Use one key:value per line for repo, task, owner, cadence, risk, next-review, and notes. GitHub public repos JSON arrays and plain text are also accepted.", "Help", { i18nKey: "tools.public-repos-not-automation.ui.desc0" })}
                 </label>
                 <button id="load-sample" class="btn btn-ghost btn-xs" type="button" data-i18n="tools.public-repos-not-automation.ui.button0">Sample</button>
               </div>
@@ -258,11 +350,11 @@ function renderPublicReposNotAutomationPage(lang = DEFAULT_LANGUAGE) {
             <div class="p-5 bg-surface-50 dark:bg-surface-950 rounded-xl border border-surface-200 dark:border-surface-800">
               <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400 mb-4" data-i18n="tools.public-repos-not-automation.ui.heading0">No-automation reasons</h2>
               <div class="space-y-3">
-                ${reasonCheckbox('safety', 'Safety or reputation risk', 'Automation could affect public users, external contributors, security posture, or project trust.', true)}
-                ${reasonCheckbox('unclear-owner', 'Unclear owner or approval path', 'No named maintainer can review failures, exceptions, or rollback decisions.', true)}
-                ${reasonCheckbox('low-frequency', 'Low frequency or weak demand', 'The task is not frequent enough to justify automation maintenance cost.', false)}
-                ${reasonCheckbox('ambiguous-policy', 'Ambiguous policy boundary', 'The task needs judgment calls that are not yet written as explicit rules.', true)}
-                ${reasonCheckbox('missing-observability', 'Missing observability', 'There is no reliable signal to confirm that automation worked correctly.', false)}
+                ${reasonCheckbox("safety", "Safety or reputation risk", "Automation could affect public users, external contributors, security posture, or project trust.", true)}
+                ${reasonCheckbox("unclear-owner", "Unclear owner or approval path", "No named maintainer can review failures, exceptions, or rollback decisions.", true)}
+                ${reasonCheckbox("low-frequency", "Low frequency or weak demand", "The task is not frequent enough to justify automation maintenance cost.", false)}
+                ${reasonCheckbox("ambiguous-policy", "Ambiguous policy boundary", "The task needs judgment calls that are not yet written as explicit rules.", true)}
+                ${reasonCheckbox("missing-observability", "Missing observability", "There is no reliable signal to confirm that automation worked correctly.", false)}
               </div>
             </div>
 
@@ -296,9 +388,9 @@ function renderPublicReposNotAutomationPage(lang = DEFAULT_LANGUAGE) {
 
           <section class="lg:col-span-3 space-y-5">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3" aria-live="polite">
-              ${statBox('selected-reason-count', 'Reasons', '0')}
-              ${statBox('decision-state', 'Decision', 'Manual')}
-              ${statBox('review-state', 'Review', '30 days')}
+              ${statBox("selected-reason-count", "Reasons", "0")}
+              ${statBox("decision-state", "Decision", "Manual")}
+              ${statBox("review-state", "Review", "30 days")}
             </div>
 
             <div id="form-error" class="hidden rounded-lg border border-error-200 dark:border-error-800 bg-error-50 dark:bg-error-900/20 px-4 py-3 text-sm text-error-800 dark:text-error-200" role="alert"></div>
@@ -614,17 +706,17 @@ function renderPublicReposNotAutomationPage(lang = DEFAULT_LANGUAGE) {
   return createPageTemplate({
     title,
     description,
-    path: '/public-repos-not-automation',
+    path: "/public-repos-not-automation",
     content,
     scripts,
-    lang: currentLang
+    lang: currentLang,
   });
 }
 
 function reasonCheckbox(id, label, help, checked) {
   return `
     <label class="flex items-start gap-3 rounded-lg border border-surface-200 dark:border-surface-800 bg-white dark:bg-surface-900 p-3 cursor-pointer">
-      <input id="reason-${id}" type="checkbox" class="mt-1 w-4 h-4 rounded border-surface-300 text-primary-600 focus:ring-primary-500" ${checked ? 'checked' : ''}>
+      <input id="reason-${id}" type="checkbox" class="mt-1 w-4 h-4 rounded border-surface-300 text-primary-600 focus:ring-primary-500" ${checked ? "checked" : ""}>
       <span>
         <span class="block text-sm font-semibold text-surface-900 dark:text-surface-100">${label}</span>
         <span class="block text-xs text-surface-500 dark:text-surface-400">${help}</span>

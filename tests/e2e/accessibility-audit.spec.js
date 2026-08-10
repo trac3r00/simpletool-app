@@ -1,9 +1,9 @@
-import { test, expect } from '@playwright/test';
-import { handleJSONFormatterRoutes } from '../../src/routes/json-formatter.js';
-import { getToolsForEnvironment } from '../../src/utils/tool-registry.js';
+import { test, expect } from "@playwright/test";
+import { handleJSONFormatterRoutes } from "../../src/routes/json-formatter.js";
+import { getToolsForEnvironment } from "../../src/utils/tool-registry.js";
 
 const tools = getToolsForEnvironment(true);
-const AXE_MIN_JS = 'node_modules/axe-core/axe.min.js';
+const AXE_MIN_JS = "node_modules/axe-core/axe.min.js";
 
 // ── Baseline Violations ──────────────────────────────────────────
 //
@@ -19,284 +19,284 @@ const AXE_MIN_JS = 'node_modules/axe-core/axe.min.js';
 // ────────────────────────────────────────────────────────────────
 
 const BASELINE_VIOLATIONS = {
-  '/': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
 
-  '/bandwidth-calculator': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'heading-order', impact: 'moderate' },
-    { id: 'link-in-text-block', impact: 'serious' },
-    { id: 'select-name', impact: 'critical' },
+  "/bandwidth-calculator": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "heading-order", impact: "moderate" },
+    { id: "link-in-text-block", impact: "serious" },
+    { id: "select-name", impact: "critical" },
   ],
-  '/case-converter': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'heading-order', impact: 'moderate' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/case-converter": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "heading-order", impact: "moderate" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/certificate-decoder': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'heading-order', impact: 'moderate' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/certificate-decoder": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "heading-order", impact: "moderate" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/cidr-calculator': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/cidr-calculator": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/code-minifier': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/code-minifier": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/color-converter': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/color-converter": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/cron-builder': [
-    { id: 'aria-allowed-role', impact: 'minor' },
-    { id: 'aria-required-children', impact: 'critical' },
-    { id: 'aria-required-parent', impact: 'critical' },
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/cron-builder": [
+    { id: "aria-allowed-role", impact: "minor" },
+    { id: "aria-required-children", impact: "critical" },
+    { id: "aria-required-parent", impact: "critical" },
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/css-gradient': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
-    { id: 'scrollable-region-focusable', impact: 'serious', optional: true },
+  "/css-gradient": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
+    { id: "scrollable-region-focusable", impact: "serious", optional: true },
   ],
-  '/curl-studio': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/curl-studio": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/dns-reference': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
-    { id: 'select-name', impact: 'critical' },
+  "/dns-reference": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
+    { id: "select-name", impact: "critical" },
   ],
-  '/encoding-workbench': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/encoding-workbench": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/htpasswd-generator': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/htpasswd-generator": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/http-status-reference': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/http-status-reference": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/image-converter': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/image-converter": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/json-formatter': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/json-formatter": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/json-schema-studio': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/json-schema-studio": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/log-masker': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/log-masker": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/log-viewer': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/log-viewer": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/markdown-editor': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'heading-order', impact: 'moderate' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/markdown-editor": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "heading-order", impact: "moderate" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/mermaid-studio': [
-    { id: 'aria-required-parent', impact: 'critical' },
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'heading-order', impact: 'moderate' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/mermaid-studio": [
+    { id: "aria-required-parent", impact: "critical" },
+    { id: "color-contrast", impact: "serious" },
+    { id: "heading-order", impact: "moderate" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/mock-data-generator': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/mock-data-generator": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/oauth-debugger': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'label', impact: 'critical' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/oauth-debugger": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "label", impact: "critical" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/password-generator': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/password-generator": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/port-reference': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/port-reference": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/protocol-headers': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'heading-order', impact: 'moderate' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/protocol-headers": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "heading-order", impact: "moderate" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/public-repos-not-automation': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/public-repos-not-automation": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/public-repos-yml-builder': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/public-repos-yml-builder": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/public-repos-not-automation': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/public-repos-not-automation": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/qr-code': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/qr-code": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/regex-visualizer': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
-    { id: 'scrollable-region-focusable', impact: 'serious' },
-    { id: 'select-name', impact: 'critical' },
+  "/regex-visualizer": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
+    { id: "scrollable-region-focusable", impact: "serious" },
+    { id: "select-name", impact: "critical" },
   ],
-  '/review-description-generator': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'heading-order', impact: 'moderate' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/review-description-generator": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "heading-order", impact: "moderate" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/saml-decoder': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'heading-order', impact: 'moderate' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/saml-decoder": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "heading-order", impact: "moderate" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/ssh-key-generator': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/ssh-key-generator": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/text-diff': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/text-diff": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/timestamp-converter': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/timestamp-converter": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/token-studio': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/token-studio": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/unit-converter': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/unit-converter": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/user-agent-decoder': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/user-agent-decoder": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/uuid-generator': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/uuid-generator": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/webhook-debugger': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/webhook-debugger": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/wireguard-config': [
-    { id: 'button-name', impact: 'critical' },
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
-    { id: 'select-name', impact: 'critical' },
+  "/wireguard-config": [
+    { id: "button-name", impact: "critical" },
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
+    { id: "select-name", impact: "critical" },
   ],
-  '/wireshark-filter': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
-    { id: 'select-name', impact: 'critical' },
+  "/wireshark-filter": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
+    { id: "select-name", impact: "critical" },
   ],
-  '/yaml-toml-converter': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/yaml-toml-converter": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
 
   // ── Routes that are intermittently unavailable ──────────────
   // These routes loaded during a subsequent run — baselines
   // captured from actual axe output when the dev server was stable.
 
-  '/caffeinate': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/caffeinate": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/changelog': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/changelog": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/csp-builder': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'label', impact: 'critical' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/csp-builder": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "label", impact: "critical" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/email-analyzer': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/email-analyzer": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/env-var-manager': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/env-var-manager": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/ladder-game': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/ladder-game": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/marble-roulette': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/marble-roulette": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/pipe': [
-    { id: 'aria-allowed-role', impact: 'minor' },
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/pipe": [
+    { id: "aria-allowed-role", impact: "minor" },
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/prompt-template-builder': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'label', impact: 'critical' },
-    { id: 'link-in-text-block', impact: 'serious' },
-    { id: 'select-name', impact: 'critical' },
+  "/prompt-template-builder": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "label", impact: "critical" },
+    { id: "link-in-text-block", impact: "serious" },
+    { id: "select-name", impact: "critical" },
   ],
-  '/roulette-wheel': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'heading-order', impact: 'moderate' },
-    { id: 'label', impact: 'critical' },
-    { id: 'link-in-text-block', impact: 'serious' },
-    { id: 'nested-interactive', impact: 'serious' },
-    { id: 'select-name', impact: 'critical' },
+  "/roulette-wheel": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "heading-order", impact: "moderate" },
+    { id: "label", impact: "critical" },
+    { id: "link-in-text-block", impact: "serious" },
+    { id: "nested-interactive", impact: "serious" },
+    { id: "select-name", impact: "critical" },
   ],
-  '/secret-scanner': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/secret-scanner": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/sql-formatter': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'heading-order', impact: 'moderate' },
-    { id: 'link-in-text-block', impact: 'serious' },
-    { id: 'select-name', impact: 'critical' },
+  "/sql-formatter": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "heading-order", impact: "moderate" },
+    { id: "link-in-text-block", impact: "serious" },
+    { id: "select-name", impact: "critical" },
   ],
-  '/svg-optimizer': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'link-in-text-block', impact: 'serious' },
+  "/svg-optimizer": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
   ],
-  '/token-counter': [
-    { id: 'color-contrast', impact: 'serious' },
-    { id: 'label', impact: 'critical' },
-    { id: 'link-in-text-block', impact: 'serious' },
-    { id: 'select-name', impact: 'critical' },
+  "/token-counter": [
+    { id: "color-contrast", impact: "serious" },
+    { id: "label", impact: "critical" },
+    { id: "link-in-text-block", impact: "serious" },
+    { id: "select-name", impact: "critical" },
   ],
 };
 
 // ── Audited Routes ───────────────────────────────────────────────
 
 const AUDITED_ROUTES = [
-  '/',                                    // home page
-  ...tools.map((t) => t.path),           // every registered tool
+  "/", // home page
+  ...tools.map((t) => t.path), // every registered tool
 ];
 
 // ── Helpers ──────────────────────────────────────────────────────
@@ -318,7 +318,8 @@ function normalizeViolations(violations) {
  */
 function violationLine(v) {
   let line = `  · ${v.id}  [impact: ${v.impact}]`;
-  if (v.nodeCount != null) line += `  (${v.nodeCount} node${v.nodeCount === 1 ? '' : 's'})`;
+  if (v.nodeCount != null)
+    line += `  (${v.nodeCount} node${v.nodeCount === 1 ? "" : "s"})`;
   if (v.helpUrl) line += `  ${v.helpUrl}`;
   return line;
 }
@@ -326,7 +327,12 @@ function violationLine(v) {
 /**
  * Build a human-readable diff block for a single route.
  */
-function formatDiffBlock(route, newViolations, changedViolations, missingViolations) {
+function formatDiffBlock(
+  route,
+  newViolations,
+  changedViolations,
+  missingViolations,
+) {
   const parts = [];
   parts.push(`\n── ${route} ──`);
 
@@ -339,7 +345,8 @@ function formatDiffBlock(route, newViolations, changedViolations, missingViolati
     parts.push(`  CHANGED impact level:`);
     for (const c of changedViolations) {
       let line = `  · ${c.id}  [${c.before} → ${c.after}]`;
-      if (c.nodeCount != null) line += `  (${c.nodeCount} node${c.nodeCount === 1 ? '' : 's'})`;
+      if (c.nodeCount != null)
+        line += `  (${c.nodeCount} node${c.nodeCount === 1 ? "" : "s"})`;
       if (c.helpUrl) line += `  ${c.helpUrl}`;
       parts.push(line);
     }
@@ -350,7 +357,7 @@ function formatDiffBlock(route, newViolations, changedViolations, missingViolati
     parts.push(...missingViolations.map(violationLine));
   }
 
-  return parts.join('\n');
+  return parts.join("\n");
 }
 
 /**
@@ -392,7 +399,13 @@ function diffViolations(actual, baseline) {
     if (!match) {
       extra.push(v);
     } else if (match.impact !== v.impact) {
-      changed.push({ id: v.id, before: match.impact, after: v.impact, helpUrl: v.helpUrl, nodeCount: v.nodeCount });
+      changed.push({
+        id: v.id,
+        before: match.impact,
+        after: v.impact,
+        helpUrl: v.helpUrl,
+        nodeCount: v.nodeCount,
+      });
     }
   }
 
@@ -412,11 +425,13 @@ function diffViolations(actual, baseline) {
 }
 
 async function auditRoute(route, page, baseline) {
-  const response = await page.goto(route, { waitUntil: 'networkidle' }).catch(() => null);
+  const response = await page
+    .goto(route, { waitUntil: "networkidle" })
+    .catch(() => null);
 
   if (!response || !response.ok()) {
     throw new Error(
-      `Route ${route} returned ${response ? response.status() : 'ERR_CONNECTION_REFUSED'} — navigation failed`
+      `Route ${route} returned ${response ? response.status() : "ERR_CONNECTION_REFUSED"} — navigation failed`,
     );
   }
 
@@ -428,7 +443,7 @@ async function auditRoute(route, page, baseline) {
 
 // ── Tests ────────────────────────────────────────────────────────
 
-test.describe('Accessibility audit', () => {
+test.describe("Accessibility audit", () => {
   test.use({
     timeout: 120_000,
     bypassCSP: true,
@@ -436,102 +451,128 @@ test.describe('Accessibility audit', () => {
 
   // ── 1. Registry integrity ────────────────────────────────────
 
-  test('tool registry is non-empty', () => {
+  test("tool registry is non-empty", () => {
     expect(tools.length).toBeGreaterThan(0);
     expect(AUDITED_ROUTES.length).toBeGreaterThan(1);
   });
 
-  test('every registered route is covered', () => {
+  test("every registered route is covered", () => {
     const auditedSet = new Set(AUDITED_ROUTES);
     for (const tool of tools) {
       expect(auditedSet.has(tool.path)).toBeTruthy();
     }
   });
 
-  test('AUDITED_ROUTES contains no duplicate entries', () => {
+  test("AUDITED_ROUTES contains no duplicate entries", () => {
     const uniqueSet = new Set(AUDITED_ROUTES);
     expect(uniqueSet.size).toBe(AUDITED_ROUTES.length);
   });
 
-  test('BASELINE_VIOLATIONS has no stale routes outside AUDITED_ROUTES', () => {
+  test("BASELINE_VIOLATIONS has no stale routes outside AUDITED_ROUTES", () => {
     const auditedSet = new Set(AUDITED_ROUTES);
-    const staleKeys = Object.keys(BASELINE_VIOLATIONS).filter((r) => !auditedSet.has(r));
+    const staleKeys = Object.keys(BASELINE_VIOLATIONS).filter(
+      (r) => !auditedSet.has(r),
+    );
     expect(staleKeys).toEqual([]);
   });
 
-  test('skip link moves keyboard focus to the main content region', async ({ page }) => {
-    const url = new URL('https://simpletool.test/json-formatter');
-    const response = await handleJSONFormatterRoutes(new Request(url, { method: 'GET' }), url);
-    await page.setContent(await response.text(), { waitUntil: 'domcontentloaded' });
+  test("skip link moves keyboard focus to the main content region", async ({
+    page,
+  }) => {
+    const url = new URL("https://simpletool.test/json-formatter");
+    const response = await handleJSONFormatterRoutes(
+      new Request(url, { method: "GET" }),
+      url,
+    );
+    await page.setContent(await response.text(), {
+      waitUntil: "domcontentloaded",
+    });
 
-    await page.keyboard.press('Tab');
+    await page.keyboard.press("Tab");
 
-    const skipLink = page.getByRole('link', { name: 'Skip to main content' });
+    const skipLink = page.getByRole("link", { name: "Skip to main content" });
     await expect(skipLink).toBeFocused();
 
-    await page.keyboard.press('Enter');
+    await page.keyboard.press("Enter");
 
-    await expect(page.locator('#main-content')).toBeFocused();
+    await expect(page.locator("#main-content")).toBeFocused();
   });
 
   // ── 2. Formatter output ───────────────────────────────────────
 
-  test('violationLine includes rule id, impact, help URL, and affected node count', () => {
+  test("violationLine includes rule id, impact, help URL, and affected node count", () => {
     const v = {
-      id: 'color-contrast',
-      impact: 'serious',
-      helpUrl: 'https://dequeuniversity.com/rules/axe/4.9/color-contrast',
+      id: "color-contrast",
+      impact: "serious",
+      helpUrl: "https://dequeuniversity.com/rules/axe/4.9/color-contrast",
       nodeCount: 3,
     };
     const line = violationLine(v);
-    expect(line).toContain('color-contrast');
-    expect(line).toContain('serious');
-    expect(line).toContain('https://dequeuniversity.com/rules/axe/4.9/color-contrast');
-    expect(line).toContain('3');
+    expect(line).toContain("color-contrast");
+    expect(line).toContain("serious");
+    expect(line).toContain(
+      "https://dequeuniversity.com/rules/axe/4.9/color-contrast",
+    );
+    expect(line).toContain("3");
   });
 
-  test('violationLine omits optional fields when absent', () => {
-    const v = { id: 'heading-order', impact: 'moderate' };
+  test("violationLine omits optional fields when absent", () => {
+    const v = { id: "heading-order", impact: "moderate" };
     const line = violationLine(v);
-    expect(line).toBe('  · heading-order  [impact: moderate]');
+    expect(line).toBe("  · heading-order  [impact: moderate]");
   });
 
-  test('formatDiffBlock includes help URL and affected node count for new violations', () => {
+  test("formatDiffBlock includes help URL and affected node count for new violations", () => {
     const block = formatDiffBlock(
-      '/test',
-      [{ id: 'label', impact: 'critical', helpUrl: 'https://example.com/label', nodeCount: 2 }],
+      "/test",
+      [
+        {
+          id: "label",
+          impact: "critical",
+          helpUrl: "https://example.com/label",
+          nodeCount: 2,
+        },
+      ],
       [],
-      []
+      [],
     );
-    expect(block).toContain('label');
-    expect(block).toContain('critical');
-    expect(block).toContain('https://example.com/label');
-    expect(block).toContain('2');
+    expect(block).toContain("label");
+    expect(block).toContain("critical");
+    expect(block).toContain("https://example.com/label");
+    expect(block).toContain("2");
   });
 
-  test('formatDiffBlock includes help URL and affected node count for changed violations', () => {
+  test("formatDiffBlock includes help URL and affected node count for changed violations", () => {
     const block = formatDiffBlock(
-      '/test',
+      "/test",
       [],
-      [{ id: 'color-contrast', before: 'serious', after: 'critical', helpUrl: 'https://example.com/cc', nodeCount: 5 }],
-      []
+      [
+        {
+          id: "color-contrast",
+          before: "serious",
+          after: "critical",
+          helpUrl: "https://example.com/cc",
+          nodeCount: 5,
+        },
+      ],
+      [],
     );
-    expect(block).toContain('color-contrast');
-    expect(block).toContain('serious → critical');
-    expect(block).toContain('https://example.com/cc');
-    expect(block).toContain('5');
+    expect(block).toContain("color-contrast");
+    expect(block).toContain("serious → critical");
+    expect(block).toContain("https://example.com/cc");
+    expect(block).toContain("5");
   });
 
   // ── 3. Optional baseline violations ────────────────────────────
 
-  test('optional baseline violations are accepted when present', () => {
+  test("optional baseline violations are accepted when present", () => {
     const actual = [
-      { id: 'color-contrast', impact: 'serious' },
-      { id: 'scrollable-region-focusable', impact: 'serious' },
+      { id: "color-contrast", impact: "serious" },
+      { id: "scrollable-region-focusable", impact: "serious" },
     ];
     const baseline = [
-      { id: 'color-contrast', impact: 'serious' },
-      { id: 'scrollable-region-focusable', impact: 'serious', optional: true },
+      { id: "color-contrast", impact: "serious" },
+      { id: "scrollable-region-focusable", impact: "serious", optional: true },
     ];
     const result = diffViolations(actual, baseline);
     expect(result.hasDiff).toBe(false);
@@ -540,11 +581,11 @@ test.describe('Accessibility audit', () => {
     expect(result.changed).toEqual([]);
   });
 
-  test('optional baseline violations are ignored when missing', () => {
-    const actual = [{ id: 'color-contrast', impact: 'serious' }];
+  test("optional baseline violations are ignored when missing", () => {
+    const actual = [{ id: "color-contrast", impact: "serious" }];
     const baseline = [
-      { id: 'color-contrast', impact: 'serious' },
-      { id: 'scrollable-region-focusable', impact: 'serious', optional: true },
+      { id: "color-contrast", impact: "serious" },
+      { id: "scrollable-region-focusable", impact: "serious", optional: true },
     ];
     const result = diffViolations(actual, baseline);
     expect(result.hasDiff).toBe(false);
@@ -553,30 +594,34 @@ test.describe('Accessibility audit', () => {
     expect(result.changed).toEqual([]);
   });
 
-  test('optional baseline violations do not hide unexpected new violations', () => {
+  test("optional baseline violations do not hide unexpected new violations", () => {
     const actual = [
-      { id: 'color-contrast', impact: 'serious' },
-      { id: 'unexpected-rule', impact: 'moderate' },
+      { id: "color-contrast", impact: "serious" },
+      { id: "unexpected-rule", impact: "moderate" },
     ];
     const baseline = [
-      { id: 'color-contrast', impact: 'serious' },
-      { id: 'scrollable-region-focusable', impact: 'serious', optional: true },
+      { id: "color-contrast", impact: "serious" },
+      { id: "scrollable-region-focusable", impact: "serious", optional: true },
     ];
     const result = diffViolations(actual, baseline);
     expect(result.hasDiff).toBe(true);
-    expect(result.extra).toEqual([{ id: 'unexpected-rule', impact: 'moderate' }]);
+    expect(result.extra).toEqual([
+      { id: "unexpected-rule", impact: "moderate" },
+    ]);
     expect(result.missing).toEqual([]);
     expect(result.changed).toEqual([]);
   });
 
   // ── 4. Home page audit ───────────────────────────────────────
 
-  test('home page meets baseline', async ({ page }) => {
-    const baseline = BASELINE_VIOLATIONS['/'] || [];
-    const result = await auditRoute('/', page, baseline);
+  test("home page meets baseline", async ({ page }) => {
+    const baseline = BASELINE_VIOLATIONS["/"] || [];
+    const result = await auditRoute("/", page, baseline);
 
     if (result.hasDiff) {
-      console.warn(formatDiffBlock('/', result.extra, result.changed, result.missing));
+      console.warn(
+        formatDiffBlock("/", result.extra, result.changed, result.missing),
+      );
     }
 
     expect(result.extra).toEqual([]);
@@ -592,7 +637,14 @@ test.describe('Accessibility audit', () => {
       const result = await auditRoute(tool.path, page, baseline);
 
       if (result.hasDiff) {
-        console.warn(formatDiffBlock(tool.path, result.extra, result.changed, result.missing));
+        console.warn(
+          formatDiffBlock(
+            tool.path,
+            result.extra,
+            result.changed,
+            result.missing,
+          ),
+        );
       }
 
       expect(result.extra).toEqual([]);

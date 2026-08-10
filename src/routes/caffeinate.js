@@ -1,30 +1,48 @@
-import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage, t } from '../utils/i18n.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { createRelatedToolsSection } from '../utils/content-ui.js';
+import { respondHTML } from "../utils/respond.js";
+import { createPageTemplate, createToolHeader } from "../utils/common-ui.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+  t,
+} from "../utils/i18n.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import { createRelatedToolsSection } from "../utils/content-ui.js";
 
 export async function handleCaffeinateRoutes(request, url) {
-  if (url.pathname === '/caffeinate' || url.pathname === '/caffeinate/') {
-    if (request.method === 'GET') return respondHTML(renderCaffeinatePage(resolveRequestLanguage(request, url)));
+  if (url.pathname === "/caffeinate" || url.pathname === "/caffeinate/") {
+    if (request.method === "GET")
+      return respondHTML(
+        renderCaffeinatePage(resolveRequestLanguage(request, url)),
+      );
   }
   return null;
 }
 
 function renderCaffeinatePage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('caffeinate', currentLang);
+  const translation = getToolTranslation("caffeinate", currentLang);
   const toolHeader = createToolHeader(
-    { emoji: '☕' },
-    translation?.name || 'Caffeinate',
-    translation?.desc || 'Keep your device screen awake using the Wake Lock API. No downloads, fully client-side.',
-    [{ text: translation?.ui?.badge0 || 'Client-Side Only', tooltip: 'Runs entirely in your browser using Web APIs — your data never leaves your device.' }],
-    { toolId: 'caffeinate' }
+    { emoji: "☕" },
+    translation?.name || "Caffeinate",
+    translation?.desc ||
+      "Keep your device screen awake using the Wake Lock API. No downloads, fully client-side.",
+    [
+      {
+        text: translation?.ui?.badge0 || "Client-Side Only",
+        tooltip:
+          "Runs entirely in your browser using Web APIs — your data never leaves your device.",
+      },
+    ],
+    { toolId: "caffeinate" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'caffeinate');
-    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
-
+  const currentTool = TOOLS.find((t) => t.id === "caffeinate");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -35,7 +53,7 @@ function renderCaffeinatePage(lang = DEFAULT_LANGUAGE) {
         <div id="status-panel" class="mt-6 p-5 rounded-lg bg-surface-50 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 text-center transition-all duration-300">
           <div id="status-icon" class="text-5xl mb-3" aria-hidden="true">💤</div>
           <p id="status-text" class="text-surface-700 dark:text-surface-300 text-base" role="status" aria-live="polite" data-i18n="tools.caffeinate.ui.status0">
-            ${t('tools.caffeinate.ui.status0')}
+            ${t("tools.caffeinate.ui.status0")}
           </p>
         </div>
 
@@ -46,32 +64,32 @@ function renderCaffeinatePage(lang = DEFAULT_LANGUAGE) {
 
         <!-- Note -->
         <p class="mt-4 text-sm text-center text-surface-500 dark:text-surface-400" data-i18n="tools.caffeinate.ui.desc0">
-          ${t('tools.caffeinate.ui.desc0')}
+          ${t("tools.caffeinate.ui.desc0")}
         </p>
 
         <!-- Action Button -->
         <div class="mt-6 flex justify-center">
           <button id="toggle-btn" type="button" data-tooltip="Uses the Wake Lock API to prevent your screen from sleeping" class="btn btn-primary px-8 py-3 text-base font-semibold" data-i18n="tools.caffeinate.ui.button0">
-            ${t('tools.caffeinate.ui.button0')}
+            ${t("tools.caffeinate.ui.button0")}
           </button>
         </div>
 
         <!-- Stats -->
         <div id="stats-panel" class="hidden mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4">
           <div class="text-center p-3 rounded-lg bg-surface-50 dark:bg-surface-800">
-            <div class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide mb-1" data-i18n="tools.caffeinate.ui.label0">${t('tools.caffeinate.ui.label0')}</div>
+            <div class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide mb-1" data-i18n="tools.caffeinate.ui.label0">${t("tools.caffeinate.ui.label0")}</div>
             <div id="stat-mode" class="text-sm font-semibold text-surface-900 dark:text-surface-100">—</div>
           </div>
           <div class="text-center p-3 rounded-lg bg-surface-50 dark:bg-surface-800">
-            <div class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide mb-1" data-i18n="tools.caffeinate.ui.label1">${t('tools.caffeinate.ui.label1')}</div>
+            <div class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide mb-1" data-i18n="tools.caffeinate.ui.label1">${t("tools.caffeinate.ui.label1")}</div>
             <div id="stat-uptime" class="text-sm font-semibold text-surface-900 dark:text-surface-100">—</div>
           </div>
           <div class="text-center p-3 rounded-lg bg-surface-50 dark:bg-surface-800">
-            <div class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide mb-1" data-i18n="tools.caffeinate.ui.label2">${t('tools.caffeinate.ui.label2')}</div>
+            <div class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide mb-1" data-i18n="tools.caffeinate.ui.label2">${t("tools.caffeinate.ui.label2")}</div>
             <div id="stat-heartbeats" class="text-sm font-semibold text-surface-900 dark:text-surface-100">0</div>
           </div>
           <div class="text-center p-3 rounded-lg bg-surface-50 dark:bg-surface-800">
-            <div class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide mb-1" data-i18n="tools.caffeinate.ui.label3">${t('tools.caffeinate.ui.label3')}</div>
+            <div class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide mb-1" data-i18n="tools.caffeinate.ui.label3">${t("tools.caffeinate.ui.label3")}</div>
             <div id="stat-reactivations" class="text-sm font-semibold text-surface-900 dark:text-surface-100">0</div>
           </div>
         </div>
@@ -413,10 +431,12 @@ function renderCaffeinatePage(lang = DEFAULT_LANGUAGE) {
   `;
 
   return createPageTemplate({
-    title: translation?.name || 'Caffeinate',
-    description: translation?.desc || 'Keep your device screen awake using the Wake Lock API. No downloads, fully client-side.',
+    title: translation?.name || "Caffeinate",
+    description:
+      translation?.desc ||
+      "Keep your device screen awake using the Wake Lock API. No downloads, fully client-side.",
     content,
-    path: '/caffeinate',
-    lang: currentLang
+    path: "/caffeinate",
+    lang: currentLang,
   });
 }

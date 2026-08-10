@@ -1,43 +1,55 @@
-import { respondHTML, respondJSON } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createCheatsheet } from '../utils/common-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { createRelatedToolsSection } from '../utils/content-ui.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML, respondJSON } from "../utils/respond.js";
+import {
+  createPageTemplate,
+  createToolHeader,
+  createCheatsheet,
+} from "../utils/common-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import { createRelatedToolsSection } from "../utils/content-ui.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleMarkdownEditorRoutes(request, url) {
   const { pathname } = url;
   const method = request.method;
 
   try {
-    if (pathname === '/markdown-editor' || pathname === '/markdown-editor/') {
-      if (method === 'GET') {
+    if (pathname === "/markdown-editor" || pathname === "/markdown-editor/") {
+      if (method === "GET") {
         return renderMarkdownEditorPage(resolveRequestLanguage(request, url));
       }
     }
-    return respondJSON({ error: 'Not found' }, { status: 404 });
+    return respondJSON({ error: "Not found" }, { status: 404 });
   } catch (error) {
-    console.error('Markdown Preview Route Error:', error);
+    console.error("Markdown Preview Route Error:", error);
     return respondJSON(
-      { error: 'Internal server error', message: error.message },
-      { status: 500 }
+      { error: "Internal server error", message: error.message },
+      { status: 500 },
     );
   }
 }
 
 function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('markdown-editor', currentLang);
+  const translation = getToolTranslation("markdown-editor", currentLang);
   const toolHeader = createToolHeader(
-    { emoji: '📝' },
-    translation?.name || 'Markdown Editor',
-    translation?.desc || 'Live Markdown editor with split-pane preview, Mermaid diagrams, and export tools.',
+    { emoji: "📝" },
+    translation?.name || "Markdown Editor",
+    translation?.desc ||
+      "Live Markdown editor with split-pane preview, Mermaid diagrams, and export tools.",
     [],
-    { toolId: 'markdown-editor' }
+    { toolId: "markdown-editor" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'markdown-editor');
-    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
-
+  const currentTool = TOOLS.find((t) => t.id === "markdown-editor");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -285,8 +297,10 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
         }
       </style>
 
-      ${createCheatsheet('markdown-preview', 'Markdown Quick Reference', [
-        { heading: 'Formatting', content: `
+      ${createCheatsheet("markdown-preview", "Markdown Quick Reference", [
+        {
+          heading: "Formatting",
+          content: `
           <table>
             <tr><th data-i18n="tools.markdown-editor.ui.th3">Syntax</th><th data-i18n="tools.markdown-editor.ui.th4">Result</th></tr>
             <tr><td><code>**bold**</code></td><td>Bold text</td></tr>
@@ -294,8 +308,11 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
             <tr><td><code>~~strike~~</code></td><td>Strikethrough</td></tr>
             <tr><td><code>\`code\`</code></td><td>Inline code</td></tr>
             <tr><td><code>&gt; quote</code></td><td>Blockquote</td></tr>
-          </table>` },
-        { heading: 'Structure', content: `
+          </table>`,
+        },
+        {
+          heading: "Structure",
+          content: `
           <table>
             <tr><th data-i18n="tools.markdown-editor.ui.th3">Syntax</th><th data-i18n="tools.markdown-editor.ui.th5">Element</th></tr>
             <tr><td><code># H1</code> to <code>###### H6</code></td><td>Headings</td></tr>
@@ -303,15 +320,23 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
             <tr><td><code>1. item</code></td><td>Ordered list</td></tr>
             <tr><td><code>---</code></td><td>Horizontal rule</td></tr>
             <tr><td><code>- [ ] task</code></td><td>Task list</td></tr>
-          </table>` },
-        { heading: 'Links &amp; Media', content: `
+          </table>`,
+        },
+        {
+          heading: "Links &amp; Media",
+          content: `
           <table>
             <tr><th data-i18n="tools.markdown-editor.ui.th3">Syntax</th><th data-i18n="tools.markdown-editor.ui.th4">Result</th></tr>
             <tr><td><code>[text](url)</code></td><td>Hyperlink</td></tr>
             <tr><td><code>![alt](url)</code></td><td>Image</td></tr>
             <tr><td><code>[text](url "title")</code></td><td>Link with tooltip</td></tr>
-          </table>` },
-        { heading: 'Code &amp; Tables', content: '<p>Use triple backticks for code blocks with optional language. Tables use pipes: <code>| Col1 | Col2 |</code> with <code>|---|---|</code> separator.</p>' }
+          </table>`,
+        },
+        {
+          heading: "Code &amp; Tables",
+          content:
+            "<p>Use triple backticks for code blocks with optional language. Tables use pipes: <code>| Col1 | Col2 |</code> with <code>|---|---|</code> separator.</p>",
+        },
       ])}
     ${createRelatedToolsSection(relatedToolsData)}
     </main>
@@ -788,12 +813,14 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
 
   return respondHTML(
     createPageTemplate({
-      title: translation?.name || 'Markdown Editor',
-      description: translation?.desc || 'Split-pane Markdown editor with sync scroll and GFM support.',
-      path: '/markdown-editor',
+      title: translation?.name || "Markdown Editor",
+      description:
+        translation?.desc ||
+        "Split-pane Markdown editor with sync scroll and GFM support.",
+      path: "/markdown-editor",
       content,
       scripts,
-      lang: currentLang
-    })
+      lang: currentLang,
+    }),
   );
 }

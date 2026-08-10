@@ -1,32 +1,51 @@
-import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createCheatsheet } from '../utils/common-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { createRelatedToolsSection } from '../utils/content-ui.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML } from "../utils/respond.js";
+import {
+  createPageTemplate,
+  createToolHeader,
+  createCheatsheet,
+} from "../utils/common-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import { createRelatedToolsSection } from "../utils/content-ui.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleCurlStudioRoutes(request, url) {
-  if (url.pathname !== '/curl-studio' && url.pathname !== '/curl-studio/') return null;
-  if (request.method !== 'GET') return null;
+  if (url.pathname !== "/curl-studio" && url.pathname !== "/curl-studio/")
+    return null;
+  if (request.method !== "GET") return null;
   const lang = resolveRequestLanguage(request, url);
   return renderCurlStudioPage(lang);
 }
 
 function renderCurlStudioPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('curl-studio', currentLang);
-  const title = translation?.name || 'Curl Studio';
-  const description = translation?.desc || 'Parse and generate curl commands.';
+  const translation = getToolTranslation("curl-studio", currentLang);
+  const title = translation?.name || "Curl Studio";
+  const description = translation?.desc || "Parse and generate curl commands.";
 
   const header = createToolHeader(
-    { emoji: '🐚' },
+    { emoji: "🐚" },
     title,
     description,
-    [{ text: translation?.ui?.badge14 || 'Privacy-First', tooltip: 'All processing happens in your browser — no data is sent to any server.' }],
-    { toolId: 'curl-studio' }
+    [
+      {
+        text: translation?.ui?.badge14 || "Privacy-First",
+        tooltip:
+          "All processing happens in your browser — no data is sent to any server.",
+      },
+    ],
+    { toolId: "curl-studio" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'curl-studio');
-  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+  const currentTool = TOOLS.find((t) => t.id === "curl-studio");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -97,8 +116,10 @@ function renderCurlStudioPage(lang = DEFAULT_LANGUAGE) {
         </div>
       </div>
 
-      ${createCheatsheet('curl-studio', 'Curl Flags Reference', [
-        { heading: 'Common Flags', content: `
+      ${createCheatsheet("curl-studio", "Curl Flags Reference", [
+        {
+          heading: "Common Flags",
+          content: `
           <table>
             <tr><th data-i18n="tools.curl-studio.ui.th1">Flag</th><th data-i18n="tools.curl-studio.ui.th2">Description</th><th data-i18n="tools.curl-studio.ui.th3">Example</th></tr>
             <tr><td><code>-X</code></td><td>HTTP method</td><td><code>-X POST</code></td></tr>
@@ -109,14 +130,18 @@ function renderCurlStudioPage(lang = DEFAULT_LANGUAGE) {
             <tr><td><code>-k</code></td><td>Skip TLS verification</td><td>—</td></tr>
             <tr><td><code>-L</code></td><td>Follow redirects</td><td>—</td></tr>
             <tr><td><code>-s</code></td><td>Silent mode</td><td>No progress</td></tr>
-          </table>` },
-        { heading: 'Authentication', content: `
+          </table>`,
+        },
+        {
+          heading: "Authentication",
+          content: `
           <table>
             <tr><th data-i18n="tools.curl-studio.ui.th1">Flag</th><th data-i18n="tools.curl-studio.ui.th4">Type</th></tr>
             <tr><td><code>-u user:pass</code></td><td>Basic auth</td></tr>
             <tr><td><code>-H "Authorization: Bearer TOKEN"</code></td><td>Bearer token</td></tr>
             <tr><td><code>--cert file.pem</code></td><td>Client certificate</td></tr>
-          </table>` }
+          </table>`,
+        },
       ])}
     ${createRelatedToolsSection(relatedToolsData)}
     </main>
@@ -241,12 +266,14 @@ function renderCurlStudioPage(lang = DEFAULT_LANGUAGE) {
     </script>
   `;
 
-  return respondHTML(createPageTemplate({
-    title,
-    description,
-    lang: currentLang,
-    path: '/curl-studio',
-    content,
-    scripts
-  }));
+  return respondHTML(
+    createPageTemplate({
+      title,
+      description,
+      lang: currentLang,
+      path: "/curl-studio",
+      content,
+      scripts,
+    }),
+  );
 }

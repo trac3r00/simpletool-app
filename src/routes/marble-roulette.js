@@ -1,24 +1,33 @@
-import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
-import { getToolTranslation, resolveRequestLanguage, t } from '../utils/i18n.js';
-import { getMarbleBootConfig } from '../games/marble/config.js';
+import { respondHTML } from "../utils/respond.js";
+import { createPageTemplate, createToolHeader } from "../utils/common-ui.js";
+import {
+  getToolTranslation,
+  resolveRequestLanguage,
+  t,
+} from "../utils/i18n.js";
+import { getMarbleBootConfig } from "../games/marble/config.js";
 
-function renderMarbleRoulettePage(lang = 'en') {
-  const toolTranslation = getToolTranslation('marble-roulette', lang);
+function renderMarbleRoulettePage(lang = "en") {
+  const toolTranslation = getToolTranslation("marble-roulette", lang);
   const marbleBootConfig = getMarbleBootConfig();
   const tr = (key, fallback) => {
     const value = t(key, lang);
     return value === key ? fallback : value;
   };
   const toolHeader = createToolHeader(
-    { emoji: '🎱' },
-    toolTranslation?.name || 'Marble Roulette',
-    toolTranslation?.desc || 'Drop marbles through pegs for a physics-based lucky draw.',
+    { emoji: "🎱" },
+    toolTranslation?.name || "Marble Roulette",
+    toolTranslation?.desc ||
+      "Drop marbles through pegs for a physics-based lucky draw.",
     [
-      { text: `<span data-i18n="tools.marble-roulette.ui.badge0">${tr('tools.marble-roulette.ui.badge0', 'Client-Side Only')}</span>` },
-      { text: `<span data-i18n="tools.marble-roulette.ui.badge1">${tr('tools.marble-roulette.ui.badge1', 'Fair + Unpredictable')}</span>` }
+      {
+        text: `<span data-i18n="tools.marble-roulette.ui.badge0">${tr("tools.marble-roulette.ui.badge0", "Client-Side Only")}</span>`,
+      },
+      {
+        text: `<span data-i18n="tools.marble-roulette.ui.badge1">${tr("tools.marble-roulette.ui.badge1", "Fair + Unpredictable")}</span>`,
+      },
     ],
-    { toolId: 'marble-roulette' }
+    { toolId: "marble-roulette" },
   );
 
   const content = `
@@ -38,8 +47,8 @@ function renderMarbleRoulettePage(lang = 'en') {
           <section class="lg:col-span-7" aria-label="Marble board">
             <div class="bg-surface-50 dark:bg-surface-950/40 border border-surface-200 dark:border-surface-800 rounded-xl p-4">
               <div class="flex items-center justify-between gap-3 mb-3">
-                <h2 class="text-sm font-semibold text-surface-900 dark:text-surface-50" data-i18n="tools.marble-roulette.ui.heading0">${tr('tools.marble-roulette.ui.heading0', 'Board')}</h2>
-                <div class="text-xs text-surface-600 dark:text-surface-400" aria-live="polite" id="mr-status" data-i18n="tools.marble-roulette.ui.status0">${tr('tools.marble-roulette.ui.status0', 'Ready.')}</div>
+                <h2 class="text-sm font-semibold text-surface-900 dark:text-surface-50" data-i18n="tools.marble-roulette.ui.heading0">${tr("tools.marble-roulette.ui.heading0", "Board")}</h2>
+                <div class="text-xs text-surface-600 dark:text-surface-400" aria-live="polite" id="mr-status" data-i18n="tools.marble-roulette.ui.status0">${tr("tools.marble-roulette.ui.status0", "Ready.")}</div>
               </div>
 
               <div id="mr-canvas-wrap" class="relative w-full max-w-full overflow-hidden rounded-lg border border-surface-200 dark:border-surface-800 bg-white/60 dark:bg-surface-950/60" style="aspect-ratio: 3 / 2.5; max-height: 60vh;">
@@ -47,18 +56,18 @@ function renderMarbleRoulettePage(lang = 'en') {
                 <div class="pointer-events-none absolute inset-x-0 top-0 p-3">
                   <div class="flex flex-wrap items-center justify-between gap-2">
                     <div class="inline-flex items-center gap-2 text-xs text-surface-700 dark:text-surface-300 bg-white/80 dark:bg-surface-950/70 border border-surface-200/60 dark:border-surface-800/60 rounded-full px-3 py-1">
-                      <span class="font-semibold" data-i18n="tools.marble-roulette.ui.stat0">${tr('tools.marble-roulette.ui.stat0', 'Drops')}</span>
+                      <span class="font-semibold" data-i18n="tools.marble-roulette.ui.stat0">${tr("tools.marble-roulette.ui.stat0", "Drops")}</span>
                       <span class="tabular-nums" id="mr-drops">0</span>
                       <span class="text-surface-400">&bull;</span>
-                      <span data-i18n="tools.marble-roulette.ui.stat1">${tr('tools.marble-roulette.ui.stat1', 'Speed')}</span>
+                      <span data-i18n="tools.marble-roulette.ui.stat1">${tr("tools.marble-roulette.ui.stat1", "Speed")}</span>
                       <span class="tabular-nums" id="mr-speed">1x</span>
                     </div>
                     <div class="hidden sm:flex items-center gap-2 text-[11px] text-surface-600 dark:text-surface-400">
                       <span class="inline-flex items-center gap-1" aria-hidden="true">&#x21B5;</span>
-                      <span data-i18n="tools.marble-roulette.ui.text1">${tr('tools.marble-roulette.ui.text1', 'Start')}</span>
+                      <span data-i18n="tools.marble-roulette.ui.text1">${tr("tools.marble-roulette.ui.text1", "Start")}</span>
                       <span class="text-surface-400">&bull;</span>
                       <span class="inline-flex items-center gap-1" aria-hidden="true">R</span>
-                      <span data-i18n="tools.marble-roulette.ui.text2">${tr('tools.marble-roulette.ui.text2', 'Reset')}</span>
+                      <span data-i18n="tools.marble-roulette.ui.text2">${tr("tools.marble-roulette.ui.text2", "Reset")}</span>
                     </div>
                   </div>
                 </div>
@@ -66,7 +75,7 @@ function renderMarbleRoulettePage(lang = 'en') {
                 <div id="mr-replay-overlay" class="hidden absolute inset-0 pointer-events-none z-10">
                   <div class="absolute bottom-3 left-3 right-3">
                     <div class="bg-surface-900/80 backdrop-blur rounded-lg px-3 py-2 flex items-center gap-3">
-                      <span class="text-xs font-semibold text-white/90" data-i18n="tools.marble-roulette.ui.replayLabel">${tr('tools.marble-roulette.ui.replayLabel', 'Slow-Mo Replay')}</span>
+                      <span class="text-xs font-semibold text-white/90" data-i18n="tools.marble-roulette.ui.replayLabel">${tr("tools.marble-roulette.ui.replayLabel", "Slow-Mo Replay")}</span>
                       <div class="flex-1 bg-white/20 rounded-full h-1 overflow-hidden">
                         <div id="mr-replay-progress" class="mr-replay-bar bg-primary-400 h-full" style="width:0%"></div>
                       </div>
@@ -77,12 +86,12 @@ function renderMarbleRoulettePage(lang = 'en') {
 
               <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div class="p-3 rounded-lg border border-surface-200 dark:border-surface-800 bg-white dark:bg-surface-900">
-                  <div class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" data-i18n="tools.marble-roulette.ui.heading1">${tr('tools.marble-roulette.ui.heading1', 'Winner')}</div>
+                  <div class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" data-i18n="tools.marble-roulette.ui.heading1">${tr("tools.marble-roulette.ui.heading1", "Winner")}</div>
                   <div id="mr-winner-inline" class="mt-1 text-sm font-semibold text-surface-900 dark:text-surface-50" data-i18n="tools.marble-roulette.ui.text3">&mdash;</div>
                 </div>
                 <div class="p-3 rounded-lg border border-surface-200 dark:border-surface-800 bg-white dark:bg-surface-900">
-                  <div class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" data-i18n="tools.marble-roulette.ui.heading2">${tr('tools.marble-roulette.ui.heading2', 'Fairness')}</div>
-                  <div class="mt-1 text-xs text-surface-600 dark:text-surface-400" data-i18n="tools.marble-roulette.ui.desc0">${tr('tools.marble-roulette.ui.desc0', 'Each drop randomizes start positions using Web Crypto.')}</div>
+                  <div class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" data-i18n="tools.marble-roulette.ui.heading2">${tr("tools.marble-roulette.ui.heading2", "Fairness")}</div>
+                  <div class="mt-1 text-xs text-surface-600 dark:text-surface-400" data-i18n="tools.marble-roulette.ui.desc0">${tr("tools.marble-roulette.ui.desc0", "Each drop randomizes start positions using Web Crypto.")}</div>
                 </div>
               </div>
             </div>
@@ -91,90 +100,90 @@ function renderMarbleRoulettePage(lang = 'en') {
           <!-- Controls -->
           <section class="lg:col-span-5" aria-label="Controls">
             <div class="bg-surface-50 dark:bg-surface-950/40 border border-surface-200 dark:border-surface-800 rounded-xl p-4">
-              <h2 class="text-sm font-semibold text-surface-900 dark:text-surface-50 mb-3" data-i18n="tools.marble-roulette.ui.heading3">${tr('tools.marble-roulette.ui.heading3', 'Controls')}</h2>
+              <h2 class="text-sm font-semibold text-surface-900 dark:text-surface-50 mb-3" data-i18n="tools.marble-roulette.ui.heading3">${tr("tools.marble-roulette.ui.heading3", "Controls")}</h2>
 
               <div class="flex flex-col gap-4">
                 <div>
-                  <label class="label" for="mr-names"><span data-i18n="tools.marble-roulette.ui.label0">${tr('tools.marble-roulette.ui.label0', 'Names / options')}</span></label>
-                   <textarea id="mr-names" class="input resize-y min-h-[9rem]" rows="6" aria-label="Names" data-i18n-placeholder="tools.marble-roulette.ui.placeholder0" placeholder="${tr('tools.marble-roulette.ui.placeholder0', 'Alice\nBob\nCharlie\nDave')}">${tr('tools.marble-roulette.ui.placeholder0', 'Alice\nBob\nCharlie\nDave').replace(/&#10;/g, '\n')}</textarea>
-                  <p class="mt-2 text-xs text-surface-600 dark:text-surface-400" data-i18n="tools.marble-roulette.ui.desc1">${tr('tools.marble-roulette.ui.desc1', 'Enter 2&ndash;10 names (one per line or comma-separated).')}</p>
+                  <label class="label" for="mr-names"><span data-i18n="tools.marble-roulette.ui.label0">${tr("tools.marble-roulette.ui.label0", "Names / options")}</span></label>
+                   <textarea id="mr-names" class="input resize-y min-h-[9rem]" rows="6" aria-label="Names" data-i18n-placeholder="tools.marble-roulette.ui.placeholder0" placeholder="${tr("tools.marble-roulette.ui.placeholder0", "Alice\nBob\nCharlie\nDave")}">${tr("tools.marble-roulette.ui.placeholder0", "Alice\nBob\nCharlie\nDave").replace(/&#10;/g, "\n")}</textarea>
+                  <p class="mt-2 text-xs text-surface-600 dark:text-surface-400" data-i18n="tools.marble-roulette.ui.desc1">${tr("tools.marble-roulette.ui.desc1", "Enter 2&ndash;10 names (one per line or comma-separated).")}</p>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div class="p-3 rounded-lg border border-surface-200 dark:border-surface-800 bg-white dark:bg-surface-900">
-                    <label class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" for="mr-theme" data-i18n="tools.marble-roulette.ui.labelTheme">${tr('tools.marble-roulette.ui.labelTheme', 'Board Theme')}</label>
+                    <label class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" for="mr-theme" data-i18n="tools.marble-roulette.ui.labelTheme">${tr("tools.marble-roulette.ui.labelTheme", "Board Theme")}</label>
                     <select id="mr-theme" class="input mt-2">
-                      ${marbleBootConfig.themes.map((theme) => `<option value="${theme.id}" data-i18n="${theme.labelKey}">${tr(theme.labelKey, theme.fallbackLabel)}</option>`).join('')}
+                      ${marbleBootConfig.themes.map((theme) => `<option value="${theme.id}" data-i18n="${theme.labelKey}">${tr(theme.labelKey, theme.fallbackLabel)}</option>`).join("")}
                     </select>
-                    <p class="mt-2 text-xs text-surface-600 dark:text-surface-400" data-i18n="tools.marble-roulette.ui.descTheme">${tr('tools.marble-roulette.ui.descTheme', 'Swap peg density and board behavior without changing the draw flow.')}</p>
+                    <p class="mt-2 text-xs text-surface-600 dark:text-surface-400" data-i18n="tools.marble-roulette.ui.descTheme">${tr("tools.marble-roulette.ui.descTheme", "Swap peg density and board behavior without changing the draw flow.")}</p>
                   </div>
                   <div class="p-3 rounded-lg border border-surface-200 dark:border-surface-800 bg-white dark:bg-surface-900">
-                    <label class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" for="mr-winner-mode" data-i18n="tools.marble-roulette.ui.labelWinnerMode">${tr('tools.marble-roulette.ui.labelWinnerMode', 'Winner Target')}</label>
+                    <label class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" for="mr-winner-mode" data-i18n="tools.marble-roulette.ui.labelWinnerMode">${tr("tools.marble-roulette.ui.labelWinnerMode", "Winner Target")}</label>
                     <div class="mt-2 grid grid-cols-[1fr_auto] gap-2">
                       <select id="mr-winner-mode" class="input">
-                        ${marbleBootConfig.winnerModes.map((mode) => `<option value="${mode.id}" data-i18n="${mode.labelKey}">${tr(mode.labelKey, mode.fallbackLabel)}</option>`).join('')}
+                        ${marbleBootConfig.winnerModes.map((mode) => `<option value="${mode.id}" data-i18n="${mode.labelKey}">${tr(mode.labelKey, mode.fallbackLabel)}</option>`).join("")}
                       </select>
                       <input id="mr-target-ordinal" type="number" min="2" max="10" value="${marbleBootConfig.defaultOrdinalTarget}" class="input w-20 text-center hidden" aria-label="Ordinal target">
                     </div>
-                    <p class="mt-2 text-xs text-surface-600 dark:text-surface-400" data-i18n="tools.marble-roulette.ui.descWinnerMode">${tr('tools.marble-roulette.ui.descWinnerMode', 'Pick the first finisher, last finisher, or a specific place in the ranking.')}</p>
+                    <p class="mt-2 text-xs text-surface-600 dark:text-surface-400" data-i18n="tools.marble-roulette.ui.descWinnerMode">${tr("tools.marble-roulette.ui.descWinnerMode", "Pick the first finisher, last finisher, or a specific place in the ranking.")}</p>
                   </div>
                 </div>
 
                 <div class="p-3 rounded-lg border border-surface-200 dark:border-surface-800 bg-white dark:bg-surface-900">
-                  <div class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" data-i18n="tools.marble-roulette.ui.label2">${tr('tools.marble-roulette.ui.label2', 'Speed')}</div>
+                  <div class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" data-i18n="tools.marble-roulette.ui.label2">${tr("tools.marble-roulette.ui.label2", "Speed")}</div>
                   <div class="mt-2 flex flex-wrap gap-2" aria-label="Speed controls">
-                    <button type="button" class="btn btn-secondary" id="mr-speed-1" aria-pressed="true"><span data-i18n="tools.marble-roulette.ui.button0">${tr('tools.marble-roulette.ui.button0', '1x')}</span></button>
-                    <button type="button" class="btn btn-secondary" id="mr-speed-2" aria-pressed="false"><span data-i18n="tools.marble-roulette.ui.button1">${tr('tools.marble-roulette.ui.button1', '2x')}</span></button>
-                    <button type="button" class="btn btn-secondary" id="mr-speed-3" aria-pressed="false"><span data-i18n="tools.marble-roulette.ui.button2">${tr('tools.marble-roulette.ui.button2', '3x')}</span></button>
+                    <button type="button" class="btn btn-secondary" id="mr-speed-1" aria-pressed="true"><span data-i18n="tools.marble-roulette.ui.button0">${tr("tools.marble-roulette.ui.button0", "1x")}</span></button>
+                    <button type="button" class="btn btn-secondary" id="mr-speed-2" aria-pressed="false"><span data-i18n="tools.marble-roulette.ui.button1">${tr("tools.marble-roulette.ui.button1", "2x")}</span></button>
+                    <button type="button" class="btn btn-secondary" id="mr-speed-3" aria-pressed="false"><span data-i18n="tools.marble-roulette.ui.button2">${tr("tools.marble-roulette.ui.button2", "3x")}</span></button>
                   </div>
-                  <p class="mt-2 text-xs text-surface-600 dark:text-surface-400" data-i18n="tools.marble-roulette.ui.desc2">${tr('tools.marble-roulette.ui.desc2', 'Higher speed runs the simulation faster.')}</p>
+                  <p class="mt-2 text-xs text-surface-600 dark:text-surface-400" data-i18n="tools.marble-roulette.ui.desc2">${tr("tools.marble-roulette.ui.desc2", "Higher speed runs the simulation faster.")}</p>
                 </div>
 
                 <div class="flex flex-wrap gap-2">
                   <button type="button" id="mr-shuffle" class="btn btn-secondary" aria-label="Shuffle entries">
-                    <span data-i18n="tools.marble-roulette.ui.buttonShuffle">${tr('tools.marble-roulette.ui.buttonShuffle', 'Shuffle')}</span>
+                    <span data-i18n="tools.marble-roulette.ui.buttonShuffle">${tr("tools.marble-roulette.ui.buttonShuffle", "Shuffle")}</span>
                   </button>
                   <button type="button" id="mr-start" class="btn btn-primary" aria-label="Start drop">
-                    <span data-i18n="tools.marble-roulette.ui.button3">${tr('tools.marble-roulette.ui.button3', 'Start')}</span>
+                    <span data-i18n="tools.marble-roulette.ui.button3">${tr("tools.marble-roulette.ui.button3", "Start")}</span>
                   </button>
                   <button type="button" id="mr-reset" class="btn btn-ghost" aria-label="Reset">
-                    <span data-i18n="tools.marble-roulette.ui.button4">${tr('tools.marble-roulette.ui.button4', 'Reset')}</span>
+                    <span data-i18n="tools.marble-roulette.ui.button4">${tr("tools.marble-roulette.ui.button4", "Reset")}</span>
                   </button>
                 </div>
 
                 <div id="mr-result" class="hidden" aria-live="polite">
                   <div class="rounded-xl border border-surface-200 dark:border-surface-800 bg-white dark:bg-surface-900 p-4">
-                    <div class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" data-i18n="tools.marble-roulette.ui.heading4">${tr('tools.marble-roulette.ui.heading4', 'Result')}</div>
-                    <div class="mt-1 text-lg font-bold text-surface-900 dark:text-surface-50" id="mr-result-title" data-i18n="tools.marble-roulette.ui.text4">${tr('tools.marble-roulette.ui.text4', '&#127937; Ranking')}</div>
+                    <div class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" data-i18n="tools.marble-roulette.ui.heading4">${tr("tools.marble-roulette.ui.heading4", "Result")}</div>
+                    <div class="mt-1 text-lg font-bold text-surface-900 dark:text-surface-50" id="mr-result-title" data-i18n="tools.marble-roulette.ui.text4">${tr("tools.marble-roulette.ui.text4", "&#127937; Ranking")}</div>
                     <div class="mt-3 border border-surface-200 dark:border-surface-800 rounded-xl overflow-hidden bg-surface-50 dark:bg-surface-950" aria-label="Ranking">
                       <div id="mr-ranking" class="divide-y divide-surface-200 dark:divide-surface-800"></div>
                     </div>
                     <div class="mt-3 flex flex-wrap gap-2">
                       <button type="button" class="btn btn-primary" id="mr-again">
-                        <span data-i18n="tools.marble-roulette.ui.button5">${tr('tools.marble-roulette.ui.button5', 'Drop Again')}</span>
+                        <span data-i18n="tools.marble-roulette.ui.button5">${tr("tools.marble-roulette.ui.button5", "Drop Again")}</span>
                       </button>
                       <button type="button" class="btn btn-secondary" id="mr-replay-btn">
-                        <span data-i18n="tools.marble-roulette.ui.buttonReplay">${tr('tools.marble-roulette.ui.buttonReplay', 'Slow-Mo Replay')}</span>
+                        <span data-i18n="tools.marble-roulette.ui.buttonReplay">${tr("tools.marble-roulette.ui.buttonReplay", "Slow-Mo Replay")}</span>
                       </button>
                       <button type="button" class="btn btn-secondary" id="mr-remove-winner">
-                        <span data-i18n="tools.marble-roulette.ui.button6">${tr('tools.marble-roulette.ui.button6', 'Remove Winner &amp; Drop')}</span>
+                        <span data-i18n="tools.marble-roulette.ui.button6">${tr("tools.marble-roulette.ui.button6", "Remove Winner &amp; Drop")}</span>
                       </button>
                       <button type="button" class="btn btn-ghost" id="mr-new">
-                        <span data-i18n="tools.marble-roulette.ui.button7">${tr('tools.marble-roulette.ui.button7', 'New Draw')}</span>
+                        <span data-i18n="tools.marble-roulette.ui.button7">${tr("tools.marble-roulette.ui.button7", "New Draw")}</span>
                       </button>
                     </div>
-                    <p class="mt-3 text-xs text-surface-600 dark:text-surface-400" data-i18n="tools.marble-roulette.ui.desc3">${tr('tools.marble-roulette.ui.desc3', 'Tip: share by adding <span class="font-mono">?names=Alice,Bob&amp;autostart=true</span>.')}</p>
+                    <p class="mt-3 text-xs text-surface-600 dark:text-surface-400" data-i18n="tools.marble-roulette.ui.desc3">${tr("tools.marble-roulette.ui.desc3", 'Tip: share by adding <span class="font-mono">?names=Alice,Bob&amp;autostart=true</span>.')}</p>
                   </div>
                 </div>
 
                 <div class="rounded-xl border border-surface-200 dark:border-surface-800 bg-white dark:bg-surface-900 p-4">
                   <div class="flex items-center justify-between gap-3">
-                    <div class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" data-i18n="tools.marble-roulette.ui.heading5">${tr('tools.marble-roulette.ui.heading5', 'Statistics')}</div>
+                    <div class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" data-i18n="tools.marble-roulette.ui.heading5">${tr("tools.marble-roulette.ui.heading5", "Statistics")}</div>
                     <button type="button" class="btn btn-ghost" id="mr-clear-stats" aria-label="Clear stats">
-                      <span data-i18n="tools.marble-roulette.ui.button8">${tr('tools.marble-roulette.ui.button8', 'Clear Stats')}</span>
+                      <span data-i18n="tools.marble-roulette.ui.button8">${tr("tools.marble-roulette.ui.button8", "Clear Stats")}</span>
                     </button>
                   </div>
-                  <div class="mt-3 text-sm text-surface-800 dark:text-surface-200" id="mr-stats-empty" data-i18n="tools.marble-roulette.ui.text5">${tr('tools.marble-roulette.ui.text5', 'No drops yet &mdash; press Start.')}</div>
+                  <div class="mt-3 text-sm text-surface-800 dark:text-surface-200" id="mr-stats-empty" data-i18n="tools.marble-roulette.ui.text5">${tr("tools.marble-roulette.ui.text5", "No drops yet &mdash; press Start.")}</div>
                   <div class="mt-3 hidden" id="mr-stats">
                     <div class="text-xs text-surface-600 dark:text-surface-400" id="mr-stats-sub"></div>
                     <div class="mt-2 grid grid-cols-2 gap-2" id="mr-stats-grid"></div>
@@ -196,14 +205,14 @@ function renderMarbleRoulettePage(lang = 'en') {
             <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary-100 dark:bg-primary-900/30 mb-4">
               <span class="text-3xl">&#127942;</span>
             </div>
-            <h3 class="text-lg font-semibold text-surface-500 dark:text-surface-400 mb-1" data-i18n="tools.marble-roulette.ui.heading8">${tr('tools.marble-roulette.ui.heading8', 'Winner')}</h3>
+            <h3 class="text-lg font-semibold text-surface-500 dark:text-surface-400 mb-1" data-i18n="tools.marble-roulette.ui.heading8">${tr("tools.marble-roulette.ui.heading8", "Winner")}</h3>
             <div class="winner-name text-2xl sm:text-3xl font-bold text-surface-900 dark:text-surface-50 mb-4" id="winner-name"></div>
             <div class="flex items-center justify-center gap-2 mb-6">
               <span class="inline-block w-4 h-4 rounded-full" id="winner-color"></span>
-              <span class="text-sm text-surface-600 dark:text-surface-400" data-i18n="tools.marble-roulette.ui.text6">${tr('tools.marble-roulette.ui.text6', 'First to the bottom!')}</span>
+              <span class="text-sm text-surface-600 dark:text-surface-400" data-i18n="tools.marble-roulette.ui.text6">${tr("tools.marble-roulette.ui.text6", "First to the bottom!")}</span>
             </div>
             <button type="button" id="winner-close" class="btn btn-primary w-full">
-              <span data-i18n="tools.marble-roulette.ui.button9">${tr('tools.marble-roulette.ui.button9', 'Awesome')}</span>
+              <span data-i18n="tools.marble-roulette.ui.button9">${tr("tools.marble-roulette.ui.button9", "Awesome")}</span>
             </button>
           </div>
         </div>
@@ -1860,19 +1869,27 @@ function renderMarbleRoulettePage(lang = 'en') {
     </script>
   `;
 
-  return respondHTML(createPageTemplate({
-    title: toolTranslation?.name || 'Marble Roulette',
-    description: toolTranslation?.desc || 'A physics-based marble race lucky draw. Marbles drop through pegs and the first to reach a collection slot wins.',
-    path: '/marble-roulette',
-    content,
-    scripts,
-    lang
-  }));
+  return respondHTML(
+    createPageTemplate({
+      title: toolTranslation?.name || "Marble Roulette",
+      description:
+        toolTranslation?.desc ||
+        "A physics-based marble race lucky draw. Marbles drop through pegs and the first to reach a collection slot wins.",
+      path: "/marble-roulette",
+      content,
+      scripts,
+      lang,
+    }),
+  );
 }
 
 export async function handleMarbleRouletteRoutes(request, url) {
-  if (url.pathname === '/marble-roulette' || url.pathname === '/marble-roulette/') {
-    if (request.method === 'GET') return renderMarbleRoulettePage(resolveRequestLanguage(request, url));
+  if (
+    url.pathname === "/marble-roulette" ||
+    url.pathname === "/marble-roulette/"
+  ) {
+    if (request.method === "GET")
+      return renderMarbleRoulettePage(resolveRequestLanguage(request, url));
   }
   return null;
 }

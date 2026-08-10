@@ -10,16 +10,16 @@
  * @returns {Array<Object>} Filtered tools (returns all when query is empty)
  */
 export function filterTools(allTools, query) {
-  if (!query || query.trim() === '') return allTools;
+  if (!query || query.trim() === "") return allTools;
   const q = query.toLowerCase().trim();
   return allTools.filter((tool) => {
     const searchable = [
-      tool.name || '',
-      tool.description || '',
-      tool.keywords || '',
-      ...(tool.tags || [])
+      tool.name || "",
+      tool.description || "",
+      tool.keywords || "",
+      ...(tool.tags || []),
     ]
-      .join(' ')
+      .join(" ")
       .toLowerCase();
     return searchable.includes(q);
   });

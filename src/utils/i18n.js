@@ -4,51 +4,52 @@
  * Uses localStorage for persistence
  */
 
-import { CONTENT_TRANSLATIONS } from './content-metadata.js';
-import en from '../i18n/en.js';
-import ko from '../i18n/ko.js';
-import ja from '../i18n/ja.js';
-import es from '../i18n/es.js';
-import zhCN from '../i18n/zh-CN.js';
-import zhTW from '../i18n/zh-TW.js';
-import fr from '../i18n/fr.js';
-import de from '../i18n/de.js';
-import pt from '../i18n/pt.js';
-import vi from '../i18n/vi.js';
+import { CONTENT_TRANSLATIONS } from "./content-metadata.js";
+import en from "../i18n/en.js";
+import ko from "../i18n/ko.js";
+import ja from "../i18n/ja.js";
+import es from "../i18n/es.js";
+import zhCN from "../i18n/zh-CN.js";
+import zhTW from "../i18n/zh-TW.js";
+import fr from "../i18n/fr.js";
+import de from "../i18n/de.js";
+import pt from "../i18n/pt.js";
+import vi from "../i18n/vi.js";
 
 export const SUPPORTED_LANGUAGES = {
-  en: { name: 'English', flag: '🇺🇸' },
-  ko: { name: '한국어', flag: '🇰🇷' },
-  ja: { name: '日本語', flag: '🇯🇵' },
-  es: { name: 'Español', flag: '🇪🇸' },
-  'zh-CN': { name: '简体中文', flag: '🇨🇳' },
-  'zh-TW': { name: '繁體中文', flag: '🇹🇼' },
-  fr: { name: 'Français', flag: '🇫🇷' },
-  de: { name: 'Deutsch', flag: '🇩🇪' },
-  pt: { name: 'Português', flag: '🇧🇷' },
-  vi: { name: 'Tiếng Việt', flag: '🇻🇳' }
+  en: { name: "English", flag: "🇺🇸" },
+  ko: { name: "한국어", flag: "🇰🇷" },
+  ja: { name: "日本語", flag: "🇯🇵" },
+  es: { name: "Español", flag: "🇪🇸" },
+  "zh-CN": { name: "简体中文", flag: "🇨🇳" },
+  "zh-TW": { name: "繁體中文", flag: "🇹🇼" },
+  fr: { name: "Français", flag: "🇫🇷" },
+  de: { name: "Deutsch", flag: "🇩🇪" },
+  pt: { name: "Português", flag: "🇧🇷" },
+  vi: { name: "Tiếng Việt", flag: "🇻🇳" },
 };
 
-export const DEFAULT_LANGUAGE = 'en';
-export const LANGUAGE_QUERY_KEY = 'lang';
+export const DEFAULT_LANGUAGE = "en";
+export const LANGUAGE_QUERY_KEY = "lang";
 
 const TRANSLATIONS = {
   en,
   ko,
   ja,
   es,
-  'zh-CN': zhCN,
-  'zh-TW': zhTW,
+  "zh-CN": zhCN,
+  "zh-TW": zhTW,
   fr,
   de,
   pt,
-  vi
+  vi,
 };
 
 function getLanguageCatalog(lang) {
   const normalized = normalizeLanguage(lang);
   const base = TRANSLATIONS[normalized] || TRANSLATIONS[DEFAULT_LANGUAGE];
-  const content = CONTENT_TRANSLATIONS[normalized] || CONTENT_TRANSLATIONS[DEFAULT_LANGUAGE];
+  const content =
+    CONTENT_TRANSLATIONS[normalized] || CONTENT_TRANSLATIONS[DEFAULT_LANGUAGE];
   return content ? { ...base, content } : base;
 }
 
@@ -56,9 +57,9 @@ function getLanguageCatalog(lang) {
  * Get current language from localStorage or browser preference
  */
 export function getCurrentLanguage() {
-  if (typeof window === 'undefined') return DEFAULT_LANGUAGE;
+  if (typeof window === "undefined") return DEFAULT_LANGUAGE;
 
-  const stored = localStorage.getItem('language');
+  const stored = localStorage.getItem("language");
   if (stored && SUPPORTED_LANGUAGES[stored]) return stored;
 
   const browserLang = normalizeLanguage(navigator.language);
@@ -71,9 +72,9 @@ export function getCurrentLanguage() {
  * Translate a key path (e.g., 'nav.home')
  */
 export function t(path, lang = getCurrentLanguage()) {
-  const keys = path.split('.');
+  const keys = path.split(".");
   let result = getLanguageCatalog(lang);
-  
+
   for (const key of keys) {
     if (result[key] === undefined) {
       // Fallback to English if key missing in current language
@@ -86,18 +87,20 @@ export function t(path, lang = getCurrentLanguage()) {
     }
     result = result[key];
   }
-  
+
   return result;
 }
 
 export function normalizeLanguage(lang) {
-  const raw = String(lang || '').trim().toLowerCase();
+  const raw = String(lang || "")
+    .trim()
+    .toLowerCase();
   const parts = raw.split(/[-_]/);
   const base = parts[0];
-  if (base === 'zh') {
-    const sub = (parts[1] || '').toUpperCase();
-    if (sub === 'TW' || sub === 'HANT') return 'zh-TW';
-    return 'zh-CN';
+  if (base === "zh") {
+    const sub = (parts[1] || "").toUpperCase();
+    if (sub === "TW" || sub === "HANT") return "zh-TW";
+    return "zh-CN";
   }
   return SUPPORTED_LANGUAGES[base] ? base : DEFAULT_LANGUAGE;
 }
@@ -108,9 +111,9 @@ export function resolveRequestLanguage(request, url) {
     return normalizeLanguage(queryLang);
   }
 
-  const acceptLanguage = request?.headers?.get('Accept-Language') || '';
-  for (const part of acceptLanguage.split(',')) {
-    const code = normalizeLanguage(part.split(';')[0]);
+  const acceptLanguage = request?.headers?.get("Accept-Language") || "";
+  for (const part of acceptLanguage.split(",")) {
+    const code = normalizeLanguage(part.split(";")[0]);
     if (SUPPORTED_LANGUAGES[code]) {
       return code;
     }
@@ -120,24 +123,33 @@ export function resolveRequestLanguage(request, url) {
 }
 
 export function withLanguageQuery(path, lang = DEFAULT_LANGUAGE) {
-  if (!path || path.startsWith('http') || path.startsWith('mailto:') || path.startsWith('#')) {
+  if (
+    !path ||
+    path.startsWith("http") ||
+    path.startsWith("mailto:") ||
+    path.startsWith("#")
+  ) {
     return path;
   }
   const normalized = normalizeLanguage(lang);
   if (normalized === DEFAULT_LANGUAGE) {
     return path;
   }
-  const [pathname, hash = ''] = path.split('#');
-  const [base, search = ''] = pathname.split('?');
+  const [pathname, hash = ""] = path.split("#");
+  const [base, search = ""] = pathname.split("?");
   const params = new URLSearchParams(search);
   params.set(LANGUAGE_QUERY_KEY, normalized);
   const query = params.toString();
-  return `${base}${query ? `?${query}` : ''}${hash ? `#${hash}` : ''}`;
+  return `${base}${query ? `?${query}` : ""}${hash ? `#${hash}` : ""}`;
 }
 
 export function getToolTranslation(toolId, lang = DEFAULT_LANGUAGE) {
   const normalized = normalizeLanguage(lang);
-  return TRANSLATIONS[normalized]?.tools?.[toolId] || TRANSLATIONS[DEFAULT_LANGUAGE]?.tools?.[toolId] || null;
+  return (
+    TRANSLATIONS[normalized]?.tools?.[toolId] ||
+    TRANSLATIONS[DEFAULT_LANGUAGE]?.tools?.[toolId] ||
+    null
+  );
 }
 
 export function localizeTool(tool, lang = DEFAULT_LANGUAGE) {
@@ -147,7 +159,7 @@ export function localizeTool(tool, lang = DEFAULT_LANGUAGE) {
     ...tool,
     name: translation.name || tool.name,
     description: translation.desc || tool.description,
-    tip: translation.tip || tool.tip
+    tip: translation.tip || tool.tip,
   };
 }
 
@@ -190,7 +202,10 @@ export function getLanguageBootstrapScript(serverLang = DEFAULT_LANGUAGE) {
  */
 export function getLanguageScript(toolId, serverLang = DEFAULT_LANGUAGE) {
   const normalized = normalizeLanguage(serverLang);
-  const langsToSend = normalized === DEFAULT_LANGUAGE ? [DEFAULT_LANGUAGE] : [DEFAULT_LANGUAGE, normalized];
+  const langsToSend =
+    normalized === DEFAULT_LANGUAGE
+      ? [DEFAULT_LANGUAGE]
+      : [DEFAULT_LANGUAGE, normalized];
   const slim = {};
   for (const lang of langsToSend) {
     const data = getLanguageCatalog(lang);
@@ -446,15 +461,19 @@ export function getLanguageScript(toolId, serverLang = DEFAULT_LANGUAGE) {
  */
 export function getLanguageSelectorHTML(lang = DEFAULT_LANGUAGE) {
   const current = normalizeLanguage(lang);
-  const changeLanguageLabel = t('nav.changeLanguage', current);
-  const options = Object.entries(SUPPORTED_LANGUAGES).map(([code, { name, flag }]) => `
+  const changeLanguageLabel = t("nav.changeLanguage", current);
+  const options = Object.entries(SUPPORTED_LANGUAGES)
+    .map(
+      ([code, { name, flag }]) => `
     <button data-lang="${code}" 
-            class="flex items-center gap-2 w-full px-4 py-2 text-sm text-surface-700 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors ${current === code ? 'bg-surface-50 dark:bg-surface-800/50 font-semibold' : ''}"
+            class="flex items-center gap-2 w-full px-4 py-2 text-sm text-surface-700 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors ${current === code ? "bg-surface-50 dark:bg-surface-800/50 font-semibold" : ""}"
             role="menuitem">
       <span>${flag}</span>
       <span>${name}</span>
     </button>
-  `).join('');
+  `,
+    )
+    .join("");
 
   return `
     <div class="relative inline-block text-left group">

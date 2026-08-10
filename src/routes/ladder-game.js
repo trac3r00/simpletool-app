@@ -3,22 +3,31 @@
  * Fully client-side Canvas tool with hidden ladder mechanics.
  */
 
-import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
-import { getToolTranslation, resolveRequestLanguage, t } from '../utils/i18n.js';
+import { respondHTML } from "../utils/respond.js";
+import { createPageTemplate, createToolHeader } from "../utils/common-ui.js";
+import {
+  getToolTranslation,
+  resolveRequestLanguage,
+  t,
+} from "../utils/i18n.js";
 
-function renderLadderGamePage(lang = 'en') {
-  const toolTranslation = getToolTranslation('ladder-game', lang);
+function renderLadderGamePage(lang = "en") {
+  const toolTranslation = getToolTranslation("ladder-game", lang);
   const tr = (key, fallback) => {
     const value = t(key, lang);
     return value === key ? fallback : value;
   };
   const toolHeader = createToolHeader(
-    { emoji: '🪜' },
-    toolTranslation?.name || 'Ladder Game',
-    toolTranslation?.desc || 'Classic ghost leg ladder game for random matching and decision making.',
-    [{ text: `<span data-i18n="tools.ladder-game.ui.badge0">${tr('tools.ladder-game.ui.badge0', 'Client-Side Only')}</span>` }],
-    { toolId: 'ladder-game' }
+    { emoji: "🪜" },
+    toolTranslation?.name || "Ladder Game",
+    toolTranslation?.desc ||
+      "Classic ghost leg ladder game for random matching and decision making.",
+    [
+      {
+        text: `<span data-i18n="tools.ladder-game.ui.badge0">${tr("tools.ladder-game.ui.badge0", "Client-Side Only")}</span>`,
+      },
+    ],
+    { toolId: "ladder-game" },
   );
 
   const content = `
@@ -205,44 +214,44 @@ function renderLadderGamePage(lang = 'en') {
           <!-- Step 1: Player Count + Mode Selection -->
           <div id="step-1" data-step="1" class="step-panel">
             <div class="text-center py-8 sm:py-12">
-              <h2 class="text-xl sm:text-2xl font-bold text-surface-900 dark:text-surface-50 mb-2" data-i18n="tools.ladder-game.ui.heading0">${tr('tools.ladder-game.ui.heading0', 'How many players?')}</h2>
-              <p class="text-surface-600 dark:text-surface-400 mb-8" data-i18n="tools.ladder-game.ui.text0">${tr('tools.ladder-game.ui.text0', 'Select the number of participants')}</p>
+              <h2 class="text-xl sm:text-2xl font-bold text-surface-900 dark:text-surface-50 mb-2" data-i18n="tools.ladder-game.ui.heading0">${tr("tools.ladder-game.ui.heading0", "How many players?")}</h2>
+              <p class="text-surface-600 dark:text-surface-400 mb-8" data-i18n="tools.ladder-game.ui.text0">${tr("tools.ladder-game.ui.text0", "Select the number of participants")}</p>
 
               <div class="flex items-center justify-center gap-4 mb-8">
                 <button id="decrement-count" type="button" class="btn btn-secondary w-14 h-14 text-2xl" aria-label="Decrease player count" data-i18n-aria="tools.ladder-game.ui.aria0">−</button>
                 <div class="relative">
                   <input type="number" id="player-count" value="4" min="2" max="24" class="input w-24 text-center text-2xl font-bold py-3" aria-label="Player count" data-i18n-aria="tools.ladder-game.ui.label0">
-                  <span class="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.ladder-game.ui.text1">${tr('tools.ladder-game.ui.text1', 'players')}</span>
+                  <span class="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.ladder-game.ui.text1">${tr("tools.ladder-game.ui.text1", "players")}</span>
                 </div>
                 <button id="increment-count" type="button" class="btn btn-secondary w-14 h-14 text-2xl" aria-label="Increase player count" data-i18n-aria="tools.ladder-game.ui.aria1">+</button>
               </div>
 
               <!-- Gameplay Mode Selection -->
               <div class="mb-8">
-                <p class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-3" data-i18n="tools.ladder-game.ui.modeLabel">${tr('tools.ladder-game.ui.modeLabel', 'Game Mode')}</p>
+                <p class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-3" data-i18n="tools.ladder-game.ui.modeLabel">${tr("tools.ladder-game.ui.modeLabel", "Game Mode")}</p>
                 <div class="flex flex-wrap justify-center gap-2" role="group" aria-label="Game mode">
-                  <button type="button" class="mode-tab active" data-mode="classic" data-i18n="tools.ladder-game.ui.modeClassic">${tr('tools.ladder-game.ui.modeClassic', 'Classic')}</button>
-                  <button type="button" class="mode-tab" data-mode="speed" data-i18n="tools.ladder-game.ui.modeSpeed">${tr('tools.ladder-game.ui.modeSpeed', 'Speed Race')}</button>
-                  <button type="button" class="mode-tab" data-mode="mystery" data-i18n="tools.ladder-game.ui.modeMystery">${tr('tools.ladder-game.ui.modeMystery', 'Mystery')}</button>
-                  <button type="button" class="mode-tab" data-mode="tournament" data-i18n="tools.ladder-game.ui.modeTournament">${tr('tools.ladder-game.ui.modeTournament', 'Tournament')}</button>
-                  <button type="button" class="mode-tab" data-mode="team" data-i18n="tools.ladder-game.ui.modeTeam">${tr('tools.ladder-game.ui.modeTeam', 'Team')}</button>
+                  <button type="button" class="mode-tab active" data-mode="classic" data-i18n="tools.ladder-game.ui.modeClassic">${tr("tools.ladder-game.ui.modeClassic", "Classic")}</button>
+                  <button type="button" class="mode-tab" data-mode="speed" data-i18n="tools.ladder-game.ui.modeSpeed">${tr("tools.ladder-game.ui.modeSpeed", "Speed Race")}</button>
+                  <button type="button" class="mode-tab" data-mode="mystery" data-i18n="tools.ladder-game.ui.modeMystery">${tr("tools.ladder-game.ui.modeMystery", "Mystery")}</button>
+                  <button type="button" class="mode-tab" data-mode="tournament" data-i18n="tools.ladder-game.ui.modeTournament">${tr("tools.ladder-game.ui.modeTournament", "Tournament")}</button>
+                  <button type="button" class="mode-tab" data-mode="team" data-i18n="tools.ladder-game.ui.modeTeam">${tr("tools.ladder-game.ui.modeTeam", "Team")}</button>
                 </div>
-                <p id="mode-desc" class="mt-2 text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.ladder-game.ui.modeDescClassic">${tr('tools.ladder-game.ui.modeDescClassic', 'Trace one path at a time to reveal results.')}</p>
+                <p id="mode-desc" class="mt-2 text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.ladder-game.ui.modeDescClassic">${tr("tools.ladder-game.ui.modeDescClassic", "Trace one path at a time to reveal results.")}</p>
               </div>
 
               <!-- Theme Selection -->
               <div class="mb-8">
-                <p class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-3" data-i18n="tools.ladder-game.ui.themeLabel">${tr('tools.ladder-game.ui.themeLabel', 'Visual Theme')}</p>
+                <p class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-3" data-i18n="tools.ladder-game.ui.themeLabel">${tr("tools.ladder-game.ui.themeLabel", "Visual Theme")}</p>
                 <div class="flex flex-wrap justify-center gap-2" role="group" aria-label="Visual theme">
-                  <button type="button" class="mode-tab active" data-theme-pick="neon" data-i18n="tools.ladder-game.ui.themeNeon">${tr('tools.ladder-game.ui.themeNeon', 'Neon')}</button>
-                  <button type="button" class="mode-tab" data-theme-pick="pastel" data-i18n="tools.ladder-game.ui.themePastel">${tr('tools.ladder-game.ui.themePastel', 'Pastel')}</button>
-                  <button type="button" class="mode-tab" data-theme-pick="corporate" data-i18n="tools.ladder-game.ui.themeCorporate">${tr('tools.ladder-game.ui.themeCorporate', 'Corporate')}</button>
-                  <button type="button" class="mode-tab" data-theme-pick="retro" data-i18n="tools.ladder-game.ui.themeRetro">${tr('tools.ladder-game.ui.themeRetro', 'Retro')}</button>
+                  <button type="button" class="mode-tab active" data-theme-pick="neon" data-i18n="tools.ladder-game.ui.themeNeon">${tr("tools.ladder-game.ui.themeNeon", "Neon")}</button>
+                  <button type="button" class="mode-tab" data-theme-pick="pastel" data-i18n="tools.ladder-game.ui.themePastel">${tr("tools.ladder-game.ui.themePastel", "Pastel")}</button>
+                  <button type="button" class="mode-tab" data-theme-pick="corporate" data-i18n="tools.ladder-game.ui.themeCorporate">${tr("tools.ladder-game.ui.themeCorporate", "Corporate")}</button>
+                  <button type="button" class="mode-tab" data-theme-pick="retro" data-i18n="tools.ladder-game.ui.themeRetro">${tr("tools.ladder-game.ui.themeRetro", "Retro")}</button>
                 </div>
               </div>
 
               <div class="flex justify-center">
-                <button id="btn-step-1-next" type="button" class="btn btn-primary px-8 py-3 text-lg" data-i18n="tools.ladder-game.ui.button0">${tr('tools.ladder-game.ui.button0', 'Start')}</button>
+                <button id="btn-step-1-next" type="button" class="btn btn-primary px-8 py-3 text-lg" data-i18n="tools.ladder-game.ui.button0">${tr("tools.ladder-game.ui.button0", "Start")}</button>
               </div>
             </div>
           </div>
@@ -251,61 +260,61 @@ function renderLadderGamePage(lang = 'en') {
           <div id="step-2" data-step="2" class="step-panel hidden">
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
               <div>
-                <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50" data-i18n="tools.ladder-game.ui.heading1">${tr('tools.ladder-game.ui.heading1', 'Enter Names &amp; Results')}</h2>
-                <p class="text-sm text-surface-600 dark:text-surface-400" data-i18n="tools.ladder-game.ui.text2">${tr('tools.ladder-game.ui.text2', 'Set player names and what they might win')}</p>
+                <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50" data-i18n="tools.ladder-game.ui.heading1">${tr("tools.ladder-game.ui.heading1", "Enter Names &amp; Results")}</h2>
+                <p class="text-sm text-surface-600 dark:text-surface-400" data-i18n="tools.ladder-game.ui.text2">${tr("tools.ladder-game.ui.text2", "Set player names and what they might win")}</p>
               </div>
               <div class="flex flex-wrap items-center gap-2">
-                <label for="preset-select" class="label mb-0" data-i18n="tools.ladder-game.ui.label1">${tr('tools.ladder-game.ui.label1', 'Quick presets')}</label>
+                <label for="preset-select" class="label mb-0" data-i18n="tools.ladder-game.ui.label1">${tr("tools.ladder-game.ui.label1", "Quick presets")}</label>
                 <select id="preset-select" class="input w-40">
-                  <option value="" data-i18n="tools.ladder-game.ui.option0">${tr('tools.ladder-game.ui.option0', 'Select...')}</option>
-                  <option value="coffee" data-i18n="tools.ladder-game.ui.option1">${tr('tools.ladder-game.ui.option1', 'Coffee break')}</option>
-                  <option value="lunch" data-i18n="tools.ladder-game.ui.option2">${tr('tools.ladder-game.ui.option2', 'Lunch duty')}</option>
-                  <option value="gift" data-i18n="tools.ladder-game.ui.option3">${tr('tools.ladder-game.ui.option3', 'Gift exchange')}</option>
-                  <option value="chores" data-i18n="tools.ladder-game.ui.option4">${tr('tools.ladder-game.ui.option4', 'House chores')}</option>
-                  <option value="teams" data-i18n="tools.ladder-game.ui.option5">${tr('tools.ladder-game.ui.option5', 'Team assignment')}</option>
+                  <option value="" data-i18n="tools.ladder-game.ui.option0">${tr("tools.ladder-game.ui.option0", "Select...")}</option>
+                  <option value="coffee" data-i18n="tools.ladder-game.ui.option1">${tr("tools.ladder-game.ui.option1", "Coffee break")}</option>
+                  <option value="lunch" data-i18n="tools.ladder-game.ui.option2">${tr("tools.ladder-game.ui.option2", "Lunch duty")}</option>
+                  <option value="gift" data-i18n="tools.ladder-game.ui.option3">${tr("tools.ladder-game.ui.option3", "Gift exchange")}</option>
+                  <option value="chores" data-i18n="tools.ladder-game.ui.option4">${tr("tools.ladder-game.ui.option4", "House chores")}</option>
+                  <option value="teams" data-i18n="tools.ladder-game.ui.option5">${tr("tools.ladder-game.ui.option5", "Team assignment")}</option>
                 </select>
               </div>
             </div>
 
             <!-- CSV/Paste Import -->
             <details class="mb-4 rounded-xl border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-900/40">
-              <summary class="px-4 py-3 text-sm font-medium cursor-pointer select-none text-surface-700 dark:text-surface-300" data-i18n="tools.ladder-game.ui.importLabel">${tr('tools.ladder-game.ui.importLabel', 'Bulk Import (CSV / paste)')}</summary>
+              <summary class="px-4 py-3 text-sm font-medium cursor-pointer select-none text-surface-700 dark:text-surface-300" data-i18n="tools.ladder-game.ui.importLabel">${tr("tools.ladder-game.ui.importLabel", "Bulk Import (CSV / paste)")}</summary>
               <div class="px-4 pb-4 pt-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label class="text-xs text-surface-500 mb-1 block" data-i18n="tools.ladder-game.ui.importPlayersLabel">${tr('tools.ladder-game.ui.importPlayersLabel', 'Player Names')}</label>
-                  <textarea id="import-players" class="input resize-none text-sm" rows="4" data-i18n-placeholder="tools.ladder-game.ui.importPlayersPH" placeholder="${tr('tools.ladder-game.ui.importPlayersPH', 'Alice, Bob, Charlie\nor one per line')}"></textarea>
+                  <label class="text-xs text-surface-500 mb-1 block" data-i18n="tools.ladder-game.ui.importPlayersLabel">${tr("tools.ladder-game.ui.importPlayersLabel", "Player Names")}</label>
+                  <textarea id="import-players" class="input resize-none text-sm" rows="4" data-i18n-placeholder="tools.ladder-game.ui.importPlayersPH" placeholder="${tr("tools.ladder-game.ui.importPlayersPH", "Alice, Bob, Charlie\nor one per line")}"></textarea>
                 </div>
                 <div>
-                  <label class="text-xs text-surface-500 mb-1 block" data-i18n="tools.ladder-game.ui.importResultsLabel">${tr('tools.ladder-game.ui.importResultsLabel', 'Results')}</label>
-                  <textarea id="import-results" class="input resize-none text-sm" rows="4" data-i18n-placeholder="tools.ladder-game.ui.importResultsPH" placeholder="${tr('tools.ladder-game.ui.importResultsPH', 'Prize A, Prize B\nor one per line')}"></textarea>
+                  <label class="text-xs text-surface-500 mb-1 block" data-i18n="tools.ladder-game.ui.importResultsLabel">${tr("tools.ladder-game.ui.importResultsLabel", "Results")}</label>
+                  <textarea id="import-results" class="input resize-none text-sm" rows="4" data-i18n-placeholder="tools.ladder-game.ui.importResultsPH" placeholder="${tr("tools.ladder-game.ui.importResultsPH", "Prize A, Prize B\nor one per line")}"></textarea>
                 </div>
                 <div class="sm:col-span-2">
-                  <button id="btn-import" type="button" class="btn btn-secondary text-sm" data-i18n="tools.ladder-game.ui.importBtn">${tr('tools.ladder-game.ui.importBtn', 'Apply Import')}</button>
+                  <button id="btn-import" type="button" class="btn btn-secondary text-sm" data-i18n="tools.ladder-game.ui.importBtn">${tr("tools.ladder-game.ui.importBtn", "Apply Import")}</button>
                 </div>
               </div>
             </details>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
               <div>
-                <label for="density-select" class="label mb-0" data-i18n="tools.ladder-game.ui.densityLabel">${tr('tools.ladder-game.ui.densityLabel', 'Ladder Density')}</label>
+                <label for="density-select" class="label mb-0" data-i18n="tools.ladder-game.ui.densityLabel">${tr("tools.ladder-game.ui.densityLabel", "Ladder Density")}</label>
                 <select id="density-select" class="input w-full">
-                  <option value="light" data-i18n="tools.ladder-game.ui.densityLight">${tr('tools.ladder-game.ui.densityLight', 'Light')}</option>
-                  <option value="standard" selected data-i18n="tools.ladder-game.ui.densityStandard">${tr('tools.ladder-game.ui.densityStandard', 'Standard')}</option>
-                  <option value="dense" data-i18n="tools.ladder-game.ui.densityDense">${tr('tools.ladder-game.ui.densityDense', 'Dense')}</option>
+                  <option value="light" data-i18n="tools.ladder-game.ui.densityLight">${tr("tools.ladder-game.ui.densityLight", "Light")}</option>
+                  <option value="standard" selected data-i18n="tools.ladder-game.ui.densityStandard">${tr("tools.ladder-game.ui.densityStandard", "Standard")}</option>
+                  <option value="dense" data-i18n="tools.ladder-game.ui.densityDense">${tr("tools.ladder-game.ui.densityDense", "Dense")}</option>
                 </select>
               </div>
               <label class="flex items-start gap-3 rounded-xl border border-surface-200 dark:border-surface-800 bg-surface-50 dark:bg-surface-900/40 px-4 py-3 text-sm text-surface-700 dark:text-surface-300">
                 <input id="secret-results-toggle" type="checkbox" class="mt-1 rounded border-surface-300 text-primary-600 focus:ring-primary-500">
                 <span>
-                  <span class="font-medium block" data-i18n="tools.ladder-game.ui.secretLabel">${tr('tools.ladder-game.ui.secretLabel', 'Hide bottom results until reveal')}</span>
-                  <span class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.ladder-game.ui.secretHint">${tr('tools.ladder-game.ui.secretHint', 'Keep result labels hidden until someone traces or reveals the ladder.')}</span>
+                  <span class="font-medium block" data-i18n="tools.ladder-game.ui.secretLabel">${tr("tools.ladder-game.ui.secretLabel", "Hide bottom results until reveal")}</span>
+                  <span class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.ladder-game.ui.secretHint">${tr("tools.ladder-game.ui.secretHint", "Keep result labels hidden until someone traces or reveals the ladder.")}</span>
                 </span>
               </label>
             </div>
 
             <!-- Avatar Selector -->
             <div class="mb-4">
-              <p class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-2" data-i18n="tools.ladder-game.ui.avatarLabel">${tr('tools.ladder-game.ui.avatarLabel', 'Player Avatar')}</p>
+              <p class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-2" data-i18n="tools.ladder-game.ui.avatarLabel">${tr("tools.ladder-game.ui.avatarLabel", "Player Avatar")}</p>
               <div id="avatar-selector" class="flex flex-wrap gap-1" role="group" aria-label="Avatar selection">
                 <!-- Populated by JS -->
               </div>
@@ -315,8 +324,8 @@ function renderLadderGamePage(lang = 'en') {
               <!-- Player Names (Top) with drag reorder -->
               <div>
                 <div class="flex items-center justify-between mb-2">
-                  <h3 class="label" data-i18n="tools.ladder-game.ui.label2">${tr('tools.ladder-game.ui.label2', 'Players (Top)')}</h3>
-                  <span class="text-xs text-surface-400 dark:text-surface-500" data-i18n="tools.ladder-game.ui.dragHint">${tr('tools.ladder-game.ui.dragHint', 'Drag to reorder')}</span>
+                  <h3 class="label" data-i18n="tools.ladder-game.ui.label2">${tr("tools.ladder-game.ui.label2", "Players (Top)")}</h3>
+                  <span class="text-xs text-surface-400 dark:text-surface-500" data-i18n="tools.ladder-game.ui.dragHint">${tr("tools.ladder-game.ui.dragHint", "Drag to reorder")}</span>
                 </div>
                 <div id="players-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
                   <!-- Dynamically populated -->
@@ -326,8 +335,8 @@ function renderLadderGamePage(lang = 'en') {
               <!-- Results (Bottom) -->
               <div>
                 <div class="flex items-center justify-between mb-2">
-                  <h3 class="label" data-i18n="tools.ladder-game.ui.label3">${tr('tools.ladder-game.ui.label3', 'Results (Bottom)')}</h3>
-                  <button id="btn-undo-rung" type="button" class="text-xs text-surface-400 hover:text-surface-600 dark:text-surface-500 dark:hover:text-surface-300 disabled:opacity-40 disabled:cursor-not-allowed" disabled data-i18n="tools.ladder-game.ui.undoBtn">${tr('tools.ladder-game.ui.undoBtn', 'Undo Last Randomize')}</button>
+                  <h3 class="label" data-i18n="tools.ladder-game.ui.label3">${tr("tools.ladder-game.ui.label3", "Results (Bottom)")}</h3>
+                  <button id="btn-undo-rung" type="button" class="text-xs text-surface-400 hover:text-surface-600 dark:text-surface-500 dark:hover:text-surface-300 disabled:opacity-40 disabled:cursor-not-allowed" disabled data-i18n="tools.ladder-game.ui.undoBtn">${tr("tools.ladder-game.ui.undoBtn", "Undo Last Randomize")}</button>
                 </div>
                 <div id="results-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
                   <!-- Dynamically populated -->
@@ -336,8 +345,8 @@ function renderLadderGamePage(lang = 'en') {
             </div>
 
             <div class="flex justify-between mt-8">
-              <button id="btn-step-2-back" type="button" class="btn btn-ghost" data-i18n="tools.ladder-game.ui.button1">${tr('tools.ladder-game.ui.button1', 'Back')}</button>
-              <button id="btn-step-2-next" type="button" class="btn btn-primary px-8" data-i18n="tools.ladder-game.ui.button2">${tr('tools.ladder-game.ui.button2', 'Start Ladder')}</button>
+              <button id="btn-step-2-back" type="button" class="btn btn-ghost" data-i18n="tools.ladder-game.ui.button1">${tr("tools.ladder-game.ui.button1", "Back")}</button>
+              <button id="btn-step-2-next" type="button" class="btn btn-primary px-8" data-i18n="tools.ladder-game.ui.button2">${tr("tools.ladder-game.ui.button2", "Start Ladder")}</button>
             </div>
           </div>
 
@@ -345,15 +354,15 @@ function renderLadderGamePage(lang = 'en') {
           <div id="step-3" data-step="3" class="step-panel hidden">
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
               <div>
-                <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50" data-i18n="tools.ladder-game.ui.heading2">${tr('tools.ladder-game.ui.heading2', 'Find Your Path')}</h2>
-                <p class="text-sm text-surface-600 dark:text-surface-400" data-i18n="tools.ladder-game.ui.text3">${tr('tools.ladder-game.ui.text3', 'Click a player name to trace down, or a result to trace up')}</p>
+                <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50" data-i18n="tools.ladder-game.ui.heading2">${tr("tools.ladder-game.ui.heading2", "Find Your Path")}</h2>
+                <p class="text-sm text-surface-600 dark:text-surface-400" data-i18n="tools.ladder-game.ui.text3">${tr("tools.ladder-game.ui.text3", "Click a player name to trace down, or a result to trace up")}</p>
               </div>
               <div class="flex items-center gap-3">
                 <!-- Mode badge -->
                 <span id="mode-badge" class="px-2 py-0.5 rounded-full text-xs font-semibold bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300"></span>
                 <label class="inline-flex items-center gap-2 text-sm text-surface-700 dark:text-surface-300 select-none cursor-pointer">
                   <input id="sound-toggle" type="checkbox" class="rounded border-surface-300 text-primary-600 focus:ring-primary-500">
-                  <span data-i18n="tools.ladder-game.ui.label4">${tr('tools.ladder-game.ui.label4', 'Sound')}</span>
+                  <span data-i18n="tools.ladder-game.ui.label4">${tr("tools.ladder-game.ui.label4", "Sound")}</span>
                 </label>
               </div>
             </div>
@@ -379,31 +388,31 @@ function renderLadderGamePage(lang = 'en') {
 
             <!-- Status -->
             <div class="mt-4 text-center">
-              <div id="game-status" role="status" aria-live="polite" class="text-sm text-surface-700 dark:text-surface-300" data-i18n="tools.ladder-game.ui.status0">${tr('tools.ladder-game.ui.status0', 'Click a name to start tracing')}</div>
+              <div id="game-status" role="status" aria-live="polite" class="text-sm text-surface-700 dark:text-surface-300" data-i18n="tools.ladder-game.ui.status0">${tr("tools.ladder-game.ui.status0", "Click a name to start tracing")}</div>
             </div>
 
             <!-- Action Buttons -->
             <div class="flex flex-wrap justify-center gap-3 mt-6">
-              <button id="btn-reveal-all" type="button" class="btn btn-secondary" data-i18n="tools.ladder-game.ui.button3">${tr('tools.ladder-game.ui.button3', 'Reveal All')}</button>
-              <button id="btn-share-result" type="button" class="btn btn-secondary" data-i18n="tools.ladder-game.ui.shareBtn">${tr('tools.ladder-game.ui.shareBtn', 'Share Result')}</button>
-              <button id="btn-play-again" type="button" class="btn btn-primary" data-i18n="tools.ladder-game.ui.button4">${tr('tools.ladder-game.ui.button4', 'Play Again')}</button>
+              <button id="btn-reveal-all" type="button" class="btn btn-secondary" data-i18n="tools.ladder-game.ui.button3">${tr("tools.ladder-game.ui.button3", "Reveal All")}</button>
+              <button id="btn-share-result" type="button" class="btn btn-secondary" data-i18n="tools.ladder-game.ui.shareBtn">${tr("tools.ladder-game.ui.shareBtn", "Share Result")}</button>
+              <button id="btn-play-again" type="button" class="btn btn-primary" data-i18n="tools.ladder-game.ui.button4">${tr("tools.ladder-game.ui.button4", "Play Again")}</button>
             </div>
 
             <!-- Tournament Bracket (shown only in tournament mode) -->
             <div id="tournament-bracket" class="mt-6 hidden">
-              <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-50 mb-3 text-center" data-i18n="tools.ladder-game.ui.bracketHeading">${tr('tools.ladder-game.ui.bracketHeading', 'Tournament Bracket')}</h3>
+              <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-50 mb-3 text-center" data-i18n="tools.ladder-game.ui.bracketHeading">${tr("tools.ladder-game.ui.bracketHeading", "Tournament Bracket")}</h3>
               <div id="bracket-display" class="flex gap-4 overflow-x-auto pb-2"></div>
             </div>
 
             <!-- Team Scores (shown only in team mode) -->
             <div id="team-scores-display" class="mt-6 hidden">
-              <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-50 mb-3 text-center" data-i18n="tools.ladder-game.ui.teamScoresHeading">${tr('tools.ladder-game.ui.teamScoresHeading', 'Team Scores')}</h3>
+              <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-50 mb-3 text-center" data-i18n="tools.ladder-game.ui.teamScoresHeading">${tr("tools.ladder-game.ui.teamScoresHeading", "Team Scores")}</h3>
               <div id="team-scores-list" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
             </div>
 
             <!-- Results Summary -->
             <div id="results-summary" class="mt-6 hidden">
-              <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-50 mb-3 text-center" data-i18n="tools.ladder-game.ui.heading3">${tr('tools.ladder-game.ui.heading3', 'Results')}</h3>
+              <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-50 mb-3 text-center" data-i18n="tools.ladder-game.ui.heading3">${tr("tools.ladder-game.ui.heading3", "Results")}</h3>
               <div id="results-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 <!-- Dynamically populated -->
               </div>
@@ -2046,19 +2055,23 @@ function renderLadderGamePage(lang = 'en') {
   `;
 
   return createPageTemplate({
-    title: toolTranslation?.name || 'Ladder Game',
-    description: toolTranslation?.desc || 'Classic ghost leg ladder game for random matching and decision making.',
+    title: toolTranslation?.name || "Ladder Game",
+    description:
+      toolTranslation?.desc ||
+      "Classic ghost leg ladder game for random matching and decision making.",
     content,
-    path: '/ladder-game',
+    path: "/ladder-game",
     scripts: script,
-    lang
+    lang,
   });
 }
 
 export async function handleLadderGameRoutes(request, url) {
-  if (url.pathname === '/ladder-game' || url.pathname === '/ladder-game/') {
-    if (request.method === 'GET') {
-      return respondHTML(renderLadderGamePage(resolveRequestLanguage(request, url)));
+  if (url.pathname === "/ladder-game" || url.pathname === "/ladder-game/") {
+    if (request.method === "GET") {
+      return respondHTML(
+        renderLadderGamePage(resolveRequestLanguage(request, url)),
+      );
     }
   }
   return null;

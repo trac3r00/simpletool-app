@@ -1,35 +1,61 @@
-import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createCheatsheet, createMobileTabView, getMobileTabScript, createEmptyState } from '../utils/common-ui.js';
-import { createRichEditorPane, getRichEditorStyles, getRichEditorScript } from '../utils/rich-editor.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { createRelatedToolsSection } from '../utils/content-ui.js';
-import { getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML } from "../utils/respond.js";
+import {
+  createPageTemplate,
+  createToolHeader,
+  createCheatsheet,
+  createMobileTabView,
+  getMobileTabScript,
+  createEmptyState,
+} from "../utils/common-ui.js";
+import {
+  createRichEditorPane,
+  getRichEditorStyles,
+  getRichEditorScript,
+} from "../utils/rich-editor.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import { createRelatedToolsSection } from "../utils/content-ui.js";
+import {
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleMermaidStudioRoutes(request, url) {
-  if (url.pathname !== '/mermaid-studio' && url.pathname !== '/mermaid-studio/') return null;
-  if (request.method !== 'GET') return null;
+  if (url.pathname !== "/mermaid-studio" && url.pathname !== "/mermaid-studio/")
+    return null;
+  if (request.method !== "GET") return null;
   const currentLang = resolveRequestLanguage(request, url);
-  const translation = getToolTranslation('mermaid-studio', currentLang);
+  const translation = getToolTranslation("mermaid-studio", currentLang);
 
-  const title = translation?.name || 'Mermaid Studio';
-  const description = translation?.desc || 'Live Mermaid.js diagram previewer. Create flowcharts, sequence diagrams, and gantt charts with ease.';
+  const title = translation?.name || "Mermaid Studio";
+  const description =
+    translation?.desc ||
+    "Live Mermaid.js diagram previewer. Create flowcharts, sequence diagrams, and gantt charts with ease.";
 
   const header = createToolHeader(
-    { emoji: '🧜‍♀️' },
+    { emoji: "🧜‍♀️" },
     title,
     description,
-    [{ text: translation?.ui?.badge9 || 'Client-Side Only', tooltip: 'Diagrams render entirely in your browser using Mermaid.js.' }],
-    { toolId: 'mermaid-studio' }
+    [
+      {
+        text: translation?.ui?.badge9 || "Client-Side Only",
+        tooltip: "Diagrams render entirely in your browser using Mermaid.js.",
+      },
+    ],
+    { toolId: "mermaid-studio" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'mermaid-studio');
-  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+  const currentTool = TOOLS.find((t) => t.id === "mermaid-studio");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       ${header}
 
-      ${createMobileTabView({ leftPaneId: 'editor-pane', rightPaneId: 'preview-pane', leftLabel: '<span data-i18n="tools.mermaid-studio.ui.stat3">Mermaid Code</span>', rightLabel: '<span data-i18n="tools.mermaid-studio.ui.stat4">Preview</span>' })}
+      ${createMobileTabView({ leftPaneId: "editor-pane", rightPaneId: "preview-pane", leftLabel: '<span data-i18n="tools.mermaid-studio.ui.stat3">Mermaid Code</span>', rightLabel: '<span data-i18n="tools.mermaid-studio.ui.stat4">Preview</span>' })}
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 h-[calc(100vh-350px)] min-h-[600px]">
         <!-- Editor -->
@@ -40,7 +66,7 @@ export async function handleMermaidStudioRoutes(request, url) {
               <button id="sample-btn" data-tooltip="Load a sample diagram to get started" class="btn btn-secondary btn-xs"><span data-i18n="tools.mermaid-studio.ui.button0">Load Sample</span></button>
             </div>
           </div>
-          ${createRichEditorPane({ id: 'mermaid-input', mode: 'textarea', rows: 22, placeholder: "graph TD\\nA[Start] --> B{Is it working?}\\nB -- Yes --> C[Great!]\\nB -- No --> D[Debug]", wrapClass: 'flex-1' })}
+          ${createRichEditorPane({ id: "mermaid-input", mode: "textarea", rows: 22, placeholder: "graph TD\\nA[Start] --> B{Is it working?}\\nB -- Yes --> C[Great!]\\nB -- No --> D[Debug]", wrapClass: "flex-1" })}
         </div>
 
         <!-- Preview -->
@@ -52,13 +78,15 @@ export async function handleMermaidStudioRoutes(request, url) {
             </div>
           </div>
           <div id="mermaid-render" class="flex-1 p-8 overflow-auto flex items-center justify-center bg-white dark:bg-surface-950">
-            ${createEmptyState({ icon: '🧜‍♀️', title: 'No diagram yet', description: 'Write Mermaid code on the left to see it rendered here.', id: 'mermaid-empty-state', i18nTitle: 'tools.mermaid-studio.ui.desc10', i18nDesc: 'tools.mermaid-studio.ui.desc11' })}
+            ${createEmptyState({ icon: "🧜‍♀️", title: "No diagram yet", description: "Write Mermaid code on the left to see it rendered here.", id: "mermaid-empty-state", i18nTitle: "tools.mermaid-studio.ui.desc10", i18nDesc: "tools.mermaid-studio.ui.desc11" })}
           </div>
         </div>
       </div>
 
-      ${createCheatsheet('mermaid-studio', 'Mermaid Syntax Reference', [
-        { heading: 'Diagram Types', content: `
+      ${createCheatsheet("mermaid-studio", "Mermaid Syntax Reference", [
+        {
+          heading: "Diagram Types",
+          content: `
           <table>
             <tr><th data-i18n="tools.mermaid-studio.ui.th2">Keyword</th><th data-i18n="tools.mermaid-studio.ui.th3">Type</th></tr>
             <tr><td><code>graph TD</code></td><td>Top-down flowchart</td></tr>
@@ -69,8 +97,11 @@ export async function handleMermaidStudioRoutes(request, url) {
             <tr><td><code>erDiagram</code></td><td>ER diagram</td></tr>
             <tr><td><code>gantt</code></td><td>Gantt chart</td></tr>
             <tr><td><code>pie</code></td><td>Pie chart</td></tr>
-          </table>` },
-        { heading: 'Flowchart Syntax', content: `
+          </table>`,
+        },
+        {
+          heading: "Flowchart Syntax",
+          content: `
           <table>
             <tr><th data-i18n="tools.mermaid-studio.ui.th4">Syntax</th><th data-i18n="tools.mermaid-studio.ui.th5">Shape</th></tr>
             <tr><td><code>A[Text]</code></td><td>Rectangle</td></tr>
@@ -79,7 +110,8 @@ export async function handleMermaidStudioRoutes(request, url) {
             <tr><td><code>A--&gt;B</code></td><td>Arrow</td></tr>
             <tr><td><code>A-.-&gt;B</code></td><td>Dotted arrow</td></tr>
             <tr><td><code>A==&gt;B</code></td><td>Thick arrow</td></tr>
-          </table>` }
+          </table>`,
+        },
       ])}
     ${createRelatedToolsSection(relatedToolsData)}
     </main>
@@ -183,12 +215,14 @@ export async function handleMermaidStudioRoutes(request, url) {
     </script>
   `;
 
-  return respondHTML(createPageTemplate({
-    title,
-    description,
-    path: '/mermaid-studio',
-    content,
-    scripts,
-    lang: normalizeLanguage(currentLang)
-  }));
+  return respondHTML(
+    createPageTemplate({
+      title,
+      description,
+      path: "/mermaid-studio",
+      content,
+      scripts,
+      lang: normalizeLanguage(currentLang),
+    }),
+  );
 }

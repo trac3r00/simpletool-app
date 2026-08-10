@@ -4,37 +4,60 @@
  * All key generation happens locally using libsodium.js
  */
 
-import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { createRelatedToolsSection } from '../utils/content-ui.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML } from "../utils/respond.js";
+import {
+  createPageTemplate,
+  createToolHeader,
+  createCheatsheet,
+  infoHint,
+} from "../utils/common-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import { createRelatedToolsSection } from "../utils/content-ui.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleWireguardConfigRoutes(request, url) {
-  if (url.pathname !== '/wireguard-config' && url.pathname !== '/wireguard-config/') return null;
-  if (request.method !== 'GET') return null;
+  if (
+    url.pathname !== "/wireguard-config" &&
+    url.pathname !== "/wireguard-config/"
+  )
+    return null;
+  if (request.method !== "GET") return null;
   const lang = resolveRequestLanguage(request, url);
   return respondHTML(renderWireguardConfigPage(lang));
 }
 
 function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('wireguard-config', currentLang);
-  const title = translation?.name || 'WireGuard Config Studio';
-  const description = translation?.desc || 'Generate WireGuard configurations with local key generation and QR export.';
+  const translation = getToolTranslation("wireguard-config", currentLang);
+  const title = translation?.name || "WireGuard Config Studio";
+  const description =
+    translation?.desc ||
+    "Generate WireGuard configurations with local key generation and QR export.";
 
   const toolHeader = createToolHeader(
-    { emoji: '🔒' },
+    { emoji: "🔒" },
     title,
     description,
     [
-      { text: translation?.ui?.badge41 || 'Client-Side Keys', tooltip: 'All private keys generated locally in your browser using libsodium.js. Keys never leave your device.' }
+      {
+        text: translation?.ui?.badge41 || "Client-Side Keys",
+        tooltip:
+          "All private keys generated locally in your browser using libsodium.js. Keys never leave your device.",
+      },
     ],
-    { toolId: 'wireguard-config' }
+    { toolId: "wireguard-config" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'wireguard-config');
-  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+  const currentTool = TOOLS.find((t) => t.id === "wireguard-config");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
     <!-- Libsodium for WireGuard key generation -->
@@ -165,7 +188,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
                   <div>
                     <label for="iface-address" class="label">
                       <span data-i18n="tools.wireguard-config.ui.label4">Address</span>
-                      ${infoHint('IP address with CIDR, e.g., 10.0.0.2/24')}
+                      ${infoHint("IP address with CIDR, e.g., 10.0.0.2/24")}
                     </label>
                     <input type="text" id="iface-address" class="input font-mono text-sm" placeholder="10.0.0.2/24" data-i18n-placeholder="tools.wireguard-config.ui.placeholder3">
                   </div>
@@ -179,14 +202,14 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
                   <div>
                     <label for="iface-dns" class="label">
                       <span data-i18n="tools.wireguard-config.ui.label6">DNS</span>
-                      ${infoHint('Optional. Comma-separated DNS servers.')}
+                      ${infoHint("Optional. Comma-separated DNS servers.")}
                     </label>
                     <input type="text" id="iface-dns" class="input font-mono text-sm" placeholder="1.1.1.1, 8.8.8.8" data-i18n-placeholder="tools.wireguard-config.ui.placeholder5">
                   </div>
                   <div>
                     <label for="iface-mtu" class="label">
                       <span data-i18n="tools.wireguard-config.ui.label7">MTU</span>
-                      ${infoHint('Default: 1420 for IPv4, 1400 for IPv6')}
+                      ${infoHint("Default: 1420 for IPv4, 1400 for IPv6")}
                     </label>
                     <input type="number" id="iface-mtu" class="input font-mono text-sm" placeholder="1420" min="576" max="9000" data-i18n-placeholder="tools.wireguard-config.ui.placeholder6">
                   </div>
@@ -195,7 +218,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
                 <div>
                   <label for="iface-post-up" class="label">
                     <span data-i18n="tools.wireguard-config.ui.label8">PostUp</span>
-                    ${infoHint('Command to run after interface is brought up.')}
+                    ${infoHint("Command to run after interface is brought up.")}
                   </label>
                   <input type="text" id="iface-post-up" class="input font-mono text-sm" placeholder="iptables -A FORWARD -i %i -j ACCEPT..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder7">
                 </div>
@@ -203,7 +226,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
                 <div>
                   <label for="iface-post-down" class="label">
                     <span data-i18n="tools.wireguard-config.ui.label9">PostDown</span>
-                    ${infoHint('Command to run after interface is brought down.')}
+                    ${infoHint("Command to run after interface is brought down.")}
                   </label>
                   <input type="text" id="iface-post-down" class="input font-mono text-sm" placeholder="iptables -D FORWARD -i %i -j ACCEPT..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder8">
                 </div>
@@ -282,8 +305,10 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
           </div>
         </div>
 
-        ${createCheatsheet('wireguard-config', 'WireGuard Quick Reference', [
-          { heading: 'Interface Fields', content: `
+        ${createCheatsheet("wireguard-config", "WireGuard Quick Reference", [
+          {
+            heading: "Interface Fields",
+            content: `
             <table>
               <tr><th data-i18n="tools.wireguard-config.ui.th29">Field</th><th data-i18n="tools.wireguard-config.ui.th30">Required</th><th data-i18n="tools.wireguard-config.ui.th31">Description</th></tr>
               <tr><td><code>PrivateKey</code></td><td>Yes</td><td>Base64 private key for this peer</td></tr>
@@ -293,8 +318,11 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
               <tr><td><code>MTU</code></td><td>No</td><td>Maximum transmission unit (default: 1420)</td></tr>
               <tr><td><code>PostUp</code></td><td>No</td><td>Command after interface up</td></tr>
               <tr><td><code>PostDown</code></td><td>No</td><td>Command after interface down</td></tr>
-            </table>` },
-          { heading: 'Peer Fields', content: `
+            </table>`,
+          },
+          {
+            heading: "Peer Fields",
+            content: `
             <table>
               <tr><th data-i18n="tools.wireguard-config.ui.th29">Field</th><th data-i18n="tools.wireguard-config.ui.th30">Required</th><th data-i18n="tools.wireguard-config.ui.th31">Description</th></tr>
               <tr><td><code>PublicKey</code></td><td>Yes</td><td>Base64 public key of remote peer</td></tr>
@@ -302,8 +330,11 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
               <tr><td><code>AllowedIPs</code></td><td>Yes</td><td>CIDRs this peer can route (0.0.0.0/0 for all)</td></tr>
               <tr><td><code>Endpoint</code></td><td>No</td><td>host:port of remote peer (client only)</td></tr>
               <tr><td><code>PersistentKeepalive</code></td><td>No</td><td>Seconds between keepalive packets (NAT)</td></tr>
-            </table>` },
-          { heading: 'Common Commands', content: `
+            </table>`,
+          },
+          {
+            heading: "Common Commands",
+            content: `
             <table>
               <tr><th data-i18n="tools.wireguard-config.ui.th32">Command</th><th data-i18n="tools.wireguard-config.ui.th31">Description</th></tr>
               <tr><td><code>wg genkey | tee private.key | wg pubkey > public.key</code></td><td>Generate key pair</td></tr>
@@ -311,15 +342,19 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
               <tr><td><code>wg-quick down wg0</code></td><td>Stop interface</td></tr>
               <tr><td><code>wg show</code></td><td>Show interface status</td></tr>
               <tr><td><code>wg showconf wg0</code></td><td>Dump current config</td></tr>
-            </table>` },
-          { heading: 'Template Types', content: `
+            </table>`,
+          },
+          {
+            heading: "Template Types",
+            content: `
             <table>
               <tr><th data-i18n="tools.wireguard-config.ui.th33">Topology</th><th data-i18n="tools.wireguard-config.ui.th34">Use Case</th></tr>
               <tr><td><code>Point-to-Point</code></td><td>Direct connection between two peers</td></tr>
               <tr><td><code>Hub-and-Spoke</code></td><td>Central server with multiple clients</td></tr>
               <tr><td><code>Site-to-Site</code></td><td>Connect two networks</td></tr>
               <tr><td><code>Road Warrior</code></td><td>Remote client with split tunneling</td></tr>
-            </table>` }
+            </table>`,
+          },
         ])}
 
         ${createRelatedToolsSection(relatedToolsData)}
@@ -892,8 +927,8 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
     title,
     description,
     lang: currentLang,
-    path: '/wireguard-config',
+    path: "/wireguard-config",
     content,
-    scripts: script
+    scripts: script,
   });
 }

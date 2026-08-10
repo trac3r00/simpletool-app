@@ -1,32 +1,50 @@
-import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
-import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML } from "../utils/respond.js";
+import {
+  createPageTemplate,
+  createToolHeader,
+  createCheatsheet,
+  infoHint,
+} from "../utils/common-ui.js";
+import {
+  createEducationalSection,
+  createRelatedToolsSection,
+} from "../utils/content-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleProtocolHeadersRoutes(request, url) {
-  if (url.pathname !== '/protocol-headers' && url.pathname !== '/protocol-headers/') return null;
-  if (request.method !== 'GET') return null;
+  if (
+    url.pathname !== "/protocol-headers" &&
+    url.pathname !== "/protocol-headers/"
+  )
+    return null;
+  if (request.method !== "GET") return null;
   const lang = resolveRequestLanguage(request, url);
   return respondHTML(renderProtocolHeadersPage(lang));
 }
 
 function renderProtocolHeadersPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('protocol-headers', currentLang);
-  const title = translation?.name || 'Protocol Header Visualizer';
-  const description = translation?.desc || 'Interactive bit-level diagrams for Ethernet, IPv4, IPv6, TCP, UDP, ICMP, and ARP protocol headers.';
+  const translation = getToolTranslation("protocol-headers", currentLang);
+  const title = translation?.name || "Protocol Header Visualizer";
+  const description =
+    translation?.desc ||
+    "Interactive bit-level diagrams for Ethernet, IPv4, IPv6, TCP, UDP, ICMP, and ARP protocol headers.";
 
-  const header = createToolHeader(
-    { emoji: '📡' },
-    title,
-    description,
-    [],
-    { toolId: 'protocol-headers' }
-  );
+  const header = createToolHeader({ emoji: "📡" }, title, description, [], {
+    toolId: "protocol-headers",
+  });
 
-  const currentTool = TOOLS.find(t => t.id === 'protocol-headers');
-  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+  const currentTool = TOOLS.find((t) => t.id === "protocol-headers");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -54,7 +72,7 @@ function renderProtocolHeadersPage(lang = DEFAULT_LANGUAGE) {
           <div class="tool-card">
             <div class="flex justify-between items-center mb-3">
               <label class="block text-sm font-medium text-surface-700 dark:text-surface-300" data-i18n="tools.protocol-headers.ui.label1">Hex Dump Parser</label>
-              ${infoHint('Paste a hex dump to parse and visualize the packet structure.', 'Hex dump parser help')}
+              ${infoHint("Paste a hex dump to parse and visualize the packet structure.", "Hex dump parser help")}
             </div>
             <textarea id="hex-input" rows="8"
               class="w-full p-3 bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 font-mono text-xs text-surface-900 dark:text-white resize-y"
@@ -142,15 +160,20 @@ function renderProtocolHeadersPage(lang = DEFAULT_LANGUAGE) {
         </div>
       </div>
 
-      ${createCheatsheet('protocol-headers', 'Protocol Quick Reference', [
-        { heading: 'Ethernet II', content: `
+      ${createCheatsheet("protocol-headers", "Protocol Quick Reference", [
+        {
+          heading: "Ethernet II",
+          content: `
           <table>
             <tr><th data-i18n="tools.protocol-headers.ui.th9">Field</th><th data-i18n="tools.protocol-headers.ui.th10">Size</th><th data-i18n="tools.protocol-headers.ui.th11">Description</th></tr>
             <tr><td>Destination MAC</td><td>6 bytes</td><td>Target hardware address</td></tr>
             <tr><td>Source MAC</td><td>6 bytes</td><td>Sender hardware address</td></tr>
             <tr><td>EtherType</td><td>2 bytes</td><td>Protocol type (0x0800=IPv4, 0x86DD=IPv6)</td></tr>
-          </table>` },
-        { heading: 'IPv4 Header', content: `
+          </table>`,
+        },
+        {
+          heading: "IPv4 Header",
+          content: `
           <table>
             <tr><th data-i18n="tools.protocol-headers.ui.th9">Field</th><th data-i18n="tools.protocol-headers.ui.th10">Size</th><th data-i18n="tools.protocol-headers.ui.th11">Description</th></tr>
             <tr><td>Version</td><td>4 bits</td><td>IP version (4)</td></tr>
@@ -160,8 +183,11 @@ function renderProtocolHeadersPage(lang = DEFAULT_LANGUAGE) {
             <tr><td>TTL</td><td>1 byte</td><td>Time to Live (hop limit)</td></tr>
             <tr><td>Protocol</td><td>1 byte</td><td>Next protocol (6=TCP, 17=UDP)</td></tr>
             <tr><td>Checksum</td><td>2 bytes</td><td>Header checksum</td></tr>
-          </table>` },
-        { heading: 'TCP Header', content: `
+          </table>`,
+        },
+        {
+          heading: "TCP Header",
+          content: `
           <table>
             <tr><th data-i18n="tools.protocol-headers.ui.th9">Field</th><th data-i18n="tools.protocol-headers.ui.th10">Size</th><th data-i18n="tools.protocol-headers.ui.th11">Description</th></tr>
             <tr><td>Source Port</td><td>2 bytes</td><td>Sender port number</td></tr>
@@ -171,32 +197,43 @@ function renderProtocolHeadersPage(lang = DEFAULT_LANGUAGE) {
             <tr><td>Data Offset</td><td>4 bits</td><td>Header length / 4</td></tr>
             <tr><td>Flags</td><td>9 bits</td><td>NS,CWR,ECE,URG,ACK,PSH,RST,SYN,FIN</td></tr>
             <tr><td>Window</td><td>2 bytes</td><td>Receive window size</td></tr>
-          </table>` },
-        { heading: 'Common EtherTypes', content: `
+          </table>`,
+        },
+        {
+          heading: "Common EtherTypes",
+          content: `
           <table>
             <tr><th data-i18n="tools.protocol-headers.ui.th12">Value</th><th data-i18n="tools.protocol-headers.ui.th13">Protocol</th></tr>
             <tr><td><code>0x0800</code></td><td>IPv4</td></tr>
             <tr><td><code>0x0806</code></td><td>ARP</td></tr>
             <tr><td><code>0x86DD</code></td><td>IPv6</td></tr>
             <tr><td><code>0x8100</code></td><td>VLAN (802.1Q)</td></tr>
-          </table>` }
+          </table>`,
+        },
       ])}
     </main>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-      ${createEducationalSection([
-        {
-          title: 'What are Protocol Headers?',
-          content: '<p>Protocol headers are structured data that precede the payload in network packets. They contain control information such as source and destination addresses, protocol types, sequence numbers, and checksums. Understanding header structure is essential for network debugging, packet analysis, and protocol implementation.</p><p>Each protocol layer (Ethernet, IP, TCP/UDP) adds its own header, creating a layered encapsulation that enables data to travel across networks.</p>'
-        },
-        {
-          title: 'How to Use This Tool',
-          content: '<p>Select a protocol from the tabs to view its header structure. Each colored block represents a field with its size indicated. Click on any field to see detailed information including:</p><ul><li>Field name and description</li><li>Bit/byte offset</li><li>Common values and their meanings</li><li>RFC reference</li></ul><p>Use the hex dump parser to analyze real packet captures by pasting hex output from tools like tcpdump or Wireshark.</p>'
-        },
-        {
-          title: 'Common Use Cases',
-          content: '<ul><li><strong>Packet Analysis:</strong> Understand the structure of captured network traffic</li><li><strong>Protocol Learning:</strong> Visual aid for studying network protocols</li><li><strong>Debugging:</strong> Identify malformed headers or incorrect field values</li><li><strong>Development:</strong> Reference when implementing network protocols</li></ul>'
-        }
-      ], 'protocol-headers', currentLang)}
+      ${createEducationalSection(
+        [
+          {
+            title: "What are Protocol Headers?",
+            content:
+              "<p>Protocol headers are structured data that precede the payload in network packets. They contain control information such as source and destination addresses, protocol types, sequence numbers, and checksums. Understanding header structure is essential for network debugging, packet analysis, and protocol implementation.</p><p>Each protocol layer (Ethernet, IP, TCP/UDP) adds its own header, creating a layered encapsulation that enables data to travel across networks.</p>",
+          },
+          {
+            title: "How to Use This Tool",
+            content:
+              "<p>Select a protocol from the tabs to view its header structure. Each colored block represents a field with its size indicated. Click on any field to see detailed information including:</p><ul><li>Field name and description</li><li>Bit/byte offset</li><li>Common values and their meanings</li><li>RFC reference</li></ul><p>Use the hex dump parser to analyze real packet captures by pasting hex output from tools like tcpdump or Wireshark.</p>",
+          },
+          {
+            title: "Common Use Cases",
+            content:
+              "<ul><li><strong>Packet Analysis:</strong> Understand the structure of captured network traffic</li><li><strong>Protocol Learning:</strong> Visual aid for studying network protocols</li><li><strong>Debugging:</strong> Identify malformed headers or incorrect field values</li><li><strong>Development:</strong> Reference when implementing network protocols</li></ul>",
+          },
+        ],
+        "protocol-headers",
+        currentLang,
+      )}
       ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;
@@ -744,8 +781,8 @@ function renderProtocolHeadersPage(lang = DEFAULT_LANGUAGE) {
     title,
     description,
     lang: currentLang,
-    path: '/protocol-headers',
+    path: "/protocol-headers",
     content,
-    scripts
+    scripts,
   });
 }

@@ -5,41 +5,65 @@
  * - All processing stays in the browser
  */
 
-import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { createRelatedToolsSection } from '../utils/content-ui.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML } from "../utils/respond.js";
+import {
+  createPageTemplate,
+  createToolHeader,
+  createCheatsheet,
+  infoHint,
+} from "../utils/common-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import { createRelatedToolsSection } from "../utils/content-ui.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleTokenCounterRoutes(request, url) {
   const { pathname } = url;
-  if (pathname === '/token-counter' || pathname === '/token-counter/') {
-    if (request.method === 'GET') return respondHTML(renderTokenCounterPage(resolveRequestLanguage(request, url)));
-    return new Response('Method not allowed', { status: 405 });
+  if (pathname === "/token-counter" || pathname === "/token-counter/") {
+    if (request.method === "GET")
+      return respondHTML(
+        renderTokenCounterPage(resolveRequestLanguage(request, url)),
+      );
+    return new Response("Method not allowed", { status: 405 });
   }
   return null;
 }
 
 function renderTokenCounterPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('token-counter', currentLang);
-  const title = translation?.name || 'Token Counter & Cost Estimator';
-  const description = translation?.desc || 'Estimate token counts for GPT, Claude, and Llama families and calculate cost with your pricing.';
+  const translation = getToolTranslation("token-counter", currentLang);
+  const title = translation?.name || "Token Counter & Cost Estimator";
+  const description =
+    translation?.desc ||
+    "Estimate token counts for GPT, Claude, and Llama families and calculate cost with your pricing.";
 
   const header = createToolHeader(
-    { emoji: '🧮' },
+    { emoji: "🧮" },
     title,
     description,
     [
-      { text: '<span data-i18n="tools.token-counter.ui.badge0">Offline</span>', tooltip: 'No network calls. Estimates are computed locally.' },
-      { text: '<span data-i18n="tools.token-counter.ui.badge1">Bring Your Pricing</span>', tooltip: 'Pricing changes frequently — enter your own $/1M token rates.' }
+      {
+        text: '<span data-i18n="tools.token-counter.ui.badge0">Offline</span>',
+        tooltip: "No network calls. Estimates are computed locally.",
+      },
+      {
+        text: '<span data-i18n="tools.token-counter.ui.badge1">Bring Your Pricing</span>',
+        tooltip:
+          "Pricing changes frequently — enter your own $/1M token rates.",
+      },
     ],
-    { toolId: 'token-counter' }
+    { toolId: "token-counter" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'token-counter');
-    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
-
+  const currentTool = TOOLS.find((t) => t.id === "token-counter");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -56,7 +80,7 @@ function renderTokenCounterPage(lang = DEFAULT_LANGUAGE) {
 
             <label class="label flex items-center gap-2">
               <span data-i18n="tools.token-counter.ui.label0">Text</span>
-              ${infoHint('Tokenization differs by model. This tool estimates tokens using byte/character heuristics; use it for planning and budgeting, not exact billing.', 'Help', { i18nKey: 'tools.token-counter.ui.desc0' })}
+              ${infoHint("Tokenization differs by model. This tool estimates tokens using byte/character heuristics; use it for planning and budgeting, not exact billing.", "Help", { i18nKey: "tools.token-counter.ui.desc0" })}
             </label>
             <textarea id="text" rows="16" class="input-mono resize-y" placeholder="Paste your prompt, docs, code, or any text..." data-i18n-placeholder="tools.token-counter.ui.placeholder0"></textarea>
 
@@ -83,7 +107,7 @@ function renderTokenCounterPage(lang = DEFAULT_LANGUAGE) {
               <div class="p-4 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
                 <label class="label flex items-center gap-2">
                   <span data-i18n="tools.token-counter.ui.label1">Expected output tokens</span>
-                  ${infoHint('If you don’t have an actual completion, set an expected output budget to estimate total cost.', 'Help', { i18nKey: 'tools.token-counter.ui.desc6' })}
+                  ${infoHint("If you don’t have an actual completion, set an expected output budget to estimate total cost.", "Help", { i18nKey: "tools.token-counter.ui.desc6" })}
                 </label>
                 <input id="out-tokens" type="number" min="0" step="1" value="0" class="input font-mono" />
               </div>
@@ -203,25 +227,31 @@ function renderTokenCounterPage(lang = DEFAULT_LANGUAGE) {
           </div>
         </div>
 
-        ${createCheatsheet('token-counter', '<span data-i18n="tools.token-counter.ui.heading2">Notes on Token Estimates</span>', [
-          {
-            heading: '<span data-i18n="tools.token-counter.ui.heading3">Why counts differ</span>',
-            content: `
+        ${createCheatsheet(
+          "token-counter",
+          '<span data-i18n="tools.token-counter.ui.heading2">Notes on Token Estimates</span>',
+          [
+            {
+              heading:
+                '<span data-i18n="tools.token-counter.ui.heading3">Why counts differ</span>',
+              content: `
               <ul class="list-disc ml-6 space-y-1">
                 <li data-i18n="tools.token-counter.ui.desc1">Each model family uses a different tokenizer (BPE / SentencePiece / custom).</li>
                 <li data-i18n="tools.token-counter.ui.desc2">Non-ASCII text (Korean/Japanese), code, and JSON often tokenize differently than plain English.</li>
                 <li data-i18n="tools.token-counter.ui.desc3">Chat APIs may add hidden tokens for message formatting.</li>
               </ul>
-            `
-          },
-          {
-            heading: '<span data-i18n="tools.token-counter.ui.heading4">How this tool estimates</span>',
-            content: `
+            `,
+            },
+            {
+              heading:
+                '<span data-i18n="tools.token-counter.ui.heading4">How this tool estimates</span>',
+              content: `
               <p data-i18n="tools.token-counter.ui.desc4">We estimate tokens from UTF-8 byte length and character makeup (ASCII vs non-ASCII), then apply a small safety factor in Conservative mode.</p>
               <p class="mt-2 text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.token-counter.ui.desc5">For exact billing, rely on your provider’s official tokenizer when available.</p>
-            `
-          }
-        ])}
+            `,
+            },
+          ],
+        )}
       </div>
     ${createRelatedToolsSection(relatedToolsData)}
     </main>
@@ -469,9 +499,9 @@ function renderTokenCounterPage(lang = DEFAULT_LANGUAGE) {
   return createPageTemplate({
     title,
     description,
-    path: '/token-counter',
+    path: "/token-counter",
     content,
     scripts,
-    lang: currentLang
+    lang: currentLang,
   });
 }

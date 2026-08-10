@@ -1,36 +1,60 @@
-import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createCheatsheet } from '../utils/common-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { createRelatedToolsSection } from '../utils/content-ui.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML } from "../utils/respond.js";
+import {
+  createPageTemplate,
+  createToolHeader,
+  createCheatsheet,
+} from "../utils/common-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import { createRelatedToolsSection } from "../utils/content-ui.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handlePortReferenceRoutes(request, url) {
-  if (url.pathname !== '/port-reference' && url.pathname !== '/port-reference/') return null;
-  if (request.method !== 'GET') return null;
+  if (url.pathname !== "/port-reference" && url.pathname !== "/port-reference/")
+    return null;
+  if (request.method !== "GET") return null;
   const lang = resolveRequestLanguage(request, url);
   return respondHTML(renderPortReferencePage(lang));
 }
 
 function renderPortReferencePage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('port-reference', currentLang);
-  const title = translation?.name || 'Port Reference';
-  const description = translation?.desc || 'Comprehensive IANA port database with search, filters, and security risk indicators.';
+  const translation = getToolTranslation("port-reference", currentLang);
+  const title = translation?.name || "Port Reference";
+  const description =
+    translation?.desc ||
+    "Comprehensive IANA port database with search, filters, and security risk indicators.";
 
   const header = createToolHeader(
-    { emoji: '🌐' },
+    { emoji: "🌐" },
     title,
     description,
     [
-      { text: translation?.ui?.badge23 || 'IANA Official', tooltip: 'Official port assignments from IANA registry.' },
-      { text: translation?.ui?.badge24 || 'Security Flags', tooltip: 'Highlights commonly exploited ports with risk indicators.' },
-      { text: translation?.ui?.badge25 || 'Client-Side Only', tooltip: 'All data is embedded locally — no network requests.' }
+      {
+        text: translation?.ui?.badge23 || "IANA Official",
+        tooltip: "Official port assignments from IANA registry.",
+      },
+      {
+        text: translation?.ui?.badge24 || "Security Flags",
+        tooltip: "Highlights commonly exploited ports with risk indicators.",
+      },
+      {
+        text: translation?.ui?.badge25 || "Client-Side Only",
+        tooltip: "All data is embedded locally — no network requests.",
+      },
     ],
-    { toolId: 'port-reference' }
+    { toolId: "port-reference" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'port-reference');
-  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+  const currentTool = TOOLS.find((t) => t.id === "port-reference");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -141,15 +165,20 @@ function renderPortReferencePage(lang = DEFAULT_LANGUAGE) {
         </div>
       </div>
 
-      ${createCheatsheet('port-reference', 'Port Categories & Security Guide', [
-        { heading: 'Port Number Ranges', content: `
+      ${createCheatsheet("port-reference", "Port Categories & Security Guide", [
+        {
+          heading: "Port Number Ranges",
+          content: `
           <table>
             <tr><th data-i18n="tools.port-reference.ui.th14">Range</th><th data-i18n="tools.port-reference.ui.th15">Name</th><th data-i18n="tools.port-reference.ui.th12">Description</th></tr>
             <tr><td><code>0-1023</code></td><td>Well-Known</td><td>Reserved for system services (HTTP, SSH, etc.)</td></tr>
             <tr><td><code>1024-49151</code></td><td>Registered</td><td>User-registered ports for applications</td></tr>
             <tr><td><code>49152-65535</code></td><td>Dynamic/Private</td><td>Ephemeral ports for client connections</td></tr>
-          </table>` },
-        { heading: 'High Risk Ports', content: `
+          </table>`,
+        },
+        {
+          heading: "High Risk Ports",
+          content: `
           <table>
             <tr><th data-i18n="tools.port-reference.ui.th10">Port</th><th data-i18n="tools.port-reference.ui.th11">Service</th><th data-i18n="tools.port-reference.ui.th13">Risk</th></tr>
             <tr><td><code>21</code></td><td>FTP</td><td>Unencrypted file transfers</td></tr>
@@ -158,15 +187,19 @@ function renderPortReferencePage(lang = DEFAULT_LANGUAGE) {
             <tr><td><code>53</code></td><td>DNS</td><td>DDoS amplification attacks</td></tr>
             <tr><td><code>445</code></td><td>SMB</td><td>Ransomware propagation</td></tr>
             <tr><td><code>3389</code></td><td>RDP</td><td>Brute force attacks</td></tr>
-          </table>` },
-        { heading: 'Security Best Practices', content: `
+          </table>`,
+        },
+        {
+          heading: "Security Best Practices",
+          content: `
           <ul>
             <li><strong>Close unused ports:</strong> Reduce attack surface by disabling services you don't need</li>
             <li><strong>Use firewalls:</strong> Implement network-level access controls</li>
             <li><strong>Monitor traffic:</strong> Log connections to sensitive ports (22, 443, 3389)</li>
             <li><strong>Prefer encrypted protocols:</strong> Use SSH (22) instead of Telnet (23), SFTP instead of FTP</li>
             <li><strong>Change defaults:</strong> Consider non-standard ports for SSH/RDP (security through obscurity)</li>
-          </ul>` }
+          </ul>`,
+        },
       ])}
 
       ${createRelatedToolsSection(relatedToolsData)}
@@ -970,7 +1003,7 @@ function renderPortReferencePage(lang = DEFAULT_LANGUAGE) {
     title,
     description,
     lang: currentLang,
-    path: '/port-reference',
-    content
+    path: "/port-reference",
+    content,
   });
 }

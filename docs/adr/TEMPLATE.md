@@ -3,6 +3,7 @@
 ## Status
 
 <!-- Proposed / Accepted / Deprecated / Superseded by ADR-XXXX -->
+
 Proposed
 
 ## Context
@@ -17,9 +18,7 @@ Proposed
 
 **Positive:**
 
--
-
-**Negative:**
+- **Negative:**
 
 -
 
@@ -34,4 +33,5 @@ Rejected because:
 ## Supersedes
 
 <!-- ADR number this replaces, or "None". This log is append-only — do not edit past ADRs; write a new one that supersedes. -->
+
 None

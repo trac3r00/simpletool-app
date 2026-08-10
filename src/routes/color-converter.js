@@ -3,46 +3,65 @@
  * Convert between HEX, RGB, HSL, and other color formats
  */
 
-import { respondHTML, respondJSON } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
-import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML, respondJSON } from "../utils/respond.js";
+import { createPageTemplate, createToolHeader } from "../utils/common-ui.js";
+import {
+  createEducationalSection,
+  createRelatedToolsSection,
+} from "../utils/content-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleColorConverterRoutes(request, url) {
   const { pathname } = url;
   const method = request.method;
 
   try {
-    if (pathname === '/color-converter' || pathname === '/color-converter/') {
-      if (method === 'GET') {
+    if (pathname === "/color-converter" || pathname === "/color-converter/") {
+      if (method === "GET") {
         return renderColorConverterPage(resolveRequestLanguage(request, url));
       }
     }
 
-    return respondJSON({ error: 'Not found' }, { status: 404 });
+    return respondJSON({ error: "Not found" }, { status: 404 });
   } catch (error) {
-    console.error('Color Converter Route Error:', error);
+    console.error("Color Converter Route Error:", error);
     return respondJSON(
-      { error: 'Internal server error', message: error.message },
-      { status: 500 }
+      { error: "Internal server error", message: error.message },
+      { status: 500 },
     );
   }
 }
 
 function renderColorConverterPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('color-converter', currentLang);
+  const translation = getToolTranslation("color-converter", currentLang);
   const toolHeader = createToolHeader(
-    { emoji: '🎨' },
-    translation?.name || 'Color Converter',
-    translation?.desc || 'Convert between HEX, RGB, HSL, and other color formats with live preview',
-    [{ text: translation?.ui?.badge6 || 'Live Preview', color: 'pink', tooltip: 'Updates the color preview and conversion values instantly as you edit inputs.' }],
-    { toolId: 'color-converter' }
+    { emoji: "🎨" },
+    translation?.name || "Color Converter",
+    translation?.desc ||
+      "Convert between HEX, RGB, HSL, and other color formats with live preview",
+    [
+      {
+        text: translation?.ui?.badge6 || "Live Preview",
+        color: "pink",
+        tooltip:
+          "Updates the color preview and conversion values instantly as you edit inputs.",
+      },
+    ],
+    { toolId: "color-converter" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'color-converter');
-  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+  const currentTool = TOOLS.find((t) => t.id === "color-converter");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
@@ -142,27 +161,35 @@ function renderColorConverterPage(lang = DEFAULT_LANGUAGE) {
       </div>
     </main>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-      ${createEducationalSection([
-        {
-          title: 'Color Models Explained (HEX/RGB/HSL)',
-          content: '<p>Color models are mathematical systems for representing colors. <strong>HEX</strong> (Hexadecimal) is a 6-digit code used in HTML and CSS, representing Red, Green, and Blue components. <strong>RGB</strong> (Red, Green, Blue) uses decimal values from 0 to 255 for each channel, often used in digital imaging.</p><p><strong>HSL</strong> (Hue, Saturation, Lightness) is more intuitive for humans, as it describes color in terms of its base pigment (Hue), intensity (Saturation), and brightness (Lightness). Understanding these models helps in choosing the right format for your design and development needs, ensuring consistency across different platforms and devices.</p>'
-        },
-        {
-          title: 'How to Use This Tool',
-          content: '<ol><li>Use the visual color picker to select a color by dragging the cursor in the saturation/brightness square and the hue slider.</li><li>Alternatively, enter a specific value in the "Manual Input" field (supports #hex, rgb, or hsl formats).</li><li>Observe the "Preview" box to see the selected color in real-time.</li><li>View the converted values in the HEX, RGB, HSL, and HSV cards below.</li><li>Click the "Copy" icon on any card to save that specific format to your clipboard.</li></ol>'
-        },
-        {
-          title: 'Common Use Cases',
-          content: '<ul><li><strong>Web Design:</strong> Convert colors from design tools (often RGB/HSL) to HEX codes for use in CSS stylesheets.</li><li><strong>Brand Consistency:</strong> Ensure your brand colors are accurately represented across different digital formats and media.</li><li><strong>UI Development:</strong> Quickly generate lighter or darker variations of a base color by adjusting the Lightness value in HSL.</li><li><strong>Accessibility Testing:</strong> Use the preview to check if your chosen colors provide enough contrast for readable text and UI elements.</li></ul>'
-        },
-        {
-          title: 'Pro Tips',
-          content: '<ul><li>Use HSL when designing UI components like buttons, as it makes it easy to create hover states by simply adjusting the lightness value.</li><li>When working with transparency in CSS, prefer <code>rgba()</code> or <code>hsla()</code> for better readability and control over the alpha channel.</li><li>Always check for color contrast ratios to ensure your designs are accessible to users with visual impairments.</li></ul>'
-        }
-      ], 'color-converter', currentLang)}
+      ${createEducationalSection(
+        [
+          {
+            title: "Color Models Explained (HEX/RGB/HSL)",
+            content:
+              "<p>Color models are mathematical systems for representing colors. <strong>HEX</strong> (Hexadecimal) is a 6-digit code used in HTML and CSS, representing Red, Green, and Blue components. <strong>RGB</strong> (Red, Green, Blue) uses decimal values from 0 to 255 for each channel, often used in digital imaging.</p><p><strong>HSL</strong> (Hue, Saturation, Lightness) is more intuitive for humans, as it describes color in terms of its base pigment (Hue), intensity (Saturation), and brightness (Lightness). Understanding these models helps in choosing the right format for your design and development needs, ensuring consistency across different platforms and devices.</p>",
+          },
+          {
+            title: "How to Use This Tool",
+            content:
+              '<ol><li>Use the visual color picker to select a color by dragging the cursor in the saturation/brightness square and the hue slider.</li><li>Alternatively, enter a specific value in the "Manual Input" field (supports #hex, rgb, or hsl formats).</li><li>Observe the "Preview" box to see the selected color in real-time.</li><li>View the converted values in the HEX, RGB, HSL, and HSV cards below.</li><li>Click the "Copy" icon on any card to save that specific format to your clipboard.</li></ol>',
+          },
+          {
+            title: "Common Use Cases",
+            content:
+              "<ul><li><strong>Web Design:</strong> Convert colors from design tools (often RGB/HSL) to HEX codes for use in CSS stylesheets.</li><li><strong>Brand Consistency:</strong> Ensure your brand colors are accurately represented across different digital formats and media.</li><li><strong>UI Development:</strong> Quickly generate lighter or darker variations of a base color by adjusting the Lightness value in HSL.</li><li><strong>Accessibility Testing:</strong> Use the preview to check if your chosen colors provide enough contrast for readable text and UI elements.</li></ul>",
+          },
+          {
+            title: "Pro Tips",
+            content:
+              "<ul><li>Use HSL when designing UI components like buttons, as it makes it easy to create hover states by simply adjusting the lightness value.</li><li>When working with transparency in CSS, prefer <code>rgba()</code> or <code>hsla()</code> for better readability and control over the alpha channel.</li><li>Always check for color contrast ratios to ensure your designs are accessible to users with visual impairments.</li></ul>",
+          },
+        ],
+        "color-converter",
+        currentLang,
+      )}
     </div>
     ${createRelatedToolsSection(relatedToolsData)}
-  `
+  `;
 
   const script = `
     <script>
@@ -521,14 +548,16 @@ function renderColorConverterPage(lang = DEFAULT_LANGUAGE) {
       drawHueStrip();
       syncFromHSV(false);
     </script>
-  `
+  `;
 
-  return respondHTML(createPageTemplate({
-    title: translation?.name || 'Color Converter',
-    description: translation?.desc || 'Convert HEX, RGB, and HSL colors.',
-    path: '/color-converter',
-    content,
-    scripts: script,
-    lang: currentLang
-  }));
+  return respondHTML(
+    createPageTemplate({
+      title: translation?.name || "Color Converter",
+      description: translation?.desc || "Convert HEX, RGB, and HSL colors.",
+      path: "/color-converter",
+      content,
+      scripts: script,
+      lang: currentLang,
+    }),
+  );
 }

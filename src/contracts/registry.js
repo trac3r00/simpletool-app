@@ -10,14 +10,23 @@
 const contracts = new Map();
 
 export function registerContract(contract) {
-  if (!contract.id || typeof contract.transform !== 'function') {
-    throw new Error(`Invalid contract: missing id or transform for ${contract.id || 'unknown'}`);
+  if (!contract.id || typeof contract.transform !== "function") {
+    throw new Error(
+      `Invalid contract: missing id or transform for ${contract.id || "unknown"}`,
+    );
   }
   if (!Array.isArray(contract.inputTypes) || contract.inputTypes.length === 0) {
-    throw new Error(`Contract ${contract.id}: inputTypes must be a non-empty array`);
+    throw new Error(
+      `Contract ${contract.id}: inputTypes must be a non-empty array`,
+    );
   }
-  if (!Array.isArray(contract.outputTypes) || contract.outputTypes.length === 0) {
-    throw new Error(`Contract ${contract.id}: outputTypes must be a non-empty array`);
+  if (
+    !Array.isArray(contract.outputTypes) ||
+    contract.outputTypes.length === 0
+  ) {
+    throw new Error(
+      `Contract ${contract.id}: outputTypes must be a non-empty array`,
+    );
   }
   contracts.set(contract.id, contract);
 }

@@ -5,41 +5,72 @@
  * - Previews SVG and allows simple color replacements
  */
 
-import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
-import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML } from "../utils/respond.js";
+import {
+  createPageTemplate,
+  createToolHeader,
+  createCheatsheet,
+  infoHint,
+} from "../utils/common-ui.js";
+import {
+  createEducationalSection,
+  createRelatedToolsSection,
+} from "../utils/content-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleSVGOptimizerRoutes(request, url) {
   const { pathname } = url;
-  if (pathname === '/svg-optimizer' || pathname === '/svg-optimizer/') {
-    if (request.method === 'GET') return respondHTML(renderSVGOptimizerPage(resolveRequestLanguage(request, url)));
-    return new Response('Method not allowed', { status: 405 });
+  if (pathname === "/svg-optimizer" || pathname === "/svg-optimizer/") {
+    if (request.method === "GET")
+      return respondHTML(
+        renderSVGOptimizerPage(resolveRequestLanguage(request, url)),
+      );
+    return new Response("Method not allowed", { status: 405 });
   }
   return null;
 }
 
 function renderSVGOptimizerPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('svg-optimizer', currentLang);
-  const title = translation?.name || 'SVG Optimizer & Editor';
-  const description = translation?.desc || 'Clean up and preview SVGs, then quickly adjust fill/stroke colors — all locally.';
+  const translation = getToolTranslation("svg-optimizer", currentLang);
+  const title = translation?.name || "SVG Optimizer & Editor";
+  const description =
+    translation?.desc ||
+    "Clean up and preview SVGs, then quickly adjust fill/stroke colors — all locally.";
 
   const header = createToolHeader(
-    { emoji: '✍️' },
+    { emoji: "✍️" },
     title,
     description,
     [
-      { text: translation?.ui?.badge0 || '<span data-i18n="tools.svg-optimizer.ui.badge0">Sanitized</span>', tooltip: 'Removes scripts/foreignObject/event handlers for safe preview.' },
-      { text: translation?.ui?.badge1 || '<span data-i18n="tools.svg-optimizer.ui.badge1">Icon Workflow</span>', tooltip: 'Extract colors and replace them with a few clicks.' }
+      {
+        text:
+          translation?.ui?.badge0 ||
+          '<span data-i18n="tools.svg-optimizer.ui.badge0">Sanitized</span>',
+        tooltip:
+          "Removes scripts/foreignObject/event handlers for safe preview.",
+      },
+      {
+        text:
+          translation?.ui?.badge1 ||
+          '<span data-i18n="tools.svg-optimizer.ui.badge1">Icon Workflow</span>',
+        tooltip: "Extract colors and replace them with a few clicks.",
+      },
     ],
-    { toolId: 'svg-optimizer' }
+    { toolId: "svg-optimizer" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'svg-optimizer');
-  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
-
+  const currentTool = TOOLS.find((t) => t.id === "svg-optimizer");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -60,7 +91,7 @@ function renderSVGOptimizerPage(lang = DEFAULT_LANGUAGE) {
           <div class="space-y-3">
             <label class="label flex items-center gap-2">
               <span data-i18n="tools.svg-optimizer.ui.label0">SVG Input</span>
-              ${infoHint('Paste an SVG. This tool sanitizes it for safe preview using DOMPurify (client-side).', 'Help', { i18nKey: 'tools.svg-optimizer.ui.desc0' })}
+              ${infoHint("Paste an SVG. This tool sanitizes it for safe preview using DOMPurify (client-side).", "Help", { i18nKey: "tools.svg-optimizer.ui.desc0" })}
             </label>
             <textarea id="svg-input" rows="18" class="input-mono resize-y" placeholder="&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 24 24&quot;&gt;...&lt;/svg&gt;" data-i18n-placeholder="tools.svg-optimizer.ui.placeholder0"></textarea>
 
@@ -125,39 +156,52 @@ function renderSVGOptimizerPage(lang = DEFAULT_LANGUAGE) {
           </div>
         </div>
 
-        ${createCheatsheet('svg-optimizer', '<span data-i18n="tools.svg-optimizer.ui.heading3">SVG Safety Notes</span>', [
-          {
-            heading: '<span data-i18n="tools.svg-optimizer.ui.heading4">Sanitization</span>',
-            content: `
+        ${createCheatsheet(
+          "svg-optimizer",
+          '<span data-i18n="tools.svg-optimizer.ui.heading3">SVG Safety Notes</span>',
+          [
+            {
+              heading:
+                '<span data-i18n="tools.svg-optimizer.ui.heading4">Sanitization</span>',
+              content: `
               <p data-i18n="tools.svg-optimizer.ui.desc3">SVG can execute scripts or load external resources. This tool sanitizes the markup before preview and removes risky elements/attributes.</p>
               <ul class="list-disc ml-6 space-y-1">
                 <li><span data-i18n="tools.svg-optimizer.ui.desc4">Removes</span> <code>&lt;script&gt;</code>, <code>&lt;foreignObject&gt;</code>, <span data-i18n="tools.svg-optimizer.ui.desc5">and event handler attributes</span> (<code>on*</code>).</li>
                 <li><span data-i18n="tools.svg-optimizer.ui.desc6">Strips external</span> <code>href</code>/<code>xlink:href</code> <span data-i18n="tools.svg-optimizer.ui.desc7">unless it’s an internal</span> <code>#id</code> <span data-i18n="tools.svg-optimizer.ui.desc8">reference.</span></li>
               </ul>
-            `
-          }
-        ])}
+            `,
+            },
+          ],
+        )}
       </div>
     </main>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-      ${createEducationalSection([
-        {
-          title: 'What is SVG?',
-          content: '<p>SVG (Scalable Vector Graphics) is an XML-based vector image format for two-dimensional graphics with support for interactivity and animation. Unlike raster formats (like JPEG or PNG), SVGs are defined by mathematical paths, which means they can be scaled to any size without losing quality.</p><p>This makes them perfect for logos, icons, and illustrations on the web, where they remain crisp on everything from mobile screens to high-resolution desktop monitors. Because they are code-based, they can also be manipulated with CSS and JavaScript, providing a level of flexibility and performance that raster images cannot match.</p>'
-        },
-        {
-          title: 'How to Use This Tool',
-          content: '<ol><li>Paste your SVG code into the "SVG Input" text area on the left.</li><li>Click "Preview" to see the graphic and extract its color palette.</li><li>Use the "Optimize" or "Minify" buttons to clean up the markup and reduce file size.</li><li>Optionally, replace specific colors by entering new values in the "Colors" panel and clicking "Apply".</li><li>Click "Copy" or "Download" to save your sanitized and optimized SVG.</li></ol>'
-        },
-        {
-          title: 'Common Use Cases',
-          content: '<ul><li><strong>Icon Management:</strong> Clean up SVGs exported from design tools like Figma or Illustrator to remove unnecessary metadata and hidden layers.</li><li><strong>Theming:</strong> Quickly change the colors of an icon set to match your brand\'s palette without opening a heavy design application.</li><li><strong>Security:</strong> Sanitize SVGs from untrusted sources to remove potential scripts or external references before using them on your site.</li><li><strong>Performance:</strong> Minify SVG markup to reduce the size of inline graphics, improving page load times and DOM performance.</li></ul>'
-        },
-        {
-          title: 'Pro Tips',
-          content: '<ul><li>Use the "currentColor" button to convert all explicit fills and strokes to <code>currentColor</code>, making your SVG easily styleable via CSS.</li><li>Always optimize your SVGs before using them in production to ensure they are as small as possible for fast web performance.</li><li>When creating SVGs in design tools, use the "Outline Stroke" and "Simplify Path" features to reduce the complexity of the generated code before optimization.</li></ul>'
-        }
-      ], 'svg-optimizer', currentLang)}
+      ${createEducationalSection(
+        [
+          {
+            title: "What is SVG?",
+            content:
+              "<p>SVG (Scalable Vector Graphics) is an XML-based vector image format for two-dimensional graphics with support for interactivity and animation. Unlike raster formats (like JPEG or PNG), SVGs are defined by mathematical paths, which means they can be scaled to any size without losing quality.</p><p>This makes them perfect for logos, icons, and illustrations on the web, where they remain crisp on everything from mobile screens to high-resolution desktop monitors. Because they are code-based, they can also be manipulated with CSS and JavaScript, providing a level of flexibility and performance that raster images cannot match.</p>",
+          },
+          {
+            title: "How to Use This Tool",
+            content:
+              '<ol><li>Paste your SVG code into the "SVG Input" text area on the left.</li><li>Click "Preview" to see the graphic and extract its color palette.</li><li>Use the "Optimize" or "Minify" buttons to clean up the markup and reduce file size.</li><li>Optionally, replace specific colors by entering new values in the "Colors" panel and clicking "Apply".</li><li>Click "Copy" or "Download" to save your sanitized and optimized SVG.</li></ol>',
+          },
+          {
+            title: "Common Use Cases",
+            content:
+              "<ul><li><strong>Icon Management:</strong> Clean up SVGs exported from design tools like Figma or Illustrator to remove unnecessary metadata and hidden layers.</li><li><strong>Theming:</strong> Quickly change the colors of an icon set to match your brand's palette without opening a heavy design application.</li><li><strong>Security:</strong> Sanitize SVGs from untrusted sources to remove potential scripts or external references before using them on your site.</li><li><strong>Performance:</strong> Minify SVG markup to reduce the size of inline graphics, improving page load times and DOM performance.</li></ul>",
+          },
+          {
+            title: "Pro Tips",
+            content:
+              '<ul><li>Use the "currentColor" button to convert all explicit fills and strokes to <code>currentColor</code>, making your SVG easily styleable via CSS.</li><li>Always optimize your SVGs before using them in production to ensure they are as small as possible for fast web performance.</li><li>When creating SVGs in design tools, use the "Outline Stroke" and "Simplify Path" features to reduce the complexity of the generated code before optimization.</li></ul>',
+          },
+        ],
+        "svg-optimizer",
+        currentLang,
+      )}
     ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;
@@ -542,9 +586,9 @@ function renderSVGOptimizerPage(lang = DEFAULT_LANGUAGE) {
   return createPageTemplate({
     title,
     description,
-    path: '/svg-optimizer',
+    path: "/svg-optimizer",
     content,
     scripts,
-    lang: currentLang
+    lang: currentLang,
   });
 }

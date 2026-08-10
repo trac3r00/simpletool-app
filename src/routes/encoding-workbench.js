@@ -4,46 +4,74 @@
  * All processing happens client-side for privacy
  */
 
-import { respondHTML, respondJSON } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createEmptyState } from '../utils/common-ui.js';
-import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML, respondJSON } from "../utils/respond.js";
+import {
+  createPageTemplate,
+  createToolHeader,
+  createEmptyState,
+} from "../utils/common-ui.js";
+import {
+  createEducationalSection,
+  createRelatedToolsSection,
+} from "../utils/content-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleEncodingWorkbenchRoutes(request, url) {
   const { pathname } = url;
   const method = request.method;
 
   try {
-    if (pathname === '/encoding-workbench' || pathname === '/encoding-workbench/') {
-      if (method === 'GET') {
-        return renderEncodingWorkbenchPage(resolveRequestLanguage(request, url));
+    if (
+      pathname === "/encoding-workbench" ||
+      pathname === "/encoding-workbench/"
+    ) {
+      if (method === "GET") {
+        return renderEncodingWorkbenchPage(
+          resolveRequestLanguage(request, url),
+        );
       }
     }
 
-    return respondJSON({ error: 'Not found' }, { status: 404 });
+    return respondJSON({ error: "Not found" }, { status: 404 });
   } catch (error) {
-    console.error('Encoding Workbench Route Error:', error);
+    console.error("Encoding Workbench Route Error:", error);
     return respondJSON(
-      { error: 'Internal server error', message: error.message },
-      { status: 500 }
+      { error: "Internal server error", message: error.message },
+      { status: 500 },
     );
   }
 }
 
 function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('encoding-workbench', currentLang);
+  const translation = getToolTranslation("encoding-workbench", currentLang);
   const toolHeader = createToolHeader(
-    { emoji: '🔓' },
-    translation?.name || 'Encoding & Decoding Workbench',
-    translation?.desc || 'Encode, decode, hash, and identify data transformations',
-    [{ text: translation?.ui?.badge0 || 'Privacy First', color: 'green', tooltip: 'All processing happens in your browser — no data is sent to any server.' }],
-    { toolId: 'encoding-workbench' }
+    { emoji: "🔓" },
+    translation?.name || "Encoding & Decoding Workbench",
+    translation?.desc ||
+      "Encode, decode, hash, and identify data transformations",
+    [
+      {
+        text: translation?.ui?.badge0 || "Privacy First",
+        color: "green",
+        tooltip:
+          "All processing happens in your browser — no data is sent to any server.",
+      },
+    ],
+    { toolId: "encoding-workbench" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'encoding-workbench');
-  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+  const currentTool = TOOLS.find((t) => t.id === "encoding-workbench");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -115,7 +143,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
               <button id="enc-copy-btn" class="btn btn-ghost btn-xs text-surface-600 dark:text-surface-400 hover:bg-surface-100 dark:hover:bg-surface-800" data-i18n="tools.encoding-workbench.ui.copy">Copy</button>
             </div>
             <div id="enc-empty" class="">
-              ${createEmptyState({ icon: '🔄', title: 'No output yet', description: 'Choose an operation above or click Auto-Detect Layers.', id: 'enc-empty-state', i18nTitle: 'tools.encoding-workbench.ui.desc0', i18nDesc: 'tools.encoding-workbench.ui.desc1' })}
+              ${createEmptyState({ icon: "🔄", title: "No output yet", description: "Choose an operation above or click Auto-Detect Layers.", id: "enc-empty-state", i18nTitle: "tools.encoding-workbench.ui.desc0", i18nDesc: "tools.encoding-workbench.ui.desc1" })}
             </div>
             <textarea
               id="enc-output"
@@ -241,7 +269,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
                   <h3 class="text-sm font-semibold text-surface-700 dark:text-surface-300" data-i18n="tools.encoding-workbench.ui.hashResultsLabel">Hash Results</h3>
                 </div>
                 <div id="hash-results">
-                  ${createEmptyState({ icon: '#️⃣', title: 'No hashes yet', description: 'Enter text or select a file and click Hash All.', id: 'hash-empty-state', i18nTitle: 'tools.encoding-workbench.ui.desc2', i18nDesc: 'tools.encoding-workbench.ui.desc3' })}
+                  ${createEmptyState({ icon: "#️⃣", title: "No hashes yet", description: "Enter text or select a file and click Hash All.", id: "hash-empty-state", i18nTitle: "tools.encoding-workbench.ui.desc2", i18nDesc: "tools.encoding-workbench.ui.desc3" })}
                 </div>
               </div>
             </div>
@@ -270,7 +298,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
           </div>
 
           <div id="identify-results">
-            ${createEmptyState({ icon: '🔍', title: 'Nothing identified yet', description: 'Paste a hash or encoded string above and click Identify.', id: 'identify-empty-state', i18nTitle: 'tools.encoding-workbench.ui.desc4', i18nDesc: 'tools.encoding-workbench.ui.desc5' })}
+            ${createEmptyState({ icon: "🔍", title: "Nothing identified yet", description: "Paste a hash or encoded string above and click Identify.", id: "identify-empty-state", i18nTitle: "tools.encoding-workbench.ui.desc4", i18nDesc: "tools.encoding-workbench.ui.desc5" })}
           </div>
         </div>
 
@@ -278,24 +306,32 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
     </main>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-      ${createEducationalSection([
-        {
-          title: 'What is Encoding vs Hashing?',
-          content: '<p><strong>Encoding</strong> transforms data into a different representation that can be reversed (decoded). Common formats include Base64 — used to transmit binary data over text channels — URL encoding, HTML entity encoding, and hexadecimal. Encoding is not encryption; it offers no confidentiality.</p><p><strong>Hashing</strong> is a one-way mathematical transformation. A cryptographic hash function takes any input and produces a fixed-length fingerprint. You cannot reverse a hash to retrieve the original input. Hashes are used to verify file integrity, store passwords securely, and generate digital signatures.</p>'
-        },
-        {
-          title: 'How to Use This Tool',
-          content: '<ol><li><strong>Encode / Decode tab:</strong> Paste text and choose an operation (Base64, URL, HTML, Hex), or click Auto-Detect Layers to automatically unwrap multiple nested encodings.</li><li><strong>Hash tab:</strong> Enter text or select a file, choose algorithms, and click Hash All. Enable HMAC mode to compute keyed hashes with a shared secret.</li><li><strong>Identify tab:</strong> Paste an unknown hash or encoded string and click Identify to see likely algorithms with confidence ratings.</li></ol>'
-        },
-        {
-          title: 'Layered Encoding Explained',
-          content: '<p>Real-world data is often encoded multiple times. For example, a payload could be URL-encoded, then Base64-encoded, then placed inside a hex string. The Auto-Detect Layers feature inspects the input pattern, attempts each decoding in sequence, and visualises every step as a card so you can see exactly how the data was wrapped.</p>'
-        },
-        {
-          title: 'Hash Algorithm Guide',
-          content: '<ul><li><strong>MD5</strong> — 128-bit output. Cryptographically broken; use only for legacy compatibility or non-security checksums.</li><li><strong>SHA-1</strong> — 160-bit output. Deprecated for security use. Still found in older Git commits and certificates.</li><li><strong>SHA-256</strong> — 256-bit output. General-purpose, widely used in TLS, code signing, and data integrity checks.</li><li><strong>SHA-512</strong> — 512-bit output. Higher security margin; preferred for password-adjacent workflows.</li><li><strong>bcrypt</strong> — Adaptive password-hashing function with a configurable cost factor. Use for storing passwords; not for data integrity.</li></ul>'
-        }
-      ], 'encoding-workbench', currentLang)}
+      ${createEducationalSection(
+        [
+          {
+            title: "What is Encoding vs Hashing?",
+            content:
+              "<p><strong>Encoding</strong> transforms data into a different representation that can be reversed (decoded). Common formats include Base64 — used to transmit binary data over text channels — URL encoding, HTML entity encoding, and hexadecimal. Encoding is not encryption; it offers no confidentiality.</p><p><strong>Hashing</strong> is a one-way mathematical transformation. A cryptographic hash function takes any input and produces a fixed-length fingerprint. You cannot reverse a hash to retrieve the original input. Hashes are used to verify file integrity, store passwords securely, and generate digital signatures.</p>",
+          },
+          {
+            title: "How to Use This Tool",
+            content:
+              "<ol><li><strong>Encode / Decode tab:</strong> Paste text and choose an operation (Base64, URL, HTML, Hex), or click Auto-Detect Layers to automatically unwrap multiple nested encodings.</li><li><strong>Hash tab:</strong> Enter text or select a file, choose algorithms, and click Hash All. Enable HMAC mode to compute keyed hashes with a shared secret.</li><li><strong>Identify tab:</strong> Paste an unknown hash or encoded string and click Identify to see likely algorithms with confidence ratings.</li></ol>",
+          },
+          {
+            title: "Layered Encoding Explained",
+            content:
+              "<p>Real-world data is often encoded multiple times. For example, a payload could be URL-encoded, then Base64-encoded, then placed inside a hex string. The Auto-Detect Layers feature inspects the input pattern, attempts each decoding in sequence, and visualises every step as a card so you can see exactly how the data was wrapped.</p>",
+          },
+          {
+            title: "Hash Algorithm Guide",
+            content:
+              "<ul><li><strong>MD5</strong> — 128-bit output. Cryptographically broken; use only for legacy compatibility or non-security checksums.</li><li><strong>SHA-1</strong> — 160-bit output. Deprecated for security use. Still found in older Git commits and certificates.</li><li><strong>SHA-256</strong> — 256-bit output. General-purpose, widely used in TLS, code signing, and data integrity checks.</li><li><strong>SHA-512</strong> — 512-bit output. Higher security margin; preferred for password-adjacent workflows.</li><li><strong>bcrypt</strong> — Adaptive password-hashing function with a configurable cost factor. Use for storing passwords; not for data integrity.</li></ul>",
+          },
+        ],
+        "encoding-workbench",
+        currentLang,
+      )}
       ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;
@@ -822,7 +858,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
         document.getElementById('hash-file-info').classList.add('hidden');
         dropZone.classList.remove('hidden');
         document.getElementById('hash-file-input').value = '';
-        document.getElementById('hash-results').innerHTML = \`${createEmptyState({ icon: '#️⃣', title: 'No hashes yet', description: 'Enter text or select a file and click Hash All.', id: 'hash-empty-state', i18nTitle: 'tools.encoding-workbench.ui.desc2', i18nDesc: 'tools.encoding-workbench.ui.desc3' })}\`;
+        document.getElementById('hash-results').innerHTML = \`${createEmptyState({ icon: "#️⃣", title: "No hashes yet", description: "Enter text or select a file and click Hash All.", id: "hash-empty-state", i18nTitle: "tools.encoding-workbench.ui.desc2", i18nDesc: "tools.encoding-workbench.ui.desc3" })}\`;
       });
 
       // ─── Identify panel wiring ───────────────────────────────────────────────
@@ -920,7 +956,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
 
       document.getElementById('identify-clear-btn').addEventListener('click', function() {
         document.getElementById('identify-input').value = '';
-        document.getElementById('identify-results').innerHTML = \`${createEmptyState({ icon: '🔍', title: 'Nothing identified yet', description: 'Paste a hash or encoded string above and click Identify.', id: 'identify-empty-state', i18nTitle: 'tools.encoding-workbench.ui.desc4', i18nDesc: 'tools.encoding-workbench.ui.desc5' })}\`;
+        document.getElementById('identify-results').innerHTML = \`${createEmptyState({ icon: "🔍", title: "Nothing identified yet", description: "Paste a hash or encoded string above and click Identify.", id: "identify-empty-state", i18nTitle: "tools.encoding-workbench.ui.desc4", i18nDesc: "tools.encoding-workbench.ui.desc5" })}\`;
       });
 
       document.getElementById('identify-results').addEventListener('click', function(e) {
@@ -947,12 +983,16 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
     </script>
   `;
 
-  return respondHTML(createPageTemplate({
-    title: translation?.name || 'Encoding & Decoding Workbench',
-    description: translation?.desc || 'Encode, decode, hash, and identify data transformations',
-    path: '/encoding-workbench',
-    content,
-    scripts: script,
-    lang: currentLang
-  }));
+  return respondHTML(
+    createPageTemplate({
+      title: translation?.name || "Encoding & Decoding Workbench",
+      description:
+        translation?.desc ||
+        "Encode, decode, hash, and identify data transformations",
+      path: "/encoding-workbench",
+      content,
+      scripts: script,
+      lang: currentLang,
+    }),
+  );
 }

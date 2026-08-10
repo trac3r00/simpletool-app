@@ -3,47 +3,75 @@
  * Parses certificates client-side using node-forge
  */
 
-import { respondHTML, respondJSON } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
-import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML, respondJSON } from "../utils/respond.js";
+import {
+  createPageTemplate,
+  createToolHeader,
+  createCheatsheet,
+  infoHint,
+} from "../utils/common-ui.js";
+import {
+  createEducationalSection,
+  createRelatedToolsSection,
+} from "../utils/content-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleCertificateDecoderRoutes(request, url) {
   const { pathname } = url;
   const method = request.method;
 
   try {
-    if (pathname === '/certificate-decoder' || pathname === '/certificate-decoder/') {
-      if (method === 'GET') {
-        return respondHTML(renderCertificateDecoderPage(resolveRequestLanguage(request, url)));
+    if (
+      pathname === "/certificate-decoder" ||
+      pathname === "/certificate-decoder/"
+    ) {
+      if (method === "GET") {
+        return respondHTML(
+          renderCertificateDecoderPage(resolveRequestLanguage(request, url)),
+        );
       }
     }
 
-    return respondJSON({ error: 'Not found' }, { status: 404 });
+    return respondJSON({ error: "Not found" }, { status: 404 });
   } catch (error) {
-    console.error('Certificate Decoder Route Error:', error);
+    console.error("Certificate Decoder Route Error:", error);
     return respondJSON(
-      { error: 'Internal server error', message: error.message },
-      { status: 500 }
+      { error: "Internal server error", message: error.message },
+      { status: 500 },
     );
   }
 }
 
 function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('certificate-decoder', currentLang);
+  const translation = getToolTranslation("certificate-decoder", currentLang);
   const toolHeader = createToolHeader(
-    { emoji: '📜' },
-    translation?.name || 'X.509 Certificate Inspector',
-    translation?.desc || 'Inspect PEM certificates client-side. Validate issuers, SANs, and extensions securely.',
-    [{ text: translation?.ui?.badge16 || 'Privacy First', color: 'emerald', tooltip: 'All processing happens in your browser — no data is sent to any server.' }],
-    { toolId: 'certificate-decoder' }
+    { emoji: "📜" },
+    translation?.name || "X.509 Certificate Inspector",
+    translation?.desc ||
+      "Inspect PEM certificates client-side. Validate issuers, SANs, and extensions securely.",
+    [
+      {
+        text: translation?.ui?.badge16 || "Privacy First",
+        color: "emerald",
+        tooltip:
+          "All processing happens in your browser — no data is sent to any server.",
+      },
+    ],
+    { toolId: "certificate-decoder" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'certificate-decoder');
-    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
-
+  const currentTool = TOOLS.find((t) => t.id === "certificate-decoder");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
     <script src="/vendor/forge.min.js" integrity="sha384-wX64sW+w67fcBkYc40eYEvKyZMtpFujAPnxJPPMvE6fT3WDOJDZOAAny4rWgoBYq" crossorigin="anonymous"></script>
@@ -56,7 +84,7 @@ function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
           ${toolHeader}
 
           <div class="space-y-4">
-            <label for="certificate-input" class="label"><span data-i18n="tools.certificate-decoder.ui.label2">Paste Certificate (PEM Format)</span> ${infoHint('Paste PEM block with BEGIN/END headers so the parser detects it.')}</label>
+            <label for="certificate-input" class="label"><span data-i18n="tools.certificate-decoder.ui.label2">Paste Certificate (PEM Format)</span> ${infoHint("Paste PEM block with BEGIN/END headers so the parser detects it.")}</label>
             <textarea id="certificate-input" class="input font-mono" data-tooltip="Paste PEM certificate starting with -----BEGIN CERTIFICATE-----" data-i18n-tooltip="tools.certificate-decoder.ui.tip0" h-48 resize-y" placeholder="-----BEGIN CERTIFICATE-----&#10;MIIByzCCAXSgAwIBAgIUTQl...
 -----END CERTIFICATE-----"></textarea>
             
@@ -152,8 +180,10 @@ function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
 
       </div>
 
-      ${createCheatsheet('certificate-decoder', 'X.509 Certificate Reference', [
-        { heading: 'Certificate Fields', content: `
+      ${createCheatsheet("certificate-decoder", "X.509 Certificate Reference", [
+        {
+          heading: "Certificate Fields",
+          content: `
           <table>
             <tr><th data-i18n="tools.certificate-decoder.ui.th4">Field</th><th data-i18n="tools.certificate-decoder.ui.th5">Description</th></tr>
             <tr><td><code>Subject</code></td><td>Entity the certificate identifies</td></tr>
@@ -162,28 +192,33 @@ function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
             <tr><td><code>Not Before / After</code></td><td>Validity period</td></tr>
             <tr><td><code>Subject Alt Names</code></td><td>Additional domains / IPs</td></tr>
             <tr><td><code>Key Usage</code></td><td>Allowed operations</td></tr>
-          </table>` },
-        { heading: 'Certificate Types', content: `
+          </table>`,
+        },
+        {
+          heading: "Certificate Types",
+          content: `
           <table>
             <tr><th data-i18n="tools.certificate-decoder.ui.th6">Type</th><th data-i18n="tools.certificate-decoder.ui.th7">Validation</th><th data-i18n="tools.certificate-decoder.ui.th8">Use Case</th></tr>
             <tr><td><code>DV</code> (Domain)</td><td>Quick / automated</td><td>Basic HTTPS</td></tr>
             <tr><td><code>OV</code> (Organization)</td><td>Business verified</td><td>Company sites</td></tr>
             <tr><td><code>EV</code> (Extended)</td><td>Strict verification</td><td>Financial / legal</td></tr>
-          </table>` }
+          </table>`,
+        },
       ])}
     </main>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-      ${createEducationalSection([
-        {
-          title: 'What are X.509 Certificates?',
-          content: `
+      ${createEducationalSection(
+        [
+          {
+            title: "What are X.509 Certificates?",
+            content: `
             <p>X.509 is a standard format for public key certificates, which are digital documents that securely bind a public key to an identity (such as a website, organization, or individual). These certificates are the foundation of the Public Key Infrastructure (PKI) used to secure the internet via HTTPS, as well as for signing emails and software.</p>
             <p>An X.509 certificate contains the public key, the identity of the certificate holder, and the digital signature of the Certificate Authority (CA) that issued the certificate, proving its authenticity.</p>
-          `
-        },
-        {
-          title: 'How to Use This Tool',
-          content: `
+          `,
+          },
+          {
+            title: "How to Use This Tool",
+            content: `
             <ol>
               <li><strong>Paste your certificate:</strong> Copy your PEM-encoded certificate (including the BEGIN and END headers) and paste it into the input field.</li>
               <li><strong>Parse:</strong> Click "Parse Certificate" to extract and analyze the data.</li>
@@ -191,30 +226,33 @@ function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
               <li><strong>Inspect Details:</strong> Expand the sections below to see the full Subject, Issuer, SANs, and technical extensions.</li>
               <li><strong>Check Status:</strong> Look at the status badge to see if the certificate is currently valid or expired.</li>
             </ol>
-          `
-        },
-        {
-          title: 'Common Use Cases',
-          content: `
+          `,
+          },
+          {
+            title: "Common Use Cases",
+            content: `
             <ul>
               <li><strong>SSL/TLS Troubleshooting:</strong> Diagnosing why a website is showing a "Not Secure" warning by checking for expiration or hostname mismatches.</li>
               <li><strong>Security Auditing:</strong> Verifying that a certificate was issued by a trusted CA and uses strong signature algorithms (like SHA-256).</li>
               <li><strong>Development:</strong> Inspecting self-signed certificates or CSRs (Certificate Signing Requests) during local development.</li>
               <li><strong>Infrastructure Management:</strong> Checking the Subject Alternative Names (SANs) to ensure all required subdomains are covered by a single certificate.</li>
             </ul>
-          `
-        },
-        {
-          title: 'Pro Tips',
-          content: `
+          `,
+          },
+          {
+            title: "Pro Tips",
+            content: `
             <ul>
               <li><strong>Check the SANs:</strong> Modern browsers rely on the Subject Alternative Name (SAN) extension rather than the Common Name (CN) for hostname verification. Always ensure your domain is listed in the SANs.</li>
               <li><strong>Verify the Chain:</strong> If a certificate is valid but still untrusted, it may be missing intermediate certificates. Check the "Issuer" to identify which intermediate CA you need to include on your server.</li>
               <li><strong>Fingerprints for Pinning:</strong> Use the SHA-256 Fingerprint provided by this tool if you need to implement certificate pinning in mobile applications or high-security APIs.</li>
             </ul>
-          `
-        }
-      ], 'certificate-decoder', currentLang)}
+          `,
+          },
+        ],
+        "certificate-decoder",
+        currentLang,
+      )}
     ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;
@@ -504,11 +542,13 @@ function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
   `;
 
   return createPageTemplate({
-    title: translation?.name || 'X.509 Certificate Inspector',
-    description: translation?.desc || 'Inspect PEM certificates client-side. Validate issuers, SANs, and extensions securely.',
-    path: '/certificate-decoder',
+    title: translation?.name || "X.509 Certificate Inspector",
+    description:
+      translation?.desc ||
+      "Inspect PEM certificates client-side. Validate issuers, SANs, and extensions securely.",
+    path: "/certificate-decoder",
     content,
     scripts: script,
-    lang: currentLang
+    lang: currentLang,
   });
 }

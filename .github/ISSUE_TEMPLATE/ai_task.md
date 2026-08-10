@@ -27,11 +27,13 @@ labels: ai-task
 Allowed files/directories:
 
 ```
+
 ```
 
 Do not touch:
 
 ```
+
 ```
 
 ## Context

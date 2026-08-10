@@ -14,7 +14,7 @@ export function getStyleTag() {
 export function getStyleLink() {
   // For development, link to external file
   // For production, use inline styles
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env.NODE_ENV === "production") {
     return getStyleTag();
   }
   return '<link rel="stylesheet" href="/dist/styles.css">';

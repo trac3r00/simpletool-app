@@ -3,20 +3,38 @@
  * Generates synthetic records entirely client-side
  */
 
-import { respondHTML, respondJSON } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
-import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML, respondJSON } from "../utils/respond.js";
+import {
+  createPageTemplate,
+  createToolHeader,
+  createCheatsheet,
+  infoHint,
+} from "../utils/common-ui.js";
+import {
+  createEducationalSection,
+  createRelatedToolsSection,
+} from "../utils/content-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleMockDataRoutes(request, url) {
   const { pathname } = url;
 
-  if (pathname === '/mock-data-generator' || pathname === '/mock-data-generator/') {
-    if (request.method === 'GET') {
-      return respondHTML(renderMockDataPage(resolveRequestLanguage(request, url)));
+  if (
+    pathname === "/mock-data-generator" ||
+    pathname === "/mock-data-generator/"
+  ) {
+    if (request.method === "GET") {
+      return respondHTML(
+        renderMockDataPage(resolveRequestLanguage(request, url)),
+      );
     }
-    return respondJSON({ error: 'Method not allowed' }, { status: 405 });
+    return respondJSON({ error: "Method not allowed" }, { status: 405 });
   }
 
   return null;
@@ -24,29 +42,39 @@ export async function handleMockDataRoutes(request, url) {
 
 function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('mock-data-generator', currentLang);
+  const translation = getToolTranslation("mock-data-generator", currentLang);
   const toolHeader = createToolHeader(
-    { emoji: '📊' },
-    translation?.name || 'Mock Data Generator',
-    translation?.desc || 'Produce privacy-safe placeholder data for JSON, CSV, or SQL workflows. Perfect for demos, seeding, or QA.',
+    { emoji: "📊" },
+    translation?.name || "Mock Data Generator",
+    translation?.desc ||
+      "Produce privacy-safe placeholder data for JSON, CSV, or SQL workflows. Perfect for demos, seeding, or QA.",
     [
-      { text: translation?.ui?.badge13 || 'Client-Side Only', tooltip: 'Runs entirely in your browser using Web APIs — your data never leaves your device.' }
+      {
+        text: translation?.ui?.badge13 || "Client-Side Only",
+        tooltip:
+          "Runs entirely in your browser using Web APIs — your data never leaves your device.",
+      },
     ],
-    { toolId: 'mock-data-generator' }
+    { toolId: "mock-data-generator" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'mock-data-generator');
-  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
-  const content = `
+  const currentTool = TOOLS.find((t) => t.id === "mock-data-generator");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
+  const content =
+    `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
         ${toolHeader}
-` + String.raw`
+` +
+    String.raw`
         <div class="space-y-8">
           <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 md:p-8 space-y-8">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="space-y-2">
-              <label for="row-count" class="text-xs font-semibold text-surface-500 dark:text-surface-400 uppercase tracking-[0.2em]"><span data-i18n="tools.mock-data-generator.ui.label2">Rows</span> ${infoHint('Generate 10-500 rows; higher counts run longer but stay inside the browser.')}</label>
+              <label for="row-count" class="text-xs font-semibold text-surface-500 dark:text-surface-400 uppercase tracking-[0.2em]"><span data-i18n="tools.mock-data-generator.ui.label2">Rows</span> ${infoHint("Generate 10-500 rows; higher counts run longer but stay inside the browser.")}</label>
               <input id="row-count" type="number" data-tooltip="Number of data rows to generate (10-500)" data-i18n-tooltip="tools.mock-data-generator.ui.tip0" min="10" max="500" value="25" class="w-full px-4 py-3 rounded-lg border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-950 text-base text-surface-900 dark:text-surface-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:border-primary-500" />
               <p class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.mock-data-generator.ui.desc8">Generate between 10 and 500 records.</p>
             </div>
@@ -60,7 +88,7 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
               <p class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.mock-data-generator.ui.desc9">Switch formats instantly.</p>
             </div>
             <div id="sql-options" class="hidden space-y-2">
-              <label for="table-name" class="text-xs font-semibold text-surface-500 dark:text-surface-400 uppercase tracking-[0.2em]"><span data-i18n="tools.mock-data-generator.ui.label4">Table Name</span> ${infoHint('Used by SQL output; keep it alphanumeric and lowercase if you plan to import it.')}</label>
+              <label for="table-name" class="text-xs font-semibold text-surface-500 dark:text-surface-400 uppercase tracking-[0.2em]"><span data-i18n="tools.mock-data-generator.ui.label4">Table Name</span> ${infoHint("Used by SQL output; keep it alphanumeric and lowercase if you plan to import it.")}</label>
               <input id="table-name" type="text" value="mock_data" class="w-full px-4 py-3 rounded-lg border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-950 text-base text-surface-900 dark:text-surface-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:border-primary-500" />
               <p class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.mock-data-generator.ui.desc10">For INSERT statements.</p>
             </div>
@@ -127,8 +155,10 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
         </div>
       </div>
 
-      ${createCheatsheet('mock-data-generator', 'Mock Data Field Types', [
-        { heading: 'Available Types', content: `
+      ${createCheatsheet("mock-data-generator", "Mock Data Field Types", [
+        {
+          heading: "Available Types",
+          content: `
           <table>
             <tr><th data-i18n="tools.mock-data-generator.ui.th2">Type</th><th data-i18n="tools.mock-data-generator.ui.th3">Example Output</th></tr>
             <tr><td><code>name</code></td><td>John Smith</td></tr>
@@ -143,28 +173,37 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
             <tr><td><code>ip</code></td><td>192.168.1.1</td></tr>
             <tr><td><code>color</code></td><td>#ff6b35</td></tr>
             <tr><td><code>company</code></td><td>Acme Corp</td></tr>
-          </table>` }
+          </table>`,
+        },
       ])}
     </main>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-      ${createEducationalSection([
-        {
-          title: 'What is Mock Data?',
-          content: '<p>Mock data is synthetic information that mimics real-world data without containing any sensitive or personally identifiable information (PII). It is essential for developers and testers who need realistic datasets to build and validate applications without risking data breaches or violating privacy regulations like GDPR or CCPA. By using mock data, you can simulate various scenarios, from standard user profiles to edge cases, ensuring your software handles all types of input gracefully.</p>'
-        },
-        {
-          title: 'Testing Strategies',
-          content: '<p>Effective testing requires diverse datasets. Use mock data to seed your development databases, perform load testing with thousands of records, or verify UI layouts with varying string lengths. It\'s particularly useful for integration testing where you need predictable responses from external APIs. By generating data locally, you can create consistent test environments that are easy to reset and reproduce, leading to more reliable and faster development cycles.</p>'
-        },
-        {
-          title: 'Data Privacy in Mocks',
-          content: '<p>Privacy is a top priority in modern software development. Using real production data in development or staging environments is a major security risk. Mock data generators solve this by producing "fake" but structurally correct data. Our tool runs entirely in your browser, meaning your configuration and the generated data never leave your device. This "Privacy-First" approach ensures that even the process of creating mock data is secure and compliant with the strictest security standards.</p>'
-        },
-        {
-          title: 'Pro Tips',
-          content: '<ul><li><strong>Consistency:</strong> When generating multiple related datasets, use fixed seeds or patterns to maintain referential integrity between tables.</li><li><strong>Edge Cases:</strong> Don\'t just generate "happy path" data. Include empty strings, very long names, and special characters to test your application\'s robustness.</li><li><strong>Format Switching:</strong> Use the SQL export for quick database seeding and CSV for spreadsheet analysis or bulk imports.</li><li><strong>Automation:</strong> While this tool is manual, the patterns it uses can be integrated into your automated CI/CD pipelines for continuous testing.</li></ul>'
-        }
-      ], 'mock-data-generator', currentLang)}
+      ${createEducationalSection(
+        [
+          {
+            title: "What is Mock Data?",
+            content:
+              "<p>Mock data is synthetic information that mimics real-world data without containing any sensitive or personally identifiable information (PII). It is essential for developers and testers who need realistic datasets to build and validate applications without risking data breaches or violating privacy regulations like GDPR or CCPA. By using mock data, you can simulate various scenarios, from standard user profiles to edge cases, ensuring your software handles all types of input gracefully.</p>",
+          },
+          {
+            title: "Testing Strategies",
+            content:
+              "<p>Effective testing requires diverse datasets. Use mock data to seed your development databases, perform load testing with thousands of records, or verify UI layouts with varying string lengths. It's particularly useful for integration testing where you need predictable responses from external APIs. By generating data locally, you can create consistent test environments that are easy to reset and reproduce, leading to more reliable and faster development cycles.</p>",
+          },
+          {
+            title: "Data Privacy in Mocks",
+            content:
+              '<p>Privacy is a top priority in modern software development. Using real production data in development or staging environments is a major security risk. Mock data generators solve this by producing "fake" but structurally correct data. Our tool runs entirely in your browser, meaning your configuration and the generated data never leave your device. This "Privacy-First" approach ensures that even the process of creating mock data is secure and compliant with the strictest security standards.</p>',
+          },
+          {
+            title: "Pro Tips",
+            content:
+              "<ul><li><strong>Consistency:</strong> When generating multiple related datasets, use fixed seeds or patterns to maintain referential integrity between tables.</li><li><strong>Edge Cases:</strong> Don't just generate \"happy path\" data. Include empty strings, very long names, and special characters to test your application's robustness.</li><li><strong>Format Switching:</strong> Use the SQL export for quick database seeding and CSV for spreadsheet analysis or bulk imports.</li><li><strong>Automation:</strong> While this tool is manual, the patterns it uses can be integrated into your automated CI/CD pipelines for continuous testing.</li></ul>",
+          },
+        ],
+        "mock-data-generator",
+        currentLang,
+      )}
     </div>
     ${createRelatedToolsSection(relatedToolsData)}
 
@@ -361,10 +400,12 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
   `;
 
   return createPageTemplate({
-    title: translation?.name || 'Mock Data Generator',
-    description: translation?.desc || 'Generate fake JSON, CSV, or SQL datasets locally for testing and demos.',
-    path: '/mock-data-generator',
+    title: translation?.name || "Mock Data Generator",
+    description:
+      translation?.desc ||
+      "Generate fake JSON, CSV, or SQL datasets locally for testing and demos.",
+    path: "/mock-data-generator",
     content,
-    lang: currentLang
+    lang: currentLang,
   });
 }

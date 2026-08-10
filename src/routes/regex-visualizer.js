@@ -1,29 +1,46 @@
-import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
-import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML } from "../utils/respond.js";
+import {
+  createPageTemplate,
+  createToolHeader,
+  createCheatsheet,
+  infoHint,
+} from "../utils/common-ui.js";
+import {
+  createEducationalSection,
+  createRelatedToolsSection,
+} from "../utils/content-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleRegexVisualizerRoutes(request) {
   const requestPath = new URL(request.url).pathname;
-  const canonicalPath = requestPath.replace(/\/$/, '') || '/';
+  const canonicalPath = requestPath.replace(/\/$/, "") || "/";
   const currentLang = resolveRequestLanguage(request, new URL(request.url));
   const normalizedLang = normalizeLanguage(currentLang);
-  const translation = getToolTranslation('regex-visualizer', normalizedLang);
-  const title = translation?.name || 'Regex Studio';
-  const description = translation?.desc || 'Visualize regular expressions with railroad diagrams, test matches in real-time, and generate code snippets.';
+  const translation = getToolTranslation("regex-visualizer", normalizedLang);
+  const title = translation?.name || "Regex Studio";
+  const description =
+    translation?.desc ||
+    "Visualize regular expressions with railroad diagrams, test matches in real-time, and generate code snippets.";
 
   const header = createToolHeader(
-    { emoji: '🧩' },
+    { emoji: "🧩" },
     title,
-    'Understand, test, and debug regular expressions with interactive visualizations and real-time explanations.',
+    "Understand, test, and debug regular expressions with interactive visualizations and real-time explanations.",
     [],
-    { toolId: 'regex-visualizer' }
+    { toolId: "regex-visualizer" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'regex-visualizer');
-    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
-
+  const currentTool = TOOLS.find((t) => t.id === "regex-visualizer");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -36,7 +53,7 @@ export async function handleRegexVisualizerRoutes(request) {
            <!-- Regex Input -->
            <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 p-5">
              <div class="flex justify-between items-center mb-2">
-               <label for="regex-input" class="block text-sm font-medium text-surface-700 dark:text-surface-300"><span data-i18n="tools.regex-visualizer.ui.label3">Regular Expression</span> ${infoHint('Use JS regex syntax; escape backslashes (\\\\) and omit surrounding / delimiters.')}</label>
+               <label for="regex-input" class="block text-sm font-medium text-surface-700 dark:text-surface-300"><span data-i18n="tools.regex-visualizer.ui.label3">Regular Expression</span> ${infoHint("Use JS regex syntax; escape backslashes (\\\\) and omit surrounding / delimiters.")}</label>
                <select id="preset-select" class="text-xs px-2 py-1 rounded-md bg-surface-100 dark:bg-surface-800 text-surface-700 dark:text-surface-300 border border-surface-300 dark:border-surface-700 focus:ring-2 focus:ring-primary-500">
                  <option value="" data-i18n="tools.regex-visualizer.ui.option2">Presets</option>
                  <option value="email" data-i18n="tools.regex-visualizer.ui.option3">Email</option>
@@ -78,7 +95,7 @@ export async function handleRegexVisualizerRoutes(request) {
           <!-- Test String Input -->
           <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 p-5">
             <div class="flex justify-between items-center mb-2">
-              <label for="test-string" class="block text-sm font-medium text-surface-700 dark:text-surface-300"><span data-i18n="tools.regex-visualizer.ui.label4">Test String</span> ${infoHint('Enter sample text to test against; matches highlight instantly below.')}</label>
+              <label for="test-string" class="block text-sm font-medium text-surface-700 dark:text-surface-300"><span data-i18n="tools.regex-visualizer.ui.label4">Test String</span> ${infoHint("Enter sample text to test against; matches highlight instantly below.")}</label>
               <span id="match-count" class="text-xs font-medium px-2 py-0.5 rounded-full bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-400" data-i18n="tools.regex-visualizer.ui.desc16">2 matches</span>
             </div>
             <textarea id="test-string" rows="6" data-tooltip="Text to test the regex pattern against" data-i18n-tooltip="tools.regex-visualizer.ui.tip4"
@@ -174,8 +191,10 @@ while ((m = regex.exec(str)) !== null) {
         </div>
       </div>
 
-      ${createCheatsheet('regex-visualizer', 'Regex Quick Reference', [
-        { heading: 'Character Classes', content: `
+      ${createCheatsheet("regex-visualizer", "Regex Quick Reference", [
+        {
+          heading: "Character Classes",
+          content: `
           <table>
             <tr><th data-i18n="tools.regex-visualizer.ui.th12">Pattern</th><th data-i18n="tools.regex-visualizer.ui.th13">Matches</th></tr>
             <tr><td><code>\\\\d</code></td><td>Any digit (0-9)</td></tr>
@@ -184,8 +203,11 @@ while ((m = regex.exec(str)) !== null) {
             <tr><td><code>.</code></td><td>Any char except newline</td></tr>
             <tr><td><code>[abc]</code></td><td>Any of a, b, or c</td></tr>
             <tr><td><code>[^abc]</code></td><td>Not a, b, or c</td></tr>
-          </table>` },
-        { heading: 'Quantifiers', content: `
+          </table>`,
+        },
+        {
+          heading: "Quantifiers",
+          content: `
           <table>
             <tr><th data-i18n="tools.regex-visualizer.ui.th12">Pattern</th><th data-i18n="tools.regex-visualizer.ui.th14">Meaning</th></tr>
             <tr><td><code>*</code></td><td>0 or more</td></tr>
@@ -193,8 +215,11 @@ while ((m = regex.exec(str)) !== null) {
             <tr><td><code>?</code></td><td>0 or 1</td></tr>
             <tr><td><code>{n}</code></td><td>Exactly n</td></tr>
             <tr><td><code>{n,m}</code></td><td>Between n and m</td></tr>
-          </table>` },
-        { heading: 'Anchors &amp; Groups', content: `
+          </table>`,
+        },
+        {
+          heading: "Anchors &amp; Groups",
+          content: `
           <table>
             <tr><th data-i18n="tools.regex-visualizer.ui.th12">Pattern</th><th data-i18n="tools.regex-visualizer.ui.th14">Meaning</th></tr>
             <tr><td><code>^</code></td><td>Start of string</td></tr>
@@ -203,36 +228,48 @@ while ((m = regex.exec(str)) !== null) {
             <tr><td><code>(?:...)</code></td><td>Non-capture group</td></tr>
             <tr><td><code>(?=...)</code></td><td>Lookahead</td></tr>
             <tr><td><code>\\\\b</code></td><td>Word boundary</td></tr>
-          </table>` },
-        { heading: 'Common Patterns', content: `
+          </table>`,
+        },
+        {
+          heading: "Common Patterns",
+          content: `
           <table>
             <tr><th data-i18n="tools.regex-visualizer.ui.th12">Pattern</th><th data-i18n="tools.regex-visualizer.ui.th13">Matches</th></tr>
             <tr><td><code>^[\\\\w.+-]+@[\\\\w-]+\\\\.[\\\\w.]+$</code></td><td>Email</td></tr>
             <tr><td><code>^https?:\\/\\/</code></td><td>URL</td></tr>
             <tr><td><code>^\\\\d{4}-\\\\d{2}-\\\\d{2}$</code></td><td>Date (YYYY-MM-DD)</td></tr>
             <tr><td><code>^\\\\d{1,3}\\\\.\\\\d{1,3}\\\\.\\\\d{1,3}\\\\.\\\\d{1,3}$</code></td><td>IPv4</td></tr>
-          </table>` }
+          </table>`,
+        },
       ])}
     </main>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-      ${createEducationalSection([
-        {
-          title: 'What are Regular Expressions?',
-          content: '<p>Regular expressions (regex) are powerful patterns used to match character combinations in strings. They are essential tools for text processing, validation, and data extraction across programming languages.</p><p>Regex patterns consist of literal characters and special metacharacters that define search rules. They are used in form validation, log parsing, search and replace operations, and data cleaning tasks.</p>'
-        },
-        {
-          title: 'How to Use This Tool',
-          content: '<p>Enter your regex pattern in the input field. The tool will automatically generate a railroad diagram visualizing the pattern structure. Add test text to see real-time match highlighting and explanations.</p><p>Use the cheatsheet for quick reference on common patterns and syntax. Generate code snippets for your preferred programming language.</p>'
-        },
-        {
-          title: 'Common Use Cases',
-          content: '<ul><li><strong>Email validation:</strong> Ensure user input matches proper email format before processing</li><li><strong>Log parsing:</strong> Extract timestamps, IP addresses, and error codes from server logs</li><li><strong>Data cleaning:</strong> Remove unwanted characters or format phone numbers consistently</li><li><strong>Search and replace:</strong> Bulk text transformations with pattern matching</li></ul>'
-        },
-        {
-          title: 'Pro Tips',
-          content: '<ul><li>Start simple and build complex patterns incrementally</li><li>Use non-capturing groups (?:) when you do not need to reference the match</li><li>Test edge cases like empty strings and special characters</li><li>Consider regex readability—complex patterns can be documented with comments</li></ul>'
-        }
-      ], 'regex-visualizer', currentLang)}
+      ${createEducationalSection(
+        [
+          {
+            title: "What are Regular Expressions?",
+            content:
+              "<p>Regular expressions (regex) are powerful patterns used to match character combinations in strings. They are essential tools for text processing, validation, and data extraction across programming languages.</p><p>Regex patterns consist of literal characters and special metacharacters that define search rules. They are used in form validation, log parsing, search and replace operations, and data cleaning tasks.</p>",
+          },
+          {
+            title: "How to Use This Tool",
+            content:
+              "<p>Enter your regex pattern in the input field. The tool will automatically generate a railroad diagram visualizing the pattern structure. Add test text to see real-time match highlighting and explanations.</p><p>Use the cheatsheet for quick reference on common patterns and syntax. Generate code snippets for your preferred programming language.</p>",
+          },
+          {
+            title: "Common Use Cases",
+            content:
+              "<ul><li><strong>Email validation:</strong> Ensure user input matches proper email format before processing</li><li><strong>Log parsing:</strong> Extract timestamps, IP addresses, and error codes from server logs</li><li><strong>Data cleaning:</strong> Remove unwanted characters or format phone numbers consistently</li><li><strong>Search and replace:</strong> Bulk text transformations with pattern matching</li></ul>",
+          },
+          {
+            title: "Pro Tips",
+            content:
+              "<ul><li>Start simple and build complex patterns incrementally</li><li>Use non-capturing groups (?:) when you do not need to reference the match</li><li>Test edge cases like empty strings and special characters</li><li>Consider regex readability—complex patterns can be documented with comments</li></ul>",
+          },
+        ],
+        "regex-visualizer",
+        currentLang,
+      )}
     ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;
@@ -815,12 +852,14 @@ while (matcher.find()) {
     </script>
   `;
 
-  return respondHTML(createPageTemplate({
-    title,
-    description,
-    path: canonicalPath,
-    content,
-    scripts,
-    lang: normalizedLang
-  }));
+  return respondHTML(
+    createPageTemplate({
+      title,
+      description,
+      path: canonicalPath,
+      content,
+      scripts,
+      lang: normalizedLang,
+    }),
+  );
 }

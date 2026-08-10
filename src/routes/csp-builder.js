@@ -5,41 +5,68 @@
  * - Explains directives and flags risky settings
  */
 
-import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
-import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML } from "../utils/respond.js";
+import {
+  createPageTemplate,
+  createToolHeader,
+  createCheatsheet,
+  infoHint,
+} from "../utils/common-ui.js";
+import {
+  createEducationalSection,
+  createRelatedToolsSection,
+} from "../utils/content-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleCSPBuilderRoutes(request, url) {
   const { pathname } = url;
-  if (pathname === '/csp-builder' || pathname === '/csp-builder/') {
-    if (request.method === 'GET') return respondHTML(renderCSPBuilderPage(resolveRequestLanguage(request, url)));
-    return new Response('Method not allowed', { status: 405 });
+  if (pathname === "/csp-builder" || pathname === "/csp-builder/") {
+    if (request.method === "GET")
+      return respondHTML(
+        renderCSPBuilderPage(resolveRequestLanguage(request, url)),
+      );
+    return new Response("Method not allowed", { status: 405 });
   }
   return null;
 }
 
 function renderCSPBuilderPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('csp-builder', currentLang);
-  const title = translation?.name || 'CSP Header Builder';
-  const description = translation?.desc || 'Build a Content-Security-Policy header with clear explanations and safety checks.';
+  const translation = getToolTranslation("csp-builder", currentLang);
+  const title = translation?.name || "CSP Header Builder";
+  const description =
+    translation?.desc ||
+    "Build a Content-Security-Policy header with clear explanations and safety checks.";
 
   const header = createToolHeader(
-    { emoji: '🧱' },
+    { emoji: "🧱" },
     title,
     description,
     [
-      { text: '<span data-i18n="tools.csp-builder.ui.badge0">Interactive</span>', tooltip: 'Edit directives and instantly see the full header value.' },
-      { text: '<span data-i18n="tools.csp-builder.ui.badge1">Security Checks</span>', tooltip: 'Warns on unsafe-inline, wildcard sources, and missing baselines.' }
+      {
+        text: '<span data-i18n="tools.csp-builder.ui.badge0">Interactive</span>',
+        tooltip: "Edit directives and instantly see the full header value.",
+      },
+      {
+        text: '<span data-i18n="tools.csp-builder.ui.badge1">Security Checks</span>',
+        tooltip:
+          "Warns on unsafe-inline, wildcard sources, and missing baselines.",
+      },
     ],
-    { toolId: 'csp-builder' }
+    { toolId: "csp-builder" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'csp-builder');
-    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
-
+  const currentTool = TOOLS.find((t) => t.id === "csp-builder");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -58,7 +85,7 @@ function renderCSPBuilderPage(lang = DEFAULT_LANGUAGE) {
             <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
               <label class="label flex items-center gap-2">
                 <span data-i18n="tools.csp-builder.ui.label0">Existing CSP (optional)</span>
-                ${infoHint('Paste only the policy value (everything after “Content-Security-Policy:”). Then click Parse.', 'Help', { i18nKey: 'tools.csp-builder.ui.desc0' })}
+                ${infoHint("Paste only the policy value (everything after “Content-Security-Policy:”). Then click Parse.", "Help", { i18nKey: "tools.csp-builder.ui.desc0" })}
               </label>
               <textarea id="csp-input" rows="6" class="input-mono resize-y" placeholder="default-src 'self'; script-src 'self' 'nonce-{{nonce}}'; object-src 'none'; base-uri 'none';" data-i18n-placeholder="tools.csp-builder.ui.placeholder0"></textarea>
               <div class="mt-3 flex items-center justify-between gap-3">
@@ -86,24 +113,24 @@ function renderCSPBuilderPage(lang = DEFAULT_LANGUAGE) {
               </div>
 
               <div class="space-y-3">
-                ${directiveRow('default-src', "Fallback for most fetches", "e.g., 'self'")}
-                ${directiveRow('script-src', "JS sources (use nonce/hash, avoid unsafe-inline)", "e.g., 'self' 'nonce-{{nonce}}'")}
-                ${directiveRow('style-src', "CSS sources (consider hashes/nonces)", "e.g., 'self'")}
-                ${directiveRow('img-src', "Images", "e.g., 'self' data: https:")}
-                ${directiveRow('connect-src', "XHR/fetch/WebSocket", "e.g., 'self' https://api.example.com")}
-                ${directiveRow('font-src', "Fonts", "e.g., 'self' data:")}
-                ${directiveRow('frame-src', "Frames/iframes", "e.g., 'self'")}
-                ${directiveRow('object-src', "Plugins (usually 'none')", "e.g., 'none'")}
-                ${directiveRow('base-uri', "Restrict <base> tag", "e.g., 'none'")}
-                ${directiveRow('form-action', "Where forms can POST", "e.g., 'self'")}
-                ${directiveRow('frame-ancestors', "Who can embed you", "e.g., 'none'")}
+                ${directiveRow("default-src", "Fallback for most fetches", "e.g., 'self'")}
+                ${directiveRow("script-src", "JS sources (use nonce/hash, avoid unsafe-inline)", "e.g., 'self' 'nonce-{{nonce}}'")}
+                ${directiveRow("style-src", "CSS sources (consider hashes/nonces)", "e.g., 'self'")}
+                ${directiveRow("img-src", "Images", "e.g., 'self' data: https:")}
+                ${directiveRow("connect-src", "XHR/fetch/WebSocket", "e.g., 'self' https://api.example.com")}
+                ${directiveRow("font-src", "Fonts", "e.g., 'self' data:")}
+                ${directiveRow("frame-src", "Frames/iframes", "e.g., 'self'")}
+                ${directiveRow("object-src", "Plugins (usually 'none')", "e.g., 'none'")}
+                ${directiveRow("base-uri", "Restrict <base> tag", "e.g., 'none'")}
+                ${directiveRow("form-action", "Where forms can POST", "e.g., 'self'")}
+                ${directiveRow("frame-ancestors", "Who can embed you", "e.g., 'none'")}
               </div>
             </div>
 
             <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
               <label class="label flex items-center gap-2">
                 <span data-i18n="tools.csp-builder.ui.label2">Header output</span>
-                ${infoHint('Copy this into your server response headers. For testing, prefer “Content-Security-Policy-Report-Only”.', 'Help', { i18nKey: 'tools.csp-builder.ui.desc3' })}
+                ${infoHint("Copy this into your server response headers. For testing, prefer “Content-Security-Policy-Report-Only”.", "Help", { i18nKey: "tools.csp-builder.ui.desc3" })}
               </label>
               <textarea id="csp-output" rows="7" class="input-mono resize-y bg-surface-50 dark:bg-surface-950" readonly></textarea>
               <div class="mt-2 text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.csp-builder.ui.desc4">This tool does not validate your site behavior — always test in a staging environment.</div>
@@ -111,25 +138,31 @@ function renderCSPBuilderPage(lang = DEFAULT_LANGUAGE) {
           </div>
         </div>
 
-        ${createCheatsheet('csp-builder', '<span data-i18n="tools.csp-builder.ui.heading2">CSP Concepts</span>', [
-          {
-            heading: '<span data-i18n="tools.csp-builder.ui.heading3">Baseline recommendations</span>',
-            content: `
+        ${createCheatsheet(
+          "csp-builder",
+          '<span data-i18n="tools.csp-builder.ui.heading2">CSP Concepts</span>',
+          [
+            {
+              heading:
+                '<span data-i18n="tools.csp-builder.ui.heading3">Baseline recommendations</span>',
+              content: `
               <ul class="list-disc ml-6 space-y-1">
                 <li><code>object-src 'none'</code> — <span data-i18n="tools.csp-builder.ui.desc5">blocks plugin content</span></li>
                 <li><code>base-uri 'none'</code> — <span data-i18n="tools.csp-builder.ui.desc6">prevents base tag injection</span></li>
                 <li><code>frame-ancestors 'none'</code> — <span data-i18n="tools.csp-builder.ui.desc7">prevents clickjacking</span> (<span data-i18n="tools.csp-builder.ui.desc8">or set to allowed origins</span>)</li>
                 <li><span data-i18n="tools.csp-builder.ui.desc9">Prefer</span> <strong><span data-i18n="tools.csp-builder.ui.text1">nonces/hashes</span></strong> <span data-i18n="tools.csp-builder.ui.desc10">over</span> <code>'unsafe-inline'</code> <span data-i18n="tools.csp-builder.ui.desc11">for scripts/styles</span></li>
               </ul>
-            `
-          },
-          {
-            heading: '<span data-i18n="tools.csp-builder.ui.heading4">Report-Only</span>',
-            content: `
+            `,
+            },
+            {
+              heading:
+                '<span data-i18n="tools.csp-builder.ui.heading4">Report-Only</span>',
+              content: `
               <p data-i18n="tools.csp-builder.ui.desc12">Report-Only lets you monitor policy violations without blocking content. Use it to roll out a strict policy safely.</p>
-            `
-          }
-        ])}
+            `,
+            },
+          ],
+        )}
       </div>
     ${createRelatedToolsSection(relatedToolsData)}
     </main>
@@ -307,10 +340,10 @@ function renderCSPBuilderPage(lang = DEFAULT_LANGUAGE) {
   return createPageTemplate({
     title,
     description,
-    path: '/csp-builder',
+    path: "/csp-builder",
     content,
     scripts,
-    lang: currentLang
+    lang: currentLang,
   });
 }
 

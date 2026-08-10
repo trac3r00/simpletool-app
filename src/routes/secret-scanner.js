@@ -5,41 +5,67 @@
  * - Runs entirely in the browser
  */
 
-import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
-import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML } from "../utils/respond.js";
+import {
+  createPageTemplate,
+  createToolHeader,
+  createCheatsheet,
+  infoHint,
+} from "../utils/common-ui.js";
+import {
+  createEducationalSection,
+  createRelatedToolsSection,
+} from "../utils/content-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleSecretScannerRoutes(request, url) {
   const { pathname } = url;
-  if (pathname === '/secret-scanner' || pathname === '/secret-scanner/') {
-    if (request.method === 'GET') return respondHTML(renderSecretScannerPage(resolveRequestLanguage(request, url)));
-    return new Response('Method not allowed', { status: 405 });
+  if (pathname === "/secret-scanner" || pathname === "/secret-scanner/") {
+    if (request.method === "GET")
+      return respondHTML(
+        renderSecretScannerPage(resolveRequestLanguage(request, url)),
+      );
+    return new Response("Method not allowed", { status: 405 });
   }
   return null;
 }
 
 function renderSecretScannerPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('secret-scanner', currentLang);
-  const title = translation?.name || 'Secret Scanner';
-  const description = translation?.desc || 'Scan pasted code/config for leaked API keys, tokens, and passwords — then generate a share-safe redaction.';
+  const translation = getToolTranslation("secret-scanner", currentLang);
+  const title = translation?.name || "Secret Scanner";
+  const description =
+    translation?.desc ||
+    "Scan pasted code/config for leaked API keys, tokens, and passwords — then generate a share-safe redaction.";
 
   const header = createToolHeader(
-    { emoji: '🔎' },
+    { emoji: "🔎" },
     title,
     description,
     [
-      { text: '<span data-i18n="tools.secret-scanner.ui.badge0">Local Only</span>', tooltip: 'Nothing is uploaded — scanning happens in your browser.' },
-      { text: '<span data-i18n="tools.secret-scanner.ui.badge1">Actionable</span>', tooltip: 'Highlights common key formats and sensitive assignments.' }
+      {
+        text: '<span data-i18n="tools.secret-scanner.ui.badge0">Local Only</span>',
+        tooltip: "Nothing is uploaded — scanning happens in your browser.",
+      },
+      {
+        text: '<span data-i18n="tools.secret-scanner.ui.badge1">Actionable</span>',
+        tooltip: "Highlights common key formats and sensitive assignments.",
+      },
     ],
-    { toolId: 'secret-scanner' }
+    { toolId: "secret-scanner" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'secret-scanner');
-    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
-
+  const currentTool = TOOLS.find((t) => t.id === "secret-scanner");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -57,7 +83,7 @@ function renderSecretScannerPage(lang = DEFAULT_LANGUAGE) {
           <div class="space-y-3">
             <label class="label flex items-center gap-2">
               <span data-i18n="tools.secret-scanner.ui.label0">Input</span>
-              ${infoHint('Paste code, logs, configs, CI output, .env, or JSON. This tool uses regex heuristics — false positives are possible.', 'Help', { i18nKey: 'tools.secret-scanner.ui.desc0' })}
+              ${infoHint("Paste code, logs, configs, CI output, .env, or JSON. This tool uses regex heuristics — false positives are possible.", "Help", { i18nKey: "tools.secret-scanner.ui.desc0" })}
             </label>
             <textarea id="input" rows="18" class="input-mono resize-y" placeholder="Paste code/config here..." data-i18n-placeholder="tools.secret-scanner.ui.placeholder0"></textarea>
 
@@ -99,53 +125,67 @@ function renderSecretScannerPage(lang = DEFAULT_LANGUAGE) {
             <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
               <label class="label flex items-center gap-2">
                 <span data-i18n="tools.secret-scanner.ui.label3">Redacted output (share-safe)</span>
-                ${infoHint('Use this when pasting logs into tickets or chats. Always rotate credentials if a real secret leaked.', 'Help', { i18nKey: 'tools.secret-scanner.ui.desc2' })}
+                ${infoHint("Use this when pasting logs into tickets or chats. Always rotate credentials if a real secret leaked.", "Help", { i18nKey: "tools.secret-scanner.ui.desc2" })}
               </label>
               <textarea id="redacted" rows="18" class="input-mono resize-y bg-surface-50 dark:bg-surface-950" readonly placeholder="Redacted text will appear here after scanning..." data-i18n-placeholder="tools.secret-scanner.ui.placeholder1"></textarea>
             </div>
           </div>
         </div>
 
-        ${createCheatsheet('secret-scanner', '<span data-i18n="tools.secret-scanner.ui.heading1">What to do if you find a secret</span>', [
-          {
-            heading: '<span data-i18n="tools.secret-scanner.ui.heading2">Immediate steps</span>',
-            content: `
+        ${createCheatsheet(
+          "secret-scanner",
+          '<span data-i18n="tools.secret-scanner.ui.heading1">What to do if you find a secret</span>',
+          [
+            {
+              heading:
+                '<span data-i18n="tools.secret-scanner.ui.heading2">Immediate steps</span>',
+              content: `
               <ol class="list-decimal ml-6 space-y-1">
                 <li><strong><span data-i18n="tools.secret-scanner.ui.text0">Revoke/rotate</span></strong> <span data-i18n="tools.secret-scanner.ui.desc3">the credential immediately (don’t just delete the commit).</span></li>
                 <li data-i18n="tools.secret-scanner.ui.desc4">Search for usage in logs and audit trails.</li>
                 <li data-i18n="tools.secret-scanner.ui.desc5">Invalidate sessions if applicable.</li>
                 <li data-i18n="tools.secret-scanner.ui.desc6">Patch the process: use secret managers, pre-commit scanning, CI checks.</li>
               </ol>
-            `
-          },
-          {
-            heading: '<span data-i18n="tools.secret-scanner.ui.heading3">Notes</span>',
-            content: `
+            `,
+            },
+            {
+              heading:
+                '<span data-i18n="tools.secret-scanner.ui.heading3">Notes</span>',
+              content: `
               <p data-i18n="tools.secret-scanner.ui.desc7">Regex scanners can miss secrets (false negatives) and flag benign strings (false positives). Use multiple signals.</p>
-            `
-          }
-        ])}
+            `,
+            },
+          ],
+        )}
       </div>
     </main>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-      ${createEducationalSection([
-        {
-          title: 'What are Secret Leaks?',
-          content: '<p>Secret leaks occur when sensitive information like API keys, passwords, or private tokens are accidentally committed to version control or shared in public forums. These leaks can lead to unauthorized access, data breaches, and financial loss. This tool helps identify common secret patterns locally in your browser before you share or commit your code.</p>'
-        },
-        {
-          title: 'How to Use This Tool',
-          content: '<ol><li>Paste your code, configuration, or log files into the input area.</li><li>Click the "Scan" button to analyze the text for potential secrets.</li><li>Review the findings and advice for each detected item.</li><li>Use the "Copy Redacted" button to get a share-safe version of your text with secrets masked.</li></ol>'
-        },
-        {
-          title: 'Common Use Cases',
-          content: '<ul><li><strong>Pre-commit Check:</strong> Scan your code before committing to ensure no secrets are included.</li><li><strong>Log Redaction:</strong> Mask sensitive tokens in logs before sharing them with support or teammates.</li><li><strong>Security Auditing:</strong> Quickly audit configuration files for hardcoded credentials.</li></ul>'
-        },
-        {
-          title: 'Pro Tips',
-          content: '<ul><li>Always rotate your credentials immediately if you discover they have been leaked.</li><li>Use environment variables or secret managers instead of hardcoding secrets in your source code.</li><li>Enable "Include low severity patterns" for a more thorough scan, but be prepared for more false positives.</li></ul>'
-        }
-      ], 'secret-scanner', currentLang)}
+      ${createEducationalSection(
+        [
+          {
+            title: "What are Secret Leaks?",
+            content:
+              "<p>Secret leaks occur when sensitive information like API keys, passwords, or private tokens are accidentally committed to version control or shared in public forums. These leaks can lead to unauthorized access, data breaches, and financial loss. This tool helps identify common secret patterns locally in your browser before you share or commit your code.</p>",
+          },
+          {
+            title: "How to Use This Tool",
+            content:
+              '<ol><li>Paste your code, configuration, or log files into the input area.</li><li>Click the "Scan" button to analyze the text for potential secrets.</li><li>Review the findings and advice for each detected item.</li><li>Use the "Copy Redacted" button to get a share-safe version of your text with secrets masked.</li></ol>',
+          },
+          {
+            title: "Common Use Cases",
+            content:
+              "<ul><li><strong>Pre-commit Check:</strong> Scan your code before committing to ensure no secrets are included.</li><li><strong>Log Redaction:</strong> Mask sensitive tokens in logs before sharing them with support or teammates.</li><li><strong>Security Auditing:</strong> Quickly audit configuration files for hardcoded credentials.</li></ul>",
+          },
+          {
+            title: "Pro Tips",
+            content:
+              '<ul><li>Always rotate your credentials immediately if you discover they have been leaked.</li><li>Use environment variables or secret managers instead of hardcoding secrets in your source code.</li><li>Enable "Include low severity patterns" for a more thorough scan, but be prepared for more false positives.</li></ul>',
+          },
+        ],
+        "secret-scanner",
+        currentLang,
+      )}
     ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;
@@ -464,9 +504,9 @@ function renderSecretScannerPage(lang = DEFAULT_LANGUAGE) {
   return createPageTemplate({
     title,
     description,
-    path: '/secret-scanner',
+    path: "/secret-scanner",
     content,
     scripts,
-    lang: currentLang
+    lang: currentLang,
   });
 }
