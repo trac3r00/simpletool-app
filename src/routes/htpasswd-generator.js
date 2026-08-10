@@ -3,20 +3,33 @@
  * Supports bcrypt (-B), Apache MD5 (-m), SHA1 (-s), and plaintext entries
  */
 
-import { respondHTML, respondJSON } from '../utils/respond.js';
-import { createPageTemplate, infoHint } from '../utils/common-ui.js';
-import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML, respondJSON } from "../utils/respond.js";
+import { createPageTemplate, infoHint } from "../utils/common-ui.js";
+import {
+  createEducationalSection,
+  createRelatedToolsSection,
+} from "../utils/content-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleHtpasswdRoutes(request, url) {
   const { pathname } = url;
 
-  if (pathname === '/htpasswd-generator' || pathname === '/htpasswd-generator/') {
-    if (request.method === 'GET') {
-      return respondHTML(renderHtpasswdPage(resolveRequestLanguage(request, url)));
+  if (
+    pathname === "/htpasswd-generator" ||
+    pathname === "/htpasswd-generator/"
+  ) {
+    if (request.method === "GET") {
+      return respondHTML(
+        renderHtpasswdPage(resolveRequestLanguage(request, url)),
+      );
     }
-    return respondJSON({ error: 'Method not allowed' }, { status: 405 });
+    return respondJSON({ error: "Method not allowed" }, { status: 405 });
   }
 
   return null;
@@ -24,12 +37,17 @@ export async function handleHtpasswdRoutes(request, url) {
 
 function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('htpasswd-generator', currentLang);
-  const title = translation?.name || 'Htpasswd Entry Generator';
-  const description = translation?.desc || 'Create bcrypt, apr1-md5, SHA, or plaintext htpasswd entries securely in your browser.';
+  const translation = getToolTranslation("htpasswd-generator", currentLang);
+  const title = translation?.name || "Htpasswd Entry Generator";
+  const description =
+    translation?.desc ||
+    "Create bcrypt, apr1-md5, SHA, or plaintext htpasswd entries securely in your browser.";
 
-  const currentTool = TOOLS.find(t => t.id === 'htpasswd-generator');
-  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+  const currentTool = TOOLS.find((t) => t.id === "htpasswd-generator");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
@@ -78,7 +96,7 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
           </div>
 
           <div class="space-y-2">
-            <label for="algorithm-select" class="text-sm font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide"><span data-i18n="tools.htpasswd-generator.ui.label9">Algorithm</span> ${infoHint('Pick bcrypt/apr1/SHA1/plain to match your htpasswd setup; bcrypt is strongest.')}</label>
+            <label for="algorithm-select" class="text-sm font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide"><span data-i18n="tools.htpasswd-generator.ui.label9">Algorithm</span> ${infoHint("Pick bcrypt/apr1/SHA1/plain to match your htpasswd setup; bcrypt is strongest.")}</label>
             <select id="algorithm-select" class="w-full px-4 py-3 rounded-xl border border-surface-200 dark:border-surface-700 bg-white dark:bg-surface-950 text-surface-900 dark:text-surface-100">
               <option value="bcrypt" data-i18n="tools.htpasswd-generator.ui.option13">Bcrypt (-B)</option>
               <option value="apr1" data-i18n="tools.htpasswd-generator.ui.option14">Apache MD5 (-m)</option>
@@ -97,7 +115,7 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
 
           <div id="salt-options" class="space-y-2 hidden">
             <div class="flex justify-between items-center">
-               <label for="salt-input" class="text-sm font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide"><span data-i18n="tools.htpasswd-generator.ui.label10">Salt</span> ${infoHint('Salt is 8 chars (./0-9A-Za-z) for apr1 hashes; randomize for uniqueness.')}</label>
+               <label for="salt-input" class="text-sm font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide"><span data-i18n="tools.htpasswd-generator.ui.label10">Salt</span> ${infoHint("Salt is 8 chars (./0-9A-Za-z) for apr1 hashes; randomize for uniqueness.")}</label>
               <button id="random-salt" type="button" class="btn btn-ghost btn-xs"><span data-i18n="tools.htpasswd-generator.ui.button2">Randomize</span></button>
             </div>
             <input id="salt-input" type="text" maxlength="8" class="w-full px-4 py-3 rounded-xl border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-950 text-surface-900 dark:text-surface-100 font-mono" placeholder="8 chars (./0-9A-Za-z)" data-i18n-placeholder="tools.htpasswd-generator.ui.placeholder12" />
@@ -144,17 +162,18 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
       </section>
     </main>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-      ${createEducationalSection([
-        {
-          title: 'What is htpasswd?',
-          content: `
+      ${createEducationalSection(
+        [
+          {
+            title: "What is htpasswd?",
+            content: `
             <p>The <code>htpasswd</code> file is a flat-file database used to store usernames and hashed passwords for basic authentication on Apache and Nginx web servers. It is a simple but effective way to protect specific directories or administrative panels on a website without needing a full database-backed authentication system.</p>
             <p>Each line in an <code>htpasswd</code> file represents a single user and follows the format <code>username:hashed_password</code>.</p>
-          `
-        },
-        {
-          title: 'How to Use This Tool',
-          content: `
+          `,
+          },
+          {
+            title: "How to Use This Tool",
+            content: `
             <ol>
               <li><strong>Enter Username:</strong> Type the username you want to use for authentication.</li>
               <li><strong>Provide Password:</strong> Enter a password or click "Generate strong" to create a secure one.</li>
@@ -162,30 +181,33 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
               <li><strong>Generate:</strong> Click "Generate entry" to create the hashed string.</li>
               <li><strong>Copy or Download:</strong> Copy the resulting line to your clipboard or download it as a file to upload to your server.</li>
             </ol>
-          `
-        },
-        {
-          title: 'Common Use Cases',
-          content: `
+          `,
+          },
+          {
+            title: "Common Use Cases",
+            content: `
             <ul>
               <li><strong>Admin Panels:</strong> Protecting sensitive areas like <code>/admin</code> or <code>/wp-admin</code> with an extra layer of server-level security.</li>
               <li><strong>Staging Sites:</strong> Restricting access to development or staging environments so they aren't indexed by search engines or viewed by the public.</li>
               <li><strong>Private Repositories:</strong> Securing local Git or SVN repositories served over HTTP.</li>
               <li><strong>API Gateways:</strong> Implementing simple authentication for internal microservices or legacy APIs.</li>
             </ul>
-          `
-        },
-        {
-          title: 'Pro Tips',
-          content: `
+          `,
+          },
+          {
+            title: "Pro Tips",
+            content: `
             <ul>
               <li><strong>Always Use Bcrypt:</strong> Bcrypt is intentionally slow and uses a "cost" factor to resist brute-force attacks. It is significantly more secure than the legacy MD5 or SHA1 options.</li>
               <li><strong>Secure the File:</strong> Name your file <code>.htpasswd</code> (with a leading dot) and store it <strong>outside</strong> your web root directory to prevent it from being downloaded.</li>
               <li><strong>HTTPS is Mandatory:</strong> Basic authentication sends credentials in a format that is easily reversible. Never use it over unencrypted HTTP; always ensure your site is served over HTTPS.</li>
             </ul>
-          `
-        }
-      ], 'htpasswd-generator', currentLang)}
+          `,
+          },
+        ],
+        "htpasswd-generator",
+        currentLang,
+      )}
     ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;
@@ -587,9 +609,9 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
   return createPageTemplate({
     title,
     description,
-    path: '/htpasswd-generator',
+    path: "/htpasswd-generator",
     content,
     scripts,
-    lang: currentLang
+    lang: currentLang,
   });
 }

@@ -4,10 +4,10 @@
  * Used across all tool pages for consistency
  */
 
-import { bundledStylesHash } from './bundled-styles.js';
-import { getKeyboardShortcutsScript } from './keyboard-shortcuts.js';
-import { TOOLS } from './tool-registry.js';
-import { getPersonalizationScript } from './personalization.js';
+import { bundledStylesHash } from "./bundled-styles.js";
+import { getKeyboardShortcutsScript } from "./keyboard-shortcuts.js";
+import { TOOLS } from "./tool-registry.js";
+import { getPersonalizationScript } from "./personalization.js";
 import {
   DEFAULT_LANGUAGE,
   SUPPORTED_LANGUAGES,
@@ -17,19 +17,29 @@ import {
   getLanguageScript,
   localizeTools,
   normalizeLanguage,
-  withLanguageQuery
-} from './i18n.js';
+  withLanguageQuery,
+} from "./i18n.js";
 
 // Re-export keyboard shortcuts, i18n, and personalization for easy access
-export { getKeyboardShortcutsScript, t, getLanguageSelectorHTML, getLanguageBootstrapScript, getLanguageScript, getPersonalizationScript };
+export {
+  getKeyboardShortcutsScript,
+  t,
+  getLanguageSelectorHTML,
+  getLanguageBootstrapScript,
+  getLanguageScript,
+  getPersonalizationScript,
+};
 
 export function createCheatsheet(toolId, title, sections) {
   const id = `cheatsheet-${toolId}`;
   const prefix = `tools.${toolId}.cheatsheet`;
-  const sectionsHTML = sections.map((s, i) =>
-    `${s.heading ? `<h3 data-i18n="${prefix}.h${i}">${s.heading}</h3>` : ''}` +
-    `<div data-i18n-html="${prefix}.c${i}">${s.content}</div>`
-  ).join('');
+  const sectionsHTML = sections
+    .map(
+      (s, i) =>
+        `${s.heading ? `<h3 data-i18n="${prefix}.h${i}">${s.heading}</h3>` : ""}` +
+        `<div data-i18n-html="${prefix}.c${i}">${s.content}</div>`,
+    )
+    .join("");
 
   return `
     <div class="cheatsheet mt-6" id="${id}">
@@ -105,30 +115,38 @@ export function getCheatsheetToggleScript() {
   `;
 }
 
-let analyticsToken = '';
+let analyticsToken = "";
 
 export function setAnalyticsToken(token) {
-  analyticsToken = typeof token === 'string' ? token.trim() : '';
+  analyticsToken = typeof token === "string" ? token.trim() : "";
 }
 
-let siteUrl = 'https://simpletool.app';
+let siteUrl = "https://simpletool.app";
 
 export function setSiteUrl(url) {
-  siteUrl = typeof url === 'string' ? url.replace(/\/+$/, '') : 'https://simpletool.app';
+  siteUrl =
+    typeof url === "string"
+      ? url.replace(/\/+$/, "")
+      : "https://simpletool.app";
 }
 
-export function getAlternateLanguageLinks(path = '/', currentLang = DEFAULT_LANGUAGE) {
-  const normalizedPath = path || '/';
+export function getAlternateLanguageLinks(
+  path = "/",
+  currentLang = DEFAULT_LANGUAGE,
+) {
+  const normalizedPath = path || "/";
   const links = Object.keys(SUPPORTED_LANGUAGES).map((lang) => {
     const href = `${siteUrl}${withLanguageQuery(normalizedPath, lang)}`;
     return `<link rel="alternate" hreflang="${lang}" href="${href}">`;
   });
-  links.push(`<link rel="alternate" hreflang="x-default" href="${siteUrl}${withLanguageQuery(normalizedPath, DEFAULT_LANGUAGE)}">`);
-  return links.join('\n  ');
+  links.push(
+    `<link rel="alternate" hreflang="x-default" href="${siteUrl}${withLanguageQuery(normalizedPath, DEFAULT_LANGUAGE)}">`,
+  );
+  return links.join("\n  ");
 }
 
 export function getAnalyticsScript() {
-  if (!analyticsToken) return '';
+  if (!analyticsToken) return "";
   return `<!-- Cloudflare Web Analytics (privacy-preserving, no cookies) -->
 <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "${analyticsToken}"}'></script>`;
 }
@@ -140,20 +158,20 @@ export function getAnalyticsScript() {
  */
 export function createToolLayout(options) {
   const {
-    mode = 'two-panel',
-    toolHeader = '',
-    controls = '',
-    leftPanel = '',
-    rightPanel = '',
-    content = '',
-    footer = '',
-    actionBar
+    mode = "two-panel",
+    toolHeader = "",
+    controls = "",
+    leftPanel = "",
+    rightPanel = "",
+    content = "",
+    footer = "",
+    actionBar,
   } = options;
 
-  const actionBarHTML = actionBar ? getActionBarHTML(actionBar) : '';
+  const actionBarHTML = actionBar ? getActionBarHTML(actionBar) : "";
 
   let innerContent;
-  if (mode === 'two-panel') {
+  if (mode === "two-panel") {
     innerContent = `
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div class="flex flex-col gap-2">${leftPanel}</div>
@@ -162,7 +180,7 @@ export function createToolLayout(options) {
           ${rightPanel}
         </div>
       </div>`;
-  } else if (mode === 'single-panel') {
+  } else if (mode === "single-panel") {
     innerContent = `
       <div class="max-w-3xl mx-auto">
         ${actionBarHTML}
@@ -176,7 +194,7 @@ export function createToolLayout(options) {
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
         ${toolHeader}
-        ${controls ? `<div class="flex flex-wrap gap-3 mb-6 bg-surface-50 dark:bg-surface-950/50 p-2 rounded-lg border border-surface-100 dark:border-surface-800">${controls}</div>` : ''}
+        ${controls ? `<div class="flex flex-wrap gap-3 mb-6 bg-surface-50 dark:bg-surface-950/50 p-2 rounded-lg border border-surface-100 dark:border-surface-800">${controls}</div>` : ""}
         ${innerContent}
       </div>
       ${footer}
@@ -187,7 +205,13 @@ export function createToolLayout(options) {
  * Universal action bar for tool output areas.
  */
 export function getActionBarHTML(options = {}) {
-  const { copy = true, download = false, share = false, fullscreen = false, outputId = 'output' } = options;
+  const {
+    copy = true,
+    download = false,
+    share = false,
+    fullscreen = false,
+    outputId = "output",
+  } = options;
   const buttons = [];
 
   if (copy) {
@@ -215,10 +239,10 @@ export function getActionBarHTML(options = {}) {
     </button>`);
   }
 
-  if (buttons.length === 0) return '';
+  if (buttons.length === 0) return "";
 
   return `<div class="flex items-center justify-end gap-1 mb-2">
-    ${buttons.join('\n    ')}
+    ${buttons.join("\n    ")}
   </div>`;
 }
 
@@ -275,14 +299,16 @@ export function getActionBarScript() {
 
 let adConfig = {
   client: null,
-  slots: {}
+  slots: {},
 };
 
 function isAdsEnabled() {
-  return typeof adConfig.client === 'string' && 
-         Boolean(adConfig.client.trim()) && 
-         adConfig.slots && 
-         Object.keys(adConfig.slots).length > 0;
+  return (
+    typeof adConfig.client === "string" &&
+    Boolean(adConfig.client.trim()) &&
+    adConfig.slots &&
+    Object.keys(adConfig.slots).length > 0
+  );
 }
 
 export function setAdConfig(config = {}) {
@@ -290,10 +316,10 @@ export function setAdConfig(config = {}) {
   if (client === null) {
     adConfig.client = null;
   }
-  if (typeof client === 'string' && client.trim()) {
+  if (typeof client === "string" && client.trim()) {
     adConfig.client = client.trim();
   }
-  if (slots && typeof slots === 'object') {
+  if (slots && typeof slots === "object") {
     adConfig.slots = { ...slots };
   }
 }
@@ -307,18 +333,20 @@ export function getAdConfig() {
  */
 export function getGtagScript() {
   // Disabled by default to avoid third-party requests in restrictive environments.
-  return '';
+  return "";
 }
 
 export function getAdSenseScript() {
-  if (!isAdsEnabled()) return '';
+  if (!isAdsEnabled()) return "";
   const client = adConfig.client;
-  
+
   // Validate client ID format to prevent malformed URLs
   // Must start with ca-pub- and followed by digits
   if (!client || !/^ca-pub-\d+$/.test(client)) {
-    console.warn('[AdSense] Invalid client ID format, skipping ad script injection');
-    return '';
+    console.warn(
+      "[AdSense] Invalid client ID format, skipping ad script injection",
+    );
+    return "";
   }
 
   return `
@@ -359,22 +387,24 @@ export function getAdSenseScript() {
  * Render an AdSense slot, if configured.
  */
 export function getAdSlotHTML(slotKey, options = {}) {
-  if (!isAdsEnabled()) return '';
+  if (!isAdsEnabled()) return "";
   const slotId = adConfig.slots?.[slotKey];
-  
+
   // If no slot ID configured for this key, return empty string
-  if (!slotId || typeof slotId !== 'string' || !slotId.trim()) {
-    return '';
+  if (!slotId || typeof slotId !== "string" || !slotId.trim()) {
+    return "";
   }
 
   const {
-    wrapperClassName = '',
-    label = 'Sponsored',
-    format = 'auto',
-    responsive = true
+    wrapperClassName = "",
+    label = "Sponsored",
+    format = "auto",
+    responsive = true,
   } = options;
 
-  const labelHTML = label ? `<p class="text-xs uppercase tracking-widest text-surface-400 mb-2">${label}</p>` : '';
+  const labelHTML = label
+    ? `<p class="text-xs uppercase tracking-widest text-surface-400 mb-2">${label}</p>`
+    : "";
 
   return `
     <aside class="${wrapperClassName}" aria-label="Advertisement" style="display:none" data-ad-container>
@@ -384,7 +414,7 @@ export function getAdSlotHTML(slotKey, options = {}) {
             data-ad-client="${adConfig.client}"
             data-ad-slot="${slotId}"
             data-ad-format="${format}"
-            data-full-width-responsive="${responsive ? 'true' : 'false'}"></ins>
+            data-full-width-responsive="${responsive ? "true" : "false"}"></ins>
        <script>try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}</script>
      </aside>
   `;
@@ -395,27 +425,29 @@ export function getAdSlotHTML(slotKey, options = {}) {
  */
 export function getThemeToggleButton(options = {}) {
   const {
-    id = 'theme-toggle',
+    id = "theme-toggle",
     currentLang = DEFAULT_LANGUAGE,
-    label = t('nav.toggleTheme', normalizeLanguage(currentLang)),
-    className = ''
+    label = t("nav.toggleTheme", normalizeLanguage(currentLang)),
+    className = "",
   } = options;
   const lang = normalizeLanguage(currentLang);
   const labels = {
-    system: t('nav.toggleTheme', lang),
-    light: t('nav.switchDark', lang),
-    dark: t('nav.switchLight', lang)
+    system: t("nav.toggleTheme", lang),
+    light: t("nav.switchDark", lang),
+    dark: t("nav.switchLight", lang),
   };
 
   // Uses btn-ghost style but manual classes to avoid dependency loop if CSS isn't loaded yet
   const classes = [
-    'p-2 rounded-lg',
-    'text-surface-600 hover:bg-surface-100 dark:text-surface-400 dark:hover:bg-surface-800',
-    'transition-colors duration-200',
-    'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
-    'focus:ring-offset-white dark:focus:ring-offset-surface-950',
-    className
-  ].filter(Boolean).join(' ');
+    "p-2 rounded-lg",
+    "text-surface-600 hover:bg-surface-100 dark:text-surface-400 dark:hover:bg-surface-800",
+    "transition-colors duration-200",
+    "focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2",
+    "focus:ring-offset-white dark:focus:ring-offset-surface-950",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return `
     <button id="${id}" type="button" aria-label="${label}" title="${labels.system}" class="${classes}" data-theme-toggle="true" data-theme-label-system="${labels.system}" data-theme-label-light="${labels.light}" data-theme-label-dark="${labels.dark}">
@@ -440,16 +472,13 @@ export function getThemeToggleButton(options = {}) {
  * Get common navigation HTML
  */
 export function getNavigationHTML(options = {}) {
-  const {
-    maxWidth = 'max-w-7xl',
-    lang = DEFAULT_LANGUAGE
-  } = options;
+  const { maxWidth = "max-w-7xl", lang = DEFAULT_LANGUAGE } = options;
   const currentLang = normalizeLanguage(lang);
-  const homeHref = withLanguageQuery('/', currentLang);
+  const homeHref = withLanguageQuery("/", currentLang);
 
   return `
     <!-- Navigation -->
-     <nav class="sticky top-0 z-50 glass" aria-label="${t('nav.home')}" data-i18n-aria="nav.home">
+     <nav class="sticky top-0 z-50 glass" aria-label="${t("nav.home")}" data-i18n-aria="nav.home">
       <div class="${maxWidth} mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-14">
           <div class="flex items-center gap-4">
@@ -469,13 +498,13 @@ export function getNavigationHTML(options = {}) {
 
            <div class="flex items-center gap-2">
              <!-- Mobile search button (icon only) -->
-             <button type="button" id="mobile-search-btn" class="md:hidden p-2 rounded-lg text-surface-600 hover:bg-surface-100 dark:text-surface-400 dark:hover:bg-surface-800 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500" aria-label="${t('nav.searchTools', currentLang)}">
+             <button type="button" id="mobile-search-btn" class="md:hidden p-2 rounded-lg text-surface-600 hover:bg-surface-100 dark:text-surface-400 dark:hover:bg-surface-800 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500" aria-label="${t("nav.searchTools", currentLang)}">
                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
              </button>
              <!-- Desktop search input (readonly, triggers modal on click/focus) -->
              <div class="hidden md:flex items-center mr-2 relative">
                  <svg class="absolute left-3 w-3.5 h-3.5 text-surface-400 dark:text-surface-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                 <input type="text" readonly id="nav-search-btn" placeholder="${t('nav.search', currentLang)}" data-i18n-placeholder="nav.search" class="w-48 lg:w-64 pl-8 pr-3 py-1.5 bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-md text-xs text-surface-500 dark:text-surface-400 placeholder-surface-500 dark:placeholder-surface-400 hover:border-surface-300 dark:hover:border-surface-600 cursor-pointer transition-all focus:outline-none focus:ring-2 focus:ring-primary-500" aria-label="${t('nav.searchTools', currentLang)}" />
+                 <input type="text" readonly id="nav-search-btn" placeholder="${t("nav.search", currentLang)}" data-i18n-placeholder="nav.search" class="w-48 lg:w-64 pl-8 pr-3 py-1.5 bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-md text-xs text-surface-500 dark:text-surface-400 placeholder-surface-500 dark:placeholder-surface-400 hover:border-surface-300 dark:hover:border-surface-600 cursor-pointer transition-all focus:outline-none focus:ring-2 focus:ring-primary-500" aria-label="${t("nav.searchTools", currentLang)}" />
              </div>
              ${getLanguageSelectorHTML(currentLang)}
              ${getThemeToggleButton({ currentLang })}
@@ -490,7 +519,7 @@ export function getNavigationHTML(options = {}) {
  * Theme bootstrap script to avoid flash of incorrect theme.
  */
 export function getThemeBootstrapScript() {
-   return `
+  return `
      <script data-theme-bootstrap>
        (function() {
          const root = document.documentElement;
@@ -514,7 +543,7 @@ export function getThemeBootstrapScript() {
        })();
      </script>
    `;
- }
+}
 
 /**
  * Get common theme management JavaScript
@@ -621,19 +650,19 @@ export function getThemeScript() {
  * Global Search Script
  */
 export function getSearchScript(options = {}) {
-  const {
-    lang = DEFAULT_LANGUAGE
-  } = options;
+  const { lang = DEFAULT_LANGUAGE } = options;
   const currentLang = normalizeLanguage(lang);
-  const tools = localizeTools(TOOLS, currentLang).map(({ id, name, path, icon, description, keywords, hiddenInProduction }) => ({
-    id,
-    name,
-    path: withLanguageQuery(path, currentLang),
-    icon,
-    description,
-    keywords: keywords || '',
-    hiddenInProduction: Boolean(hiddenInProduction)
-  }));
+  const tools = localizeTools(TOOLS, currentLang).map(
+    ({ id, name, path, icon, description, keywords, hiddenInProduction }) => ({
+      id,
+      name,
+      path: withLanguageQuery(path, currentLang),
+      icon,
+      description,
+      keywords: keywords || "",
+      hiddenInProduction: Boolean(hiddenInProduction),
+    }),
+  );
 
   return `
     <div id="search-modal" class="fixed inset-0 z-[100] hidden" role="dialog" aria-modal="true">
@@ -644,13 +673,13 @@ export function getSearchScript(options = {}) {
             <svg class="pointer-events-none absolute left-4 top-3.5 h-5 w-5 text-surface-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
               <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
             </svg>
-            <input type="text" class="h-12 w-full border-0 bg-transparent pl-11 pr-4 text-surface-900 dark:text-white placeholder:text-surface-400 focus:ring-0 sm:text-sm" placeholder="${t('nav.searchTools', currentLang)}" data-i18n-placeholder="nav.searchTools" id="global-search-input" role="combobox" aria-label="Search tools" aria-expanded="false" aria-controls="search-results">
+            <input type="text" class="h-12 w-full border-0 bg-transparent pl-11 pr-4 text-surface-900 dark:text-white placeholder:text-surface-400 focus:ring-0 sm:text-sm" placeholder="${t("nav.searchTools", currentLang)}" data-i18n-placeholder="nav.searchTools" id="global-search-input" role="combobox" aria-label="Search tools" aria-expanded="false" aria-controls="search-results">
           </div>
           <ul class="max-h-96 scroll-py-3 overflow-y-auto p-3" id="search-results" role="listbox">
             <!-- Results injected here -->
           </ul>
           <div class="flex flex-wrap items-center bg-surface-50 dark:bg-surface-950 px-4 py-2.5 text-xs text-surface-500 dark:text-surface-400 border-t border-surface-100 dark:border-surface-800">
-            ${t('nav.searchTools', currentLang)} · <kbd class="mx-1 font-sans font-semibold text-surface-900 dark:text-white">↑↓</kbd> ${t('nav.searchNavigate', currentLang)} · <kbd class="mx-1 font-sans font-semibold text-surface-900 dark:text-white">↵</kbd> ${t('nav.searchSelect', currentLang)} · <kbd class="mx-1 font-sans font-semibold text-surface-900 dark:text-white">esc</kbd> ${t('nav.searchClose', currentLang)}
+            ${t("nav.searchTools", currentLang)} · <kbd class="mx-1 font-sans font-semibold text-surface-900 dark:text-white">↑↓</kbd> ${t("nav.searchNavigate", currentLang)} · <kbd class="mx-1 font-sans font-semibold text-surface-900 dark:text-white">↵</kbd> ${t("nav.searchSelect", currentLang)} · <kbd class="mx-1 font-sans font-semibold text-surface-900 dark:text-white">esc</kbd> ${t("nav.searchClose", currentLang)}
           </div>
         </div>
       </div>
@@ -761,7 +790,7 @@ export function getSearchScript(options = {}) {
           if (results.length === 0) {
             resultsList.innerHTML = \`
               <li class="p-4 text-center text-sm text-surface-500 dark:text-surface-400">
-                ${t('home.noResults', currentLang)}
+                ${t("home.noResults", currentLang)}
               </li>
             \`;
             return;
@@ -922,8 +951,8 @@ export function getToastScript() {
  * Include bundled stylesheet links
  */
 export function getStylesheetLinks() {
-    const version = bundledStylesHash || 'dev';
-    return `
+  const version = bundledStylesHash || "dev";
+  return `
       <link rel="preconnect" href="https://fonts.googleapis.com">
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
       <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -968,14 +997,17 @@ export function getStylesheetLinks() {
  * Responsive: stacks on mobile
  */
 export function getFooterHTML(options = {}) {
-   const { lang = DEFAULT_LANGUAGE } = options;
-   const currentLang = normalizeLanguage(lang);
-   const topTools = localizeTools(TOOLS.slice(0, 5), currentLang);
-   const toolsHTML = topTools.map(tool => 
-     `<li><a href="${withLanguageQuery(tool.path, currentLang)}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors flex items-center gap-2"><span>${tool.icon}</span><span>${tool.name}</span></a></li>`
-   ).join('');
-   
-   return `
+  const { lang = DEFAULT_LANGUAGE } = options;
+  const currentLang = normalizeLanguage(lang);
+  const topTools = localizeTools(TOOLS.slice(0, 5), currentLang);
+  const toolsHTML = topTools
+    .map(
+      (tool) =>
+        `<li><a href="${withLanguageQuery(tool.path, currentLang)}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors flex items-center gap-2"><span>${tool.icon}</span><span>${tool.name}</span></a></li>`,
+    )
+    .join("");
+
+  return `
      <footer class="border-t border-surface-200 dark:border-surface-800 bg-white dark:bg-surface-950 mt-12">
        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <!-- 4-Column Grid: Brand | Tools | Resources | Legal -->
@@ -991,52 +1023,52 @@ export function getFooterHTML(options = {}) {
                </div>
                <span class="font-bold text-lg text-surface-900 dark:text-surface-50">SimpleTool</span>
              </div>
-             <p class="text-sm text-surface-600 dark:text-surface-400 mb-4" data-i18n="footer.tagline">${t('footer.tagline', currentLang)}</p>
+             <p class="text-sm text-surface-600 dark:text-surface-400 mb-4" data-i18n="footer.tagline">${t("footer.tagline", currentLang)}</p>
               <p class="text-xs text-surface-500 dark:text-surface-500">© ${new Date().getFullYear()} SimpleTool · <a href="/changelog" class="hover:text-primary-500 transition-colors">v2.4.1</a></p>
            </div>
            
            <!-- Column 2: Top Tools -->
            <div class="flex flex-col">
-             <h3 class="font-semibold text-surface-900 dark:text-surface-50 mb-4 text-sm uppercase tracking-wide" data-i18n="footer.popularTools">${t('footer.popularTools', currentLang)}</h3>
+             <h3 class="font-semibold text-surface-900 dark:text-surface-50 mb-4 text-sm uppercase tracking-wide" data-i18n="footer.popularTools">${t("footer.popularTools", currentLang)}</h3>
              <ul class="space-y-2 flex-1">
                ${toolsHTML}
                <li class="pt-2 border-t border-surface-200 dark:border-surface-800">
-                 <a href="${withLanguageQuery('/', currentLang)}" class="text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors" data-i18n="footer.viewAll">${t('footer.viewAll', currentLang)}</a>
+                 <a href="${withLanguageQuery("/", currentLang)}" class="text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors" data-i18n="footer.viewAll">${t("footer.viewAll", currentLang)}</a>
                </li>
              </ul>
            </div>
            
             <!-- Column 3: Resources -->
             <div class="flex flex-col">
-              <h3 class="font-semibold text-surface-900 dark:text-surface-50 mb-4 text-sm uppercase tracking-wide" data-i18n="footer.resources">${t('footer.resources', currentLang)}</h3>
+              <h3 class="font-semibold text-surface-900 dark:text-surface-50 mb-4 text-sm uppercase tracking-wide" data-i18n="footer.resources">${t("footer.resources", currentLang)}</h3>
               <ul class="space-y-2">
                 <li>
-                 <a href="${withLanguageQuery('/blog', currentLang)}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.blog">${t('footer.blog', currentLang)}</a>
+                 <a href="${withLanguageQuery("/blog", currentLang)}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.blog">${t("footer.blog", currentLang)}</a>
                 </li>
                 <li>
-                  <a href="${withLanguageQuery('/faq', currentLang)}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.faq">${t('footer.faq', currentLang)}</a>
+                  <a href="${withLanguageQuery("/faq", currentLang)}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.faq">${t("footer.faq", currentLang)}</a>
                 </li>
               </ul>
             </div>
             
             <!-- Column 4: Legal & Support -->
             <div class="flex flex-col">
-              <h3 class="font-semibold text-surface-900 dark:text-surface-50 mb-4 text-sm uppercase tracking-wide" data-i18n="footer.legal">${t('footer.legal', currentLang)}</h3>
+              <h3 class="font-semibold text-surface-900 dark:text-surface-50 mb-4 text-sm uppercase tracking-wide" data-i18n="footer.legal">${t("footer.legal", currentLang)}</h3>
              <ul class="space-y-2">
                <li>
-                 <a href="${withLanguageQuery('/about', currentLang)}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.about">${t('footer.about', currentLang)}</a>
+                 <a href="${withLanguageQuery("/about", currentLang)}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.about">${t("footer.about", currentLang)}</a>
                </li>
                <li>
-                 <a href="${withLanguageQuery('/privacy', currentLang)}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.privacy">${t('footer.privacy', currentLang)}</a>
+                 <a href="${withLanguageQuery("/privacy", currentLang)}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.privacy">${t("footer.privacy", currentLang)}</a>
                </li>
                <li>
-                 <a href="${withLanguageQuery('/terms', currentLang)}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.terms">${t('footer.terms', currentLang)}</a>
+                 <a href="${withLanguageQuery("/terms", currentLang)}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.terms">${t("footer.terms", currentLang)}</a>
                </li>
                <li>
-                 <a href="${withLanguageQuery('/contact', currentLang)}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.contact">${t('footer.contact', currentLang)}</a>
+                 <a href="${withLanguageQuery("/contact", currentLang)}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.contact">${t("footer.contact", currentLang)}</a>
                </li>
                <li>
-                 <a href="${withLanguageQuery('/security', currentLang)}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.security">${t('footer.security', currentLang)}</a>
+                 <a href="${withLanguageQuery("/security", currentLang)}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.security">${t("footer.security", currentLang)}</a>
                </li>
              </ul>
            </div>
@@ -1046,7 +1078,7 @@ export function getFooterHTML(options = {}) {
          <!-- Divider -->
          <div class="border-t border-surface-200 dark:border-surface-800 pt-6">
            <p class="text-xs text-surface-500 dark:text-surface-500 text-center">
-             ${t('footer.privacyNote', currentLang)} <a href="${withLanguageQuery('/privacy', currentLang)}" class="text-primary-600 dark:text-primary-400 hover:underline" data-i18n="footer.learnMore">${t('footer.learnMore', currentLang)}</a>
+             ${t("footer.privacyNote", currentLang)} <a href="${withLanguageQuery("/privacy", currentLang)}" class="text-primary-600 dark:text-primary-400 hover:underline" data-i18n="footer.learnMore">${t("footer.learnMore", currentLang)}</a>
            </p>
          </div>
        </div>
@@ -1062,29 +1094,31 @@ export function createPageTemplate(options) {
     title,
     description,
     content,
-    path = '',
-    scripts = '',
-    schema
+    path = "",
+    scripts = "",
+    schema,
   } = options;
   const currentLang = normalizeLanguage(options.lang || DEFAULT_LANGUAGE);
-  const toolId = path ? path.replace(/^\//, '') : '';
+  const toolId = path ? path.replace(/^\//, "") : "";
 
-  const pagePath = path || '/';
+  const pagePath = path || "/";
   const pageUrl = `${siteUrl}${withLanguageQuery(pagePath, currentLang)}`;
   const fullTitle = `${title} | SimpleTool`;
 
-  const sidebarAd = getAdSlotHTML('sidebar', {
-    wrapperClassName: 'hidden xl:block w-[160px] flex-shrink-0 sticky top-24 self-start ml-4 mt-8',
-    format: 'vertical',
+  const sidebarAd = getAdSlotHTML("sidebar", {
+    wrapperClassName:
+      "hidden xl:block w-[160px] flex-shrink-0 sticky top-24 self-start ml-4 mt-8",
+    format: "vertical",
     responsive: false,
-    label: ''
+    label: "",
   });
 
-  const bottomAd = getAdSlotHTML('bottom', {
-    wrapperClassName: 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 mt-8 border-t border-surface-200 dark:border-surface-800',
-    format: 'horizontal',
+  const bottomAd = getAdSlotHTML("bottom", {
+    wrapperClassName:
+      "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 mt-8 border-t border-surface-200 dark:border-surface-800",
+    format: "horizontal",
     responsive: true,
-    label: ''
+    label: "",
   });
 
   return `<!DOCTYPE html>
@@ -1131,7 +1165,7 @@ export function createPageTemplate(options) {
   </div>
   ${bottomAd}
   ${getFooterHTML({ lang: currentLang })}
-  ${schema !== undefined ? (schema ? `<script type="application/ld+json">${JSON.stringify(schema)}</script>` : '') : (path ? `<script type="application/ld+json">${JSON.stringify({'@context':'https://schema.org','@type':'SoftwareApplication',name:title,url:pageUrl,description,applicationCategory:'DeveloperApplication',operatingSystem:'Any',offers:{'@type':'Offer',price:'0',priceCurrency:'USD'}})}</script>` : '')}
+  ${schema !== undefined ? (schema ? `<script type="application/ld+json">${JSON.stringify(schema)}</script>` : "") : path ? `<script type="application/ld+json">${JSON.stringify({ "@context": "https://schema.org", "@type": "SoftwareApplication", name: title, url: pageUrl, description, applicationCategory: "DeveloperApplication", operatingSystem: "Any", offers: { "@type": "Offer", price: "0", priceCurrency: "USD" } })}</script>` : ""}
    ${getThemeScript()}
    ${getLanguageScript(toolId, currentLang)}
    ${getSearchScript({ lang: currentLang })}
@@ -1140,9 +1174,11 @@ export function createPageTemplate(options) {
    ${getCheatsheetToggleScript()}
    ${getCopyToClipboardScript()}
    ${getClipboardSafetyScript()}
-   ${toolId ? getPersonalizationScript(toolId) : ''}
+   ${toolId ? getPersonalizationScript(toolId) : ""}
    ${scripts}
-  ${isAdsEnabled() ? `<script>
+  ${
+    isAdsEnabled()
+      ? `<script>
     (function(){
       function showAds(){document.querySelectorAll('[data-ad-container]').forEach(function(el){el.style.display=''});}
       if(window.adsbygoogle&&window.adsbygoogle.loaded){showAds();return;}
@@ -1153,7 +1189,9 @@ export function createPageTemplate(options) {
       },200);
       setTimeout(function(){clearInterval(check);},5000);
     })();
-  </script>` : ''}
+  </script>`
+      : ""
+  }
   ${getAnalyticsScript()}
   <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){});}</script>
 </body>
@@ -1248,8 +1286,8 @@ export function getClipboardSafetyScript() {
  * @returns {string} HTML markup
  */
 export function createFeatureList(items = []) {
-  if (!items || !items.length) return '';
-  const itemsHTML = items.map(item => `<li>${item.text}</li>`).join('');
+  if (!items || !items.length) return "";
+  const itemsHTML = items.map((item) => `<li>${item.text}</li>`).join("");
   return `<ul data-feature-list class="mt-2 flex flex-wrap gap-2 text-xs text-surface-600 dark:text-surface-400">${itemsHTML}</ul>`;
 }
 
@@ -1257,29 +1295,40 @@ export function createFeatureList(items = []) {
  * Create a tool header section.
  * Enforces single-pill policy: max 1 trust pill, rest demoted to feature list.
  */
-export function createToolHeader(icon, title, subtitle, badges = [], options = {}) {
-  const { toolId } = typeof options === 'string' ? { toolId: options } : (options || {});
+export function createToolHeader(
+  icon,
+  title,
+  subtitle,
+  badges = [],
+  options = {},
+) {
+  const { toolId } =
+    typeof options === "string" ? { toolId: options } : options || {};
 
-  const titleAttr = toolId ? ` data-i18n="tools.${toolId}.name"` : '';
-  const subtitleAttr = toolId ? ` data-i18n="tools.${toolId}.desc"` : '';
+  const titleAttr = toolId ? ` data-i18n="tools.${toolId}.name"` : "";
+  const subtitleAttr = toolId ? ` data-i18n="tools.${toolId}.desc"` : "";
 
   // Single-pill policy: first badge is the trust pill, rest are demoted features
-  let trustPillHTML = '';
-  let demotedFeaturesHTML = '';
+  let trustPillHTML = "";
+  let demotedFeaturesHTML = "";
 
   if (badges.length === 1) {
     // Single pill: render as trust pill
     const badge = badges[0];
-    const tipAttr = badge.tooltip ? ` data-tooltip="${badge.tooltip}" cursor-help` : '';
-    const tipClass = badge.tooltip ? ' cursor-help' : '';
+    const tipAttr = badge.tooltip
+      ? ` data-tooltip="${badge.tooltip}" cursor-help`
+      : "";
+    const tipClass = badge.tooltip ? " cursor-help" : "";
     trustPillHTML = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300${tipClass}" data-trust-pill${tipAttr}>
        ${badge.text}
      </span>`;
   } else if (badges.length >= 2) {
     // Multiple pills: first is trust pill, rest are demoted features
     const trustBadge = badges[0];
-    const tipAttr = trustBadge.tooltip ? ` data-tooltip="${trustBadge.tooltip}" cursor-help` : '';
-    const tipClass = trustBadge.tooltip ? ' cursor-help' : '';
+    const tipAttr = trustBadge.tooltip
+      ? ` data-tooltip="${trustBadge.tooltip}" cursor-help`
+      : "";
+    const tipClass = trustBadge.tooltip ? " cursor-help" : "";
     trustPillHTML = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300${tipClass}" data-trust-pill${tipAttr}>
        ${trustBadge.text}
      </span>`;
@@ -1293,7 +1342,7 @@ export function createToolHeader(icon, title, subtitle, badges = [], options = {
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div class="flex items-start gap-4">
           <div class="flex-shrink-0 p-3 bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-lg shadow-sm">
-             <span class="text-3xl">${icon.emoji || '🛠️'}</span>
+             <span class="text-3xl">${icon.emoji || "🛠️"}</span>
           </div>
           <div>
             <div class="flex items-center gap-3 mb-1 flex-wrap">
@@ -1313,25 +1362,25 @@ export function createToolHeader(icon, title, subtitle, badges = [], options = {
  * Create download/export button functionality
  */
 export function infoHint(tooltip, ariaLabel, options = {}) {
-  const { large = false, position, i18nKey, icon = 'help' } = options;
-  const sizeClass = large ? ' info-hint-lg' : '';
-  const posAttr = position ? ` data-tooltip-pos="${position}"` : '';
-  const i18nAttr = i18nKey ? ` data-i18n-tooltip="${i18nKey}"` : '';
+  const { large = false, position, i18nKey, icon = "help" } = options;
+  const sizeClass = large ? " info-hint-lg" : "";
+  const posAttr = position ? ` data-tooltip-pos="${position}"` : "";
+  const i18nAttr = i18nKey ? ` data-i18n-tooltip="${i18nKey}"` : "";
   const label = ariaLabel || tooltip;
   return `<button type="button" class="info-hint${sizeClass}" data-tooltip="${tooltip}"${posAttr}${i18nAttr} aria-label="${label}"><span class="material-symbols-rounded" aria-hidden="true">${icon}</span></button>`;
 }
 
 export function createEmptyState(options = {}) {
   const {
-    icon = '📥',
-    title = 'No input yet',
-    description = 'Paste or type your input above to get started.',
-    id = 'empty-state',
+    icon = "📥",
+    title = "No input yet",
+    description = "Paste or type your input above to get started.",
+    id = "empty-state",
     i18nTitle,
-    i18nDesc
+    i18nDesc,
   } = options;
-  const titleAttr = i18nTitle ? ` data-i18n="${i18nTitle}"` : '';
-  const descAttr = i18nDesc ? ` data-i18n="${i18nDesc}"` : '';
+  const titleAttr = i18nTitle ? ` data-i18n="${i18nTitle}"` : "";
+  const descAttr = i18nDesc ? ` data-i18n="${i18nDesc}"` : "";
   return `
     <div id="${id}" class="empty-state">
       <span class="empty-state-icon">${icon}</span>
@@ -1376,7 +1425,7 @@ export function getBtnLoadingScript() {
 }
 
 export function getDownloadFileScript() {
-   return `
+  return `
      function downloadFile(content, filename, contentType) {
        const blob = new Blob([content], { type: contentType });
        const url = URL.createObjectURL(blob);
@@ -1403,10 +1452,10 @@ export function getDownloadFileScript() {
  */
 export function createMobileTabView(options = {}) {
   const {
-    leftPaneId = 'left-pane',
-    rightPaneId = 'right-pane',
-    leftLabel = 'Left',
-    rightLabel = 'Right'
+    leftPaneId = "left-pane",
+    rightPaneId = "right-pane",
+    leftLabel = "Left",
+    rightLabel = "Right",
   } = options;
 
   return `

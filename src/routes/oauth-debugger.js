@@ -3,41 +3,64 @@
  * Generate PKCE challenges, visualize OAuth flows, and analyze security — all in-browser.
  */
 
-import { respondHTML, respondJSON } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
-import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML, respondJSON } from "../utils/respond.js";
+import { createPageTemplate, createToolHeader } from "../utils/common-ui.js";
+import {
+  createEducationalSection,
+  createRelatedToolsSection,
+} from "../utils/content-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleOAuthDebuggerRoutes(request, url) {
   const { pathname } = url;
   try {
-    if (pathname === '/oauth-debugger' || pathname === '/oauth-debugger/') {
-      if (request.method === 'GET') return renderOAuthDebuggerPage(resolveRequestLanguage(request, url));
+    if (pathname === "/oauth-debugger" || pathname === "/oauth-debugger/") {
+      if (request.method === "GET")
+        return renderOAuthDebuggerPage(resolveRequestLanguage(request, url));
     }
-    return respondJSON({ error: 'Not found' }, { status: 404 });
+    return respondJSON({ error: "Not found" }, { status: 404 });
   } catch (error) {
-    console.error('OAuth Debugger Route Error:', error);
-    return respondJSON({ error: 'Internal server error', message: error.message }, { status: 500 });
+    console.error("OAuth Debugger Route Error:", error);
+    return respondJSON(
+      { error: "Internal server error", message: error.message },
+      { status: 500 },
+    );
   }
 }
 
 function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('oauth-debugger', currentLang);
-  const title = translation?.name || 'OAuth 2.0 / PKCE Debugger';
-  const description = translation?.desc || 'Generate PKCE challenges, visualize OAuth flows, and analyze security.';
+  const translation = getToolTranslation("oauth-debugger", currentLang);
+  const title = translation?.name || "OAuth 2.0 / PKCE Debugger";
+  const description =
+    translation?.desc ||
+    "Generate PKCE challenges, visualize OAuth flows, and analyze security.";
 
   const toolHeader = createToolHeader(
-    { emoji: '🔑' },
+    { emoji: "🔑" },
     title,
     description,
-    [{ text: 'Privacy First', color: 'green', tooltip: 'All operations happen in your browser.' }],
-    { toolId: 'oauth-debugger' }
+    [
+      {
+        text: "Privacy First",
+        color: "green",
+        tooltip: "All operations happen in your browser.",
+      },
+    ],
+    { toolId: "oauth-debugger" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'oauth-debugger');
-  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+  const currentTool = TOOLS.find((t) => t.id === "oauth-debugger");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -84,15 +107,15 @@ function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
               <!-- Flow diagram -->
               <div class="overflow-x-auto">
                 <div class="flex items-start gap-0 min-w-[600px] text-xs">
-                  ${flowStep('1', 'Client', 'Build authorization URL with code_challenge', 'bg-primary-100 dark:bg-primary-900/30 border-primary-300 dark:border-primary-700 text-primary-800 dark:text-primary-200')}
-                  ${flowArrow('GET /authorize?...')}
-                  ${flowStep('2', 'Auth Server', 'Authenticate user, display consent screen', 'bg-surface-100 dark:bg-surface-800 border-surface-300 dark:border-surface-600 text-surface-700 dark:text-surface-300')}
-                  ${flowArrow('302 redirect + code')}
-                  ${flowStep('3', 'Client', 'Receive auth code in redirect_uri', 'bg-surface-100 dark:bg-surface-800 border-surface-300 dark:border-surface-600 text-surface-700 dark:text-surface-300')}
-                  ${flowArrow('POST /token + code_verifier')}
-                  ${flowStep('4', 'Auth Server', 'Verify code_verifier against stored challenge', 'bg-surface-100 dark:bg-surface-800 border-surface-300 dark:border-surface-600 text-surface-700 dark:text-surface-300')}
-                  ${flowArrow('access_token')}
-                  ${flowStep('5', 'Client', 'Use access_token to call APIs', 'bg-success-100 dark:bg-success-900/30 border-success-300 dark:border-success-700 text-success-800 dark:text-success-200')}
+                  ${flowStep("1", "Client", "Build authorization URL with code_challenge", "bg-primary-100 dark:bg-primary-900/30 border-primary-300 dark:border-primary-700 text-primary-800 dark:text-primary-200")}
+                  ${flowArrow("GET /authorize?...")}
+                  ${flowStep("2", "Auth Server", "Authenticate user, display consent screen", "bg-surface-100 dark:bg-surface-800 border-surface-300 dark:border-surface-600 text-surface-700 dark:text-surface-300")}
+                  ${flowArrow("302 redirect + code")}
+                  ${flowStep("3", "Client", "Receive auth code in redirect_uri", "bg-surface-100 dark:bg-surface-800 border-surface-300 dark:border-surface-600 text-surface-700 dark:text-surface-300")}
+                  ${flowArrow("POST /token + code_verifier")}
+                  ${flowStep("4", "Auth Server", "Verify code_verifier against stored challenge", "bg-surface-100 dark:bg-surface-800 border-surface-300 dark:border-surface-600 text-surface-700 dark:text-surface-300")}
+                  ${flowArrow("access_token")}
+                  ${flowStep("5", "Client", "Use access_token to call APIs", "bg-success-100 dark:bg-success-900/30 border-success-300 dark:border-success-700 text-success-800 dark:text-success-200")}
                 </div>
               </div>
 
@@ -199,23 +222,24 @@ function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
       </div>
 
       <div class="mt-8">
-        ${createEducationalSection([
-          {
-            title: 'What is PKCE and Why Does It Matter?',
-            content: `
+        ${createEducationalSection(
+          [
+            {
+              title: "What is PKCE and Why Does It Matter?",
+              content: `
               <p>Proof Key for Code Exchange (PKCE, RFC 7636) was originally designed for mobile and native apps that cannot securely store a client secret. It works by having the client generate a random <code>code_verifier</code>, derive a <code>code_challenge</code> from it (SHA-256 + base64url), and send the challenge with the authorization request. When exchanging the authorization code for tokens, the client sends the original <code>code_verifier</code>. The authorization server verifies it matches the earlier challenge — proving the token request came from the same client that started the flow.</p>
               <p>Even for confidential clients (server-side apps with a client secret), PKCE is now recommended by OAuth 2.1 as a defense against authorization code interception attacks.</p>
-            `
-          },
-          {
-            title: 'Why Is the Implicit Flow Deprecated?',
-            content: `
+            `,
+            },
+            {
+              title: "Why Is the Implicit Flow Deprecated?",
+              content: `
               <p>The implicit flow (<code>response_type=token</code>) was designed as a shortcut for single-page apps, returning the access token directly in the URL fragment. This creates serious problems: tokens in URLs appear in browser history, server logs, and referrer headers, and the flow is vulnerable to token injection attacks. OAuth 2.0 Security Best Current Practice (RFC 9700) and OAuth 2.1 explicitly remove the implicit flow in favor of Authorization Code + PKCE, which SPAs can use safely without a client secret.</p>
-            `
-          },
-          {
-            title: 'Key OAuth 2.1 Changes',
-            content: `
+            `,
+            },
+            {
+              title: "Key OAuth 2.1 Changes",
+              content: `
               <ul>
                 <li><strong>PKCE required</strong> for all Authorization Code flows, including confidential clients.</li>
                 <li><strong>Implicit flow removed</strong> — use Authorization Code + PKCE instead.</li>
@@ -223,11 +247,11 @@ function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
                 <li><strong>Refresh token rotation required</strong> for public clients — a new refresh token must be issued with each use.</li>
                 <li><strong>Redirect URI exact matching required</strong> — no pattern matching or wildcards.</li>
               </ul>
-            `
-          },
-          {
-            title: 'Authorization Code Flow Step by Step',
-            content: `
+            `,
+            },
+            {
+              title: "Authorization Code Flow Step by Step",
+              content: `
               <ol>
                 <li><strong>Generate PKCE pair:</strong> Create a random <code>code_verifier</code> and compute <code>code_challenge = BASE64URL(SHA256(code_verifier))</code>.</li>
                 <li><strong>Redirect to authorization endpoint:</strong> Include <code>response_type=code</code>, <code>client_id</code>, <code>redirect_uri</code>, <code>scope</code>, <code>state</code>, <code>code_challenge</code>, and <code>code_challenge_method=S256</code>.</li>
@@ -236,9 +260,12 @@ function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
                 <li><strong>Exchange code for tokens:</strong> POST to the token endpoint with <code>grant_type=authorization_code</code>, <code>code</code>, <code>redirect_uri</code>, <code>client_id</code>, and <code>code_verifier</code>.</li>
                 <li><strong>Receive access token</strong> (and optionally <code>id_token</code> and <code>refresh_token</code>) and use them to call APIs.</li>
               </ol>
-            `
-          }
-        ], 'oauth-debugger', currentLang)}
+            `,
+            },
+          ],
+          "oauth-debugger",
+          currentLang,
+        )}
       </div>
 
       ${createRelatedToolsSection(relatedToolsData)}
@@ -416,14 +443,16 @@ function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
     </script>
   `;
 
-  return respondHTML(createPageTemplate({
-    title,
-    description,
-    lang: currentLang,
-    path: '/oauth-debugger',
-    content,
-    scripts
-  }));
+  return respondHTML(
+    createPageTemplate({
+      title,
+      description,
+      lang: currentLang,
+      path: "/oauth-debugger",
+      content,
+      scripts,
+    }),
+  );
 }
 
 function flowStep(num, actor, desc, colorClasses) {

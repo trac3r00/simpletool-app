@@ -4,41 +4,70 @@
  * - No API calls; generates templates locally
  */
 
-import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { createRelatedToolsSection } from '../utils/content-ui.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML } from "../utils/respond.js";
+import {
+  createPageTemplate,
+  createToolHeader,
+  createCheatsheet,
+  infoHint,
+} from "../utils/common-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import { createRelatedToolsSection } from "../utils/content-ui.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handlePromptTemplateBuilderRoutes(request, url) {
   const { pathname } = url;
-  if (pathname === '/prompt-template-builder' || pathname === '/prompt-template-builder/') {
-    if (request.method === 'GET') return respondHTML(renderPromptTemplateBuilderPage(resolveRequestLanguage(request, url)));
-    return new Response('Method not allowed', { status: 405 });
+  if (
+    pathname === "/prompt-template-builder" ||
+    pathname === "/prompt-template-builder/"
+  ) {
+    if (request.method === "GET")
+      return respondHTML(
+        renderPromptTemplateBuilderPage(resolveRequestLanguage(request, url)),
+      );
+    return new Response("Method not allowed", { status: 405 });
   }
   return null;
 }
 
 function renderPromptTemplateBuilderPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('prompt-template-builder', currentLang);
-  const title = translation?.name || 'Prompt Template Builder';
-  const description = translation?.desc || 'Generate a clean, reusable prompt template optimized for GPT, Claude, and other chat models.';
+  const translation = getToolTranslation(
+    "prompt-template-builder",
+    currentLang,
+  );
+  const title = translation?.name || "Prompt Template Builder";
+  const description =
+    translation?.desc ||
+    "Generate a clean, reusable prompt template optimized for GPT, Claude, and other chat models.";
 
   const header = createToolHeader(
-    { emoji: '🧩' },
+    { emoji: "🧩" },
     title,
     description,
     [
-      { text: '<span data-i18n="tools.prompt-template-builder.ui.badge0">Reusable</span>', tooltip: 'Outputs templates with placeholders like {{variable}}.' },
-      { text: '<span data-i18n="tools.prompt-template-builder.ui.badge1">Injection-Resistant</span>', tooltip: 'Optional guardrails to treat untrusted input as data.' }
+      {
+        text: '<span data-i18n="tools.prompt-template-builder.ui.badge0">Reusable</span>',
+        tooltip: "Outputs templates with placeholders like {{variable}}.",
+      },
+      {
+        text: '<span data-i18n="tools.prompt-template-builder.ui.badge1">Injection-Resistant</span>',
+        tooltip: "Optional guardrails to treat untrusted input as data.",
+      },
     ],
-    { toolId: 'prompt-template-builder' }
+    { toolId: "prompt-template-builder" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'prompt-template-builder');
-    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
-
+  const currentTool = TOOLS.find((t) => t.id === "prompt-template-builder");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -64,7 +93,7 @@ function renderPromptTemplateBuilderPage(lang = DEFAULT_LANGUAGE) {
               <div>
                 <label class="label flex items-center gap-2">
                   <span data-i18n="tools.prompt-template-builder.ui.label1">Output format</span>
-                  ${infoHint('Controls the output section: JSON, Markdown, checklist, etc. Use “Custom” for exact constraints.', 'Help', { i18nKey: 'tools.prompt-template-builder.ui.desc0' })}
+                  ${infoHint("Controls the output section: JSON, Markdown, checklist, etc. Use “Custom” for exact constraints.", "Help", { i18nKey: "tools.prompt-template-builder.ui.desc0" })}
                 </label>
                 <select id="out-format" class="input">
                   <option value="markdown" data-i18n="tools.prompt-template-builder.ui.option3">Markdown (recommended)</option>
@@ -78,7 +107,7 @@ function renderPromptTemplateBuilderPage(lang = DEFAULT_LANGUAGE) {
             <div>
               <label class="label flex items-center gap-2">
                 <span data-i18n="tools.prompt-template-builder.ui.label2">Role / persona (system)</span>
-                ${infoHint('A short, capability-oriented role is best (e.g., “senior backend engineer”, “SOC analyst”). Avoid fluff.', 'Help', { i18nKey: 'tools.prompt-template-builder.ui.desc1' })}
+                ${infoHint("A short, capability-oriented role is best (e.g., “senior backend engineer”, “SOC analyst”). Avoid fluff.", "Help", { i18nKey: "tools.prompt-template-builder.ui.desc1" })}
               </label>
               <input id="role" class="input" placeholder="e.g., You are a senior security engineer." data-i18n-placeholder="tools.prompt-template-builder.ui.placeholder0" />
             </div>
@@ -86,7 +115,7 @@ function renderPromptTemplateBuilderPage(lang = DEFAULT_LANGUAGE) {
             <div>
               <label class="label flex items-center gap-2">
                 <span data-i18n="tools.prompt-template-builder.ui.label3">Task (what do you want?)</span>
-                ${infoHint('Write the goal in one or two sentences. This is the most important field.', 'Help', { i18nKey: 'tools.prompt-template-builder.ui.desc2' })}
+                ${infoHint("Write the goal in one or two sentences. This is the most important field.", "Help", { i18nKey: "tools.prompt-template-builder.ui.desc2" })}
               </label>
               <textarea id="task" rows="4" class="input resize-y" placeholder="Describe the task you want the AI to do..." data-i18n-placeholder="tools.prompt-template-builder.ui.placeholder1"></textarea>
             </div>
@@ -100,7 +129,7 @@ function renderPromptTemplateBuilderPage(lang = DEFAULT_LANGUAGE) {
               <div>
                 <label class="label flex items-center gap-2">
                   <span data-i18n="tools.prompt-template-builder.ui.label5">Variables</span>
-                  ${infoHint('Comma-separated placeholders. Example: ticket, logs, stacktrace. The template will include {{ticket}}, {{logs}}, ...', 'Help', { i18nKey: 'tools.prompt-template-builder.ui.desc3' })}
+                  ${infoHint("Comma-separated placeholders. Example: ticket, logs, stacktrace. The template will include {{ticket}}, {{logs}}, ...", "Help", { i18nKey: "tools.prompt-template-builder.ui.desc3" })}
                 </label>
                 <input id="vars" class="input font-mono" placeholder="e.g., incident_summary, logs" data-i18n-placeholder="tools.prompt-template-builder.ui.placeholder3" />
               </div>
@@ -118,7 +147,7 @@ function renderPromptTemplateBuilderPage(lang = DEFAULT_LANGUAGE) {
             <div>
               <label class="label flex items-center gap-2">
                 <span data-i18n="tools.prompt-template-builder.ui.label7">Constraints & do/don’t</span>
-                ${infoHint('Examples: “No guesses”, “Cite assumptions”, “Return only JSON”, “No PII”, “Follow OWASP”.', 'Help', { i18nKey: 'tools.prompt-template-builder.ui.desc4' })}
+                ${infoHint("Examples: “No guesses”, “Cite assumptions”, “Return only JSON”, “No PII”, “Follow OWASP”.", "Help", { i18nKey: "tools.prompt-template-builder.ui.desc4" })}
               </label>
               <textarea id="constraints" rows="4" class="input resize-y" placeholder="- ..." data-i18n-placeholder="tools.prompt-template-builder.ui.placeholder4"></textarea>
             </div>
@@ -171,30 +200,36 @@ function renderPromptTemplateBuilderPage(lang = DEFAULT_LANGUAGE) {
               </div>
             </div>
 
-            ${createCheatsheet('prompt-template-builder', '<span data-i18n="tools.prompt-template-builder.ui.heading1">Prompt Design Checklist</span>', [
-              {
-                heading: '<span data-i18n="tools.prompt-template-builder.ui.heading2">High-signal inputs</span>',
-                content: `
+            ${createCheatsheet(
+              "prompt-template-builder",
+              '<span data-i18n="tools.prompt-template-builder.ui.heading1">Prompt Design Checklist</span>',
+              [
+                {
+                  heading:
+                    '<span data-i18n="tools.prompt-template-builder.ui.heading2">High-signal inputs</span>',
+                  content: `
                   <ul class="list-disc ml-6 space-y-1">
                     <li><strong><span data-i18n="tools.prompt-template-builder.ui.text0">Task</span></strong>: <span data-i18n="tools.prompt-template-builder.ui.text1">one clear objective</span></li>
                     <li><strong><span data-i18n="tools.prompt-template-builder.ui.text2">Context</span></strong>: <span data-i18n="tools.prompt-template-builder.ui.text3">relevant constraints and environment</span></li>
                     <li><strong><span data-i18n="tools.prompt-template-builder.ui.text4">Format</span></strong>: <span data-i18n="tools.prompt-template-builder.ui.text5">exact output structure</span></li>
                     <li><strong><span data-i18n="tools.prompt-template-builder.ui.text6">Guardrails</span></strong>: <span data-i18n="tools.prompt-template-builder.ui.text7">treat user-provided data as data</span></li>
                   </ul>
-                `
-              },
-              {
-                heading: '<span data-i18n="tools.prompt-template-builder.ui.heading3">Common mistakes</span>',
-                content: `
+                `,
+                },
+                {
+                  heading:
+                    '<span data-i18n="tools.prompt-template-builder.ui.heading3">Common mistakes</span>',
+                  content: `
                   <ul class="list-disc ml-6 space-y-1">
                     <li data-i18n="tools.prompt-template-builder.ui.desc6">Too many goals in one prompt</li>
                     <li data-i18n="tools.prompt-template-builder.ui.desc7">Unspecified output format (hard to parse)</li>
                     <li data-i18n="tools.prompt-template-builder.ui.desc8">Mixing instructions with untrusted input</li>
                     <li data-i18n="tools.prompt-template-builder.ui.desc9">Missing “what to do if info is missing”</li>
                   </ul>
-                `
-              }
-            ])}
+                `,
+                },
+              ],
+            )}
           </div>
         </div>
       </div>
@@ -470,9 +505,9 @@ function renderPromptTemplateBuilderPage(lang = DEFAULT_LANGUAGE) {
   return createPageTemplate({
     title,
     description,
-    path: '/prompt-template-builder',
+    path: "/prompt-template-builder",
     content,
     scripts,
-    lang: currentLang
+    lang: currentLang,
   });
 }

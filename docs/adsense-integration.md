@@ -71,12 +71,12 @@ Use these checks before enabling production ads:
 
 ## Slot configuration per page type
 
-| Page type | Slot keys used | Notes |
-|-----------|----------------|-------|
-| Home (`/`) | `home`, `bottom` | `home` renders in the hero area; `bottom` renders below footer fold |
-| Tool pages | `tool`, `sidebar`, `bottom` | `tool` is the fallback for pages without an explicit slot; `sidebar` is shown at the `xl` breakpoint; `bottom` follows the main content. |
-| Legal, FAQ, and blog pages | `legal`, `sidebar`, `bottom` | These pages render `legal` explicitly and remove the template-level `tool` slot. |
-| Game pages | reviewed separately | See `docs/monetization-content-safety.md` before enabling |
+| Page type                  | Slot keys used               | Notes                                                                                                                                    |
+| -------------------------- | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Home (`/`)                 | `home`, `bottom`             | `home` renders in the hero area; `bottom` renders below footer fold                                                                      |
+| Tool pages                 | `tool`, `sidebar`, `bottom`  | `tool` is the fallback for pages without an explicit slot; `sidebar` is shown at the `xl` breakpoint; `bottom` follows the main content. |
+| Legal, FAQ, and blog pages | `legal`, `sidebar`, `bottom` | These pages render `legal` explicitly and remove the template-level `tool` slot.                                                         |
+| Game pages                 | reviewed separately          | See `docs/monetization-content-safety.md` before enabling                                                                                |
 
 Ad placement rule: **Do not place ads between educational content section panels** (cheatsheet, reference tables, step-by-step guides). Place only before or after the complete educational block.
 

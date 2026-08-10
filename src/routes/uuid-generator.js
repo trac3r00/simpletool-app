@@ -3,46 +3,65 @@
  * Generate various types of UUIDs/GUIDs
  */
 
-import { respondHTML, respondJSON } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
-import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML, respondJSON } from "../utils/respond.js";
+import { createPageTemplate, createToolHeader } from "../utils/common-ui.js";
+import {
+  createEducationalSection,
+  createRelatedToolsSection,
+} from "../utils/content-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleUUIDGeneratorRoutes(request, url) {
   const { pathname } = url;
   const method = request.method;
 
   try {
-    if (pathname === '/uuid-generator' || pathname === '/uuid-generator/') {
-      if (method === 'GET') {
+    if (pathname === "/uuid-generator" || pathname === "/uuid-generator/") {
+      if (method === "GET") {
         return renderUUIDGeneratorPage(resolveRequestLanguage(request, url));
       }
     }
 
-    return respondJSON({ error: 'Not found' }, { status: 404 });
+    return respondJSON({ error: "Not found" }, { status: 404 });
   } catch (error) {
-    console.error('UUID Generator Route Error:', error);
+    console.error("UUID Generator Route Error:", error);
     return respondJSON(
-      { error: 'Internal server error', message: error.message },
-      { status: 500 }
+      { error: "Internal server error", message: error.message },
+      { status: 500 },
     );
   }
 }
 
 function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('uuid-generator', currentLang);
+  const translation = getToolTranslation("uuid-generator", currentLang);
   const toolHeader = createToolHeader(
-    { emoji: '🔑' },
-    translation?.name || 'UUID Generator',
-    translation?.desc || 'Generate unique identifiers instantly (UUID v4, v1, NIL, GUID)',
-    [{ text: translation?.ui?.badge16 || 'Bulk Generation', color: 'purple', tooltip: 'Generate multiple UUIDs or GUIDs at once without any network requests.' }],
-    { toolId: 'uuid-generator' }
+    { emoji: "🔑" },
+    translation?.name || "UUID Generator",
+    translation?.desc ||
+      "Generate unique identifiers instantly (UUID v4, v1, NIL, GUID)",
+    [
+      {
+        text: translation?.ui?.badge16 || "Bulk Generation",
+        color: "purple",
+        tooltip:
+          "Generate multiple UUIDs or GUIDs at once without any network requests.",
+      },
+    ],
+    { toolId: "uuid-generator" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'uuid-generator');
-  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+  const currentTool = TOOLS.find((t) => t.id === "uuid-generator");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
@@ -124,24 +143,32 @@ function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
           </div>
         </div>
 
-        ${createEducationalSection([
-          {
-            title: 'What is a UUID?',
-            content: 'A Universally Unique Identifier (UUID) is a 128-bit number used to uniquely identify information in computer systems. They are designed to be generated independently without a central authority while maintaining a negligible probability of collision.'
-          },
-          {
-            title: 'How to Use This Tool',
-            content: 'Select the UUID version (v1 for time-based, v4 for random) and the number of IDs you need. Click "Generate" to create a list of unique identifiers ready for use in your database or application.'
-          },
-          {
-            title: 'Common Use Cases',
-            content: 'Primary keys in distributed databases, session identifiers, transaction tracking, and naming temporary files or resources where uniqueness is critical across multiple systems.'
-          },
-          {
-            title: 'Pro Tips',
-            content: 'UUID v4 is the most common choice for general-purpose unique IDs because it relies on high-quality randomness. Use v1 if you need to sort IDs by creation time.'
-          }
-        ], 'uuid-generator', currentLang)}
+        ${createEducationalSection(
+          [
+            {
+              title: "What is a UUID?",
+              content:
+                "A Universally Unique Identifier (UUID) is a 128-bit number used to uniquely identify information in computer systems. They are designed to be generated independently without a central authority while maintaining a negligible probability of collision.",
+            },
+            {
+              title: "How to Use This Tool",
+              content:
+                'Select the UUID version (v1 for time-based, v4 for random) and the number of IDs you need. Click "Generate" to create a list of unique identifiers ready for use in your database or application.',
+            },
+            {
+              title: "Common Use Cases",
+              content:
+                "Primary keys in distributed databases, session identifiers, transaction tracking, and naming temporary files or resources where uniqueness is critical across multiple systems.",
+            },
+            {
+              title: "Pro Tips",
+              content:
+                "UUID v4 is the most common choice for general-purpose unique IDs because it relies on high-quality randomness. Use v1 if you need to sort IDs by creation time.",
+            },
+          ],
+          "uuid-generator",
+          currentLang,
+        )}
       </div>
     </main>
     ${createRelatedToolsSection(relatedToolsData)}
@@ -300,12 +327,14 @@ function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
     </script>
   `;
 
-  return respondHTML(createPageTemplate({
-    title: translation?.name || 'UUID Generator',
-    description: translation?.desc || 'Generate standard UUIDs (v1, v4).',
-    path: '/uuid-generator',
-    content,
-    scripts: script,
-    lang: currentLang
-  }));
+  return respondHTML(
+    createPageTemplate({
+      title: translation?.name || "UUID Generator",
+      description: translation?.desc || "Generate standard UUIDs (v1, v4).",
+      path: "/uuid-generator",
+      content,
+      scripts: script,
+      lang: currentLang,
+    }),
+  );
 }

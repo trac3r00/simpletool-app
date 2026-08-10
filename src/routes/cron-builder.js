@@ -1,26 +1,50 @@
-import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
-import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML } from "../utils/respond.js";
+import {
+  createPageTemplate,
+  createToolHeader,
+  createCheatsheet,
+  infoHint,
+} from "../utils/common-ui.js";
+import {
+  createEducationalSection,
+  createRelatedToolsSection,
+} from "../utils/content-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleCronBuilderRoutes(request) {
   const requestPath = new URL(request.url).pathname;
-  const canonicalPath = requestPath.replace(/\/$/, '') || '/';
+  const canonicalPath = requestPath.replace(/\/$/, "") || "/";
   const currentLang = resolveRequestLanguage(request, new URL(request.url));
   const normalizedLang = normalizeLanguage(currentLang);
-  const translation = getToolTranslation('cron-builder', normalizedLang);
-  const currentTool = TOOLS.find(t => t.id === 'cron-builder');
-    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+  const translation = getToolTranslation("cron-builder", normalizedLang);
+  const currentTool = TOOLS.find((t) => t.id === "cron-builder");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6 lg:h-[calc(100vh-9rem)] min-h-[800px]">
       ${createToolHeader(
-        { emoji: '⏰' },
-        translation?.name || 'Cron Builder',
-        translation?.desc || 'Visually build, parse, and schedule cron jobs with next execution previews.',
-        [{ text: translation?.ui?.badge21 || 'Bi-directional', color: 'blue', tooltip: 'Parse cron expressions and build them visually in either direction without leaving the page.' }],
-        { toolId: 'cron-builder' }
+        { emoji: "⏰" },
+        translation?.name || "Cron Builder",
+        translation?.desc ||
+          "Visually build, parse, and schedule cron jobs with next execution previews.",
+        [
+          {
+            text: translation?.ui?.badge21 || "Bi-directional",
+            color: "blue",
+            tooltip:
+              "Parse cron expressions and build them visually in either direction without leaving the page.",
+          },
+        ],
+        { toolId: "cron-builder" },
       )}
 
       <div class="flex-grow flex flex-col lg:flex-row gap-6 min-h-0">
@@ -181,7 +205,7 @@ export async function handleCronBuilderRoutes(request) {
           <!-- Main Output -->
           <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 p-6">
             <label for="cron-expression" class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
-              <span data-i18n="tools.cron-builder.ui.label6">Cron Expression</span> ${infoHint('Enter five fields (min hour day month dow); use * or lists/ranges to control scheduling.')}
+              <span data-i18n="tools.cron-builder.ui.label6">Cron Expression</span> ${infoHint("Enter five fields (min hour day month dow); use * or lists/ranges to control scheduling.")}
             </label>
             <div class="flex gap-3 mb-4">
               <div class="relative flex-grow">
@@ -248,8 +272,10 @@ export async function handleCronBuilderRoutes(request) {
         </div>
       </div>
 
-      ${createCheatsheet('cron-builder', 'Cron Syntax Reference', [
-        { heading: 'Field Order', content: `
+      ${createCheatsheet("cron-builder", "Cron Syntax Reference", [
+        {
+          heading: "Field Order",
+          content: `
           <table>
             <tr><th data-i18n="tools.cron-builder.ui.th0">Position</th><th data-i18n="tools.cron-builder.ui.th1">Field</th><th data-i18n="tools.cron-builder.ui.th2">Range</th></tr>
             <tr><td>1</td><td>Minute</td><td>0–59</td></tr>
@@ -257,16 +283,22 @@ export async function handleCronBuilderRoutes(request) {
             <tr><td>3</td><td>Day of Month</td><td>1–31</td></tr>
             <tr><td>4</td><td>Month</td><td>1–12</td></tr>
             <tr><td>5</td><td>Day of Week</td><td>0–7 (0,7 = Sun)</td></tr>
-          </table>` },
-        { heading: 'Special Characters', content: `
+          </table>`,
+        },
+        {
+          heading: "Special Characters",
+          content: `
           <table>
             <tr><th data-i18n="tools.cron-builder.ui.th3">Char</th><th data-i18n="tools.cron-builder.ui.th4">Meaning</th><th data-i18n="tools.cron-builder.ui.th5">Example</th></tr>
             <tr><td><code>*</code></td><td>Any value</td><td>Every minute</td></tr>
             <tr><td><code>,</code></td><td>List</td><td><code>1,15</code> (1st and 15th)</td></tr>
             <tr><td><code>-</code></td><td>Range</td><td><code>1-5</code> (Mon–Fri)</td></tr>
             <tr><td><code>/</code></td><td>Step</td><td><code>*/5</code> (every 5 min)</td></tr>
-          </table>` },
-        { heading: 'Common Examples', content: `
+          </table>`,
+        },
+        {
+          heading: "Common Examples",
+          content: `
           <table>
             <tr><th data-i18n="tools.cron-builder.ui.th6">Expression</th><th data-i18n="tools.cron-builder.ui.th7">Description</th></tr>
             <tr><td><code>0 * * * *</code></td><td>Every hour</td></tr>
@@ -274,7 +306,8 @@ export async function handleCronBuilderRoutes(request) {
             <tr><td><code>0 0 * * 1</code></td><td>Every Monday</td></tr>
             <tr><td><code>*/5 * * * *</code></td><td>Every 5 minutes</td></tr>
             <tr><td><code>0 9-17 * * 1-5</code></td><td>Hourly 9am–5pm weekdays</td></tr>
-          </table>` }
+          </table>`,
+        },
       ])}
     ${createRelatedToolsSection(relatedToolsData)}
     </main>
@@ -789,16 +822,21 @@ function renderGrid(part, start, end, labelFn) {
     </script>
   `;
 
-  return respondHTML(createPageTemplate({
-    title: translation?.name || 'Cron Builder',
-    description: translation?.desc || 'Visual cron editor with human-readable descriptions and next-run preview.',
-    path: canonicalPath,
-    content: content,
-    scripts: '',
-    lang: normalizedLang
-  }), {
-    headers: {
-      'Cache-Control': 'public, max-age=3600'
-    }
-  });
+  return respondHTML(
+    createPageTemplate({
+      title: translation?.name || "Cron Builder",
+      description:
+        translation?.desc ||
+        "Visual cron editor with human-readable descriptions and next-run preview.",
+      path: canonicalPath,
+      content: content,
+      scripts: "",
+      lang: normalizedLang,
+    }),
+    {
+      headers: {
+        "Cache-Control": "public, max-age=3600",
+      },
+    },
+  );
 }

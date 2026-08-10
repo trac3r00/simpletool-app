@@ -1,32 +1,46 @@
-import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createCheatsheet } from '../utils/common-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { createRelatedToolsSection } from '../utils/content-ui.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML } from "../utils/respond.js";
+import {
+  createPageTemplate,
+  createToolHeader,
+  createCheatsheet,
+} from "../utils/common-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import { createRelatedToolsSection } from "../utils/content-ui.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleWiresharkFilterRoutes(request, url) {
-  if (url.pathname !== '/wireshark-filter' && url.pathname !== '/wireshark-filter/') return null;
-  if (request.method !== 'GET') return null;
+  if (
+    url.pathname !== "/wireshark-filter" &&
+    url.pathname !== "/wireshark-filter/"
+  )
+    return null;
+  if (request.method !== "GET") return null;
   const lang = resolveRequestLanguage(request, url);
   return respondHTML(renderWiresharkFilterPage(lang));
 }
 
 function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('wireshark-filter', currentLang);
-  const title = translation?.name || 'Wireshark Filter Builder';
-  const description = translation?.desc || 'Build Wireshark display filters and BPF capture expressions visually.';
+  const translation = getToolTranslation("wireshark-filter", currentLang);
+  const title = translation?.name || "Wireshark Filter Builder";
+  const description =
+    translation?.desc ||
+    "Build Wireshark display filters and BPF capture expressions visually.";
 
-  const header = createToolHeader(
-    { emoji: '🦈' },
-    title,
-    description,
-    [],
-    { toolId: 'wireshark-filter' }
-  );
+  const header = createToolHeader({ emoji: "🦈" }, title, description, [], {
+    toolId: "wireshark-filter",
+  });
 
-  const currentTool = TOOLS.find(t => t.id === 'wireshark-filter');
-  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+  const currentTool = TOOLS.find((t) => t.id === "wireshark-filter");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -334,16 +348,24 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
         </div>
       </div>
 
-      ${createCheatsheet('wireshark-filter', 'Display Filters vs BPF Comparison', [
-        { heading: 'When to Use Each', content: `
+      ${createCheatsheet(
+        "wireshark-filter",
+        "Display Filters vs BPF Comparison",
+        [
+          {
+            heading: "When to Use Each",
+            content: `
           <table>
             <tr><th data-i18n="tools.wireshark-filter.ui.th42">Display Filter</th><th data-i18n="tools.wireshark-filter.ui.th43">BPF Capture Filter</th></tr>
             <tr><td>Applied <strong>after</strong> capture</td><td>Applied <strong>during</strong> capture</td></tr>
             <tr><td>More flexible (deep packet inspection)</td><td>Faster performance</td></tr>
             <tr><td>Can filter on any dissected field</td><td>Limited to link-layer headers</td></tr>
             <tr><td>Use for: protocol analysis</td><td>Use for: reducing capture size</td></tr>
-          </table>` },
-        { heading: 'Common Display Filter Examples', content: `
+          </table>`,
+          },
+          {
+            heading: "Common Display Filter Examples",
+            content: `
           <table>
             <tr><th data-i18n="tools.wireshark-filter.ui.th44">Filter</th><th data-i18n="tools.wireshark-filter.ui.th45">Description</th></tr>
             <tr><td><code>ip.addr == 192.168.1.1</code></td><td>Traffic to/from IP</td></tr>
@@ -352,8 +374,11 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
             <tr><td><code>dns.qry.type == 1</code></td><td>A record queries</td></tr>
             <tr><td><code>tcp.flags.syn == 1</code></td><td>TCP SYN packets</td></tr>
             <tr><td><code>frame.len > 1000</code></td><td>Large frames</td></tr>
-          </table>` },
-        { heading: 'Common BPF Examples', content: `
+          </table>`,
+          },
+          {
+            heading: "Common BPF Examples",
+            content: `
           <table>
             <tr><th data-i18n="tools.wireshark-filter.ui.th44">Filter</th><th data-i18n="tools.wireshark-filter.ui.th45">Description</th></tr>
             <tr><td><code>host 192.168.1.1</code></td><td>Traffic to/from host</td></tr>
@@ -362,8 +387,10 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
             <tr><td><code>tcp port 443</code></td><td>HTTPS only</td></tr>
             <tr><td><code>not port 22</code></td><td>Exclude SSH</td></tr>
             <tr><td><code>icmp</code></td><td>Ping traffic only</td></tr>
-          </table>` }
-      ])}
+          </table>`,
+          },
+        ],
+      )}
       ${createRelatedToolsSection(relatedToolsData)}
     </main>
   `;
@@ -717,8 +744,8 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
     title,
     description,
     lang: currentLang,
-    path: '/wireshark-filter',
+    path: "/wireshark-filter",
     content,
-    scripts
+    scripts,
   });
 }

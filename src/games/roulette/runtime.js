@@ -1,9 +1,9 @@
 export const ROULETTE_PHASES = {
-  editing: 'editing',
-  ready: 'ready',
-  spinning: 'spinning',
-  roundResult: 'roundResult',
-  completed: 'completed'
+  editing: "editing",
+  ready: "ready",
+  spinning: "spinning",
+  roundResult: "roundResult",
+  completed: "completed",
 };
 
 export function createRouletteSessionState(bootConfig = {}) {
@@ -16,18 +16,18 @@ export function createRouletteSessionState(bootConfig = {}) {
     canvasSize: 0,
     dpr: 1,
     audio: { enabled: false, ctx: null },
-    selectionMode: bootConfig.defaultSelectionMode || 'equal',
+    selectionMode: bootConfig.defaultSelectionMode || "equal",
     stats: { total: 0, counts: {}, history: [] },
     series: { active: false, remaining: 0, total: 0 },
     tournament: { active: false, ranking: [], originalSegments: null },
     confetti: [],
     confettiRaf: null,
-    spinRaf: null
+    spinRaf: null,
   };
 }
 
 export function normalizeRouletteMode(mode) {
-  return mode === 'weighted' ? 'weighted' : 'equal';
+  return mode === "weighted" ? "weighted" : "equal";
 }
 
 export function segmentWeight(segment) {
@@ -35,20 +35,30 @@ export function segmentWeight(segment) {
   return Number.isFinite(raw) && raw > 0 ? raw : 0;
 }
 
-export function pickRouletteWinnerIndex(segments, selectionMode, randomUnit = 0) {
+export function pickRouletteWinnerIndex(
+  segments,
+  selectionMode,
+  randomUnit = 0,
+) {
   if (!Array.isArray(segments) || segments.length === 0) return 0;
-  const normalizedMode = selectionMode === 'weighted' ? 'weighted' : 'equal';
+  const normalizedMode = selectionMode === "weighted" ? "weighted" : "equal";
   const getWeight = (segment) => {
     const raw = Number(segment && segment.weight);
     return Number.isFinite(raw) && raw > 0 ? raw : 0;
   };
-  if (normalizedMode !== 'weighted') {
-    return Math.min(segments.length - 1, Math.floor(Math.max(0, Math.min(0.999999, randomUnit)) * segments.length));
+  if (normalizedMode !== "weighted") {
+    return Math.min(
+      segments.length - 1,
+      Math.floor(Math.max(0, Math.min(0.999999, randomUnit)) * segments.length),
+    );
   }
 
   const total = segments.reduce((sum, segment) => sum + getWeight(segment), 0);
   if (total <= 0) {
-    return Math.min(segments.length - 1, Math.floor(Math.max(0, Math.min(0.999999, randomUnit)) * segments.length));
+    return Math.min(
+      segments.length - 1,
+      Math.floor(Math.max(0, Math.min(0.999999, randomUnit)) * segments.length),
+    );
   }
 
   let cursor = Math.max(0, Math.min(0.999999, randomUnit)) * total;
@@ -59,34 +69,43 @@ export function pickRouletteWinnerIndex(segments, selectionMode, randomUnit = 0)
   return segments.length - 1;
 }
 
-export function computeRouletteFairnessLabel(segments, counts, total, selectionMode) {
-  if (!Array.isArray(segments) || segments.length < 2 || total < 10) return '—';
+export function computeRouletteFairnessLabel(
+  segments,
+  counts,
+  total,
+  selectionMode,
+) {
+  if (!Array.isArray(segments) || segments.length < 2 || total < 10) return "—";
 
-  const normalizedMode = selectionMode === 'weighted' ? 'weighted' : 'equal';
+  const normalizedMode = selectionMode === "weighted" ? "weighted" : "equal";
   const getWeight = (segment) => {
     const raw = Number(segment && segment.weight);
     return Number.isFinite(raw) && raw > 0 ? raw : 0;
   };
-  const totalWeight = segments.reduce((sum, segment) => sum + getWeight(segment), 0);
+  const totalWeight = segments.reduce(
+    (sum, segment) => sum + getWeight(segment),
+    0,
+  );
   let maxDeviation = 0;
 
   for (const segment of segments) {
     const actual = (((counts && counts[segment.id]) || 0) / total) * 100;
-    const expected = normalizedMode === 'weighted' && totalWeight > 0
-      ? (getWeight(segment) / totalWeight) * 100
-      : 100 / segments.length;
+    const expected =
+      normalizedMode === "weighted" && totalWeight > 0
+        ? (getWeight(segment) / totalWeight) * 100
+        : 100 / segments.length;
     maxDeviation = Math.max(maxDeviation, Math.abs(actual - expected));
   }
 
-  if (maxDeviation < 5) return 'Good';
-  if (maxDeviation < 10) return 'Fair';
-  return 'Uneven';
+  if (maxDeviation < 5) return "Good";
+  if (maxDeviation < 10) return "Fair";
+  return "Uneven";
 }
 
 export function setRoulettePhase(state, phase) {
   return {
     ...state,
-    phase
+    phase,
   };
 }
 
@@ -99,8 +118,8 @@ export function startRouletteSeries(state, total) {
       ...state.series,
       active: true,
       total: rounds,
-      remaining: rounds
-    }
+      remaining: rounds,
+    },
   };
 }
 
@@ -113,8 +132,8 @@ export function advanceRouletteSeries(state) {
     series: {
       ...state.series,
       active,
-      remaining
-    }
+      remaining,
+    },
   };
 }
 
@@ -124,8 +143,8 @@ export function stopRouletteSeries(state) {
     phase: ROULETTE_PHASES.ready,
     series: {
       ...state.series,
-      active: false
-    }
+      active: false,
+    },
   };
 }
 
@@ -136,23 +155,27 @@ export function startRouletteTournament(state, segments) {
     tournament: {
       active: true,
       ranking: [],
-      originalSegments: Array.isArray(segments) ? segments.map((segment) => ({ ...segment })) : []
-    }
+      originalSegments: Array.isArray(segments)
+        ? segments.map((segment) => ({ ...segment }))
+        : [],
+    },
   };
 }
 
 export function pushRouletteTournamentWinner(state, winner, remainingSegments) {
   const ranking = [...(state.tournament?.ranking || [])];
   if (winner) ranking.push({ ...winner });
-  const active = Array.isArray(remainingSegments) ? remainingSegments.length > 0 : false;
+  const active = Array.isArray(remainingSegments)
+    ? remainingSegments.length > 0
+    : false;
   return {
     ...state,
     phase: active ? ROULETTE_PHASES.roundResult : ROULETTE_PHASES.completed,
     tournament: {
       ...state.tournament,
       active,
-      ranking
-    }
+      ranking,
+    },
   };
 }
 
@@ -162,20 +185,27 @@ export function stopRouletteTournament(state) {
     phase: ROULETTE_PHASES.ready,
     tournament: {
       ...state.tournament,
-      active: false
-    }
+      active: false,
+    },
   };
 }
 
-export function resolveRouletteRoundOutcome({ state, segments, winnerIndex, mode }) {
+export function resolveRouletteRoundOutcome({
+  state,
+  segments,
+  winnerIndex,
+  mode,
+}) {
   const nextMode = mode || state.selectionMode;
   const winner = Array.isArray(segments) ? segments[winnerIndex] : null;
-  const nextSegments = nextMode === 'elimination'
-    ? (segments || []).filter((_, index) => index !== winnerIndex)
-    : (segments || []);
-  const nextPhase = nextMode === 'elimination' && nextSegments.length <= 1
-    ? ROULETTE_PHASES.completed
-    : ROULETTE_PHASES.roundResult;
+  const nextSegments =
+    nextMode === "elimination"
+      ? (segments || []).filter((_, index) => index !== winnerIndex)
+      : segments || [];
+  const nextPhase =
+    nextMode === "elimination" && nextSegments.length <= 1
+      ? ROULETTE_PHASES.completed
+      : ROULETTE_PHASES.roundResult;
 
   return {
     ...state,
@@ -183,6 +213,6 @@ export function resolveRouletteRoundOutcome({ state, segments, winnerIndex, mode
     spinning: false,
     winnerIndex,
     lastWinnerId: winner?.id || null,
-    remainingSegmentIds: nextSegments.map((segment) => segment.id)
+    remainingSegmentIds: nextSegments.map((segment) => segment.id),
   };
 }

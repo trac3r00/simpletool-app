@@ -3,15 +3,19 @@
  * Your data never leaves your browser.
  */
 
-import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate } from '../utils/common-ui.js';
-import { DEFAULT_LANGUAGE, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML } from "../utils/respond.js";
+import { createPageTemplate } from "../utils/common-ui.js";
+import {
+  DEFAULT_LANGUAGE,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handlePipeRoutes(request, url) {
   const { pathname } = url;
 
-  if (pathname === '/pipe' || pathname === '/pipe/') {
-    if (request.method === 'GET') {
+  if (pathname === "/pipe" || pathname === "/pipe/") {
+    if (request.method === "GET") {
       return renderPipePage(resolveRequestLanguage(request, url));
     }
   }
@@ -516,11 +520,12 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
 
   return respondHTML(
     createPageTemplate({
-      title: 'Pipe Mode — Chain Tools Together',
-      description: 'Chain multiple tools into a pipeline. Your data never leaves your browser.',
+      title: "Pipe Mode — Chain Tools Together",
+      description:
+        "Chain multiple tools into a pipeline. Your data never leaves your browser.",
       content: content + script,
-      path: '/pipe',
-      lang
-    })
+      path: "/pipe",
+      lang,
+    }),
   );
 }

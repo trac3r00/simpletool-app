@@ -1,17 +1,27 @@
-import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, getAdSlotHTML } from '../utils/common-ui.js';
-import { createBlogArticleCard, createBreadcrumbs, createReadingProgressBar } from '../utils/content-ui.js';
-import { DEFAULT_LANGUAGE, normalizeLanguage, resolveRequestLanguage, t } from '../utils/i18n.js';
-import { getLocalizedBlogArticle } from './blog-content-locales.js';
+import { respondHTML } from "../utils/respond.js";
+import { createPageTemplate, getAdSlotHTML } from "../utils/common-ui.js";
+import {
+  createBlogArticleCard,
+  createBreadcrumbs,
+  createReadingProgressBar,
+} from "../utils/content-ui.js";
+import {
+  DEFAULT_LANGUAGE,
+  normalizeLanguage,
+  resolveRequestLanguage,
+  t,
+} from "../utils/i18n.js";
+import { getLocalizedBlogArticle } from "./blog-content-locales.js";
 
 export const BLOG_ARTICLES = [
   {
-    slug: 'what-is-json',
-    title: 'What is JSON? A Developer\'s Complete Guide',
-    description: 'A comprehensive guide to JSON structure, data types, when to use JSON vs XML vs YAML, formatting best practices, and common parsing errors.',
-    category: 'Development',
-    readingTime: '12 min read',
-    datePublished: '2026-02-08',
+    slug: "what-is-json",
+    title: "What is JSON? A Developer's Complete Guide",
+    description:
+      "A comprehensive guide to JSON structure, data types, when to use JSON vs XML vs YAML, formatting best practices, and common parsing errors.",
+    category: "Development",
+    readingTime: "12 min read",
+    datePublished: "2026-02-08",
     content: `
       <p data-i18n-html="content.blog.what-is-json.p1">JSON, or JavaScript Object Notation, has become the ubiquitous language of the modern web. From RESTful APIs to configuration files like <code>package.json</code>, it is the invisible thread that connects disparate systems across the globe. But despite its simplicity, many developers only scratch the surface of what JSON can do—and where it can fail.</p>
 
@@ -116,15 +126,16 @@ export const BLOG_ARTICLES = [
           </li>
         </ul>
       </div>
-    `
+    `,
   },
   {
-    slug: 'password-security-guide',
-    title: 'Password Security in 2026: What Every Developer Should Know',
-    description: 'A deep dive into modern password security, entropy, NIST guidelines, and secure hashing algorithms like bcrypt and Argon2.',
-    category: 'Security',
-    readingTime: '14 min read',
-    datePublished: '2026-02-08',
+    slug: "password-security-guide",
+    title: "Password Security in 2026: What Every Developer Should Know",
+    description:
+      "A deep dive into modern password security, entropy, NIST guidelines, and secure hashing algorithms like bcrypt and Argon2.",
+    category: "Security",
+    readingTime: "14 min read",
+    datePublished: "2026-02-08",
     content: `
       <p data-i18n-html="content.blog.password-security-guide.p1">In 2026, the landscape of password security has shifted dramatically. With the rise of quantum computing threats and increasingly sophisticated phishing attacks, developers must move beyond outdated practices and embrace modern standards for authentication. The days of simple complexity rules and forced rotations are over, replaced by a focus on entropy, hardware-backed security, and phishing-resistant protocols.</p>
 
@@ -210,15 +221,16 @@ const hash = await argon2.hash('user-password', {
           </li>
         </ul>
       </div>
-    `
+    `,
   },
   {
-    slug: 'understanding-hashes',
-    title: 'Understanding Cryptographic Hashes: MD5, SHA-256, and Beyond',
-    description: 'Learn about one-way functions, hash collisions, and why choosing the right algorithm is critical for data integrity and security.',
-    category: 'Security',
-    readingTime: '12 min read',
-    datePublished: '2026-02-08',
+    slug: "understanding-hashes",
+    title: "Understanding Cryptographic Hashes: MD5, SHA-256, and Beyond",
+    description:
+      "Learn about one-way functions, hash collisions, and why choosing the right algorithm is critical for data integrity and security.",
+    category: "Security",
+    readingTime: "12 min read",
+    datePublished: "2026-02-08",
     content: `
       <p data-i18n-html="content.blog.understanding-hashes.p1">Cryptographic hash functions are the unsung heroes of digital security. They are used everywhere—from verifying file integrity to securing blockchain transactions and storing passwords. But what exactly is a hash, and why does the choice of algorithm matter so much? In this guide, we'll explore the fundamental properties of hashes, the history of popular algorithms, and the future of cryptographic integrity.</p>
 
@@ -303,15 +315,16 @@ async function getHash(message) {
           </li>
         </ul>
       </div>
-    `
+    `,
   },
   {
-    slug: 'jwt-explained',
-    title: 'JWT Tokens Explained: Structure, Security, and Common Pitfalls',
-    description: 'Master JSON Web Tokens — from their three-part structure to advanced security considerations and common implementation mistakes.',
-    category: 'Security',
-    readingTime: '13 min read',
-    datePublished: '2026-02-08',
+    slug: "jwt-explained",
+    title: "JWT Tokens Explained: Structure, Security, and Common Pitfalls",
+    description:
+      "Master JSON Web Tokens — from their three-part structure to advanced security considerations and common implementation mistakes.",
+    category: "Security",
+    readingTime: "13 min read",
+    datePublished: "2026-02-08",
     content: `
       <p data-i18n-html="content.blog.jwt-explained.p1">JSON Web Tokens (JWTs) have revolutionized the way we handle authentication in modern web applications. By providing a compact, self-contained way to transmit information between parties, they enable stateless authentication that scales effortlessly. But with great power comes great responsibility—and many ways to get it wrong. In this guide, we'll dive deep into the structure of JWTs, explore advanced security strategies, and identify the pitfalls that can leave your application vulnerable.</p>
 
@@ -407,15 +420,16 @@ async function getHash(message) {
           </li>
         </ul>
       </div>
-    `
+    `,
   },
   {
-    slug: 'regex-guide',
-    title: 'Regular Expressions Demystified: A Practical Guide',
-    description: 'Master the fundamentals of regex with real-world examples, character classes, quantifiers, and 10 common patterns every developer should know.',
-    category: 'Development',
-    readingTime: '14 min read',
-    datePublished: '2026-02-08',
+    slug: "regex-guide",
+    title: "Regular Expressions Demystified: A Practical Guide",
+    description:
+      "Master the fundamentals of regex with real-world examples, character classes, quantifiers, and 10 common patterns every developer should know.",
+    category: "Development",
+    readingTime: "14 min read",
+    datePublished: "2026-02-08",
     content: `
       <p data-i18n-html="content.blog.regex-guide.p1">Regular expressions, or regex, are often viewed as a dark art. To the uninitiated, a pattern like <code>/^(?:[a-z0-9!&dollar;%&\'*+/=?^&#96;{|}~-]+(?:\.[a-z0-9!&dollar;%&\'*+/=?^&#96;{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])&dollar;/i</code> looks like a cat walked across a keyboard. But once you understand the logic, regex becomes one of the most powerful tools in your arsenal for text processing, validation, and data extraction.</p>
 
@@ -504,15 +518,16 @@ async function getHash(message) {
           </li>
         </ul>
       </div>
-    `
+    `,
   },
   {
-    slug: 'why-client-side-tools-matter',
-    title: 'Why Client-Side Tools Matter for Developer Privacy',
-    description: 'Learn why processing data in your browser instead of sending it to servers is critical for security and privacy.',
-    category: 'Privacy',
-    readingTime: '5 min read',
-    datePublished: '2026-02-01',
+    slug: "why-client-side-tools-matter",
+    title: "Why Client-Side Tools Matter for Developer Privacy",
+    description:
+      "Learn why processing data in your browser instead of sending it to servers is critical for security and privacy.",
+    category: "Privacy",
+    readingTime: "5 min read",
+    datePublished: "2026-02-01",
     content: `
       <p>Every time you paste sensitive data into an online tool, you trust that server with your information. Client-side tools eliminate this risk entirely by keeping all processing in your browser.</p>
       <h2>The Problem with Server-Side Tools</h2>
@@ -528,15 +543,16 @@ async function getHash(message) {
       </ul>
       <h2>What to Look For</h2>
       <p>When evaluating online tools, check the network tab in your browser's developer tools. A truly client-side tool will show no data being sent to external servers during processing.</p>
-    `
+    `,
   },
   {
-    slug: 'password-security-best-practices-2026',
-    title: 'Password Security Best Practices for 2026',
-    description: 'A comprehensive guide to creating, storing, and managing secure passwords in the modern threat landscape.',
-    category: 'Security',
-    readingTime: '7 min read',
-    datePublished: '2026-01-25',
+    slug: "password-security-best-practices-2026",
+    title: "Password Security Best Practices for 2026",
+    description:
+      "A comprehensive guide to creating, storing, and managing secure passwords in the modern threat landscape.",
+    category: "Security",
+    readingTime: "7 min read",
+    datePublished: "2026-01-25",
     content: `
       <p>Password security remains one of the most critical aspects of online safety. Despite advances in biometrics and passkeys, passwords are still the primary authentication method for most services.</p>
       <h2>Length Over Complexity</h2>
@@ -553,15 +569,16 @@ async function getHash(message) {
         <li><strong>Stored securely</strong> — use a password manager</li>
         <li><strong>Rotated when compromised</strong> — check HaveIBeenPwned regularly</li>
       </ul>
-    `
+    `,
   },
   {
-    slug: 'understanding-json-web-tokens',
-    title: 'Understanding JSON Web Tokens: A Developer Guide',
-    description: 'Demystify JWTs — learn how they work, when to use them, and common security pitfalls to avoid.',
-    category: 'Tutorial',
-    readingTime: '8 min read',
-    datePublished: '2026-01-18',
+    slug: "understanding-json-web-tokens",
+    title: "Understanding JSON Web Tokens: A Developer Guide",
+    description:
+      "Demystify JWTs — learn how they work, when to use them, and common security pitfalls to avoid.",
+    category: "Tutorial",
+    readingTime: "8 min read",
+    datePublished: "2026-01-18",
     content: `
       <p>JSON Web Tokens (JWTs) are a compact, URL-safe way to represent claims between two parties. They are widely used for authentication and authorization in modern web applications.</p>
       <h2>JWT Structure</h2>
@@ -580,15 +597,16 @@ async function getHash(message) {
       </ul>
       <h2>Inspecting JWTs Safely</h2>
       <p>Use a client-side JWT inspector to decode and examine tokens. Server-side decoders may log your tokens, which is especially dangerous for production credentials.</p>
-    `
+    `,
   },
   {
-    slug: 'regex-guide-for-beginners',
-    title: 'Regular Expressions: A Practical Guide for Beginners',
-    description: 'Master the fundamentals of regex with real-world examples for log parsing, data validation, and text processing.',
-    category: 'Tutorial',
-    readingTime: '10 min read',
-    datePublished: '2026-01-10',
+    slug: "regex-guide-for-beginners",
+    title: "Regular Expressions: A Practical Guide for Beginners",
+    description:
+      "Master the fundamentals of regex with real-world examples for log parsing, data validation, and text processing.",
+    category: "Tutorial",
+    readingTime: "10 min read",
+    datePublished: "2026-01-10",
     content: `
       <p>Regular expressions (regex) are one of the most powerful tools in a developer's toolkit. They provide a concise way to search, match, and transform text patterns.</p>
       <h2>Basic Building Blocks</h2>
@@ -610,15 +628,16 @@ async function getHash(message) {
         <li><strong>Greedy vs. lazy matching</strong> — <code>.*</code> is greedy by default; use <code>.*?</code> for lazy matching</li>
         <li><strong>Character class escaping</strong> — Remember to escape special characters properly</li>
       </ul>
-    `
+    `,
   },
   {
-    slug: 'hash-algorithms-compared',
-    title: 'Hash Algorithms Compared: MD5 vs SHA-256 vs SHA-3',
-    description: 'Understand the differences between popular hash algorithms and when to use each one.',
-    category: 'Security',
-    readingTime: '6 min read',
-    datePublished: '2026-01-05',
+    slug: "hash-algorithms-compared",
+    title: "Hash Algorithms Compared: MD5 vs SHA-256 vs SHA-3",
+    description:
+      "Understand the differences between popular hash algorithms and when to use each one.",
+    category: "Security",
+    readingTime: "6 min read",
+    datePublished: "2026-01-05",
     content: `
       <p>Cryptographic hash functions are fundamental to modern security infrastructure. They convert arbitrary data into fixed-length outputs, enabling integrity verification and digital signatures.</p>
       <h2>MD5 — Deprecated</h2>
@@ -634,15 +653,16 @@ async function getHash(message) {
         <li><strong>Digital signatures</strong> — SHA-256 or SHA-3</li>
         <li><strong>Content addressing</strong> — SHA-256 (used by Git, Docker)</li>
       </ul>
-    `
+    `,
   },
   {
-    slug: 'curl-essentials',
-    title: 'cURL for Developers: Essential Commands and Techniques',
-    description: 'Master the Swiss Army knife of APIs. Learn essential cURL flags, authentication patterns, and debugging techniques for modern development.',
-    category: 'Networking',
-    readingTime: '12 min read',
-    datePublished: '2026-02-05',
+    slug: "curl-essentials",
+    title: "cURL for Developers: Essential Commands and Techniques",
+    description:
+      "Master the Swiss Army knife of APIs. Learn essential cURL flags, authentication patterns, and debugging techniques for modern development.",
+    category: "Networking",
+    readingTime: "12 min read",
+    datePublished: "2026-02-05",
     content: `
       <p data-i18n-html="content.blog.curl-essentials.p1">In the world of backend development, API integration, and systems administration, few tools are as ubiquitous or as powerful as cURL. Short for "Client URL," cURL is a command-line tool and library for transferring data with URLs. Supporting dozens of protocols—including HTTP, HTTPS, FTP, and SMTP—it has become the de facto standard for testing endpoints, debugging network issues, and automating web interactions.</p>
 
@@ -715,15 +735,16 @@ done</code></pre>
 
       <h2 data-i18n="content.blog.curl-essentials.h2_11">Conclusion</h2>
       <p data-i18n-html="content.blog.curl-essentials.p22">cURL is more than just a command; it's a fundamental skill for any developer. By understanding its core flags, mastering its authentication and session management capabilities, and leveraging its powerful debugging features, you gain a deeper understanding of the HTTP protocol and the web as a whole. Whether you're debugging a production outage, exploring a new API, or building complex automation, cURL provides the precision, transparency, and control you need to succeed.</p>
-    `
+    `,
   },
   {
-    slug: 'x509-certificates-explained',
-    title: 'X.509 Certificates: How TLS/SSL Actually Works',
-    description: 'Demystify the Public Key Infrastructure (PKI). Learn about certificate chains, CA trust, SANs, and the CSR process.',
-    category: 'Networking',
-    readingTime: '10 min read',
-    datePublished: '2026-02-06',
+    slug: "x509-certificates-explained",
+    title: "X.509 Certificates: How TLS/SSL Actually Works",
+    description:
+      "Demystify the Public Key Infrastructure (PKI). Learn about certificate chains, CA trust, SANs, and the CSR process.",
+    category: "Networking",
+    readingTime: "10 min read",
+    datePublished: "2026-02-06",
     content: `
       <p data-i18n-html="content.blog.x509-certificates-explained.p1">Every time you see the padlock icon in your browser's address bar, you are witnessing the result of a complex cryptographic dance powered by X.509 certificates. While we often refer to it simply as "SSL" or "TLS," the underlying infrastructure—the Public Key Infrastructure (PKI)—is what makes secure communication on the internet possible. Understanding how these certificates work is crucial for developers, DevOps engineers, and security professionals alike.</p>
 
@@ -792,15 +813,16 @@ done</code></pre>
 
       <h2 data-i18n="content.blog.x509-certificates-explained.h2_11">Conclusion</h2>
       <p data-i18n-html="content.blog.x509-certificates-explained.p15">X.509 certificates are the foundation of trust on the internet. By understanding the anatomy of a certificate, the mechanics of the chain of trust, and the importance of the CSR process, you can build more secure applications and troubleshoot connectivity issues with confidence. In an era where "encryption by default" is the standard, mastering these concepts is no longer optional. Whether you're a frontend developer wondering why an API call is failing or a DevOps engineer managing thousands of certificates, a solid grasp of PKI is an essential part of your toolkit.</p>
-    `
+    `,
   },
   {
-    slug: 'saml-oauth-oidc-compared',
-    title: 'SAML vs OAuth vs OIDC: Choosing the Right Auth Protocol',
-    description: 'Navigate the alphabet soup of authentication. Compare SAML, OAuth 2.0, and OpenID Connect to find the best fit for your application.',
-    category: 'Security',
-    readingTime: '11 min read',
-    datePublished: '2026-02-07',
+    slug: "saml-oauth-oidc-compared",
+    title: "SAML vs OAuth vs OIDC: Choosing the Right Auth Protocol",
+    description:
+      "Navigate the alphabet soup of authentication. Compare SAML, OAuth 2.0, and OpenID Connect to find the best fit for your application.",
+    category: "Security",
+    readingTime: "11 min read",
+    datePublished: "2026-02-07",
     content: `
       <p data-i18n-html="content.blog.saml-oauth-oidc-compared.p1">Authentication and authorization are the twin pillars of application security, but the terminology surrounding them can be overwhelming. SAML, OAuth 2.0, and OpenID Connect (OIDC) are the three most common protocols used today, yet they serve different purposes and operate in distinct ways. Choosing the right one for your project requires understanding their strengths, weaknesses, and typical use cases.</p>
 
@@ -893,15 +915,16 @@ done</code></pre>
 
       <h2 data-i18n="content.blog.saml-oauth-oidc-compared.h2_11">Conclusion</h2>
       <p data-i18n-html="content.blog.saml-oauth-oidc-compared.p18">SAML, OAuth, and OIDC are not competitors; they are specialized tools for different jobs. By understanding that SAML is for enterprise SSO, OAuth is for authorization, and OIDC is for modern identity, you can architect more secure and interoperable systems. As the web continues to move toward a decentralized identity model, mastering these protocols is essential for any developer. Don't let the "alphabet soup" intimidate you—once you understand the roles and the tokens, the logic becomes clear.</p>
-    `
+    `,
   },
   {
-    slug: 'cron-expressions-guide',
-    title: 'Mastering Cron Expressions: Schedule Anything Like a Pro',
-    description: 'Stop guessing and start scheduling. A comprehensive guide to cron syntax, special characters, and timezone best practices.',
-    category: 'Development',
-    readingTime: '9 min read',
-    datePublished: '2026-02-08',
+    slug: "cron-expressions-guide",
+    title: "Mastering Cron Expressions: Schedule Anything Like a Pro",
+    description:
+      "Stop guessing and start scheduling. A comprehensive guide to cron syntax, special characters, and timezone best practices.",
+    category: "Development",
+    readingTime: "9 min read",
+    datePublished: "2026-02-08",
     content: `
       <p data-i18n-html="content.blog.cron-expressions-guide.p1">Automation is the secret sauce of efficient systems, and at the heart of most automation lies the humble cron expression. Whether you're scheduling database backups, sending weekly newsletters, or cleaning up temporary files, cron provides a powerful, standardized way to define time-based execution. However, for many developers, the syntax of a cron expression remains a cryptic string of numbers and asterisks. Let's demystify it and turn you into a scheduling pro.</p>
 
@@ -978,15 +1001,16 @@ done</code></pre>
 
       <h2 data-i18n="content.blog.cron-expressions-guide.h2_12">Conclusion</h2>
       <p data-i18n-html="content.blog.cron-expressions-guide.p17">Cron is a timeless tool that remains as relevant today as it was in the 1970s. By mastering its syntax, being aware of timezone and monitoring best practices, and leveraging modern alternatives when appropriate, you can build robust, automated systems that work while you sleep. Don't let the asterisks intimidate you—with the right approach and tools, you can schedule anything like a pro.</p>
-    `
+    `,
   },
   {
-    slug: 'csp-implementation-guide',
-    title: 'Content Security Policy (CSP): A Practical Implementation Guide',
-    description: 'Stop XSS in its tracks. Learn how to implement a robust Content Security Policy using nonces, hashes, and report-only mode.',
-    category: 'Security',
-    readingTime: '10 min read',
-    datePublished: '2026-02-08',
+    slug: "csp-implementation-guide",
+    title: "Content Security Policy (CSP): A Practical Implementation Guide",
+    description:
+      "Stop XSS in its tracks. Learn how to implement a robust Content Security Policy using nonces, hashes, and report-only mode.",
+    category: "Security",
+    readingTime: "10 min read",
+    datePublished: "2026-02-08",
     content: `
       <p data-i18n-html="content.blog.csp-implementation-guide.p1">In the modern web, Cross-Site Scripting (XSS) remains one of the most prevalent and dangerous vulnerabilities. While input sanitization and output encoding are essential first lines of defense, they are not foolproof. <strong>Content Security Policy (CSP)</strong> provides a powerful second layer of security that can stop XSS in its tracks, even if an attacker manages to inject a malicious script into your page. By defining a clear policy of what is allowed to run, you significantly reduce the attack surface of your application.</p>
 
@@ -1048,25 +1072,32 @@ done</code></pre>
 
       <h2 data-i18n="content.blog.csp-implementation-guide.h2_14">Conclusion</h2>
       <p data-i18n-html="content.blog.csp-implementation-guide.p15">CSP is one of the most effective security headers available today. While it requires careful planning and testing to implement correctly, the protection it offers against XSS and other injection attacks is well worth the effort. By moving away from <code>'unsafe-inline'</code> and embracing nonces, hashes, and report-only mode, you can significantly harden your application's security posture. Start small, use reporting, and gradually move toward a strict "default-deny" policy to keep your users safe.</p>
-    `
-  }
+    `,
+  },
 ];
 
-function renderBlogShell({ title, description, content, schema, path = '/blog', lang = DEFAULT_LANGUAGE }) {
+function renderBlogShell({
+  title,
+  description,
+  content,
+  schema,
+  path = "/blog",
+  lang = DEFAULT_LANGUAGE,
+}) {
   const html = createPageTemplate({
     title,
     description,
     content,
     path,
     schema,
-    lang
+    lang,
   });
 
-  const toolAdSlot = getAdSlotHTML('tool', {
-    wrapperClassName: 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6'
+  const toolAdSlot = getAdSlotHTML("tool", {
+    wrapperClassName: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6",
   });
 
-  const htmlWithoutToolSlot = toolAdSlot ? html.replace(toolAdSlot, '') : html;
+  const htmlWithoutToolSlot = toolAdSlot ? html.replace(toolAdSlot, "") : html;
   return respondHTML(htmlWithoutToolSlot);
 }
 
@@ -1074,7 +1105,9 @@ function getBlogLocale(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
   return {
     lang: currentLang,
-    dateLocale: ({ en: 'en-US', ko: 'ko-KR', ja: 'ja-JP', es: 'es-ES' })[currentLang] || 'en-US'
+    dateLocale:
+      { en: "en-US", ko: "ko-KR", ja: "ja-JP", es: "es-ES" }[currentLang] ||
+      "en-US",
   };
 }
 
@@ -1084,32 +1117,45 @@ function getLocalizedBlogCategory(category, lang) {
 
 export function renderBlogListingPage(lang = DEFAULT_LANGUAGE) {
   const locale = getBlogLocale(lang);
-  const articleCards = BLOG_ARTICLES.length > 0
-    ? BLOG_ARTICLES.map((article) => {
-        const localizedArticle = getLocalizedBlogArticle(article, locale.lang);
-        return createBlogArticleCard({
-          ...localizedArticle,
-          category: getLocalizedBlogCategory(localizedArticle.category, locale.lang)
-        }, { lang: locale.lang, locale: locale.dateLocale });
-      }).join('')
-    : `
+  const articleCards =
+    BLOG_ARTICLES.length > 0
+      ? BLOG_ARTICLES.map((article) => {
+          const localizedArticle = getLocalizedBlogArticle(
+            article,
+            locale.lang,
+          );
+          return createBlogArticleCard(
+            {
+              ...localizedArticle,
+              category: getLocalizedBlogCategory(
+                localizedArticle.category,
+                locale.lang,
+              ),
+            },
+            { lang: locale.lang, locale: locale.dateLocale },
+          );
+        }).join("")
+      : `
       <div class="text-center py-16">
-        <p class="text-surface-500 dark:text-surface-400 text-sm" data-i18n-html="content.blog.empty">${t('content.blog.empty', locale.lang)}</p>
+        <p class="text-surface-500 dark:text-surface-400 text-sm" data-i18n-html="content.blog.empty">${t("content.blog.empty", locale.lang)}</p>
       </div>
     `;
 
-  const breadcrumbs = createBreadcrumbs([
-    { label: t('nav.home', locale.lang), url: '/' },
-    { label: t('content.blog.heading', locale.lang) }
-  ], { lang: locale.lang });
+  const breadcrumbs = createBreadcrumbs(
+    [
+      { label: t("nav.home", locale.lang), url: "/" },
+      { label: t("content.blog.heading", locale.lang) },
+    ],
+    { lang: locale.lang },
+  );
 
   const content = `
     <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
       ${breadcrumbs}
       <div class="card p-6 sm:p-10">
         <header class="mb-8">
-          <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-surface-900 dark:text-surface-50" data-i18n="content.blog.heading">${t('content.blog.heading', locale.lang)}</h1>
-          <p class="mt-2 text-sm text-surface-500 dark:text-surface-400" data-i18n-html="content.blog.subheading">${t('content.blog.subheading', locale.lang)}</p>
+          <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-surface-900 dark:text-surface-50" data-i18n="content.blog.heading">${t("content.blog.heading", locale.lang)}</h1>
+          <p class="mt-2 text-sm text-surface-500 dark:text-surface-400" data-i18n-html="content.blog.subheading">${t("content.blog.subheading", locale.lang)}</p>
         </header>
 
         <div class="space-y-4">
@@ -1117,45 +1163,55 @@ export function renderBlogListingPage(lang = DEFAULT_LANGUAGE) {
         </div>
       </div>
 
-      ${getAdSlotHTML('legal', { wrapperClassName: 'mt-10' })}
+      ${getAdSlotHTML("legal", { wrapperClassName: "mt-10" })}
     </main>
   `;
 
   return renderBlogShell({
-    title: t('content.blog.heading', locale.lang),
-    description: t('content.blog.subheading', locale.lang),
+    title: t("content.blog.heading", locale.lang),
+    description: t("content.blog.subheading", locale.lang),
     content,
-    lang: locale.lang
+    lang: locale.lang,
   });
 }
 
 export function renderBlogPostPage(slug, lang = DEFAULT_LANGUAGE) {
-  const article = BLOG_ARTICLES.find(a => a.slug === slug);
+  const article = BLOG_ARTICLES.find((a) => a.slug === slug);
   if (!article) return null;
   const locale = getBlogLocale(lang);
   const localizedArticle = getLocalizedBlogArticle(article, locale.lang);
 
-  const breadcrumbs = createBreadcrumbs([
-    { label: t('nav.home', locale.lang), url: '/' },
-    { label: t('content.blog.heading', locale.lang), url: '/blog' },
-    { label: localizedArticle.title }
-  ], { lang: locale.lang });
+  const breadcrumbs = createBreadcrumbs(
+    [
+      { label: t("nav.home", locale.lang), url: "/" },
+      { label: t("content.blog.heading", locale.lang), url: "/blog" },
+      { label: localizedArticle.title },
+    ],
+    { lang: locale.lang },
+  );
 
   const progressBar = createReadingProgressBar();
 
   const dateFormatted = localizedArticle.datePublished
-    ? new Date(localizedArticle.datePublished).toLocaleDateString(locale.dateLocale, { year: 'numeric', month: 'long', day: 'numeric' })
-    : '';
+    ? new Date(localizedArticle.datePublished).toLocaleDateString(
+        locale.dateLocale,
+        { year: "numeric", month: "long", day: "numeric" },
+      )
+    : "";
 
   const schema = {
-    '@context': 'https://schema.org',
-    '@type': 'BlogPosting',
-    'headline': localizedArticle.title,
-    'description': localizedArticle.description,
-    'datePublished': localizedArticle.datePublished || '',
-    'author': { '@type': 'Organization', 'name': 'SimpleTool' },
-    'publisher': { '@type': 'Organization', 'name': 'SimpleTool', 'url': 'https://simpletool.app' },
-    'mainEntityOfPage': `https://simpletool.app/blog/${slug}`
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: localizedArticle.title,
+    description: localizedArticle.description,
+    datePublished: localizedArticle.datePublished || "",
+    author: { "@type": "Organization", name: "SimpleTool" },
+    publisher: {
+      "@type": "Organization",
+      name: "SimpleTool",
+      url: "https://simpletool.app",
+    },
+    mainEntityOfPage: `https://simpletool.app/blog/${slug}`,
   };
 
   const content = `
@@ -1165,19 +1221,19 @@ export function renderBlogPostPage(slug, lang = DEFAULT_LANGUAGE) {
       <article class="card p-6 sm:p-10">
         <header class="mb-8">
           <div class="flex flex-wrap items-center gap-2 mb-3">
-            ${localizedArticle.category ? `<span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300">${getLocalizedBlogCategory(localizedArticle.category, locale.lang)}</span>` : ''}
-            ${localizedArticle.readingTime ? `<span class="text-xs text-surface-500 dark:text-surface-400">${localizedArticle.readingTime}</span>` : ''}
+            ${localizedArticle.category ? `<span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300">${getLocalizedBlogCategory(localizedArticle.category, locale.lang)}</span>` : ""}
+            ${localizedArticle.readingTime ? `<span class="text-xs text-surface-500 dark:text-surface-400">${localizedArticle.readingTime}</span>` : ""}
           </div>
           <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-surface-900 dark:text-surface-50">${localizedArticle.title}</h1>
-          ${dateFormatted ? `<time datetime="${localizedArticle.datePublished}" class="block mt-2 text-sm text-surface-500 dark:text-surface-400">${dateFormatted}</time>` : ''}
+          ${dateFormatted ? `<time datetime="${localizedArticle.datePublished}" class="block mt-2 text-sm text-surface-500 dark:text-surface-400">${dateFormatted}</time>` : ""}
         </header>
 
         <div class="prose dark:prose-invert max-w-none prose-pre:bg-surface-100 dark:prose-pre:bg-surface-950 prose-pre:border prose-pre:border-surface-200 dark:prose-pre:border-surface-800">
-          ${localizedArticle.content || ''}
+          ${localizedArticle.content || ""}
         </div>
       </article>
 
-      ${getAdSlotHTML('legal', { wrapperClassName: 'mt-10' })}
+      ${getAdSlotHTML("legal", { wrapperClassName: "mt-10" })}
     </main>
   `;
 
@@ -1187,22 +1243,22 @@ export function renderBlogPostPage(slug, lang = DEFAULT_LANGUAGE) {
     content,
     schema,
     path: `/blog/${slug}`,
-    lang: locale.lang
+    lang: locale.lang,
   });
 }
 
 export function handleBlogRoutes(request, url) {
-  const pathname = url.pathname.replace(/\/+$/, '') || '/blog';
+  const pathname = url.pathname.replace(/\/+$/, "") || "/blog";
   const method = request.method;
   const lang = resolveRequestLanguage(request, url);
 
-  if (pathname === '/blog') {
-    if (method === 'GET') return renderBlogListingPage(lang);
+  if (pathname === "/blog") {
+    if (method === "GET") return renderBlogListingPage(lang);
   }
 
   const blogPostPattern = /^\/blog\/([a-z0-9][a-z0-9-]*[a-z0-9])$/;
   const postMatch = pathname.match(blogPostPattern);
-  if (postMatch && method === 'GET') {
+  if (postMatch && method === "GET") {
     return renderBlogPostPage(postMatch[1], lang);
   }
 

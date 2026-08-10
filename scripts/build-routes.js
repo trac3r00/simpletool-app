@@ -12,72 +12,256 @@
  * Run: node scripts/build-routes.js
  */
 
-import { writeFileSync, existsSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { writeFileSync, existsSync } from "fs";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const ROOT = join(__dirname, '..');
-const ROUTES_DIR = join(ROOT, 'src', 'routes');
-const OUTPUT = join(ROUTES_DIR, '_handlers.js');
+const ROOT = join(__dirname, "..");
+const ROUTES_DIR = join(ROOT, "src", "routes");
+const OUTPUT = join(ROUTES_DIR, "_handlers.js");
 
 const TOOL_HANDLERS = [
-  { id: 'password-generator', file: 'password-generator.js', exp: 'handlePasswordGeneratorRoutes' },
-  { id: 'json-formatter', file: 'json-formatter.js', exp: 'handleJSONFormatterRoutes' },
-  { id: 'qr-code', file: 'qr-code.js', exp: 'handleQRCodeRoutes' },
-  { id: 'uuid-generator', file: 'uuid-generator.js', exp: 'handleUUIDGeneratorRoutes' },
-  { id: 'timestamp-converter', file: 'timestamp-converter.js', exp: 'handleTimestampConverterRoutes' },
-  { id: 'color-converter', file: 'color-converter.js', exp: 'handleColorConverterRoutes' },
-  { id: 'unit-converter', file: 'unit-converter.js', exp: 'handleUnitConverterRoutes' },
-  { id: 'markdown-editor', file: 'markdown-editor.js', exp: 'handleMarkdownEditorRoutes' },
-  { id: 'text-diff', file: 'text-diff.js', exp: 'handleTextDiffRoutes' },
-  { id: 'certificate-decoder', file: 'certificate-decoder.js', exp: 'handleCertificateDecoderRoutes' },
-  { id: 'case-converter', file: 'case-converter.js', exp: 'handleCaseConverterRoutes' },
-  { id: 'log-viewer', file: 'log-viewer.js', exp: 'handleLogViewerRoutes' },
-  { id: 'image-converter', file: 'image-converter.js', exp: 'handleImageConverterRoutes' },
-  { id: 'css-gradient', file: 'css-gradient-generator.js', exp: 'handleCSSGradientRoutes' },
-  { id: 'code-minifier', file: 'code-minifier.js', exp: 'handleCodeMinifierRoutes' },
-  { id: 'cidr-calculator', file: 'cidr-calculator.js', exp: 'handleCIDRCalculatorRoutes' },
-  { id: 'saml-decoder', file: 'saml-decoder.js', exp: 'handleSamlDecoderRoutes' },
-  { id: 'htpasswd-generator', file: 'htpasswd-generator.js', exp: 'handleHtpasswdRoutes' },
-  { id: 'yaml-toml-converter', file: 'yaml-toml-converter.js', exp: 'handleDataConverterRoutes' },
-  { id: 'cron-builder', file: 'cron-builder.js', exp: 'handleCronBuilderRoutes' },
-  { id: 'mock-data-generator', file: 'mock-data-generator.js', exp: 'handleMockDataRoutes' },
-  { id: 'user-agent-decoder', file: 'user-agent-decoder.js', exp: 'handleUserAgentDecoderRoutes' },
-  { id: 'ssh-key-generator', file: 'ssh-key-generator.js', exp: 'handleSSHKeyGeneratorRoutes' },
-  { id: 'regex-visualizer', file: 'regex-visualizer.js', exp: 'handleRegexVisualizerRoutes' },
-  { id: 'curl-studio', file: 'curl-studio.js', exp: 'handleCurlStudioRoutes' },
-  { id: 'log-masker', file: 'log-masker.js', exp: 'handleLogMaskerRoutes' },
-  { id: 'mermaid-studio', file: 'mermaid-studio.js', exp: 'handleMermaidStudioRoutes' },
-  { id: 'json-schema-studio', file: 'json-schema-studio.js', exp: 'handleJsonSchemaStudioRoutes' },
-  { id: 'caffeinate', file: 'caffeinate.js', exp: 'handleCaffeinateRoutes' },
-  { id: 'email-analyzer', file: 'email-analyzer.js', exp: 'handleEmailAnalyzerRoutes' },
-  { id: 'token-counter', file: 'token-counter.js', exp: 'handleTokenCounterRoutes' },
-  { id: 'prompt-template-builder', file: 'prompt-template-builder.js', exp: 'handlePromptTemplateBuilderRoutes' },
-  { id: 'public-repos-yml-builder', file: 'public-repos-yml-builder.js', exp: 'handlePublicReposYmlBuilderRoutes' },
-  { id: 'public-repos-not-automation', file: 'public-repos-not-automation.js', exp: 'handlePublicReposNotAutomationRoutes' },
-  { id: 'review-description-generator', file: 'review-description-generator.js', exp: 'handleReviewDescriptionGeneratorRoutes' },
-  { id: 'sql-formatter', file: 'sql-formatter.js', exp: 'handleSQLFormatterRoutes' },
-  { id: 'env-var-manager', file: 'env-var-manager.js', exp: 'handleEnvVarManagerRoutes' },
-  { id: 'ladder-game', file: 'ladder-game.js', exp: 'handleLadderGameRoutes' },
-  { id: 'roulette-wheel', file: 'roulette-wheel.js', exp: 'handleRouletteWheelRoutes' },
-  { id: 'svg-optimizer', file: 'svg-optimizer.js', exp: 'handleSVGOptimizerRoutes' },
-  { id: 'csp-builder', file: 'csp-builder.js', exp: 'handleCSPBuilderRoutes' },
-  { id: 'secret-scanner', file: 'secret-scanner.js', exp: 'handleSecretScannerRoutes' },
-  { id: 'dns-reference', file: 'dns-reference.js', exp: 'handleDNSReferenceRoutes' },
-  { id: 'port-reference', file: 'port-reference.js', exp: 'handlePortReferenceRoutes' },
-  { id: 'http-status-reference', file: 'http-status-reference.js', exp: 'handleHTTPStatusReferenceRoutes' },
-  { id: 'bandwidth-calculator', file: 'bandwidth-calculator.js', exp: 'handleBandwidthCalculatorRoutes' },
-  { id: 'wireshark-filter', file: 'wireshark-filter.js', exp: 'handleWiresharkFilterRoutes' },
-  { id: 'protocol-headers', file: 'protocol-headers.js', exp: 'handleProtocolHeadersRoutes' },
-  { id: 'wireguard-config', file: 'wireguard-config.js', exp: 'handleWireguardConfigRoutes' },
-  { id: 'marble-roulette', file: 'marble-roulette.js', exp: 'handleMarbleRouletteRoutes' },
-  { id: 'token-studio', file: 'token-studio.js', exp: 'handleTokenStudioRoutes' },
-  { id: 'encoding-workbench', file: 'encoding-workbench.js', exp: 'handleEncodingWorkbenchRoutes' },
-  { id: 'oauth-debugger', file: 'oauth-debugger.js', exp: 'handleOAuthDebuggerRoutes' },
-  { id: 'webhook-debugger', file: 'webhook-debugger.js', exp: 'handleWebhookDebuggerRoutes' },
-  { id: 'pipe', file: 'pipe.js', exp: 'handlePipeRoutes' },
-  { id: 'changelog', file: 'changelog.js', exp: 'handleChangelogRoutes' },
+  {
+    id: "password-generator",
+    file: "password-generator.js",
+    exp: "handlePasswordGeneratorRoutes",
+  },
+  {
+    id: "json-formatter",
+    file: "json-formatter.js",
+    exp: "handleJSONFormatterRoutes",
+  },
+  { id: "qr-code", file: "qr-code.js", exp: "handleQRCodeRoutes" },
+  {
+    id: "uuid-generator",
+    file: "uuid-generator.js",
+    exp: "handleUUIDGeneratorRoutes",
+  },
+  {
+    id: "timestamp-converter",
+    file: "timestamp-converter.js",
+    exp: "handleTimestampConverterRoutes",
+  },
+  {
+    id: "color-converter",
+    file: "color-converter.js",
+    exp: "handleColorConverterRoutes",
+  },
+  {
+    id: "unit-converter",
+    file: "unit-converter.js",
+    exp: "handleUnitConverterRoutes",
+  },
+  {
+    id: "markdown-editor",
+    file: "markdown-editor.js",
+    exp: "handleMarkdownEditorRoutes",
+  },
+  { id: "text-diff", file: "text-diff.js", exp: "handleTextDiffRoutes" },
+  {
+    id: "certificate-decoder",
+    file: "certificate-decoder.js",
+    exp: "handleCertificateDecoderRoutes",
+  },
+  {
+    id: "case-converter",
+    file: "case-converter.js",
+    exp: "handleCaseConverterRoutes",
+  },
+  { id: "log-viewer", file: "log-viewer.js", exp: "handleLogViewerRoutes" },
+  {
+    id: "image-converter",
+    file: "image-converter.js",
+    exp: "handleImageConverterRoutes",
+  },
+  {
+    id: "css-gradient",
+    file: "css-gradient-generator.js",
+    exp: "handleCSSGradientRoutes",
+  },
+  {
+    id: "code-minifier",
+    file: "code-minifier.js",
+    exp: "handleCodeMinifierRoutes",
+  },
+  {
+    id: "cidr-calculator",
+    file: "cidr-calculator.js",
+    exp: "handleCIDRCalculatorRoutes",
+  },
+  {
+    id: "saml-decoder",
+    file: "saml-decoder.js",
+    exp: "handleSamlDecoderRoutes",
+  },
+  {
+    id: "htpasswd-generator",
+    file: "htpasswd-generator.js",
+    exp: "handleHtpasswdRoutes",
+  },
+  {
+    id: "yaml-toml-converter",
+    file: "yaml-toml-converter.js",
+    exp: "handleDataConverterRoutes",
+  },
+  {
+    id: "cron-builder",
+    file: "cron-builder.js",
+    exp: "handleCronBuilderRoutes",
+  },
+  {
+    id: "mock-data-generator",
+    file: "mock-data-generator.js",
+    exp: "handleMockDataRoutes",
+  },
+  {
+    id: "user-agent-decoder",
+    file: "user-agent-decoder.js",
+    exp: "handleUserAgentDecoderRoutes",
+  },
+  {
+    id: "ssh-key-generator",
+    file: "ssh-key-generator.js",
+    exp: "handleSSHKeyGeneratorRoutes",
+  },
+  {
+    id: "regex-visualizer",
+    file: "regex-visualizer.js",
+    exp: "handleRegexVisualizerRoutes",
+  },
+  { id: "curl-studio", file: "curl-studio.js", exp: "handleCurlStudioRoutes" },
+  { id: "log-masker", file: "log-masker.js", exp: "handleLogMaskerRoutes" },
+  {
+    id: "mermaid-studio",
+    file: "mermaid-studio.js",
+    exp: "handleMermaidStudioRoutes",
+  },
+  {
+    id: "json-schema-studio",
+    file: "json-schema-studio.js",
+    exp: "handleJsonSchemaStudioRoutes",
+  },
+  { id: "caffeinate", file: "caffeinate.js", exp: "handleCaffeinateRoutes" },
+  {
+    id: "email-analyzer",
+    file: "email-analyzer.js",
+    exp: "handleEmailAnalyzerRoutes",
+  },
+  {
+    id: "token-counter",
+    file: "token-counter.js",
+    exp: "handleTokenCounterRoutes",
+  },
+  {
+    id: "prompt-template-builder",
+    file: "prompt-template-builder.js",
+    exp: "handlePromptTemplateBuilderRoutes",
+  },
+  {
+    id: "public-repos-yml-builder",
+    file: "public-repos-yml-builder.js",
+    exp: "handlePublicReposYmlBuilderRoutes",
+  },
+  {
+    id: "public-repos-not-automation",
+    file: "public-repos-not-automation.js",
+    exp: "handlePublicReposNotAutomationRoutes",
+  },
+  {
+    id: "review-description-generator",
+    file: "review-description-generator.js",
+    exp: "handleReviewDescriptionGeneratorRoutes",
+  },
+  {
+    id: "sql-formatter",
+    file: "sql-formatter.js",
+    exp: "handleSQLFormatterRoutes",
+  },
+  {
+    id: "env-var-manager",
+    file: "env-var-manager.js",
+    exp: "handleEnvVarManagerRoutes",
+  },
+  { id: "ladder-game", file: "ladder-game.js", exp: "handleLadderGameRoutes" },
+  {
+    id: "roulette-wheel",
+    file: "roulette-wheel.js",
+    exp: "handleRouletteWheelRoutes",
+  },
+  {
+    id: "svg-optimizer",
+    file: "svg-optimizer.js",
+    exp: "handleSVGOptimizerRoutes",
+  },
+  { id: "csp-builder", file: "csp-builder.js", exp: "handleCSPBuilderRoutes" },
+  {
+    id: "secret-scanner",
+    file: "secret-scanner.js",
+    exp: "handleSecretScannerRoutes",
+  },
+  {
+    id: "dns-reference",
+    file: "dns-reference.js",
+    exp: "handleDNSReferenceRoutes",
+  },
+  {
+    id: "port-reference",
+    file: "port-reference.js",
+    exp: "handlePortReferenceRoutes",
+  },
+  {
+    id: "http-status-reference",
+    file: "http-status-reference.js",
+    exp: "handleHTTPStatusReferenceRoutes",
+  },
+  {
+    id: "bandwidth-calculator",
+    file: "bandwidth-calculator.js",
+    exp: "handleBandwidthCalculatorRoutes",
+  },
+  {
+    id: "wireshark-filter",
+    file: "wireshark-filter.js",
+    exp: "handleWiresharkFilterRoutes",
+  },
+  {
+    id: "protocol-headers",
+    file: "protocol-headers.js",
+    exp: "handleProtocolHeadersRoutes",
+  },
+  {
+    id: "wireguard-config",
+    file: "wireguard-config.js",
+    exp: "handleWireguardConfigRoutes",
+  },
+  {
+    id: "marble-roulette",
+    file: "marble-roulette.js",
+    exp: "handleMarbleRouletteRoutes",
+  },
+  {
+    id: "token-studio",
+    file: "token-studio.js",
+    exp: "handleTokenStudioRoutes",
+  },
+  {
+    id: "encoding-workbench",
+    file: "encoding-workbench.js",
+    exp: "handleEncodingWorkbenchRoutes",
+  },
+  {
+    id: "oauth-debugger",
+    file: "oauth-debugger.js",
+    exp: "handleOAuthDebuggerRoutes",
+  },
+  {
+    id: "webhook-debugger",
+    file: "webhook-debugger.js",
+    exp: "handleWebhookDebuggerRoutes",
+  },
+  { id: "pipe", file: "pipe.js", exp: "handlePipeRoutes" },
+  { id: "changelog", file: "changelog.js", exp: "handleChangelogRoutes" },
 ];
 
 const imports = [];
@@ -90,7 +274,7 @@ for (const { id, file, exp } of TOOL_HANDLERS) {
     missing++;
     continue;
   }
-  const alias = id.replace(/-/g, '_');
+  const alias = id.replace(/-/g, "_");
   imports.push(`import { ${exp} as ${alias} } from './${file}';`);
   entries.push(`  '${id}': ${alias},`);
 }
@@ -100,12 +284,14 @@ const output = `/**
  * Do not edit. Re-generate: node scripts/build-routes.js
  */
 
-${imports.join('\n')}
+${imports.join("\n")}
 
 export const handlersById = {
-${entries.join('\n')}
+${entries.join("\n")}
 };
 `;
 
-writeFileSync(OUTPUT, output, 'utf-8');
-console.log(`Generated _handlers.js: ${TOOL_HANDLERS.length - missing} handlers (${missing} missing)`);
+writeFileSync(OUTPUT, output, "utf-8");
+console.log(
+  `Generated _handlers.js: ${TOOL_HANDLERS.length - missing} handlers (${missing} missing)`,
+);

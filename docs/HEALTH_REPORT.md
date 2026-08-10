@@ -35,7 +35,7 @@ _Last updated: {{DATE}} by {{AGENT}}_
 ## 5. Risk Areas
 
 | Area | Risk | Evidence | Suggested Action |
-|------|------|----------|------------------|
+| ---- | ---- | -------- | ---------------- |
 |      |      |          |                  |
 
 ## 6. Recommended Plan
@@ -54,4 +54,5 @@ Reason:
 Commands run:
 
 ```
+
 ```

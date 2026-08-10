@@ -4,28 +4,46 @@
  * All processing happens client-side
  */
 
-import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
-import { respondHTML } from '../utils/respond.js';
-import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { createPageTemplate, createToolHeader } from "../utils/common-ui.js";
+import { respondHTML } from "../utils/respond.js";
+import {
+  createEducationalSection,
+  createRelatedToolsSection,
+} from "../utils/content-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 /**
  * Render the Unit Converter page
  */
 function renderUnitConverterPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('unit-converter', currentLang);
+  const translation = getToolTranslation("unit-converter", currentLang);
   const toolHeader = createToolHeader(
-    { emoji: '⚖️' },
-    translation?.name || 'Unit Converter',
-    translation?.desc || 'Convert between common units of measurement including length, weight, temperature, and more.',
-    [{ text: translation?.ui?.badge5 || 'Client-Side Only', tooltip: 'Runs entirely in your browser using Web APIs — your data never leaves your device.' }],
-    { toolId: 'unit-converter' }
+    { emoji: "⚖️" },
+    translation?.name || "Unit Converter",
+    translation?.desc ||
+      "Convert between common units of measurement including length, weight, temperature, and more.",
+    [
+      {
+        text: translation?.ui?.badge5 || "Client-Side Only",
+        tooltip:
+          "Runs entirely in your browser using Web APIs — your data never leaves your device.",
+      },
+    ],
+    { toolId: "unit-converter" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'unit-converter');
-  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+  const currentTool = TOOLS.find((t) => t.id === "unit-converter");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
   const pageContent = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
@@ -89,28 +107,35 @@ function renderUnitConverterPage(lang = DEFAULT_LANGUAGE) {
       </div>
     </main>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-      ${createEducationalSection([
-        {
-          title: 'Measurement Systems Overview',
-          content: '<p>Measurement systems are collections of units of measurement and rules relating them to each other. The two most common systems are the <strong>Metric System</strong> (International System of Units or SI) and the <strong>Imperial System</strong>. The Metric system is based on powers of ten, making it highly logical and easy to scale (e.g., meters, kilometers, millimeters).</p><p>The Imperial system, primarily used in the United States, uses units like inches, feet, and pounds, which have historical origins and less uniform conversion factors. Understanding the differences between these systems is essential for science, engineering, international trade, and even daily tasks like cooking or traveling.</p>'
-        },
-        {
-          title: 'How to Use This Tool',
-          content: '<ol><li>Select the measurement category (e.g., Length, Weight, Temperature) from the grid at the top.</li><li>Choose the unit you want to convert from in the "From" dropdown menu.</li><li>Enter the value you wish to convert in the input field below the "From" unit.</li><li>Select the target unit in the "To" dropdown menu.</li><li>The converted value will appear instantly in the "To" field, along with the mathematical formula used for the conversion.</li></ol>'
-        },
-        {
-          title: 'Common Use Cases',
-          content: '<ul><li><strong>Travel:</strong> Convert distances from kilometers to miles or temperatures from Celsius to Fahrenheit when visiting different countries.</li><li><strong>Cooking:</strong> Translate recipes between metric (grams/milliliters) and imperial (ounces/cups) measurements.</li><li><strong>Engineering & Science:</strong> Perform precise conversions between different units of pressure, energy, or speed for technical calculations.</li><li><strong>Digital Storage:</strong> Understand the difference between Megabytes, Gigabytes, and Terabytes when managing your files and hardware.</li></ul>'
-        },
-        {
-          title: 'Pro Tips',
-          content: '<ul><li>Use the "Swap" button to quickly reverse the conversion direction between your selected units.</li><li>Always double-check the specific unit type, especially for volume and weight, as names can be similar across different systems (e.g., US vs. UK gallons).</li><li>When performing multiple conversions in a sequence, keep as many decimal places as possible until the final result to avoid cumulative rounding errors.</li></ul>'
-        }
-      ], 'unit-converter', currentLang)}
+      ${createEducationalSection(
+        [
+          {
+            title: "Measurement Systems Overview",
+            content:
+              "<p>Measurement systems are collections of units of measurement and rules relating them to each other. The two most common systems are the <strong>Metric System</strong> (International System of Units or SI) and the <strong>Imperial System</strong>. The Metric system is based on powers of ten, making it highly logical and easy to scale (e.g., meters, kilometers, millimeters).</p><p>The Imperial system, primarily used in the United States, uses units like inches, feet, and pounds, which have historical origins and less uniform conversion factors. Understanding the differences between these systems is essential for science, engineering, international trade, and even daily tasks like cooking or traveling.</p>",
+          },
+          {
+            title: "How to Use This Tool",
+            content:
+              '<ol><li>Select the measurement category (e.g., Length, Weight, Temperature) from the grid at the top.</li><li>Choose the unit you want to convert from in the "From" dropdown menu.</li><li>Enter the value you wish to convert in the input field below the "From" unit.</li><li>Select the target unit in the "To" dropdown menu.</li><li>The converted value will appear instantly in the "To" field, along with the mathematical formula used for the conversion.</li></ol>',
+          },
+          {
+            title: "Common Use Cases",
+            content:
+              "<ul><li><strong>Travel:</strong> Convert distances from kilometers to miles or temperatures from Celsius to Fahrenheit when visiting different countries.</li><li><strong>Cooking:</strong> Translate recipes between metric (grams/milliliters) and imperial (ounces/cups) measurements.</li><li><strong>Engineering & Science:</strong> Perform precise conversions between different units of pressure, energy, or speed for technical calculations.</li><li><strong>Digital Storage:</strong> Understand the difference between Megabytes, Gigabytes, and Terabytes when managing your files and hardware.</li></ul>",
+          },
+          {
+            title: "Pro Tips",
+            content:
+              '<ul><li>Use the "Swap" button to quickly reverse the conversion direction between your selected units.</li><li>Always double-check the specific unit type, especially for volume and weight, as names can be similar across different systems (e.g., US vs. UK gallons).</li><li>When performing multiple conversions in a sequence, keep as many decimal places as possible until the final result to avoid cumulative rounding errors.</li></ul>',
+          },
+        ],
+        "unit-converter",
+        currentLang,
+      )}
     </div>
     ${createRelatedToolsSection(relatedToolsData)}
   `;
-
 
   const scripts = `
     <script>
@@ -461,12 +486,12 @@ function renderUnitConverterPage(lang = DEFAULT_LANGUAGE) {
   `;
 
   return createPageTemplate({
-    title: translation?.name || 'Unit Converter',
-    description: translation?.desc || 'Convert length, weight, and more.',
-    path: '/unit-converter',
+    title: translation?.name || "Unit Converter",
+    description: translation?.desc || "Convert length, weight, and more.",
+    path: "/unit-converter",
     content: pageContent,
     scripts,
-    lang: currentLang
+    lang: currentLang,
   });
 }
 
@@ -476,8 +501,10 @@ function renderUnitConverterPage(lang = DEFAULT_LANGUAGE) {
 export async function handleUnitConverterRoutes(request, url) {
   const pathname = url.pathname;
 
-  if (pathname === '/unit-converter' || pathname === '/unit-converter/') {
-    return respondHTML(renderUnitConverterPage(resolveRequestLanguage(request, url)));
+  if (pathname === "/unit-converter" || pathname === "/unit-converter/") {
+    return respondHTML(
+      renderUnitConverterPage(resolveRequestLanguage(request, url)),
+    );
   }
 
   return null;

@@ -3,11 +3,15 @@
  * Crypto-random, client-side roulette wheel.
  */
 
-import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
-import { getToolTranslation, resolveRequestLanguage, t } from '../utils/i18n.js';
-import { getRouletteBootConfig } from '../games/roulette/config.js';
-import { buildRouletteToolBadges } from '../games/roulette/render.js';
+import { respondHTML } from "../utils/respond.js";
+import { createPageTemplate, createToolHeader } from "../utils/common-ui.js";
+import {
+  getToolTranslation,
+  resolveRequestLanguage,
+  t,
+} from "../utils/i18n.js";
+import { getRouletteBootConfig } from "../games/roulette/config.js";
+import { buildRouletteToolBadges } from "../games/roulette/render.js";
 import {
   advanceRouletteSeries,
   createRouletteSessionState,
@@ -16,18 +20,19 @@ import {
   startRouletteSeries,
   startRouletteTournament,
   stopRouletteSeries,
-  stopRouletteTournament
-} from '../games/roulette/runtime.js';
+  stopRouletteTournament,
+} from "../games/roulette/runtime.js";
 
-function renderRouletteWheelPage(lang = 'en') {
-  const toolTranslation = getToolTranslation('roulette-wheel', lang);
+function renderRouletteWheelPage(lang = "en") {
+  const toolTranslation = getToolTranslation("roulette-wheel", lang);
   const rouletteBootConfig = getRouletteBootConfig();
   const toolHeader = createToolHeader(
-    { emoji: '\ud83c\udfa1' },
-    toolTranslation?.name || 'Roulette Wheel',
-    toolTranslation?.desc || 'Spin the wheel for fair random picks with real-time statistics.',
+    { emoji: "\ud83c\udfa1" },
+    toolTranslation?.name || "Roulette Wheel",
+    toolTranslation?.desc ||
+      "Spin the wheel for fair random picks with real-time statistics.",
     buildRouletteToolBadges(lang, t),
-    { toolId: 'roulette-wheel' }
+    { toolId: "roulette-wheel" },
   );
 
   const styles = `
@@ -175,9 +180,9 @@ function renderRouletteWheelPage(lang = 'en') {
                   <path d="M24 47.4c7.7 0 13.9-6.2 13.9-13.9V17L27 24.8c-1.8 1.3-4.2 1.3-6 0L10.1 17v16.5c0 7.7 6.2 13.9 13.9 13.9Z" fill="#6366f1"/>
                 </svg>
               </div>
-              <button id="spin-button" class="rw-center-btn" data-i18n="tools.roulette-wheel.ui.spin-button">${t('tools.roulette-wheel.ui.spin-button', lang)}</button>
+              <button id="spin-button" class="rw-center-btn" data-i18n="tools.roulette-wheel.ui.spin-button">${t("tools.roulette-wheel.ui.spin-button", lang)}</button>
               <div id="result-popup" class="rw-result-popup result-announcement" role="alert" aria-live="polite">
-                <div class="rw-result-label" data-i18n="tools.roulette-wheel.ui.result-label">${t('tools.roulette-wheel.ui.result-label', lang)}</div>
+                <div class="rw-result-label" data-i18n="tools.roulette-wheel.ui.result-label">${t("tools.roulette-wheel.ui.result-label", lang)}</div>
                 <div id="result-text" class="rw-result-text"></div>
               </div>
             </div>
@@ -186,20 +191,20 @@ function renderRouletteWheelPage(lang = 'en') {
             <div class="rw-main-controls">
               <label class="rw-sound-toggle">
                 <input type="checkbox" id="sound-toggle">
-                <span data-i18n="tools.roulette-wheel.ui.sound-toggle">${t('tools.roulette-wheel.ui.sound-toggle', lang)}</span>
+                <span data-i18n="tools.roulette-wheel.ui.sound-toggle">${t("tools.roulette-wheel.ui.sound-toggle", lang)}</span>
               </label>
               <select id="sound-theme-select" class="rw-mode-input" style="width:auto;">
-                ${rouletteBootConfig.soundThemes.map(st => `<option value="${st.id}">${st.fallbackLabel}</option>`).join('')}
+                ${rouletteBootConfig.soundThemes.map((st) => `<option value="${st.id}">${st.fallbackLabel}</option>`).join("")}
               </select>
-              <button id="clear-stats-btn" class="btn btn-ghost btn-sm" data-i18n="tools.roulette-wheel.ui.clear-stats">${t('tools.roulette-wheel.ui.clear-stats', lang)}</button>
-              <button id="fullscreen-btn" class="btn btn-ghost btn-sm" data-i18n="tools.roulette-wheel.ui.fullscreen" title="${t('tools.roulette-wheel.ui.fullscreen', lang)}" aria-label="${t('tools.roulette-wheel.ui.fullscreen', lang)}">&#x26F6;</button>
-              <button id="neon-toggle-btn" class="btn btn-ghost btn-sm" data-i18n="tools.roulette-wheel.ui.neonToggle" title="${t('tools.roulette-wheel.ui.neonToggle', lang)}" aria-label="${t('tools.roulette-wheel.ui.neonToggle', lang)}">&#x2728;</button>
+              <button id="clear-stats-btn" class="btn btn-ghost btn-sm" data-i18n="tools.roulette-wheel.ui.clear-stats">${t("tools.roulette-wheel.ui.clear-stats", lang)}</button>
+              <button id="fullscreen-btn" class="btn btn-ghost btn-sm" data-i18n="tools.roulette-wheel.ui.fullscreen" title="${t("tools.roulette-wheel.ui.fullscreen", lang)}" aria-label="${t("tools.roulette-wheel.ui.fullscreen", lang)}">&#x26F6;</button>
+              <button id="neon-toggle-btn" class="btn btn-ghost btn-sm" data-i18n="tools.roulette-wheel.ui.neonToggle" title="${t("tools.roulette-wheel.ui.neonToggle", lang)}" aria-label="${t("tools.roulette-wheel.ui.neonToggle", lang)}">&#x2728;</button>
             </div>
             <div class="rw-section open" id="segments-section" data-section-id="segments">
               <button class="rw-section-header" type="button" aria-expanded="true" data-section-toggle>
                 <span class="rw-section-title">
                   <svg class="rw-section-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-                  <span data-i18n="tools.roulette-wheel.ui.segments-title">${t('tools.roulette-wheel.ui.segments-title', lang)}</span>
+                  <span data-i18n="tools.roulette-wheel.ui.segments-title">${t("tools.roulette-wheel.ui.segments-title", lang)}</span>
                 </span>
                 <svg class="rw-section-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
               </button>
@@ -208,11 +213,11 @@ function renderRouletteWheelPage(lang = 'en') {
                   <div id="segments-list" class="rw-segments-list"></div>
                   <div class="rw-add-segment">
                     <input type="text" id="new-segment-input" class="rw-add-input" data-i18n-placeholder="tools.roulette-wheel.ui.add-placeholder" placeholder="Add new segment...">
-                    <button id="add-segment-btn" class="btn btn-secondary btn-sm" data-i18n="tools.roulette-wheel.ui.add-button">${t('tools.roulette-wheel.ui.add-button', lang)}</button>
+                    <button id="add-segment-btn" class="btn btn-secondary btn-sm" data-i18n="tools.roulette-wheel.ui.add-button">${t("tools.roulette-wheel.ui.add-button", lang)}</button>
                   </div>
                   <div class="rw-import-export">
-                    <button id="export-segments-btn" class="btn btn-ghost btn-sm" data-i18n="tools.roulette-wheel.ui.exportBtn">${t('tools.roulette-wheel.ui.exportBtn', lang)}</button>
-                    <button id="import-segments-btn" class="btn btn-ghost btn-sm" data-i18n="tools.roulette-wheel.ui.importBtn">${t('tools.roulette-wheel.ui.importBtn', lang)}</button>
+                    <button id="export-segments-btn" class="btn btn-ghost btn-sm" data-i18n="tools.roulette-wheel.ui.exportBtn">${t("tools.roulette-wheel.ui.exportBtn", lang)}</button>
+                    <button id="import-segments-btn" class="btn btn-ghost btn-sm" data-i18n="tools.roulette-wheel.ui.importBtn">${t("tools.roulette-wheel.ui.importBtn", lang)}</button>
                     <input type="file" id="import-file-input" accept=".json,.csv,.txt" class="hidden">
                   </div>
                 </div>
@@ -222,20 +227,20 @@ function renderRouletteWheelPage(lang = 'en') {
               <button class="rw-section-header" type="button" aria-expanded="false" data-section-toggle>
                 <span class="rw-section-title">
                   <svg class="rw-section-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-2.21 0-4 .895-4 2s1.79 2 4 2 4 .895 4 2-1.79 2-4 2m0-10v12"/></svg>
-                  <span data-i18n="tools.roulette-wheel.ui.modeTitle">${t('tools.roulette-wheel.ui.modeTitle', lang)}</span>
+                  <span data-i18n="tools.roulette-wheel.ui.modeTitle">${t("tools.roulette-wheel.ui.modeTitle", lang)}</span>
                 </span>
                 <svg class="rw-section-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
               </button>
               <div class="rw-section-content">
                 <div class="rw-section-inner">
                   <div class="rw-mode-row">
-                    <button id="mode-equal-btn" class="btn btn-secondary btn-sm" aria-pressed="true" data-i18n="tools.roulette-wheel.ui.modeEqual">${t('tools.roulette-wheel.ui.modeEqual', lang)}</button>
-                    <button id="mode-weighted-btn" class="btn btn-secondary btn-sm" aria-pressed="false" data-i18n="tools.roulette-wheel.ui.modeWeighted">${t('tools.roulette-wheel.ui.modeWeighted', lang)}</button>
-                    <button id="mode-progressive-btn" class="btn btn-secondary btn-sm" aria-pressed="false" data-i18n="tools.roulette-wheel.ui.modeProgressive">${t('tools.roulette-wheel.ui.modeProgressive', lang)}</button>
-                    <button id="mode-timed-btn" class="btn btn-secondary btn-sm" aria-pressed="false" data-i18n="tools.roulette-wheel.ui.modeTimed">${t('tools.roulette-wheel.ui.modeTimed', lang)}</button>
+                    <button id="mode-equal-btn" class="btn btn-secondary btn-sm" aria-pressed="true" data-i18n="tools.roulette-wheel.ui.modeEqual">${t("tools.roulette-wheel.ui.modeEqual", lang)}</button>
+                    <button id="mode-weighted-btn" class="btn btn-secondary btn-sm" aria-pressed="false" data-i18n="tools.roulette-wheel.ui.modeWeighted">${t("tools.roulette-wheel.ui.modeWeighted", lang)}</button>
+                    <button id="mode-progressive-btn" class="btn btn-secondary btn-sm" aria-pressed="false" data-i18n="tools.roulette-wheel.ui.modeProgressive">${t("tools.roulette-wheel.ui.modeProgressive", lang)}</button>
+                    <button id="mode-timed-btn" class="btn btn-secondary btn-sm" aria-pressed="false" data-i18n="tools.roulette-wheel.ui.modeTimed">${t("tools.roulette-wheel.ui.modeTimed", lang)}</button>
                   </div>
-                  <div id="mode-status" class="rw-mode-status">${t('tools.roulette-wheel.js.modeEqualActive', lang)}</div>
-                  <p class="mt-2 text-sm text-surface-500 dark:text-surface-400" data-i18n="tools.roulette-wheel.ui.modeHint">${t('tools.roulette-wheel.ui.modeHint', lang)}</p>
+                  <div id="mode-status" class="rw-mode-status">${t("tools.roulette-wheel.js.modeEqualActive", lang)}</div>
+                  <p class="mt-2 text-sm text-surface-500 dark:text-surface-400" data-i18n="tools.roulette-wheel.ui.modeHint">${t("tools.roulette-wheel.ui.modeHint", lang)}</p>
                 </div>
               </div>
             </div>
@@ -243,20 +248,20 @@ function renderRouletteWheelPage(lang = 'en') {
               <button class="rw-section-header" type="button" aria-expanded="false" data-section-toggle>
                 <span class="rw-section-title">
                   <svg class="rw-section-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                  <span data-i18n="tools.roulette-wheel.ui.stats-title">${t('tools.roulette-wheel.ui.stats-title', lang)}</span>
+                  <span data-i18n="tools.roulette-wheel.ui.stats-title">${t("tools.roulette-wheel.ui.stats-title", lang)}</span>
                 </span>
                 <svg class="rw-section-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
               </button>
               <div class="rw-section-content">
                 <div class="rw-section-inner">
                   <div class="rw-stats-grid">
-                    <div class="rw-stat-card"><div id="stat-total" class="rw-stat-value">0</div><div class="rw-stat-label" data-i18n="tools.roulette-wheel.ui.stat-total">${t('tools.roulette-wheel.ui.stat-total', lang)}</div></div>
-                    <div class="rw-stat-card"><div id="stat-fairness" class="rw-stat-value">\u2014</div><div class="rw-stat-label" data-i18n="tools.roulette-wheel.ui.stat-fairness">${t('tools.roulette-wheel.ui.stat-fairness', lang)}</div></div>
+                    <div class="rw-stat-card"><div id="stat-total" class="rw-stat-value">0</div><div class="rw-stat-label" data-i18n="tools.roulette-wheel.ui.stat-total">${t("tools.roulette-wheel.ui.stat-total", lang)}</div></div>
+                    <div class="rw-stat-card"><div id="stat-fairness" class="rw-stat-value">\u2014</div><div class="rw-stat-label" data-i18n="tools.roulette-wheel.ui.stat-fairness">${t("tools.roulette-wheel.ui.stat-fairness", lang)}</div></div>
                   </div>
                   <div id="freq-chart" class="rw-freq-list"></div>
                   <div id="bar-chart" class="rw-bar-chart"></div>
                   <div style="margin-top: 1rem;">
-                    <div class="text-sm font-semibold mb-2" data-i18n="tools.roulette-wheel.ui.history-title">${t('tools.roulette-wheel.ui.history-title', lang)}</div>
+                    <div class="text-sm font-semibold mb-2" data-i18n="tools.roulette-wheel.ui.history-title">${t("tools.roulette-wheel.ui.history-title", lang)}</div>
                     <div id="history-list" class="rw-history-list"></div>
                   </div>
                 </div>
@@ -266,7 +271,7 @@ function renderRouletteWheelPage(lang = 'en') {
               <button class="rw-section-header" type="button" aria-expanded="false" data-section-toggle>
                 <span class="rw-section-title">
                   <svg class="rw-section-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
-                  <span data-i18n="tools.roulette-wheel.ui.presets-title">${t('tools.roulette-wheel.ui.presets-title', lang)}</span>
+                  <span data-i18n="tools.roulette-wheel.ui.presets-title">${t("tools.roulette-wheel.ui.presets-title", lang)}</span>
                 </span>
                 <svg class="rw-section-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
               </button>
@@ -274,15 +279,15 @@ function renderRouletteWheelPage(lang = 'en') {
                 <div class="rw-section-inner">
                   <div class="rw-preset-row">
                     <input type="text" id="preset-name-input" class="rw-add-input" data-i18n-placeholder="tools.roulette-wheel.ui.preset-name-placeholder" placeholder="Preset name...">
-                    <button id="save-preset-btn" class="btn btn-secondary btn-sm" data-i18n="tools.roulette-wheel.ui.save-preset">${t('tools.roulette-wheel.ui.save-preset', lang)}</button>
+                    <button id="save-preset-btn" class="btn btn-secondary btn-sm" data-i18n="tools.roulette-wheel.ui.save-preset">${t("tools.roulette-wheel.ui.save-preset", lang)}</button>
                   </div>
                   <div class="rw-preset-row">
                     <select id="preset-select" class="rw-preset-select">
-                      <option value="" data-i18n="tools.roulette-wheel.ui.select-preset">${t('tools.roulette-wheel.ui.select-preset', lang)}</option>
+                      <option value="" data-i18n="tools.roulette-wheel.ui.select-preset">${t("tools.roulette-wheel.ui.select-preset", lang)}</option>
                     </select>
-                    <button id="load-preset-btn" class="btn btn-primary btn-sm" data-i18n="tools.roulette-wheel.ui.load-preset">${t('tools.roulette-wheel.ui.load-preset', lang)}</button>
+                    <button id="load-preset-btn" class="btn btn-primary btn-sm" data-i18n="tools.roulette-wheel.ui.load-preset">${t("tools.roulette-wheel.ui.load-preset", lang)}</button>
                   </div>
-                  <div id="preset-status" class="rw-mode-status" data-i18n="tools.roulette-wheel.ui.preset-status">${t('tools.roulette-wheel.ui.preset-status', lang)}</div>
+                  <div id="preset-status" class="rw-mode-status" data-i18n="tools.roulette-wheel.ui.preset-status">${t("tools.roulette-wheel.ui.preset-status", lang)}</div>
                 </div>
               </div>
             </div>
@@ -290,7 +295,7 @@ function renderRouletteWheelPage(lang = 'en') {
               <button class="rw-section-header" type="button" aria-expanded="false" data-section-toggle>
                 <span class="rw-section-title">
                   <svg class="rw-section-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                  <span data-i18n="tools.roulette-wheel.ui.series-title">${t('tools.roulette-wheel.ui.series-title', lang)}</span>
+                  <span data-i18n="tools.roulette-wheel.ui.series-title">${t("tools.roulette-wheel.ui.series-title", lang)}</span>
                 </span>
                 <svg class="rw-section-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
               </button>
@@ -298,10 +303,10 @@ function renderRouletteWheelPage(lang = 'en') {
                 <div class="rw-section-inner">
                   <div class="rw-mode-row">
                     <input type="number" id="series-count" class="rw-mode-input" value="10" min="1" max="50">
-                    <button id="start-series-btn" class="btn btn-primary btn-sm" data-i18n="tools.roulette-wheel.ui.start-series">${t('tools.roulette-wheel.ui.start-series', lang)}</button>
-                    <button id="stop-series-btn" class="btn btn-ghost btn-sm" disabled data-i18n="tools.roulette-wheel.ui.stop-series">${t('tools.roulette-wheel.ui.stop-series', lang)}</button>
+                    <button id="start-series-btn" class="btn btn-primary btn-sm" data-i18n="tools.roulette-wheel.ui.start-series">${t("tools.roulette-wheel.ui.start-series", lang)}</button>
+                    <button id="stop-series-btn" class="btn btn-ghost btn-sm" disabled data-i18n="tools.roulette-wheel.ui.stop-series">${t("tools.roulette-wheel.ui.stop-series", lang)}</button>
                   </div>
-                  <div id="series-status" class="rw-mode-status" data-i18n="tools.roulette-wheel.ui.series-status">${t('tools.roulette-wheel.ui.series-status', lang)}</div>
+                  <div id="series-status" class="rw-mode-status" data-i18n="tools.roulette-wheel.ui.series-status">${t("tools.roulette-wheel.ui.series-status", lang)}</div>
                 </div>
               </div>
             </div>
@@ -309,25 +314,25 @@ function renderRouletteWheelPage(lang = 'en') {
               <button class="rw-section-header" type="button" aria-expanded="false" data-section-toggle>
                 <span class="rw-section-title">
                   <svg class="rw-section-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
-                  <span data-i18n="tools.roulette-wheel.ui.tournament-title">${t('tools.roulette-wheel.ui.tournament-title', lang)}</span>
+                  <span data-i18n="tools.roulette-wheel.ui.tournament-title">${t("tools.roulette-wheel.ui.tournament-title", lang)}</span>
                 </span>
                 <svg class="rw-section-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
               </button>
               <div class="rw-section-content">
                 <div class="rw-section-inner">
                   <div class="rw-mode-row">
-                    <button id="start-tournament-btn" class="btn btn-primary btn-sm" data-i18n="tools.roulette-wheel.ui.start-tournament">${t('tools.roulette-wheel.ui.start-tournament', lang)}</button>
-                    <button id="stop-tournament-btn" class="btn btn-ghost btn-sm" disabled data-i18n="tools.roulette-wheel.ui.stop-tournament">${t('tools.roulette-wheel.ui.stop-tournament', lang)}</button>
+                    <button id="start-tournament-btn" class="btn btn-primary btn-sm" data-i18n="tools.roulette-wheel.ui.start-tournament">${t("tools.roulette-wheel.ui.start-tournament", lang)}</button>
+                    <button id="stop-tournament-btn" class="btn btn-ghost btn-sm" disabled data-i18n="tools.roulette-wheel.ui.stop-tournament">${t("tools.roulette-wheel.ui.stop-tournament", lang)}</button>
                   </div>
-                  <div id="tournament-status" class="rw-mode-status" data-i18n="tools.roulette-wheel.ui.tournament-status">${t('tools.roulette-wheel.ui.tournament-status', lang)}</div>
+                  <div id="tournament-status" class="rw-mode-status" data-i18n="tools.roulette-wheel.ui.tournament-status">${t("tools.roulette-wheel.ui.tournament-status", lang)}</div>
                   <div id="tournament-bracket-board" class="rw-bracket-board">
                     <div class="rw-bracket-column">
-                      <div class="rw-bracket-heading" data-i18n="tools.roulette-wheel.ui.bracketRemaining">${t('tools.roulette-wheel.ui.bracketRemaining', lang)}</div>
-                      <div id="tournament-bracket-remaining" class="rw-bracket-empty" data-i18n="tools.roulette-wheel.js.bracketAwaiting">${t('tools.roulette-wheel.js.bracketAwaiting', lang)}</div>
+                      <div class="rw-bracket-heading" data-i18n="tools.roulette-wheel.ui.bracketRemaining">${t("tools.roulette-wheel.ui.bracketRemaining", lang)}</div>
+                      <div id="tournament-bracket-remaining" class="rw-bracket-empty" data-i18n="tools.roulette-wheel.js.bracketAwaiting">${t("tools.roulette-wheel.js.bracketAwaiting", lang)}</div>
                     </div>
                     <div class="rw-bracket-column">
-                      <div class="rw-bracket-heading" data-i18n="tools.roulette-wheel.ui.bracketWinners">${t('tools.roulette-wheel.ui.bracketWinners', lang)}</div>
-                      <div id="tournament-bracket-winners" class="rw-bracket-empty" data-i18n="tools.roulette-wheel.js.bracketAwaiting">${t('tools.roulette-wheel.js.bracketAwaiting', lang)}</div>
+                      <div class="rw-bracket-heading" data-i18n="tools.roulette-wheel.ui.bracketWinners">${t("tools.roulette-wheel.ui.bracketWinners", lang)}</div>
+                      <div id="tournament-bracket-winners" class="rw-bracket-empty" data-i18n="tools.roulette-wheel.js.bracketAwaiting">${t("tools.roulette-wheel.js.bracketAwaiting", lang)}</div>
                     </div>
                   </div>
                   <div id="tournament-ranking" class="rw-ranking-list"></div>
@@ -735,19 +740,27 @@ function renderRouletteWheelPage(lang = 'en') {
     <\/script>
   `;
 
-  return respondHTML(createPageTemplate({
-    title: toolTranslation?.name || 'Roulette Wheel',
-    description: toolTranslation?.desc || 'Spin a crypto-random roulette wheel for fair picks with real-time statistics, presets, sound effects, and fullscreen mode.',
-    path: '/roulette-wheel',
-    content,
-    scripts: script,
-    lang
-  }));
+  return respondHTML(
+    createPageTemplate({
+      title: toolTranslation?.name || "Roulette Wheel",
+      description:
+        toolTranslation?.desc ||
+        "Spin a crypto-random roulette wheel for fair picks with real-time statistics, presets, sound effects, and fullscreen mode.",
+      path: "/roulette-wheel",
+      content,
+      scripts: script,
+      lang,
+    }),
+  );
 }
 
 export async function handleRouletteWheelRoutes(request, url) {
-  if (url.pathname === '/roulette-wheel' || url.pathname === '/roulette-wheel/') {
-    if (request.method === 'GET') return renderRouletteWheelPage(resolveRequestLanguage(request, url));
+  if (
+    url.pathname === "/roulette-wheel" ||
+    url.pathname === "/roulette-wheel/"
+  ) {
+    if (request.method === "GET")
+      return renderRouletteWheelPage(resolveRequestLanguage(request, url));
   }
   return null;
 }

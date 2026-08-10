@@ -1,27 +1,32 @@
-import { respondHTML, respondJSON } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { createRelatedToolsSection } from '../utils/content-ui.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML, respondJSON } from "../utils/respond.js";
+import { createPageTemplate, createToolHeader } from "../utils/common-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import { createRelatedToolsSection } from "../utils/content-ui.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleWebhookDebuggerRoutes(request, url) {
   const path = url.pathname;
 
   // Main page
-  if (path === '/webhook-debugger' || path === '/webhook-debugger/') {
-    if (request.method !== 'GET') return null;
+  if (path === "/webhook-debugger" || path === "/webhook-debugger/") {
+    if (request.method !== "GET") return null;
     const lang = resolveRequestLanguage(request, url);
     return respondHTML(renderWebhookDebuggerPage(lang));
   }
 
   // Listener iframe page (loaded by the main page's hidden iframe)
-  if (path === '/webhook-debugger/listen') {
-    if (request.method !== 'GET') return null;
+  if (path === "/webhook-debugger/listen") {
+    if (request.method !== "GET") return null;
     return renderListenPage(url);
   }
 
   // Capture endpoint — accepts any HTTP method from webhook providers
-  if (path === '/webhook-debugger/capture') {
+  if (path === "/webhook-debugger/capture") {
     return handleCaptureRequest(request, url);
   }
 
@@ -30,20 +35,31 @@ export async function handleWebhookDebuggerRoutes(request, url) {
 
 function renderWebhookDebuggerPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('webhook-debugger', currentLang);
-  const title = translation?.name || 'Webhook Debugger';
-  const description = translation?.desc || 'Capture, inspect, and replay webhook payloads locally in your browser.';
+  const translation = getToolTranslation("webhook-debugger", currentLang);
+  const title = translation?.name || "Webhook Debugger";
+  const description =
+    translation?.desc ||
+    "Capture, inspect, and replay webhook payloads locally in your browser.";
 
   const header = createToolHeader(
-    { emoji: '🪝' },
+    { emoji: "🪝" },
     title,
     description,
-    [{ text: translation?.ui?.badge14 || 'Privacy-First', tooltip: 'All processing happens in your browser — no data is sent to any server.' }],
-    { toolId: 'webhook-debugger' }
+    [
+      {
+        text: translation?.ui?.badge14 || "Privacy-First",
+        tooltip:
+          "All processing happens in your browser — no data is sent to any server.",
+      },
+    ],
+    { toolId: "webhook-debugger" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'webhook-debugger');
-  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+  const currentTool = TOOLS.find((t) => t.id === "webhook-debugger");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -167,7 +183,7 @@ function renderWebhookDebuggerPage(lang = DEFAULT_LANGUAGE) {
         <p class="text-sm text-surface-500 dark:text-surface-400" data-i18n="tools.webhook-debugger.ui.desc1">Start listening and send a webhook to your local endpoint. Requests will appear here.</p>
       </div>
 
-      ${relatedToolsData.length > 0 ? createRelatedToolsSection(relatedToolsData) : ''}
+      ${relatedToolsData.length > 0 ? createRelatedToolsSection(relatedToolsData) : ""}
     </main>
 
     <script>
@@ -721,7 +737,12 @@ function renderWebhookDebuggerPage(lang = DEFAULT_LANGUAGE) {
     </script>
   `;
 
-  return createPageTemplate({ title, description, content, path: '/webhook-debugger' });
+  return createPageTemplate({
+    title,
+    description,
+    content,
+    path: "/webhook-debugger",
+  });
 }
 
 /**
@@ -730,8 +751,8 @@ function renderWebhookDebuggerPage(lang = DEFAULT_LANGUAGE) {
  * or from the parent page, and relays capture data back to the parent.
  */
 function renderListenPage(url) {
-  const session = url.searchParams.get('session') || '';
-  const origin = url.searchParams.get('origin') || '';
+  const session = url.searchParams.get("session") || "";
+  const origin = url.searchParams.get("origin") || "";
 
   const html = `<!DOCTYPE html>
 <html><head><title>Webhook Listener</title></head>
@@ -760,7 +781,10 @@ function renderListenPage(url) {
 
   return new Response(html, {
     status: 200,
-    headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' }
+    headers: {
+      "Content-Type": "text/html; charset=utf-8",
+      "Cache-Control": "no-store",
+    },
   });
 }
 
@@ -771,15 +795,15 @@ function renderListenPage(url) {
  */
 async function handleCaptureRequest(request, url) {
   // Handle CORS preflight
-  if (request.method === 'OPTIONS') {
+  if (request.method === "OPTIONS") {
     return new Response(null, {
       status: 204,
-      headers: corsHeaders()
+      headers: corsHeaders(),
     });
   }
 
   // Read request data
-  let body = '';
+  let body = "";
   try {
     body = await request.text();
   } catch (e) {
@@ -796,21 +820,19 @@ async function handleCaptureRequest(request, url) {
     path: url.pathname + url.search,
     headers: headersObj,
     body: body,
-    contentType: request.headers.get('content-type') || '',
-    timestamp: Date.now()
+    contentType: request.headers.get("content-type") || "",
+    timestamp: Date.now(),
   };
 
-  return respondJSON(
-    { ok: true, captured },
-    { headers: corsHeaders() }
-  );
+  return respondJSON({ ok: true, captured }, { headers: corsHeaders() });
 }
 
 function corsHeaders() {
   return {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD',
-    'Access-Control-Allow-Headers': '*',
-    'Access-Control-Max-Age': '86400'
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods":
+      "GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD",
+    "Access-Control-Allow-Headers": "*",
+    "Access-Control-Max-Age": "86400",
   };
 }

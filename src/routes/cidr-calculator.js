@@ -3,21 +3,36 @@
  * Supports IPv4 and IPv6 with client-side calculations
  */
 
-import { respondHTML, respondJSON } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
-import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML, respondJSON } from "../utils/respond.js";
+import {
+  createPageTemplate,
+  createToolHeader,
+  createCheatsheet,
+  infoHint,
+} from "../utils/common-ui.js";
+import {
+  createEducationalSection,
+  createRelatedToolsSection,
+} from "../utils/content-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleCIDRCalculatorRoutes(request, url) {
   const { pathname } = url;
 
-  if (pathname === '/cidr-calculator' || pathname === '/cidr-calculator/') {
-    if (request.method === 'GET') {
-      return respondHTML(renderCIDRCalculatorPage(resolveRequestLanguage(request, url)));
+  if (pathname === "/cidr-calculator" || pathname === "/cidr-calculator/") {
+    if (request.method === "GET") {
+      return respondHTML(
+        renderCIDRCalculatorPage(resolveRequestLanguage(request, url)),
+      );
     }
 
-    return respondJSON({ error: 'Method not allowed' }, { status: 405 });
+    return respondJSON({ error: "Method not allowed" }, { status: 405 });
   }
 
   return null;
@@ -25,20 +40,34 @@ export async function handleCIDRCalculatorRoutes(request, url) {
 
 function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('cidr-calculator', currentLang);
+  const translation = getToolTranslation("cidr-calculator", currentLang);
   const toolHeader = createToolHeader(
-    { emoji: '🕸️' },
-    translation?.name || 'IP Subnet Planner',
-    translation?.desc || 'Inspect IPv4 and IPv6 networks, validate ranges, plan host allocations, and share subnet blueprints.',
+    { emoji: "🕸️" },
+    translation?.name || "IP Subnet Planner",
+    translation?.desc ||
+      "Inspect IPv4 and IPv6 networks, validate ranges, plan host allocations, and share subnet blueprints.",
     [
-      { text: translation?.ui?.badge34 || 'Zero Upload', color: 'blue', tooltip: 'No data is uploaded; all subnet math runs locally in your browser.' },
-      { text: translation?.ui?.badge35 || 'IPv4 & IPv6', color: 'purple', tooltip: 'Handles subnet planning for both IPv4 and IPv6 address spaces.' }
+      {
+        text: translation?.ui?.badge34 || "Zero Upload",
+        color: "blue",
+        tooltip:
+          "No data is uploaded; all subnet math runs locally in your browser.",
+      },
+      {
+        text: translation?.ui?.badge35 || "IPv4 & IPv6",
+        color: "purple",
+        tooltip:
+          "Handles subnet planning for both IPv4 and IPv6 address spaces.",
+      },
     ],
-    { toolId: 'cidr-calculator' }
+    { toolId: "cidr-calculator" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'cidr-calculator');
-  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+  const currentTool = TOOLS.find((t) => t.id === "cidr-calculator");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       
@@ -48,7 +77,7 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
         <!-- Input Panel -->
         <div class="tool-card p-6 space-y-6">
           <div>
-            <label for="cidr-input" class="label"><span data-i18n="tools.cidr-calculator.ui.label4">Network or host</span> ${infoHint('Enter IP with /prefix or dotted mask; missing prefix uses the slider value.')}</label>
+            <label for="cidr-input" class="label"><span data-i18n="tools.cidr-calculator.ui.label4">Network or host</span> ${infoHint("Enter IP with /prefix or dotted mask; missing prefix uses the slider value.")}</label>
             <div class="mt-2 space-y-3">
               <input id="cidr-input" type="text" data-tooltip="Enter IP address with prefix length, e.g. 192.168.1.0/24" data-i18n-tooltip="tools.cidr-calculator.ui.tip0" spellcheck="false" autocomplete="off" placeholder="Examples: 192.168.1.10/24 · 2001:db8::/48" data-i18n-placeholder="tools.cidr-calculator.ui.placeholder8" class="input font-mono text-base" />
               <div class="flex flex-wrap gap-2 text-sm">
@@ -207,7 +236,7 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
               <p class="text-sm text-surface-500" data-i18n="tools.cidr-calculator.ui.desc30">Split the analyzed block into smaller CIDRs.</p>
             </div>
             <div class="flex items-center gap-2">
-               <label for="subnet-prefix" class="text-sm text-surface-500 dark:text-surface-400"><span data-i18n="tools.cidr-calculator.ui.label7">Target prefix</span> ${infoHint('Pick a deeper prefix to split the analyzed block into smaller subnets.')}</label>
+               <label for="subnet-prefix" class="text-sm text-surface-500 dark:text-surface-400"><span data-i18n="tools.cidr-calculator.ui.label7">Target prefix</span> ${infoHint("Pick a deeper prefix to split the analyzed block into smaller subnets.")}</label>
               <select id="subnet-prefix" class="input py-1 px-3 w-auto" aria-label="Target prefix for subnet splitting"></select>
             </div>
           </div>
@@ -320,41 +349,55 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
         </div>
       </section>
 
-      ${createEducationalSection([
-        {
-          title: 'What is CIDR?',
-          content: 'Classless Inter-Domain Routing (CIDR) is a method for allocating IP addresses and IP routing. It replaced the older system based on classes (A, B, and C) to provide more flexibility and efficiency in address distribution.'
-        },
-        {
-          title: 'How to Use This Tool',
-          content: 'Enter an IP address with a prefix (e.g., 192.168.1.0/24) or use the slider to adjust the prefix length. Click "Run analysis" to see network details, usable host ranges, and binary representations.'
-        },
-        {
-          title: 'Common Use Cases',
-          content: 'Planning network subnets for cloud infrastructure (VPCs), troubleshooting routing issues, calculating host capacity for a given prefix, and converting between CIDR and subnet masks.'
-        },
-        {
-          title: 'Pro Tips',
-          content: 'Remember that in IPv4, the first and last addresses in a subnet are typically reserved for the network ID and broadcast address. In IPv6, subnets are almost always /64 for standard local networks.'
-        }
-      ], 'cidr-calculator', currentLang)}
+      ${createEducationalSection(
+        [
+          {
+            title: "What is CIDR?",
+            content:
+              "Classless Inter-Domain Routing (CIDR) is a method for allocating IP addresses and IP routing. It replaced the older system based on classes (A, B, and C) to provide more flexibility and efficiency in address distribution.",
+          },
+          {
+            title: "How to Use This Tool",
+            content:
+              'Enter an IP address with a prefix (e.g., 192.168.1.0/24) or use the slider to adjust the prefix length. Click "Run analysis" to see network details, usable host ranges, and binary representations.',
+          },
+          {
+            title: "Common Use Cases",
+            content:
+              "Planning network subnets for cloud infrastructure (VPCs), troubleshooting routing issues, calculating host capacity for a given prefix, and converting between CIDR and subnet masks.",
+          },
+          {
+            title: "Pro Tips",
+            content:
+              "Remember that in IPv4, the first and last addresses in a subnet are typically reserved for the network ID and broadcast address. In IPv6, subnets are almost always /64 for standard local networks.",
+          },
+        ],
+        "cidr-calculator",
+        currentLang,
+      )}
 
-      ${createCheatsheet('cidr-calculator', 'Subnet Quick Reference', [
-        { heading: 'Common Subnets', content: `
+      ${createCheatsheet("cidr-calculator", "Subnet Quick Reference", [
+        {
+          heading: "Common Subnets",
+          content: `
           <table>
             <tr><th>CIDR</th><th data-i18n="tools.cidr-calculator.ui.th18">Subnet Mask</th><th data-i18n="tools.cidr-calculator.ui.th19">Hosts</th><th data-i18n="tools.cidr-calculator.ui.th20">Use Case</th></tr>
             <tr><td><code>/32</code></td><td>255.255.255.255</td><td>1</td><td>Single host</td></tr>
             <tr><td><code>/24</code></td><td>255.255.255.0</td><td>254</td><td>Small network</td></tr>
             <tr><td><code>/16</code></td><td>255.255.0.0</td><td>65,534</td><td>Medium network</td></tr>
             <tr><td><code>/8</code></td><td>255.0.0.0</td><td>16M+</td><td>Large network</td></tr>
-          </table>` },
-        { heading: 'Private Ranges (RFC 1918)', content: `
+          </table>`,
+        },
+        {
+          heading: "Private Ranges (RFC 1918)",
+          content: `
           <table>
             <tr><th data-i18n="tools.cidr-calculator.ui.th13">Range</th><th>CIDR</th><th data-i18n="tools.cidr-calculator.ui.th21">Class</th></tr>
             <tr><td>10.0.0.0 – 10.255.255.255</td><td><code>10.0.0.0/8</code></td><td>A</td></tr>
             <tr><td>172.16.0.0 – 172.31.255.255</td><td><code>172.16.0.0/12</code></td><td>B</td></tr>
             <tr><td>192.168.0.0 – 192.168.255.255</td><td><code>192.168.0.0/16</code></td><td>C</td></tr>
-          </table>` }
+          </table>`,
+        },
       ])}
     </main>
     ${createRelatedToolsSection(relatedToolsData)}
@@ -1112,9 +1155,9 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
   `;
 
   return createPageTemplate({
-    title: translation?.name || 'IP Subnet Planner',
-    description: translation?.desc || 'Calculate IPv4/IPv6 subnets and ranges.',
-    path: '/cidr-calculator',
+    title: translation?.name || "IP Subnet Planner",
+    description: translation?.desc || "Calculate IPv4/IPv6 subnets and ranges.",
+    path: "/cidr-calculator",
     content,
     lang: currentLang,
   });

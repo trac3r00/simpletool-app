@@ -5,39 +5,61 @@
  * - Dialects: Postgres / MySQL / BigQuery / Snowflake / ClickHouse / SQLite (heuristic)
  */
 
-import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createCheatsheet, infoHint, createEmptyState, getBtnLoadingScript } from '../utils/common-ui.js';
-import { createRichEditorPane, getRichEditorStyles, getRichEditorScript } from '../utils/rich-editor.js';
-import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML } from "../utils/respond.js";
+import {
+  createPageTemplate,
+  createToolHeader,
+  createCheatsheet,
+  infoHint,
+  createEmptyState,
+  getBtnLoadingScript,
+} from "../utils/common-ui.js";
+import {
+  createRichEditorPane,
+  getRichEditorStyles,
+  getRichEditorScript,
+} from "../utils/rich-editor.js";
+import {
+  createEducationalSection,
+  createRelatedToolsSection,
+} from "../utils/content-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleSQLFormatterRoutes(request, url) {
   const { pathname } = url;
-  if (pathname === '/sql-formatter' || pathname === '/sql-formatter/') {
-    if (request.method === 'GET') return respondHTML(renderSQLFormatterPage(resolveRequestLanguage(request, url)));
-    return new Response('Method not allowed', { status: 405 });
+  if (pathname === "/sql-formatter" || pathname === "/sql-formatter/") {
+    if (request.method === "GET")
+      return respondHTML(
+        renderSQLFormatterPage(resolveRequestLanguage(request, url)),
+      );
+    return new Response("Method not allowed", { status: 405 });
   }
   return null;
 }
 
 function renderSQLFormatterPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('sql-formatter', currentLang);
-  const title = translation?.name || 'SQL Formatter & Validator';
-  const description = translation?.desc || 'Format SQL and catch common syntax issues. Supports Postgres/MySQL-friendly formatting (offline).';
+  const translation = getToolTranslation("sql-formatter", currentLang);
+  const title = translation?.name || "SQL Formatter & Validator";
+  const description =
+    translation?.desc ||
+    "Format SQL and catch common syntax issues. Supports Postgres/MySQL-friendly formatting (offline).";
 
-  const header = createToolHeader(
-    { emoji: '🗄️' },
-    title,
-    description,
-    [],
-    { toolId: 'sql-formatter' }
-  );
+  const header = createToolHeader({ emoji: "🗄️" }, title, description, [], {
+    toolId: "sql-formatter",
+  });
 
-  const currentTool = TOOLS.find(t => t.id === 'sql-formatter');
-    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
-
+  const currentTool = TOOLS.find((t) => t.id === "sql-formatter");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -56,9 +78,9 @@ function renderSQLFormatterPage(lang = DEFAULT_LANGUAGE) {
           <div class="space-y-2">
             <label class="label flex items-center gap-2">
               <span data-i18n="tools.sql-formatter.ui.label0">Input SQL</span>
-              ${infoHint('This tool does not execute SQL. Validation is heuristic (not a full parser).', 'Help', { i18nKey: 'tools.sql-formatter.ui.desc0' })}
+              ${infoHint("This tool does not execute SQL. Validation is heuristic (not a full parser).", "Help", { i18nKey: "tools.sql-formatter.ui.desc0" })}
             </label>
-            ${createRichEditorPane({ id: 'sql-in', mode: 'textarea', rows: 18, placeholder: "SELECT id, email FROM users WHERE created_at > NOW() - INTERVAL '7 days' ORDER BY created_at DESC;" })}
+            ${createRichEditorPane({ id: "sql-in", mode: "textarea", rows: 18, placeholder: "SELECT id, email FROM users WHERE created_at > NOW() - INTERVAL '7 days' ORDER BY created_at DESC;" })}
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
@@ -94,55 +116,73 @@ function renderSQLFormatterPage(lang = DEFAULT_LANGUAGE) {
 
           <div class="space-y-2">
             <label class="label" data-i18n="tools.sql-formatter.ui.label4">Output</label>
-            ${createEmptyState({ icon: '🗄️', title: 'No output yet', description: 'Paste SQL on the left, then click Format or Validate.', id: 'sql-empty-state', i18nTitle: 'tools.sql-formatter.ui.desc9', i18nDesc: 'tools.sql-formatter.ui.desc10' })}
-            ${createRichEditorPane({ id: 'sql-out', mode: 'pre', ariaLabel: 'Formatted SQL output', hidden: true })}
+            ${createEmptyState({ icon: "🗄️", title: "No output yet", description: "Paste SQL on the left, then click Format or Validate.", id: "sql-empty-state", i18nTitle: "tools.sql-formatter.ui.desc9", i18nDesc: "tools.sql-formatter.ui.desc10" })}
+            ${createRichEditorPane({ id: "sql-out", mode: "pre", ariaLabel: "Formatted SQL output", hidden: true })}
           </div>
         </div>
 
-        ${createCheatsheet('sql-formatter', '<span data-i18n="tools.sql-formatter.ui.heading0">SQL Formatting Tips</span>', [
-          {
-            heading: '<span data-i18n="tools.sql-formatter.ui.heading1">Quick wins</span>',
-            content: `
+        ${createCheatsheet(
+          "sql-formatter",
+          '<span data-i18n="tools.sql-formatter.ui.heading0">SQL Formatting Tips</span>',
+          [
+            {
+              heading:
+                '<span data-i18n="tools.sql-formatter.ui.heading1">Quick wins</span>',
+              content: `
               <ul class="list-disc ml-6 space-y-1">
                 <li><span data-i18n="tools.sql-formatter.ui.desc1">Break long</span> <code>SELECT</code> <span data-i18n="tools.sql-formatter.ui.desc2">lists by comma for easier review.</span></li>
                 <li><span data-i18n="tools.sql-formatter.ui.desc3">Put</span> <code>WHERE</code> <span data-i18n="tools.sql-formatter.ui.desc4">conditions on separate lines with</span> <code>AND</code>/<code>OR</code><span data-i18n="tools.sql-formatter.ui.desc5">.</span></li>
                 <li><span data-i18n="tools.sql-formatter.ui.desc6">Use explicit</span> <code>JOIN ... ON</code> <span data-i18n="tools.sql-formatter.ui.desc7">blocks instead of comma joins.</span></li>
               </ul>
-            `
-          },
-          {
-            heading: '<span data-i18n="tools.sql-formatter.ui.heading2">Validator limitations</span>',
-            content: `
+            `,
+            },
+            {
+              heading:
+                '<span data-i18n="tools.sql-formatter.ui.heading2">Validator limitations</span>',
+              content: `
               <p data-i18n="tools.sql-formatter.ui.desc8">This tool detects common structural issues (quotes/parens/comments). It does not implement full grammar validation for every dialect.</p>
-            `
-          }
-        ])}
+            `,
+            },
+          ],
+        )}
       </div>
     </main>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-      ${createEducationalSection([
-        {
-          title: 'Why Format SQL?',
-          content: '<p>SQL (Structured Query Language) can quickly become complex and difficult to read, especially when dealing with multiple joins, subqueries, and nested conditions. Formatting SQL involves adding consistent indentation, line breaks, and capitalization of keywords. This makes the logic of the query much easier to follow, which is essential for debugging, code reviews, and maintaining large database schemas over time.</p><p>A well-formatted query is also less prone to logical errors during manual edits. By clearly separating clauses like <code>SELECT</code>, <code>FROM</code>, and <code>WHERE</code>, you can quickly identify missing filters or incorrect join conditions. Consistency in SQL style across a team also improves collaboration and reduces the cognitive load required to understand unfamiliar queries.</p>'
-        },
-        {
-          title: 'How to Use This Tool',
-          content: '<ol><li>Paste your raw SQL query into the "Input SQL" editor on the left.</li><li>Select your database dialect (Postgres or MySQL) and preferred keyword case (UPPER or lower).</li><li>Click the "Format" button to beautify your query with proper indentation and spacing.</li><li>Use the "Validate" button to check for common structural issues like unclosed quotes or unbalanced parentheses.</li><li>Click "Copy" to save the formatted SQL to your clipboard or "Clear" to start over.</li></ol>'
-        },
-        {
-          title: 'Common Use Cases',
-          content: '<ul><li><strong>Code Reviews:</strong> Format messy SQL before submitting a pull request to make it easier for your teammates to review and approve.</li><li><strong>Debugging:</strong> Clean up queries generated by ORMs (like Hibernate or Sequelize) to understand exactly what is being executed against your database.</li><li><strong>Documentation:</strong> Use the formatted output to create clear and readable examples for technical guides, wikis, or README files.</li><li><strong>Legacy Cleanup:</strong> Quickly refactor old, unformatted scripts into a modern, readable style that follows industry standards.</li></ul>'
-        },
-        {
-          title: 'Pro Tips',
-          content: '<ul><li>Use Common Table Expressions (CTEs) with the <code>WITH</code> clause to break down complex queries into smaller, more manageable parts.</li><li>Always use descriptive aliases for tables and columns to make the intent of your query clear to others.</li><li>Use the "Minify" button if you need to compress your SQL into a single line for use in configuration files or command-line tools.</li></ul>'
-        }
-      ], 'sql-formatter', currentLang)}
+      ${createEducationalSection(
+        [
+          {
+            title: "Why Format SQL?",
+            content:
+              "<p>SQL (Structured Query Language) can quickly become complex and difficult to read, especially when dealing with multiple joins, subqueries, and nested conditions. Formatting SQL involves adding consistent indentation, line breaks, and capitalization of keywords. This makes the logic of the query much easier to follow, which is essential for debugging, code reviews, and maintaining large database schemas over time.</p><p>A well-formatted query is also less prone to logical errors during manual edits. By clearly separating clauses like <code>SELECT</code>, <code>FROM</code>, and <code>WHERE</code>, you can quickly identify missing filters or incorrect join conditions. Consistency in SQL style across a team also improves collaboration and reduces the cognitive load required to understand unfamiliar queries.</p>",
+          },
+          {
+            title: "How to Use This Tool",
+            content:
+              '<ol><li>Paste your raw SQL query into the "Input SQL" editor on the left.</li><li>Select your database dialect (Postgres or MySQL) and preferred keyword case (UPPER or lower).</li><li>Click the "Format" button to beautify your query with proper indentation and spacing.</li><li>Use the "Validate" button to check for common structural issues like unclosed quotes or unbalanced parentheses.</li><li>Click "Copy" to save the formatted SQL to your clipboard or "Clear" to start over.</li></ol>',
+          },
+          {
+            title: "Common Use Cases",
+            content:
+              "<ul><li><strong>Code Reviews:</strong> Format messy SQL before submitting a pull request to make it easier for your teammates to review and approve.</li><li><strong>Debugging:</strong> Clean up queries generated by ORMs (like Hibernate or Sequelize) to understand exactly what is being executed against your database.</li><li><strong>Documentation:</strong> Use the formatted output to create clear and readable examples for technical guides, wikis, or README files.</li><li><strong>Legacy Cleanup:</strong> Quickly refactor old, unformatted scripts into a modern, readable style that follows industry standards.</li></ul>",
+          },
+          {
+            title: "Pro Tips",
+            content:
+              '<ul><li>Use Common Table Expressions (CTEs) with the <code>WITH</code> clause to break down complex queries into smaller, more manageable parts.</li><li>Always use descriptive aliases for tables and columns to make the intent of your query clear to others.</li><li>Use the "Minify" button if you need to compress your SQL into a single line for use in configuration files or command-line tools.</li></ul>',
+          },
+        ],
+        "sql-formatter",
+        currentLang,
+      )}
     ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;
 
-	      const scripts = `<style>${getRichEditorStyles()}</style>` + getRichEditorScript() + getBtnLoadingScript() + String.raw`
+  const scripts =
+    `<style>${getRichEditorStyles()}</style>` +
+    getRichEditorScript() +
+    getBtnLoadingScript() +
+    String.raw`
 	    <script>
 	      const t = (k, fb) => (window._t ? window._t('tools.sql-formatter.js.' + k, fb) : (fb || k));
 	      const fmtVars = (s, vars) => String(s || '').replace(/\{(\w+)\}/g, (_, k) => (vars && vars[k] !== undefined) ? String(vars[k]) : '');
@@ -722,9 +762,9 @@ function renderSQLFormatterPage(lang = DEFAULT_LANGUAGE) {
   return createPageTemplate({
     title,
     description,
-    path: '/sql-formatter',
+    path: "/sql-formatter",
     content,
     scripts,
-    lang: currentLang
+    lang: currentLang,
   });
 }

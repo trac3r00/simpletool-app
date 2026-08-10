@@ -4,28 +4,47 @@
  * All processing happens client-side
  */
 
-import { createPageTemplate, createToolHeader, createCheatsheet } from '../utils/common-ui.js';
-import { respondHTML } from '../utils/respond.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { createRelatedToolsSection } from '../utils/content-ui.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import {
+  createPageTemplate,
+  createToolHeader,
+  createCheatsheet,
+} from "../utils/common-ui.js";
+import { respondHTML } from "../utils/respond.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import { createRelatedToolsSection } from "../utils/content-ui.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 /**
  * Render the Bandwidth Calculator page
  */
 function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('bandwidth-calculator', currentLang);
+  const translation = getToolTranslation("bandwidth-calculator", currentLang);
   const toolHeader = createToolHeader(
-    { emoji: '📊' },
-    translation?.name || 'Bandwidth Calculator',
-    translation?.desc || 'Calculate transfer times, required bandwidth, data capacity, and TCP overhead.',
-    [{ text: translation?.ui?.badge54 || 'Client-Side Only', tooltip: 'Runs entirely in your browser using Web APIs — your data never leaves your device.' }],
-    { toolId: 'bandwidth-calculator' }
+    { emoji: "📊" },
+    translation?.name || "Bandwidth Calculator",
+    translation?.desc ||
+      "Calculate transfer times, required bandwidth, data capacity, and TCP overhead.",
+    [
+      {
+        text: translation?.ui?.badge54 || "Client-Side Only",
+        tooltip:
+          "Runs entirely in your browser using Web APIs — your data never leaves your device.",
+      },
+    ],
+    { toolId: "bandwidth-calculator" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'bandwidth-calculator');
-  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+  const currentTool = TOOLS.find((t) => t.id === "bandwidth-calculator");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -324,10 +343,13 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
           </div>
         </div>
 
-        ${createCheatsheet('bandwidth-calculator', 'Bandwidth Reference Table', [
-          {
-            heading: 'Common Connection Types',
-            content: `
+        ${createCheatsheet(
+          "bandwidth-calculator",
+          "Bandwidth Reference Table",
+          [
+            {
+              heading: "Common Connection Types",
+              content: `
               <table>
                 <tr><th data-i18n="tools.bandwidth-calculator.ui.th20">Connection</th><th data-i18n="tools.bandwidth-calculator.ui.th21">Speed</th><th data-i18n="tools.bandwidth-calculator.ui.th22">Use Case</th></tr>
                 <tr><td>Dial-up</td><td>56 Kbps</td><td>Legacy, text-only</td></tr>
@@ -336,11 +358,11 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
                 <tr><td>Gigabit Ethernet</td><td>1 Gbps</td><td>LAN, data center</td></tr>
                 <tr><td>10 GigE</td><td>10 Gbps</td><td>Server interconnect</td></tr>
                 <tr><td>40/100 GigE</td><td>40-100 Gbps</td><td>Core networking</td></tr>
-              </table>`
-          },
-          {
-            heading: 'Data Size Reference',
-            content: `
+              </table>`,
+            },
+            {
+              heading: "Data Size Reference",
+              content: `
               <table>
                 <tr><th data-i18n="tools.bandwidth-calculator.ui.th23">Media</th><th data-i18n="tools.bandwidth-calculator.ui.th24">Approx. Size</th></tr>
                 <tr><td>MP3 Song (4 min)</td><td>4 MB</td></tr>
@@ -349,11 +371,11 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
                 <tr><td>Blu-ray (single layer)</td><td>25 GB</td></tr>
                 <tr><td>Triple-A Game</td><td>50-100 GB</td></tr>
                 <tr><td>4K Movie</td><td>50-100 GB</td></tr>
-              </table>`
-          },
-          {
-            heading: 'Unit Conversions',
-            content: `
+              </table>`,
+            },
+            {
+              heading: "Unit Conversions",
+              content: `
               <table>
                 <tr><th data-i18n="tools.bandwidth-calculator.ui.th25">Decimal (SI)</th><th data-i18n="tools.bandwidth-calculator.ui.th26">Value</th></tr>
                 <tr><td>1 KB</td><td>1,000 bytes</td></tr>
@@ -366,9 +388,10 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
                 <tr><td>1 KiB</td><td>1,024 bytes</td></tr>
                 <tr><td>1 MiB</td><td>1,048,576 bytes</td></tr>
                 <tr><td>1 GiB</td><td>1,073,741,824 bytes</td></tr>
-              </table>`
-          }
-        ])}
+              </table>`,
+            },
+          ],
+        )}
       </div>
     </main>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
@@ -701,12 +724,14 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
   `;
 
   return createPageTemplate({
-    title: translation?.name || 'Bandwidth Calculator',
-    description: translation?.desc || 'Calculate transfer times, required bandwidth, data capacity, and TCP overhead.',
-    path: '/bandwidth-calculator',
+    title: translation?.name || "Bandwidth Calculator",
+    description:
+      translation?.desc ||
+      "Calculate transfer times, required bandwidth, data capacity, and TCP overhead.",
+    path: "/bandwidth-calculator",
     content,
     scripts,
-    lang: currentLang
+    lang: currentLang,
   });
 }
 
@@ -715,9 +740,14 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
  */
 export async function handleBandwidthCalculatorRoutes(request, url) {
   try {
-    if (url.pathname === '/bandwidth-calculator' || url.pathname === '/bandwidth-calculator/') {
-      if (request.method === 'GET') {
-        return respondHTML(renderBandwidthCalculatorPage(resolveRequestLanguage(request, url)));
+    if (
+      url.pathname === "/bandwidth-calculator" ||
+      url.pathname === "/bandwidth-calculator/"
+    ) {
+      if (request.method === "GET") {
+        return respondHTML(
+          renderBandwidthCalculatorPage(resolveRequestLanguage(request, url)),
+        );
       }
     }
     return null;

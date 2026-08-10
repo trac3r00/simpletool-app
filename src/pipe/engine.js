@@ -14,14 +14,14 @@
  */
 export function runPipeline(steps, initialInput) {
   const results = [];
-  let currentInput = initialInput ?? '';
+  let currentInput = initialInput ?? "";
   let failed = false;
 
   for (const step of steps) {
     if (failed) {
       results.push({
         contractId: step.contract.id,
-        status: 'skipped',
+        status: "skipped",
         output: null,
         error: null,
       });
@@ -32,7 +32,7 @@ export function runPipeline(steps, initialInput) {
       const output = step.contract.transform(currentInput, step.options);
       results.push({
         contractId: step.contract.id,
-        status: 'success',
+        status: "success",
         output,
         error: null,
       });
@@ -40,7 +40,7 @@ export function runPipeline(steps, initialInput) {
     } catch (err) {
       results.push({
         contractId: step.contract.id,
-        status: 'error',
+        status: "error",
         output: null,
         error: err.message || String(err),
       });
@@ -66,13 +66,15 @@ export function validateChain(contracts) {
   for (let i = 0; i < contracts.length - 1; i++) {
     const current = contracts[i];
     const next = contracts[i + 1];
-    const overlap = current.outputTypes.some(t => next.inputTypes.includes(t));
+    const overlap = current.outputTypes.some((t) =>
+      next.inputTypes.includes(t),
+    );
 
     if (!overlap) {
       issues.push(
         `Step ${i + 1} → ${i + 2}: type mismatch. ` +
-        `${current.id} outputs [${current.outputTypes}] but ` +
-        `${next.id} expects [${next.inputTypes}]`
+          `${current.id} outputs [${current.outputTypes}] but ` +
+          `${next.id} expects [${next.inputTypes}]`,
       );
     }
   }
@@ -93,7 +95,7 @@ export function serializeWorkflow(steps) {
     // compression can be added here (pako is already a dependency).
     return btoa(encodeURIComponent(json));
   } catch {
-    return '';
+    return "";
   }
 }
 

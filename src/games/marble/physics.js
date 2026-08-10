@@ -18,7 +18,7 @@ export function spatialHashClear(grid) {
 }
 
 function _cellKey(cx, cy) {
-  return (cx & 0xFFFF) | ((cy & 0xFFFF) << 16);
+  return (cx & 0xffff) | ((cy & 0xffff) << 16);
 }
 
 export function spatialHashInsert(grid, obj, idx) {
@@ -31,7 +31,10 @@ export function spatialHashInsert(grid, obj, idx) {
     for (let cy = y0; cy <= y1; cy++) {
       const k = _cellKey(cx, cy);
       let bucket = grid.cells.get(k);
-      if (!bucket) { bucket = []; grid.cells.set(k, bucket); }
+      if (!bucket) {
+        bucket = [];
+        grid.cells.set(k, bucket);
+      }
       bucket.push(idx);
     }
   }
@@ -116,7 +119,7 @@ export function collideMarbles(a, c, restitution) {
   const velAlongNormal = rvx * nx + rvy * ny;
   if (velAlongNormal > 0) return false;
 
-  const impulse = -(1 + restitution) * velAlongNormal / 2;
+  const impulse = (-(1 + restitution) * velAlongNormal) / 2;
   const ix = impulse * nx;
   const iy = impulse * ny;
   a.vx -= ix;
@@ -209,7 +212,12 @@ export function updateShake(shake) {
 // ── Replay Recorder ────────────────────────────────────────────────
 
 export function createReplayRecorder() {
-  return { frames: new Map(), recording: false, frameInterval: 3, frameCounter: 0 };
+  return {
+    frames: new Map(),
+    recording: false,
+    frameInterval: 3,
+    frameCounter: 0,
+  };
 }
 
 export function replayRecordFrame(recorder, marbles, simTime) {
@@ -219,7 +227,10 @@ export function replayRecordFrame(recorder, marbles, simTime) {
   for (let i = 0; i < marbles.length; i++) {
     const m = marbles[i];
     let arr = recorder.frames.get(m.id);
-    if (!arr) { arr = []; recorder.frames.set(m.id, arr); }
+    if (!arr) {
+      arr = [];
+      recorder.frames.set(m.id, arr);
+    }
     if (arr.length < 2000) {
       arr.push({ x: m.x, y: m.y, t: simTime });
     }
@@ -234,10 +245,12 @@ export function getReplayPath(recorder, marbleId) {
 
 export function createTrailParticle(x, y, color) {
   return {
-    x, y, color,
+    x,
+    y,
+    color,
     alpha: 0.6,
     r: 2 + Math.random() * 2,
-    life: 0.4 + Math.random() * 0.3
+    life: 0.4 + Math.random() * 0.3,
   };
 }
 
@@ -258,13 +271,20 @@ export function updateTrailParticles(particles, dt) {
 export function generatePegs(boardW, board, pegProfile, randRangeFn) {
   const usableW = boardW - board.sidePad * 2;
   const targetCols = pegProfile.targetCols || 10;
-  const spacingX = Math.max(pegProfile.spacingXMin || 34,
-    Math.min(pegProfile.spacingXMax || 56, usableW / targetCols));
+  const spacingX = Math.max(
+    pegProfile.spacingXMin || 34,
+    Math.min(pegProfile.spacingXMax || 56, usableW / targetCols),
+  );
   const rows = pegProfile.rows || 32;
   const topY = board.topPad + 140;
   const bottomY = board.worldH - board.slotHeight - 120;
-  const spacingY = Math.max(pegProfile.spacingYMin || 44,
-    Math.min(pegProfile.spacingYMax || 58, (bottomY - topY) / Math.max(1, rows)));
+  const spacingY = Math.max(
+    pegProfile.spacingYMin || 44,
+    Math.min(
+      pegProfile.spacingYMax || 58,
+      (bottomY - topY) / Math.max(1, rows),
+    ),
+  );
 
   const maxCols = Math.floor(usableW / spacingX);
   const baseCols = Math.max(9, Math.min(11, maxCols));
@@ -274,14 +294,16 @@ export function generatePegs(boardW, board, pegProfile, randRangeFn) {
     const y = topY + r * spacingY;
     const isOffset = r % 2 === 1;
     const rowW = (baseCols - 1) * spacingX;
-    const startX = (boardW / 2) - (rowW / 2) + (isOffset ? spacingX * 0.5 : 0);
+    const startX = boardW / 2 - rowW / 2 + (isOffset ? spacingX * 0.5 : 0);
     for (let c = 0; c < baseCols; c++) {
       const x = startX + c * spacingX;
       if (x < board.sidePad + 16 || x > boardW - board.sidePad - 16) continue;
       pegs.push({
         x: x + randRangeFn(-(pegProfile.jitterX || 2), pegProfile.jitterX || 2),
-        y: y + randRangeFn(-(pegProfile.jitterY || 1.5), pegProfile.jitterY || 1.5),
-        r: board.pegR
+        y:
+          y +
+          randRangeFn(-(pegProfile.jitterY || 1.5), pegProfile.jitterY || 1.5),
+        r: board.pegR,
       });
     }
   }
@@ -303,7 +325,7 @@ export function generateBumpers(boardW, board, randRangeFn) {
 
   for (let r = 0; r < bumperRows; r++) {
     const y = topY + (r + 1) * sectionH;
-    const count = (r % 2 === 0) ? 3 : 2;
+    const count = r % 2 === 0 ? 3 : 2;
     const spread = usableW * 0.55;
     for (let c = 0; c < count; c++) {
       const frac = count === 1 ? 0.5 : c / (count - 1);
@@ -313,7 +335,7 @@ export function generateBumpers(boardW, board, randRangeFn) {
         y: y + randRangeFn(-10, 10),
         r: 18 + randRangeFn(-2, 4),
         kickForce: 500 + randRangeFn(0, 200),
-        hitTime: 0
+        hitTime: 0,
       });
     }
   }
@@ -333,24 +355,30 @@ export function generateFlippers(boardW, board) {
 
   for (let r = 0; r < flipperRows; r++) {
     const y = topY + (r + 1) * sectionH;
-    const side = (r % 2 === 0) ? -1 : 1;
+    const side = r % 2 === 0 ? -1 : 1;
     const angle = side * 0.35;
     const len = 40 + (r % 2) * 10;
 
     // Left flipper
     const lx = midX - usableW * 0.28;
     flippers.push({
-      x1: lx, y1: y,
-      x2: lx + Math.cos(angle) * len, y2: y + Math.sin(angle) * len,
-      thickness: 5, restitution: 0.82
+      x1: lx,
+      y1: y,
+      x2: lx + Math.cos(angle) * len,
+      y2: y + Math.sin(angle) * len,
+      thickness: 5,
+      restitution: 0.82,
     });
 
     // Right flipper
     const rx = midX + usableW * 0.28;
     flippers.push({
-      x1: rx, y1: y,
-      x2: rx - Math.cos(angle) * len, y2: y + Math.sin(angle) * len,
-      thickness: 5, restitution: 0.82
+      x1: rx,
+      y1: y,
+      x2: rx - Math.cos(angle) * len,
+      y2: y + Math.sin(angle) * len,
+      thickness: 5,
+      restitution: 0.82,
     });
   }
   return flippers;

@@ -5,39 +5,60 @@
  * diff summaries, or free-form notes.  All processing is client-side.
  */
 
-import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
-import { createRelatedToolsSection } from '../utils/content-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML } from "../utils/respond.js";
+import { createPageTemplate, createToolHeader } from "../utils/common-ui.js";
+import { createRelatedToolsSection } from "../utils/content-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleReviewDescriptionGeneratorRoutes(request, url) {
   const { pathname } = url;
-  if (pathname === '/review-description-generator' || pathname === '/review-description-generator/') {
-    if (request.method === 'GET') {
-      return respondHTML(renderReviewDescriptionGeneratorPage(resolveRequestLanguage(request, url)));
+  if (
+    pathname === "/review-description-generator" ||
+    pathname === "/review-description-generator/"
+  ) {
+    if (request.method === "GET") {
+      return respondHTML(
+        renderReviewDescriptionGeneratorPage(
+          resolveRequestLanguage(request, url),
+        ),
+      );
     }
-    return new Response('Method not allowed', { status: 405 });
+    return new Response("Method not allowed", { status: 405 });
   }
   return null;
 }
 
 function renderReviewDescriptionGeneratorPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('review-description-generator', currentLang);
+  const translation = getToolTranslation(
+    "review-description-generator",
+    currentLang,
+  );
   const toolHeader = createToolHeader(
-    { emoji: '📝' },
-    translation?.name || 'Review Description Generator',
-    translation?.desc || 'Generate structured PR review and comment descriptions from commits, diffs, or notes.',
+    { emoji: "📝" },
+    translation?.name || "Review Description Generator",
+    translation?.desc ||
+      "Generate structured PR review and comment descriptions from commits, diffs, or notes.",
     [
-      { text: translation?.ui?.badge0 || 'Client-Side Only', color: 'green' },
-      { text: translation?.ui?.badge1 || '6 Templates', color: 'indigo' }
+      { text: translation?.ui?.badge0 || "Client-Side Only", color: "green" },
+      { text: translation?.ui?.badge1 || "6 Templates", color: "indigo" },
     ],
-    { toolId: 'review-description-generator' }
+    { toolId: "review-description-generator" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'review-description-generator');
-  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+  const currentTool = TOOLS.find(
+    (t) => t.id === "review-description-generator",
+  );
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -333,9 +354,11 @@ function renderReviewDescriptionGeneratorPage(lang = DEFAULT_LANGUAGE) {
   `;
 
   return createPageTemplate({
-    title: translation?.name || 'Review Description Generator',
-    description: translation?.desc || 'Generate structured PR review and comment descriptions from commits, diffs, or notes.',
+    title: translation?.name || "Review Description Generator",
+    description:
+      translation?.desc ||
+      "Generate structured PR review and comment descriptions from commits, diffs, or notes.",
     content,
-    path: '/review-description-generator'
+    path: "/review-description-generator",
   });
 }

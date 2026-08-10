@@ -3,11 +3,19 @@
  * All generation happens in the browser for maximum privacy
  */
 
-import { respondHTML, respondJSON } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
-import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML, respondJSON } from "../utils/respond.js";
+import { createPageTemplate, createToolHeader } from "../utils/common-ui.js";
+import {
+  createEducationalSection,
+  createRelatedToolsSection,
+} from "../utils/content-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handlePasswordGeneratorRoutes(request, url) {
   const { pathname } = url;
@@ -15,47 +23,71 @@ export async function handlePasswordGeneratorRoutes(request, url) {
 
   try {
     // Serve the UI
-    if (pathname === '/password-generator' || pathname === '/password-generator/') {
-      if (method === 'GET') {
-        return renderPasswordGeneratorPage(resolveRequestLanguage(request, url));
+    if (
+      pathname === "/password-generator" ||
+      pathname === "/password-generator/"
+    ) {
+      if (method === "GET") {
+        return renderPasswordGeneratorPage(
+          resolveRequestLanguage(request, url),
+        );
       }
     }
 
     // API endpoints are disabled - all features are client-side only
-    if (pathname.startsWith('/api/password') || pathname.startsWith('/api/username') ||
-      pathname.startsWith('/api/passphrase') || pathname.startsWith('/api/email') ||
-      pathname.startsWith('/api/cyberchef') || pathname.startsWith('/api/qr')) {
-      return respondJSON({
-        error: 'API access disabled',
-        message: 'This tool operates entirely client-side for privacy. All generation happens in your browser.',
-        available: false
-      }, { status: 403 });
+    if (
+      pathname.startsWith("/api/password") ||
+      pathname.startsWith("/api/username") ||
+      pathname.startsWith("/api/passphrase") ||
+      pathname.startsWith("/api/email") ||
+      pathname.startsWith("/api/cyberchef") ||
+      pathname.startsWith("/api/qr")
+    ) {
+      return respondJSON(
+        {
+          error: "API access disabled",
+          message:
+            "This tool operates entirely client-side for privacy. All generation happens in your browser.",
+          available: false,
+        },
+        { status: 403 },
+      );
     }
 
-    return respondJSON({ error: 'Not found' }, { status: 404 });
+    return respondJSON({ error: "Not found" }, { status: 404 });
   } catch (error) {
-    console.error('Password Generator Route Error:', error);
+    console.error("Password Generator Route Error:", error);
     return respondJSON(
-      { error: 'Internal server error', message: error.message },
-      { status: 500 }
+      { error: "Internal server error", message: error.message },
+      { status: 500 },
     );
   }
 }
 
 function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('password-generator', currentLang);
+  const translation = getToolTranslation("password-generator", currentLang);
   const toolHeader = createToolHeader(
-    { emoji: '🔐' },
-    translation?.name || 'Password Generator',
-    translation?.desc || 'Create secure passwords, usernames, and passphrases with advanced customization options.',
-    [{ text: translation?.ui?.badge35 || 'Client-Side Only', color: 'blue', tooltip: 'Runs entirely in your browser using Web APIs — your data never leaves your device.' }],
-    { toolId: 'password-generator' }
+    { emoji: "🔐" },
+    translation?.name || "Password Generator",
+    translation?.desc ||
+      "Create secure passwords, usernames, and passphrases with advanced customization options.",
+    [
+      {
+        text: translation?.ui?.badge35 || "Client-Side Only",
+        color: "blue",
+        tooltip:
+          "Runs entirely in your browser using Web APIs — your data never leaves your device.",
+      },
+    ],
+    { toolId: "password-generator" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'password-generator');
-    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
-
+  const currentTool = TOOLS.find((t) => t.id === "password-generator");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -323,17 +355,18 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
 
       </div>
 
-      ${createEducationalSection([
-        {
-          title: 'What Makes a Password Secure?',
-          content: `
+      ${createEducationalSection(
+        [
+          {
+            title: "What Makes a Password Secure?",
+            content: `
             <p>A secure password is your first line of defense against unauthorized access. In the modern era of high-speed computing, "secure" is defined by <strong>entropy</strong>—the measure of randomness and unpredictability in a string. A strong password should be long (at least 16 characters), unique to every account, and composed of a diverse set of character types including uppercase, lowercase, numbers, and symbols.</p>
             <p>Avoid using personal information like birthdays, pet names, or common dictionary words. Even complex-looking substitutions like "P@ssw0rd123" are easily cracked by modern brute-force tools that use massive dictionaries of common patterns.</p>
-          `
-        },
-        {
-          title: 'How to Use This Tool',
-          content: `
+          `,
+          },
+          {
+            title: "How to Use This Tool",
+            content: `
             <ol>
               <li><strong>Select your mode:</strong> Choose between Password, Username, Passphrase, or Email Alias depending on your needs.</li>
               <li><strong>Adjust length:</strong> Use the slider to set the desired length. For passwords, 16+ characters is recommended for high security.</li>
@@ -341,30 +374,33 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
               <li><strong>Generate:</strong> Click the "Generate" button to create your unique credential.</li>
               <li><strong>Copy:</strong> Use the copy icon to safely move the result to your clipboard or password manager.</li>
             </ol>
-          `
-        },
-        {
-          title: 'Common Use Cases',
-          content: `
+          `,
+          },
+          {
+            title: "Common Use Cases",
+            content: `
             <ul>
               <li><strong>Account Security:</strong> Generating unique, high-entropy passwords for every online service you use.</li>
               <li><strong>System Administration:</strong> Creating secure temporary passwords for new users or service accounts.</li>
               <li><strong>Privacy Protection:</strong> Using "Plus Aliases" (e.g., user+service@domain.com) to track which services sell your data or to filter spam.</li>
               <li><strong>Memorable Security:</strong> Using the Passphrase generator for master passwords that need to be typed manually but remain resistant to cracking.</li>
             </ul>
-          `
-        },
-        {
-          title: 'Pro Tips',
-          content: `
+          `,
+          },
+          {
+            title: "Pro Tips",
+            content: `
             <ul>
               <li><strong>Use a Password Manager:</strong> Never try to memorize complex passwords. Use this tool to generate them, and store them in a reputable password manager like Bitwarden, 1Password, or KeePassXC.</li>
               <li><strong>Entropy over Complexity:</strong> Length is often more important than character variety. A 20-character lowercase password is often harder to crack than an 8-character "complex" one.</li>
               <li><strong>Rotate on Breach:</strong> If a service you use is compromised, use this generator to create a completely new, unrelated password immediately.</li>
             </ul>
-          `
-        }
-      ], 'password-generator', currentLang)}
+          `,
+          },
+        ],
+        "password-generator",
+        currentLang,
+      )}
     </main>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
     ${createRelatedToolsSection(relatedToolsData)}
@@ -795,12 +831,14 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
     </script>
   `;
 
-  return respondHTML(createPageTemplate({
-    title: translation?.name || 'Password Generator',
-    description: translation?.desc || 'Create secure, random passwords.',
-    path: '/password-generator',
-    content,
-    scripts: script,
-    lang: currentLang
-  }));
+  return respondHTML(
+    createPageTemplate({
+      title: translation?.name || "Password Generator",
+      description: translation?.desc || "Create secure, random passwords.",
+      path: "/password-generator",
+      content,
+      scripts: script,
+      lang: currentLang,
+    }),
+  );
 }

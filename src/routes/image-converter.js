@@ -5,28 +5,46 @@
  * All processing happens client-side using Canvas API
  */
 
-import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
-import { respondHTML } from '../utils/respond.js';
-import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { createPageTemplate, createToolHeader } from "../utils/common-ui.js";
+import { respondHTML } from "../utils/respond.js";
+import {
+  createEducationalSection,
+  createRelatedToolsSection,
+} from "../utils/content-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 /**
  * Render the Image Converter page
  */
 function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('image-converter', currentLang);
+  const translation = getToolTranslation("image-converter", currentLang);
   const toolHeader = createToolHeader(
-    { emoji: '🖼️' },
-    translation?.name || 'Image Converter',
-    translation?.desc || 'Convert between image formats and resize images while maintaining quality. All processing happens in your browser.',
-    [{ text: translation?.ui?.badge26 || 'Client-Side Only', tooltip: 'Runs entirely in your browser using Web APIs — your data never leaves your device.' }],
-    { toolId: 'image-converter' }
+    { emoji: "🖼️" },
+    translation?.name || "Image Converter",
+    translation?.desc ||
+      "Convert between image formats and resize images while maintaining quality. All processing happens in your browser.",
+    [
+      {
+        text: translation?.ui?.badge26 || "Client-Side Only",
+        tooltip:
+          "Runs entirely in your browser using Web APIs — your data never leaves your device.",
+      },
+    ],
+    { toolId: "image-converter" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'image-converter');
-  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+  const currentTool = TOOLS.find((t) => t.id === "image-converter");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
   const pageContent = `
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -270,28 +288,35 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
       </div>
     </main>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-      ${createEducationalSection([
-        {
-          title: 'Image Formats Compared (PNG/JPEG/WebP)',
-          content: '<p>Choosing the right image format is crucial for web performance and visual quality. <strong>JPEG</strong> is best for photographs and complex images with many colors, as it uses lossy compression to achieve small file sizes. <strong>PNG</strong> is ideal for images that require transparency or have sharp edges and solid colors (like logos and icons), as it uses lossless compression.</p><p><strong>WebP</strong> is a modern format that provides superior lossy and lossless compression, often resulting in significantly smaller file sizes than JPEG or PNG while maintaining high quality. Our tool supports all these formats, allowing you to optimize your assets for any platform or device without sacrificing clarity.</p>'
-        },
-        {
-          title: 'How to Use This Tool',
-          content: '<ol><li>Upload your image by dropping it into the "Upload Image" zone or clicking to browse your files.</li><li>Select your desired output format (PNG, JPG, WebP, or GIF) from the "Convert Format" options.</li><li>If you\'ve selected a lossy format like JPG or WebP, use the quality slider to balance file size and visual fidelity.</li><li>Optionally, use the "Resize Image" settings to scale your image by percentage or specific dimensions.</li><li>Click "Convert & Resize Image" and then "Download" to save your optimized asset.</li></ol>'
-        },
-        {
-          title: 'Common Use Cases',
-          content: '<ul><li><strong>Web Optimization:</strong> Convert large PNG or JPEG images to WebP to improve your website\'s load speed and Core Web Vitals.</li><li><strong>Social Media:</strong> Resize and compress photos to meet the specific upload requirements of platforms like Instagram, Twitter, or LinkedIn.</li><li><strong>Email Marketing:</strong> Reduce the file size of images in your email campaigns to ensure they load quickly for all recipients and don\'t get flagged as spam.</li><li><strong>App Development:</strong> Generate multiple sizes of the same icon or asset for different screen densities (e.g., @2x, @3x) using the resizing features.</li></ul>'
-        },
-        {
-          title: 'Pro Tips',
-          content: '<ul><li>Use WebP whenever possible for web projects, as it is supported by all modern browsers and offers the best compression-to-quality ratio.</li><li>When converting to JPEG, a quality setting of 70-80% usually provides the best balance between file size and visual quality for most web uses.</li><li>Always keep your original high-resolution images and only convert or resize copies for specific use cases to avoid losing quality over time through repeated compression.</li></ul>'
-        }
-      ], 'image-converter', currentLang)}
+      ${createEducationalSection(
+        [
+          {
+            title: "Image Formats Compared (PNG/JPEG/WebP)",
+            content:
+              "<p>Choosing the right image format is crucial for web performance and visual quality. <strong>JPEG</strong> is best for photographs and complex images with many colors, as it uses lossy compression to achieve small file sizes. <strong>PNG</strong> is ideal for images that require transparency or have sharp edges and solid colors (like logos and icons), as it uses lossless compression.</p><p><strong>WebP</strong> is a modern format that provides superior lossy and lossless compression, often resulting in significantly smaller file sizes than JPEG or PNG while maintaining high quality. Our tool supports all these formats, allowing you to optimize your assets for any platform or device without sacrificing clarity.</p>",
+          },
+          {
+            title: "How to Use This Tool",
+            content:
+              '<ol><li>Upload your image by dropping it into the "Upload Image" zone or clicking to browse your files.</li><li>Select your desired output format (PNG, JPG, WebP, or GIF) from the "Convert Format" options.</li><li>If you\'ve selected a lossy format like JPG or WebP, use the quality slider to balance file size and visual fidelity.</li><li>Optionally, use the "Resize Image" settings to scale your image by percentage or specific dimensions.</li><li>Click "Convert & Resize Image" and then "Download" to save your optimized asset.</li></ol>',
+          },
+          {
+            title: "Common Use Cases",
+            content:
+              "<ul><li><strong>Web Optimization:</strong> Convert large PNG or JPEG images to WebP to improve your website's load speed and Core Web Vitals.</li><li><strong>Social Media:</strong> Resize and compress photos to meet the specific upload requirements of platforms like Instagram, Twitter, or LinkedIn.</li><li><strong>Email Marketing:</strong> Reduce the file size of images in your email campaigns to ensure they load quickly for all recipients and don't get flagged as spam.</li><li><strong>App Development:</strong> Generate multiple sizes of the same icon or asset for different screen densities (e.g., @2x, @3x) using the resizing features.</li></ul>",
+          },
+          {
+            title: "Pro Tips",
+            content:
+              "<ul><li>Use WebP whenever possible for web projects, as it is supported by all modern browsers and offers the best compression-to-quality ratio.</li><li>When converting to JPEG, a quality setting of 70-80% usually provides the best balance between file size and visual quality for most web uses.</li><li>Always keep your original high-resolution images and only convert or resize copies for specific use cases to avoid losing quality over time through repeated compression.</li></ul>",
+          },
+        ],
+        "image-converter",
+        currentLang,
+      )}
     </div>
     ${createRelatedToolsSection(relatedToolsData)}
   `;
-
 
   const customStyles = `
     <style>
@@ -372,11 +397,13 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
   `;
 
   return createPageTemplate({
-    title: translation?.name || 'Image Converter',
-    description: translation?.desc || 'Convert and resize images in your browser. Support for PNG, JPG, WebP, GIF. Privacy-first, client-side processing.',
-    path: '/image-converter',
+    title: translation?.name || "Image Converter",
+    description:
+      translation?.desc ||
+      "Convert and resize images in your browser. Support for PNG, JPG, WebP, GIF. Privacy-first, client-side processing.",
+    path: "/image-converter",
     content: customStyles + pageContent,
-    lang: currentLang
+    lang: currentLang,
   });
 }
 
@@ -386,8 +413,10 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
 export async function handleImageConverterRoutes(request, url) {
   const pathname = url.pathname;
 
-  if (pathname === '/image-converter' || pathname === '/image-converter/') {
-    return respondHTML(renderImageConverterPage(resolveRequestLanguage(request, url)));
+  if (pathname === "/image-converter" || pathname === "/image-converter/") {
+    return respondHTML(
+      renderImageConverterPage(resolveRequestLanguage(request, url)),
+    );
   }
 
   return null;
