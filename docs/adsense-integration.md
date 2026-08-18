@@ -1,6 +1,9 @@
 # AdSense Integration
 
-This project supports manual AdSense slot injection with server-side config parsing and client-side lazy script loading.
+Ads are abandoned until real AdSense slot IDs exist. Do not publish `ads.txt`
+or a publisher ID with empty slots.
+
+The code still supports manual slot injection. Keep it disabled.
 
 ## Current implementation
 

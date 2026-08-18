@@ -290,7 +290,7 @@ const worker = {
             status: "healthy",
             uptime: now - workerStartedAt,
             timestamp: new Date().toISOString(),
-            version: "2.4.1",
+            version: "2.4.2",
           },
           {
             headers: { "Cache-Control": "no-store" },
@@ -307,14 +307,7 @@ const worker = {
         throw new Error("Sentry test error");
       }
 
-      // ads.txt (Google AdSense)
-      if (path === "/ads.txt") {
-        const adsTxt =
-          "google.com, pub-5134881365131182, DIRECT, f08c47fec0942fa0";
-        return respondText(adsTxt, {
-          headers: { "Cache-Control": "public, max-age=86400" },
-        });
-      }
+      // Ads are not shipped: no ads.txt until real slot IDs exist.
 
       // Robots.txt
       if (path === "/robots.txt") {

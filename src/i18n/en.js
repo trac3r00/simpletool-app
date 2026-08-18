@@ -40,7 +40,7 @@ export default {
     heroTitle: "Free Online Developer Tools",
     heroLine1:
       "A collection of free, privacy-first tools for your daily workflow.",
-    heroLine2: "No tracking, no data collection — just tools that work.",
+    heroLine2: "Your tool input stays in the browser. We do not collect it.",
     favorites: "Favorites",
     recentlyUsed: "Recently Used",
     searchResultsLabel: "Search Results",
@@ -2572,7 +2572,8 @@ export default {
         option3: "lower",
         option4: "keep",
         option5: "2 spaces",
-        option6: "4 spaces",
+        option6: "BigQuery",
+        option10: "4 spaces",
         heading0: "SQL Formatting Tips",
         heading1: "Quick wins",
         heading2: "Validator limitations",

@@ -42,7 +42,7 @@ export default {
     heroLine1:
       "Eine Sammlung kostenloser, datenschutzorientierter Tools für Ihren Alltag.",
     heroLine2:
-      "Kein Tracking, keine Datensammlung — einfach Tools, die funktionieren.",
+      "Ihre Eingaben bleiben im Browser. Wir sammeln sie nicht.",
     favorites: "Favoriten",
     recentlyUsed: "Kürzlich verwendet",
     searchResultsLabel: "Suchergebnisse",
@@ -2574,7 +2574,8 @@ export default {
         option3: "lower",
         option4: "keep",
         option5: "2 spaces",
-        option6: "4 spaces",
+        option6: "BigQuery",
+        option10: "4 spaces",
         heading0: "SQL Formatting Tips",
         heading1: "Quick wins",
         heading2: "Validator limitations",

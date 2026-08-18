@@ -81,7 +81,7 @@ export function renderHomePage({
   <div id="main-content" tabindex="-1"></div>
   <header class="pt-16 pb-12 sm:pt-24 sm:pb-16 bg-white dark:bg-surface-950 border-b border-surface-200 dark:border-surface-800 hexagon-pattern">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-surface-900 dark:text-surface-50 mb-6">
+      <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-surface-900 dark:text-surface-50 mb-6" data-i18n="home.heroTitle">
         ${t("home.heroTitle", currentLang)}
       </h1>
       <p class="text-xl text-surface-600 dark:text-surface-400 max-w-2xl mx-auto mb-10 leading-relaxed">
@@ -246,9 +246,17 @@ export function renderHomePage({
               section.classList.remove('hidden');
               delete section.dataset.searchHidden;
             }
+            const countEl = section.querySelector('.category-count');
+            if (countEl) {
+              countEl.textContent = String(section.querySelectorAll('[data-tool-id]').length);
+            }
             return;
           }
           const visibleInSection = section.querySelectorAll('[data-tool-id]:not(.hidden)').length;
+          const countEl = section.querySelector('.category-count, [id$="-count"]');
+          if (countEl && section.classList.contains('category-section')) {
+            countEl.textContent = String(visibleInSection);
+          }
           if (visibleInSection === 0) {
             if (!section.classList.contains('hidden')) {
               section.dataset.searchHidden = '1';
@@ -320,16 +328,6 @@ export function renderHomePage({
     })();
   </script>
   <script>
-    (function(){
-      function showAds(){document.querySelectorAll('[data-ad-container]').forEach(function(el){el.style.display=''});}
-      var check=setInterval(function(){
-        var ins=document.querySelector('ins.adsbygoogle');
-        if(ins&&(ins.dataset.adStatus||ins.childElementCount>0)){clearInterval(check);showAds();}
-      },200);
-      setTimeout(function(){clearInterval(check);},5000);
-    })();
-  </script>
-  <script>
     (function() {
       var RECENT_KEY = 'simpletool-recent';
       var FAV_KEY = 'simpletool-favorites';
@@ -383,7 +381,7 @@ function renderCategories(categories, lang = DEFAULT_LANGUAGE) {
         <h2 class="text-xl font-bold text-surface-900 dark:text-surface-100 uppercase tracking-wide" data-i18n="home.cat.${key}">
           ${t("home.cat." + key, lang)}
         </h2>
-        <span class="text-xs font-medium text-surface-400 bg-surface-100 dark:bg-surface-800 dark:text-surface-500 px-2 py-0.5 rounded-full">${section.tools.length}</span>
+        <span class="category-count text-xs font-medium text-surface-400 bg-surface-100 dark:bg-surface-800 dark:text-surface-500 px-2 py-0.5 rounded-full">${section.tools.length}</span>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         ${section.tools.map((tool) => renderToolCard(tool, lang)).join("")}

@@ -218,7 +218,7 @@ function renderCaseConverterPage(lang = DEFAULT_LANGUAGE) {
           name: 'dot.case',
           icon: '⚫',
           color: 'gray',
-          convert: (text) => text.toLowerCase().replace(/[^a-zA-Z0-9]+/g, '.').replace(/^\.|\$/g, '')
+          convert: (text) => text.toLowerCase().replace(/[^a-zA-Z0-9]+/g, '.').replace(/^\.|\.$/g, '')
         },
         alternating: {
           name: 'aLtErNaTiNg CaSe',

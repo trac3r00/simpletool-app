@@ -57,6 +57,23 @@ test.describe("Home search query parameter", () => {
     });
     expect(mismatches).toEqual([]);
 
+    const badgeMismatches = await page.evaluate(() => {
+      const out = [];
+      document.querySelectorAll(".category-section:not(.hidden)").forEach((section) => {
+        const visible = section.querySelectorAll("[data-tool-id]:not(.hidden)").length;
+        const badge = section.querySelector(".category-count");
+        if (!badge) {
+          out.push("missing-badge");
+          return;
+        }
+        if (badge.textContent !== String(visible)) {
+          out.push(`${badge.textContent}!=${visible}`);
+        }
+      });
+      return out;
+    });
+    expect(badgeMismatches).toEqual([]);
+
     // There should be at least one hidden card (filtering actually happened)
     const hiddenCount = await page.locator("[data-tool-id].hidden").count();
     expect(hiddenCount).toBeGreaterThan(0);

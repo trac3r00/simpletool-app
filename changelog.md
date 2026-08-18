@@ -2,6 +2,19 @@
 
 This changelog is a snapshot-style record of major changes in this workspace.
 
+## 2026-08-17 — v2.4.2 Honesty pass
+
+### Fixes
+
+- Hero and About no longer claim "no tracking" or "0 bytes stored" while ads were configured.
+- Removed `ads.txt` and unused Google Ads / GTM / GA CSP entries until real ad slots exist.
+- User-Agent Parser now has a paste field, parse output, and a working Use This button.
+- `dot.case` no longer drops the last character.
+- SQL indent option labeled "4 spaces" is no longer overwritten by BigQuery.
+- Home search badges now follow the filtered card counts.
+- Language switch now updates the homepage H1 without a reload.
+- SVG preview stays visible after removing width and height.
+
 ## 2026-05-07 — v2.4.1 Post-QA sweep
 
 ### Bug fixes
@@ -13,7 +26,7 @@ This changelog is a snapshot-style record of major changes in this workspace.
 - **Clipboard**: promote `getCopyToClipboardScript()` to `createPageTemplate()` (global), remove redundant per-route calls from 12 route files.
 - **SRI crossorigin**: add `crossorigin="anonymous"` to 6 vendor script tags that had `integrity` without it.
 - **Routes**: add 301 redirects for `/jwt-inspector`, `/layered-decoder`, and `/css-gradient-generator` aliases.
-- **CSS**: fix `.empty-state.hidden` specificity so Tailwind's `hidden` utility actually hides empty-state placeholders.
+- **CSS**: empty-state placeholders now hide correctly when a result is present.
 
 ### Tooling
 

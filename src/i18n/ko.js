@@ -40,7 +40,7 @@ export default {
   home: {
     heroTitle: "무료 온라인 개발자 도구",
     heroLine1: "매일 쓰는 무료 개인정보 보호 도구 모음.",
-    heroLine2: "추적 없음, 데이터 수집 없음 — 그냥 바로 쓰세요.",
+    heroLine2: "도구 입력은 브라우저에 남습니다. 수집하지 않습니다.",
     favorites: "즐겨찾기",
     recentlyUsed: "최근 사용",
     searchResultsLabel: "검색 결과",
@@ -2570,7 +2570,8 @@ export default {
         option3: "소문자",
         option4: "유지",
         option5: "2칸",
-        option6: "4칸",
+        option6: "BigQuery",
+        option10: "4칸",
         heading0: "SQL 포맷 팁",
         heading1: "빠른 개선",
         heading2: "검증 한계",

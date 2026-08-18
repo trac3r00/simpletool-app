@@ -42,7 +42,7 @@ export default {
     heroLine1:
       "Uma coleção gratuita e focada em privacidade para o seu dia a dia.",
     heroLine2:
-      "Sem rastreamento, sem coleta de dados — apenas ferramentas que funcionam.",
+      "Sua entrada fica no navegador. Não a coletamos.",
     favorites: "Favoritos",
     recentlyUsed: "Usados recentemente",
     searchResultsLabel: "Resultados da pesquisa",
@@ -2574,7 +2574,8 @@ export default {
         option3: "lower",
         option4: "keep",
         option5: "2 spaces",
-        option6: "4 spaces",
+        option6: "BigQuery",
+        option10: "4 spaces",
         heading0: "SQL Formatting Tips",
         heading1: "Quick wins",
         heading2: "Validator limitations",
