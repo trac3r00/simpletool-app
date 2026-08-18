@@ -72,6 +72,20 @@ describe("getSecurityHeaders", () => {
     expect(frameSrc).not.toContain("doubleclick.net");
   });
 
+  it("includes ad hosts only while ads are enabled", async () => {
+    const { setAdConfig } = await import("./ads.js");
+    setAdConfig({
+      client: "ca-pub-5134881365131182",
+      slots: { home: "1111111111" },
+    });
+    const headers = getSecurityHeaders("text/html; charset=utf-8");
+    const csp = headers["Content-Security-Policy"];
+    expect(csp).toContain("pagead2.googlesyndication.com");
+    expect(csp).not.toContain("googletagmanager.com");
+    expect(csp).not.toContain("google-analytics.com");
+    setAdConfig({ client: null, slots: {} });
+  });
+
   it("uses unsafe-inline fallback without unused ad or analytics hosts", () => {
     const headers = getSecurityHeaders("text/html; charset=utf-8");
     const csp = headers["Content-Security-Policy"];

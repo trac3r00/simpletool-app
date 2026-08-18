@@ -2,6 +2,8 @@
  * Security utilities for rate limiting and headers
  */
 
+import { isAdsEnabled } from "./ads.js";
+
 export const RATE_LIMIT_WINDOW_MS = 60_000;
 export const RATE_LIMIT_MAX_REQUESTS = 120;
 export const RATE_LIMIT_MAX_REQUESTS_SHARED_IP = 240;
@@ -77,17 +79,40 @@ export function getSecurityHeaders(
 
   // Build CSP with nonce if provided (eliminates need for unsafe-inline)
   let csp;
-  const extraScriptSrc = ["https://static.cloudflareinsights.com"].join(" ");
-
+  const extraScriptSrc = ["https://static.cloudflareinsights.com"];
   const extraFrameSrc = [];
+  const extraConnectSrc = ["https://cloudflareinsights.com"];
 
-  const extraConnectSrc = ["https://cloudflareinsights.com"].join(" ");
+  if (isAdsEnabled()) {
+    extraScriptSrc.push(
+      "https://pagead2.googlesyndication.com",
+      "https://www.googletagservices.com",
+      "https://tpc.googlesyndication.com",
+    );
+    extraFrameSrc.push(
+      "https://googleads.g.doubleclick.net",
+      "https://tpc.googlesyndication.com",
+      "https://pagead2.googlesyndication.com",
+      "https://*.adtrafficquality.google",
+    );
+    extraConnectSrc.push(
+      "https://pagead2.googlesyndication.com",
+      "https://googleads.g.doubleclick.net",
+      "https://adservice.google.com",
+      "https://tpc.googlesyndication.com",
+      "https://*.adtrafficquality.google",
+    );
+  }
+
+  const scriptExtras = extraScriptSrc.join(" ");
+  const frameExtras = extraFrameSrc.length ? ` ${extraFrameSrc.join(" ")}` : "";
+  const connectExtras = extraConnectSrc.join(" ");
 
   if (nonce) {
-    csp = `default-src 'self'; script-src 'self' 'nonce-${nonce}' ${extraScriptSrc}; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: blob:; media-src 'self' data: blob:; connect-src 'self' ${extraConnectSrc}; font-src 'self' data: https://fonts.gstatic.com; frame-src 'self'${extraFrameSrc.length ? " " + extraFrameSrc.join(" ") : ""};`;
+    csp = `default-src 'self'; script-src 'self' 'nonce-${nonce}' ${scriptExtras}; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: blob:; media-src 'self' data: blob:; connect-src 'self' ${connectExtras}; font-src 'self' data: https://fonts.gstatic.com; frame-src 'self'${frameExtras};`;
   } else {
     // Fallback for non-HTML responses
-    csp = `default-src 'self'; script-src 'self' 'unsafe-inline' ${extraScriptSrc}; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: blob:; media-src 'self' data: blob:; connect-src 'self' ${extraConnectSrc}; font-src 'self' data: https://fonts.gstatic.com; frame-src 'self'${extraFrameSrc.length ? " " + extraFrameSrc.join(" ") : ""};`;
+    csp = `default-src 'self'; script-src 'self' 'unsafe-inline' ${scriptExtras}; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: blob:; media-src 'self' data: blob:; connect-src 'self' ${connectExtras}; font-src 'self' data: https://fonts.gstatic.com; frame-src 'self'${frameExtras};`;
   }
 
   return {

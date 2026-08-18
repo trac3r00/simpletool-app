@@ -69,7 +69,7 @@ export function renderHomePage({
   ${getThemeBootstrapScript()}
   ${getLanguageBootstrapScript(currentLang)}
   ${getGtagScript()}
-  ${getAdSenseScript()}
+  ${getAdSenseScript("/")}
   ${getStylesheetLinks()}
 </head>
 <body class="bg-surface-50 text-surface-900 dark:bg-surface-950 dark:text-surface-50 transition-colors duration-200 flex flex-col min-h-screen">
@@ -110,11 +110,6 @@ export function renderHomePage({
     </div>
   </header>
 
-
-  ${getAdSlotHTML("home", {
-    wrapperClassName: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8",
-  })}
-
   <!-- Tools Grid -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16 flex-grow">
     <!-- Favorites Section (populated client-side from localStorage) -->
@@ -151,6 +146,11 @@ export function renderHomePage({
       ${renderCategories(categories, currentLang)}
     </div>
 
+    ${getAdSlotHTML("home", {
+      path: "/",
+      wrapperClassName: "pt-8",
+    })}
+
     <!-- Empty state when search query matches no tools -->
     <div id="search-empty-state" class="hidden text-center py-16">
       <div class="text-6xl mb-4" aria-hidden="true">🔍</div>
@@ -161,11 +161,6 @@ export function renderHomePage({
       <p class="text-sm text-surface-500 dark:text-surface-500 mt-2" data-i18n="home.noResultsHint">Try a different search term.</p>
     </div>
   </main>
-
-  ${getAdSlotHTML("bottom", {
-    wrapperClassName:
-      "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 mt-8 border-t border-surface-200 dark:border-surface-800",
-  })}
 
   <script type="application/ld+json">
   ${JSON.stringify({

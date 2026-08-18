@@ -13,12 +13,13 @@ binding = "CF_VERSION_METADATA"
 [vars]
 ENVIRONMENT = "production"
 SITE_URL = "https://simpletool.app"
-# Ads abandoned until real AdSense slot IDs exist. Do not publish ads.txt
-# or a publisher ID with empty slots.
-# ADSENSE_CLIENT = "ca-pub-XXXXXXXXXXXXXXXX"
-# ADSENSE_SLOT = ""
-# ADSENSE_SLOTS = "{\"home\":\"1234567890\",\"legal\":\"3456789012\"}"
-ADSENSE_CLIENT = ""
+# Ads stay off until real slot IDs exist. ads.txt is served only then.
+# Create three Display units in AdSense (NPA, no Auto ads) and paste the IDs:
+#   home  = homepage below the tool grid
+#   json  = JSON Formatter below the editor
+#   legal = changelog / about / privacy / terms / contact / security / careers
+ADSENSE_CLIENT = "ca-pub-5134881365131182"
+# ADSENSE_SLOTS = "{\"home\":\"1111111111\",\"json\":\"2222222222\",\"legal\":\"3333333333\"}"
 ADSENSE_SLOTS = "{}"
 SENTRY_DSN = ""
 CF_ANALYTICS_TOKEN = ""

@@ -42,6 +42,11 @@ import {
   setAnalyticsToken,
   setSiteUrl,
 } from "./utils/common-ui.js";
+import {
+  getAdsTxtBody,
+  parseAdSlots,
+  shouldServeAdsTxt,
+} from "./utils/ads.js";
 import { resolveRequestLanguage } from "./utils/i18n.js";
 
 // Rate limiting state (memory fallback)
@@ -57,33 +62,6 @@ async function resolveToolResponse(handler, request, url) {
 
 function matchesToolPath(pathname, toolPath) {
   return pathname === toolPath || pathname.startsWith(`${toolPath}/`);
-}
-
-function parseAdSlots(env) {
-  if (!env) return {};
-  const slots = {};
-
-  if (typeof env.ADSENSE_SLOTS === "string" && env.ADSENSE_SLOTS.trim()) {
-    try {
-      Object.assign(slots, JSON.parse(env.ADSENSE_SLOTS));
-    } catch (error) {
-      console.warn(
-        "Invalid ADSENSE_SLOTS JSON. Falling back to default slot.",
-        error,
-      );
-    }
-  }
-
-  if (typeof env.ADSENSE_SLOT === "string" && env.ADSENSE_SLOT.trim()) {
-    const fallback = env.ADSENSE_SLOT.trim();
-    slots.home ||= fallback;
-    slots.tool ||= fallback;
-    slots.legal ||= fallback;
-    slots.sidebar ||= fallback;
-    slots.bottom ||= fallback;
-  }
-
-  return slots;
 }
 
 function isDevEnvironment(env, url) {
@@ -237,12 +215,14 @@ const worker = {
       setAdConfig({
         client: null,
         slots: {},
+        path,
       });
       setAnalyticsToken("");
     } else {
       setAdConfig({
         client: env?.ADSENSE_CLIENT,
         slots: parseAdSlots(env),
+        path,
       });
       setAnalyticsToken(env?.CF_ANALYTICS_TOKEN);
     }
@@ -290,7 +270,7 @@ const worker = {
             status: "healthy",
             uptime: now - workerStartedAt,
             timestamp: new Date().toISOString(),
-            version: "2.4.2",
+            version: "2.4.3",
           },
           {
             headers: { "Cache-Control": "no-store" },
@@ -307,7 +287,14 @@ const worker = {
         throw new Error("Sentry test error");
       }
 
-      // Ads are not shipped: no ads.txt until real slot IDs exist.
+      if (path === "/ads.txt") {
+        if (!shouldServeAdsTxt()) {
+          return respond404();
+        }
+        return respondText(getAdsTxtBody(), {
+          headers: { "Cache-Control": "public, max-age=86400" },
+        });
+      }
 
       // Robots.txt
       if (path === "/robots.txt") {

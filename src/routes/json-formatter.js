@@ -8,6 +8,7 @@ import {
   createPageTemplate,
   createToolHeader,
   createEmptyState,
+  getAdSlotHTML,
 } from "../utils/common-ui.js";
 import {
   createRichEditorPane,
@@ -145,6 +146,10 @@ function renderJSONFormatterPage(lang = "en") {
 
       </div>
     </main>
+    ${getAdSlotHTML("tool", {
+      path: "/json-formatter",
+      wrapperClassName: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-4",
+    })}
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
       ${createEducationalSection(
         [
