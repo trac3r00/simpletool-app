@@ -43,6 +43,15 @@ describe("case-converter transform", () => {
     );
   });
 
+  it("converts to dot.case without dropping the last character", () => {
+    expect(caseConverter.transform("Hello World", { style: "dot" })).toBe(
+      "hello.world",
+    );
+    expect(caseConverter.transform("object property style", { style: "dot" })).toBe(
+      "object.property.style",
+    );
+  });
+
   it("defaults to camel when no style given", () => {
     expect(caseConverter.transform("hello world")).toBe("helloWorld");
   });

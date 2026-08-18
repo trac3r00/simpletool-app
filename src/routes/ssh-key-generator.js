@@ -88,7 +88,7 @@ function renderSSHKeyGeneratorPage(lang = DEFAULT_LANGUAGE) {
                <ul class="text-xs text-success-800 dark:text-success-200 space-y-1 list-disc list-inside">
                 <li>All keys generated in your browser using Web Crypto API</li>
                 <li>Private keys NEVER leave your device</li>
-                <li>No logging, no tracking, no data collection</li>
+                <li>Keys are generated in the browser. Nothing is sent to the server.</li>
               </ul>
             </div>
           </div>

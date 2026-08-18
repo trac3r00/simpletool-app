@@ -40,7 +40,7 @@ export default {
   home: {
     heroTitle: "無料のオンライン開発ツール",
     heroLine1: "日常ワークフローのための無料・プライバシー重視ツール集。",
-    heroLine2: "トラッキングなし、データ収集なし — すぐ使えるツール。",
+    heroLine2: "入力はブラウザ内で処理します。収集しません。",
     favorites: "お気に入り",
     recentlyUsed: "最近使ったツール",
     searchResultsLabel: "検索結果",
@@ -2573,7 +2573,8 @@ export default {
         option3: "小文字",
         option4: "保持",
         option5: "2スペース",
-        option6: "4スペース",
+        option6: "BigQuery",
+        option10: "4スペース",
         heading0: "SQL整形のヒント",
         heading1: "手早い改善",
         heading2: "検証の限界",

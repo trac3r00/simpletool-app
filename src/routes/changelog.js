@@ -12,6 +12,45 @@ import {
 
 const RELEASES = [
   {
+    version: "2.4.2",
+    date: "2026-08-17",
+    title: "Honesty Pass & Broken Tools",
+    changes: [
+      {
+        type: "fix",
+        text: "Hero and About no longer claim zero tracking or zero stored bytes while ads were configured",
+      },
+      {
+        type: "fix",
+        text: "Removed ads.txt and unused Google Ads / GTM / GA CSP entries until real ad slots exist",
+      },
+      {
+        type: "fix",
+        text: "User-Agent Parser now has a paste field, parse output, and a working Use This button",
+      },
+      {
+        type: "fix",
+        text: "dot.case no longer drops the last character",
+      },
+      {
+        type: "fix",
+        text: "SQL indent option labeled 4 spaces is no longer overwritten by BigQuery",
+      },
+      {
+        type: "fix",
+        text: "Home search badges now follow the filtered card counts",
+      },
+      {
+        type: "fix",
+        text: "Language switch now updates the homepage H1 without a reload",
+      },
+      {
+        type: "fix",
+        text: "SVG preview stays visible after removing width and height",
+      },
+    ],
+  },
+  {
     version: "2.4.1",
     date: "2026-05-11",
     title: "Post-QA & Page-sweep Fixes",
@@ -38,7 +77,7 @@ const RELEASES = [
       },
       {
         type: "fix",
-        text: "CSS: fix .empty-state.hidden specificity so Tailwind hidden actually hides",
+        text: "Empty-state placeholders now hide correctly when a result is present",
       },
       {
         type: "fix",

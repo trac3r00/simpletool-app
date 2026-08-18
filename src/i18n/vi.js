@@ -42,7 +42,7 @@ export default {
     heroLine1:
       "Bộ sưu tập công cụ miễn phí, ưu tiên quyền riêng tư cho công việc hàng ngày.",
     heroLine2:
-      "Không theo dõi, không thu thập dữ liệu — chỉ là công cụ hoạt động.",
+      "Dữ liệu nhập ở lại trình duyệt. Chúng tôi không thu thập.",
     favorites: "Yêu thích",
     recentlyUsed: "Sử dụng gần đây",
     searchResultsLabel: "Kết quả tìm kiếm",
@@ -2574,7 +2574,8 @@ export default {
         option3: "lower",
         option4: "keep",
         option5: "2 spaces",
-        option6: "4 spaces",
+        option6: "BigQuery",
+        option10: "4 spaces",
         heading0: "SQL Formatting Tips",
         heading1: "Quick wins",
         heading2: "Validator limitations",

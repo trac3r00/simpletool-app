@@ -64,11 +64,15 @@ describe("getSecurityHeaders", () => {
     expect(headers["Vary"]).toBe("Accept-Encoding");
     expect(csp).toContain("script-src 'self' 'nonce-test-nonce'");
     expect(csp).not.toContain("script-src 'self' 'unsafe-inline'");
-    expect(connectSrc).toContain("https://*.adtrafficquality.google");
-    expect(frameSrc).toContain("https://*.adtrafficquality.google");
+    expect(connectSrc).not.toContain("googletagmanager.com");
+    expect(connectSrc).not.toContain("google-analytics.com");
+    expect(csp).not.toContain("pagead2.googlesyndication.com");
+    expect(csp).not.toContain("googletagmanager.com");
+    expect(frameSrc).toContain("frame-src 'self'");
+    expect(frameSrc).not.toContain("doubleclick.net");
   });
 
-  it("uses unsafe-inline fallback and adtrafficquality CSP without a nonce", () => {
+  it("uses unsafe-inline fallback without unused ad or analytics hosts", () => {
     const headers = getSecurityHeaders("text/html; charset=utf-8");
     const csp = headers["Content-Security-Policy"];
     const connectSrc = getCspDirective(csp, "connect-src");
@@ -76,8 +80,10 @@ describe("getSecurityHeaders", () => {
 
     expect(csp).toContain("script-src 'self' 'unsafe-inline'");
     expect(csp).not.toContain("'nonce-");
-    expect(connectSrc).toContain("https://*.adtrafficquality.google");
-    expect(frameSrc).toContain("https://*.adtrafficquality.google");
+    expect(csp).not.toContain("googletagmanager.com");
+    expect(csp).not.toContain("google-analytics.com");
+    expect(connectSrc).not.toContain("googletagmanager.com");
+    expect(frameSrc).toContain("frame-src 'self'");
   });
 
   it("returns no-store for JSON", () => {

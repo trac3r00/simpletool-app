@@ -106,7 +106,7 @@ function renderSQLFormatterPage(lang = DEFAULT_LANGUAGE) {
                 <label class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" data-i18n="tools.sql-formatter.ui.label3">Indent</label>
                 <select id="indent" class="input">
                   <option value="2" data-i18n="tools.sql-formatter.ui.option5">2 spaces</option>
-                  <option value="4" data-i18n="tools.sql-formatter.ui.option6">4 spaces</option>
+                  <option value="4" data-i18n="tools.sql-formatter.ui.option10">4 spaces</option>
                 </select>
               </div>
             </div>

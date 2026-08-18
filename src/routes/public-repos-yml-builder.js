@@ -337,8 +337,8 @@ function renderPublicReposYmlBuilderPage(lang = DEFAULT_LANGUAGE) {
   );
 
   const sampleRepos = [
-    "trac3r00/simpletool-app team=maintainers cadence=weekly sha=missing branch=unknown secrets=review monetization=ready",
-    "https://github.com/trac3r00/docs-site team=docs cadence=monthly sha=ok branch=protected secrets=ok monetization=todo",
+    "example-api team=platform cadence=weekly sha=ok branch=protected secrets=ok monetization=ready",
+    "https://github.com/example/docs-site team=docs cadence=monthly sha=ok branch=protected secrets=ok monetization=todo",
   ].join("&#10;");
 
   const content = `
@@ -366,7 +366,7 @@ function renderPublicReposYmlBuilderPage(lang = DEFAULT_LANGUAGE) {
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label for="inventory-owner" class="label" data-i18n="tools.public-repos-yml-builder.ui.label1">Owner</label>
-                  <input id="inventory-owner" class="input" value="trac3r00" placeholder="trac3r00" />
+                  <input id="inventory-owner" class="input" value="example" placeholder="example" />
                 </div>
                 <div>
                   <label for="automation-cadence" class="label" data-i18n="tools.public-repos-yml-builder.ui.label2">Default cadence</label>
@@ -459,8 +459,8 @@ function renderPublicReposYmlBuilderPage(lang = DEFAULT_LANGUAGE) {
         };
 
         const sample = [
-          'trac3r00/simpletool-app team=maintainers cadence=weekly sha=missing branch=unknown secrets=review monetization=ready',
-          'https://github.com/trac3r00/docs-site team=docs cadence=monthly sha=ok branch=protected secrets=ok monetization=todo'
+          'example-api team=platform cadence=weekly sha=ok branch=protected secrets=ok monetization=ready',
+          'https://github.com/example/docs-site team=docs cadence=monthly sha=ok branch=protected secrets=ok monetization=todo'
         ].join('\n');
 
 ${publicReposParserScript}
@@ -546,7 +546,7 @@ ${publicReposParserScript}
             '  audit:',
             '    runs-on: ubuntu-latest',
             '    steps:',
-            '      # Replace action ref placeholders with approved full 40-character commit SHAs.',
+            '      # Pin each action to a full 40-character commit SHA before enabling the workflow.',
             '      - uses: actions/checkout@<actions_checkout_commit_sha>',
             '      - name: Initialize CodeQL for public repo posture',
             '        uses: github/codeql-action/init@<codeql_action_init_commit_sha>',

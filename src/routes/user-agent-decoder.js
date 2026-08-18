@@ -83,9 +83,60 @@ function renderUserAgentDecoderPage(lang = DEFAULT_LANGUAGE) {
               <h2 class="text-sm font-bold text-primary-900 dark:text-primary-300 mb-2" data-i18n="tools.user-agent-decoder.ui.heading12">🌐 Your Current Browser</h2>
               <div id="current-ua" class="text-xs font-mono text-surface-700 dark:text-surface-300 bg-white dark:bg-surface-950 p-3 rounded border border-primary-200 dark:border-primary-700 break-all"></div>
             </div>
-            <button id="use-current" class="btn btn-secondary" data-tooltip="Use your current browser User-Agent string" data-i18n-tooltip="tools.user-agent-decoder.ui.tip0" whitespace-nowrap text-sm py-2">
+            <button id="use-current" type="button" class="btn btn-secondary whitespace-nowrap text-sm py-2" data-tooltip="Use your current browser User-Agent string" data-i18n-tooltip="tools.user-agent-decoder.ui.tip0">
               <span data-i18n="tools.user-agent-decoder.ui.button0">Use This</span>
             </button>
+        </div>
+        </div>
+
+        <div class="space-y-6">
+          <div>
+            <label for="ua-input" class="label" data-i18n="tools.user-agent-decoder.ui.label9">User-Agent String</label>
+            <textarea id="ua-input" rows="4" class="input-mono resize-y" placeholder="Paste User-Agent string here..." data-i18n-placeholder="tools.user-agent-decoder.ui.placeholder11"></textarea>
+            <p id="ua-error" class="hidden mt-2 text-sm text-danger-600 dark:text-danger-400"></p>
+            <div class="flex flex-wrap gap-2 mt-3">
+              <button id="parse-btn" type="button" class="btn btn-primary" data-i18n="tools.user-agent-decoder.ui.button6">🔍 Parse User-Agent</button>
+              <button id="clear-btn" type="button" class="btn btn-ghost" data-i18n="tools.user-agent-decoder.ui.button7">🗑️ Clear</button>
+            </div>
+          </div>
+
+          <div>
+            <p class="label" data-i18n="tools.user-agent-decoder.ui.label10">Quick Examples</p>
+            <div class="flex flex-wrap gap-2">
+              <button type="button" class="example-btn btn btn-ghost btn-xs" data-ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36" data-i18n="tools.user-agent-decoder.ui.button1">Chrome on Windows</button>
+              <button type="button" class="example-btn btn btn-ghost btn-xs" data-ua="Mozilla/5.0 (Macintosh; Intel Mac OS X 14_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.1 Safari/605.1.15" data-i18n="tools.user-agent-decoder.ui.button2">Safari on macOS</button>
+              <button type="button" class="example-btn btn btn-ghost btn-xs" data-ua="Mozilla/5.0 (iPhone; CPU iPhone OS 18_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.1 Mobile/15E148 Safari/604.1" data-i18n="tools.user-agent-decoder.ui.button3">iPhone Safari</button>
+              <button type="button" class="example-btn btn btn-ghost btn-xs" data-ua="Mozilla/5.0 (Linux; Android 15; Pixel 9) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.6778.104 Mobile Safari/537.36" data-i18n="tools.user-agent-decoder.ui.button4">Android Chrome</button>
+              <button type="button" class="example-btn btn btn-ghost btn-xs" data-ua="Mozilla/5.0 (X11; Linux x86_64; rv:133.0) Gecko/20100101 Firefox/133.0" data-i18n="tools.user-agent-decoder.ui.button5">Firefox on Linux</button>
+            </div>
+          </div>
+
+          <div id="results" class="hidden space-y-4">
+            <div>
+              <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400 mb-3" data-i18n="tools.user-agent-decoder.ui.heading13">Parsed Information</h2>
+              <dl class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                <div><dt class="text-surface-500">Browser</dt><dd id="browser-name">—</dd></div>
+                <div><dt class="text-surface-500" data-i18n="tools.user-agent-decoder.ui.desc15">Version:</dt><dd id="browser-version">—</dd></div>
+                <div><dt class="text-surface-500" data-i18n="tools.user-agent-decoder.ui.desc16">Engine:</dt><dd id="browser-engine">—</dd></div>
+                <div><dt class="text-surface-500">OS</dt><dd id="os-name">—</dd></div>
+                <div><dt class="text-surface-500">OS version</dt><dd id="os-version">—</dd></div>
+                <div><dt class="text-surface-500" data-i18n="tools.user-agent-decoder.ui.desc17">Architecture:</dt><dd id="os-arch">—</dd></div>
+                <div><dt class="text-surface-500">Device</dt><dd id="device-type">—</dd></div>
+                <div><dt class="text-surface-500" data-i18n="tools.user-agent-decoder.ui.desc18">Vendor:</dt><dd id="device-vendor">—</dd></div>
+                <div><dt class="text-surface-500" data-i18n="tools.user-agent-decoder.ui.desc19">Model:</dt><dd id="device-model">—</dd></div>
+                <div><dt class="text-surface-500" data-i18n="tools.user-agent-decoder.ui.desc20">Bot/Crawler:</dt><dd id="is-bot">—</dd></div>
+                <div><dt class="text-surface-500" data-i18n="tools.user-agent-decoder.ui.desc21">Mobile:</dt><dd id="is-mobile">—</dd></div>
+                <div><dt class="text-surface-500" data-i18n="tools.user-agent-decoder.ui.desc22">Tablet:</dt><dd id="is-tablet">—</dd></div>
+              </dl>
+            </div>
+            <div>
+              <div class="flex items-center justify-between gap-3 mb-2">
+                <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400" data-i18n="tools.user-agent-decoder.ui.heading14">Raw Analysis Output</h2>
+                <button id="copy-analysis" type="button" class="btn btn-ghost btn-xs" data-i18n="tools.user-agent-decoder.ui.button8">Copy</button>
+              </div>
+              <pre id="raw-output" class="input-mono whitespace-pre-wrap break-all text-xs p-3"></pre>
+            </div>
+          </div>
         </div>
 
         ${createEducationalSection(
@@ -168,9 +219,10 @@ function renderUserAgentDecoderPage(lang = DEFAULT_LANGUAGE) {
       });
 
        function parseUserAgent() {
+         if (!uaInput) return;
          const ua = uaInput.value.trim();
          if (!ua) {
-           document.getElementById('ua-error').textContent = _t('tools.user-agent-decoder.js.text0', 'Please enter a User-Agent string.');
+           document.getElementById('ua-error').textContent = _t('tools.user-agent-decoder.js.alert1', 'Please enter a User-Agent string.');
            document.getElementById('ua-error').classList.remove('hidden');
            return;
          }

@@ -436,10 +436,22 @@ function renderSVGOptimizerPage(lang = DEFAULT_LANGUAGE) {
         els.preview.innerHTML = '';
         const wrap = document.createElement('div');
         wrap.className = 'max-w-full';
-        // Import node into HTML document for display.
         const node = document.importNode(svg, true);
+        if (!node.getAttribute('width') && !node.getAttribute('height')) {
+          const vb = (node.getAttribute('viewBox') || '').trim().split(/[\s,]+/).map(Number);
+          if (vb.length === 4 && vb[2] > 0 && vb[3] > 0) {
+            const maxH = 280;
+            const scale = Math.min(1, maxH / vb[3]);
+            node.setAttribute('width', String(Math.max(1, Math.round(vb[2] * scale))));
+            node.setAttribute('height', String(Math.max(1, Math.round(vb[3] * scale))));
+          } else {
+            node.setAttribute('width', '280');
+            node.setAttribute('height', '280');
+          }
+        }
         node.style.maxWidth = '100%';
         node.style.maxHeight = '280px';
+        node.style.height = 'auto';
         wrap.appendChild(node);
         els.preview.appendChild(wrap);
       }
@@ -558,18 +570,23 @@ function renderSVGOptimizerPage(lang = DEFAULT_LANGUAGE) {
         }
       });
 
-      els.downloadBtn.addEventListener('click', () => {
+      els.downloadBtn.addEventListener('click', (event) => {
+        event.preventDefault();
         const text = els.output.value;
         if (!text.trim()) return;
-        const blob = new Blob([text], { type: 'image/svg+xml' });
+        const blob = new Blob([text], { type: 'image/svg+xml;charset=utf-8' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'optimized.svg';
+        a.setAttribute('download', 'optimized.svg');
+        a.rel = 'noopener';
+        a.style.display = 'none';
         document.body.appendChild(a);
         a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        window.setTimeout(() => {
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        }, 0);
       });
 
       // Update byte stats live

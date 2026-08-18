@@ -77,40 +77,17 @@ export function getSecurityHeaders(
 
   // Build CSP with nonce if provided (eliminates need for unsafe-inline)
   let csp;
-  const adScriptSrc = [
-    "https://pagead2.googlesyndication.com",
-    "https://www.googletagservices.com",
-    "https://tpc.googlesyndication.com",
-    "https://googleads.g.doubleclick.net",
-    "https://adservice.google.com",
-    "https://www.googletagmanager.com",
-    "https://static.cloudflareinsights.com",
-  ].join(" ");
+  const extraScriptSrc = ["https://static.cloudflareinsights.com"].join(" ");
 
-  const adFrameSrc = [
-    "https://googleads.g.doubleclick.net",
-    "https://tpc.googlesyndication.com",
-    "https://pagead2.googlesyndication.com",
-    "https://*.adtrafficquality.google",
-  ].join(" ");
+  const extraFrameSrc = [];
 
-  const adConnectSrc = [
-    "https://pagead2.googlesyndication.com",
-    "https://googleads.g.doubleclick.net",
-    "https://adservice.google.com",
-    "https://tpc.googlesyndication.com",
-    "https://www.google-analytics.com",
-    "https://www.googletagmanager.com",
-    "https://analytics.google.com",
-    "https://cloudflareinsights.com",
-    "https://*.adtrafficquality.google",
-  ].join(" ");
+  const extraConnectSrc = ["https://cloudflareinsights.com"].join(" ");
 
   if (nonce) {
-    csp = `default-src 'self'; script-src 'self' 'nonce-${nonce}' ${adScriptSrc}; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: blob:; media-src 'self' data: blob:; connect-src 'self' ${adConnectSrc}; font-src 'self' data: https://fonts.gstatic.com; frame-src 'self' ${adFrameSrc};`;
+    csp = `default-src 'self'; script-src 'self' 'nonce-${nonce}' ${extraScriptSrc}; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: blob:; media-src 'self' data: blob:; connect-src 'self' ${extraConnectSrc}; font-src 'self' data: https://fonts.gstatic.com; frame-src 'self'${extraFrameSrc.length ? " " + extraFrameSrc.join(" ") : ""};`;
   } else {
     // Fallback for non-HTML responses
-    csp = `default-src 'self'; script-src 'self' 'unsafe-inline' ${adScriptSrc}; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: blob:; media-src 'self' data: blob:; connect-src 'self' ${adConnectSrc}; font-src 'self' data: https://fonts.gstatic.com; frame-src 'self' ${adFrameSrc};`;
+    csp = `default-src 'self'; script-src 'self' 'unsafe-inline' ${extraScriptSrc}; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: blob:; media-src 'self' data: blob:; connect-src 'self' ${extraConnectSrc}; font-src 'self' data: https://fonts.gstatic.com; frame-src 'self'${extraFrameSrc.length ? " " + extraFrameSrc.join(" ") : ""};`;
   }
 
   return {

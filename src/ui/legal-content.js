@@ -30,13 +30,12 @@ const LEGAL_CONTENT = {
             "Tool computations happen client-side where possible",
             "We do not require accounts to use the service",
             "Operational infrastructure may keep limited request logs for abuse prevention",
-            "Third-party advertising providers may process cookies or identifiers under their own policies",
           ],
         },
         {
           heading: "4. Advertising",
           paragraphs: [
-            "The service is free to use and may be supported by advertising, including Google AdSense. Ad providers may use cookies, device identifiers, or IP-based signals to deliver and measure ads.",
+            "The service is free to use. We do not currently serve ads, and we do not load advertising or analytics scripts.",
           ],
         },
         {
@@ -115,13 +114,12 @@ const LEGAL_CONTENT = {
             "도구 계산은 가능한 한 클라이언트에서 수행됩니다",
             "서비스 사용에 계정이 필요하지 않습니다",
             "남용 방지를 위해 인프라 수준의 제한적 요청 로그가 남을 수 있습니다",
-            "서드파티 광고 사업자는 자체 정책에 따라 쿠키나 식별자를 처리할 수 있습니다",
           ],
         },
         {
           heading: "4. 광고",
           paragraphs: [
-            "서비스는 무료로 제공되며 Google AdSense를 포함한 광고로 운영될 수 있습니다. 광고 사업자는 광고 제공과 측정을 위해 쿠키, 기기 식별자, IP 기반 신호를 사용할 수 있습니다.",
+            "서비스는 무료입니다. 지금은 광고를 싣지 않으며, 광고·분석 스크립트도 로드하지 않습니다.",
           ],
         },
         {
@@ -199,13 +197,12 @@ const LEGAL_CONTENT = {
             "ツールの計算は可能な限りクライアント側で行われます",
             "利用にアカウント登録は不要です",
             "不正利用防止のため、インフラ側で限定的なリクエストログが残る場合があります",
-            "第三者広告事業者は独自ポリシーに基づき Cookie や識別子を処理する場合があります",
           ],
         },
         {
           heading: "4. 広告",
           paragraphs: [
-            "本サービスは無料で提供され、Google AdSense を含む広告により支えられる場合があります。広告配信と計測のため、広告事業者が Cookie、端末識別子、IP ベースの情報を利用することがあります。",
+            "本サービスは無料です。現在広告は掲載しておらず、広告・分析スクリプトも読み込みません。",
           ],
         },
         {
@@ -287,7 +284,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Publicidad",
           paragraphs: [
-            "El servicio es gratuito y puede mantenerse mediante publicidad, incluido Google AdSense. Los proveedores de anuncios pueden usar cookies, identificadores del dispositivo o señales basadas en IP para mostrar y medir anuncios.",
+            "El servicio es gratuito. Ahora mismo no mostramos anuncios ni cargamos scripts de publicidad o analítica.",
           ],
         },
         {
@@ -372,7 +369,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. 广告",
           paragraphs: [
-            "本服务免费提供，可能通过广告（包括 Google AdSense）维持运营。广告服务商可能使用 Cookie、设备标识符或基于 IP 的信号来投放和衡量广告效果。",
+            "本服务免费。当前不投放广告，也不加载广告或分析脚本。",
           ],
         },
         {
@@ -452,7 +449,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. 廣告",
           paragraphs: [
-            "本服務免費提供，可能透過廣告（包括 Google AdSense）維持營運。廣告服務商可能使用 Cookie、裝置識別碼或基於 IP 的訊號來投放和衡量廣告效果。",
+            "本服務免費。目前不投放廣告，也不載入廣告或分析指令碼。",
           ],
         },
         {
@@ -528,13 +525,12 @@ const LEGAL_CONTENT = {
             "Les calculs des outils s'effectuent côté client dans la mesure du possible",
             "Aucun compte n'est requis pour utiliser le service",
             "L'infrastructure opérationnelle peut conserver des journaux de requêtes limités à des fins de prévention des abus",
-            "Les fournisseurs publicitaires tiers peuvent traiter des cookies ou des identifiants conformément à leurs propres politiques",
           ],
         },
         {
           heading: "4. Publicité",
           paragraphs: [
-            "Le service est gratuit et peut être financé par la publicité, notamment Google AdSense. Les fournisseurs publicitaires peuvent utiliser des cookies, des identifiants d'appareils ou des signaux basés sur l'adresse IP pour diffuser et mesurer les annonces.",
+            "Le service est gratuit. Nous ne diffusons pas d'annonces pour le moment et nous ne chargeons pas de scripts publicitaires ou d'analyse.",
           ],
         },
         {
@@ -615,13 +611,12 @@ const LEGAL_CONTENT = {
             "Tool-Berechnungen erfolgen soweit möglich client-seitig",
             "Für die Nutzung des Dienstes ist kein Konto erforderlich",
             "Die Betriebsinfrastruktur kann begrenzte Anfrage-Logs zur Missbrauchsprävention vorhalten",
-            "Drittanbieter-Werbedienstleister können Cookies oder Kennungen gemäß ihren eigenen Richtlinien verarbeiten",
           ],
         },
         {
           heading: "4. Werbung",
           paragraphs: [
-            "Der Dienst ist kostenlos und kann durch Werbung finanziert werden, einschließlich Google AdSense. Werbedienstleister können Cookies, Gerätekennungen oder IP-basierte Signale verwenden, um Anzeigen auszuliefern und zu messen.",
+            "Der Dienst ist kostenlos. Derzeit schalten wir keine Anzeigen und laden keine Werbe- oder Analyseskripte.",
           ],
         },
         {
@@ -702,13 +697,12 @@ const LEGAL_CONTENT = {
             "Os cálculos das ferramentas ocorrem no lado do cliente sempre que possível",
             "Nenhuma conta é necessária para usar o serviço",
             "A infraestrutura operacional pode manter registros limitados de requisições para prevenção de abusos",
-            "Provedores de publicidade terceiros podem processar cookies ou identificadores de acordo com suas próprias políticas",
           ],
         },
         {
           heading: "4. Publicidade",
           paragraphs: [
-            "O serviço é gratuito e pode ser suportado por publicidade, incluindo o Google AdSense. Os provedores de anúncios podem usar cookies, identificadores de dispositivos ou sinais baseados em IP para exibir e medir anúncios.",
+            "O serviço é gratuito. No momento não exibimos anúncios nem carregamos scripts de publicidade ou análise.",
           ],
         },
         {
@@ -789,13 +783,12 @@ const LEGAL_CONTENT = {
             "Các phép tính của công cụ được thực hiện phía máy khách khi có thể",
             "Không cần tài khoản để sử dụng dịch vụ",
             "Cơ sở hạ tầng vận hành có thể lưu giữ nhật ký yêu cầu hạn chế để ngăn chặn lạm dụng",
-            "Nhà cung cấp quảng cáo bên thứ ba có thể xử lý cookie hoặc mã nhận dạng theo chính sách riêng của họ",
           ],
         },
         {
           heading: "4. Quảng cáo",
           paragraphs: [
-            "Dịch vụ được cung cấp miễn phí và có thể được hỗ trợ bởi quảng cáo, bao gồm Google AdSense. Nhà cung cấp quảng cáo có thể sử dụng cookie, mã nhận dạng thiết bị hoặc tín hiệu dựa trên IP để phân phối và đo lường quảng cáo.",
+            "Dịch vụ miễn phí. Hiện chúng tôi không phục vụ quảng cáo và không tải script quảng cáo hay phân tích.",
           ],
         },
         {
@@ -881,7 +874,7 @@ const LEGAL_CONTENT = {
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
                 <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">0</div>
-                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Bytes Stored</div>
+                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Tool Inputs Stored</div>
               </div>
             </div>
           `,
@@ -1019,7 +1012,7 @@ const LEGAL_CONTENT = {
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
                 <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">0</div>
-                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">저장 바이트</div>
+                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">저장한 도구 입력</div>
               </div>
             </div>
           `,
@@ -1157,7 +1150,7 @@ const LEGAL_CONTENT = {
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
                 <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">0</div>
-                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Bytes Stored</div>
+                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Tool Inputs Stored</div>
               </div>
             </div>
           `,
@@ -1295,7 +1288,7 @@ const LEGAL_CONTENT = {
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
                 <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">0</div>
-                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Bytes Stored</div>
+                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Tool Inputs Stored</div>
               </div>
             </div>
           `,
@@ -1433,7 +1426,7 @@ const LEGAL_CONTENT = {
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
                 <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">0</div>
-                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">存储字节</div>
+                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">保存的工具输入</div>
               </div>
             </div>
           `,
@@ -1569,7 +1562,7 @@ const LEGAL_CONTENT = {
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
                 <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">0</div>
-                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">儲存位元組</div>
+                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">儲存的工具輸入</div>
               </div>
             </div>
           `,
@@ -1705,7 +1698,7 @@ const LEGAL_CONTENT = {
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
                 <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">0</div>
-                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Octets stockés</div>
+                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Saisies stockées</div>
               </div>
             </div>
           `,
@@ -1843,7 +1836,7 @@ const LEGAL_CONTENT = {
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
                 <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">0</div>
-                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Gespeicherte Bytes</div>
+                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Gespeicherte Eingaben</div>
               </div>
             </div>
           `,
@@ -1981,7 +1974,7 @@ const LEGAL_CONTENT = {
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
                 <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">0</div>
-                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Bytes armazenados</div>
+                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Entradas armazenadas</div>
               </div>
             </div>
           `,
@@ -2119,7 +2112,7 @@ const LEGAL_CONTENT = {
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
                 <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">0</div>
-                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Byte được lưu trữ</div>
+                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Dữ liệu công cụ đã lưu</div>
               </div>
             </div>
           `,
@@ -2232,7 +2225,7 @@ const LEGAL_CONTENT = {
           heading: "Our Privacy Commitment",
           paragraphs: [
             "SimpleTool App is designed around privacy-first operation. Most tools process data locally in your browser, and we intentionally avoid collecting tool inputs or generated output on our servers.",
-            "The service is supported by infrastructure and advertising providers, so a limited amount of technical request data may still be processed by those providers under their own policies.",
+            "The service is supported by infrastructure providers, so a limited amount of technical request data may still be processed by those providers under their own policies.",
           ],
         },
         {
@@ -2264,7 +2257,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Cookies and Advertising",
           paragraphs: [
-            "We do not rely on first-party tracking cookies for core tool functionality. Advertising providers such as Google AdSense may use cookies, device identifiers, or similar signals to serve and measure ads in accordance with their policies and your regional controls.",
+            "We do not use first-party tracking cookies for core tool functionality, and we do not currently load advertising or analytics scripts.",
           ],
         },
         {
@@ -2274,7 +2267,7 @@ const LEGAL_CONTENT = {
           ],
           list: [
             "Cloudflare for hosting, CDN delivery, and abuse protection",
-            "Google AdSense for advertising",
+            "No advertising or analytics vendors",
             "Other browser-delivered assets only when required for the user experience",
           ],
         },
@@ -2320,7 +2313,7 @@ const LEGAL_CONTENT = {
           heading: "개인정보 보호 원칙",
           paragraphs: [
             "SimpleTool App은 프라이버시 우선 원칙으로 설계되었습니다. 대부분의 도구는 브라우저 안에서 로컬 처리되며, 도구 입력값이나 생성 결과를 서버에 의도적으로 수집하지 않습니다.",
-            "다만 사이트 운영과 광고 제공을 위해 사용하는 인프라 및 광고 사업자는 자체 정책에 따라 제한적인 기술 정보나 요청 데이터를 처리할 수 있습니다.",
+            "다만 사이트 운영을 위해 사용하는 인프라는 자체 정책에 따라 제한적인 기술 정보나 요청 데이터를 처리할 수 있습니다.",
           ],
         },
         {
@@ -2352,7 +2345,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. 쿠키와 광고",
           paragraphs: [
-            "핵심 도구 기능을 위해 1st-party 추적 쿠키를 사용하지 않습니다. 다만 Google AdSense 같은 광고 사업자는 각자의 정책과 지역별 통제 방식에 따라 쿠키, 기기 식별자, 유사 신호를 사용할 수 있습니다.",
+            "핵심 도구 기능을 위해 1st-party 추적 쿠키를 사용하지 않으며, 지금은 광고·분석 스크립트도 로드하지 않습니다.",
           ],
         },
         {
@@ -2360,7 +2353,7 @@ const LEGAL_CONTENT = {
           paragraphs: ["사이트 운영을 위해 소수의 외부 서비스를 사용합니다."],
           list: [
             "호스팅, CDN, 남용 방지를 위한 Cloudflare",
-            "광고 제공을 위한 Google AdSense",
+            "광고·분석 사업자 없음",
             "사용자 경험에 필요한 경우에만 전달되는 기타 브라우저 자산",
           ],
         },
@@ -2403,7 +2396,7 @@ const LEGAL_CONTENT = {
           heading: "プライバシー方針",
           paragraphs: [
             "SimpleTool App はプライバシー優先で設計されています。ほとんどのツールはブラウザ内でローカル処理され、ツール入力や生成結果をサーバー側で意図的に収集しません。",
-            "一方で、サイト運営や広告配信のために利用するインフラ事業者や広告事業者は、それぞれのポリシーに基づき限定的な技術情報やリクエスト情報を処理する場合があります。",
+            "一方で、サイト運営のために利用するインフラ事業者は、それぞれのポリシーに基づき限定的な技術情報やリクエスト情報を処理する場合があります。",
           ],
         },
         {
@@ -2435,7 +2428,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Cookie と広告",
           paragraphs: [
-            "中核ツール機能のためにファーストパーティの追跡 Cookie へ依存していません。ただし Google AdSense などの広告事業者は、各自のポリシーと地域設定に従い、Cookie や端末識別子などを利用する場合があります。",
+            "中核ツール機能のためにファーストパーティの追跡 Cookie は使いません。現在、広告・分析スクリプトも読み込みません。",
           ],
         },
         {
@@ -2443,7 +2436,7 @@ const LEGAL_CONTENT = {
           paragraphs: ["サイト運営には少数の第三者サービスを利用します。"],
           list: [
             "ホスティング、CDN、悪用対策のための Cloudflare",
-            "広告配信のための Google AdSense",
+            "広告・分析ベンダーなし",
             "ユーザー体験上必要な場合に限って読み込まれるその他のブラウザ向けアセット",
           ],
         },
@@ -2489,7 +2482,7 @@ const LEGAL_CONTENT = {
           heading: "Nuestro compromiso con la privacidad",
           paragraphs: [
             "SimpleTool App está diseñado con un enfoque de privacidad por defecto. La mayoría de las herramientas procesan los datos localmente en tu navegador y evitamos recopilar de forma intencional las entradas o los resultados generados por las herramientas.",
-            "Aun así, los proveedores de infraestructura y publicidad que utilizamos pueden procesar una cantidad limitada de datos técnicos o de solicitud conforme a sus propias políticas.",
+            "Aun así, los proveedores de infraestructura que utilizamos pueden procesar una cantidad limitada de datos técnicos o de solicitud conforme a sus propias políticas.",
           ],
         },
         {
@@ -2521,7 +2514,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Cookies y publicidad",
           paragraphs: [
-            "No dependemos de cookies propias de seguimiento para la funcionalidad principal. Sin embargo, proveedores publicitarios como Google AdSense pueden usar cookies, identificadores de dispositivo o señales similares para mostrar y medir anuncios según sus políticas y tus controles regionales.",
+            "No usamos cookies propias de seguimiento para la funcionalidad principal, y ahora mismo no cargamos scripts de publicidad o analítica.",
           ],
         },
         {
@@ -2531,7 +2524,7 @@ const LEGAL_CONTENT = {
           ],
           list: [
             "Cloudflare para hosting, CDN y protección contra abuso",
-            "Google AdSense para publicidad",
+            "Sin proveedores de publicidad o analítica",
             "Otros recursos entregados al navegador solo cuando son necesarios para la experiencia",
           ],
         },
@@ -2609,7 +2602,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Cookie 与广告",
           paragraphs: [
-            "我们不依赖第一方追踪 Cookie 实现核心工具功能。Google AdSense 等广告服务商可能根据其政策和您所在地区的法规使用 Cookie、设备标识符或类似信号来投放和衡量广告。",
+            "我们不依赖第一方追踪 Cookie 实现核心工具功能，当前也不加载广告或分析脚本。",
           ],
         },
         {
@@ -2617,7 +2610,7 @@ const LEGAL_CONTENT = {
           paragraphs: ["我们使用少量第三方服务来运营本站。"],
           list: [
             "Cloudflare 提供托管、CDN 分发和滥用防护",
-            "Google AdSense 提供广告服务",
+            "无广告或分析服务商",
             "仅在用户体验需要时加载的其他浏览器资源",
           ],
         },
@@ -2692,7 +2685,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Cookie 與廣告",
           paragraphs: [
-            "我們不依賴第一方追蹤 Cookie 實現核心工具功能。Google AdSense 等廣告服務商可能根據其政策和您所在地區的法規使用 Cookie、裝置識別碼或類似訊號來投放和衡量廣告。",
+            "我們不依賴第一方追蹤 Cookie 實現核心工具功能，目前也不載入廣告或分析指令碼。",
           ],
         },
         {
@@ -2700,7 +2693,7 @@ const LEGAL_CONTENT = {
           paragraphs: ["我們使用少量第三方服務來營運本站。"],
           list: [
             "Cloudflare 提供託管、CDN 分發和濫用防護",
-            "Google AdSense 提供廣告服務",
+            "無廣告或分析服務商",
             "僅在使用者體驗需要時載入的其他瀏覽器資源",
           ],
         },
@@ -2776,7 +2769,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Cookies et publicité",
           paragraphs: [
-            "Nous ne dépendons pas de cookies de suivi propriétaires pour les fonctionnalités principales. Les fournisseurs publicitaires comme Google AdSense peuvent utiliser des cookies, des identifiants d'appareils ou des signaux similaires pour diffuser et mesurer les annonces conformément à leurs politiques et à vos contrôles régionaux.",
+            "Nous n'utilisons pas de cookies de suivi propriétaires pour les fonctionnalités principales, et nous ne chargeons actuellement aucun script publicitaire ou d'analyse.",
           ],
         },
         {
@@ -2786,7 +2779,7 @@ const LEGAL_CONTENT = {
           ],
           list: [
             "Cloudflare pour l'hébergement, la livraison CDN et la protection contre les abus",
-            "Google AdSense pour la publicité",
+            "Aucun prestataire publicitaire ou d'analyse",
             "D'autres ressources délivrées par le navigateur uniquement lorsque nécessaires pour l'expérience utilisateur",
           ],
         },
@@ -2864,7 +2857,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Cookies und Werbung",
           paragraphs: [
-            "Wir verlassen uns nicht auf Erstanbieter-Tracking-Cookies für die Kernfunktionalität. Werbeanbieter wie Google AdSense können Cookies, Gerätekennungen oder ähnliche Signale verwenden, um Anzeigen gemäß ihren Richtlinien und Ihren regionalen Einstellungen zu schalten und zu messen.",
+            "Wir verwenden keine Erstanbieter-Tracking-Cookies für die Kernfunktionalität und laden derzeit keine Werbe- oder Analyseskripte.",
           ],
         },
         {
@@ -2874,7 +2867,7 @@ const LEGAL_CONTENT = {
           ],
           list: [
             "Cloudflare für Hosting, CDN-Auslieferung und Missbrauchsschutz",
-            "Google AdSense für Werbung",
+            "Keine Werbe- oder Analyseanbieter",
             "Andere vom Browser gelieferte Assets nur wenn für die Benutzererfahrung erforderlich",
           ],
         },
@@ -2920,7 +2913,7 @@ const LEGAL_CONTENT = {
           heading: "Nosso compromisso com a privacidade",
           paragraphs: [
             "O SimpleTool App é projetado com foco em privacidade por padrão. A maioria das ferramentas processa dados localmente no seu navegador, e evitamos intencionalmente coletar entradas das ferramentas ou resultados gerados em nossos servidores.",
-            "O serviço é suportado por provedores de infraestrutura e publicidade, de modo que uma quantidade limitada de dados técnicos de requisição ainda pode ser processada por esses provedores de acordo com suas próprias políticas.",
+            "O serviço é suportado por provedores de infraestrutura, de modo que uma quantidade limitada de dados técnicos de requisição ainda pode ser processada por esses provedores de acordo com suas próprias políticas.",
           ],
         },
         {
@@ -2952,7 +2945,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Cookies e publicidade",
           paragraphs: [
-            "Não dependemos de cookies de rastreamento próprios para a funcionalidade principal das ferramentas. Provedores de publicidade como o Google AdSense podem usar cookies, identificadores de dispositivos ou sinais similares para exibir e medir anúncios de acordo com suas políticas e seus controles regionais.",
+            "Não usamos cookies de rastreamento próprios para a funcionalidade principal das ferramentas e atualmente não carregamos scripts de publicidade ou análise.",
           ],
         },
         {
@@ -2962,7 +2955,7 @@ const LEGAL_CONTENT = {
           ],
           list: [
             "Cloudflare para hospedagem, entrega CDN e proteção contra abusos",
-            "Google AdSense para publicidade",
+            "Nenhum fornecedor de publicidade ou análise",
             "Outros recursos entregues pelo navegador apenas quando necessários para a experiência do usuário",
           ],
         },
@@ -3040,7 +3033,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Cookie và quảng cáo",
           paragraphs: [
-            "Chúng tôi không dựa vào cookie theo dõi nội bộ cho chức năng công cụ cốt lõi. Các nhà cung cấp quảng cáo như Google AdSense có thể sử dụng cookie, mã nhận dạng thiết bị hoặc các tín hiệu tương tự để phục vụ và đo lường quảng cáo theo chính sách của họ và các quyền kiểm soát khu vực của bạn.",
+            "Chúng tôi không dùng cookie theo dõi nội bộ cho chức năng công cụ cốt lõi và hiện không tải script quảng cáo hay phân tích.",
           ],
         },
         {
@@ -3050,7 +3043,7 @@ const LEGAL_CONTENT = {
           ],
           list: [
             "Cloudflare để lưu trữ, phân phối CDN và bảo vệ chống lạm dụng",
-            "Google AdSense cho quảng cáo",
+            "Không có nhà cung cấp quảng cáo hoặc phân tích",
             "Các tài nguyên được phân phối qua trình duyệt khác chỉ khi cần thiết cho trải nghiệm người dùng",
           ],
         },

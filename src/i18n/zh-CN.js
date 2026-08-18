@@ -39,7 +39,7 @@ export default {
   home: {
     heroTitle: "免费在线开发者工具",
     heroLine1: "为日常工作流程打造的免费隐私优先工具集。",
-    heroLine2: "无追踪、无数据收集——开箱即用的工具。",
+    heroLine2: "工具输入留在浏览器中，我们不会收集。",
     favorites: "收藏",
     recentlyUsed: "最近使用",
     searchResultsLabel: "搜索结果",
@@ -2573,7 +2573,8 @@ export default {
         option3: "lower",
         option4: "keep",
         option5: "2 spaces",
-        option6: "4 spaces",
+        option6: "BigQuery",
+        option10: "4 spaces",
         heading0: "SQL Formatting Tips",
         heading1: "Quick wins",
         heading2: "Validator limitations",

@@ -43,7 +43,7 @@ export default {
     heroLine1:
       "Una colección de herramientas gratuitas y privadas para tu flujo de trabajo diario.",
     heroLine2:
-      "Sin rastreo, sin recopilación de datos — solo herramientas que funcionan.",
+      "Tu entrada se queda en el navegador. No la recopilamos.",
     favorites: "Favoritos",
     recentlyUsed: "Usadas recientemente",
     searchResultsLabel: "Resultados de búsqueda",
@@ -2588,7 +2588,8 @@ export default {
         option3: "lower",
         option4: "keep",
         option5: "2 espacios",
-        option6: "4 espacios",
+        option6: "BigQuery",
+        option10: "4 espacios",
         heading0: "Consejos de formato SQL",
         heading1: "Mejoras rápidas",
         heading2: "Limitaciones del validador",
