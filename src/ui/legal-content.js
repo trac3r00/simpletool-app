@@ -35,7 +35,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Advertising",
           paragraphs: [
-            "The service is free to use. We do not currently serve ads, and we do not load advertising or analytics scripts.",
+            "The service is free to use and may show non-personalized Google ads on a small allow list of pages: the homepage below the tool grid, JSON Formatter below the editor, and changelog, about, and legal footers. Password, SSH, Token Studio, WireGuard, certificates, secret scanner, encoding, and pipe pages never load advertising scripts.",
           ],
         },
         {
@@ -119,7 +119,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. 광고",
           paragraphs: [
-            "서비스는 무료입니다. 지금은 광고를 싣지 않으며, 광고·분석 스크립트도 로드하지 않습니다.",
+            "서비스는 무료이며, 홈 그리드 아래·JSON Formatter 에디터 아래·changelog/about/legal 푸터에만 비개인화 Google 광고를 둘 수 있습니다. 비밀번호, SSH, Token Studio, WireGuard, 인증서, 시크릿 스캐너, 인코딩, pipe 페이지는 광고 스크립트를 로드하지 않습니다.",
           ],
         },
         {
@@ -2225,7 +2225,7 @@ const LEGAL_CONTENT = {
           heading: "Our Privacy Commitment",
           paragraphs: [
             "SimpleTool App is designed around privacy-first operation. Most tools process data locally in your browser, and we intentionally avoid collecting tool inputs or generated output on our servers.",
-            "The service is supported by infrastructure providers, so a limited amount of technical request data may still be processed by those providers under their own policies.",
+            "The service is supported by infrastructure providers, and allow-listed pages may also load Google advertising scripts. A limited amount of technical request data may still be processed by those providers under their own policies.",
           ],
         },
         {
@@ -2257,7 +2257,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Cookies and Advertising",
           paragraphs: [
-            "We do not use first-party tracking cookies for core tool functionality, and we do not currently load advertising or analytics scripts.",
+            "We do not use first-party tracking cookies for core tool functionality. On allow-listed pages we may load Google AdSense in non-personalized mode to serve ads. We do not use Google Tag Manager or Google Analytics. Sensitive tools never load advertising scripts.",
           ],
         },
         {
@@ -2267,7 +2267,7 @@ const LEGAL_CONTENT = {
           ],
           list: [
             "Cloudflare for hosting, CDN delivery, and abuse protection",
-            "No advertising or analytics vendors",
+            "Non-personalized Google AdSense on allow-listed pages only",
             "Other browser-delivered assets only when required for the user experience",
           ],
         },
@@ -2345,7 +2345,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. 쿠키와 광고",
           paragraphs: [
-            "핵심 도구 기능을 위해 1st-party 추적 쿠키를 사용하지 않으며, 지금은 광고·분석 스크립트도 로드하지 않습니다.",
+            "핵심 도구 기능을 위해 1st-party 추적 쿠키를 사용하지 않습니다. 허용된 페이지에서만 비개인화 Google AdSense를 로드할 수 있습니다. GTM과 GA는 쓰지 않으며, 민감 도구는 광고 스크립트를 로드하지 않습니다.",
           ],
         },
         {
@@ -2353,7 +2353,7 @@ const LEGAL_CONTENT = {
           paragraphs: ["사이트 운영을 위해 소수의 외부 서비스를 사용합니다."],
           list: [
             "호스팅, CDN, 남용 방지를 위한 Cloudflare",
-            "광고·분석 사업자 없음",
+            "허용된 페이지만 비개인화 Google AdSense",
             "사용자 경험에 필요한 경우에만 전달되는 기타 브라우저 자산",
           ],
         },

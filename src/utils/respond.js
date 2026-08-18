@@ -9,7 +9,6 @@ import {
   getLanguageBootstrapScript,
   getStylesheetLinks,
   getAdSenseScript,
-  getAdSlotHTML,
 } from "./common-ui.js";
 
 function injectStylesheet(html) {
@@ -54,12 +53,12 @@ function injectLanguageBootstrap(html) {
   return `${bootstrap}\n${html}`;
 }
 
-function injectAdSenseScript(html) {
-  if (html.includes("adsbygoogle.js")) {
+function injectAdSenseScript(html, pathname = "/") {
+  if (html.includes("adsbygoogle.js") || html.includes("requestNonPersonalizedAds")) {
     return html;
   }
 
-  const adScript = getAdSenseScript();
+  const adScript = getAdSenseScript(pathname);
   if (!adScript.trim()) {
     return html;
   }
@@ -69,29 +68,6 @@ function injectAdSenseScript(html) {
   }
 
   return `${adScript}\n${html}`;
-}
-
-function injectAdSlot(html) {
-  if (
-    html.includes('class="adsbygoogle"') ||
-    html.includes("class='adsbygoogle'") ||
-    html.includes("data-ad-slot=")
-  ) {
-    return html;
-  }
-
-  const adSlot = getAdSlotHTML("tool", {
-    wrapperClassName: "max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8",
-  });
-  if (!adSlot) {
-    return html;
-  }
-
-  if (html.includes("</body>")) {
-    return html.replace("</body>", `${adSlot}\n</body>`);
-  }
-
-  return `${html}\n${adSlot}`;
 }
 
 export function respondJSON(data, options = {}) {
@@ -125,7 +101,10 @@ export function respondHTML(html, options = {}) {
   const htmlWithStyles = injectStylesheet(html);
   const htmlWithTheme = injectThemeBootstrap(htmlWithStyles);
   const htmlWithLang = injectLanguageBootstrap(htmlWithTheme);
-  const htmlWithAds = injectAdSlot(injectAdSenseScript(htmlWithLang));
+  const htmlWithAds = injectAdSenseScript(
+    htmlWithLang,
+    url ? url.pathname : "/",
+  );
 
   // Inject nonce into ALL script tags (both inline and external)
   const htmlWithNonce = htmlWithAds.replace(

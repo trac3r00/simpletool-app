@@ -23,8 +23,7 @@ function renderLegalShell({
   path,
   lang = DEFAULT_LANGUAGE,
 }) {
-  // createPageTemplate always includes the tool ad slot; legal pages have their own slot,
-  // so strip the default tool slot to avoid double-ads.
+  // createPageTemplate no longer injects a default tool slot.
   const html = createPageTemplate({
     title,
     description,
@@ -33,12 +32,7 @@ function renderLegalShell({
     lang,
   });
 
-  const toolAdSlot = getAdSlotHTML("tool", {
-    wrapperClassName: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6",
-  });
-
-  const htmlWithoutToolSlot = toolAdSlot ? html.replace(toolAdSlot, "") : html;
-  return respondHTML(htmlWithoutToolSlot);
+  return respondHTML(html);
 }
 
 function wrapLegalPage({
@@ -72,7 +66,7 @@ function wrapLegalPage({
         </div>
       </div>
 
-      ${getAdSlotHTML("legal", { wrapperClassName: "mt-10" })}
+      ${getAdSlotHTML("legal", { path, wrapperClassName: "mt-10" })}
     </main>
   `;
 

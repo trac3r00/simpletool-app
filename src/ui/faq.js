@@ -1,5 +1,5 @@
 import { respondHTML } from "../utils/respond.js";
-import { createPageTemplate, getAdSlotHTML } from "../utils/common-ui.js";
+import { createPageTemplate } from "../utils/common-ui.js";
 import { createFaqAccordion, createBreadcrumbs } from "../utils/content-ui.js";
 import {
   DEFAULT_LANGUAGE,
@@ -32,12 +32,7 @@ function renderFaqShell({
     lang,
   });
 
-  const toolAdSlot = getAdSlotHTML("tool", {
-    wrapperClassName: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6",
-  });
-
-  const htmlWithoutToolSlot = toolAdSlot ? html.replace(toolAdSlot, "") : html;
-  return respondHTML(htmlWithoutToolSlot);
+  return respondHTML(html);
 }
 
 export function renderFaqPage(lang = DEFAULT_LANGUAGE) {
@@ -96,8 +91,6 @@ export function renderFaqPage(lang = DEFAULT_LANGUAGE) {
 
         ${faqContent}
       </div>
-
-      ${getAdSlotHTML("legal", { wrapperClassName: "mt-10" })}
     </main>
     <script>
       (function(){

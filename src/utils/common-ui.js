@@ -9,6 +9,10 @@ import { getKeyboardShortcutsScript } from "./keyboard-shortcuts.js";
 import { TOOLS } from "./tool-registry.js";
 import { getPersonalizationScript } from "./personalization.js";
 import {
+  getAdSenseScript,
+  getGtagScript,
+} from "./ads.js";
+import {
   DEFAULT_LANGUAGE,
   SUPPORTED_LANGUAGES,
   t,
@@ -297,128 +301,14 @@ export function getActionBarScript() {
   </script>`;
 }
 
-let adConfig = {
-  client: null,
-  slots: {},
-};
-
-function isAdsEnabled() {
-  return (
-    typeof adConfig.client === "string" &&
-    Boolean(adConfig.client.trim()) &&
-    adConfig.slots &&
-    Object.keys(adConfig.slots).length > 0
-  );
-}
-
-export function setAdConfig(config = {}) {
-  const { client, slots } = config;
-  if (client === null) {
-    adConfig.client = null;
-  }
-  if (typeof client === "string" && client.trim()) {
-    adConfig.client = client.trim();
-  }
-  if (slots && typeof slots === "object") {
-    adConfig.slots = { ...slots };
-  }
-}
-
-export function getAdConfig() {
-  return { ...adConfig, slots: { ...adConfig.slots } };
-}
-
-/**
- * Google AdSense script tag (disabled by default).
- */
-export function getGtagScript() {
-  // Disabled by default to avoid third-party requests in restrictive environments.
-  return "";
-}
-
-export function getAdSenseScript() {
-  if (!isAdsEnabled()) return "";
-  const client = adConfig.client;
-
-  // Validate client ID format to prevent malformed URLs
-  // Must start with ca-pub- and followed by digits
-  if (!client || !/^ca-pub-\d+$/.test(client)) {
-    console.warn(
-      "[AdSense] Invalid client ID format, skipping ad script injection",
-    );
-    return "";
-  }
-
-  return `
-    <script>
-      (function() {
-        function loadAdSense() {
-          const script = document.createElement('script');
-          script.async = true;
-          script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${client}';
-          script.crossOrigin = 'anonymous';
-          script.dataset.adClient = '${client}';
-          script.onerror = function() { this.remove(); };
-          document.head.appendChild(script);
-        }
-        // Load after DOM is ready or 2 seconds, whichever comes first
-        if (document.readyState === 'complete') {
-          setTimeout(loadAdSense, 2000);
-        } else {
-          window.addEventListener('DOMContentLoaded', function() {
-            setTimeout(loadAdSense, 2000);
-          });
-        }
-        // Safety timeout: remove if not loaded after 5 seconds
-        setTimeout(function() {
-          const scripts = document.querySelectorAll('script[data-ad-client]');
-          scripts.forEach(function(s) {
-            if (!window.adsbygoogle || !window.adsbygoogle.loaded) {
-              s.remove();
-            }
-          });
-        }, 5000);
-      })();
-    </script>
-  `;
-}
-
-/**
- * Render an AdSense slot, if configured.
- */
-export function getAdSlotHTML(slotKey, options = {}) {
-  if (!isAdsEnabled()) return "";
-  const slotId = adConfig.slots?.[slotKey];
-
-  // If no slot ID configured for this key, return empty string
-  if (!slotId || typeof slotId !== "string" || !slotId.trim()) {
-    return "";
-  }
-
-  const {
-    wrapperClassName = "",
-    label = "Sponsored",
-    format = "auto",
-    responsive = true,
-  } = options;
-
-  const labelHTML = label
-    ? `<p class="text-xs uppercase tracking-widest text-surface-400 mb-2">${label}</p>`
-    : "";
-
-  return `
-    <aside class="${wrapperClassName}" aria-label="Advertisement" style="display:none" data-ad-container>
-      ${labelHTML}
-       <ins class="adsbygoogle"
-            style="display:block"
-            data-ad-client="${adConfig.client}"
-            data-ad-slot="${slotId}"
-            data-ad-format="${format}"
-            data-full-width-responsive="${responsive ? "true" : "false"}"></ins>
-       <script>try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}</script>
-     </aside>
-  `;
-}
+export {
+  getAdConfig,
+  getAdSenseScript,
+  getAdSlotHTML,
+  getGtagScript,
+  isAdsEnabled,
+  setAdConfig,
+} from "./ads.js";
 
 /**
  * Shared theme toggle button markup with accessible defaults
@@ -1024,7 +914,7 @@ export function getFooterHTML(options = {}) {
                <span class="font-bold text-lg text-surface-900 dark:text-surface-50">SimpleTool</span>
              </div>
              <p class="text-sm text-surface-600 dark:text-surface-400 mb-4" data-i18n="footer.tagline">${t("footer.tagline", currentLang)}</p>
-              <p class="text-xs text-surface-500 dark:text-surface-500">© ${new Date().getFullYear()} SimpleTool · <a href="/changelog" class="hover:text-primary-500 transition-colors">v2.4.2</a></p>
+              <p class="text-xs text-surface-500 dark:text-surface-500">© ${new Date().getFullYear()} SimpleTool · <a href="/changelog" class="hover:text-primary-500 transition-colors">v2.4.3</a></p>
            </div>
            
            <!-- Column 2: Top Tools -->
@@ -1105,22 +995,6 @@ export function createPageTemplate(options) {
   const pageUrl = `${siteUrl}${withLanguageQuery(pagePath, currentLang)}`;
   const fullTitle = `${title} | SimpleTool`;
 
-  const sidebarAd = getAdSlotHTML("sidebar", {
-    wrapperClassName:
-      "hidden xl:block w-[160px] flex-shrink-0 sticky top-24 self-start ml-4 mt-8",
-    format: "vertical",
-    responsive: false,
-    label: "",
-  });
-
-  const bottomAd = getAdSlotHTML("bottom", {
-    wrapperClassName:
-      "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 mt-8 border-t border-surface-200 dark:border-surface-800",
-    format: "horizontal",
-    responsive: true,
-    label: "",
-  });
-
   return `<!DOCTYPE html>
 <html lang="${currentLang}" class="scroll-smooth">
 <head>
@@ -1149,7 +1023,7 @@ export function createPageTemplate(options) {
   ${getThemeBootstrapScript()}
   ${getLanguageBootstrapScript(currentLang)}
   ${getGtagScript()}
-  ${getAdSenseScript()}
+  ${getAdSenseScript(pagePath)}
   ${getStylesheetLinks()}
 </head>
 <body class="bg-surface-50 text-surface-900 dark:bg-surface-950 dark:text-surface-50 transition-colors duration-200 flex flex-col min-h-screen" data-tool-page-id="${toolId}">
@@ -1160,10 +1034,8 @@ export function createPageTemplate(options) {
       <div id="main-content" tabindex="-1" class="flex-1 min-w-0 overflow-x-hidden">
         ${content}
       </div>
-      ${sidebarAd}
     </div>
   </div>
-  ${bottomAd}
   ${getFooterHTML({ lang: currentLang })}
   ${schema !== undefined ? (schema ? `<script type="application/ld+json">${JSON.stringify(schema)}</script>` : "") : path ? `<script type="application/ld+json">${JSON.stringify({ "@context": "https://schema.org", "@type": "SoftwareApplication", name: title, url: pageUrl, description, applicationCategory: "DeveloperApplication", operatingSystem: "Any", offers: { "@type": "Offer", price: "0", priceCurrency: "USD" } })}</script>` : ""}
    ${getThemeScript()}
@@ -1176,22 +1048,6 @@ export function createPageTemplate(options) {
    ${getClipboardSafetyScript()}
    ${toolId ? getPersonalizationScript(toolId) : ""}
    ${scripts}
-  ${
-    isAdsEnabled()
-      ? `<script>
-    (function(){
-      function showAds(){document.querySelectorAll('[data-ad-container]').forEach(function(el){el.style.display=''});}
-      if(window.adsbygoogle&&window.adsbygoogle.loaded){showAds();return;}
-      var t=setTimeout(function(){},3000);
-      var check=setInterval(function(){
-        var ins=document.querySelector('ins.adsbygoogle');
-        if(ins&&(ins.dataset.adStatus||ins.childElementCount>0)){clearInterval(check);clearTimeout(t);showAds();}
-      },200);
-      setTimeout(function(){clearInterval(check);},5000);
-    })();
-  </script>`
-      : ""
-  }
   ${getAnalyticsScript()}
   <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){});}</script>
 </body>

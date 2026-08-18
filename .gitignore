@@ -83,6 +83,5 @@ youtube-output/
 
 # Draft scripts and tests (not yet production-ready)
 scripts/add-missing-sri.mjs
-src/utils/ads.test.js
 src/utils/sri.test.js
 src/worker.test.js

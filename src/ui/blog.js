@@ -1,5 +1,5 @@
 import { respondHTML } from "../utils/respond.js";
-import { createPageTemplate, getAdSlotHTML } from "../utils/common-ui.js";
+import { createPageTemplate } from "../utils/common-ui.js";
 import {
   createBlogArticleCard,
   createBreadcrumbs,
@@ -1093,12 +1093,7 @@ function renderBlogShell({
     lang,
   });
 
-  const toolAdSlot = getAdSlotHTML("tool", {
-    wrapperClassName: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6",
-  });
-
-  const htmlWithoutToolSlot = toolAdSlot ? html.replace(toolAdSlot, "") : html;
-  return respondHTML(htmlWithoutToolSlot);
+  return respondHTML(html);
 }
 
 function getBlogLocale(lang = DEFAULT_LANGUAGE) {
@@ -1162,8 +1157,6 @@ export function renderBlogListingPage(lang = DEFAULT_LANGUAGE) {
           ${articleCards}
         </div>
       </div>
-
-      ${getAdSlotHTML("legal", { wrapperClassName: "mt-10" })}
     </main>
   `;
 
@@ -1232,8 +1225,6 @@ export function renderBlogPostPage(slug, lang = DEFAULT_LANGUAGE) {
           ${localizedArticle.content || ""}
         </div>
       </article>
-
-      ${getAdSlotHTML("legal", { wrapperClassName: "mt-10" })}
     </main>
   `;
 

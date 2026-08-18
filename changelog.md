@@ -2,6 +2,12 @@
 
 This changelog is a snapshot-style record of major changes in this workspace.
 
+## 2026-08-17 — v2.4.3 Non-personalized ads
+
+- Manual AdSense units on the homepage, JSON Formatter, and legal/changelog pages only.
+- Ads stay non-personalized. Auto ads stay off. `ads.txt` appears only after real slot IDs exist.
+- Password, SSH, Token Studio, WireGuard, certificates, secret scanner, encoding, and pipe never load ad scripts.
+
 ## 2026-08-17 — v2.4.2 Honesty pass
 
 ### Fixes

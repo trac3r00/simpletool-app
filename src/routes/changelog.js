@@ -3,7 +3,7 @@
  */
 
 import { respondHTML } from "../utils/respond.js";
-import { createPageTemplate } from "../utils/common-ui.js";
+import { createPageTemplate, getAdSlotHTML } from "../utils/common-ui.js";
 import {
   DEFAULT_LANGUAGE,
   normalizeLanguage,
@@ -11,6 +11,25 @@ import {
 } from "../utils/i18n.js";
 
 const RELEASES = [
+  {
+    version: "2.4.3",
+    date: "2026-08-17",
+    title: "Non-personalized ads on an allow list",
+    changes: [
+      {
+        type: "feat",
+        text: "Manual AdSense units on homepage, JSON Formatter, and legal/changelog pages only",
+      },
+      {
+        type: "feat",
+        text: "Ads stay non-personalized; Auto ads stay off; ads.txt appears only after real slot IDs exist",
+      },
+      {
+        type: "feat",
+        text: "Password, SSH, Token Studio, WireGuard, certificates, secret scanner, encoding, and pipe never load ad scripts",
+      },
+    ],
+  },
   {
     version: "2.4.2",
     date: "2026-08-17",
@@ -290,6 +309,7 @@ function renderChangelogPage(lang = DEFAULT_LANGUAGE) {
         <p class="text-surface-600 dark:text-surface-400">Release history and recent changes to SimpleTool.</p>
       </div>
       ${releasesHTML}
+      ${getAdSlotHTML("legal", { path: "/changelog", wrapperClassName: "mt-10" })}
     </main>
   `;
 

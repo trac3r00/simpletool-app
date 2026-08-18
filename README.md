@@ -112,9 +112,9 @@ Cloudflare Worker settings are defined in `wrangler.toml`. The checked-in defaul
 | -------------------- | -------------------------------------------------------------------------------------------------------------------------- |
 | `ENVIRONMENT`        | Set to `development`, `dev`, or `local` to disable ads and production rate limiting and to include development-only tools. |
 | `SITE_URL`           | Base URL used for canonical links; defaults to `https://simpletool.app`.                                                   |
-| `ADSENSE_CLIENT`     | AdSense publisher client ID in `ca-pub-<digits>` format.                                                                   |
-| `ADSENSE_SLOT`       | Optional fallback slot ID for any missing supported placement.                                                             |
-| `ADSENSE_SLOTS`      | JSON object containing `home`, `tool`, `legal`, `sidebar`, and/or `bottom` slot IDs.                                       |
+| `ADSENSE_CLIENT`     | AdSense publisher client ID in `ca-pub-<digits>` format. Ads stay off until slot IDs exist.                                |
+| `ADSENSE_SLOT`       | Optional fallback slot ID for the allow-list keys (`home`, `json`, `legal`).                                               |
+| `ADSENSE_SLOTS`      | JSON object with `home`, `json`, and/or `legal` slot IDs. Empty `{}` keeps ads and ads.txt off.                            |
 | `SENTRY_DSN`         | Enables Sentry error reporting when non-empty.                                                                             |
 | `CF_ANALYTICS_TOKEN` | Enables the Cloudflare Web Analytics beacon when non-empty.                                                                |
 
