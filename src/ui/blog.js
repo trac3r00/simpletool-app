@@ -547,6 +547,8 @@ async function getHash(message) {
   },
   {
     slug: "password-security-best-practices-2026",
+    noindex: true,
+    canonicalSlug: "password-security-guide",
     title: "Password Security Best Practices for 2026",
     description:
       "A comprehensive guide to creating, storing, and managing secure passwords in the modern threat landscape.",
@@ -573,6 +575,8 @@ async function getHash(message) {
   },
   {
     slug: "understanding-json-web-tokens",
+    noindex: true,
+    canonicalSlug: "jwt-explained",
     title: "Understanding JSON Web Tokens: A Developer Guide",
     description:
       "Demystify JWTs — learn how they work, when to use them, and common security pitfalls to avoid.",
@@ -601,6 +605,8 @@ async function getHash(message) {
   },
   {
     slug: "regex-guide-for-beginners",
+    noindex: true,
+    canonicalSlug: "regex-guide",
     title: "Regular Expressions: A Practical Guide for Beginners",
     description:
       "Master the fundamentals of regex with real-world examples for log parsing, data validation, and text processing.",
@@ -632,6 +638,8 @@ async function getHash(message) {
   },
   {
     slug: "hash-algorithms-compared",
+    noindex: true,
+    canonicalSlug: "understanding-hashes",
     title: "Hash Algorithms Compared: MD5 vs SHA-256 vs SHA-3",
     description:
       "Understand the differences between popular hash algorithms and when to use each one.",
@@ -1083,6 +1091,8 @@ function renderBlogShell({
   schema,
   path = "/blog",
   lang = DEFAULT_LANGUAGE,
+  robots,
+  canonicalUrl,
 }) {
   const html = createPageTemplate({
     title,
@@ -1091,6 +1101,8 @@ function renderBlogShell({
     path,
     schema,
     lang,
+    robots,
+    canonicalUrl,
   });
 
   return respondHTML(html);
@@ -1228,6 +1240,7 @@ export function renderBlogPostPage(slug, lang = DEFAULT_LANGUAGE) {
     </main>
   `;
 
+  const canonicalSlug = article.canonicalSlug || slug;
   return renderBlogShell({
     title: localizedArticle.title,
     description: localizedArticle.description,
@@ -1235,6 +1248,8 @@ export function renderBlogPostPage(slug, lang = DEFAULT_LANGUAGE) {
     schema,
     path: `/blog/${slug}`,
     lang: locale.lang,
+    robots: article.noindex ? "noindex,follow" : undefined,
+    canonicalUrl: `https://simpletool.app/blog/${canonicalSlug}`,
   });
 }
 

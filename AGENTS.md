@@ -65,6 +65,10 @@ tests/
   helpers/tool-suite.js          # Shared test actions per tool (TOOL_ACTIONS map)
 ```
 
+## Catalog Freeze
+
+Do not add new tool pages until the eight flagships (JSON, Token studio / JWT, Regex, Cron, Password, SSH/certs, Curl, CIDR) beat the bookmarks people already use. Existing routes stay live; this freeze is about new catalog entries, not deletions.
+
 ## Adding a New Tool
 
 1. Create `src/routes/my-tool.js` — export `handleMyToolRoutes(request, url)`
