@@ -42,7 +42,7 @@ export default {
     heroLine1:
       "Une collection gratuite et respectueuse de la vie privée pour votre quotidien.",
     heroLine2:
-      "Vos saisies restent dans le navigateur. Nous ne les collectons pas.",
+      "Des publicités non personnalisées et étiquetées peuvent apparaître. Les outils mot de passe et clés restent sans publicité.",
     favorites: "Favoris",
     recentlyUsed: "Utilisés récemment",
     searchResultsLabel: "Résultats de recherche",
@@ -50,7 +50,7 @@ export default {
     meta: {
       title: "SimpleTool - Outils développeur en ligne gratuits",
       description:
-        "Outils en ligne gratuits et axés sur la confidentialité pour les développeurs. Formatage JSON, générateur de mots de passe, roulette à billes et bien plus.",
+        "Outils développeur côté client : formateur JSON, inspecteur JWT, testeur regex, cron, générateur de mots de passe, SSH/certs, curl et calculateur CIDR.",
       keywords:
         "outils en ligne, outils développeur, formateur JSON, générateur de mot de passe, calculateur de hachage, générateur UUID, testeur regex, décodeur base64, générateur QR code, outils gratuits, confidentialité",
     },

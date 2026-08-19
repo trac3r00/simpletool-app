@@ -987,12 +987,18 @@ export function createPageTemplate(options) {
     path = "",
     scripts = "",
     schema,
+    robots,
+    canonicalUrl,
   } = options;
   const currentLang = normalizeLanguage(options.lang || DEFAULT_LANGUAGE);
   const toolId = path ? path.replace(/^\//, "") : "";
 
   const pagePath = path || "/";
   const pageUrl = `${siteUrl}${withLanguageQuery(pagePath, currentLang)}`;
+  const canonicalHref = canonicalUrl || pageUrl;
+  const robotsTag = robots
+    ? `<meta name="robots" content="${robots}">`
+    : "";
   const fullTitle = `${title} | SimpleTool`;
 
   return `<!DOCTYPE html>
@@ -1002,7 +1008,8 @@ export function createPageTemplate(options) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${fullTitle}</title>
   <meta name="description" content="${description}">
-  <link rel="canonical" href="${pageUrl}">
+  ${robotsTag}
+  <link rel="canonical" href="${canonicalHref}">
   ${getAlternateLanguageLinks(pagePath, currentLang)}
   <link rel="icon" type="image/svg+xml" href="/favicon.ico">
   <link rel="manifest" href="/manifest.json">

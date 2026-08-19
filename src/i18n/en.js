@@ -40,7 +40,8 @@ export default {
     heroTitle: "Free Online Developer Tools",
     heroLine1:
       "A collection of free, privacy-first tools for your daily workflow.",
-    heroLine2: "Your tool input stays in the browser. We do not collect it.",
+    heroLine2:
+      "Labeled non-personalized ads may appear on some pages. Password and key tools stay ad-free.",
     favorites: "Favorites",
     recentlyUsed: "Recently Used",
     searchResultsLabel: "Search Results",
@@ -48,7 +49,7 @@ export default {
     meta: {
       title: "SimpleTool - Free Online Developer Tools",
       description:
-        "Free, privacy-focused online tools for developers. JSON formatter, password generator, marble roulette, and dozens more utilities.",
+        "Client-side developer tools: JSON formatter, JWT inspector, regex tester, cron builder, password generator, SSH/certs, curl studio, and CIDR calculator.",
       keywords:
         "online tools, developer tools, JSON formatter, password generator, hash calculator, UUID generator, regex tester, base64 decoder, QR code generator, free tools, privacy tools",
     },

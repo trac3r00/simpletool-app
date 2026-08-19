@@ -42,7 +42,7 @@ export default {
     heroLine1:
       "Eine Sammlung kostenloser, datenschutzorientierter Tools für Ihren Alltag.",
     heroLine2:
-      "Ihre Eingaben bleiben im Browser. Wir sammeln sie nicht.",
+      "Auf manchen Seiten gibt es gekennzeichnete, nicht personalisierte Anzeigen. Passwort- und Schlüsseltools bleiben werbefrei.",
     favorites: "Favoriten",
     recentlyUsed: "Kürzlich verwendet",
     searchResultsLabel: "Suchergebnisse",
@@ -50,7 +50,7 @@ export default {
     meta: {
       title: "SimpleTool - Kostenlose Online-Entwicklertools",
       description:
-        "Kostenlose, datenschutzorientierte Online-Tools für Entwickler. JSON-Formatter, Passwortgenerator, Marble Roulette und viele weitere.",
+        "Clientseitige Entwicklertools: JSON-Formatter, JWT-Inspector, Regex-Tester, Cron, Passwortgenerator, SSH/Zertifikate, Curl und CIDR-Rechner.",
       keywords:
         "Online-Tools, Entwicklertools, JSON-Formatter, Passwortgenerator, Hash-Rechner, UUID-Generator, Regex-Tester, Base64-Decoder, QR-Code-Generator, kostenlose Tools, Datenschutz",
     },

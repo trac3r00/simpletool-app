@@ -39,7 +39,8 @@ export default {
   home: {
     heroTitle: "免费在线开发者工具",
     heroLine1: "为日常工作流程打造的免费隐私优先工具集。",
-    heroLine2: "工具输入留在浏览器中，我们不会收集。",
+    heroLine2:
+      "部分页面可能显示已标注的非个性化广告。密码与密钥工具永不投放广告。",
     favorites: "收藏",
     recentlyUsed: "最近使用",
     searchResultsLabel: "搜索结果",
@@ -47,7 +48,7 @@ export default {
     meta: {
       title: "SimpleTool - 免费在线开发者工具",
       description:
-        "面向开发者的免费隐私优先在线工具。JSON格式化、密码生成器、弹珠轮盘等众多实用工具。",
+        "客户端开发者工具：JSON 格式化、JWT 检查、正则、cron、密码生成、SSH/证书、curl 与 CIDR 计算器。",
       keywords:
         "在线工具, 开发者工具, JSON格式化, 密码生成器, 哈希计算器, UUID生成器, 正则表达式测试, base64解码器, QR码生成器, 免费工具, 隐私工具",
     },
