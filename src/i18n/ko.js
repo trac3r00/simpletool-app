@@ -40,7 +40,8 @@ export default {
   home: {
     heroTitle: "무료 온라인 개발자 도구",
     heroLine1: "매일 쓰는 무료 개인정보 보호 도구 모음.",
-    heroLine2: "도구 입력은 브라우저에 남습니다. 수집하지 않습니다.",
+    heroLine2:
+      "일부 페이지에는 표시된 비개인화 광고가 있을 수 있습니다. 비밀번호와 키 도구는 광고가 없습니다.",
     favorites: "즐겨찾기",
     recentlyUsed: "최근 사용",
     searchResultsLabel: "검색 결과",
@@ -48,7 +49,7 @@ export default {
     meta: {
       title: "SimpleTool - 무료 온라인 개발자 도구",
       description:
-        "개발자를 위한 무료 개인정보 보호 도구 모음입니다. JSON 정리기, 비밀번호 생성기, 마블 룰렛 등 다양한 유틸리티를 제공합니다.",
+        "클라이언트 사이드 개발자 도구: JSON 정리, JWT 검사, 정규식, cron, 비밀번호 생성, SSH/인증서, curl, CIDR 계산기.",
       keywords:
         "온라인 도구, 개발자 도구, JSON 정리기, 비밀번호 생성기, 해시 계산기, UUID 생성기, 정규식 테스터, base64 디코더, QR 코드 생성기, 무료 도구, 개인정보 보호",
     },

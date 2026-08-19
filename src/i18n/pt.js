@@ -42,7 +42,7 @@ export default {
     heroLine1:
       "Uma coleção gratuita e focada em privacidade para o seu dia a dia.",
     heroLine2:
-      "Sua entrada fica no navegador. Não a coletamos.",
+      "Anúncios não personalizados e rotulados podem aparecer. Ferramentas de senha e chaves permanecem sem anúncios.",
     favorites: "Favoritos",
     recentlyUsed: "Usados recentemente",
     searchResultsLabel: "Resultados da pesquisa",
@@ -50,7 +50,7 @@ export default {
     meta: {
       title: "SimpleTool - Ferramentas online gratuitas para devs",
       description:
-        "Ferramentas online gratuitas e focadas em privacidade para desenvolvedores. Formatador JSON, gerador de senhas, Marble Roulette e muito mais.",
+        "Ferramentas de desenvolvimento no cliente: formatador JSON, inspetor JWT, testador regex, cron, gerador de senhas, SSH/certs, curl e calculadora CIDR.",
       keywords:
         "ferramentas online, ferramentas para desenvolvedores, formatador JSON, gerador de senhas, calculadora hash, gerador UUID, testador regex, decodificador base64, gerador de código QR, ferramentas gratuitas, privacidade",
     },

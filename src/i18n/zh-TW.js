@@ -39,7 +39,8 @@ export default {
   home: {
     heroTitle: "免費線上開發者工具",
     heroLine1: "為日常工作流程打造的免費隱私優先工具集。",
-    heroLine2: "工具輸入留在瀏覽器中，我們不會收集。",
+    heroLine2:
+      "部分頁面可能顯示已標示的非個人化廣告。密碼與金鑰工具永不投放廣告。",
     favorites: "收藏",
     recentlyUsed: "最近使用",
     searchResultsLabel: "搜尋結果",
@@ -47,7 +48,7 @@ export default {
     meta: {
       title: "SimpleTool - 免費線上開發者工具",
       description:
-        "面向開發者的免費隱私優先線上工具。JSON格式化、密碼產生器、彈珠輪盤等眾多實用工具。",
+        "用戶端開發者工具：JSON 格式化、JWT 檢查、正規表示式、cron、密碼產生、SSH/憑證、curl 與 CIDR 計算器。",
       keywords:
         "線上工具, 開發者工具, JSON格式化, 密碼產生器, 雜湊計算器, UUID產生器, 正規表示式測試, base64解碼器, QR碼產生器, 免費工具, 隱私工具",
     },

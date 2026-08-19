@@ -42,7 +42,7 @@ export default {
     heroLine1:
       "Bộ sưu tập công cụ miễn phí, ưu tiên quyền riêng tư cho công việc hàng ngày.",
     heroLine2:
-      "Dữ liệu nhập ở lại trình duyệt. Chúng tôi không thu thập.",
+      "Một số trang có thể có quảng cáo không cá nhân hóa và được gắn nhãn. Công cụ mật khẩu và khóa không có quảng cáo.",
     favorites: "Yêu thích",
     recentlyUsed: "Sử dụng gần đây",
     searchResultsLabel: "Kết quả tìm kiếm",
@@ -50,7 +50,7 @@ export default {
     meta: {
       title: "SimpleTool - Công cụ miễn phí cho nhà phát triển",
       description:
-        "Công cụ trực tuyến miễn phí, ưu tiên quyền riêng tư cho nhà phát triển. Định dạng JSON, tạo mật khẩu, Marble Roulette và nhiều tiện ích khác.",
+        "Công cụ lập trình chạy trên trình duyệt: định dạng JSON, kiểm tra JWT, regex, cron, tạo mật khẩu, SSH/chứng chỉ, curl và tính CIDR.",
       keywords:
         "công cụ trực tuyến, công cụ phát triển, định dạng JSON, tạo mật khẩu, tính băm, tạo UUID, kiểm tra regex, giải mã base64, tạo mã QR, công cụ miễn phí, quyền riêng tư",
     },

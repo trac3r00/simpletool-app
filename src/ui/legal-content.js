@@ -904,7 +904,7 @@ const LEGAL_CONTENT = {
           heading: "Privacy Commitment",
           paragraphs: [
             "Privacy is not a feature added later. It is the default design constraint for every tool we ship.",
-            "We avoid tracking pixels, session recording, and persistent tool-data storage so users can work without surveillance.",
+            "We avoid tracking pixels, session recording, and persistent tool-data storage. Labeled non-personalized ads may appear on allow-listed pages; password and key tools stay ad-free.",
           ],
           list: [
             "No accounts for normal use",
@@ -937,22 +937,22 @@ const LEGAL_CONTENT = {
           `,
         },
         {
-          heading: "For Enterprises",
+          heading: "Who It Is For",
           paragraphs: [
-            "SimpleTool App is designed for environments where data handling, compliance, and auditability matter.",
-            "Because tool inputs stay on the user device, teams can adopt the tools without routing sensitive material through a centralized backend.",
+            "SimpleTool App is for individual developers and small teams who want client-side utilities without sending payloads to a backend.",
+            "There is no paid product or licensing program.",
           ],
           list: [
-            "Compliance-friendly by design",
-            "Privacy-by-design architecture",
-            "Reduced data residency burden",
-            "Aligned with zero-trust operating models",
+            "No account required",
+            "Tool inputs stay on the device",
+            "Labeled ads may appear on a small allow list",
+            "Password and key tools stay ad-free",
           ],
         },
         {
           heading: "Contact & Support",
           paragraphs: [
-            "We value feedback from individual developers, students, and enterprise teams.",
+            "We value feedback from individual developers, students, and teams using the public site.",
           ],
           html: `
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
@@ -970,7 +970,7 @@ const LEGAL_CONTENT = {
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Business Inquiries</h3>
-                <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Partnerships, enterprise licensing, or media.</p>
+                <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Press, media, or other non-product questions.</p>
                 <a href="mailto:business@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">business@simpletool.app</a>
                 <p class="text-xs text-surface-500 mt-2">Response time: 2-3 business days</p>
               </div>
@@ -1075,7 +1075,7 @@ const LEGAL_CONTENT = {
           `,
         },
         {
-          heading: "엔터프라이즈용",
+          heading: "누구를 위한 도구인가",
           paragraphs: [
             "SimpleTool App은 데이터 취급, 규정 준수, 감사 가능성이 중요한 환경을 고려해 설계되었습니다.",
             "도구 입력이 사용자 기기 안에 머무르기 때문에 중앙 서버로 민감 정보를 우회시키지 않고도 도입할 수 있습니다.",
@@ -1108,7 +1108,7 @@ const LEGAL_CONTENT = {
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">비즈니스 문의</h3>
-                <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">파트너십, 엔터프라이즈 라이선스, 미디어.</p>
+                <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">보도, 미디어, 그 외 제품 외 문의.</p>
                 <a href="mailto:business@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">business@simpletool.app</a>
                 <p class="text-xs text-surface-500 mt-2">응답 시간: 영업일 2-3일</p>
               </div>
@@ -1213,7 +1213,7 @@ const LEGAL_CONTENT = {
           `,
         },
         {
-          heading: "企業向け",
+          heading: "対象ユーザー",
           paragraphs: [
             "SimpleTool App は、データ取り扱い、コンプライアンス、監査可能性が重要な環境を想定しています。",
             "入力が端末内にとどまるため、機密情報を中央サーバーへ迂回させずに導入できます。",
@@ -1246,7 +1246,7 @@ const LEGAL_CONTENT = {
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Business Inquiries</h3>
-                <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Partnerships, enterprise licensing, or media.</p>
+                <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Press, media, or other non-product questions.</p>
                 <a href="mailto:business@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">business@simpletool.app</a>
                 <p class="text-xs text-surface-500 mt-2">Response time: 2-3 business days</p>
               </div>
@@ -1384,7 +1384,7 @@ const LEGAL_CONTENT = {
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Business Inquiries</h3>
-                <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Partnerships, enterprise licensing, or media.</p>
+                <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Press, media, or other non-product questions.</p>
                 <a href="mailto:business@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">business@simpletool.app</a>
                 <p class="text-xs text-surface-500 mt-2">Response time: 2-3 business days</p>
               </div>
@@ -1625,7 +1625,7 @@ const LEGAL_CONTENT = {
           `,
         },
         {
-          heading: "企業級應用",
+          heading: "適用對象",
           paragraphs: [
             "SimpleTool App 專為重視資料處理、法規遵循性和可稽核性的企業環境設計。",
             "由於工具輸入保留在使用者裝置上，團隊可以在不將敏感資料路由至集中後端的前提下部署使用。",
@@ -1794,7 +1794,7 @@ const LEGAL_CONTENT = {
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Demandes commerciales</h3>
-                <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Partenariats, licences enterprise ou médias.</p>
+                <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Presse, médias ou autres questions hors produit.</p>
                 <a href="mailto:business@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">business@simpletool.app</a>
                 <p class="text-xs text-surface-500 mt-2">Délai de réponse : 2-3 jours ouvrés</p>
               </div>
@@ -1899,7 +1899,7 @@ const LEGAL_CONTENT = {
           `,
         },
         {
-          heading: "Für Unternehmen",
+          heading: "Für wen",
           paragraphs: [
             "SimpleTool App ist für Umgebungen konzipiert, in denen Datenhandhabung, Compliance und Auditierbarkeit wichtig sind.",
             "Da Tool-Eingaben auf dem Benutzergerät verbleiben, können Teams die Tools einsetzen, ohne sensible Daten über ein zentralisiertes Backend zu leiten.",
@@ -1932,7 +1932,7 @@ const LEGAL_CONTENT = {
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Geschäftliche Anfragen</h3>
-                <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Partnerschaften, Enterprise-Lizenzen oder Medienanfragen.</p>
+                <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Presse, Medien oder andere produktfremde Fragen.</p>
                 <a href="mailto:business@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">business@simpletool.app</a>
                 <p class="text-xs text-surface-500 mt-2">Reaktionszeit: 2-3 Werktage</p>
               </div>
@@ -2070,7 +2070,7 @@ const LEGAL_CONTENT = {
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Consultas comerciais</h3>
-                <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Parcerias, licenciamento enterprise ou mídia.</p>
+                <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Imprensa, mídia ou outras perguntas que não sejam de produto.</p>
                 <a href="mailto:business@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">business@simpletool.app</a>
                 <p class="text-xs text-surface-500 mt-2">Tempo de resposta: 2-3 dias úteis</p>
               </div>
@@ -3474,10 +3474,10 @@ const LEGAL_CONTENT = {
           ],
         },
         {
-          heading: "Enterprise & Partnership",
+          heading: "Press & Other Questions",
           paragraphs: [
-            "Interested in enterprise licensing, white-label solutions, or partnerships?",
-            "business@simpletool.app",
+            "For press, media, or other non-product questions:",
+            "hello@simpletool.app",
           ],
         },
         {
@@ -3523,10 +3523,10 @@ const LEGAL_CONTENT = {
           ],
         },
         {
-          heading: "엔터프라이즈 및 파트너십",
+          heading: "보도 및 기타 문의",
           paragraphs: [
-            "엔터프라이즈 라이선스, 화이트라벨, 파트너십에 관심이 있다면:",
-            "business@simpletool.app",
+            "보도, 미디어, 그 외 제품 외 문의:",
+            "hello@simpletool.app",
           ],
         },
         {
@@ -3572,10 +3572,10 @@ const LEGAL_CONTENT = {
           ],
         },
         {
-          heading: "企業利用と提携",
+          heading: "報道とその他のお問い合わせ",
           paragraphs: [
-            "エンタープライズ利用、ホワイトラベル、提携のご相談はこちら:",
-            "business@simpletool.app",
+            "報道、メディア、その他プロダクト以外のご相談:",
+            "hello@simpletool.app",
           ],
         },
         {
@@ -3621,10 +3621,10 @@ const LEGAL_CONTENT = {
           ],
         },
         {
-          heading: "Empresas y alianzas",
+          heading: "Prensa y otras consultas",
           paragraphs: [
-            "Si te interesan licencias enterprise, soluciones white-label o alianzas:",
-            "business@simpletool.app",
+            "Para prensa, medios u otras preguntas que no sean de producto:",
+            "hello@simpletool.app",
           ],
         },
         {
@@ -3670,10 +3670,10 @@ const LEGAL_CONTENT = {
           ],
         },
         {
-          heading: "企业合作与商务",
+          heading: "媒体与其他咨询",
           paragraphs: [
-            "有意向了解企业授权、白标解决方案或合作事宜？",
-            "business@simpletool.app",
+            "媒体、新闻或其他非产品问题：",
+            "hello@simpletool.app",
           ],
         },
         {
@@ -3719,10 +3719,10 @@ const LEGAL_CONTENT = {
           ],
         },
         {
-          heading: "企業合作與商務",
+          heading: "媒體與其他諮詢",
           paragraphs: [
-            "有意向了解企業授權、白標解決方案或合作事宜？",
-            "business@simpletool.app",
+            "媒體、新聞或其他非產品問題：",
+            "hello@simpletool.app",
           ],
         },
         {
@@ -3768,10 +3768,10 @@ const LEGAL_CONTENT = {
           ],
         },
         {
-          heading: "Entreprises et partenariats",
+          heading: "Presse et autres questions",
           paragraphs: [
-            "Intéressé par des licences enterprise, des solutions white-label ou des partenariats ?",
-            "business@simpletool.app",
+            "Pour la presse, les médias ou d'autres questions hors produit :",
+            "hello@simpletool.app",
           ],
         },
         {
@@ -3817,10 +3817,10 @@ const LEGAL_CONTENT = {
           ],
         },
         {
-          heading: "Unternehmen & Partnerschaften",
+          heading: "Presse und weitere Fragen",
           paragraphs: [
-            "Interesse an Enterprise-Lizenzen, White-Label-Lösungen oder Partnerschaften?",
-            "business@simpletool.app",
+            "Für Presse, Medien oder andere produktfremde Fragen:",
+            "hello@simpletool.app",
           ],
         },
         {
@@ -3866,10 +3866,10 @@ const LEGAL_CONTENT = {
           ],
         },
         {
-          heading: "Empresas e parcerias",
+          heading: "Imprensa e outras perguntas",
           paragraphs: [
-            "Interessado em licenciamento enterprise, soluções white-label ou parcerias?",
-            "business@simpletool.app",
+            "Para imprensa, mídia ou outras perguntas que não sejam de produto:",
+            "hello@simpletool.app",
           ],
         },
         {

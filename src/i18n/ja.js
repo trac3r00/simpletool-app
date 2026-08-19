@@ -40,7 +40,8 @@ export default {
   home: {
     heroTitle: "無料のオンライン開発ツール",
     heroLine1: "日常ワークフローのための無料・プライバシー重視ツール集。",
-    heroLine2: "入力はブラウザ内で処理します。収集しません。",
+    heroLine2:
+      "一部のページには表示付きの非パーソナライズ広告があります。パスワードと鍵ツールは広告なしです。",
     favorites: "お気に入り",
     recentlyUsed: "最近使ったツール",
     searchResultsLabel: "検索結果",
@@ -48,7 +49,7 @@ export default {
     meta: {
       title: "SimpleTool - 無料のオンライン開発ツール",
       description:
-        "開発者向けの無料・プライバシー重視ツール集。JSON整形ツール、パスワード生成、マーブルルーレットなどを利用できます。",
+        "クライアントサイドの開発者ツール: JSON整形、JWT検査、正規表現、cron、パスワード生成、SSH/証明書、curl、CIDR計算。",
       keywords:
         "オンラインツール, 開発者ツール, JSON整形, パスワード生成, ハッシュ計算, UUID生成, 正規表現テスター, base64デコーダー, QRコード生成, 無料ツール, プライバシー",
     },
