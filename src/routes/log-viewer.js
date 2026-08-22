@@ -32,7 +32,7 @@ export async function handleLogViewerRoutes(request, url) {
           {
             text: translation?.ui?.badge10 || "Client-Side Only",
             tooltip:
-              "Runs entirely in your browser using Web APIs — your data never leaves your device.",
+              "Runs entirely in your browser using Web APIs — your data is processed locally and not sent to our servers.",
           },
           {
             text: translation?.ui?.badge11 || "100k+ Lines",

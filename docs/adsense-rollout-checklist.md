@@ -1,5 +1,9 @@
 # AdSense Rollout Checklist
 
+> Canonical allow/deny lists and policy live in
+> [`adsense-integration.md`](./adsense-integration.md) (which mirrors
+> `src/utils/ads.js`). This file is the operational rollout steps only.
+
 ## Before turning ads on
 
 - Create three Display units in AdSense. Do not enable Auto ads.

@@ -1,7 +1,7 @@
 /**
  * SSH Key Generator Tool
  * Generate ECDSA and RSA key pairs securely in the browser using Web Crypto API
- * All processing happens client-side - keys never leave your browser
+ * All processing happens client-side - keys stay in your browser and are not sent to our servers
  */
 
 import { respondHTML, respondJSON } from "../utils/respond.js";
@@ -61,7 +61,7 @@ function renderSSHKeyGeneratorPage(lang = DEFAULT_LANGUAGE) {
         text: translation?.ui?.badge18 || "Private & Secure",
         color: "green",
         tooltip:
-          "Keys are generated in the browser via the Web Crypto API and private material never leaves your device.",
+          "Keys are generated in the browser via the Web Crypto API and the private key stays in your browser and is not sent to our servers.",
       },
     ],
     { toolId: "ssh-key-generator" },
@@ -87,7 +87,7 @@ function renderSSHKeyGeneratorPage(lang = DEFAULT_LANGUAGE) {
                <h2 class="text-sm font-bold text-success-900 dark:text-success-300 mb-1" data-i18n="tools.ssh-key-generator.ui.heading11">100% Client-Side & Private</h2>
                <ul class="text-xs text-success-800 dark:text-success-200 space-y-1 list-disc list-inside">
                 <li>All keys generated in your browser using Web Crypto API</li>
-                <li>Private keys NEVER leave your device</li>
+                <li>Private keys stay in your browser and are not sent to our servers</li>
                 <li>Keys are generated in the browser. Nothing is sent to the server.</li>
               </ul>
             </div>

@@ -447,19 +447,6 @@ const worker = {
         });
       }
 
-      // Legacy routing compatibility: older docs/links used the /tools/<tool-id> prefix.
-      if (path === "/tools") {
-        const redirectUrl = new URL(request.url);
-        redirectUrl.pathname = "/";
-        return Response.redirect(redirectUrl.href, 301);
-      }
-
-      if (path.startsWith("/tools/")) {
-        const redirectUrl = new URL(request.url);
-        redirectUrl.pathname = path.slice("/tools".length).replace(/^\/+/, "/");
-        return Response.redirect(redirectUrl.href, 301);
-      }
-
       // Tool routes - path-based
 
       // Legacy tool redirects (map-driven) — before /tools/ prefix so single-hop works

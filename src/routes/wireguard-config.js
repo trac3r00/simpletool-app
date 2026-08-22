@@ -47,7 +47,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
       {
         text: translation?.ui?.badge41 || "Client-Side Keys",
         tooltip:
-          "All private keys generated locally in your browser using libsodium.js. Keys never leave your device.",
+          "All private keys generated locally in your browser using libsodium.js. Keys stay in your browser and are not sent to our servers.",
       },
     ],
     { toolId: "wireguard-config" },

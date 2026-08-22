@@ -51,7 +51,7 @@ function renderQRCodePage(lang = DEFAULT_LANGUAGE) {
         text: translation?.ui?.badge21 || "Privacy First",
         color: "purple",
         tooltip:
-          "All processing happens in your browser — no data is sent to any server.",
+          "All processing happens in your browser — your data is not sent to our servers.",
       },
     ],
     { toolId: "qr-code" },

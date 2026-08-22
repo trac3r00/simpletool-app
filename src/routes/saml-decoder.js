@@ -64,7 +64,7 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
                <span class="text-xl">🔐</span>
                <div>
                  <p class="font-semibold" data-i18n="tools.saml-decoder.ui.heading11">Client-side only</p>
-                 <p class="text-surface-500 dark:text-surface-400" data-i18n="tools.saml-decoder.ui.desc13">Nothing leaves your browser.</p>
+                 <p class="text-surface-500 dark:text-surface-400" data-i18n="tools.saml-decoder.ui.desc13">Processed in your browser, not sent to our servers.</p>
                </div>
              </div>
              <div class="flex items-center gap-3 bg-info-50 dark:bg-info-900/20 border border-info-200 dark:border-info-800 rounded-xl px-4 py-3">

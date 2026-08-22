@@ -37,7 +37,7 @@ function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
       {
         text: translation?.ui?.badge16 || "Client-Side Only",
         tooltip:
-          "Runs entirely in your browser using Web APIs — your code never leaves your device.",
+          "Runs entirely in your browser using Web APIs — your code is processed locally and not sent to our servers.",
       },
     ],
     { toolId: "code-minifier" },
@@ -134,7 +134,7 @@ function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
         <div class="bg-surface-50 dark:bg-surface-800/50 rounded-xl p-4 border border-surface-200 dark:border-surface-700">
           <h3 class="font-bold text-surface-900 dark:text-surface-100 mb-2" data-i18n="tools.code-minifier.ui.heading12">🔒 Privacy First</h3>
           <p class="text-sm text-surface-600 dark:text-surface-400" data-i18n="tools.code-minifier.ui.desc15">
-            All processing happens in your browser. Your code never leaves your device.
+            All processing happens in your browser. Your code is processed locally and not sent to our servers.
           </p>
         </div>
       </div>

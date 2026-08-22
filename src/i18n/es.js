@@ -121,7 +121,7 @@ export default {
         desc6:
           "Los JSON Web Tokens (JWT) son un medio compacto y seguro para URL de representar claims transferidos entre dos partes.",
         desc7:
-          "🔒 Toda la decodificación ocurre en su navegador. Sus tokens nunca se envían a ningún servidor.",
+          "🔒 Toda la decodificación ocurre en su navegador. Sus tokens no se envían a nuestros servidores.",
         badge8: "Solo cliente",
         badge9: "Privacidad primero",
         desc10: "Todavía no se ha decodificado ningún token",
@@ -140,7 +140,7 @@ export default {
         status0: "error",
         status1: "éxito",
         text2: "¡Copiado!",
-        tpl3: "🔒 Toda la decodificación ocurre en su navegador. Sus tokens nunca se envían a ningún servidor.",
+        tpl3: "🔒 Toda la decodificación ocurre en su navegador. Sus tokens no se envían a nuestros servidores.",
         tpl4: "' + match + '",
         tpl5: "Análisis de claims",
         status2: "No Token Provided",
@@ -319,7 +319,7 @@ export default {
         desc20: "Seleccione archivo para verificar",
         desc21: "Esperando entrada...",
         desc22:
-          "MD5 and SHA-1 are cryptographically broken and disabled by default. All processing occurs in a sandboxed client-side environment using the Web Crypto API. No data is transmitted to external servers.",
+          "MD5 and SHA-1 are cryptographically broken and disabled by default. All processing occurs in a sandboxed client-side environment using the Web Crypto API. Your data is not sent to our servers.",
         desc23: "Introduzca texto o suelte un archivo para calcular hashes.",
         badge23: "SHA-256 recomendado",
         badge24: "Listo",
@@ -358,7 +358,7 @@ export default {
         text1: "Calculado:",
         alert2:
           "Longitud de hash inválida. Se esperan 64, 96 o 128 caracteres.",
-        tpl3: "MD5 and SHA-1 are cryptographically broken and disabled by default. All processing occurs in a sandboxed client-side environment using the Web Crypto API. No data is transmitted to external servers.",
+        tpl3: "MD5 and SHA-1 are cryptographically broken and disabled by default. All processing occurs in a sandboxed client-side environment using the Web Crypto API. Your data is not sent to our servers.",
         tpl4: "Esperando entrada...",
         tpl5: "Error: ' + error.message + '",
         text2: "Computed: ",
@@ -793,7 +793,7 @@ export default {
         th34: "Use Case",
         heading35: "100% Client-Side Key Generation",
         desc36:
-          "Private keys are generated using libsodium.js directly in your browser. Keys never leave your device.",
+          "Private keys are generated using libsodium.js directly in your browser. Keys stay in your browser and are not sent to our servers.",
         desc37: "⚠️ Never share your private key!",
         desc38: "Paste an existing .conf file to populate the form.",
         desc39: "Generate a config to create QR code",
@@ -805,7 +805,7 @@ export default {
         badge45: "Privacidad primero",
         heading0: "100% Client-Side Key Generation",
         desc0:
-          "Private keys are generated using libsodium.js directly in your browser. Keys never leave your device.",
+          "Private keys are generated using libsodium.js directly in your browser. Keys stay in your browser and are not sent to our servers.",
         heading1: "Key Pair Generator",
         label0: "Private Key",
         warning0: "⚠️ Never share your private key!",

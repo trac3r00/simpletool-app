@@ -1,5 +1,11 @@
 # AdSense Integration
 
+> **Authoritative ad-policy doc.** The allow/deny lists below mirror the code —
+> the real source of truth is `ALLOW_SLOT_KEYS`, `DENY_AD_PATHS`, and
+> `LEGAL_AD_PATHS` in [`src/utils/ads.js`](../src/utils/ads.js), enforced by
+> `src/ui/honest-copy.test.js`. Other docs must point here rather than restate
+> the lists.
+
 Manual Display units only. Non-personalized ads. Never Auto ads.
 
 Ads stay off until `ADSENSE_SLOTS` contains real slot IDs. `ads.txt` is served

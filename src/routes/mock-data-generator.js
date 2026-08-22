@@ -52,7 +52,7 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
       {
         text: translation?.ui?.badge13 || "Client-Side Only",
         tooltip:
-          "Runs entirely in your browser using Web APIs — your data never leaves your device.",
+          "Runs entirely in your browser using Web APIs — your data is processed locally and not sent to our servers.",
       },
     ],
     { toolId: "mock-data-generator" },
@@ -193,7 +193,7 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
           {
             title: "Data Privacy in Mocks",
             content:
-              '<p>Privacy is a top priority in modern software development. Using real production data in development or staging environments is a major security risk. Mock data generators solve this by producing "fake" but structurally correct data. Our tool runs entirely in your browser, meaning your configuration and the generated data never leave your device. This "Privacy-First" approach ensures that even the process of creating mock data is secure and compliant with the strictest security standards.</p>',
+              '<p>Privacy is a top priority in modern software development. Using real production data in development or staging environments is a major security risk. Mock data generators solve this by producing "fake" but structurally correct data. Our tool runs entirely in your browser, meaning your configuration and the generated data stay in your browser and are not sent to our servers. This "Privacy-First" approach ensures that even the process of creating mock data is secure and compliant with the strictest security standards.</p>',
           },
           {
             title: "Pro Tips",

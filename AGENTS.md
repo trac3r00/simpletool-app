@@ -2,7 +2,7 @@
 
 ## Overview
 
-49 browser-based web tools served from a single Cloudflare Worker. All tool processing is client-side. Server renders HTML via template literals in route files. Supports 4 languages (en/ko/ja/es) via a client-side i18n system.
+53 browser-based web tools served from a single Cloudflare Worker (56 registered, including 3 dev-only games hidden in production). All tool processing is client-side. Server renders HTML via template literals in route files. Supports 10 languages (en/ko/ja/es/zh-CN/zh-TW/fr/de/pt/vi) via a client-side i18n system.
 
 **Stack:** Cloudflare Workers (V8 isolates), Vanilla JS, Tailwind CSS 3, Vitest, Playwright.
 
@@ -95,7 +95,7 @@ Affected characters: `\d`, `\w`, `\s`, `\b`, `\S`, `\W`, `\D`, `\B`, `\.`
 
 ## i18n System
 
-Four languages: en (default), ko, ja, es. Language stored in `localStorage('language')`.
+Ten languages: en (default), ko, ja, es, zh-CN, zh-TW, fr, de, pt, vi. Language stored in `localStorage('language')`.
 
 **Server-side:** `getLanguageScript(toolId)` serializes translations inline. Only the active tool's `ui`/`js` data is included (other tools get name/desc only) to keep page size small.
 

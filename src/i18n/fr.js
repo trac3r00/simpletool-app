@@ -120,7 +120,7 @@ export default {
         desc6:
           "JSON Web Tokens (JWT) are a compact, URL-safe means of representing claims to be transferred between two parties.",
         desc7:
-          "🔒 All decoding happens in your browser. Your tokens are never sent to any server.",
+          "🔒 All decoding happens in your browser. Your tokens are not sent to our servers.",
         badge8: "Client-Side Only",
         badge9: "Privacy First",
         desc10: "No token decoded",
@@ -139,7 +139,7 @@ export default {
         status0: "error",
         status1: "success",
         text2: "Copied!",
-        tpl3: "🔒 All decoding happens in your browser. Your tokens are never sent to any server.",
+        tpl3: "🔒 All decoding happens in your browser. Your tokens are not sent to our servers.",
         tpl4: "' + match + '",
         tpl5: "Claim Analysis",
         status2: "No Token Provided",
@@ -317,7 +317,7 @@ export default {
         desc20: "Select file to verify",
         desc21: "Awaiting input...",
         desc22:
-          "MD5 and SHA-1 are cryptographically broken and disabled by default. All processing occurs in a sandboxed client-side environment using the Web Crypto API. No data is transmitted to external servers.",
+          "MD5 and SHA-1 are cryptographically broken and disabled by default. All processing occurs in a sandboxed client-side environment using the Web Crypto API. Your data is not sent to our servers.",
         desc23: "Enter text or drop a file to compute hashes.",
         badge23: "SHA-256 Recommended",
         badge24: "Ready",
@@ -355,7 +355,7 @@ export default {
         text0: "Expected:",
         text1: "Computed:",
         alert2: "Invalid hash length. Expected 64, 96, or 128 characters.",
-        tpl3: "MD5 and SHA-1 are cryptographically broken and disabled by default. All processing occurs in a sandboxed client-side environment using the Web Crypto API. No data is transmitted to external servers.",
+        tpl3: "MD5 and SHA-1 are cryptographically broken and disabled by default. All processing occurs in a sandboxed client-side environment using the Web Crypto API. Your data is not sent to our servers.",
         tpl4: "Awaiting input...",
         tpl5: "Error: ' + error.message + '",
         text2: "Computed: ",
@@ -790,7 +790,7 @@ export default {
         th34: "Use Case",
         heading35: "100% Client-Side Key Generation",
         desc36:
-          "Private keys are generated using libsodium.js directly in your browser. Keys never leave your device.",
+          "Private keys are generated using libsodium.js directly in your browser. Keys stay in your browser and are not sent to our servers.",
         desc37: "⚠️ Never share your private key!",
         desc38: "Paste an existing .conf file to populate the form.",
         desc39: "Generate a config to create QR code",
@@ -802,7 +802,7 @@ export default {
         badge45: "Privacy First",
         heading0: "100% Client-Side Key Generation",
         desc0:
-          "Private keys are generated using libsodium.js directly in your browser. Keys never leave your device.",
+          "Private keys are generated using libsodium.js directly in your browser. Keys stay in your browser and are not sent to our servers.",
         heading1: "Key Pair Generator",
         label0: "Private Key",
         warning0: "⚠️ Never share your private key!",
@@ -1387,7 +1387,7 @@ export default {
         desc11: "Enterprise SSO",
         desc12:
           "Paste a Base64 SAML response or raw XML to inspect issuers, subjects, attributes, and validity windows instantly—no network requests.",
-        desc13: "Nothing leaves your browser.",
+        desc13: "Processed in your browser, not sent to our servers.",
         desc14: "Base64 + optional deflate.",
         desc15: "Awaiting input",
         badge16: "Client-Side Only",
@@ -1751,7 +1751,7 @@ export default {
         heading2: "Strat\u00e9gies de test",
         p2: "<p>Des tests efficaces n\u00e9cessitent des jeux de donn\u00e9es diversifi\u00e9s. Utilisez des donn\u00e9es simul\u00e9es pour amorcer vos bases de donn\u00e9es de d\u00e9veloppement, effectuer des tests de charge avec des milliers d'enregistrements ou v\u00e9rifier les mises en page UI avec des longueurs de cha\u00eenes variables. C'est particuli\u00e8rement utile pour les tests d'int\u00e9gration o\u00f9 vous avez besoin de r\u00e9ponses pr\u00e9visibles d'APIs externes. En g\u00e9n\u00e9rant des donn\u00e9es localement, vous pouvez cr\u00e9er des environnements de test coh\u00e9rents faciles \u00e0 r\u00e9initialiser et \u00e0 reproduire, conduisant \u00e0 des cycles de d\u00e9veloppement plus fiables et plus rapides.</p>",
         heading3: "Confidentialit\u00e9 des donn\u00e9es dans les simulations",
-        p3: "<p>La vie priv\u00e9e est une priorit\u00e9 absolue dans le d\u00e9veloppement logiciel moderne. L'utilisation de donn\u00e9es de production r\u00e9elles dans des environnements de d\u00e9veloppement ou de staging est un risque de s\u00e9curit\u00e9 majeur. Les g\u00e9n\u00e9rateurs de donn\u00e9es simul\u00e9es r\u00e9solvent ce probl\u00e8me en produisant des donn\u00e9es fausses mais structurellement correctes. Notre outil fonctionne enti\u00e8rement dans votre navigateur, ce qui signifie que votre configuration et les donn\u00e9es g\u00e9n\u00e9r\u00e9es ne quittent jamais votre appareil. Cette approche Confidentialit\u00e9 d'abord garantit que m\u00eame le processus de cr\u00e9ation de donn\u00e9es simul\u00e9es est s\u00e9curis\u00e9 et conforme aux normes de s\u00e9curit\u00e9 les plus strictes.</p>",
+        p3: "<p>La vie priv\u00e9e est une priorit\u00e9 absolue dans le d\u00e9veloppement logiciel moderne. L'utilisation de donn\u00e9es de production r\u00e9elles dans des environnements de d\u00e9veloppement ou de staging est un risque de s\u00e9curit\u00e9 majeur. Les g\u00e9n\u00e9rateurs de donn\u00e9es simul\u00e9es r\u00e9solvent ce probl\u00e8me en produisant des donn\u00e9es fausses mais structurellement correctes. Notre outil fonctionne enti\u00e8rement dans votre navigateur, ce qui signifie que votre configuration et les donn\u00e9es g\u00e9n\u00e9r\u00e9es restent dans votre navigateur et ne sont pas envoyÃ©es Ã  nos serveurs. Cette approche Confidentialit\u00e9 d'abord garantit que m\u00eame le processus de cr\u00e9ation de donn\u00e9es simul\u00e9es est s\u00e9curis\u00e9 et conforme aux normes de s\u00e9curit\u00e9 les plus strictes.</p>",
         heading4: "Conseils de pro",
         p4: "<ul><li><strong>Coh\u00e9rence :</strong> Lors de la g\u00e9n\u00e9ration de plusieurs jeux de donn\u00e9es li\u00e9s, utilisez des seeds ou des mod\u00e8les fixes pour maintenir l'int\u00e9grit\u00e9 r\u00e9f\u00e9rentielle entre les tables.</li><li><strong>Cas limites :</strong> Incluez des cha\u00eenes vides, des noms tr\u00e8s longs et des caract\u00e8res sp\u00e9ciaux pour tester la robustesse de votre application.</li><li><strong>Changement de format :</strong> Utilisez l'export SQL pour l'amor\u00e7age rapide de bases de donn\u00e9es et CSV pour l'analyse de tableurs ou les importations en masse.</li><li><strong>Automatisation :</strong> Les mod\u00e8les utilis\u00e9s par cet outil peuvent \u00eatre int\u00e9gr\u00e9s dans vos pipelines CI/CD automatis\u00e9s pour des tests continus.</li></ul>",
       },
@@ -1883,7 +1883,7 @@ export default {
         desc14:
           "Formats code with proper indentation and spacing. Makes code more readable and maintainable.",
         desc15:
-          "All processing happens in your browser. Your code never leaves your device.",
+          "All processing happens in your browser. Your code is processed locally and not sent to our servers.",
         badge16: "Client-Side Only",
         badge17: "Privacy First",
         button6: "CSS",
@@ -1894,7 +1894,7 @@ export default {
         text0: "✓ Copied!",
         text1: "✗ Failed",
         text2: "📋 Copy",
-        tpl3: "All processing happens in your browser. Your code never leaves your device.",
+        tpl3: "All processing happens in your browser. Your code is processed locally and not sent to our servers.",
       },
       edu: {
         heading1: "What is Minification?",
@@ -2663,7 +2663,7 @@ export default {
         aria0: "Name for Environment A",
         aria1: "Name for Environment B",
         desc0:
-          "Paste dotenv-style KEY=VALUE lines. Comments (#) are supported. No data leaves your device.",
+          "Paste dotenv-style KEY=VALUE lines. Comments (#) are supported. Your input is processed locally and not sent to our servers.",
         desc1: "Click Compare to see differences.",
         desc2:
           "Sensitive keys are detected by name (SECRET, TOKEN, KEY, PASSWORD, etc.) and by value heuristics (JWT-like, long random strings). You can disable masking to see raw values locally.",
