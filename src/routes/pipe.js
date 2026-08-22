@@ -1,6 +1,6 @@
 /**
  * Pipe Mode — chain tools together, all client-side.
- * Your data never leaves your browser.
+ * Your data is processed in your browser, not sent to our servers.
  */
 
 import { respondHTML } from "../utils/respond.js";
@@ -33,7 +33,7 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
             Pipe Mode
             <span class="text-xs font-medium bg-teal-100 text-teal-700 dark:bg-teal-900/40 dark:text-teal-300 px-2 py-0.5 rounded-full">BETA</span>
           </h1>
-          <p class="text-sm text-surface-500 dark:text-surface-400 mt-1">Chain tools together. Your data never leaves your browser.</p>
+          <p class="text-sm text-surface-500 dark:text-surface-400 mt-1">Chain tools together. Your data is processed in your browser, not sent to our servers.</p>
         </div>
         <div class="flex gap-2">
           <button id="share-btn" class="btn btn-ghost text-xs" title="Share pipeline (no data included)">Share</button>
@@ -522,7 +522,7 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
     createPageTemplate({
       title: "Pipe Mode — Chain Tools Together",
       description:
-        "Chain multiple tools into a pipeline. Your data never leaves your browser.",
+        "Chain multiple tools into a pipeline. Your data is processed in your browser, not sent to our servers.",
       content: content + script,
       path: "/pipe",
       lang,

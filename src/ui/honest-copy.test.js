@@ -14,7 +14,7 @@ const VAPOR_ENTERPRISE =
   /white-label|white label|화이트라벨|ホワイトラベル|白標|enterprise licensing|enterprise & partnership|엔터프라이즈 라이선스/i;
 
 const ABSOLUTE_NO_TRACKING =
-  /no tracking|never track|without surveillance|추적 없음|トラッキングなし/i;
+  /no tracking|never track|without surveillance|추적 없음|トラッキングなし|never leaves your (device|browser|machine)|no data is sent to any server|nothing (ever )?leaves your (device|browser)|0 bytes stored/i;
 
 const WEAKER_BLOG_TWINS = {
   "password-security-best-practices-2026": "password-security-guide",
@@ -139,6 +139,9 @@ describe("blog twins", () => {
 
 describe("catalog freeze guard", () => {
   it("does not add tool routes in this slice", () => {
-    expect(TOOLS.map((tool) => tool.id)).toHaveLength(56);
+    // 56 → 55: `changelog` retired as a catalog tool (the /changelog page stays
+    // live, served directly in worker.js). The repo-trio and network-reference
+    // merges (→ 50) land with the Track A re-skin.
+    expect(TOOLS.map((tool) => tool.id)).toHaveLength(55);
   });
 });

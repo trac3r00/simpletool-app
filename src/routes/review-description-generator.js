@@ -118,7 +118,7 @@ function renderReviewDescriptionGeneratorPage(lang = DEFAULT_LANGUAGE) {
             <li data-i18n="tools.review-description-generator.ui.text0">Choose a template that matches your review type (dependency bump, bug fix, feature, etc.).</li>
             <li data-i18n="tools.review-description-generator.ui.text1">Fill in the context fields — the tool provides sensible defaults and guidance for each template.</li>
             <li data-i18n="tools.review-description-generator.ui.text2">Click Generate to produce a structured, markdown-formatted description ready for your PR or review comment.</li>
-            <li data-i18n="tools.review-description-generator.ui.text3">All processing is local — nothing leaves your browser.</li>
+            <li data-i18n="tools.review-description-generator.ui.text3">All processing is local — your data is not sent to our servers.</li>
           </ul>
         </div>
       </div>

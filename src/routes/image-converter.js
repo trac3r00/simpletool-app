@@ -34,7 +34,7 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
       {
         text: translation?.ui?.badge26 || "Client-Side Only",
         tooltip:
-          "Runs entirely in your browser using Web APIs — your data never leaves your device.",
+          "Runs entirely in your browser using Web APIs — your data is processed locally and not sent to our servers.",
       },
     ],
     { toolId: "image-converter" },
@@ -54,7 +54,7 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
        <!-- Privacy Notice -->
        <div class="mb-6 p-4 bg-success-50 dark:bg-success-900/20 rounded-xl border-2 border-success-300 dark:border-success-700">
          <p class="text-sm text-success-800 dark:text-success-300">
-           🔒 <strong>Privacy-First Design:</strong> Your images never leave your device. All conversion and resizing happens client-side using Canvas API.
+           🔒 <strong>Privacy-First Design:</strong> Your images stay in your browser and are not sent to our servers. All conversion and resizing happens client-side using Canvas API.
          </p>
        </div>
 

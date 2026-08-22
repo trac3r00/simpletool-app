@@ -320,7 +320,7 @@ export default {
         desc20: "検証するファイルを選択",
         desc21: "入力待ち...",
         desc22:
-          "MD5 and SHA-1 are cryptographically broken and disabled by default. All processing occurs in a sandboxed client-side environment using the Web Crypto API. No data is transmitted to external servers.",
+          "MD5 and SHA-1 are cryptographically broken and disabled by default. All processing occurs in a sandboxed client-side environment using the Web Crypto API. Your data is not sent to our servers.",
         desc23:
           "テキストを入力するかファイルをドロップしてハッシュを計算してください。",
         badge23: "SHA-256推奨",
@@ -359,7 +359,7 @@ export default {
         text0: "期待値:",
         text1: "計算値:",
         alert2: "無効なハッシュ長。64、96、または128文字が必要です。",
-        tpl3: "MD5 and SHA-1 are cryptographically broken and disabled by default. All processing occurs in a sandboxed client-side environment using the Web Crypto API. No data is transmitted to external servers.",
+        tpl3: "MD5 and SHA-1 are cryptographically broken and disabled by default. All processing occurs in a sandboxed client-side environment using the Web Crypto API. Your data is not sent to our servers.",
         tpl4: "入力待ち...",
         tpl5: "Error: ' + error.message + '",
         text2: "Computed: ",
@@ -796,7 +796,7 @@ export default {
         th34: "Use Case",
         heading35: "100% Client-Side Key Generation",
         desc36:
-          "Private keys are generated using libsodium.js directly in your browser. Keys never leave your device.",
+          "Private keys are generated using libsodium.js directly in your browser. Keys stay in your browser and are not sent to our servers.",
         desc37: "⚠️ Never share your private key!",
         desc38: "Paste an existing .conf file to populate the form.",
         desc39: "Generate a config to create QR code",
@@ -808,7 +808,7 @@ export default {
         badge45: "プライバシー最優先",
         heading0: "100% Client-Side Key Generation",
         desc0:
-          "Private keys are generated using libsodium.js directly in your browser. Keys never leave your device.",
+          "Private keys are generated using libsodium.js directly in your browser. Keys stay in your browser and are not sent to our servers.",
         heading1: "Key Pair Generator",
         label0: "Private Key",
         warning0: "⚠️ Never share your private key!",

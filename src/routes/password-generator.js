@@ -77,7 +77,7 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
         text: translation?.ui?.badge35 || "Client-Side Only",
         color: "blue",
         tooltip:
-          "Runs entirely in your browser using Web APIs — your data never leaves your device.",
+          "Runs entirely in your browser using Web APIs — your data is processed locally and not sent to our servers.",
       },
     ],
     { toolId: "password-generator" },

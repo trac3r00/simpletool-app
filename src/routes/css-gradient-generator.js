@@ -34,7 +34,7 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
       {
         text: translation?.ui?.badge32 || "Client-Side Only",
         tooltip:
-          "Runs entirely in your browser using Web APIs — your data never leaves your device.",
+          "Runs entirely in your browser using Web APIs — your data is processed locally and not sent to our servers.",
       },
     ],
     { toolId: "css-gradient" },

@@ -261,7 +261,9 @@ const TOOL_HANDLERS = [
     exp: "handleWebhookDebuggerRoutes",
   },
   { id: "pipe", file: "pipe.js", exp: "handlePipeRoutes" },
-  { id: "changelog", file: "changelog.js", exp: "handleChangelogRoutes" },
+  // Note: /changelog is served directly in worker.js (handleChangelogRoutes),
+  // not via handlersById — it is a page, not a catalog tool. Retired from the
+  // TOOLS registry 2026-08-22; no handlersById entry needed.
 ];
 
 const imports = [];

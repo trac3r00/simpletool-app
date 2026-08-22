@@ -120,7 +120,7 @@ export default {
         desc6:
           "JSON Web Tokens (JWT) are a compact, URL-safe means of representing claims to be transferred between two parties.",
         desc7:
-          "🔒 All decoding happens in your browser. Your tokens are never sent to any server.",
+          "🔒 All decoding happens in your browser. Your tokens are not sent to our servers.",
         badge8: "Client-Side Only",
         badge9: "Privacy First",
         desc10: "No token decoded",
@@ -139,7 +139,7 @@ export default {
         status0: "error",
         status1: "success",
         text2: "Copied!",
-        tpl3: "🔒 All decoding happens in your browser. Your tokens are never sent to any server.",
+        tpl3: "🔒 All decoding happens in your browser. Your tokens are not sent to our servers.",
         tpl4: "' + match + '",
         tpl5: "Claim Analysis",
         status2: "No Token Provided",
@@ -317,7 +317,7 @@ export default {
         desc20: "Select file to verify",
         desc21: "Awaiting input...",
         desc22:
-          "MD5 and SHA-1 are cryptographically broken and disabled by default. All processing occurs in a sandboxed client-side environment using the Web Crypto API. No data is transmitted to external servers.",
+          "MD5 and SHA-1 are cryptographically broken and disabled by default. All processing occurs in a sandboxed client-side environment using the Web Crypto API. Your data is not sent to our servers.",
         desc23: "Enter text or drop a file to compute hashes.",
         badge23: "SHA-256 Recommended",
         badge24: "Ready",
@@ -355,7 +355,7 @@ export default {
         text0: "Expected:",
         text1: "Computed:",
         alert2: "Invalid hash length. Expected 64, 96, or 128 characters.",
-        tpl3: "MD5 and SHA-1 are cryptographically broken and disabled by default. All processing occurs in a sandboxed client-side environment using the Web Crypto API. No data is transmitted to external servers.",
+        tpl3: "MD5 and SHA-1 are cryptographically broken and disabled by default. All processing occurs in a sandboxed client-side environment using the Web Crypto API. Your data is not sent to our servers.",
         tpl4: "Awaiting input...",
         tpl5: "Error: ' + error.message + '",
         text2: "Computed: ",
@@ -790,7 +790,7 @@ export default {
         th34: "Use Case",
         heading35: "100% Client-Side Key Generation",
         desc36:
-          "Private keys are generated using libsodium.js directly in your browser. Keys never leave your device.",
+          "Private keys are generated using libsodium.js directly in your browser. Keys stay in your browser and are not sent to our servers.",
         desc37: "⚠️ Never share your private key!",
         desc38: "Paste an existing .conf file to populate the form.",
         desc39: "Generate a config to create QR code",
@@ -802,7 +802,7 @@ export default {
         badge45: "Privacy First",
         heading0: "100% Client-Side Key Generation",
         desc0:
-          "Private keys are generated using libsodium.js directly in your browser. Keys never leave your device.",
+          "Private keys are generated using libsodium.js directly in your browser. Keys stay in your browser and are not sent to our servers.",
         heading1: "Key Pair Generator",
         label0: "Private Key",
         warning0: "⚠️ Never share your private key!",
@@ -1387,7 +1387,7 @@ export default {
         desc11: "Enterprise SSO",
         desc12:
           "Paste a Base64 SAML response or raw XML to inspect issuers, subjects, attributes, and validity windows instantly—no network requests.",
-        desc13: "Nothing leaves your browser.",
+        desc13: "Processed in your browser, not sent to our servers.",
         desc14: "Base64 + optional deflate.",
         desc15: "Awaiting input",
         badge16: "Client-Side Only",
@@ -1751,7 +1751,7 @@ export default {
         heading2: "Chiến lược kiểm thử",
         p2: "<p>Kiểm thử hiệu quả đòi hỏi tập dữ liệu đa dạng. Dùng dữ liệu giả lập để điền vào cơ sở dữ liệu phát triển, thực hiện kiểm thử tải với hàng nghìn bản ghi, hoặc xác minh bố cục UI với độ dài chuỗi khác nhau. Đặc biệt hữu ích cho kiểm thử tích hợp khi bạn cần phản hồi có thể dự đoán từ các API bên ngoài. Bằng cách tạo dữ liệu cục bộ, bạn có thể tạo môi trường kiểm thử nhất quán, dễ đặt lại và tái tạo.</p>",
         heading3: "Quyền riêng tư dữ liệu trong mock",
-        p3: "<p>Quyền riêng tư là ưu tiên hàng đầu trong phát triển phần mềm hiện đại. Sử dụng dữ liệu sản xuất thực trong môi trường phát triển hoặc staging là rủi ro bảo mật lớn. Các bộ tạo dữ liệu giả lập giải quyết vấn đề này bằng cách tạo ra dữ liệu giả nhưng đúng cấu trúc. Công cụ của chúng tôi chạy hoàn toàn trong trình duyệt, nghĩa là cấu hình và dữ liệu được tạo ra không bao giờ rời khỏi thiết bị của bạn.</p>",
+        p3: "<p>Quyền riêng tư là ưu tiên hàng đầu trong phát triển phần mềm hiện đại. Sử dụng dữ liệu sản xuất thực trong môi trường phát triển hoặc staging là rủi ro bảo mật lớn. Các bộ tạo dữ liệu giả lập giải quyết vấn đề này bằng cách tạo ra dữ liệu giả nhưng đúng cấu trúc. Công cụ của chúng tôi chạy hoàn toàn trong trình duyệt, nghĩa là cấu hình và dữ liệu được tạo ra vẫn nằm trong trình duyệt của bạn và không được gửi đến máy chủ của chúng tôi.</p>",
         heading4: "Mẹo chuyên nghiệp",
         p4: "<ul><li><strong>Tính nhất quán:</strong> Khi tạo nhiều tập dữ liệu liên quan, dùng seed cố định hoặc mẫu để duy trì tính toàn vẹn tham chiếu giữa các bảng.</li><li><strong>Trường hợp biên:</strong> Bao gồm chuỗi rỗng, tên rất dài và ký tự đặc biệt để kiểm tra tính mạnh mẽ của ứng dụng.</li><li><strong>Chuyển đổi định dạng:</strong> Dùng xuất SQL để nhanh chóng seed cơ sở dữ liệu và CSV để phân tích bảng tính hoặc nhập hàng loạt.</li><li><strong>Tự động hóa:</strong> Các mẫu công cụ này sử dụng có thể được tích hợp vào pipeline CI/CD tự động để kiểm thử liên tục.</li></ul>",
       },
@@ -1883,7 +1883,7 @@ export default {
         desc14:
           "Formats code with proper indentation and spacing. Makes code more readable and maintainable.",
         desc15:
-          "All processing happens in your browser. Your code never leaves your device.",
+          "All processing happens in your browser. Your code is processed locally and not sent to our servers.",
         badge16: "Client-Side Only",
         badge17: "Privacy First",
         button6: "CSS",
@@ -1894,7 +1894,7 @@ export default {
         text0: "✓ Copied!",
         text1: "✗ Failed",
         text2: "📋 Copy",
-        tpl3: "All processing happens in your browser. Your code never leaves your device.",
+        tpl3: "All processing happens in your browser. Your code is processed locally and not sent to our servers.",
       },
       edu: {
         heading1: "What is Minification?",
@@ -2663,7 +2663,7 @@ export default {
         aria0: "Name for Environment A",
         aria1: "Name for Environment B",
         desc0:
-          "Paste dotenv-style KEY=VALUE lines. Comments (#) are supported. No data leaves your device.",
+          "Paste dotenv-style KEY=VALUE lines. Comments (#) are supported. Your input is processed locally and not sent to our servers.",
         desc1: "Click Compare to see differences.",
         desc2:
           "Sensitive keys are detected by name (SECRET, TOKEN, KEY, PASSWORD, etc.) and by value heuristics (JWT-like, long random strings). You can disable masking to see raw values locally.",

@@ -63,7 +63,7 @@ function renderJSONFormatterPage(lang = "en") {
         text: tr("tools.json-formatter.ui.badge12", "Privacy First"),
         color: "green",
         tooltip:
-          "All processing happens in your browser — no data is sent to any server.",
+          "All processing happens in your browser — your data is not sent to our servers.",
       },
     ],
     { toolId: "json-formatter" },

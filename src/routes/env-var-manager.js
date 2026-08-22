@@ -87,7 +87,7 @@ function renderEnvVarManagerPage(lang = DEFAULT_LANGUAGE) {
             <div class="flex items-center justify-between gap-3">
               <label class="label flex items-center gap-2">
                 <span data-i18n="tools.env-var-manager.ui.label0">Environment A</span>
-                ${infoHint("Paste dotenv-style KEY=VALUE lines. Comments (#) are supported. No data leaves your device.", "Help", { i18nKey: "tools.env-var-manager.ui.desc0" })}
+                ${infoHint("Paste dotenv-style KEY=VALUE lines. Comments (#) are supported. Your input is processed locally and not sent to our servers.", "Help", { i18nKey: "tools.env-var-manager.ui.desc0" })}
               </label>
               <input id="name-a" class="input w-40" value="Dev" aria-label="Name A" data-i18n-aria="tools.env-var-manager.ui.aria0" />
             </div>

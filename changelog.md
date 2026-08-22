@@ -2,6 +2,13 @@
 
 This changelog is a snapshot-style record of major changes in this workspace.
 
+## 2026-08-19 — v2.4.4 Honest copy & catalog freeze
+
+- Homepage and About copy reworded to match the honest ads-vs-privacy stance: tool data is processed in the browser, but ads and analytics can make third-party requests in production.
+- Aligned the ad allow-list (`home`, `json`, `legal`) and deny-list (password, SSH, Token Studio, WireGuard, certificates, secret scanner, encoding, pipe) across copy and code.
+- Locked the invariants in `src/ui/honest-copy.test.js`: 56-tool registry count, no absolute privacy claims, ads-mentioned, blog-twin `noindex`, ad allow/deny list.
+- Froze the new-tool catalog until the eight flagships beat the bookmarks people already use.
+
 ## 2026-08-17 — v2.4.3 Non-personalized ads
 
 - Manual AdSense units on the homepage, JSON Formatter, and legal/changelog pages only.

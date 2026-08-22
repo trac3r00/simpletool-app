@@ -35,7 +35,7 @@ function renderCurlStudioPage(lang = DEFAULT_LANGUAGE) {
       {
         text: translation?.ui?.badge14 || "Privacy-First",
         tooltip:
-          "All processing happens in your browser — no data is sent to any server.",
+          "All processing happens in your browser — your data is not sent to our servers.",
       },
     ],
     { toolId: "curl-studio" },

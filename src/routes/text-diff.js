@@ -51,7 +51,7 @@ function renderTextDiffPage(lang = DEFAULT_LANGUAGE) {
         text: translation?.ui?.badge8 || "Privacy First",
         color: "blue",
         tooltip:
-          "All processing happens in your browser — no data is sent to any server.",
+          "All processing happens in your browser — your data is not sent to our servers.",
       },
     ],
     { toolId: "text-diff" },
