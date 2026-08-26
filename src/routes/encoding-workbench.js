@@ -224,7 +224,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
               <!-- HMAC toggle -->
               <div>
                 <label class="flex items-center gap-2 cursor-pointer mb-2">
-                  <input type="checkbox" id="hmac-toggle" class="w-4 h-4 rounded border-surface-300 dark:border-surface-700 text-primary-600 focus:ring-2 focus:ring-primary-500">
+                  <input type="checkbox" id="hmac-toggle" class="w-4 h-4 rounded border-surface-300 dark:border-surface-700 text-primary-600 dark:text-primary-400 focus:ring-2 focus:ring-primary-500">
                   <span class="text-sm font-semibold text-surface-700 dark:text-surface-300" data-i18n="tools.encoding-workbench.ui.hmacLabel">HMAC Mode</span>
                 </label>
                 <div id="hmac-key-section" class="hidden">
@@ -241,7 +241,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
               <!-- bcrypt section -->
               <div>
                 <label class="flex items-center gap-2 cursor-pointer mb-2">
-                  <input type="checkbox" id="bcrypt-toggle" class="w-4 h-4 rounded border-surface-300 dark:border-surface-700 text-primary-600 focus:ring-2 focus:ring-primary-500">
+                  <input type="checkbox" id="bcrypt-toggle" class="w-4 h-4 rounded border-surface-300 dark:border-surface-700 text-primary-600 dark:text-primary-400 focus:ring-2 focus:ring-primary-500">
                   <span class="text-sm font-semibold text-surface-700 dark:text-surface-300" data-i18n="tools.encoding-workbench.ui.bcryptLabel">bcrypt Mode</span>
                 </label>
                 <div id="bcrypt-section" class="hidden flex items-center gap-3">

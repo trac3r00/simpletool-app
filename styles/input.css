@@ -26,7 +26,7 @@
     --secondary: 210 40% 96%; /* surface-100 */
     --secondary-foreground: 217 33% 17%; /* surface-800 */
     --muted: 210 40% 96%; /* surface-100 */
-    --muted-foreground: 215 16% 47%; /* surface-500 */
+    --muted-foreground: 215 16% 44%; /* between surface-500/600 — 47% measured 4.49:1 on --background and 4.30:1 on --muted (AA needs 4.5); 44% clears both */
     --accent: 210 40% 96%; /* neutral hover surface (NOT the cyan accent) */
     --accent-foreground: 217 33% 17%;
     --info: 192 91% 36%; /* cyan-600 #0891b2 — brand accent */
@@ -53,7 +53,7 @@
     --card-foreground: 210 40% 98%;
     --popover: 228 22% 9%;
     --popover-foreground: 210 40% 98%;
-    --primary: 258 89% 66%; /* violet-500 #8b5cf6 — lifts for dark ground */
+    --primary: 258 89% 64%; /* lifted violet for dark ground — 66% (violet-500) measured 4.29:1 under white button text; 64% clears AA at 4.70:1 */
     --primary-foreground: 0 0% 100%;
     --secondary: 217 33% 17%; /* surface-800 */
     --secondary-foreground: 210 40% 98%;
@@ -208,8 +208,17 @@
 
   /* Pipe Mode accent button (teal territory — see pipe.js). Stays stock teal
      until pipe.js is re-skinned onto --info (cyan) in the Track A migration. */
-  .btn-teal {
-    @apply btn bg-teal-600 text-white hover:bg-teal-700 focus-visible:ring-teal-500 dark:bg-teal-600 dark:hover:bg-teal-500 border border-transparent;
+  /* Pipe-Mode accent button — the identity's cyan (replaces the legacy teal).
+     info-700 (not 600) in light because white text on info-600 is 3.7:1;
+     dark flips to a light cyan fill with dark text, like the dark badge. */
+  .btn-info {
+    @apply btn bg-info-700 text-white hover:bg-info-800 focus-visible:ring-info-500 dark:bg-info-400 dark:text-surface-950 dark:hover:bg-info-300 border border-transparent;
+  }
+
+  /* List-item button (tool palettes, dropdown menus): full-width, left-aligned,
+     neutral accent hover — interactive styling from the component, per contract. */
+  .menu-item {
+    @apply block w-full text-left rounded-md px-2 py-1.5 text-sm text-surface-700 dark:text-surface-300 hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-colors;
   }
 
   .card {
@@ -335,7 +344,8 @@
   }
 
   .tool-page-shell .tool-header-trust {
-    @apply rounded-full bg-info/10 px-2.5 py-1 text-info;
+    /* text-info (cyan-600) on the cyan tint measured 3.39:1; info-700/300 clear 4.5:1 in both themes */
+    @apply rounded-full bg-info/10 px-2.5 py-1 text-info-700 dark:text-info-300;
   }
 
   .tool-page-shell .tool-header-features {
@@ -417,7 +427,8 @@
   }
 
   .badge-info {
-    @apply badge border-transparent bg-info/10 text-info;
+    /* text-info (cyan-600) on the cyan tint measured 3.39:1; info-700/300 clear 4.5:1 in both themes */
+    @apply badge border-transparent bg-info/10 text-info-700 dark:text-info-300;
   }
 
   .badge-outline {

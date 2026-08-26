@@ -155,11 +155,11 @@ function renderPromptTemplateBuilderPage(lang = DEFAULT_LANGUAGE) {
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <label class="inline-flex items-center gap-2 cursor-pointer text-sm text-surface-700 dark:text-surface-300">
-                <input id="ask-questions" type="checkbox" class="w-4 h-4 rounded border-surface-300 text-primary-600 focus:ring-primary-500" checked>
+                <input id="ask-questions" type="checkbox" class="w-4 h-4 rounded border-surface-300 text-primary-600 dark:text-primary-400 focus:ring-primary-500" checked>
                 <span data-i18n="tools.prompt-template-builder.ui.label8">Ask clarifying questions first (if needed)</span>
               </label>
               <label class="inline-flex items-center gap-2 cursor-pointer text-sm text-surface-700 dark:text-surface-300">
-                <input id="guardrails" type="checkbox" class="w-4 h-4 rounded border-surface-300 text-primary-600 focus:ring-primary-500" checked>
+                <input id="guardrails" type="checkbox" class="w-4 h-4 rounded border-surface-300 text-primary-600 dark:text-primary-400 focus:ring-primary-500" checked>
                 <span data-i18n="tools.prompt-template-builder.ui.label9">Include injection guardrails</span>
               </label>
             </div>

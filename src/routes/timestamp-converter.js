@@ -89,7 +89,7 @@ function renderTimestampConverterPage(lang = DEFAULT_LANGUAGE) {
           <!-- Unix to Human -->
           <div class="space-y-6">
             <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50 flex items-center gap-2">
-              <span class="material-symbols-rounded text-primary-600">arrow_forward</span>
+              <span class="material-symbols-rounded text-primary-600 dark:text-primary-400">arrow_forward</span>
               Unix to Human
             </h2>
             
@@ -104,11 +104,11 @@ function renderTimestampConverterPage(lang = DEFAULT_LANGUAGE) {
                 </div>
                 <div class="flex gap-4 mt-3">
                   <label class="flex items-center space-x-2 cursor-pointer">
-                    <input type="radio" name="unix-unit" value="seconds" checked class="w-4 h-4 text-primary-600 focus:ring-primary-500">
+                    <input type="radio" name="unix-unit" value="seconds" checked class="w-4 h-4 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
                     <span class="text-sm text-surface-700 dark:text-surface-300" data-i18n="tools.timestamp-converter.ui.desc15" data-tooltip="Standard Unix epoch (10 digits)" data-i18n-tooltip="tools.timestamp-converter.ui.tip1">Seconds</span>
                   </label>
                   <label class="flex items-center space-x-2 cursor-pointer">
-                    <input type="radio" name="unix-unit" value="milliseconds" class="w-4 h-4 text-primary-600 focus:ring-primary-500">
+                    <input type="radio" name="unix-unit" value="milliseconds" class="w-4 h-4 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
                     <span class="text-sm text-surface-700 dark:text-surface-300" data-i18n="tools.timestamp-converter.ui.desc16" data-tooltip="JavaScript Date.now() format (13 digits)" data-i18n-tooltip="tools.timestamp-converter.ui.tip2">Milliseconds</span>
                   </label>
                 </div>
@@ -138,7 +138,7 @@ function renderTimestampConverterPage(lang = DEFAULT_LANGUAGE) {
           <!-- Human to Unix -->
           <div class="space-y-6">
             <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50 flex items-center gap-2">
-              <span class="material-symbols-rounded text-primary-600">arrow_back</span>
+              <span class="material-symbols-rounded text-primary-600 dark:text-primary-400">arrow_back</span>
               Human to Unix
             </h2>
             

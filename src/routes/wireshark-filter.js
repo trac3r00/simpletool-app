@@ -214,7 +214,7 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
           <div class="tool-card">
             <div class="flex justify-between items-center mb-4">
               <h2 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.wireshark-filter.ui.heading0">Filter Preview</h2>
-              <button id="clear-filter-btn" class="btn btn-ghost btn-xs text-surface-500">
+              <button id="clear-filter-btn" class="btn btn-ghost btn-xs">
                 <span data-i18n="tools.wireshark-filter.ui.button9">Clear</span>
               </button>
             </div>
@@ -252,16 +252,16 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
                 </summary>
                 <div class="mt-2 px-3 pb-3 text-sm text-surface-600 dark:text-surface-300">
                   <table class="w-full">
-                    <tr><td class="font-mono text-primary-600">tcp.port</td><td>Source or destination port</td></tr>
-                    <tr><td class="font-mono text-primary-600">tcp.srcport</td><td>Source port</td></tr>
-                    <tr><td class="font-mono text-primary-600">tcp.dstport</td><td>Destination port</td></tr>
-                    <tr><td class="font-mono text-primary-600">tcp.seq</td><td>Sequence number</td></tr>
-                    <tr><td class="font-mono text-primary-600">tcp.ack</td><td>Acknowledgment number</td></tr>
-                    <tr><td class="font-mono text-primary-600">tcp.flags.syn</td><td>SYN flag</td></tr>
-                    <tr><td class="font-mono text-primary-600">tcp.flags.ack</td><td>ACK flag</td></tr>
-                    <tr><td class="font-mono text-primary-600">tcp.flags.fin</td><td>FIN flag</td></tr>
-                    <tr><td class="font-mono text-primary-600">tcp.flags.rst</td><td>RST flag</td></tr>
-                    <tr><td class="font-mono text-primary-600">tcp.window_size</td><td>Window size</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">tcp.port</td><td>Source or destination port</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">tcp.srcport</td><td>Source port</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">tcp.dstport</td><td>Destination port</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">tcp.seq</td><td>Sequence number</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">tcp.ack</td><td>Acknowledgment number</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">tcp.flags.syn</td><td>SYN flag</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">tcp.flags.ack</td><td>ACK flag</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">tcp.flags.fin</td><td>FIN flag</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">tcp.flags.rst</td><td>RST flag</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">tcp.window_size</td><td>Window size</td></tr>
                   </table>
                 </div>
               </details>
@@ -272,13 +272,13 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
                 </summary>
                 <div class="mt-2 px-3 pb-3 text-sm text-surface-600 dark:text-surface-300">
                   <table class="w-full">
-                    <tr><td class="font-mono text-primary-600">ip.addr</td><td>Source or destination IP</td></tr>
-                    <tr><td class="font-mono text-primary-600">ip.src</td><td>Source IP address</td></tr>
-                    <tr><td class="font-mono text-primary-600">ip.dst</td><td>Destination IP address</td></tr>
-                    <tr><td class="font-mono text-primary-600">ip.proto</td><td>Protocol number</td></tr>
-                    <tr><td class="font-mono text-primary-600">ip.ttl</td><td>Time to live</td></tr>
-                    <tr><td class="font-mono text-primary-600">ip.len</td><td>Total length</td></tr>
-                    <tr><td class="font-mono text-primary-600">ip.version</td><td>IP version (4 or 6)</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">ip.addr</td><td>Source or destination IP</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">ip.src</td><td>Source IP address</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">ip.dst</td><td>Destination IP address</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">ip.proto</td><td>Protocol number</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">ip.ttl</td><td>Time to live</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">ip.len</td><td>Total length</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">ip.version</td><td>IP version (4 or 6)</td></tr>
                   </table>
                 </div>
               </details>
@@ -289,14 +289,14 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
                 </summary>
                 <div class="mt-2 px-3 pb-3 text-sm text-surface-600 dark:text-surface-300">
                   <table class="w-full">
-                    <tr><td class="font-mono text-primary-600">http.request</td><td>HTTP request</td></tr>
-                    <tr><td class="font-mono text-primary-600">http.response</td><td>HTTP response</td></tr>
-                    <tr><td class="font-mono text-primary-600">http.method</td><td>Request method (GET, POST, etc)</td></tr>
-                    <tr><td class="font-mono text-primary-600">http.host</td><td>Host header value</td></tr>
-                    <tr><td class="font-mono text-primary-600">http.uri</td><td>Request URI</td></tr>
-                    <tr><td class="font-mono text-primary-600">http.user_agent</td><td>User-Agent header</td></tr>
-                    <tr><td class="font-mono text-primary-600">http.status_code</td><td>Response status code</td></tr>
-                    <tr><td class="font-mono text-primary-600">http.content_type</td><td>Content-Type header</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">http.request</td><td>HTTP request</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">http.response</td><td>HTTP response</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">http.method</td><td>Request method (GET, POST, etc)</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">http.host</td><td>Host header value</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">http.uri</td><td>Request URI</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">http.user_agent</td><td>User-Agent header</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">http.status_code</td><td>Response status code</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">http.content_type</td><td>Content-Type header</td></tr>
                   </table>
                 </div>
               </details>
@@ -307,11 +307,11 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
                 </summary>
                 <div class="mt-2 px-3 pb-3 text-sm text-surface-600 dark:text-surface-300">
                   <table class="w-full">
-                    <tr><td class="font-mono text-primary-600">dns.qry.name</td><td>Query name</td></tr>
-                    <tr><td class="font-mono text-primary-600">dns.qry.type</td><td>Query type (A, AAAA, MX, etc)</td></tr>
-                    <tr><td class="font-mono text-primary-600">dns.resp.name</td><td>Response name</td></tr>
-                    <tr><td class="font-mono text-primary-600">dns.resp.addr</td><td>Response address</td></tr>
-                    <tr><td class="font-mono text-primary-600">dns.flags.response</td><td>Is response flag</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">dns.qry.name</td><td>Query name</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">dns.qry.type</td><td>Query type (A, AAAA, MX, etc)</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">dns.resp.name</td><td>Response name</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">dns.resp.addr</td><td>Response address</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">dns.flags.response</td><td>Is response flag</td></tr>
                   </table>
                 </div>
               </details>
@@ -322,11 +322,11 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
                 </summary>
                 <div class="mt-2 px-3 pb-3 text-sm text-surface-600 dark:text-surface-300">
                   <table class="w-full">
-                    <tr><td class="font-mono text-primary-600">udp.port</td><td>Source or destination port</td></tr>
-                    <tr><td class="font-mono text-primary-600">udp.srcport</td><td>Source port</td></tr>
-                    <tr><td class="font-mono text-primary-600">udp.dstport</td><td>Destination port</td></tr>
-                    <tr><td class="font-mono text-primary-600">udp.length</td><td>UDP length</td></tr>
-                    <tr><td class="font-mono text-primary-600">udp.checksum</td><td>Checksum value</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">udp.port</td><td>Source or destination port</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">udp.srcport</td><td>Source port</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">udp.dstport</td><td>Destination port</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">udp.length</td><td>UDP length</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">udp.checksum</td><td>Checksum value</td></tr>
                   </table>
                 </div>
               </details>
@@ -337,10 +337,10 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
                 </summary>
                 <div class="mt-2 px-3 pb-3 text-sm text-surface-600 dark:text-surface-300">
                   <table class="w-full">
-                    <tr><td class="font-mono text-primary-600">tls.handshake.type</td><td>Handshake type</td></tr>
-                    <tr><td class="font-mono text-primary-600">tls.record.content_type</td><td>Record content type</td></tr>
-                    <tr><td class="font-mono text-primary-600">tls.alert.level</td><td>Alert level</td></tr>
-                    <tr><td class="font-mono text-primary-600">tls.alert.desc</td><td>Alert description</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">tls.handshake.type</td><td>Handshake type</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">tls.record.content_type</td><td>Record content type</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">tls.alert.level</td><td>Alert level</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">tls.alert.desc</td><td>Alert description</td></tr>
                   </table>
                 </div>
               </details>

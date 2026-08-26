@@ -82,10 +82,11 @@ The Modern Utility palette (2026-08-22) is **6 named hues**: `primary` (violet),
   reads near-black rather than slate-blue.
 - **`success-*` / `warning-*` / `error-*`** — semantic. Standard Tailwind
   green/amber/red scales.
-- **Pipe Mode accent (teal):** Still uses **stock Tailwind `teal-*`** classes
-  (`.btn-teal`, `teal-600` `#0d9488`) in `src/routes/pipe.js`. The identity's
-  long-term Pipe-Mode signal is the `info` cyan; the teal→cyan swap lands when
-  `pipe.js` is re-skinned in the Track A migration.
+- **Pipe Mode accent (cyan):** Pipe Mode uses the identity's **`info` cyan** as
+  its territory signal (`.btn-info`, `info-*` tints on the final-output box,
+  recipe "Try it →", shared-pipeline banner). The legacy stock-teal accent was
+  swapped out when `pipe.js` was re-skinned on 2026-08-26; `teal-*` classes no
+  longer appear outside content-categorical maps.
 - **Brand gradient:** violet→cyan, via the `.text-gradient-brand` /
   `.bg-brand-gradient` / `.bg-brand-gradient-soft` utilities in
   `styles/input.css`. This is the signature accent — use sparingly (hero, section
@@ -150,7 +151,9 @@ Component classes live in `styles/input.css` (`@layer components` + plain rules)
 
 - Base: `.btn` (`rounded-md`, `text-sm`, `font-medium`, focus ring).
 - Variants: `.btn-primary`, `.btn-secondary`, `.btn-ghost`, `.btn-danger`,
-  `.btn-teal` (Pipe Mode). Sizes: `.btn-sm`, `.btn-xs`.
+  `.btn-info` (Pipe Mode cyan; `info-700` fill in light because white on
+  `info-600` is 3.7:1, light-cyan fill with dark text in dark). Sizes:
+  `.btn-sm`, `.btn-xs`.
 
 ### Tool page shell
 
@@ -170,7 +173,8 @@ follow:
 
 | Element | Required class | Raw utilities still allowed for |
 |---|---|---|
-| `<button>`, `[role="button"]` | `.btn-primary` / `.btn-secondary` / `.btn-ghost` / `.btn-danger` / `.btn-teal` | `w-`, `flex-`, `justify-`, margins, responsive visibility |
+| `<button>`, `[role="button"]` | `.btn-primary` / `.btn-secondary` / `.btn-ghost` / `.btn-danger` / `.btn-info` | `w-`, `flex-`, `justify-`, margins, responsive visibility |
+| List-item button (tool palette, menu) | `.menu-item` | width, margins |
 | Icon-only button | that variant **+ `.btn-icon`** (36px) or `.btn-icon-sm` (32px) | position, `md:hidden` |
 | Floating action button | `.btn-fab` | `fixed`, `bottom-`, `left-`, `z-` |
 | `<input>`, `<textarea>`, `<select>` | `.input` or `.input-mono` | width, `pl-`/`pr-` for adornments, `resize-` |
@@ -329,4 +333,6 @@ deletions. (Also stated in `AGENTS.md`.)
 | 2026-08-22 | Signature = tool-grid gradient + hover depth      | The one memorable element: violet→cyan brand gradient (`.text-gradient-brand`/`.bg-brand-gradient`) plus tool cards that lift on hover. Applied via shared tokens/classes so all ~50 pages re-skin without per-route color edits.                                                                                                                                                                                                           |
 | 2026-08-22 | Both light + dark authored deliberately           | User chose "both" as the default; neither mode is a mechanical derivation. `theme-color` meta is scheme-aware.                                                                                                                                                                                                                                                                                                                              |
 | 2026-08-22 | **Adopt shadcn design language (no React)**       | User asked for shadcn; it is React/Radix-only, and this app is vanilla JS on CF Workers. Ported shadcn's _token model_ (semantic HSL CSS vars → Tailwind utilities) + new-york component set (btn/card/input/tabs/badge) onto the existing stack instead of re-platforming. Violet→`--primary`, cyan→`--info`, slate→neutrals; `--accent` reserved as shadcn's neutral hover surface. Numeric scales kept alongside for small tinted elements (chips, badges, stat tiles) whose correct target is `bg-muted`, not `bg-card`. |
+| 2026-08-26 | **Pipe Mode re-skinned onto the identity** | The last teal holdout: header rebuilt on `createToolHeader` (gradient icon tile + cyan Beta pill), `.btn-teal`→`.btn-info` (cyan, AA-safe fills both themes), final-output/banner/links teal→`info-*`, palette items on new `.menu-item`, step-card chrome on semantic `border-border`/`bg-muted`, recipe cards on `.tool-card-link` signature hover, icon buttons on `.btn-icon-sm`. Behavior, IDs, and the client contract registry untouched. |
+| 2026-08-26 | **AA contrast pass on shared tokens** | Browser audit (`test:ui-audit`) measured: trust pill / `.badge-info` cyan-on-tint 3.39:1 → text `info-700`/`info-300`; `--muted-foreground` 47%→44% (was 4.49:1 on `--background`, 4.30:1 on `--muted`); dark `--primary` 66%→64% (white button text was 4.29:1); ~90 `text-primary-600` route usages gained missing `dark:text-primary-400`. Also: `tool-group` never carries `shadow-*`; button decoration beyond the variant removed (mock-data CTA); `accent-primary-600` is the checkbox accent everywhere; bandwidth unit toggle moved onto `.tabs-list`/`.tab-trigger`. |
 | 2026-08-24 | **Nested groups are delineation, not elevation** | `--card` is #fff/#12141c — the same colour as `.tool-page-panel` — so the pre-rebuild nested card was a card inside an identical card. `bg-muted` would invert elevation between themes against `.input` (`bg-background`). `.tool-group` therefore adds border+radius+padding and **no fill**; `--flush` for child-padded containers, `--inset` for output-only regions, `bg-popover` for surfaces that leave the panel's plane. 104 group edits + 27 form controls to `.input`; guarded by `src/ui/card-contract.test.js`. |

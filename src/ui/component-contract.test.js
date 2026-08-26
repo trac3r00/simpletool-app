@@ -24,7 +24,7 @@ const SKIP = new Set(["bundled-styles.js"]);
 
 /** Component classes that give an interactive element its appearance. */
 const BUTTON_COMPONENTS =
-  /\b(btn|btn-primary|btn-secondary|btn-ghost|btn-danger|btn-teal|btn-fab|btn-icon|btn-icon-sm|btn-sm|btn-xs|tab-trigger|filter-chip|info-hint|cheatsheet-toggle|mobile-tab-btn)\b/;
+  /\b(btn|btn-primary|btn-secondary|btn-ghost|btn-danger|btn-info|btn-fab|btn-icon|btn-icon-sm|btn-sm|btn-xs|tab-trigger|filter-chip|info-hint|cheatsheet-toggle|mobile-tab-btn|menu-item)\b/;
 const INPUT_COMPONENTS = /\b(input|input-mono|input-search)\b/;
 
 /** Types that are not text-like and legitimately style themselves. */

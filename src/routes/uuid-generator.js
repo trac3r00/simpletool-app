@@ -98,19 +98,19 @@ function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
               <label class="label"><span data-i18n="tools.uuid-generator.ui.label2">Format</span></label>
               <div class="space-y-3">
                 <label class="flex items-center space-x-3 p-3 bg-surface-50 dark:bg-surface-800 rounded-lg cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors border border-surface-200 dark:border-surface-700">
-                  <input type="radio" name="format" value="hyphenated" checked class="w-4 h-4 text-primary-600 focus:ring-primary-500">
+                  <input type="radio" name="format" value="hyphenated" checked class="w-4 h-4 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
                   <span class="text-sm font-medium text-surface-900 dark:text-surface-100" data-i18n="tools.uuid-generator.ui.desc11">Hyphenated</span>
                 </label>
                 <label class="flex items-center space-x-3 p-3 bg-surface-50 dark:bg-surface-800 rounded-lg cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors border border-surface-200 dark:border-surface-700">
-                  <input type="radio" name="format" value="plain" class="w-4 h-4 text-primary-600 focus:ring-primary-500">
+                  <input type="radio" name="format" value="plain" class="w-4 h-4 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
                   <span class="text-sm font-medium text-surface-900 dark:text-surface-100" data-i18n="tools.uuid-generator.ui.desc12">Plain (no hyphens)</span>
                 </label>
                 <label class="flex items-center space-x-3 p-3 bg-surface-50 dark:bg-surface-800 rounded-lg cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors border border-surface-200 dark:border-surface-700">
-                  <input type="radio" name="format" value="uppercase" class="w-4 h-4 text-primary-600 focus:ring-primary-500">
+                  <input type="radio" name="format" value="uppercase" class="w-4 h-4 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
                   <span class="text-sm font-medium text-surface-900 dark:text-surface-100" data-i18n="tools.uuid-generator.ui.desc13">Uppercase</span>
                 </label>
                 <label class="flex items-center space-x-3 p-3 bg-surface-50 dark:bg-surface-800 rounded-lg cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors border border-surface-200 dark:border-surface-700">
-                  <input type="radio" name="format" value="braces" class="w-4 h-4 text-primary-600 focus:ring-primary-500">
+                  <input type="radio" name="format" value="braces" class="w-4 h-4 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
                   <span class="text-sm font-medium text-surface-900 dark:text-surface-100" data-i18n="tools.uuid-generator.ui.desc14">With braces {}</span>
                 </label>
               </div>

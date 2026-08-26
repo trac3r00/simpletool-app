@@ -110,7 +110,7 @@ function renderEnvVarManagerPage(lang = DEFAULT_LANGUAGE) {
             <div class="tool-group p-5">
               <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400 mb-3" data-i18n="tools.env-var-manager.ui.heading0">Options</h2>
               <label class="inline-flex items-center gap-2 cursor-pointer text-sm text-surface-700 dark:text-surface-300">
-                <input id="mask" type="checkbox" class="w-4 h-4 rounded border-surface-300 text-primary-600 focus:ring-primary-500" checked>
+                <input id="mask" type="checkbox" class="w-4 h-4 rounded border-surface-300 text-primary-600 dark:text-primary-400 focus:ring-primary-500" checked>
                 <span data-i18n="tools.env-var-manager.ui.label2">Mask sensitive values</span>
               </label>
               <div class="mt-3">

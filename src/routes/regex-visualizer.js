@@ -79,15 +79,15 @@ export async function handleRegexVisualizerRoutes(request) {
             <!-- Flags -->
             <div class="mt-3 flex flex-wrap gap-2">
               <label class="inline-flex items-center px-2 py-1 rounded bg-surface-100 dark:bg-surface-800 cursor-pointer hover:bg-surface-200 dark:hover:bg-surface-700 transition-colors">
-                <input type="checkbox" id="flag-g" data-tooltip="Global — find all matches, not just the first" data-i18n-tooltip="tools.regex-visualizer.ui.tip1" class="rounded border-surface-300 text-primary-600 focus:ring-primary-500" checked>
+                <input type="checkbox" id="flag-g" data-tooltip="Global — find all matches, not just the first" data-i18n-tooltip="tools.regex-visualizer.ui.tip1" class="rounded border-surface-300 text-primary-600 dark:text-primary-400 focus:ring-primary-500" checked>
                 <span class="ml-2 text-xs font-mono text-surface-700 dark:text-surface-300" data-i18n="tools.regex-visualizer.ui.desc13">g (global)</span>
               </label>
               <label class="inline-flex items-center px-2 py-1 rounded bg-surface-100 dark:bg-surface-800 cursor-pointer hover:bg-surface-200 dark:hover:bg-surface-700 transition-colors">
-                <input type="checkbox" id="flag-i" data-tooltip="Case-insensitive — A matches a" data-i18n-tooltip="tools.regex-visualizer.ui.tip2" class="rounded border-surface-300 text-primary-600 focus:ring-primary-500">
+                <input type="checkbox" id="flag-i" data-tooltip="Case-insensitive — A matches a" data-i18n-tooltip="tools.regex-visualizer.ui.tip2" class="rounded border-surface-300 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
                 <span class="ml-2 text-xs font-mono text-surface-700 dark:text-surface-300" data-i18n="tools.regex-visualizer.ui.desc14">i (insensitive)</span>
               </label>
               <label class="inline-flex items-center px-2 py-1 rounded bg-surface-100 dark:bg-surface-800 cursor-pointer hover:bg-surface-200 dark:hover:bg-surface-700 transition-colors">
-                <input type="checkbox" id="flag-m" data-tooltip="Multiline — ^ and $ match line boundaries" data-i18n-tooltip="tools.regex-visualizer.ui.tip3" class="rounded border-surface-300 text-primary-600 focus:ring-primary-500">
+                <input type="checkbox" id="flag-m" data-tooltip="Multiline — ^ and $ match line boundaries" data-i18n-tooltip="tools.regex-visualizer.ui.tip3" class="rounded border-surface-300 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
                 <span class="ml-2 text-xs font-mono text-surface-700 dark:text-surface-300" data-i18n="tools.regex-visualizer.ui.desc15">m (multiline)</span>
               </label>
             </div>

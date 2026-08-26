@@ -101,25 +101,25 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
               <div class="format-option selected" data-format="png">
                 <div class="text-center">
                   <p class="font-bold text-surface-900 dark:text-surface-50">PNG</p>
-                  <p class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.image-converter.ui.desc21">Lossless</p>
+                  <p class="text-xs text-surface-600 dark:text-surface-300" data-i18n="tools.image-converter.ui.desc21">Lossless</p>
                 </div>
               </div>
               <div class="format-option" data-format="jpeg">
                 <div class="text-center">
                   <p class="font-bold text-surface-900 dark:text-surface-50">JPG</p>
-                  <p class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.image-converter.ui.desc22">Smaller size</p>
+                  <p class="text-xs text-surface-600 dark:text-surface-300" data-i18n="tools.image-converter.ui.desc22">Smaller size</p>
                 </div>
               </div>
               <div class="format-option" data-format="webp">
                 <div class="text-center">
                   <p class="font-bold text-surface-900 dark:text-surface-50">WebP</p>
-                  <p class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.image-converter.ui.desc23">Modern</p>
+                  <p class="text-xs text-surface-600 dark:text-surface-300" data-i18n="tools.image-converter.ui.desc23">Modern</p>
                 </div>
               </div>
               <div class="format-option" data-format="gif">
                 <div class="text-center">
                   <p class="font-bold text-surface-900 dark:text-surface-50">GIF</p>
-                  <p class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.image-converter.ui.desc24">Animation</p>
+                  <p class="text-xs text-surface-600 dark:text-surface-300" data-i18n="tools.image-converter.ui.desc24">Animation</p>
                 </div>
               </div>
             </div>
@@ -263,21 +263,21 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
 
       <!-- Features Info -->
       <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="tool-group shadow-lg p-6">
+        <div class="tool-group p-6">
           <div class="text-3xl mb-3">🎨</div>
           <h3 class="font-bold text-surface-900 dark:text-surface-50 mb-2" data-i18n="tools.image-converter.ui.heading16">Multiple Formats</h3>
           <p class="text-sm text-surface-600 dark:text-surface-300" data-i18n="tools.image-converter.ui.desc29">
             Convert between PNG, JPG, WebP, and GIF formats with quality control
           </p>
         </div>
-        <div class="tool-group shadow-lg p-6">
+        <div class="tool-group p-6">
           <div class="text-3xl mb-3">📐</div>
           <h3 class="font-bold text-surface-900 dark:text-surface-50 mb-2" data-i18n="tools.image-converter.ui.heading17">Flexible Resizing</h3>
           <p class="text-sm text-surface-600 dark:text-surface-300" data-i18n="tools.image-converter.ui.desc30">
             Resize by percentage, dimensions, or max width/height with aspect ratio control
           </p>
         </div>
-        <div class="tool-group shadow-lg p-6">
+        <div class="tool-group p-6">
           <div class="text-3xl mb-3">⚡</div>
           <h3 class="font-bold text-surface-900 dark:text-surface-50 mb-2" data-i18n="tools.image-converter.ui.heading18">Instant Processing</h3>
           <p class="text-sm text-surface-600 dark:text-surface-300" data-i18n="tools.image-converter.ui.desc31">
