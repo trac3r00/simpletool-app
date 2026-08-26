@@ -859,9 +859,9 @@ const LEGAL_CONTENT = {
         {
           heading: "By the Numbers",
           html: `
-            <div class="not-prose grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="not-prose grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">45+</div>
+                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">50</div>
                 <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Professional Tools</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
@@ -869,12 +869,8 @@ const LEGAL_CONTENT = {
                 <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Global Languages</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">100%</div>
-                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Client-Side</div>
-              </div>
-              <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
                 <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">0</div>
-                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Tool Inputs Stored</div>
+                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Accounts Required</div>
               </div>
             </div>
           `,
@@ -960,13 +956,13 @@ const LEGAL_CONTENT = {
                 <h3 class="font-bold mb-1">General Support</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Questions, suggestions, or bug reports.</p>
                 <a href="mailto:hello@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">hello@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Response time: 24-48 hours</p>
+                <p class="text-xs text-surface-500 mt-2">Response time: 2-3 business days</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Security Team</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Vulnerability reports and security concerns.</p>
                 <a href="mailto:security@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">security@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Response time: Priority</p>
+                <p class="text-xs text-surface-500 mt-2">Response time: Prioritized, within 3 business days</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Business Inquiries</h3>
@@ -997,22 +993,18 @@ const LEGAL_CONTENT = {
         {
           heading: "숫자로 보는 SimpleTool",
           html: `
-            <div class="not-prose grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="not-prose grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">45+</div>
+                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">50</div>
                 <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">전문 도구</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">4</div>
+                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">10</div>
                 <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">지원 언어</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">100%</div>
-                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">클라이언트 사이드</div>
-              </div>
-              <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
                 <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">0</div>
-                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">저장한 도구 입력</div>
+                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">필요한 계정</div>
               </div>
             </div>
           `,
@@ -1042,7 +1034,7 @@ const LEGAL_CONTENT = {
           heading: "개인정보 보호 원칙",
           paragraphs: [
             "개인정보 보호는 나중에 얹는 기능이 아니라 모든 도구의 기본 제약입니다.",
-            "추적 픽셀, 세션 기록, 장기 저장을 피해서 사용자가 감시 없이 작업할 수 있도록 합니다.",
+            "추적 픽셀, 세션 기록, 도구 데이터의 장기 저장을 사용하지 않습니다. 허용 목록에 있는 페이지에는 라벨이 표시된 비개인화 광고가 나타날 수 있으며, 비밀번호·키 도구는 광고를 로드하지 않습니다.",
           ],
           list: [
             "일반 사용에 계정 불필요",
@@ -1098,13 +1090,13 @@ const LEGAL_CONTENT = {
                 <h3 class="font-bold mb-1">일반 지원</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">질문, 제안, 버그 리포트.</p>
                 <a href="mailto:hello@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">hello@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">응답 시간: 24-48시간</p>
+                <p class="text-xs text-surface-500 mt-2">응답 시간: 영업일 2-3일</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">보안 팀</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">취약점 제보 및 보안 문의.</p>
                 <a href="mailto:security@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">security@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">응답 시간: 우선 처리</p>
+                <p class="text-xs text-surface-500 mt-2">응답 시간: 우선 처리, 영업일 3일 이내</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">비즈니스 문의</h3>
@@ -1135,9 +1127,9 @@ const LEGAL_CONTENT = {
         {
           heading: "数字で見る SimpleTool",
           html: `
-            <div class="not-prose grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="not-prose grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">45+</div>
+                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">50</div>
                 <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Professional Tools</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
@@ -1145,12 +1137,8 @@ const LEGAL_CONTENT = {
                 <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Global Languages</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">100%</div>
-                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Client-Side</div>
-              </div>
-              <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
                 <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">0</div>
-                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Tool Inputs Stored</div>
+                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Accounts Required</div>
               </div>
             </div>
           `,
@@ -1180,7 +1168,7 @@ const LEGAL_CONTENT = {
           heading: "プライバシー方針",
           paragraphs: [
             "プライバシーは後付けではなく、すべてのツールの初期制約です。",
-            "トラッキングピクセル、セッション記録、長期保存を避け、監視なしで作業できるようにしています。",
+            "トラッキングピクセル、セッション記録、ツールデータの長期保存は使用しません。許可リストに含まれるページにはラベル付きの非パーソナライズ広告が表示される場合があります。パスワードおよび鍵関連ツールには広告を読み込みません。",
           ],
           list: [
             "通常利用はアカウント不要",
@@ -1236,13 +1224,13 @@ const LEGAL_CONTENT = {
                 <h3 class="font-bold mb-1">General Support</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Questions, suggestions, or bug reports.</p>
                 <a href="mailto:hello@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">hello@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Response time: 24-48 hours</p>
+                <p class="text-xs text-surface-500 mt-2">Response time: 2-3 business days</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Security Team</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Vulnerability reports and security concerns.</p>
                 <a href="mailto:security@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">security@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Response time: Priority</p>
+                <p class="text-xs text-surface-500 mt-2">Response time: Prioritized, within 3 business days</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Business Inquiries</h3>
@@ -1273,9 +1261,9 @@ const LEGAL_CONTENT = {
         {
           heading: "Números",
           html: `
-            <div class="not-prose grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="not-prose grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">45+</div>
+                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">50</div>
                 <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Professional Tools</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
@@ -1283,12 +1271,8 @@ const LEGAL_CONTENT = {
                 <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Global Languages</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">100%</div>
-                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Client-Side</div>
-              </div>
-              <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
                 <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">0</div>
-                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Tool Inputs Stored</div>
+                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Accounts Required</div>
               </div>
             </div>
           `,
@@ -1374,13 +1358,13 @@ const LEGAL_CONTENT = {
                 <h3 class="font-bold mb-1">General Support</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Questions, suggestions, or bug reports.</p>
                 <a href="mailto:hello@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">hello@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Response time: 24-48 hours</p>
+                <p class="text-xs text-surface-500 mt-2">Response time: 2-3 business days</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Security Team</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Vulnerability reports and security concerns.</p>
                 <a href="mailto:security@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">security@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Response time: Priority</p>
+                <p class="text-xs text-surface-500 mt-2">Response time: Prioritized, within 3 business days</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Business Inquiries</h3>
@@ -1411,9 +1395,9 @@ const LEGAL_CONTENT = {
         {
           heading: "SimpleTool 数字概览",
           html: `
-            <div class="not-prose grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="not-prose grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">45+</div>
+                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">50</div>
                 <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">专业工具</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
@@ -1421,12 +1405,8 @@ const LEGAL_CONTENT = {
                 <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">支持语言</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">100%</div>
-                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">客户端处理</div>
-              </div>
-              <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
                 <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">0</div>
-                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">保存的工具输入</div>
+                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">需要账户</div>
               </div>
             </div>
           `,
@@ -1456,7 +1436,7 @@ const LEGAL_CONTENT = {
           heading: "隐私承诺",
           paragraphs: [
             "隐私保护不是事后添加的功能，而是我们每款工具的默认设计约束。",
-            "我们避免使用追踪像素、会话录制和持久性工具数据存储，让用户可以在无监控环境下工作。",
+            "我们不使用追踪像素、会话录制或持久性工具数据存储。允许列表内的页面可能显示带标识的非个性化广告；密码和密钥工具始终不加载广告。",
           ],
           list: [
             "正常使用无需账号",
@@ -1510,13 +1490,13 @@ const LEGAL_CONTENT = {
                 <h3 class="font-bold mb-1">通用支持</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">问题、建议或错误报告。</p>
                 <a href="mailto:hello@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">hello@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">响应时间：24-48 小时</p>
+                <p class="text-xs text-surface-500 mt-2">响应时间：2-3 个工作日</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">安全团队</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">漏洞报告及安全相关问题。</p>
                 <a href="mailto:security@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">security@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">响应时间：优先处理</p>
+                <p class="text-xs text-surface-500 mt-2">响应时间：优先处理，3 个工作日内</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">商务合作</h3>
@@ -1547,9 +1527,9 @@ const LEGAL_CONTENT = {
         {
           heading: "SimpleTool 數字概覽",
           html: `
-            <div class="not-prose grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="not-prose grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">45+</div>
+                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">50</div>
                 <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">專業工具</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
@@ -1557,12 +1537,8 @@ const LEGAL_CONTENT = {
                 <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">支援語言</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">100%</div>
-                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">用戶端處理</div>
-              </div>
-              <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
                 <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">0</div>
-                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">儲存的工具輸入</div>
+                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">需要帳戶</div>
               </div>
             </div>
           `,
@@ -1592,7 +1568,7 @@ const LEGAL_CONTENT = {
           heading: "隱私承諾",
           paragraphs: [
             "隱私保護不是事後添加的功能，而是我們每款工具的預設設計約束。",
-            "我們避免使用追蹤像素、工作階段錄製和持久性工具資料儲存，讓使用者可以在無監控環境下工作。",
+            "我們不使用追蹤像素、工作階段錄製或持久性工具資料儲存。允許清單內的頁面可能顯示標示的非個人化廣告；密碼與金鑰工具始終不載入廣告。",
           ],
           list: [
             "正常使用無需帳號",
@@ -1646,13 +1622,13 @@ const LEGAL_CONTENT = {
                 <h3 class="font-bold mb-1">一般支援</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">問題、建議或錯誤回報。</p>
                 <a href="mailto:hello@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">hello@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">回應時間：24-48 小時</p>
+                <p class="text-xs text-surface-500 mt-2">回應時間：2-3 個工作日</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">安全團隊</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">漏洞回報及安全相關問題。</p>
                 <a href="mailto:security@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">security@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">回應時間：優先處理</p>
+                <p class="text-xs text-surface-500 mt-2">回應時間：優先處理，3 個工作日內</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">商務合作</h3>
@@ -1683,9 +1659,9 @@ const LEGAL_CONTENT = {
         {
           heading: "SimpleTool en chiffres",
           html: `
-            <div class="not-prose grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="not-prose grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">45+</div>
+                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">50</div>
                 <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Outils professionnels</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
@@ -1693,12 +1669,8 @@ const LEGAL_CONTENT = {
                 <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Langues</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">100%</div>
-                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Côté client</div>
-              </div>
-              <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
                 <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">0</div>
-                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Saisies stockées</div>
+                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Comptes requis</div>
               </div>
             </div>
           `,
@@ -1728,7 +1700,7 @@ const LEGAL_CONTENT = {
           heading: "Engagement en matière de confidentialité",
           paragraphs: [
             "La confidentialité n'est pas une fonctionnalité ajoutée après coup. C'est la contrainte de conception par défaut de chaque outil que nous publions.",
-            "Nous évitons les pixels de suivi, l'enregistrement de session et le stockage persistant des données d'outils afin que les utilisateurs puissent travailler sans surveillance.",
+            "Nous évitons les pixels de suivi, l'enregistrement de session et le stockage persistant des données d'outils. Des annonces non personnalisées et identifiées peuvent apparaître sur les pages d'une liste d'autorisation ; les outils de mots de passe et de clés restent sans publicité.",
           ],
           list: [
             "Aucun compte requis pour une utilisation normale",
@@ -1784,13 +1756,13 @@ const LEGAL_CONTENT = {
                 <h3 class="font-bold mb-1">Support général</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Questions, suggestions ou rapports de bugs.</p>
                 <a href="mailto:hello@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">hello@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Délai de réponse : 24-48 heures</p>
+                <p class="text-xs text-surface-500 mt-2">Délai de réponse : 2-3 jours ouvrés</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Équipe sécurité</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Rapports de vulnérabilité et questions de sécurité.</p>
                 <a href="mailto:security@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">security@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Délai de réponse : Prioritaire</p>
+                <p class="text-xs text-surface-500 mt-2">Délai de réponse : Prioritaire, sous 3 jours ouvrés</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Demandes commerciales</h3>
@@ -1821,9 +1793,9 @@ const LEGAL_CONTENT = {
         {
           heading: "SimpleTool in Zahlen",
           html: `
-            <div class="not-prose grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="not-prose grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">45+</div>
+                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">50</div>
                 <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Professionelle Tools</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
@@ -1831,12 +1803,8 @@ const LEGAL_CONTENT = {
                 <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Sprachen</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">100%</div>
-                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Client-seitig</div>
-              </div>
-              <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
                 <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">0</div>
-                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Gespeicherte Eingaben</div>
+                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Konten erforderlich</div>
               </div>
             </div>
           `,
@@ -1866,7 +1834,7 @@ const LEGAL_CONTENT = {
           heading: "Datenschutzverpflichtung",
           paragraphs: [
             "Datenschutz ist keine nachträglich hinzugefügte Funktion. Er ist die Standard-Designbeschränkung für jedes Tool, das wir veröffentlichen.",
-            "Wir vermeiden Tracking-Pixel, Sitzungsaufzeichnung und persistente Tool-Datenspeicherung, damit Benutzer ohne Überwachung arbeiten können.",
+            "Wir vermeiden Tracking-Pixel, Sitzungsaufzeichnung und persistente Tool-Datenspeicherung. Auf Seiten einer Positivliste können gekennzeichnete, nicht personalisierte Anzeigen erscheinen; Passwort- und Schlüssel-Tools bleiben werbefrei.",
           ],
           list: [
             "Kein Konto für die normale Nutzung erforderlich",
@@ -1922,13 +1890,13 @@ const LEGAL_CONTENT = {
                 <h3 class="font-bold mb-1">Allgemeiner Support</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Fragen, Vorschläge oder Fehlerberichte.</p>
                 <a href="mailto:hello@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">hello@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Reaktionszeit: 24-48 Stunden</p>
+                <p class="text-xs text-surface-500 mt-2">Reaktionszeit: 2-3 Werktage</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Sicherheitsteam</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Meldung von Sicherheitslücken und Sicherheitsbedenken.</p>
                 <a href="mailto:security@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">security@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Reaktionszeit: Priorität</p>
+                <p class="text-xs text-surface-500 mt-2">Reaktionszeit: Priorität, innerhalb von 3 Werktagen</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Geschäftliche Anfragen</h3>
@@ -1959,9 +1927,9 @@ const LEGAL_CONTENT = {
         {
           heading: "SimpleTool em números",
           html: `
-            <div class="not-prose grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="not-prose grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">45+</div>
+                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">50</div>
                 <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Ferramentas profissionais</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
@@ -1969,12 +1937,8 @@ const LEGAL_CONTENT = {
                 <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Idiomas</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">100%</div>
-                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Lado do cliente</div>
-              </div>
-              <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
                 <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">0</div>
-                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Entradas armazenadas</div>
+                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Contas necessárias</div>
               </div>
             </div>
           `,
@@ -2004,7 +1968,7 @@ const LEGAL_CONTENT = {
           heading: "Compromisso com a privacidade",
           paragraphs: [
             "A privacidade não é um recurso adicionado depois. É a restrição de design padrão para cada ferramenta que desenvolvemos.",
-            "Evitamos pixels de rastreamento, gravação de sessão e armazenamento persistente de dados de ferramentas para que os usuários possam trabalhar sem vigilância.",
+            "Evitamos pixels de rastreamento, gravação de sessão e armazenamento persistente de dados de ferramentas. Anúncios não personalizados e identificados podem aparecer em páginas de uma lista de permissões; ferramentas de senha e chaves permanecem sem anúncios.",
           ],
           list: [
             "Sem contas para uso normal",
@@ -2060,13 +2024,13 @@ const LEGAL_CONTENT = {
                 <h3 class="font-bold mb-1">Suporte geral</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Perguntas, sugestões ou relatórios de bugs.</p>
                 <a href="mailto:hello@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">hello@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Tempo de resposta: 24-48 horas</p>
+                <p class="text-xs text-surface-500 mt-2">Tempo de resposta: 2-3 dias úteis</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Equipe de segurança</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Relatórios de vulnerabilidade e questões de segurança.</p>
                 <a href="mailto:security@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">security@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Tempo de resposta: Prioritário</p>
+                <p class="text-xs text-surface-500 mt-2">Tempo de resposta: Prioritário, em até 3 dias úteis</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Consultas comerciais</h3>
@@ -2097,9 +2061,9 @@ const LEGAL_CONTENT = {
         {
           heading: "SimpleTool qua các con số",
           html: `
-            <div class="not-prose grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="not-prose grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">45+</div>
+                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">50</div>
                 <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Công cụ chuyên nghiệp</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
@@ -2107,12 +2071,8 @@ const LEGAL_CONTENT = {
                 <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Ngôn ngữ</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">100%</div>
-                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Phía máy khách</div>
-              </div>
-              <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
                 <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">0</div>
-                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Dữ liệu công cụ đã lưu</div>
+                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Tài khoản cần thiết</div>
               </div>
             </div>
           `,
@@ -2142,7 +2102,7 @@ const LEGAL_CONTENT = {
           heading: "Cam kết về quyền riêng tư",
           paragraphs: [
             "Quyền riêng tư không phải tính năng được thêm vào sau. Đó là ràng buộc thiết kế mặc định cho mọi công cụ chúng tôi phát hành.",
-            "Chúng tôi tránh pixel theo dõi, ghi lại phiên làm việc và lưu trữ dữ liệu công cụ lâu dài để người dùng có thể làm việc mà không bị giám sát.",
+            "Chúng tôi tránh pixel theo dõi, ghi lại phiên làm việc và lưu trữ dữ liệu công cụ lâu dài. Quảng cáo không cá nhân hóa có gắn nhãn có thể xuất hiện trên các trang trong danh sách cho phép; công cụ mật khẩu và khóa luôn không tải quảng cáo.",
           ],
           list: [
             "Không cần tài khoản để sử dụng thông thường",
@@ -2198,13 +2158,13 @@ const LEGAL_CONTENT = {
                 <h3 class="font-bold mb-1">Hỗ trợ chung</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Câu hỏi, góp ý hoặc báo cáo lỗi.</p>
                 <a href="mailto:hello@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">hello@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Thời gian phản hồi: 24-48 giờ</p>
+                <p class="text-xs text-surface-500 mt-2">Thời gian phản hồi: 2-3 ngày làm việc</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Nhóm bảo mật</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Báo cáo lỗ hổng và các vấn đề bảo mật.</p>
                 <a href="mailto:security@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">security@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Thời gian phản hồi: Ưu tiên</p>
+                <p class="text-xs text-surface-500 mt-2">Thời gian phản hồi: Ưu tiên, trong vòng 3 ngày làm việc</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Hợp tác kinh doanh</h3>

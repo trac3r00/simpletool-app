@@ -1,35 +1,11 @@
-import { respondHTML } from "../utils/respond.js";
-import {
-  createPageTemplate,
-  createToolHeader,
-  infoHint,
-} from "../utils/common-ui.js";
+import { createToolHeader, infoHint } from "../utils/common-ui.js";
 import { createRelatedToolsSection } from "../utils/content-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
 import {
   DEFAULT_LANGUAGE,
   getToolTranslation,
   normalizeLanguage,
-  resolveRequestLanguage,
 } from "../utils/i18n.js";
-
-export async function handlePublicReposNotAutomationRoutes(request, url) {
-  const { pathname } = url;
-  if (
-    pathname === "/public-repos-not-automation" ||
-    pathname === "/public-repos-not-automation/"
-  ) {
-    if (request.method === "GET") {
-      return respondHTML(
-        renderPublicReposNotAutomationPage(
-          resolveRequestLanguage(request, url),
-        ),
-      );
-    }
-    return new Response("Method not allowed", { status: 405 });
-  }
-  return null;
-}
 
 function coerceText(value) {
   return value == null ? "" : "" + value;
@@ -283,7 +259,7 @@ export function buildNoAutomationChecklist(task, options = {}) {
   ].join("\n");
 }
 
-function renderPublicReposNotAutomationPage(lang = DEFAULT_LANGUAGE) {
+export function renderPublicReposNotAutomationSection(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
   const translation = getToolTranslation(
     "public-repos-not-automation",
@@ -330,18 +306,18 @@ function renderPublicReposNotAutomationPage(lang = DEFAULT_LANGUAGE) {
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+      <div class="tool-group p-6 sm:p-8">
         ${header}
 
         <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
           <section class="lg:col-span-2 space-y-5">
-            <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+            <div class="tool-group p-5">
               <div class="flex items-center justify-between gap-3 mb-3">
                 <label for="repo-task-input" class="label flex items-center gap-2">
                   <span data-i18n="tools.public-repos-not-automation.ui.label0">Repository task</span>
                   ${infoHint("Use one key:value per line for repo, task, owner, cadence, risk, next-review, and notes. GitHub public repos JSON arrays and plain text are also accepted.", "Help", { i18nKey: "tools.public-repos-not-automation.ui.desc0" })}
                 </label>
-                <button id="load-sample" class="btn btn-ghost btn-xs" type="button" data-i18n="tools.public-repos-not-automation.ui.button0">Sample</button>
+                <button id="load-no-automation-sample" class="btn btn-ghost btn-xs" type="button" data-i18n="tools.public-repos-not-automation.ui.button0">Sample</button>
               </div>
               <textarea id="repo-task-input" rows="10" class="input-mono resize-y" placeholder="${sampleTask}" data-i18n-placeholder="tools.public-repos-not-automation.ui.placeholder0"></textarea>
               <p class="mt-3 text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.public-repos-not-automation.ui.desc1">Designed for public repository work that has recurring Kanban demand but still needs manual stewardship and human judgment. Paste GitHub public repos JSON arrays to start from repo metadata.</p>
@@ -358,7 +334,7 @@ function renderPublicReposNotAutomationPage(lang = DEFAULT_LANGUAGE) {
               </div>
             </div>
 
-            <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+            <div class="tool-group p-5">
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label for="decision-owner" class="label" data-i18n="tools.public-repos-not-automation.ui.label1">Decision owner</label>
@@ -396,7 +372,7 @@ function renderPublicReposNotAutomationPage(lang = DEFAULT_LANGUAGE) {
             <div id="form-error" class="hidden rounded-lg border border-error-200 dark:border-error-800 bg-error-50 dark:bg-error-900/20 px-4 py-3 text-sm text-error-800 dark:text-error-200" role="alert"></div>
 
             <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
-              <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+              <div class="tool-group p-5">
                 <div class="flex items-center justify-between gap-3 mb-3">
                   <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400" data-i18n="tools.public-repos-not-automation.ui.heading1">Decision record</h2>
                   <button id="copy-decision" class="btn btn-secondary btn-xs" type="button" disabled data-i18n="tools.public-repos-not-automation.ui.button3">Copy</button>
@@ -404,7 +380,7 @@ function renderPublicReposNotAutomationPage(lang = DEFAULT_LANGUAGE) {
                 <textarea id="decision-output" rows="20" class="input-mono resize-y bg-surface-50 dark:bg-surface-950" readonly placeholder="No automation decision record will appear here." data-i18n-placeholder="tools.public-repos-not-automation.ui.placeholder2"></textarea>
               </div>
 
-              <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+              <div class="tool-group p-5">
                 <div class="flex items-center justify-between gap-3 mb-3">
                   <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400" data-i18n="tools.public-repos-not-automation.ui.heading2">Checklist</h2>
                   <button id="copy-checklist" class="btn btn-secondary btn-xs" type="button" disabled data-i18n="tools.public-repos-not-automation.ui.button3">Copy</button>
@@ -431,7 +407,7 @@ function renderPublicReposNotAutomationPage(lang = DEFAULT_LANGUAGE) {
           threshold: $('automation-threshold'),
           decisionButton: $('build-decision'),
           clear: $('clear-decision'),
-          sample: $('load-sample'),
+          sample: $('load-no-automation-sample'),
           decision: $('decision-output'),
           checklist: $('checklist-output'),
           copyDecision: $('copy-decision'),
@@ -703,19 +679,19 @@ function renderPublicReposNotAutomationPage(lang = DEFAULT_LANGUAGE) {
     </script>
   `;
 
-  return createPageTemplate({
-    title,
-    description,
-    path: "/public-repos-not-automation",
-    content,
+  return {
+    content: content
+      .replace(/^\s*<main\b[^>]*>/, '<section class="py-2">')
+      .replace(/<\/main>\s*$/, "</section>")
+      .replace(/<h1\b/, "<h2")
+      .replace("</h1>", "</h2>"),
     scripts,
-    lang: currentLang,
-  });
+  };
 }
 
 function reasonCheckbox(id, label, help, checked) {
   return `
-    <label class="flex items-start gap-3 rounded-lg border border-surface-200 dark:border-surface-800 bg-white dark:bg-surface-900 p-3 cursor-pointer">
+    <label class="tool-group flex items-start gap-3 p-3 cursor-pointer">
       <input id="reason-${id}" type="checkbox" class="mt-1 w-4 h-4 rounded border-surface-300 text-primary-600 focus:ring-primary-500" ${checked ? "checked" : ""}>
       <span>
         <span class="block text-sm font-semibold text-surface-900 dark:text-surface-100">${label}</span>

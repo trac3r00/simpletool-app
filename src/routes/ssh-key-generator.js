@@ -74,8 +74,8 @@ function renderSSHKeyGeneratorPage(lang = DEFAULT_LANGUAGE) {
       .filter(Boolean) || [];
 
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
 
         ${toolHeader}
 
@@ -84,11 +84,11 @@ function renderSSHKeyGeneratorPage(lang = DEFAULT_LANGUAGE) {
            <div class="flex items-start gap-3">
              <span class="text-2xl">🔒</span>
              <div>
-               <h2 class="text-sm font-bold text-success-900 dark:text-success-300 mb-1" data-i18n="tools.ssh-key-generator.ui.heading11">100% Client-Side & Private</h2>
+               <h2 class="text-sm font-bold text-success-900 dark:text-success-300 mb-1" data-i18n="tools.ssh-key-generator.ui.heading11">Keys Generated in Your Browser</h2>
                <ul class="text-xs text-success-800 dark:text-success-200 space-y-1 list-disc list-inside">
                 <li>All keys generated in your browser using Web Crypto API</li>
                 <li>Private keys stay in your browser and are not sent to our servers</li>
-                <li>Keys are generated in the browser. Nothing is sent to the server.</li>
+                <li>Page assets load over the network, but the keys this tool generates are not transmitted</li>
               </ul>
             </div>
           </div>

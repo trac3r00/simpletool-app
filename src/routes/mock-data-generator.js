@@ -65,22 +65,22 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
       .filter(Boolean) || [];
   const content =
     `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
         ${toolHeader}
 ` +
     String.raw`
         <div class="space-y-8">
-          <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 md:p-8 space-y-8">
+          <div class="tool-group p-6 md:p-8 space-y-8">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="space-y-2">
               <label for="row-count" class="text-xs font-semibold text-surface-500 dark:text-surface-400 uppercase tracking-[0.2em]"><span data-i18n="tools.mock-data-generator.ui.label2">Rows</span> ${infoHint("Generate 10-500 rows; higher counts run longer but stay inside the browser.")}</label>
-              <input id="row-count" type="number" data-tooltip="Number of data rows to generate (10-500)" data-i18n-tooltip="tools.mock-data-generator.ui.tip0" min="10" max="500" value="25" class="w-full px-4 py-3 rounded-lg border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-950 text-base text-surface-900 dark:text-surface-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:border-primary-500" />
+              <input id="row-count" type="number" data-tooltip="Number of data rows to generate (10-500)" data-i18n-tooltip="tools.mock-data-generator.ui.tip0" min="10" max="500" value="25" class="input w-full" />
               <p class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.mock-data-generator.ui.desc8">Generate between 10 and 500 records.</p>
             </div>
             <div class="space-y-2">
               <label for="output-format" class="text-xs font-semibold text-surface-500 dark:text-surface-400 uppercase tracking-[0.2em]"><span data-i18n="tools.mock-data-generator.ui.label3">Format</span></label>
-              <select id="output-format" data-tooltip="Choose output format for generated data" data-i18n-tooltip="tools.mock-data-generator.ui.tip1" class="w-full px-4 py-3 rounded-lg border border-surface-200 dark:border-surface-700 bg-white dark:bg-surface-950 text-base text-surface-900 dark:text-surface-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:border-primary-500" aria-label="Output format">
+              <select id="output-format" data-tooltip="Choose output format for generated data" data-i18n-tooltip="tools.mock-data-generator.ui.tip1" class="input" aria-label="Output format">
                 <option value="json">JSON</option>
                 <option value="csv">CSV</option>
                 <option value="sql" data-i18n="tools.mock-data-generator.ui.option5">SQL INSERT</option>
@@ -89,7 +89,7 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
             </div>
             <div id="sql-options" class="hidden space-y-2">
               <label for="table-name" class="text-xs font-semibold text-surface-500 dark:text-surface-400 uppercase tracking-[0.2em]"><span data-i18n="tools.mock-data-generator.ui.label4">Table Name</span> ${infoHint("Used by SQL output; keep it alphanumeric and lowercase if you plan to import it.")}</label>
-              <input id="table-name" type="text" value="mock_data" class="w-full px-4 py-3 rounded-lg border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-950 text-base text-surface-900 dark:text-surface-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:border-primary-500" />
+              <input id="table-name" type="text" value="mock_data" class="input w-full" />
               <p class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.mock-data-generator.ui.desc10">For INSERT statements.</p>
             </div>
           </div>
@@ -114,7 +114,7 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
         <!-- Output & Preview Section -->
         <div class="grid lg:grid-cols-2 gap-8">
              <!-- Output Code Block -->
-            <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 flex flex-col h-[600px]">
+            <div class="tool-group p-6 flex flex-col h-[600px]">
               <div class="flex items-center justify-between mb-4">
                 <h2 class="text-lg font-bold text-surface-900 dark:text-white flex items-center gap-2">
                   <span class="p-1.5 bg-surface-100 dark:bg-surface-800 rounded-lg text-surface-500">📥</span>
@@ -131,7 +131,7 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
             </div>
 
             <!-- Preview Table -->
-            <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 flex flex-col h-[600px]">
+            <div class="tool-group p-6 flex flex-col h-[600px]">
               <div class="flex items-center justify-between mb-4">
                 <h2 class="text-lg font-bold text-surface-900 dark:text-white flex items-center gap-2">
                   <span class="p-1.5 bg-surface-100 dark:bg-surface-800 rounded-lg text-surface-500">👁️</span>
@@ -240,8 +240,14 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
 
         fieldGrid.innerHTML = FIELDS.map(field => '<label class="flex items-center gap-3 px-3 py-2 rounded-lg border border-surface-200 dark:border-surface-700 text-sm font-medium text-surface-700 dark:text-surface-200 bg-surface-50 dark:bg-surface-900/50"><input type="checkbox" value="' + field.id + '" class="accent-primary-600" checked><span>' + field.label + '</span></label>').join('');
 
+        let lastDataset = null;
+        let lastFields = [];
+
         formatSelect.addEventListener('change', () => {
           sqlOptions.classList.toggle('hidden', formatSelect.value !== 'sql');
+          // Re-serialise the dataset already on screen so the selector applies
+          // immediately instead of leaving the previous format's output.
+          writeOutput();
         });
 
         generateBtn.addEventListener('click', () => {
@@ -250,10 +256,10 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
             const fields = Array.from(fieldGrid.querySelectorAll('input[type="checkbox"]:checked')).map(input => input.value);
             if (!fields.length) throw new Error('Select at least one field.');
             const dataset = buildDataset(rows, fields);
+            lastDataset = dataset;
+            lastFields = fields;
             renderPreview(dataset.slice(0, Math.min(5, dataset.length)), fields);
-            const payload = renderOutput(dataset, fields);
-            outputArea.textContent = payload.content;
-            attachDownload(payload.filename, payload.content);
+            writeOutput();
             showError('');
           } catch (error) {
             showError(error.message);
@@ -317,7 +323,7 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
             previewBody.innerHTML = '<tr><td class="py-3 text-surface-500">' + (window._t ? window._t('tools.mock-data-generator.js.text2', 'No rows to preview.') : 'No rows to preview.') + '</td></tr>';
             return;
           }
-          previewHead.innerHTML = '<tr>' + fields.map(field => '<th class="py-2 pr-4 text-left" data-i18n="tools.mock-data-generator.ui.th7">' + labelFor(field) + '</th>').join('') + '</tr>';
+          previewHead.innerHTML = '<tr>' + fields.map(field => '<th class="py-2 pr-4 text-left">' + labelFor(field) + '</th>').join('') + '</tr>';
           previewBody.innerHTML = rows.map(row => '<tr>' + fields.map(field => '<td class="py-2 pr-4">' + escapeHtml(row[field]) + '</td>').join('') + '</tr>').join('');
         }
 
@@ -336,6 +342,13 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
           const values = dataset.map(row => '(' + fields.map(field => '\'' + String(row[field]).replace(/'/g, "''") + '\'').join(', ') + ')');
           const sql = 'INSERT INTO ' + table + ' (' + columns.join(', ') + ')\nVALUES\n' + values.join(',\n') + ';';
           return { filename: table + '.sql', content: sql };
+        }
+
+        function writeOutput() {
+          if (!lastDataset) return;
+          const payload = renderOutput(lastDataset, lastFields);
+          outputArea.textContent = payload.content;
+          attachDownload(payload.filename, payload.content);
         }
 
         function attachDownload(filename, content) {

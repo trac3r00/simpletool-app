@@ -35,6 +35,20 @@
  * @param {string} [opts.wrapClass=''] - Extra classes on the outer wrap
  * @returns {string} HTML string
  */
+
+/**
+ * Escapes a value for interpolation into a double-quoted HTML attribute.
+ * Callers pass code samples containing `"`, `<` and `&`, which would otherwise
+ * terminate the attribute and inject stray attributes onto the element.
+ */
+function escapeAttribute(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
 export function createRichEditorPane(opts = {}) {
   const {
     id,
@@ -52,7 +66,13 @@ export function createRichEditorPane(opts = {}) {
   const extraWrap = wrapClass ? ` ${wrapClass}` : "";
 
   if (mode === "textarea") {
-    const phAttr = placeholder ? ` placeholder="${placeholder}"` : "";
+    // Placeholders here are code samples that legitimately contain quotes and
+    // angle brackets (JSON, SQL, XML). Interpolating them raw closed the
+    // attribute early: the JSON sample rendered as placeholder="{" and the
+    // rest of the sample was parsed as bogus attributes on the <textarea>.
+    const phAttr = placeholder
+      ? ` placeholder="${escapeAttribute(placeholder)}"`
+      : "";
     return (
       `<div id="${wrapId}" class="re-wrap${extraWrap}${hiddenClass}">` +
       `<div id="${lineId}" class="re-line-numbers" aria-hidden="true">1</div>` +
@@ -62,7 +82,7 @@ export function createRichEditorPane(opts = {}) {
   }
 
   // mode === 'pre'
-  const ariaAttr = ariaLabel ? ` aria-label="${ariaLabel}"` : "";
+  const ariaAttr = ariaLabel ? ` aria-label="${escapeAttribute(ariaLabel)}"` : "";
   return (
     `<div id="${wrapId}" class="re-wrap${extraWrap}${hiddenClass}">` +
     `<div id="${lineId}" class="re-line-numbers" aria-hidden="true">1</div>` +
@@ -90,6 +110,7 @@ export function getRichEditorStyles() {
   overflow: hidden;
   background: var(--color-surface-50, #f8fafc);
   position: relative;
+  min-width: 0;
 }
 .dark .re-wrap {
   border-color: var(--color-surface-700);

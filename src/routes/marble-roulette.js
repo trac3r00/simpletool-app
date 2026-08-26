@@ -38,8 +38,8 @@ function renderMarbleRoulettePage(lang = "en") {
       @keyframes mr-pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.12); } }
       .mr-bumper-glow { animation: mr-pulse 0.3s ease-out; }
     </style>
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 marble-roulette-page">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-4 sm:p-6 lg:p-8">
+    <main class="tool-page-shell marble-roulette-page">
+      <div class="tool-page-panel">
         ${toolHeader}
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -85,11 +85,11 @@ function renderMarbleRoulettePage(lang = "en") {
               </div>
 
               <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div class="p-3 rounded-lg border border-surface-200 dark:border-surface-800 bg-white dark:bg-surface-900">
+                <div class="tool-group p-3">
                   <div class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" data-i18n="tools.marble-roulette.ui.heading1">${tr("tools.marble-roulette.ui.heading1", "Winner")}</div>
                   <div id="mr-winner-inline" class="mt-1 text-sm font-semibold text-surface-900 dark:text-surface-50" data-i18n="tools.marble-roulette.ui.text3">&mdash;</div>
                 </div>
-                <div class="p-3 rounded-lg border border-surface-200 dark:border-surface-800 bg-white dark:bg-surface-900">
+                <div class="tool-group p-3">
                   <div class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" data-i18n="tools.marble-roulette.ui.heading2">${tr("tools.marble-roulette.ui.heading2", "Fairness")}</div>
                   <div class="mt-1 text-xs text-surface-600 dark:text-surface-400" data-i18n="tools.marble-roulette.ui.desc0">${tr("tools.marble-roulette.ui.desc0", "Each drop randomizes start positions using Web Crypto.")}</div>
                 </div>
@@ -110,14 +110,14 @@ function renderMarbleRoulettePage(lang = "en") {
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div class="p-3 rounded-lg border border-surface-200 dark:border-surface-800 bg-white dark:bg-surface-900">
+                  <div class="tool-group p-3">
                     <label class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" for="mr-theme" data-i18n="tools.marble-roulette.ui.labelTheme">${tr("tools.marble-roulette.ui.labelTheme", "Board Theme")}</label>
                     <select id="mr-theme" class="input mt-2">
                       ${marbleBootConfig.themes.map((theme) => `<option value="${theme.id}" data-i18n="${theme.labelKey}">${tr(theme.labelKey, theme.fallbackLabel)}</option>`).join("")}
                     </select>
                     <p class="mt-2 text-xs text-surface-600 dark:text-surface-400" data-i18n="tools.marble-roulette.ui.descTheme">${tr("tools.marble-roulette.ui.descTheme", "Swap peg density and board behavior without changing the draw flow.")}</p>
                   </div>
-                  <div class="p-3 rounded-lg border border-surface-200 dark:border-surface-800 bg-white dark:bg-surface-900">
+                  <div class="tool-group p-3">
                     <label class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" for="mr-winner-mode" data-i18n="tools.marble-roulette.ui.labelWinnerMode">${tr("tools.marble-roulette.ui.labelWinnerMode", "Winner Target")}</label>
                     <div class="mt-2 grid grid-cols-[1fr_auto] gap-2">
                       <select id="mr-winner-mode" class="input">
@@ -129,7 +129,7 @@ function renderMarbleRoulettePage(lang = "en") {
                   </div>
                 </div>
 
-                <div class="p-3 rounded-lg border border-surface-200 dark:border-surface-800 bg-white dark:bg-surface-900">
+                <div class="tool-group p-3">
                   <div class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" data-i18n="tools.marble-roulette.ui.label2">${tr("tools.marble-roulette.ui.label2", "Speed")}</div>
                   <div class="mt-2 flex flex-wrap gap-2" aria-label="Speed controls">
                     <button type="button" class="btn btn-secondary" id="mr-speed-1" aria-pressed="true"><span data-i18n="tools.marble-roulette.ui.button0">${tr("tools.marble-roulette.ui.button0", "1x")}</span></button>
@@ -152,7 +152,7 @@ function renderMarbleRoulettePage(lang = "en") {
                 </div>
 
                 <div id="mr-result" class="hidden" aria-live="polite">
-                  <div class="rounded-xl border border-surface-200 dark:border-surface-800 bg-white dark:bg-surface-900 p-4">
+                  <div class="tool-group p-4">
                     <div class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" data-i18n="tools.marble-roulette.ui.heading4">${tr("tools.marble-roulette.ui.heading4", "Result")}</div>
                     <div class="mt-1 text-lg font-bold text-surface-900 dark:text-surface-50" id="mr-result-title" data-i18n="tools.marble-roulette.ui.text4">${tr("tools.marble-roulette.ui.text4", "&#127937; Ranking")}</div>
                     <div class="mt-3 border border-surface-200 dark:border-surface-800 rounded-xl overflow-hidden bg-surface-50 dark:bg-surface-950" aria-label="Ranking">
@@ -176,7 +176,7 @@ function renderMarbleRoulettePage(lang = "en") {
                   </div>
                 </div>
 
-                <div class="rounded-xl border border-surface-200 dark:border-surface-800 bg-white dark:bg-surface-900 p-4">
+                <div class="tool-group p-4">
                   <div class="flex items-center justify-between gap-3">
                     <div class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" data-i18n="tools.marble-roulette.ui.heading5">${tr("tools.marble-roulette.ui.heading5", "Statistics")}</div>
                     <button type="button" class="btn btn-ghost" id="mr-clear-stats" aria-label="Clear stats">
@@ -200,7 +200,7 @@ function renderMarbleRoulettePage(lang = "en") {
     <div id="winner-modal" class="fixed inset-0 z-[100] hidden" role="dialog" aria-modal="true" aria-labelledby="winner-title">
       <div class="fixed inset-0 bg-surface-900/60 backdrop-blur-sm transition-opacity opacity-0" id="winner-overlay"></div>
       <div class="fixed inset-0 flex items-center justify-center p-4">
-        <div class="winner-announcement bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-2xl shadow-2xl p-6 sm:p-8 max-w-sm w-full transform scale-95 opacity-0 transition-all duration-300" id="winner-panel">
+        <div class="winner-announcement bg-popover text-popover-foreground border border-border rounded-2xl shadow-2xl p-6 sm:p-8 max-w-sm w-full transform scale-95 opacity-0 transition-all duration-300" id="winner-panel">
           <div class="text-center">
             <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary-100 dark:bg-primary-900/30 mb-4">
               <span class="text-3xl">&#127942;</span>
@@ -1003,9 +1003,9 @@ function renderMarbleRoulettePage(lang = "en") {
             return (
               '<div class="p-3 flex items-center justify-between gap-3">'
                 + '<div class="min-w-0 flex items-center gap-2">'
-                  + '<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-surface-100 dark:bg-surface-800 text-xs font-extrabold text-surface-700 dark:text-surface-200" data-i18n="tools.marble-roulette.ui.desc16">' + String(m.rank) + '</span>'
+                  + '<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-surface-100 dark:bg-surface-800 text-xs font-extrabold text-surface-700 dark:text-surface-200">' + String(m.rank) + '</span>'
                   + '<span class="w-2.5 h-2.5 rounded-full" style="background:' + escapeHtml(m.color) + '" aria-hidden="true"></span>'
-                  + '<span class="text-sm font-semibold text-surface-900 dark:text-surface-50 truncate" data-i18n="tools.marble-roulette.ui.desc17">' + escapeHtml(m.name) + '</span>'
+                  + '<span class="text-sm font-semibold text-surface-900 dark:text-surface-50 truncate">' + escapeHtml(m.name) + '</span>'
                 + '</div>'
                 + '<div class="text-xs text-surface-500 dark:text-surface-400 tabular-nums">' + (m.finishedAt ? m.finishedAt.toFixed(2) + 's' : '') + '</div>'
               + '</div>'
@@ -1286,9 +1286,9 @@ function renderMarbleRoulettePage(lang = "en") {
                 '<div class="flex items-center justify-between gap-2">' +
                   '<div class="flex items-center gap-2 min-w-0">' +
                     '<span class="inline-block w-2.5 h-2.5 rounded-full" style="background:' + r.color + '"></span>' +
-                    '<span class="text-xs font-medium text-surface-900 dark:text-surface-50 truncate" data-i18n="tools.marble-roulette.ui.desc18">' + escapeHtml(r.name) + '</span>' +
+                    '<span class="text-xs font-medium text-surface-900 dark:text-surface-50 truncate">' + escapeHtml(r.name) + '</span>' +
                   '</div>' +
-                  '<span class="text-xs tabular-nums text-surface-700 dark:text-surface-300" data-i18n="tools.marble-roulette.ui.desc19">' + String(r.count) + '</span>' +
+                  '<span class="text-xs tabular-nums text-surface-700 dark:text-surface-300">' + String(r.count) + '</span>' +
                 '</div>' +
                 '<div class="mt-1 text-[11px] text-surface-600 dark:text-surface-400">' + String(pct) + '%</div>' +
               '</div>'

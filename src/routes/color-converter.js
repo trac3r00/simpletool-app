@@ -63,8 +63,8 @@ function renderColorConverterPage(lang = DEFAULT_LANGUAGE) {
       ?.map((id) => TOOLS.find((t) => t.id === id))
       .filter(Boolean) || [];
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
 
         ${toolHeader}
 
@@ -97,8 +97,9 @@ function renderColorConverterPage(lang = DEFAULT_LANGUAGE) {
               </div>
               <div class="flex-1 space-y-1">
                 <label for="manual-input" class="label"><span data-i18n="tools.color-converter.ui.label1">Manual Input</span></label>
-                <input type="text" id="manual-input" placeholder="#FF5733 or rgb(255,87,51) or hsl(14,100%,60%)" data-i18n-placeholder="tools.color-converter.ui.placeholder3" class="input font-mono" data-tooltip="Enter any color format: #hex, rgb(), or hsl()" data-i18n-tooltip="tools.color-converter.ui.tip0">
+                <input type="text" id="manual-input" placeholder="#FF5733 or rgb(255,87,51) or hsl(14,100%,60%)" data-i18n-placeholder="tools.color-converter.ui.placeholder3" class="input font-mono" data-tooltip="Enter any color format: #hex, rgb(), or hsl()" data-i18n-tooltip="tools.color-converter.ui.tip0" aria-describedby="manual-input-error">
                 <p class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.color-converter.ui.desc4">Supports #hex, rgb(r,g,b), hsl(h,s,l)</p>
+                <div id="manual-input-error" role="alert" class="hidden rounded-lg border border-error-200 dark:border-error-800 bg-error-50 dark:bg-error-900/30 text-sm text-error-700 dark:text-error-200 px-3 py-2" data-i18n="tools.color-converter.ui.error7">Couldn't recognize that color. Try #hex, rgb(), or hsl().</div>
               </div>
             </div>
           </div>
@@ -117,7 +118,7 @@ function renderColorConverterPage(lang = DEFAULT_LANGUAGE) {
                 <div class="flex justify-between items-center mb-2">
                   <span class="text-xs font-bold text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-tooltip="6-digit hexadecimal color code" data-i18n-tooltip="tools.color-converter.ui.tip1">HEX</span>
                    <button data-copy-target="hex-value" class="copy-btn text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" aria-label="Copy HEX color value">
-                     <span class="material-symbols-rounded text-sm" data-i18n="tools.color-converter.ui.desc5">content_copy</span>
+                     <span class="material-symbols-rounded text-sm" aria-hidden="true" data-i18n="tools.color-converter.ui.desc5">content_copy</span>
                    </button>
                 </div>
                 <div id="hex-value" class="text-base font-mono font-bold text-surface-900 dark:text-white break-all">#3b82f6</div>
@@ -127,7 +128,7 @@ function renderColorConverterPage(lang = DEFAULT_LANGUAGE) {
                 <div class="flex justify-between items-center mb-2">
                   <span class="text-xs font-bold text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-tooltip="Red, Green, Blue — 0 to 255 each" data-i18n-tooltip="tools.color-converter.ui.tip2">RGB</span>
                    <button data-copy-target="rgb-value" class="copy-btn text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" aria-label="Copy RGB color value">
-                     <span class="material-symbols-rounded text-sm" data-i18n="tools.color-converter.ui.desc5">content_copy</span>
+                     <span class="material-symbols-rounded text-sm" aria-hidden="true" data-i18n="tools.color-converter.ui.desc5">content_copy</span>
                    </button>
                 </div>
                 <div id="rgb-value" class="text-base font-mono font-bold text-surface-900 dark:text-white break-all">rgb(59, 130, 246)</div>
@@ -137,7 +138,7 @@ function renderColorConverterPage(lang = DEFAULT_LANGUAGE) {
                 <div class="flex justify-between items-center mb-2">
                   <span class="text-xs font-bold text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-tooltip="Hue 0-360°, Saturation 0-100%, Lightness 0-100%" data-i18n-tooltip="tools.color-converter.ui.tip3">HSL</span>
                    <button data-copy-target="hsl-value" class="copy-btn text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" aria-label="Copy HSL color value">
-                     <span class="material-symbols-rounded text-sm" data-i18n="tools.color-converter.ui.desc5">content_copy</span>
+                     <span class="material-symbols-rounded text-sm" aria-hidden="true" data-i18n="tools.color-converter.ui.desc5">content_copy</span>
                    </button>
                 </div>
                 <div id="hsl-value" class="text-base font-mono font-bold text-surface-900 dark:text-white break-all">hsl(217, 91%, 60%)</div>
@@ -147,7 +148,7 @@ function renderColorConverterPage(lang = DEFAULT_LANGUAGE) {
                 <div class="flex justify-between items-center mb-2">
                   <span class="text-xs font-bold text-surface-500 dark:text-surface-400 uppercase tracking-wide">HSV</span>
                    <button data-copy-target="hsv-value" class="copy-btn text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" aria-label="Copy HSV color value">
-                     <span class="material-symbols-rounded text-sm" data-i18n="tools.color-converter.ui.desc5">content_copy</span>
+                     <span class="material-symbols-rounded text-sm" aria-hidden="true" data-i18n="tools.color-converter.ui.desc5">content_copy</span>
                    </button>
                 </div>
                 <div id="hsv-value" class="text-base font-mono font-bold text-surface-900 dark:text-white break-all">hsv(217, 76%, 96%)</div>
@@ -490,6 +491,18 @@ function renderColorConverterPage(lang = DEFAULT_LANGUAGE) {
         }
       });
 
+      const manualInputError = document.getElementById('manual-input-error');
+
+      function clearManualInputError() {
+        manualInput.removeAttribute('aria-invalid');
+        manualInputError.classList.add('hidden');
+      }
+
+      function showManualInputError() {
+        manualInput.setAttribute('aria-invalid', 'true');
+        manualInputError.classList.remove('hidden');
+      }
+
       manualInput.addEventListener('input', (e) => {
         const value = e.target.value.trim();
         let hex = null;
@@ -521,6 +534,11 @@ function renderColorConverterPage(lang = DEFAULT_LANGUAGE) {
             currentH = hsv.h; currentS = hsv.s; currentV = hsv.v;
             syncFromHSV(false);
           }
+          clearManualInputError();
+        } else if (value.length === 0) {
+          clearManualInputError();
+        } else {
+          showManualInputError();
         }
       });
 

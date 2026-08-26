@@ -54,7 +54,7 @@ function renderEmailAnalyzerPage(lang = DEFAULT_LANGUAGE) {
           translation?.ui?.badge0 ||
           '<span data-i18n="tools.email-analyzer.ui.badge0">Client-Side Only</span>',
         tooltip:
-          "Parsing and analysis happen entirely in your browser. Nothing is uploaded.",
+          "Parsing and analysis happen in your browser; the message you paste is not sent to our servers.",
       },
       {
         text:
@@ -74,8 +74,8 @@ function renderEmailAnalyzerPage(lang = DEFAULT_LANGUAGE) {
       .filter(Boolean) || [];
 
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
         ${header}
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -132,7 +132,7 @@ function renderEmailAnalyzerPage(lang = DEFAULT_LANGUAGE) {
             </div>
 
             <div class="grid grid-cols-1 gap-4">
-              <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+              <div class="tool-group p-5">
                 <div class="flex items-center justify-between gap-3 mb-3">
                   <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400" data-i18n="tools.email-analyzer.ui.heading0">Identity</h2>
                   <button id="copy-summary-btn" class="btn btn-secondary text-xs py-1 px-2" disabled>
@@ -167,7 +167,7 @@ function renderEmailAnalyzerPage(lang = DEFAULT_LANGUAGE) {
                 </dl>
               </div>
 
-              <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+              <div class="tool-group p-5">
                 <div class="flex items-center justify-between gap-3 mb-3">
                   <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400" data-i18n="tools.email-analyzer.ui.heading1">Findings</h2>
                   <span id="finding-count" class="text-xs text-surface-500 dark:text-surface-400">0</span>
@@ -177,7 +177,7 @@ function renderEmailAnalyzerPage(lang = DEFAULT_LANGUAGE) {
                 </div>
               </div>
 
-              <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+              <div class="tool-group p-5">
                 <div class="flex items-center justify-between gap-3 mb-3">
                   <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400" data-i18n="tools.email-analyzer.ui.heading2">URLs</h2>
                   <span id="url-count" class="text-xs text-surface-500 dark:text-surface-400">0</span>
@@ -187,7 +187,7 @@ function renderEmailAnalyzerPage(lang = DEFAULT_LANGUAGE) {
                 </div>
               </div>
 
-              <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+              <div class="tool-group p-5">
                 <div class="flex items-center justify-between gap-3 mb-3">
                   <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400" data-i18n="tools.email-analyzer.ui.heading3">Routing Hops</h2>
                   <span id="hop-count" class="text-xs text-surface-500 dark:text-surface-400">0</span>
@@ -907,11 +907,11 @@ function renderEmailAnalyzerPage(lang = DEFAULT_LANGUAGE) {
         els.idDate.textContent = '—';
         els.idReturnPath.textContent = '—';
         els.idReplyTo.textContent = '—';
-        els.findings.innerHTML = '<p class="text-surface-500 dark:text-surface-400" data-i18n="tools.email-analyzer.ui.desc14">' + t('text50', 'Run analysis to see signals and mismatches.') + '</p>';
+        els.findings.innerHTML = '<p class="text-surface-500 dark:text-surface-400">' + t('text50', 'Run analysis to see signals and mismatches.') + '</p>';
         els.findingCount.textContent = '0';
-        els.urls.innerHTML = '<p class="text-surface-500 dark:text-surface-400" data-i18n="tools.email-analyzer.ui.desc15">' + t('text51', 'No URLs extracted yet.') + '</p>';
+        els.urls.innerHTML = '<p class="text-surface-500 dark:text-surface-400">' + t('text51', 'No URLs extracted yet.') + '</p>';
         els.urlCount.textContent = '0';
-        els.hops.innerHTML = '<p class="text-surface-500 dark:text-surface-400" data-i18n="tools.email-analyzer.ui.desc16">' + t('text52', 'No routing data yet.') + '</p>';
+        els.hops.innerHTML = '<p class="text-surface-500 dark:text-surface-400">' + t('text52', 'No routing data yet.') + '</p>';
         els.hopCount.textContent = '0';
         els.copySummaryBtn.disabled = true;
         lastSummary = null;

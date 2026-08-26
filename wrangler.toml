@@ -38,3 +38,40 @@ new_sqlite_classes = ["RateLimiter"]
 [observability.logs]
 enabled = true
 invocation_logs = true
+
+# ---------------------------------------------------------------------------
+# Isolated preview deployment for testing.
+#
+#   npx wrangler deploy --env preview
+#
+# Deploys to a SEPARATE worker (`simpletool-app-preview`) reachable at
+# https://simpletool-app-preview.<your-subdomain>.workers.dev — it does NOT
+# touch the production worker that simpletool.app is attached to via the
+# Dashboard, because that binding is per-worker and this is a different worker.
+#
+# ENVIRONMENT is deliberately not "production", which makes /robots.txt serve
+# `Disallow: /` so the preview cannot be indexed alongside the real site.
+# Ads stay off (empty ADSENSE_SLOTS).
+# ---------------------------------------------------------------------------
+[env.preview]
+name = "simpletool-app-preview"
+
+# `version_metadata` is NOT inherited by named environments, so it must be
+# repeated here or the CF_VERSION_METADATA binding is missing at runtime.
+[env.preview.version_metadata]
+binding = "CF_VERSION_METADATA"
+
+[env.preview.vars]
+ENVIRONMENT = "preview"
+SITE_URL = ""
+ADSENSE_CLIENT = ""
+ADSENSE_SLOTS = "{}"
+SENTRY_DSN = ""
+CF_ANALYTICS_TOKEN = ""
+
+[env.preview.durable_objects]
+bindings = [{ name = "RATE_LIMITER", class_name = "RateLimiter" }]
+
+[[env.preview.migrations]]
+tag = "v1"
+new_sqlite_classes = ["RateLimiter"]

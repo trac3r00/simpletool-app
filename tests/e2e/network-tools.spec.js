@@ -3,12 +3,17 @@ import { TOOL_ACTIONS } from "../helpers/tool-suite.js";
 
 test.describe("Port Reference", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/port-reference", { waitUntil: "domcontentloaded" });
+    await page.goto("/network-reference?tab=ports", {
+      waitUntil: "domcontentloaded",
+    });
     await expect(page.locator("main")).toBeVisible();
   });
 
   test("page loads with correct title", async ({ page }) => {
-    await expect(page.locator("h1")).toContainText("Port Reference");
+    await expect(page.locator("h1")).toContainText("Network Reference");
+    await expect(
+      page.locator("#panel-ports h2.tool-header-title"),
+    ).toContainText("Port Reference");
   });
 
   test("search input is visible", async ({ page }) => {
@@ -17,9 +22,9 @@ test.describe("Port Reference", () => {
 
   test("protocol filter buttons exist", async ({ page }) => {
     await expect(page.locator(".protocol-filter")).toHaveCount(3);
-    await expect(page.locator('[data-protocol="all"]')).toBeVisible();
-    await expect(page.locator('[data-protocol="tcp"]')).toBeVisible();
-    await expect(page.locator('[data-protocol="udp"]')).toBeVisible();
+    await expect(page.locator('.protocol-filter[data-protocol="all"]')).toBeVisible();
+    await expect(page.locator('.protocol-filter[data-protocol="tcp"]')).toBeVisible();
+    await expect(page.locator('.protocol-filter[data-protocol="udp"]')).toBeVisible();
   });
 
   test("category filter buttons exist", async ({ page }) => {
@@ -65,7 +70,9 @@ test.describe("Port Reference", () => {
 
   test("mobile viewport: renders correctly", async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
-    await page.goto("/port-reference", { waitUntil: "domcontentloaded" });
+    await page.goto("/network-reference?tab=ports", {
+      waitUntil: "domcontentloaded",
+    });
     await expect(page.locator("main")).toBeVisible();
     await expect(page.locator("#port-search")).toBeVisible();
   });
@@ -159,12 +166,17 @@ test.describe("Bandwidth Calculator", () => {
 
 test.describe("DNS Record Reference", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/dns-reference", { waitUntil: "domcontentloaded" });
+    await page.goto("/network-reference?tab=dns", {
+      waitUntil: "domcontentloaded",
+    });
     await expect(page.locator("main")).toBeVisible();
   });
 
   test("page loads with correct title", async ({ page }) => {
-    await expect(page.locator("h1")).toContainText("DNS Record Reference");
+    await expect(page.locator("h1")).toContainText("Network Reference");
+    await expect(page.locator("#panel-dns h2.tool-header-title")).toContainText(
+      "DNS Record Reference",
+    );
   });
 
   test("record type grid is visible", async ({ page }) => {
@@ -229,7 +241,9 @@ test.describe("DNS Record Reference", () => {
 
   test("mobile viewport: renders correctly", async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
-    await page.goto("/dns-reference", { waitUntil: "domcontentloaded" });
+    await page.goto("/network-reference?tab=dns", {
+      waitUntil: "domcontentloaded",
+    });
     await expect(page.locator("main")).toBeVisible();
   });
 
@@ -242,14 +256,17 @@ test.describe("DNS Record Reference", () => {
 
 test.describe("HTTP Status Reference", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/http-status-reference", {
+    await page.goto("/network-reference?tab=http", {
       waitUntil: "domcontentloaded",
     });
     await expect(page.locator("main")).toBeVisible();
   });
 
   test("page loads with correct title", async ({ page }) => {
-    await expect(page.locator("h1")).toContainText("HTTP Status Reference");
+    await expect(page.locator("h1")).toContainText("Network Reference");
+    await expect(
+      page.locator("#panel-http h2.tool-header-title"),
+    ).toContainText("HTTP Status Reference");
   });
 
   test("search input and class filters are visible", async ({ page }) => {
@@ -265,23 +282,25 @@ test.describe("HTTP Status Reference", () => {
 
   test("search for status code shows results", async ({ page }) => {
     await page.locator("#status-search").fill("404");
-    await expect(page.locator("#results-body")).toContainText("Not Found");
-    await expect(page.locator("#results-body")).toContainText(
+    await expect(page.locator("#hs-results-body")).toContainText("Not Found");
+    await expect(page.locator("#hs-results-body")).toContainText(
       "Default cacheable",
     );
   });
 
   test("class filter narrows results", async ({ page }) => {
     await page.locator('button.class-filter[data-class="5xx"]').click();
-    await expect(page.locator("#results-body")).toContainText(
+    await expect(page.locator("#hs-results-body")).toContainText(
       "Internal Server Error",
     );
-    await expect(page.locator("#results-body")).not.toContainText("Not Found");
+    await expect(page.locator("#hs-results-body")).not.toContainText(
+      "Not Found",
+    );
   });
 
   test("clear button clears search", async ({ page }) => {
     await page.locator("#status-search").fill("429");
-    await page.locator("#clear-search").click();
+    await page.locator("#hs-clear-search").click();
     await expect(page.locator("#status-search")).toHaveValue("");
   });
 
@@ -293,7 +312,7 @@ test.describe("HTTP Status Reference", () => {
 
   test("mobile viewport: renders correctly", async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
-    await page.goto("/http-status-reference", {
+    await page.goto("/network-reference?tab=http", {
       waitUntil: "domcontentloaded",
     });
     await expect(page.locator("main")).toBeVisible();
@@ -401,7 +420,9 @@ test.describe("Wireshark Filter Builder", () => {
   });
 
   test("display filter tab is active by default", async ({ page }) => {
-    await expect(page.locator("#tab-display")).toHaveClass(/text-primary-600/);
+    // Tabs now use the shared .tab-trigger component, which marks the active
+    // tab with `.active` (or [aria-selected]) rather than colour utilities.
+    await expect(page.locator("#tab-display")).toHaveClass(/\bactive\b/);
     await expect(page.locator("#panel-display")).toBeVisible();
   });
 
@@ -479,14 +500,19 @@ test.describe("Wireshark Filter Builder", () => {
 
 test.describe("Protocol Header Visualizer", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/protocol-headers", { waitUntil: "domcontentloaded" });
+    await page.goto("/network-reference?tab=headers", {
+      waitUntil: "domcontentloaded",
+    });
     await expect(page.locator("main")).toBeVisible();
   });
 
   test("page loads with correct title", async ({ page }) => {
-    await expect(page.locator("h1")).toContainText(
-      "Protocol Header Visualizer",
-    );
+    // Now a section inside the merged /network-reference page: the page h1 is
+    // the composite title and the section keeps its own h2.
+    await expect(page.locator("h1")).toContainText("Network Reference");
+    await expect(
+      page.locator("#panel-headers h2.tool-header-title"),
+    ).toContainText("Protocol Header Visualizer");
   });
 
   test("protocol tabs are visible", async ({ page }) => {
@@ -551,7 +577,9 @@ test.describe("Protocol Header Visualizer", () => {
 
   test("mobile viewport: renders correctly", async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
-    await page.goto("/protocol-headers", { waitUntil: "domcontentloaded" });
+    await page.goto("/network-reference?tab=headers", {
+      waitUntil: "domcontentloaded",
+    });
     await expect(page.locator("main")).toBeVisible();
   });
 

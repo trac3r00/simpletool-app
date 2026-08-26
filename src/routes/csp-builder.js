@@ -69,8 +69,8 @@ function renderCSPBuilderPage(lang = DEFAULT_LANGUAGE) {
       .filter(Boolean) || [];
 
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
         ${header}
 
         <div class="flex flex-wrap gap-3 mb-6 bg-surface-50 dark:bg-surface-950/50 p-2 rounded-lg border border-surface-100 dark:border-surface-800">
@@ -82,7 +82,7 @@ function renderCSPBuilderPage(lang = DEFAULT_LANGUAGE) {
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div class="space-y-4">
-            <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+            <div class="tool-group p-5">
               <label class="label flex items-center gap-2">
                 <span data-i18n="tools.csp-builder.ui.label0">Existing CSP (optional)</span>
                 ${infoHint("Paste only the policy value (everything after “Content-Security-Policy:”). Then click Parse.", "Help", { i18nKey: "tools.csp-builder.ui.desc0" })}
@@ -97,7 +97,7 @@ function renderCSPBuilderPage(lang = DEFAULT_LANGUAGE) {
               </div>
             </div>
 
-            <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+            <div class="tool-group p-5">
               <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400 mb-3" data-i18n="tools.csp-builder.ui.heading0">Warnings</h2>
               <div id="warnings" class="text-sm text-surface-700 dark:text-surface-200">
                 <p class="text-surface-500 dark:text-surface-400" data-i18n="tools.csp-builder.ui.desc2">No warnings yet.</p>
@@ -106,7 +106,7 @@ function renderCSPBuilderPage(lang = DEFAULT_LANGUAGE) {
           </div>
 
           <div class="space-y-4">
-            <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+            <div class="tool-group p-5">
               <div class="flex items-center justify-between mb-3">
                 <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400" data-i18n="tools.csp-builder.ui.heading1">Directives</h2>
                 <span class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.csp-builder.ui.text0">Space-separated sources</span>
@@ -127,8 +127,8 @@ function renderCSPBuilderPage(lang = DEFAULT_LANGUAGE) {
               </div>
             </div>
 
-            <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
-              <label class="label flex items-center gap-2">
+            <div class="tool-group p-5">
+              <label for="csp-output" class="label flex items-center gap-2">
                 <span data-i18n="tools.csp-builder.ui.label2">Header output</span>
                 ${infoHint("Copy this into your server response headers. For testing, prefer “Content-Security-Policy-Report-Only”.", "Help", { i18nKey: "tools.csp-builder.ui.desc3" })}
               </label>

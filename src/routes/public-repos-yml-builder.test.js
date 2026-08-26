@@ -1,28 +1,26 @@
 // @vitest-environment node
 import { describe, expect, it } from "vitest";
-import {
-  handlePublicReposYmlBuilderRoutes,
-  parsePublicReposInput,
-} from "./public-repos-yml-builder.js";
+import { parsePublicReposInput } from "./public-repos-yml-builder.js";
+import { handleRepoOpsRoutes } from "./repo-ops.js";
 import { TOOLS } from "../utils/tool-registry.js";
 
-describe("public-repos-yml-builder route rendering", () => {
+describe("repo-ops embedded repository inventory", () => {
   it("is registered with the expected production metadata", () => {
-    const tool = TOOLS.find((item) => item.id === "public-repos-yml-builder");
+    const tool = TOOLS.find((item) => item.id === "repo-ops");
 
     expect(tool).toMatchObject({
-      id: "public-repos-yml-builder",
-      name: "Public Repos YAML Builder",
-      path: "/public-repos-yml-builder",
+      id: "repo-ops",
+      name: "Repo Operations",
+      path: "/repo-ops",
       category: "utils",
     });
     expect(tool?.keywords).toContain("repos.yml");
   });
 
   it("renders the builder UI and client-side automation outputs", async () => {
-    const url = new URL("http://localhost/public-repos-yml-builder");
+    const url = new URL("http://localhost/repo-ops");
     const request = new Request(url, { method: "GET" });
-    const response = await handlePublicReposYmlBuilderRoutes(request, url);
+    const response = await handleRepoOpsRoutes(request, url);
 
     expect(response).not.toBeNull();
     expect(response.status).toBe(200);
@@ -47,18 +45,13 @@ describe("public-repos-yml-builder route rendering", () => {
   });
 
   it("returns null for unmatched routes and 405 for unsupported methods", async () => {
-    const missUrl = new URL("http://localhost/not-public-repos-yml-builder");
+    const missUrl = new URL("http://localhost/not-repo-ops");
     const missRequest = new Request(missUrl, { method: "GET" });
-    await expect(
-      handlePublicReposYmlBuilderRoutes(missRequest, missUrl),
-    ).resolves.toBeNull();
+    await expect(handleRepoOpsRoutes(missRequest, missUrl)).resolves.toBeNull();
 
-    const postUrl = new URL("http://localhost/public-repos-yml-builder");
+    const postUrl = new URL("http://localhost/repo-ops");
     const postRequest = new Request(postUrl, { method: "POST" });
-    const response = await handlePublicReposYmlBuilderRoutes(
-      postRequest,
-      postUrl,
-    );
+    const response = await handleRepoOpsRoutes(postRequest, postUrl);
     expect(response.status).toBe(405);
   });
 });

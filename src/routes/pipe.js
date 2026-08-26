@@ -25,10 +25,11 @@ export async function handlePipeRoutes(request, url) {
 
 function renderPipePage(lang = DEFAULT_LANGUAGE) {
   const content = `
-    <main class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <main class="tool-page-shell tool-page-shell--wide">
+      <div class="tool-page-panel">
       <div class="flex items-center justify-between mb-6">
         <div>
-          <h1 class="text-2xl font-bold text-surface-900 dark:text-surface-50 flex items-center gap-3">
+          <h1 class="tool-header-title flex items-center gap-3">
             <span class="text-teal-600 dark:text-teal-400">⛓</span>
             Pipe Mode
             <span class="text-xs font-medium bg-teal-100 text-teal-700 dark:bg-teal-900/40 dark:text-teal-300 px-2 py-0.5 rounded-full">BETA</span>
@@ -47,7 +48,7 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
         <aside id="tool-palette" class="w-56 shrink-0 hidden lg:block">
           <div class="sticky top-20 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-lg p-3">
             <input type="text" id="palette-search" placeholder="Search tools..."
-              class="w-full px-2 py-1.5 text-xs border border-surface-200 dark:border-surface-700 rounded bg-white dark:bg-surface-800 text-surface-900 dark:text-surface-100 mb-3"
+              class="input text-xs mb-3"
               role="search" aria-label="Search tools">
             <div id="palette-list" class="space-y-0.5 text-sm max-h-[60vh] overflow-y-auto"></div>
           </div>
@@ -56,11 +57,11 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
         <!-- Main Workspace -->
         <div class="flex-1 min-w-0">
           <!-- Input -->
-          <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-lg p-4 mb-0">
+          <div class="tool-group p-4 mb-0">
             <label class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wider mb-2 block">Input</label>
             <textarea id="pipe-input" rows="3"
               placeholder="Paste your data here, or try a recipe below..."
-              class="w-full px-3 py-2 border border-surface-200 dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-800 text-surface-900 dark:text-surface-100 font-mono text-sm resize-y"
+              class="input"
             ></textarea>
           </div>
 
@@ -90,7 +91,17 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
           <!-- Recipe Gallery (empty state / inspiration) -->
           <div id="recipe-gallery" class="mt-8">
             <h2 class="text-xs font-semibold text-surface-500 dark:text-surface-400 uppercase tracking-wider mb-3">Try a recipe</h2>
-            <div class="flex gap-3 overflow-x-auto pb-2" id="recipe-list"></div>
+            <!-- Recipe cards stay a horizontal row rather than reflowing, so the
+               scroller is made explicit and keyboard-reachable (tabindex +
+               role + aria-label) instead of silently clipping the third card. -->
+            <div
+              class="flex gap-3 overflow-x-auto pb-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              id="recipe-list"
+              tabindex="0"
+              role="region"
+              aria-label="Recipe gallery, scroll horizontally to see more recipes"
+              data-i18n-aria="tools.pipe.ui.ariaRecipeList"
+            ></div>
           </div>
         </div>
       </div>
@@ -98,15 +109,16 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
       <!-- Mobile palette bottom sheet -->
       <div id="mobile-palette" class="fixed inset-0 z-50 hidden">
         <div class="absolute inset-0 bg-black/40" id="mobile-palette-backdrop"></div>
-        <div class="absolute bottom-0 left-0 right-0 bg-white dark:bg-surface-900 rounded-t-xl p-4 max-h-[70vh] overflow-y-auto">
+        <div class="absolute bottom-0 left-0 right-0 bg-popover text-popover-foreground rounded-t-xl p-4 max-h-[70vh] overflow-y-auto">
           <div class="flex justify-between items-center mb-3">
             <span class="font-semibold text-sm">Add a step</span>
             <button id="close-mobile-palette" class="text-surface-400 hover:text-surface-600 text-lg">&times;</button>
           </div>
           <input type="text" id="mobile-palette-search" placeholder="Search tools..."
-            class="w-full px-3 py-2 text-sm border border-surface-200 dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-800 mb-3">
+            class="input w-full mb-3">
           <div id="mobile-palette-list" class="space-y-1"></div>
         </div>
+      </div>
       </div>
     </main>
   `;
@@ -187,9 +199,9 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
       };
 
       const RECIPES = [
-        { name: 'Decode JWT payload', steps: [{ id: 'base64', options: { mode: 'decode' } }, { id: 'json-format', options: { mode: 'format' } }] },
-        { name: 'Sort & dedupe lines', steps: [{ id: 'line-sort', options: { mode: 'sort-dedupe' } }] },
-        { name: 'Encode for URL', steps: [{ id: 'base64', options: { mode: 'encode' } }, { id: 'url-encode', options: { mode: 'encode' } }] },
+        { name: 'Decode JWT payload', sample: 'eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9', steps: [{ id: 'base64', options: { mode: 'decode' } }, { id: 'json-format', options: { mode: 'format' } }] },
+        { name: 'Sort & dedupe lines', sample: 'banana\\ncherry\\napple\\nbanana\\napple', steps: [{ id: 'line-sort', options: { mode: 'sort-dedupe' } }] },
+        { name: 'Encode for URL', sample: 'hello world & friends=true', steps: [{ id: 'base64', options: { mode: 'encode' } }, { id: 'url-encode', options: { mode: 'encode' } }] },
       ];
 
       // ── State ──────────────────────────────────────────────
@@ -302,7 +314,7 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
             for (const opt of contract.options) {
               if (opt.type === 'select' && opt.values) {
                 optionsHtml += \`<label class="text-xs text-surface-500"><span class="mr-1">\${opt.id}:</span>
-                  <select class="opt-select text-xs border border-surface-200 dark:border-surface-700 rounded px-1 py-0.5 bg-white dark:bg-surface-800 text-surface-800 dark:text-surface-200" data-opt="\${opt.id}">
+                  <select class="input opt-select text-xs px-1 py-0.5 w-auto" data-opt="\${opt.id}">
                     \${opt.values.map(v => \`<option value="\${v}" \${step.options[opt.id]===v?'selected':''}>\${v}</option>\`).join('')}
                   </select></label>\`;
               }
@@ -388,7 +400,7 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
         recipeList.innerHTML = '';
         RECIPES.forEach(recipe => {
           const card = document.createElement('button');
-          card.className = 'shrink-0 bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-lg px-4 py-3 text-left hover:border-teal-400 transition-colors min-w-[200px]';
+          card.className = 'shrink-0 border border-border rounded-lg px-4 py-3 text-left hover:border-teal-400 transition-colors min-w-[200px]';
           card.innerHTML = \`
             <div class="font-medium text-sm text-surface-800 dark:text-surface-200 mb-1">\${recipe.name}</div>
             <div class="text-xs text-surface-400">\${recipe.steps.map(s => CONTRACTS[s.id]?.name || s.id).join(' → ')}</div>
@@ -396,6 +408,11 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
           \`;
           card.onclick = () => {
             pipeSteps = recipe.steps.map(s => ({ contractId: s.id, options: { ...s.options } }));
+            // Seed the sample input only when the user has not typed anything,
+            // so trying a recipe never clobbers real data.
+            if (!inputEl.value.trim() && recipe.sample) {
+              inputEl.value = recipe.sample;
+            }
             renderSteps();
             runPipe();
             document.getElementById('recipe-gallery').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -442,7 +459,7 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
         pipeSteps = [];
         inputEl.value = '';
         renderSteps();
-        finalContainer.classList.add('hidden');
+        runPipe();
       };
 
       document.getElementById('download-output').onclick = () => {
@@ -494,6 +511,7 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
               banner.textContent = 'Someone shared this pipeline with you. Paste your data above to run it.';
               inputEl.parentElement.parentElement.insertBefore(banner, inputEl.parentElement);
               renderSteps();
+              runPipe();
               return;
             }
           } catch {}
@@ -505,6 +523,7 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
             if (Array.isArray(data) && data.length > 0) {
               pipeSteps = data;
               renderSteps();
+              runPipe();
             }
           } catch {}
         }

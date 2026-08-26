@@ -63,8 +63,8 @@ function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
       ?.map((id) => TOOLS.find((t) => t.id === id))
       .filter(Boolean) || [];
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
 
         ${toolHeader}
 
@@ -126,13 +126,13 @@ function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
 
           <!-- Results Column -->
           <div class="lg:col-span-2">
-            <div id="placeholder" class="flex flex-col items-center justify-center py-16 text-surface-400 dark:text-surface-500">
+            <div id="placeholder" class="flex flex-col items-center justify-center py-16 text-surface-500 dark:text-surface-400">
               <svg class="w-16 h-16 mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
               <p class="text-sm" data-i18n="tools.uuid-generator.ui.text0">Click Generate to create UUIDs</p>
             </div>
             <div id="result" class="hidden">
               <div class="flex items-center justify-between mb-4">
-                <h3 class="text-sm font-semibold text-surface-700 dark:text-surface-300" data-i18n="tools.uuid-generator.ui.heading0">Generated UUIDs</h3>
+                <h2 class="text-sm font-semibold text-surface-700 dark:text-surface-300" data-i18n="tools.uuid-generator.ui.heading0">Generated UUIDs</h2>
                 <button id="copy-btn" class="btn btn-ghost text-xs">
                   <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                   <span data-i18n="tools.uuid-generator.ui.button1">Copy All</span>
@@ -220,12 +220,15 @@ function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
 
       // UUID v1 Generator (timestamp-based with cryptographically secure random components)
       function generateUUIDv1() {
-        const now = Date.now();
-        const timestamp = now * 10000 + 122192928000000000; // UUID epoch
+        // 60-bit count of 100ns intervals since the UUID epoch (1582-10-15).
+        // Must be BigInt: the value exceeds Number.MAX_SAFE_INTEGER, and JS
+        // bitwise operators coerce to signed 32-bit, which produced a negative
+        // time_low and a stray leading '-' in the rendered UUID.
+        const timestamp = BigInt(Date.now()) * 10000n + 122192928000000000n;
 
-        const timeLow = (timestamp & 0xFFFFFFFF).toString(16).padStart(8, '0');
-        const timeMid = ((timestamp >> 32) & 0xFFFF).toString(16).padStart(4, '0');
-        const timeHi = (((timestamp >> 48) & 0x0FFF) | 0x1000).toString(16).padStart(4, '0');
+        const timeLow = (timestamp & 0xFFFFFFFFn).toString(16).padStart(8, '0');
+        const timeMid = ((timestamp >> 32n) & 0xFFFFn).toString(16).padStart(4, '0');
+        const timeHi = (((timestamp >> 48n) & 0x0FFFn) | 0x1000n).toString(16).padStart(4, '0');
 
         // Use crypto.getRandomValues for clock sequence and node
         const randomBytes = new Uint8Array(8);

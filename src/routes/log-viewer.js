@@ -22,7 +22,8 @@ export async function handleLogViewerRoutes(request, url) {
       .filter(Boolean) || [];
 
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
       ${createToolHeader(
         { emoji: "📃" },
         translation?.name || "Enterprise Log Viewer",
@@ -44,7 +45,7 @@ export async function handleLogViewerRoutes(request, url) {
       )}
 
       <!-- Controls -->
-      <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 p-6 mb-6">
+      <div class="tool-group p-6 mb-6">
         <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
           <!-- File Input -->
           <div class="md:col-span-4">
@@ -63,7 +64,7 @@ export async function handleLogViewerRoutes(request, url) {
                 </svg>
               </div>
               <input type="text" id="search-input" placeholder="Search logs..." data-i18n-placeholder="tools.log-viewer.ui.placeholder2" data-tooltip="Filter logs by text — enable regex toggle for pattern matching" data-i18n-tooltip="tools.log-viewer.ui.tip0" data-i18n-placeholder="tools.log-viewer.ui.placeholder2"
-                class="block w-full pl-10 pr-12 py-2 border border-surface-300 dark:border-surface-700 rounded-lg bg-surface-50 dark:bg-surface-950 text-surface-900 dark:text-surface-50 focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                class="input pl-10 pr-12">
               <div class="absolute inset-y-0 right-0 flex items-center">
                 <label for="regex-toggle" class="flex items-center px-2 cursor-pointer" title="Use Regex" data-i18n-title="tools.log-viewer.ui.title3">
                   <input type="checkbox" id="regex-toggle" class="sr-only peer" data-tooltip="Enable regex pattern matching in search" data-i18n-tooltip="tools.log-viewer.ui.tip1">
@@ -74,11 +75,11 @@ export async function handleLogViewerRoutes(request, url) {
           </div>
 
           <!-- Level Filters -->
-          <div class="md:col-span-3 flex gap-2">
-             <button id="toggle-info" data-tooltip="Show/hide INFO level messages" data-i18n-tooltip="tools.log-viewer.ui.tip2" class="flex-1 px-3 py-2 rounded-lg text-xs font-medium bg-info-100 text-info-800 dark:bg-info-900/30 dark:text-info-300 border border-transparent hover:border-info-300 transition-all ring-2 ring-info-500 ring-offset-1 dark:ring-offset-surface-900" data-active="true">INFO</button>
-             <button id="toggle-warn" class="flex-1 px-3 py-2 rounded-lg text-xs font-medium bg-warning-100 text-warning-800 dark:bg-warning-900/30 dark:text-warning-300 border border-transparent hover:border-warning-300 transition-all ring-2 ring-warning-500 ring-offset-1 dark:ring-offset-surface-900" data-active="true">WARN</button>
-             <button id="toggle-error" class="flex-1 px-3 py-2 rounded-lg text-xs font-medium bg-error-100 text-error-800 dark:bg-error-900/30 dark:text-error-300 border border-transparent hover:border-error-300 transition-all ring-2 ring-error-500 ring-offset-1 dark:ring-offset-surface-900" data-active="true">ERR</button>
-            <button id="toggle-other" class="flex-1 px-3 py-2 rounded-lg text-xs font-medium bg-surface-100 text-surface-800 dark:bg-surface-800 dark:text-surface-300 border border-transparent hover:border-surface-300 transition-all ring-2 ring-surface-500 ring-offset-1 dark:ring-offset-surface-900" data-active="true">OTHER</button>
+          <div class="md:col-span-3 flex flex-wrap gap-2 min-w-0">
+             <button id="toggle-info" data-tooltip="Show/hide INFO level messages" data-i18n-tooltip="tools.log-viewer.ui.tip2" class="filter-chip bg-info-100 text-info-800 dark:bg-info-900 dark:text-info-200" data-active="true">INFO</button>
+             <button id="toggle-warn" class="filter-chip bg-warning-100 text-warning-800 dark:bg-warning-900 dark:text-warning-200" data-active="true">WARN</button>
+             <button id="toggle-error" class="filter-chip bg-error-100 text-error-800 dark:bg-error-900 dark:text-error-200" data-active="true">ERR</button>
+            <button id="toggle-other" class="filter-chip bg-surface-100 text-surface-800 dark:bg-surface-800 dark:text-surface-200" data-active="true">OTHER</button>
           </div>
         </div>
         
@@ -93,8 +94,8 @@ export async function handleLogViewerRoutes(request, url) {
       </div>
 
       <!-- Visualization -->
-      <div id="viz-container" class="hidden mb-4 bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 p-4">
-        <h3 class="text-xs font-semibold text-surface-500 uppercase tracking-wider mb-2" data-i18n="tools.log-viewer.ui.stat4">Log Density</h3>
+      <div id="viz-container" class="tool-group hidden mb-4 p-4">
+        <h2 class="text-xs font-semibold text-surface-500 uppercase tracking-wider mb-2" data-i18n="tools.log-viewer.ui.stat4">Log Density</h2>
         <canvas id="density-canvas" class="w-full h-16 cursor-crosshair rounded bg-surface-50 dark:bg-surface-950"></canvas>
       </div>
 
@@ -123,6 +124,7 @@ export async function handleLogViewerRoutes(request, url) {
         </div>
       </div>
     ${createRelatedToolsSection(relatedToolsData)}
+      </div>
     </main>
 
     <style>

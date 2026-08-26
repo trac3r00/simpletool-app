@@ -50,12 +50,13 @@ function renderDataConverterPage(lang = DEFAULT_LANGUAGE) {
       .filter(Boolean) || [];
 
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
       <header class="bg-white/90 dark:bg-surface-900/80 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-8">
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
           <div>
             <p class="text-xs font-semibold uppercase tracking-[0.35em] text-info-600 dark:text-info-300 mb-3" data-i18n="tools.yaml-toml-converter.ui.desc9">Data formats</p>
-            <h1 class="text-4xl sm:text-5xl font-extrabold text-surface-900 dark:text-white mb-4">${title}</h1>
+            <h1 class="tool-header-title mb-4">${title}</h1>
             <p class="text-lg text-surface-600 dark:text-surface-300 max-w-3xl" data-i18n="tools.yaml-toml-converter.ui.desc10">Validate and translate configs instantly. Paste once, get well-formed JSON, YAML, and TOML representations without leaking secrets.</p>
           </div>
           <div class="flex flex-col gap-3 text-sm text-surface-600 dark:text-surface-300">
@@ -78,10 +79,10 @@ function renderDataConverterPage(lang = DEFAULT_LANGUAGE) {
       </header>
 
       <section class="grid gap-6 lg:grid-cols-[3fr,3fr]">
-        <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 space-y-4">
+        <div class="tool-group p-6 space-y-4">
           <div class="flex flex-wrap items-center gap-3">
             <label for="format-select" class="text-sm font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide"><span data-i18n="tools.yaml-toml-converter.ui.label6">Source format</span></label>
-            <select id="format-select" class="rounded-xl border border-surface-200 dark:border-surface-700 bg-white dark:bg-surface-950 px-3 py-2 text-sm text-surface-900 dark:text-surface-100">
+            <select id="format-select" class="input w-auto">
               <option value="auto" data-i18n="tools.yaml-toml-converter.ui.option8">Auto detect</option>
               <option value="json">JSON</option>
               <option value="yaml">YAML</option>
@@ -90,7 +91,7 @@ function renderDataConverterPage(lang = DEFAULT_LANGUAGE) {
              <button id="load-sample" class="btn btn-ghost btn-xs"><span data-i18n="tools.yaml-toml-converter.ui.button0">Load sample</span></button>
           </div>
           <label for="format-input" class="sr-only"><span data-i18n="tools.yaml-toml-converter.ui.label0">Input configuration data</span></label>
-          <textarea id="format-input" class="w-full min-h-[280px] rounded-xl border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-950 px-4 py-3 font-mono text-sm text-surface-900 dark:text-surface-100" placeholder="Paste JSON, YAML, or TOML..." data-i18n-placeholder="tools.yaml-toml-converter.ui.placeholder7"></textarea>
+          <textarea id="format-input" class="input-mono w-full min-h-[280px]" placeholder="Paste JSON, YAML, or TOML..." data-i18n-placeholder="tools.yaml-toml-converter.ui.placeholder7"></textarea>
           <div class="flex flex-wrap gap-3">
              <button id="validate-btn" class="btn btn-secondary" data-tooltip="Check syntax without converting"><span data-i18n="tools.yaml-toml-converter.ui.button1">Validate only</span></button>
              <button data-convert="json" class="convert-btn btn btn-secondary" data-tooltip="Convert to JSON format"><span data-i18n="tools.yaml-toml-converter.ui.button2">→ JSON</span></button>
@@ -102,21 +103,21 @@ function renderDataConverterPage(lang = DEFAULT_LANGUAGE) {
         </div>
 
         <div class="space-y-6">
-            <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6">
+            <div class="tool-group p-6">
             <div class="flex items-center justify-between mb-2">
               <h2 class="text-lg font-bold text-surface-900 dark:text-white">JSON</h2>
                <button data-copy="json" class="copy-btn btn btn-ghost btn-xs" disabled><span data-i18n="tools.yaml-toml-converter.ui.button5">Copy</span></button>
             </div>
             <pre id="json-output" class="bg-surface-900 text-surface-100 rounded-xl p-4 min-h-[140px] overflow-x-auto text-sm">Await conversion.</pre>
           </div>
-          <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6">
+          <div class="tool-group p-6">
             <div class="flex items-center justify-between mb-2">
               <h2 class="text-lg font-bold text-surface-900 dark:text-white">YAML</h2>
                <button data-copy="yaml" class="copy-btn btn btn-ghost btn-xs" disabled><span data-i18n="tools.yaml-toml-converter.ui.button5">Copy</span></button>
             </div>
             <pre id="yaml-output" class="bg-surface-900 text-surface-100 rounded-xl p-4 min-h-[140px] overflow-x-auto text-sm">Await conversion.</pre>
           </div>
-          <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6">
+          <div class="tool-group p-6">
             <div class="flex items-center justify-between mb-2">
               <h2 class="text-lg font-bold text-surface-900 dark:text-white">TOML</h2>
                <button data-copy="toml" class="copy-btn btn btn-ghost btn-xs" disabled><span data-i18n="tools.yaml-toml-converter.ui.button5">Copy</span></button>
@@ -148,6 +149,7 @@ function renderDataConverterPage(lang = DEFAULT_LANGUAGE) {
           </table>`,
         },
       ])}
+      </div>
     </main>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
       ${createEducationalSection(

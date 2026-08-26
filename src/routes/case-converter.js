@@ -64,8 +64,8 @@ function renderCaseConverterPage(lang = DEFAULT_LANGUAGE) {
       .filter(Boolean) || [];
 
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
 
         ${toolHeader}
 
@@ -87,11 +87,12 @@ function renderCaseConverterPage(lang = DEFAULT_LANGUAGE) {
         <!-- Action Buttons -->
         <div class="flex gap-3 mb-6">
           <button id="clear-btn" class="btn btn-ghost" data-tooltip="Clear all input and results" data-i18n-tooltip="tools.case-converter.ui.tip0">
-            <span class="material-symbols-rounded text-sm" data-i18n="tools.case-converter.ui.desc3">delete</span> <span data-i18n="tools.case-converter.ui.button0">Clear</span>
+            <span class="material-symbols-rounded text-sm" aria-hidden="true" data-i18n="tools.case-converter.ui.desc3">delete</span> <span data-i18n="tools.case-converter.ui.button0">Clear</span>
           </button>
         </div>
 
         <!-- Conversion Results Grid -->
+        <h2 class="sr-only" data-i18n="tools.case-converter.ui.resultsHeading">Conversion results</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6" id="conversion-results"></div>
 
         <!-- Info Section -->
@@ -218,7 +219,7 @@ function renderCaseConverterPage(lang = DEFAULT_LANGUAGE) {
           name: 'dot.case',
           icon: '⚫',
           color: 'gray',
-          convert: (text) => text.toLowerCase().replace(/[^a-zA-Z0-9]+/g, '.').replace(/^\.|\.$/g, '')
+          convert: (text) => text.toLowerCase().replace(/[^a-zA-Z0-9]+/g, '.').replace(/^\\.|\\.$/g, '')
         },
         alternating: {
           name: 'aLtErNaTiNg CaSe',
@@ -268,8 +269,8 @@ function renderCaseConverterPage(lang = DEFAULT_LANGUAGE) {
               <div class="flex items-center gap-2">
                 <h3 class="text-xs font-bold text-surface-500 dark:text-surface-400 uppercase tracking-wide">\${config.name}</h3>
               </div>
-              <button data-copy-result="\${encodeURIComponent(result)}" class="copy-result-btn text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-                <span class="material-symbols-rounded text-sm" data-i18n="tools.case-converter.ui.desc4">content_copy</span>
+              <button data-copy-result="\${encodeURIComponent(result)}" aria-label="Copy \${config.name} result" class="copy-result-btn text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                <span class="material-symbols-rounded text-sm" aria-hidden="true" data-i18n="tools.case-converter.ui.desc4">content_copy</span>
               </button>
             </div>
             <div class="relative">

@@ -107,8 +107,8 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
     </script>
     <script src="/vendor/qrcode.min.js" integrity="sha384-B3w4ObQEXH2D3E8FlVZ+pBTHHTrPFwqbXjfU/95D5ekt8DVTeG+cB6s6nVpsvh3m" crossorigin="anonymous"></script>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="tool-card">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
 
         ${toolHeader}
 
@@ -128,14 +128,14 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
             <!-- Private Key -->
             <div>
               <div class="flex items-center justify-between mb-2">
-                <label class="text-xs font-semibold text-surface-600 dark:text-surface-400 uppercase" data-i18n="tools.wireguard-config.ui.label0">Private Key</label>
+                <label for="private-key" class="text-xs font-semibold text-surface-600 dark:text-surface-400 uppercase" data-i18n="tools.wireguard-config.ui.label0">Private Key</label>
                 <div class="flex gap-2">
                   <button id="toggle-private-key" class="btn btn-ghost btn-xs" data-i18n="tools.wireguard-config.ui.button1">Show</button>
                   <button id="copy-private-key" class="btn btn-secondary btn-xs" data-i18n="tools.wireguard-config.ui.button2">Copy</button>
                 </div>
               </div>
               <input type="password" id="private-key" readonly 
-                class="w-full p-3 bg-error-50 dark:bg-error-900/10 border border-error-200 dark:border-error-900 rounded-lg font-mono text-sm text-surface-900 dark:text-surface-100"
+                class="input-mono w-full"
                 placeholder="Click Generate to create..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder0">
               <p class="mt-1 text-xs text-error-600 dark:text-error-400" data-i18n="tools.wireguard-config.ui.warning0">⚠️ Never share your private key!</p>
             </div>
@@ -143,11 +143,11 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
             <!-- Public Key -->
             <div>
               <div class="flex items-center justify-between mb-2">
-                <label class="text-xs font-semibold text-surface-600 dark:text-surface-400 uppercase" data-i18n="tools.wireguard-config.ui.label1">Public Key</label>
+                <label for="public-key" class="text-xs font-semibold text-surface-600 dark:text-surface-400 uppercase" data-i18n="tools.wireguard-config.ui.label1">Public Key</label>
                 <button id="copy-public-key" class="btn btn-secondary btn-xs" data-i18n="tools.wireguard-config.ui.button2">Copy</button>
               </div>
               <input type="text" id="public-key" readonly 
-                class="w-full p-3 bg-surface-100 dark:bg-surface-900 border border-surface-300 dark:border-surface-700 rounded-lg font-mono text-sm text-surface-900 dark:text-surface-100"
+                class="input-mono w-full"
                 placeholder="Generated from private key..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder1">
             </div>
           </div>
@@ -155,7 +155,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
 
         <!-- Template Quick Start -->
         <div class="mb-8">
-          <label class="label mb-2" data-i18n="tools.wireguard-config.ui.label2">Template Quick Start</label>
+          <label for="template-select" class="label mb-2" data-i18n="tools.wireguard-config.ui.label2">Template Quick Start</label>
           <select id="template-select" class="input">
             <option value="" data-i18n="tools.wireguard-config.ui.option0">-- Select a template --</option>
             <option value="p2p-client" data-i18n="tools.wireguard-config.ui.option1">Point-to-Point (Client)</option>
@@ -254,8 +254,9 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
                 <span data-i18n="tools.wireguard-config.ui.heading2">📥 Config Parser</span>
               </h3>
               <p class="text-xs text-surface-500 dark:text-surface-400 mb-3" data-i18n="tools.wireguard-config.ui.desc1">Paste an existing .conf file to populate the form.</p>
-              <textarea id="config-parser-input" rows="6" class="input font-mono text-sm resize-vertical" 
-                placeholder="[Interface]\nPrivateKey = ...\nAddress = ..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder9"></textarea>
+              <textarea id="config-parser-input" rows="6" class="input font-mono text-sm resize-vertical"
+                placeholder="[Interface]\nPrivateKey = ...\nAddress = ..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder9"
+                aria-label="WireGuard config to parse" data-i18n-aria="tools.wireguard-config.ui.aria0"></textarea>
               <button id="parse-config-btn" class="btn btn-primary w-full mt-3" data-i18n="tools.wireguard-config.ui.button4">Parse Configuration</button>
             </div>
           </div>
@@ -535,7 +536,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
                 <span class="px-2 py-1 bg-secondary-100 dark:bg-secondary-900/30 text-secondary-700 dark:text-secondary-300 rounded text-xs font-mono">[Peer]</span>
                 <span class="peer-number">Peer \${peerId}</span>
               </h4>
-              <button class="remove-peer-btn btn btn-ghost btn-xs text-error-600 dark:text-error-400" data-peer-id="\${peerId}">
+              <button class="remove-peer-btn btn btn-ghost btn-xs text-error-600 dark:text-error-400" data-peer-id="\${peerId}" aria-label="\${_t('tools.wireguard-config.js.removePeer', 'Remove peer')}" data-i18n-aria="tools.wireguard-config.js.removePeer">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
@@ -544,28 +545,28 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
             
             <div class="space-y-4">
               <div>
-                <label class="label">PublicKey <span class="text-error-500">*</span></label>
-                <input type="text" class="peer-public-key input font-mono text-sm" placeholder="Base64 public key of peer..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder20" value="\${peerData.publicKey}">
+                <label class="label" for="peer-public-key-\${peerId}">PublicKey <span class="text-error-500">*</span></label>
+                <input type="text" id="peer-public-key-\${peerId}" class="peer-public-key input font-mono text-sm" placeholder="Base64 public key of peer..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder20" value="\${peerData.publicKey}">
               </div>
-              
+
               <div>
-                <label class="label">PresharedKey <span class="text-xs text-surface-400">(optional)</span></label>
-                <input type="text" class="peer-preshared-key input font-mono text-sm" placeholder="Additional symmetric key..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder21" value="\${peerData.presharedKey}">
+                <label class="label" for="peer-preshared-key-\${peerId}">PresharedKey <span class="text-xs text-surface-400">(optional)</span></label>
+                <input type="text" id="peer-preshared-key-\${peerId}" class="peer-preshared-key input font-mono text-sm" placeholder="Additional symmetric key..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder21" value="\${peerData.presharedKey}">
               </div>
-              
+
               <div>
-                <label class="label">AllowedIPs <span class="text-error-500">*</span></label>
-                <input type="text" class="peer-allowed-ips input font-mono text-sm" placeholder="0.0.0.0/0 or 10.0.0.1/32..." value="\${peerData.allowedIPs}">
+                <label class="label" for="peer-allowed-ips-\${peerId}">AllowedIPs <span class="text-error-500">*</span></label>
+                <input type="text" id="peer-allowed-ips-\${peerId}" class="peer-allowed-ips input font-mono text-sm" placeholder="0.0.0.0/0 or 10.0.0.1/32..." value="\${peerData.allowedIPs}">
               </div>
-              
+
               <div class="grid grid-cols-2 gap-4">
                 <div>
-                  <label class="label"><span data-i18n="tools.wireguard-config.ui.label10">Endpoint</span></label>
-                  <input type="text" class="peer-endpoint input font-mono text-sm" placeholder="host:port..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder22" value="\${peerData.endpoint}">
+                  <label class="label" for="peer-endpoint-\${peerId}"><span data-i18n="tools.wireguard-config.ui.label10">Endpoint</span></label>
+                  <input type="text" id="peer-endpoint-\${peerId}" class="peer-endpoint input font-mono text-sm" placeholder="host:port..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder22" value="\${peerData.endpoint}">
                 </div>
                 <div>
-                  <label class="label"><span data-i18n="tools.wireguard-config.ui.label11">PersistentKeepalive</span></label>
-                  <input type="number" class="peer-keepalive input font-mono text-sm" placeholder="25" min="0" max="65535" value="\${peerData.persistentKeepalive}">
+                  <label class="label" for="peer-keepalive-\${peerId}"><span data-i18n="tools.wireguard-config.ui.label11">PersistentKeepalive</span></label>
+                  <input type="number" id="peer-keepalive-\${peerId}" class="peer-keepalive input font-mono text-sm" placeholder="25" min="0" max="65535" value="\${peerData.persistentKeepalive}">
                 </div>
               </div>
             </div>

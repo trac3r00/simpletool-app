@@ -3,30 +3,28 @@ import { describe, expect, it } from "vitest";
 import {
   buildNoAutomationChecklist,
   buildNoAutomationDecisionRecord,
-  handlePublicReposNotAutomationRoutes,
   parsePublicReposNoAutomationInput,
 } from "./public-repos-not-automation.js";
+import { handleRepoOpsRoutes } from "./repo-ops.js";
 import { TOOLS } from "../utils/tool-registry.js";
 
-describe("public-repos-not-automation route rendering", () => {
+describe("repo-ops embedded manual stewardship", () => {
   it("is registered with the expected production metadata", () => {
-    const tool = TOOLS.find(
-      (item) => item.id === "public-repos-not-automation",
-    );
+    const tool = TOOLS.find((item) => item.id === "repo-ops");
 
     expect(tool).toMatchObject({
-      id: "public-repos-not-automation",
-      name: "Public Repos Not Automation",
-      path: "/public-repos-not-automation",
+      id: "repo-ops",
+      name: "Repo Operations",
+      path: "/repo-ops",
       category: "utils",
     });
-    expect(tool?.keywords).toContain("no automation");
+    expect(tool?.keywords).toContain("manual stewardship");
   });
 
   it("renders the no-automation decision UI without browser alerts", async () => {
-    const url = new URL("http://localhost/public-repos-not-automation");
+    const url = new URL("http://localhost/repo-ops");
     const request = new Request(url, { method: "GET" });
-    const response = await handlePublicReposNotAutomationRoutes(request, url);
+    const response = await handleRepoOpsRoutes(request, url);
 
     expect(response).not.toBeNull();
     expect(response.status).toBe(200);
@@ -46,9 +44,9 @@ describe("public-repos-not-automation route rendering", () => {
   });
 
   it("keeps both header badges without malformed definition-list feature markup", async () => {
-    const url = new URL("http://localhost/public-repos-not-automation");
+    const url = new URL("http://localhost/repo-ops");
     const request = new Request(url, { method: "GET" });
-    const response = await handlePublicReposNotAutomationRoutes(request, url);
+    const response = await handleRepoOpsRoutes(request, url);
 
     const text = await response.text();
     expect(text).toContain("tools.public-repos-not-automation.ui.badge0");
@@ -60,9 +58,9 @@ describe("public-repos-not-automation route rendering", () => {
   });
 
   it("renders browser script intent to compose artifacts for every GitHub JSON repo", async () => {
-    const url = new URL("http://localhost/public-repos-not-automation");
+    const url = new URL("http://localhost/repo-ops");
     const request = new Request(url, { method: "GET" });
-    const response = await handlePublicReposNotAutomationRoutes(request, url);
+    const response = await handleRepoOpsRoutes(request, url);
 
     const text = await response.text();
     expect(text).toContain("return parsed.map(parseJsonTask).filter(Boolean);");
@@ -82,12 +80,12 @@ describe("public-repos-not-automation route rendering", () => {
     const missUrl = new URL("http://localhost/not-public-repos-not-automation");
     const missRequest = new Request(missUrl, { method: "GET" });
     await expect(
-      handlePublicReposNotAutomationRoutes(missRequest, missUrl),
+      handleRepoOpsRoutes(missRequest, missUrl),
     ).resolves.toBeNull();
 
-    const postUrl = new URL("http://localhost/public-repos-not-automation");
+    const postUrl = new URL("http://localhost/repo-ops");
     const postRequest = new Request(postUrl, { method: "POST" });
-    const response = await handlePublicReposNotAutomationRoutes(
+    const response = await handleRepoOpsRoutes(
       postRequest,
       postUrl,
     );

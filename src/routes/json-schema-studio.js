@@ -54,12 +54,13 @@ function renderJsonSchemaStudioPage(lang = DEFAULT_LANGUAGE) {
       .filter(Boolean) || [];
 
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      ${header}
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
+        ${header}
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <!-- Input -->
-        <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 p-5">
+        <div class="tool-group p-5">
           <div class="flex justify-between items-center mb-4">
             <h2 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.json-schema-studio.ui.heading4">Input JSON</h2>
             <div class="flex gap-2">
@@ -68,13 +69,13 @@ function renderJsonSchemaStudioPage(lang = DEFAULT_LANGUAGE) {
             </div>
           </div>
           <textarea id="json-input" rows="20" data-tooltip="Paste JSON to auto-generate its JSON Schema" data-i18n-tooltip="tools.json-schema-studio.ui.tip0"
-            class="w-full p-4 bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 font-mono text-sm text-surface-900 dark:text-white resize-none"
+            class="input-mono w-full resize-none"
             placeholder='{ "name": "John", "age": 30 }'></textarea>
-          <button id="generate-btn" data-tooltip="Analyze JSON structure and generate a matching schema" data-i18n-tooltip="tools.json-schema-studio.ui.tip1" class="w-full mt-4 py-3 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-lg transition shadow-md"><span data-i18n="tools.json-schema-studio.ui.button2">Generate JSON Schema</span></button>
+          <button id="generate-btn" data-tooltip="Analyze JSON structure and generate a matching schema" data-i18n-tooltip="tools.json-schema-studio.ui.tip1" class="btn-primary w-full mt-4"><span data-i18n="tools.json-schema-studio.ui.button2">Generate JSON Schema</span></button>
         </div>
 
         <!-- Output -->
-        <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 p-5 flex flex-col">
+        <div class="tool-group p-5 flex flex-col">
           <div class="flex justify-between items-center mb-4">
             <h2 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.json-schema-studio.ui.heading5">JSON Schema Result</h2>
             <button id="copy-btn" data-tooltip="Copy generated schema to clipboard" data-i18n-tooltip="tools.json-schema-studio.ui.tip2" class="btn btn-secondary btn-xs"><span data-i18n="tools.json-schema-studio.ui.button3">Copy Schema</span></button>
@@ -108,6 +109,7 @@ function renderJsonSchemaStudioPage(lang = DEFAULT_LANGUAGE) {
         },
       ])}
     ${createRelatedToolsSection(relatedToolsData)}
+      </div>
     </main>
   `;
 

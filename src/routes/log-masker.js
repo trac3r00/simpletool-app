@@ -48,23 +48,24 @@ function renderLogMaskerPage(lang = DEFAULT_LANGUAGE) {
       .filter(Boolean) || [];
 
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      ${header}
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
+        ${header}
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <!-- Input -->
         <div class="space-y-6">
-          <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 p-5">
+          <div class="tool-group p-5">
             <div class="flex justify-between items-center mb-2">
               <label for="log-input" class="block text-sm font-medium text-surface-700 dark:text-surface-300"><span data-i18n="tools.log-masker.ui.label2">Raw Logs</span></label>
               <button id="mask-btn" data-tooltip="Redact all selected PII patterns from the input" data-i18n-tooltip="tools.log-masker.ui.tip0" class="btn btn-primary btn-sm"><span data-i18n="tools.log-masker.ui.button0">Mask Logs</span></button>
             </div>
             <textarea id="log-input" rows="15" 
-              class="w-full p-3 bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 font-mono text-sm text-surface-900 dark:text-white resize-y"
+              class="input-mono w-full resize-y"
               placeholder="Paste log content with PII to redact..." data-i18n-placeholder="tools.log-masker.ui.placeholder4"></textarea>
           </div>
 
-          <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 p-5">
+          <div class="tool-group p-5">
             <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4" data-i18n="tools.log-masker.ui.heading6">Redaction Settings</h2>
             <div class="space-y-3">
               <label class="flex items-center gap-3 cursor-pointer">
@@ -82,20 +83,21 @@ function renderLogMaskerPage(lang = DEFAULT_LANGUAGE) {
               <div class="pt-2">
                 <label for="custom-patterns" class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1"><span data-i18n="tools.log-masker.ui.label3">Custom Keywords (comma separated)</span></label>
                 <input type="text" id="custom-patterns" placeholder="api_key, secret, token" data-i18n-placeholder="tools.log-masker.ui.placeholder5" 
-                  class="w-full p-2 bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg text-sm focus:ring-2 focus:ring-primary-500">
+                  class="input w-full">
               </div>
             </div>
           </div>
         </div>
 
         <!-- Output -->
-        <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 p-5 flex flex-col">
+        <div class="tool-group p-5 flex flex-col">
            <div class="flex justify-between items-center mb-4">
              <h2 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.log-masker.ui.heading7">Masked Logs</h2>
               <button id="copy-result-btn" type="button" class="btn btn-ghost btn-xs"><span data-i18n="tools.log-masker.ui.button1">Copy Result</span></button>
            </div>
           <div id="log-output" class="flex-1 bg-surface-900 text-surface-50 p-4 rounded-lg text-sm font-mono whitespace-pre-wrap overflow-y-auto min-h-[400px]" data-i18n="tools.log-masker.ui.desc11">Logs will appear here after masking...</div>
         </div>
+      </div>
       </div>
     </main>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">

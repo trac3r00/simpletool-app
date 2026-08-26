@@ -1,6 +1,4 @@
-import { respondHTML } from "../utils/respond.js";
 import {
-  createPageTemplate,
   createToolHeader,
   createCheatsheet,
   infoHint,
@@ -14,21 +12,12 @@ import {
   DEFAULT_LANGUAGE,
   getToolTranslation,
   normalizeLanguage,
-  resolveRequestLanguage,
 } from "../utils/i18n.js";
 
-export async function handleProtocolHeadersRoutes(request, url) {
-  if (
-    url.pathname !== "/protocol-headers" &&
-    url.pathname !== "/protocol-headers/"
-  )
-    return null;
-  if (request.method !== "GET") return null;
-  const lang = resolveRequestLanguage(request, url);
-  return respondHTML(renderProtocolHeadersPage(lang));
-}
-
-function renderProtocolHeadersPage(lang = DEFAULT_LANGUAGE) {
+// Merged into /network-reference (Track A). Returns the Protocol-headers tab's
+// content + script (IIFE-wrapped here so its globals don't collide with the
+// other tabs). Old /protocol-headers path 301s (redirects.js).
+export function renderProtocolHeadersSection(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
   const translation = getToolTranslation("protocol-headers", currentLang);
   const title = translation?.name || "Protocol Header Visualizer";
@@ -38,6 +27,7 @@ function renderProtocolHeadersPage(lang = DEFAULT_LANGUAGE) {
 
   const header = createToolHeader({ emoji: "📡" }, title, description, [], {
     toolId: "protocol-headers",
+    headingLevel: 2,
   });
 
   const currentTool = TOOLS.find((t) => t.id === "protocol-headers");
@@ -47,7 +37,7 @@ function renderProtocolHeadersPage(lang = DEFAULT_LANGUAGE) {
       .filter(Boolean) || [];
 
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="net-ref-section">
       ${header}
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -58,13 +48,13 @@ function renderProtocolHeadersPage(lang = DEFAULT_LANGUAGE) {
           <div class="tool-card">
             <label class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-3" data-i18n="tools.protocol-headers.ui.label0">Select Protocol</label>
             <div class="grid grid-cols-2 gap-2">
-              <button class="protocol-tab active px-3 py-2 text-sm font-medium rounded-lg bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300 border border-primary-200 dark:border-primary-800 transition-colors" data-protocol="ethernet" data-i18n="tools.protocol-headers.ui.button0">Ethernet II</button>
-              <button class="protocol-tab px-3 py-2 text-sm font-medium rounded-lg bg-surface-100 text-surface-600 dark:bg-surface-800 dark:text-surface-400 border border-surface-200 dark:border-surface-700 hover:bg-surface-200 dark:hover:bg-surface-700 transition-colors" data-protocol="ipv4" data-i18n="tools.protocol-headers.ui.button1">IPv4</button>
-              <button class="protocol-tab px-3 py-2 text-sm font-medium rounded-lg bg-surface-100 text-surface-600 dark:bg-surface-800 dark:text-surface-400 border border-surface-200 dark:border-surface-700 hover:bg-surface-200 dark:hover:bg-surface-700 transition-colors" data-protocol="ipv6" data-i18n="tools.protocol-headers.ui.button2">IPv6</button>
-              <button class="protocol-tab px-3 py-2 text-sm font-medium rounded-lg bg-surface-100 text-surface-600 dark:bg-surface-800 dark:text-surface-400 border border-surface-200 dark:border-surface-700 hover:bg-surface-200 dark:hover:bg-surface-700 transition-colors" data-protocol="tcp" data-i18n="tools.protocol-headers.ui.button3">TCP</button>
-              <button class="protocol-tab px-3 py-2 text-sm font-medium rounded-lg bg-surface-100 text-surface-600 dark:bg-surface-800 dark:text-surface-400 border border-surface-200 dark:border-surface-700 hover:bg-surface-200 dark:hover:bg-surface-700 transition-colors" data-protocol="udp" data-i18n="tools.protocol-headers.ui.button4">UDP</button>
-              <button class="protocol-tab px-3 py-2 text-sm font-medium rounded-lg bg-surface-100 text-surface-600 dark:bg-surface-800 dark:text-surface-400 border border-surface-200 dark:border-surface-700 hover:bg-surface-200 dark:hover:bg-surface-700 transition-colors" data-protocol="icmp" data-i18n="tools.protocol-headers.ui.button5">ICMP</button>
-              <button class="protocol-tab col-span-2 px-3 py-2 text-sm font-medium rounded-lg bg-surface-100 text-surface-600 dark:bg-surface-800 dark:text-surface-400 border border-surface-200 dark:border-surface-700 hover:bg-surface-200 dark:hover:bg-surface-700 transition-colors" data-protocol="arp" data-i18n="tools.protocol-headers.ui.button6">ARP (IPv4)</button>
+              <button class="tab-trigger protocol-tab active" data-protocol="ethernet" data-i18n="tools.protocol-headers.ui.button0">Ethernet II</button>
+              <button class="tab-trigger protocol-tab" data-protocol="ipv4" data-i18n="tools.protocol-headers.ui.button1">IPv4</button>
+              <button class="tab-trigger protocol-tab" data-protocol="ipv6" data-i18n="tools.protocol-headers.ui.button2">IPv6</button>
+              <button class="tab-trigger protocol-tab" data-protocol="tcp" data-i18n="tools.protocol-headers.ui.button3">TCP</button>
+              <button class="tab-trigger protocol-tab" data-protocol="udp" data-i18n="tools.protocol-headers.ui.button4">UDP</button>
+              <button class="tab-trigger protocol-tab" data-protocol="icmp" data-i18n="tools.protocol-headers.ui.button5">ICMP</button>
+              <button class="tab-trigger protocol-tab col-span-2" data-protocol="arp" data-i18n="tools.protocol-headers.ui.button6">ARP (IPv4)</button>
             </div>
           </div>
 
@@ -75,7 +65,7 @@ function renderProtocolHeadersPage(lang = DEFAULT_LANGUAGE) {
               ${infoHint("Paste a hex dump to parse and visualize the packet structure.", "Hex dump parser help")}
             </div>
             <textarea id="hex-input" rows="8"
-              class="w-full p-3 bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 font-mono text-xs text-surface-900 dark:text-white resize-y"
+              class="input-mono w-full resize-y"
               placeholder="Paste hex dump here...&#10;e.g.&#10;00 1a 2b 3c 4d 5e 00 50&#10;56 c0 00 08 08 00 45 00&#10;00 3c 1c 46 40 00 40 06&#10;b1 e6 c0 a8 01 0a c0 a8&#10;01 01" data-i18n-placeholder="tools.protocol-headers.ui.placeholder8"
               spellcheck="false"></textarea>
             <div class="flex gap-2 mt-3">
@@ -211,7 +201,7 @@ function renderProtocolHeadersPage(lang = DEFAULT_LANGUAGE) {
           </table>`,
         },
       ])}
-    </main>
+    </div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
       ${createEducationalSection(
         [
@@ -240,6 +230,7 @@ function renderProtocolHeadersPage(lang = DEFAULT_LANGUAGE) {
 
   const scripts = `
     <script>
+      (function(){
       // Protocol definitions with field information
       const PROTOCOLS = {
         ethernet: {
@@ -372,30 +363,36 @@ function renderProtocolHeadersPage(lang = DEFAULT_LANGUAGE) {
         return COLOR_MAP[color] || COLOR_MAP.blue;
       }
 
-      function createBitRow(rowIndex, fieldsInRow) {
-        const rowStartBit = rowIndex * 64;
-        const rowEndBit = rowStartBit + 64;
-        let currentBit = rowStartBit;
-        const segments = [];
+      // Split every field across the 64-bit rows it actually occupies, keyed by
+      // absolute bit offset. Fields that straddle a row boundary (Ethernet
+      // Source MAC, IPv6 addresses, ARP protocol addresses) get one segment per
+      // row instead of being silently clipped to the first row.
+      function buildRows(fields) {
+        const rowMap = new Map();
 
-        for (const field of fieldsInRow) {
-          const fieldStart = Math.max(field.offset, rowStartBit);
-          const fieldEnd = Math.min(field.offset + field.bits, rowEndBit);
-          const bitsInRow = fieldEnd - fieldStart;
-          const widthPercent = (bitsInRow / 64) * 100;
-          const colors = getColorClasses(field.color);
-
-          segments.push({
-            field,
-            width: widthPercent,
-            startBit: fieldStart,
-            endBit: fieldEnd,
-            bitsInRow,
-            colors
-          });
+        for (const field of fields) {
+          const fieldEnd = field.offset + field.bits;
+          let bit = field.offset;
+          while (bit < fieldEnd) {
+            const rowIndex = Math.floor(bit / 64);
+            const segmentEnd = Math.min(fieldEnd, (rowIndex + 1) * 64);
+            const bitsInRow = segmentEnd - bit;
+            if (!rowMap.has(rowIndex)) rowMap.set(rowIndex, []);
+            rowMap.get(rowIndex).push({
+              field,
+              width: (bitsInRow / 64) * 100,
+              startBit: bit,
+              endBit: segmentEnd,
+              bitsInRow,
+              colors: getColorClasses(field.color)
+            });
+            bit = segmentEnd;
+          }
         }
 
-        return segments;
+        return Array.from(rowMap.keys())
+          .sort((a, b) => a - b)
+          .map(rowIndex => ({ rowIndex, segments: rowMap.get(rowIndex) }));
       }
 
       function renderProtocol(protocolId) {
@@ -408,33 +405,16 @@ function renderProtocolHeadersPage(lang = DEFAULT_LANGUAGE) {
         sizeEl.textContent = protocol.size + ' bytes';
 
         // Group fields into 64-bit rows
-        const rows = [];
-        let currentRow = [];
-        let currentRowEndBit = 64;
-
-        for (const field of protocol.fields) {
-          const fieldEnd = field.offset + field.bits;
-
-          if (field.offset >= currentRowEndBit) {
-            if (currentRow.length > 0) {
-              rows.push(createBitRow(rows.length, currentRow));
-            }
-            currentRow = [];
-            currentRowEndBit = Math.ceil(field.offset / 64) * 64 + 64;
-          }
-
-          currentRow.push(field);
-        }
-
-        if (currentRow.length > 0) {
-          rows.push(createBitRow(rows.length, currentRow));
-        }
+        const rows = buildRows(protocol.fields);
 
         // Render rows
-        container.innerHTML = rows.map((row, rowIndex) => {
-          const rowStartBit = rowIndex * 64;
-          const rowHtml = row.map(segment => {
-            const bitsText = segment.bitsInRow >= 8 ? (segment.bitsInRow / 8) + 'B' : segment.bitsInRow + 'b';
+        container.innerHTML = rows.map(row => {
+          const rowStartBit = row.rowIndex * 64;
+          const rowHtml = row.segments.map(segment => {
+            // Label with the field's real size, not the slice that happens to
+            // fall inside this row.
+            const totalBits = segment.field.bits;
+            const bitsText = totalBits >= 8 ? (totalBits / 8) + 'B' : totalBits + 'b';
             return \`
               <div class="diagram-field \${segment.colors.bg} \${segment.colors.border} \${segment.colors.text} border rounded px-2 py-3 text-xs font-medium cursor-pointer hover:opacity-80 transition-opacity flex flex-col justify-center min-h-[60px]"
                    style="width: \${segment.width}%;"
@@ -747,6 +727,7 @@ function renderProtocolHeadersPage(lang = DEFAULT_LANGUAGE) {
 
       // Initial render
       renderProtocol('ethernet');
+      })();
     </script>
 
     <style>
@@ -777,12 +758,5 @@ function renderProtocolHeadersPage(lang = DEFAULT_LANGUAGE) {
     </style>
   `;
 
-  return createPageTemplate({
-    title,
-    description,
-    lang: currentLang,
-    path: "/protocol-headers",
-    content,
-    scripts,
-  });
+  return { content, scripts };
 }

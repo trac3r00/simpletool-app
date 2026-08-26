@@ -1,6 +1,4 @@
-import { respondHTML } from "../utils/respond.js";
 import {
-  createPageTemplate,
   createToolHeader,
   createCheatsheet,
 } from "../utils/common-ui.js";
@@ -10,7 +8,6 @@ import {
   DEFAULT_LANGUAGE,
   getToolTranslation,
   normalizeLanguage,
-  resolveRequestLanguage,
 } from "../utils/i18n.js";
 
 const STATUS_CODES = [
@@ -707,18 +704,10 @@ const CLASS_LABELS = {
   "5xx": "Server Error",
 };
 
-export async function handleHTTPStatusReferenceRoutes(request, url) {
-  if (
-    url.pathname !== "/http-status-reference" &&
-    url.pathname !== "/http-status-reference/"
-  )
-    return null;
-  if (request.method !== "GET") return null;
-  const lang = resolveRequestLanguage(request, url);
-  return respondHTML(renderHTTPStatusReferencePage(lang));
-}
-
-function renderHTTPStatusReferencePage(lang = DEFAULT_LANGUAGE) {
+// Merged into /network-reference (Track A). Returns the HTTP-status tab's
+// content + script (already IIFE-wrapped). Its 3 shared DOM ids are prefixed
+// `hs-` to avoid colliding with the Ports tab. Old path 301s (redirects.js).
+export function renderHTTPStatusReferenceSection(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
   const translation = getToolTranslation("http-status-reference", currentLang);
   const title = translation?.name || "HTTP Status Reference";
@@ -744,7 +733,7 @@ function renderHTTPStatusReferencePage(lang = DEFAULT_LANGUAGE) {
         tooltip: "All reference data is embedded locally.",
       },
     ],
-    { toolId: "http-status-reference" },
+    { toolId: "http-status-reference", headingLevel: 2 },
   );
 
   const currentTool = TOOLS.find((t) => t.id === "http-status-reference");
@@ -754,7 +743,7 @@ function renderHTTPStatusReferencePage(lang = DEFAULT_LANGUAGE) {
       .filter(Boolean) || [];
 
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="net-ref-section">
       ${header}
 
       <section class="card rounded-xl shadow-sm p-6 sm:p-8 mb-8" aria-labelledby="http-status-search-heading">
@@ -769,7 +758,7 @@ function renderHTTPStatusReferencePage(lang = DEFAULT_LANGUAGE) {
               <label for="status-search" class="label" data-i18n="tools.http-status-reference.ui.label0">Status code search</label>
               <input id="status-search" class="input w-full" type="search" autocomplete="off" placeholder="e.g., 404, redirect, cacheable, rate limit" data-i18n-placeholder="tools.http-status-reference.ui.placeholder0">
             </div>
-            <button id="clear-search" type="button" class="btn btn-secondary" data-i18n="tools.http-status-reference.ui.button0">Clear</button>
+            <button id="hs-clear-search" type="button" class="btn btn-secondary" data-i18n="tools.http-status-reference.ui.button0">Clear</button>
           </div>
 
           <div aria-label="Status class filters" class="flex flex-wrap gap-2">
@@ -791,7 +780,7 @@ function renderHTTPStatusReferencePage(lang = DEFAULT_LANGUAGE) {
           <div class="text-sm text-surface-600 dark:text-surface-400" data-i18n="tools.http-status-reference.ui.stat0">Total statuses</div>
         </div>
         <div class="card rounded-xl shadow-sm p-4">
-          <div id="filtered-count" class="text-2xl font-bold text-primary-600 dark:text-primary-400">${STATUS_CODES.length}</div>
+          <div id="hs-filtered-count" class="text-2xl font-bold text-primary-600 dark:text-primary-400">${STATUS_CODES.length}</div>
           <div class="text-sm text-surface-600 dark:text-surface-400" data-i18n="tools.http-status-reference.ui.stat1">Matching results</div>
         </div>
         <div class="card rounded-xl shadow-sm p-4">
@@ -811,7 +800,7 @@ function renderHTTPStatusReferencePage(lang = DEFAULT_LANGUAGE) {
             <p id="result-summary" class="text-sm text-surface-600 dark:text-surface-400" data-i18n="tools.http-status-reference.ui.status0">Showing all HTTP status codes.</p>
           </div>
         </div>
-        <div id="results-body" class="grid grid-cols-1 lg:grid-cols-2 gap-4" aria-live="polite"></div>
+        <div id="hs-results-body" class="grid grid-cols-1 lg:grid-cols-2 gap-4" aria-live="polite"></div>
         <div id="empty-state" class="hidden rounded-xl border border-surface-200 dark:border-surface-800 p-8 text-center text-surface-600 dark:text-surface-400" data-i18n="tools.http-status-reference.ui.status1">
           No HTTP status codes match the current search and class filter.
         </div>
@@ -839,7 +828,7 @@ function renderHTTPStatusReferencePage(lang = DEFAULT_LANGUAGE) {
       ])}
 
       ${relatedToolsData.length > 0 ? createRelatedToolsSection(relatedToolsData, "Related Network Tools") : ""}
-    </main>
+    </div>
   `;
 
   const scripts = `
@@ -851,11 +840,11 @@ function renderHTTPStatusReferencePage(lang = DEFAULT_LANGUAGE) {
         let classFilter = 'all';
 
         const searchInput = document.getElementById('status-search');
-        const clearSearchBtn = document.getElementById('clear-search');
+        const clearSearchBtn = document.getElementById('hs-clear-search');
         const classFilters = document.querySelectorAll('.class-filter');
-        const resultsBody = document.getElementById('results-body');
+        const resultsBody = document.getElementById('hs-results-body');
         const emptyState = document.getElementById('empty-state');
-        const filteredCount = document.getElementById('filtered-count');
+        const filteredCount = document.getElementById('hs-filtered-count');
         const resultSummary = document.getElementById('result-summary');
         const statusError = document.getElementById('status-error');
 
@@ -1005,12 +994,5 @@ function renderHTTPStatusReferencePage(lang = DEFAULT_LANGUAGE) {
     </script>
   `;
 
-  return createPageTemplate({
-    title,
-    description,
-    content,
-    path: "/http-status-reference",
-    lang: currentLang,
-    scripts,
-  });
+  return { content, scripts };
 }

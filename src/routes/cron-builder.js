@@ -30,7 +30,8 @@ export async function handleCronBuilderRoutes(request) {
       .filter(Boolean) || [];
 
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6 lg:h-[calc(100vh-9rem)] min-h-[800px]">
+    <main class="tool-page-shell min-h-screen">
+      <div class="tool-page-panel">
       ${createToolHeader(
         { emoji: "⏰" },
         translation?.name || "Cron Builder",
@@ -50,22 +51,22 @@ export async function handleCronBuilderRoutes(request) {
       <div class="flex-grow flex flex-col lg:flex-row gap-6 min-h-0">
         
         <!-- Left Column: Visual Builder (Editor) -->
-        <div class="flex-1 flex flex-col min-h-0 bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 overflow-hidden">
+        <div class="tool-group tool-group--flush flex-1 flex flex-col min-h-0 overflow-hidden">
           <div class="border-b border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-950/50">
             <nav class="flex -mb-px" aria-label="Tabs" id="builder-tabs">
-              <button class="tab-btn active group inline-flex items-center py-4 px-6 border-b-2 font-medium text-sm transition-colors border-primary-500 text-primary-600 dark:text-primary-400 focus:outline-none" data-target="minute" data-tooltip="0-59, which minutes to run">
+              <button class="tab-trigger tab-btn active" data-target="minute" data-tooltip="0-59, which minutes to run">
                 <span data-i18n="tools.cron-builder.ui.button0">Minute</span>
               </button>
-              <button class="tab-btn group inline-flex items-center py-4 px-6 border-b-2 border-transparent font-medium text-sm text-surface-500 hover:text-surface-700 hover:border-surface-300 dark:text-surface-400 dark:hover:text-surface-300 focus:outline-none" data-target="hour" data-tooltip="0-23, which hours to run">
+              <button class="tab-trigger tab-btn" data-target="hour" data-tooltip="0-23, which hours to run">
                 <span data-i18n="tools.cron-builder.ui.button1">Hour</span>
               </button>
-              <button class="tab-btn group inline-flex items-center py-4 px-6 border-b-2 border-transparent font-medium text-sm text-surface-500 hover:text-surface-700 hover:border-surface-300 dark:text-surface-400 dark:hover:text-surface-300 focus:outline-none" data-target="dom" data-tooltip="1-31, which days of the month">
+              <button class="tab-trigger tab-btn" data-target="dom" data-tooltip="1-31, which days of the month">
                 <span data-i18n="tools.cron-builder.ui.button2">Day</span>
               </button>
-              <button class="tab-btn group inline-flex items-center py-4 px-6 border-b-2 border-transparent font-medium text-sm text-surface-500 hover:text-surface-700 hover:border-surface-300 dark:text-surface-400 dark:hover:text-surface-300 focus:outline-none" data-target="month" data-tooltip="1-12, which months">
+              <button class="tab-trigger tab-btn" data-target="month" data-tooltip="1-12, which months">
                 <span data-i18n="tools.cron-builder.ui.button3">Month</span>
               </button>
-              <button class="tab-btn group inline-flex items-center py-4 px-6 border-b-2 border-transparent font-medium text-sm text-surface-500 hover:text-surface-700 hover:border-surface-300 dark:text-surface-400 dark:hover:text-surface-300 focus:outline-none" data-target="dow" data-tooltip="0-6 (Sun-Sat), which days of week">
+              <button class="tab-trigger tab-btn" data-target="dow" data-tooltip="0-6 (Sun-Sat), which days of week">
                 <span data-i18n="tools.cron-builder.ui.button4">Week</span>
               </button>
             </nav>
@@ -203,20 +204,20 @@ export async function handleCronBuilderRoutes(request) {
         <div class="flex-1 flex flex-col gap-6 overflow-y-auto pr-1">
           
           <!-- Main Output -->
-          <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 p-6">
+          <div class="tool-group p-6">
             <label for="cron-expression" class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
               <span data-i18n="tools.cron-builder.ui.label6">Cron Expression</span> ${infoHint("Enter five fields (min hour day month dow); use * or lists/ranges to control scheduling.")}
             </label>
             <div class="flex gap-3 mb-4">
               <div class="relative flex-grow">
                 <input type="text" id="cron-expression" 
-                  class="w-full text-2xl font-mono tracking-wider p-4 rounded-lg border border-surface-300 dark:border-surface-700 bg-surface-50 dark:bg-surface-950 text-surface-900 dark:text-surface-50 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors" 
+                  class="input-mono w-full tracking-wider" 
                   value="* * * * *" 
                   spellcheck="false"
                   autocomplete="off">
               </div>
               <button id="copy-cron-btn" 
-                class="flex-shrink-0 px-6 py-2 bg-surface-100 dark:bg-surface-800 hover:bg-surface-200 dark:hover:bg-surface-700 text-surface-700 dark:text-surface-300 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-surface-900">
+                class="tab-trigger flex-shrink-0">
                 <span data-i18n="tools.cron-builder.ui.button5">Copy</span>
               </button>
             </div>
@@ -234,7 +235,7 @@ export async function handleCronBuilderRoutes(request) {
           </div>
 
           <!-- Next Executions -->
-          <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 p-6">
+          <div class="tool-group p-6">
             <div class="flex items-center justify-between mb-4">
               <h2 class="text-lg font-semibold text-surface-900 dark:text-surface-50" data-i18n="tools.cron-builder.ui.heading7">Next Runs</h2>
               <span class="text-xs px-2 py-1 rounded bg-surface-100 dark:bg-surface-800 text-surface-500 dark:text-surface-400" data-i18n="tools.cron-builder.ui.desc20">Local Time</span>
@@ -248,7 +249,7 @@ export async function handleCronBuilderRoutes(request) {
           </div>
 
           <!-- Recipes -->
-          <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 p-6">
+          <div class="tool-group p-6">
             <h2 class="text-lg font-semibold text-surface-900 dark:text-surface-50 mb-4" data-i18n="tools.cron-builder.ui.heading8">Common Recipes</h2>
             <div class="space-y-2" id="recipes-list">
               <!-- Populated by JS -->
@@ -310,6 +311,7 @@ export async function handleCronBuilderRoutes(request) {
         },
       ])}
     ${createRelatedToolsSection(relatedToolsData)}
+      </div>
     </main>
 
     <script>
@@ -712,7 +714,7 @@ function renderGrid(part, start, end, labelFn) {
                nextExecutionsList.appendChild(li);
              });
            } catch (e) {
-             nextExecutionsList.innerHTML = '<li class="text-error-500 text-sm">' + (window._t ? window._t('tools.cron-builder.js.text0', 'Invalid expression') : 'Invalid expression') + '</li>';
+             nextExecutionsList.innerHTML = '<li class="text-error-500 text-sm">' + (window._t ? window._t('tools.cron-builder.js.text0', 'Invalid cron expression') : 'Invalid cron expression') + '</li>';
            }
          }
 

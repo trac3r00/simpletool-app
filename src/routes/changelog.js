@@ -303,9 +303,9 @@ function renderChangelogPage(lang = DEFAULT_LANGUAGE) {
   }).join("");
 
   const content = `
-    <main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <main class="content-page-shell">
       <div class="mb-8">
-        <h1 class="text-3xl font-extrabold text-surface-900 dark:text-surface-50 mb-2">Changelog</h1>
+        <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-surface-900 dark:text-surface-50 mb-2">Changelog</h1>
         <p class="text-surface-600 dark:text-surface-400">Release history and recent changes to SimpleTool.</p>
       </div>
       ${releasesHTML}

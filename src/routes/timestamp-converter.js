@@ -69,8 +69,8 @@ function renderTimestampConverterPage(lang = DEFAULT_LANGUAGE) {
       .filter(Boolean) || [];
 
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
 
         ${toolHeader}
 
@@ -80,7 +80,7 @@ function renderTimestampConverterPage(lang = DEFAULT_LANGUAGE) {
           <div id="current-unix" class="text-4xl font-mono font-bold text-primary-600 dark:text-primary-400 mb-2">0</div>
           <div id="current-human" class="text-lg text-surface-700 dark:text-surface-300"></div>
           <button id="copy-current" class="mt-4 btn btn-secondary text-sm">
-            <span class="material-symbols-rounded text-sm" data-i18n="tools.timestamp-converter.ui.desc14">content_copy</span> Copy Timestamp
+            <span class="material-symbols-rounded text-sm" aria-hidden="true" data-i18n="tools.timestamp-converter.ui.desc14">content_copy</span> Copy Timestamp
           </button>
         </div>
 
@@ -276,9 +276,19 @@ function renderTimestampConverterPage(lang = DEFAULT_LANGUAGE) {
       }
 
       // Unix to Human conversion
+      function clearUnixOutputs(isoText) {
+        document.getElementById('iso-output').textContent = isoText;
+        document.getElementById('local-output').textContent = '-';
+        document.getElementById('utc-output').textContent = '-';
+        document.getElementById('relative-output').textContent = '-';
+      }
+
       function convertUnixToHuman() {
         const input = unixInput.value.trim();
-        if (!input) return;
+        if (!input) {
+          clearUnixOutputs('-');
+          return;
+        }
 
         const unit = document.querySelector('input[name="unix-unit"]:checked').value;
         let timestamp = parseInt(input);
@@ -290,7 +300,7 @@ function renderTimestampConverterPage(lang = DEFAULT_LANGUAGE) {
         const date = new Date(timestamp);
 
         if (isNaN(date.getTime())) {
-          document.getElementById('iso-output').textContent = _t('tools.timestamp-converter.js.text0', 'Invalid timestamp');
+          clearUnixOutputs(_t('tools.timestamp-converter.js.text0', 'Invalid timestamp'));
           return;
         }
 

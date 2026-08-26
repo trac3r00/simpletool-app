@@ -43,8 +43,9 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
       .filter(Boolean) || [];
 
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      ${header}
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
+        ${header}
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <!-- Left Panel: Filter Builder -->
@@ -52,10 +53,10 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
           <!-- Mode Tabs -->
           <div class="tool-card">
             <div class="flex space-x-1 border-b border-surface-200 dark:border-surface-700 mb-4">
-              <button id="tab-display" class="tab-btn px-4 py-2 text-sm font-medium text-primary-600 border-b-2 border-primary-600" data-tab="display">
+              <button id="tab-display" class="tab-trigger tab-btn active" data-tab="display">
                 <span data-i18n="tools.wireshark-filter.ui.button0">Display Filter</span>
               </button>
-              <button id="tab-bpf" class="tab-btn px-4 py-2 text-sm font-medium text-surface-500 dark:text-surface-400" data-tab="bpf">
+              <button id="tab-bpf" class="tab-trigger tab-btn" data-tab="bpf">
                 <span data-i18n="tools.wireshark-filter.ui.button1">Capture Filter (BPF)</span>
               </button>
             </div>
@@ -64,8 +65,8 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
             <div id="panel-display" class="tab-panel">
               <div class="space-y-4">
                 <div>
-                  <label class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label0">Protocol</label>
-                  <select id="df-protocol" class="w-full bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500">
+                  <label for="df-protocol" class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label0">Protocol</label>
+                  <select id="df-protocol" class="input w-full">
                     <option value="">-- Select Protocol --</option>
                     <option value="ip">IP</option>
                     <option value="tcp">TCP</option>
@@ -87,15 +88,15 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
                 </div>
 
                 <div>
-                  <label class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label1">Field</label>
-                  <select id="df-field" class="w-full bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500">
+                  <label for="df-field" class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label1">Field</label>
+                  <select id="df-field" class="input w-full">
                     <option value="" data-i18n="tools.wireshark-filter.ui.option0">-- Select Field --</option>
                   </select>
                 </div>
 
                 <div>
-                  <label class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label2">Operator</label>
-                  <select id="df-operator" class="w-full bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500">
+                  <label for="df-operator" class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label2">Operator</label>
+                  <select id="df-operator" class="input w-full">
                     <option value="==" data-i18n="tools.wireshark-filter.ui.option22">== (equals)</option>
                     <option value="!=" data-i18n="tools.wireshark-filter.ui.option23">!= (not equals)</option>
                     <option value=">" data-i18n="tools.wireshark-filter.ui.option24">&gt; (greater than)</option>
@@ -108,8 +109,8 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
                 </div>
 
                 <div>
-                  <label class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label3">Value</label>
-                  <input type="text" id="df-value" class="w-full bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500" placeholder="e.g., 80, 192.168.1.1">
+                  <label for="df-value" class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label3">Value</label>
+                  <input type="text" id="df-value" class="input w-full" placeholder="e.g., 80, 192.168.1.1">
                 </div>
 
                 <button id="df-add-btn" class="btn btn-primary w-full">
@@ -144,8 +145,8 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
             <div id="panel-bpf" class="tab-panel hidden">
               <div class="space-y-4">
                 <div>
-                  <label class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label6">Primitive</label>
-                  <select id="bpf-primitive" class="w-full bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500">
+                  <label for="bpf-primitive" class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label6">Primitive</label>
+                  <select id="bpf-primitive" class="input w-full">
                     <option value="host" data-i18n="tools.wireshark-filter.ui.option28">host</option>
                     <option value="net" data-i18n="tools.wireshark-filter.ui.option29">net</option>
                     <option value="port" data-i18n="tools.wireshark-filter.ui.option30">port</option>
@@ -155,8 +156,8 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
                 </div>
 
                 <div>
-                  <label class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label7">Direction</label>
-                  <select id="bpf-direction" class="w-full bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500">
+                  <label for="bpf-direction" class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label7">Direction</label>
+                  <select id="bpf-direction" class="input w-full">
                     <option value="" data-i18n="tools.wireshark-filter.ui.option33">src or dst (either)</option>
                     <option value="src" data-i18n="tools.wireshark-filter.ui.option34">src (source only)</option>
                     <option value="dst" data-i18n="tools.wireshark-filter.ui.option35">dst (destination only)</option>
@@ -164,13 +165,13 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
                 </div>
 
                 <div>
-                  <label class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label8">Value</label>
-                  <input type="text" id="bpf-value" class="w-full bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500" placeholder="e.g., 192.168.1.1, 80, 1-1024">
+                  <label for="bpf-value" class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label8">Value</label>
+                  <input type="text" id="bpf-value" class="input w-full" placeholder="e.g., 192.168.1.1, 80, 1-1024">
                 </div>
 
                 <div>
-                  <label class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label9">Protocol</label>
-                  <select id="bpf-protocol" class="w-full bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500">
+                  <label for="bpf-protocol" class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label9">Protocol</label>
+                  <select id="bpf-protocol" class="input w-full">
                     <option value="" data-i18n="tools.wireshark-filter.ui.option36">Any</option>
                     <option value="tcp">tcp</option>
                     <option value="udp" data-i18n="tools.wireshark-filter.ui.option37">udp</option>
@@ -392,6 +393,7 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
         ],
       )}
       ${createRelatedToolsSection(relatedToolsData)}
+      </div>
     </main>
   `;
 

@@ -28,6 +28,9 @@ describe("handleMarkdownEditorRoutes", () => {
 
     // Verify HTML structure
     expect(text).toContain("<!DOCTYPE html>");
+    expect(text).toContain(
+      '<main class="tool-page-shell min-h-[calc(100vh-4rem)] flex flex-col">\n      <div class="tool-page-panel tool-page-panel--fill">',
+    );
 
     // Verify split pane IDs
     expect(text).toContain('id="md-preview-root"');
