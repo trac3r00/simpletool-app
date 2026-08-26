@@ -100,7 +100,7 @@ export async function handleLogViewerRoutes(request, url) {
       </div>
 
       <!-- Log Viewer -->
-      <div class="bg-surface-900 rounded-xl shadow-lg overflow-hidden border border-surface-800 relative h-[600px] flex flex-col">
+      <div class="bg-surface-900 rounded-xl shadow-sm overflow-hidden border border-surface-800 relative h-[600px] flex flex-col">
         <!-- Header -->
         <div class="flex items-center px-4 py-2 bg-surface-800 border-b border-surface-700 text-xs font-mono text-surface-400 select-none">
           <div class="w-16 text-right mr-4">#</div>

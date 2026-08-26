@@ -125,19 +125,19 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
 
             <div class="grid grid-cols-2 gap-4">
               <label class="flex items-center space-x-3 p-3 bg-surface-50 dark:bg-surface-800 rounded-lg cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors border border-surface-200 dark:border-surface-700">
-                <input type="checkbox" id="use-uppercase" checked class="w-5 h-5 text-primary-600 rounded focus:ring-primary-500">
+                <input type="checkbox" id="use-uppercase" checked class="w-5 h-5 text-primary-600 dark:text-primary-400 rounded focus:ring-primary-500">
                 <span class="text-sm font-medium text-surface-900 dark:text-surface-100" data-i18n="tools.password-generator.ui.desc24" data-tooltip="26 uppercase letters increase entropy" data-i18n-tooltip="tools.password-generator.ui.tip1">Uppercase (A-Z)</span>
               </label>
               <label class="flex items-center space-x-3 p-3 bg-surface-50 dark:bg-surface-800 rounded-lg cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors border border-surface-200 dark:border-surface-700">
-                <input type="checkbox" id="use-lowercase" checked class="w-5 h-5 text-primary-600 rounded focus:ring-primary-500">
+                <input type="checkbox" id="use-lowercase" checked class="w-5 h-5 text-primary-600 dark:text-primary-400 rounded focus:ring-primary-500">
                 <span class="text-sm font-medium text-surface-900 dark:text-surface-100" data-i18n="tools.password-generator.ui.desc25" data-tooltip="26 lowercase letters increase entropy" data-i18n-tooltip="tools.password-generator.ui.tip2">Lowercase (a-z)</span>
               </label>
               <label class="flex items-center space-x-3 p-3 bg-surface-50 dark:bg-surface-800 rounded-lg cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors border border-surface-200 dark:border-surface-700">
-                <input type="checkbox" id="use-numbers" checked class="w-5 h-5 text-primary-600 rounded focus:ring-primary-500">
+                <input type="checkbox" id="use-numbers" checked class="w-5 h-5 text-primary-600 dark:text-primary-400 rounded focus:ring-primary-500">
                 <span class="text-sm font-medium text-surface-900 dark:text-surface-100" data-i18n="tools.password-generator.ui.desc26" data-tooltip="10 digits add variety to your password" data-i18n-tooltip="tools.password-generator.ui.tip3">Numbers (0-9)</span>
               </label>
               <label class="flex items-center space-x-3 p-3 bg-surface-50 dark:bg-surface-800 rounded-lg cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors border border-surface-200 dark:border-surface-700">
-                <input type="checkbox" id="use-symbols" checked class="w-5 h-5 text-primary-600 rounded focus:ring-primary-500">
+                <input type="checkbox" id="use-symbols" checked class="w-5 h-5 text-primary-600 dark:text-primary-400 rounded focus:ring-primary-500">
                 <span class="text-sm font-medium text-surface-900 dark:text-surface-100" data-i18n="tools.password-generator.ui.desc27" data-tooltip="Special characters greatly increase password strength" data-i18n-tooltip="tools.password-generator.ui.tip4">Symbols (!@#$)</span>
               </label>
             </div>
@@ -197,7 +197,7 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
             </div>
 
             <label class="flex items-center space-x-3 p-3 bg-surface-50 dark:bg-surface-800 rounded-lg cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors border border-surface-200 dark:border-surface-700">
-              <input type="checkbox" id="username-include-numbers" checked class="w-5 h-5 text-primary-600 rounded focus:ring-primary-500">
+              <input type="checkbox" id="username-include-numbers" checked class="w-5 h-5 text-primary-600 dark:text-primary-400 rounded focus:ring-primary-500">
               <span class="text-sm font-medium text-surface-900 dark:text-surface-100" data-i18n="tools.password-generator.ui.desc29">Include numbers</span>
             </label>
 
@@ -238,11 +238,11 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <label class="flex items-center space-x-3 p-3 bg-surface-50 dark:bg-surface-800 rounded-lg cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors border border-surface-200 dark:border-surface-700">
-                <input type="checkbox" id="passphrase-capitalize" checked class="w-5 h-5 text-primary-600 rounded focus:ring-primary-500">
+                <input type="checkbox" id="passphrase-capitalize" checked class="w-5 h-5 text-primary-600 dark:text-primary-400 rounded focus:ring-primary-500">
                 <span class="text-sm font-medium text-surface-900 dark:text-surface-100" data-i18n="tools.password-generator.ui.desc31">Capitalize words</span>
               </label>
               <label class="flex items-center space-x-3 p-3 bg-surface-50 dark:bg-surface-800 rounded-lg cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors border border-surface-200 dark:border-surface-700">
-                <input type="checkbox" id="passphrase-include-numbers" class="w-5 h-5 text-primary-600 rounded focus:ring-primary-500">
+                <input type="checkbox" id="passphrase-include-numbers" class="w-5 h-5 text-primary-600 dark:text-primary-400 rounded focus:ring-primary-500">
                 <span class="text-sm font-medium text-surface-900 dark:text-surface-100" data-i18n="tools.password-generator.ui.desc29">Include numbers</span>
               </label>
             </div>

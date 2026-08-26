@@ -88,11 +88,11 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
           <textarea id="saml-input" data-tooltip="Paste Base64-encoded SAML request or response" data-i18n-tooltip="tools.saml-decoder.ui.tip0" class="input-mono w-full min-h-[220px]" placeholder="Paste the Base64 value of SAMLResponse or raw XML here" data-i18n-placeholder="tools.saml-decoder.ui.placeholder8"></textarea>
           <div class="flex flex-wrap gap-4 text-sm text-surface-600 dark:text-surface-400">
             <label class="inline-flex items-center gap-2">
-              <input id="inflate-toggle" type="checkbox" data-tooltip="Decompress deflated SAML messages" data-i18n-tooltip="tools.saml-decoder.ui.tip1" class="accent-purple-600" checked />
+              <input id="inflate-toggle" type="checkbox" data-tooltip="Decompress deflated SAML messages" data-i18n-tooltip="tools.saml-decoder.ui.tip1" class="accent-primary-600" checked />
               <span>Attempt to inflate (Redirect binding)</span>
             </label>
             <label class="inline-flex items-center gap-2">
-              <input id="pretty-toggle" type="checkbox" data-tooltip="Format XML output with indentation" data-i18n-tooltip="tools.saml-decoder.ui.tip2" class="accent-purple-600" checked />
+              <input id="pretty-toggle" type="checkbox" data-tooltip="Format XML output with indentation" data-i18n-tooltip="tools.saml-decoder.ui.tip2" class="accent-primary-600" checked />
               <span>Pretty-print XML</span>
             </label>
           </div>

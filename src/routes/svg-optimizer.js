@@ -97,11 +97,11 @@ function renderSVGOptimizerPage(lang = DEFAULT_LANGUAGE) {
 
             <div class="grid grid-cols-2 gap-3">
               <label class="inline-flex items-center gap-2 cursor-pointer text-sm text-surface-700 dark:text-surface-300">
-                <input id="strip-metadata" type="checkbox" class="w-4 h-4 rounded border-surface-300 text-primary-600 focus:ring-primary-500" checked>
+                <input id="strip-metadata" type="checkbox" class="w-4 h-4 rounded border-surface-300 text-primary-600 dark:text-primary-400 focus:ring-primary-500" checked>
                 <span data-i18n="tools.svg-optimizer.ui.label1">Remove &lt;title&gt;/&lt;desc&gt;/&lt;metadata&gt;</span>
               </label>
               <label class="inline-flex items-center gap-2 cursor-pointer text-sm text-surface-700 dark:text-surface-300">
-                <input id="strip-dimensions" type="checkbox" class="w-4 h-4 rounded border-surface-300 text-primary-600 focus:ring-primary-500">
+                <input id="strip-dimensions" type="checkbox" class="w-4 h-4 rounded border-surface-300 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
                 <span data-i18n="tools.svg-optimizer.ui.label2">Remove width/height</span>
               </label>
             </div>

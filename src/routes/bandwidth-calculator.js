@@ -55,11 +55,11 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
         <div class="mb-6 flex items-center justify-between flex-wrap gap-4">
           <div class="flex items-center gap-3">
             <span class="text-sm font-medium text-surface-700 dark:text-surface-300" data-i18n="tools.bandwidth-calculator.ui.label0">Unit System:</span>
-            <div class="inline-flex bg-surface-100 dark:bg-surface-800 rounded-lg p-1">
-              <button id="unit-decimal" class="unit-toggle active px-3 py-1.5 text-sm font-medium rounded-md transition-all" data-unit="decimal">
+            <div class="tabs-list">
+              <button id="unit-decimal" class="unit-toggle tab-trigger active" data-unit="decimal">
                 <span data-i18n="tools.bandwidth-calculator.ui.button0">Decimal (MB = 1000 KB)</span>
               </button>
-              <button id="unit-binary" class="unit-toggle px-3 py-1.5 text-sm font-medium rounded-md transition-all text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-200" data-unit="binary">
+              <button id="unit-binary" class="unit-toggle tab-trigger" data-unit="binary">
                 <span data-i18n="tools.bandwidth-calculator.ui.button1">Binary (MiB = 1024 KiB)</span>
               </button>
             </div>
@@ -502,11 +502,6 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
           unitToggles.forEach(t => {
             const isActive = t.dataset.unit === (useBinary ? 'binary' : 'decimal');
             t.classList.toggle('active', isActive);
-            t.classList.toggle('bg-white', isActive);
-            t.classList.toggle('dark:bg-surface-700', isActive);
-            t.classList.toggle('shadow-sm', isActive);
-            t.classList.toggle('text-primary-600', isActive);
-            t.classList.toggle('dark:text-primary-400', isActive);
           });
           // Recalculate all
           calculateTransferTime();

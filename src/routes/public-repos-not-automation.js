@@ -692,7 +692,7 @@ export function renderPublicReposNotAutomationSection(lang = DEFAULT_LANGUAGE) {
 function reasonCheckbox(id, label, help, checked) {
   return `
     <label class="tool-group flex items-start gap-3 p-3 cursor-pointer">
-      <input id="reason-${id}" type="checkbox" class="mt-1 w-4 h-4 rounded border-surface-300 text-primary-600 focus:ring-primary-500" ${checked ? "checked" : ""}>
+      <input id="reason-${id}" type="checkbox" class="mt-1 w-4 h-4 rounded border-surface-300 text-primary-600 dark:text-primary-400 focus:ring-primary-500" ${checked ? "checked" : ""}>
       <span>
         <span class="block text-sm font-semibold text-surface-900 dark:text-surface-100">${label}</span>
         <span class="block text-xs text-surface-500 dark:text-surface-400">${help}</span>

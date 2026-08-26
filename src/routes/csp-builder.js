@@ -90,7 +90,7 @@ function renderCSPBuilderPage(lang = DEFAULT_LANGUAGE) {
               <textarea id="csp-input" rows="6" aria-label="Existing CSP policy" class="input-mono resize-y" placeholder="default-src 'self'; script-src 'self' 'nonce-{{nonce}}'; object-src 'none'; base-uri 'none';" data-i18n-placeholder="tools.csp-builder.ui.placeholder0"></textarea>
               <div class="mt-3 flex items-center justify-between gap-3">
                 <label class="inline-flex items-center gap-2 cursor-pointer text-sm text-surface-700 dark:text-surface-300">
-                  <input id="report-only" type="checkbox" class="w-4 h-4 rounded border-surface-300 text-primary-600 focus:ring-primary-500">
+                  <input id="report-only" type="checkbox" class="w-4 h-4 rounded border-surface-300 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
                   <span data-i18n="tools.csp-builder.ui.label1">Report-Only header</span>
                 </label>
                 <div class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.csp-builder.ui.desc1">Tip: Use Report-Only to test safely in production.</div>

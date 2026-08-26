@@ -69,15 +69,15 @@ function renderLogMaskerPage(lang = DEFAULT_LANGUAGE) {
             <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4" data-i18n="tools.log-masker.ui.heading6">Redaction Settings</h2>
             <div class="space-y-3">
               <label class="flex items-center gap-3 cursor-pointer">
-                <input type="checkbox" id="mask-email" checked data-tooltip="Matches email addresses like user@domain.com" data-i18n-tooltip="tools.log-masker.ui.tip1" class="w-4 h-4 rounded border-surface-300 text-primary-600 focus:ring-primary-500">
+                <input type="checkbox" id="mask-email" checked data-tooltip="Matches email addresses like user@domain.com" data-i18n-tooltip="tools.log-masker.ui.tip1" class="w-4 h-4 rounded border-surface-300 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
                 <span class="text-sm text-surface-700 dark:text-surface-300" data-i18n="tools.log-masker.ui.desc8">Email Addresses</span>
               </label>
               <label class="flex items-center gap-3 cursor-pointer">
-                <input type="checkbox" id="mask-ip" checked data-tooltip="Matches IPv4 addresses like 192.168.1.1" data-i18n-tooltip="tools.log-masker.ui.tip2" class="w-4 h-4 rounded border-surface-300 text-primary-600 focus:ring-primary-500">
+                <input type="checkbox" id="mask-ip" checked data-tooltip="Matches IPv4 addresses like 192.168.1.1" data-i18n-tooltip="tools.log-masker.ui.tip2" class="w-4 h-4 rounded border-surface-300 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
                 <span class="text-sm text-surface-700 dark:text-surface-300" data-i18n="tools.log-masker.ui.desc9">IP Addresses</span>
               </label>
               <label class="flex items-center gap-3 cursor-pointer">
-                <input type="checkbox" id="mask-credit-card" checked data-tooltip="Matches 16-digit credit card numbers" data-i18n-tooltip="tools.log-masker.ui.tip3" class="w-4 h-4 rounded border-surface-300 text-primary-600 focus:ring-primary-500">
+                <input type="checkbox" id="mask-credit-card" checked data-tooltip="Matches 16-digit credit card numbers" data-i18n-tooltip="tools.log-masker.ui.tip3" class="w-4 h-4 rounded border-surface-300 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
                 <span class="text-sm text-surface-700 dark:text-surface-300" data-i18n="tools.log-masker.ui.desc10">Credit Card Numbers</span>
               </label>
               <div class="pt-2">

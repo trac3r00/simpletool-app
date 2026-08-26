@@ -103,7 +103,7 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
           </div>
 
           <div class="pt-4 border-t border-surface-100 dark:border-surface-800">
-            <button id="generate-data" data-tooltip="Generate random mock data with selected fields" data-i18n-tooltip="tools.mock-data-generator.ui.tip2" class="btn btn-primary w-full md:w-auto md:min-w-[200px] text-lg shadow-lg shadow-primary-600/20 transition transform hover:-translate-y-0.5">
+            <button id="generate-data" data-tooltip="Generate random mock data with selected fields" data-i18n-tooltip="tools.mock-data-generator.ui.tip2" class="btn btn-primary w-full md:w-auto md:min-w-[200px]">
               <span data-i18n="tools.mock-data-generator.ui.button2">Generate Data</span>
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" /></svg>
             </button>
@@ -117,7 +117,7 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
             <div class="tool-group p-6 flex flex-col h-[600px]">
               <div class="flex items-center justify-between mb-4">
                 <h2 class="text-lg font-bold text-surface-900 dark:text-white flex items-center gap-2">
-                  <span class="p-1.5 bg-surface-100 dark:bg-surface-800 rounded-lg text-surface-500">📥</span>
+                  <span class="p-1.5 bg-surface-100 dark:bg-surface-800 rounded-lg text-surface-600 dark:text-surface-300">📥</span>
                   <span data-i18n="tools.mock-data-generator.ui.heading2">Output</span>
                 </h2>
                 <div class="flex gap-2">
@@ -134,7 +134,7 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
             <div class="tool-group p-6 flex flex-col h-[600px]">
               <div class="flex items-center justify-between mb-4">
                 <h2 class="text-lg font-bold text-surface-900 dark:text-white flex items-center gap-2">
-                  <span class="p-1.5 bg-surface-100 dark:bg-surface-800 rounded-lg text-surface-500">👁️</span>
+                  <span class="p-1.5 bg-surface-100 dark:bg-surface-800 rounded-lg text-surface-600 dark:text-surface-300">👁️</span>
                   <span data-i18n="tools.mock-data-generator.ui.heading3">Preview</span> <span class="text-xs font-normal text-surface-500 ml-1" data-i18n="tools.mock-data-generator.ui.desc13">(First 5 rows)</span>
                 </h2>
               </div>
@@ -142,11 +142,11 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
                 <table class="w-full text-sm text-left border-collapse">
                   <thead class="sticky top-0 bg-surface-50 dark:bg-surface-800/80 backdrop-blur z-10">
                     <tr id="preview-head">
-                        <th class="p-4 text-surface-400 font-normal italic" data-i18n="tools.mock-data-generator.ui.th6">Fields will appear here...</th>
+                        <th class="p-4 text-surface-500 dark:text-surface-400 font-normal italic" data-i18n="tools.mock-data-generator.ui.th6">Fields will appear here...</th>
                     </tr>
                   </thead>
                   <tbody id="preview-body" class="divide-y divide-surface-100 dark:divide-surface-800 text-surface-700 dark:text-surface-300">
-                    <tr><td class="p-4 text-surface-400" data-i18n="tools.mock-data-generator.ui.desc15">No data generated yet.</td></tr>
+                    <tr><td class="p-4 text-surface-500 dark:text-surface-400" data-i18n="tools.mock-data-generator.ui.desc15">No data generated yet.</td></tr>
                   </tbody>
                 </table>
               </div>

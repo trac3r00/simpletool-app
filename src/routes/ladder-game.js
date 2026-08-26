@@ -304,7 +304,7 @@ function renderLadderGamePage(lang = "en") {
                 </select>
               </div>
               <label class="flex items-start gap-3 rounded-xl border border-surface-200 dark:border-surface-800 bg-surface-50 dark:bg-surface-900/40 px-4 py-3 text-sm text-surface-700 dark:text-surface-300">
-                <input id="secret-results-toggle" type="checkbox" class="mt-1 rounded border-surface-300 text-primary-600 focus:ring-primary-500">
+                <input id="secret-results-toggle" type="checkbox" class="mt-1 rounded border-surface-300 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
                 <span>
                   <span class="font-medium block" data-i18n="tools.ladder-game.ui.secretLabel">${tr("tools.ladder-game.ui.secretLabel", "Hide bottom results until reveal")}</span>
                   <span class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.ladder-game.ui.secretHint">${tr("tools.ladder-game.ui.secretHint", "Keep result labels hidden until someone traces or reveals the ladder.")}</span>
@@ -361,7 +361,7 @@ function renderLadderGamePage(lang = "en") {
                 <!-- Mode badge -->
                 <span id="mode-badge" class="px-2 py-0.5 rounded-full text-xs font-semibold bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300"></span>
                 <label class="inline-flex items-center gap-2 text-sm text-surface-700 dark:text-surface-300 select-none cursor-pointer">
-                  <input id="sound-toggle" type="checkbox" class="rounded border-surface-300 text-primary-600 focus:ring-primary-500">
+                  <input id="sound-toggle" type="checkbox" class="rounded border-surface-300 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
                   <span data-i18n="tools.ladder-game.ui.label4">${tr("tools.ladder-game.ui.label4", "Sound")}</span>
                 </label>
               </div>

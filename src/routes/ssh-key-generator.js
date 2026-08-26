@@ -103,14 +103,14 @@ function renderSSHKeyGeneratorPage(lang = DEFAULT_LANGUAGE) {
               <label class="label mb-3"><span data-i18n="tools.ssh-key-generator.ui.label2">Key Type</span> ${infoHint("Choose ECDSA for modern clients or RSA when you need older-system compatibility.")}</label>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <label class="relative flex items-start p-4 bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-800 rounded-lg cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-900 transition-all has-[:checked]:border-primary-500 has-[:checked]:bg-primary-50 dark:has-[:checked]:bg-primary-900/20">
-                  <input type="radio" name="keyType" value="ecdsa" data-tooltip="Modern, smaller keys, faster operations" data-i18n-tooltip="tools.ssh-key-generator.ui.tip0" checked class="mt-1 w-4 h-4 text-primary-600 focus:ring-primary-500">
+                  <input type="radio" name="keyType" value="ecdsa" data-tooltip="Modern, smaller keys, faster operations" data-i18n-tooltip="tools.ssh-key-generator.ui.tip0" checked class="mt-1 w-4 h-4 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
                   <div class="ml-3">
                     <div class="text-sm font-bold text-surface-900 dark:text-surface-50">ECDSA (P-256)</div>
                     <div class="text-xs text-surface-500 dark:text-surface-400 mt-1">Modern, secure, fast. Compatible with most systems.</div>
                   </div>
                 </label>
                 <label class="relative flex items-start p-4 bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-800 rounded-lg cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-900 transition-all has-[:checked]:border-primary-500 has-[:checked]:bg-primary-50 dark:has-[:checked]:bg-primary-900/20">
-                  <input type="radio" name="keyType" value="rsa" data-tooltip="Traditional, widely compatible with older systems" data-i18n-tooltip="tools.ssh-key-generator.ui.tip1" class="mt-1 w-4 h-4 text-primary-600 focus:ring-primary-500">
+                  <input type="radio" name="keyType" value="rsa" data-tooltip="Traditional, widely compatible with older systems" data-i18n-tooltip="tools.ssh-key-generator.ui.tip1" class="mt-1 w-4 h-4 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
                   <div class="ml-3">
                     <div class="text-sm font-bold text-surface-900 dark:text-surface-50">RSA</div>
                     <div class="text-xs text-surface-500 dark:text-surface-400 mt-1">Traditional, widely supported. Larger key size.</div>
