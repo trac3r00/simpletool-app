@@ -85,7 +85,7 @@ function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
             </button>
           </div>
 
-          <textarea id="input-code" class="input w-full resize-vertical" placeholder="Paste your code here..." data-i18n-placeholder="tools.code-minifier.ui.placeholder6"></textarea>
+          <textarea id="input-code" aria-label="Code input" class="input w-full resize-vertical" placeholder="Paste your code here..." data-i18n-placeholder="tools.code-minifier.ui.placeholder6"></textarea>
 
           <div class="mt-3 text-sm text-surface-600 dark:text-surface-400">
             <span id="input-size">Size: 0 bytes</span>
@@ -106,7 +106,7 @@ function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
             </div>
           </div>
 
-          <textarea id="output-code" class="input w-full resize-vertical" readonly placeholder="Output will appear here..." data-i18n-placeholder="tools.code-minifier.ui.placeholder7"></textarea>
+          <textarea id="output-code" aria-label="Minified output" class="input w-full resize-vertical" readonly placeholder="Output will appear here..." data-i18n-placeholder="tools.code-minifier.ui.placeholder7"></textarea>
 
           <div id="output-stats" class="mt-3 text-sm text-surface-600 dark:text-surface-400 hidden">
             <span id="output-size"></span>

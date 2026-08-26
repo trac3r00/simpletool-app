@@ -68,7 +68,7 @@ function renderJsonSchemaStudioPage(lang = DEFAULT_LANGUAGE) {
               <button id="sample-btn" class="btn btn-secondary btn-xs"><span data-i18n="tools.json-schema-studio.ui.button1">Sample</span></button>
             </div>
           </div>
-          <textarea id="json-input" rows="20" data-tooltip="Paste JSON to auto-generate its JSON Schema" data-i18n-tooltip="tools.json-schema-studio.ui.tip0"
+          <textarea id="json-input" rows="20" aria-label="JSON input" data-tooltip="Paste JSON to auto-generate its JSON Schema" data-i18n-tooltip="tools.json-schema-studio.ui.tip0"
             class="input-mono w-full resize-none"
             placeholder='{ "name": "John", "age": 30 }'></textarea>
           <button id="generate-btn" data-tooltip="Analyze JSON structure and generate a matching schema" data-i18n-tooltip="tools.json-schema-studio.ui.tip1" class="btn-primary w-full mt-4"><span data-i18n="tools.json-schema-studio.ui.button2">Generate JSON Schema</span></button>

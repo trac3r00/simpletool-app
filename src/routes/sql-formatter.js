@@ -80,7 +80,7 @@ function renderSQLFormatterPage(lang = DEFAULT_LANGUAGE) {
               <span data-i18n="tools.sql-formatter.ui.label0">Input SQL</span>
               ${infoHint("This tool does not execute SQL. Validation is heuristic (not a full parser).", "Help", { i18nKey: "tools.sql-formatter.ui.desc0" })}
             </label>
-            ${createRichEditorPane({ id: "sql-in", mode: "textarea", rows: 18, placeholder: "SELECT id, email FROM users WHERE created_at > NOW() - INTERVAL '7 days' ORDER BY created_at DESC;" })}
+            ${createRichEditorPane({ id: "sql-in", mode: "textarea", rows: 18, ariaLabel: "SQL input", placeholder: "SELECT id, email FROM users WHERE created_at > NOW() - INTERVAL '7 days' ORDER BY created_at DESC;" })}
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>

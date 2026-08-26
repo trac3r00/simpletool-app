@@ -87,7 +87,7 @@ function renderCSPBuilderPage(lang = DEFAULT_LANGUAGE) {
                 <span data-i18n="tools.csp-builder.ui.label0">Existing CSP (optional)</span>
                 ${infoHint("Paste only the policy value (everything after “Content-Security-Policy:”). Then click Parse.", "Help", { i18nKey: "tools.csp-builder.ui.desc0" })}
               </label>
-              <textarea id="csp-input" rows="6" class="input-mono resize-y" placeholder="default-src 'self'; script-src 'self' 'nonce-{{nonce}}'; object-src 'none'; base-uri 'none';" data-i18n-placeholder="tools.csp-builder.ui.placeholder0"></textarea>
+              <textarea id="csp-input" rows="6" aria-label="Existing CSP policy" class="input-mono resize-y" placeholder="default-src 'self'; script-src 'self' 'nonce-{{nonce}}'; object-src 'none'; base-uri 'none';" data-i18n-placeholder="tools.csp-builder.ui.placeholder0"></textarea>
               <div class="mt-3 flex items-center justify-between gap-3">
                 <label class="inline-flex items-center gap-2 cursor-pointer text-sm text-surface-700 dark:text-surface-300">
                   <input id="report-only" type="checkbox" class="w-4 h-4 rounded border-surface-300 text-primary-600 focus:ring-primary-500">

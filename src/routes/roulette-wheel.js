@@ -193,7 +193,7 @@ function renderRouletteWheelPage(lang = "en") {
                 <input type="checkbox" id="sound-toggle">
                 <span data-i18n="tools.roulette-wheel.ui.sound-toggle">${t("tools.roulette-wheel.ui.sound-toggle", lang)}</span>
               </label>
-              <select id="sound-theme-select" class="rw-mode-input" style="width:auto;">
+              <select id="sound-theme-select" aria-label="Sound theme" class="rw-mode-input" style="width:auto;">
                 ${rouletteBootConfig.soundThemes.map((st) => `<option value="${st.id}">${st.fallbackLabel}</option>`).join("")}
               </select>
               <button id="clear-stats-btn" class="btn btn-ghost btn-sm" data-i18n="tools.roulette-wheel.ui.clear-stats">${t("tools.roulette-wheel.ui.clear-stats", lang)}</button>
@@ -212,7 +212,7 @@ function renderRouletteWheelPage(lang = "en") {
                 <div class="rw-section-inner">
                   <div id="segments-list" class="rw-segments-list"></div>
                   <div class="rw-add-segment">
-                    <input type="text" id="new-segment-input" class="rw-add-input" data-i18n-placeholder="tools.roulette-wheel.ui.add-placeholder" placeholder="Add new segment...">
+                    <input type="text" id="new-segment-input" aria-label="New segment name" class="rw-add-input" data-i18n-placeholder="tools.roulette-wheel.ui.add-placeholder" placeholder="Add new segment...">
                     <button id="add-segment-btn" class="btn btn-secondary btn-sm" data-i18n="tools.roulette-wheel.ui.add-button">${t("tools.roulette-wheel.ui.add-button", lang)}</button>
                   </div>
                   <div class="rw-import-export">
@@ -278,11 +278,11 @@ function renderRouletteWheelPage(lang = "en") {
               <div class="rw-section-content">
                 <div class="rw-section-inner">
                   <div class="rw-preset-row">
-                    <input type="text" id="preset-name-input" class="rw-add-input" data-i18n-placeholder="tools.roulette-wheel.ui.preset-name-placeholder" placeholder="Preset name...">
+                    <input type="text" id="preset-name-input" aria-label="Preset name" class="rw-add-input" data-i18n-placeholder="tools.roulette-wheel.ui.preset-name-placeholder" placeholder="Preset name...">
                     <button id="save-preset-btn" class="btn btn-secondary btn-sm" data-i18n="tools.roulette-wheel.ui.save-preset">${t("tools.roulette-wheel.ui.save-preset", lang)}</button>
                   </div>
                   <div class="rw-preset-row">
-                    <select id="preset-select" class="rw-preset-select">
+                    <select id="preset-select" aria-label="Saved presets" class="rw-preset-select">
                       <option value="" data-i18n="tools.roulette-wheel.ui.select-preset">${t("tools.roulette-wheel.ui.select-preset", lang)}</option>
                     </select>
                     <button id="load-preset-btn" class="btn btn-primary btn-sm" data-i18n="tools.roulette-wheel.ui.load-preset">${t("tools.roulette-wheel.ui.load-preset", lang)}</button>
@@ -578,7 +578,7 @@ function renderRouletteWheelPage(lang = "en") {
           var list = document.getElementById('segments-list'), n = state.segments.length, weightLabel = _t('tools.roulette-wheel.ui.weightLabel', 'Weight');
           list.innerHTML = state.segments.map(function(seg, i) {
             var canDelete = n > MIN_SEGMENTS;
-            return '<div class="rw-segment-item" draggable="true" data-seg-id="' + seg.id + '"><input type="color" class="rw-segment-color" value="' + seg.color + '" style="background:' + seg.color + '" title="Pick color" aria-label="Pick color"><input type="text" class="rw-segment-input" value="' + escapeHtml(seg.label || '') + '" placeholder="' + (_t ? _t('tools.roulette-wheel.ui.ph0', 'Segment name') : 'Segment name') + '"><label class="text-[11px] text-surface-500 dark:text-surface-400">' + escapeHtml(weightLabel) + '<input type="number" class="rw-mode-input rw-segment-weight ml-2" min="0" max="100" step="1" value="' + Math.max(0, Number(seg.weight || 1)) + '"></label><button class="rw-segment-delete" ' + (canDelete ? '' : 'disabled') + ' aria-label="Delete segment"><svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button></div>';
+            return '<div class="rw-segment-item" draggable="true" data-seg-id="' + seg.id + '"><input type="color" class="rw-segment-color" value="' + seg.color + '" style="background:' + seg.color + '" title="Pick color" aria-label="Pick color"><input type="text" aria-label="Segment name" class="rw-segment-input" value="' + escapeHtml(seg.label || '') + '" placeholder="' + (_t ? _t('tools.roulette-wheel.ui.ph0', 'Segment name') : 'Segment name') + '"><label class="text-[11px] text-surface-500 dark:text-surface-400">' + escapeHtml(weightLabel) + '<input type="number" class="rw-mode-input rw-segment-weight ml-2" min="0" max="100" step="1" value="' + Math.max(0, Number(seg.weight || 1)) + '"></label><button class="rw-segment-delete" ' + (canDelete ? '' : 'disabled') + ' aria-label="Delete segment"><svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button></div>';
           }).join('');
         }
 

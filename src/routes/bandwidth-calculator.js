@@ -91,7 +91,7 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
               <h2 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.bandwidth-calculator.ui.heading0">Calculate Transfer Time</h2>
               
               <div>
-                <label class="label" data-i18n="tools.bandwidth-calculator.ui.label5">File Size</label>
+                <label for="transfer-size" class="label" data-i18n="tools.bandwidth-calculator.ui.label5">File Size</label>
                 <div class="flex gap-2">
                   <input type="number" id="transfer-size" value="1" min="0" step="any" placeholder="1" class="input flex-1" data-i18n-placeholder="tools.bandwidth-calculator.ui.placeholder0">
                   <select id="transfer-size-unit" class="input w-28" aria-label="Transfer file size unit" data-i18n-aria="tools.bandwidth-calculator.ui.aria0">
@@ -105,7 +105,7 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
               </div>
 
               <div>
-                <label class="label" data-i18n="tools.bandwidth-calculator.ui.label6">Bandwidth</label>
+                <label for="transfer-bandwidth" class="label" data-i18n="tools.bandwidth-calculator.ui.label6">Bandwidth</label>
                 <div class="flex gap-2">
                   <input type="number" id="transfer-bandwidth" value="100" min="0" step="any" placeholder="100" class="input flex-1" data-i18n-placeholder="tools.bandwidth-calculator.ui.placeholder1">
                   <select id="transfer-bandwidth-unit" class="input w-28" aria-label="Transfer bandwidth unit" data-i18n-aria="tools.bandwidth-calculator.ui.aria1">

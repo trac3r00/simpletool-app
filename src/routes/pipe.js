@@ -58,7 +58,7 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
         <div class="flex-1 min-w-0">
           <!-- Input -->
           <div class="tool-group p-4 mb-0">
-            <label class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wider mb-2 block">Input</label>
+            <label for="pipe-input" class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wider mb-2 block">Input</label>
             <textarea id="pipe-input" rows="3"
               placeholder="Paste your data here, or try a recipe below..."
               class="input"

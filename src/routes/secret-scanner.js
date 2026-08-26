@@ -86,7 +86,7 @@ function renderSecretScannerPage(lang = DEFAULT_LANGUAGE) {
               <span data-i18n="tools.secret-scanner.ui.label0">Input</span>
               ${infoHint("Paste code, logs, configs, CI output, .env, or JSON. This tool uses regex heuristics — false positives are possible.", "Help", { i18nKey: "tools.secret-scanner.ui.desc0" })}
             </label>
-            <textarea id="input" rows="18" class="input-mono resize-y" placeholder="Paste code/config here..." data-i18n-placeholder="tools.secret-scanner.ui.placeholder0"></textarea>
+            <textarea id="input" rows="18" aria-label="Text to scan" class="input-mono resize-y" placeholder="Paste code/config here..." data-i18n-placeholder="tools.secret-scanner.ui.placeholder0"></textarea>
 
             <div class="flex flex-wrap items-center gap-4 text-sm text-surface-700 dark:text-surface-300">
               <label class="inline-flex items-center gap-2 cursor-pointer">
@@ -128,7 +128,7 @@ function renderSecretScannerPage(lang = DEFAULT_LANGUAGE) {
                 <span data-i18n="tools.secret-scanner.ui.label3">Redacted output (share-safe)</span>
                 ${infoHint("Use this when pasting logs into tickets or chats. Always rotate credentials if a real secret leaked.", "Help", { i18nKey: "tools.secret-scanner.ui.desc2" })}
               </label>
-              <textarea id="redacted" rows="18" class="input-mono resize-y bg-surface-50 dark:bg-surface-950" readonly placeholder="Redacted text will appear here after scanning..." data-i18n-placeholder="tools.secret-scanner.ui.placeholder1"></textarea>
+              <textarea id="redacted" rows="18" aria-label="Redacted output" class="input-mono resize-y bg-surface-50 dark:bg-surface-950" readonly placeholder="Redacted text will appear here after scanning..." data-i18n-placeholder="tools.secret-scanner.ui.placeholder1"></textarea>
             </div>
           </div>
         </div>

@@ -872,7 +872,7 @@ export function createPageTemplate(options) {
   ${robotsTag}
   <link rel="canonical" href="${canonicalHref}">
   ${getAlternateLanguageLinks(pagePath, currentLang)}
-  <link rel="icon" type="image/svg+xml" href="/favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#0f0f12" media="(prefers-color-scheme: dark)">

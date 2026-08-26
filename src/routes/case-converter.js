@@ -71,7 +71,7 @@ function renderCaseConverterPage(lang = DEFAULT_LANGUAGE) {
 
         <!-- Input -->
         <div class="mb-6">
-          <label class="label"><span data-i18n="tools.case-converter.ui.label0">Input Text</span></label>
+          <label for="input-text" class="label"><span data-i18n="tools.case-converter.ui.label0">Input Text</span></label>
           <textarea
             id="input-text"
             rows="6"

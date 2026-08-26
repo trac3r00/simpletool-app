@@ -105,7 +105,7 @@ function renderJSONFormatterPage(lang = "en") {
           <!-- Input -->
           <div class="flex flex-col gap-2">
             <label class="label"><span data-i18n="tools.json-formatter.ui.label5">Input JSON</span></label>
-            ${createRichEditorPane({ id: "input", mode: "textarea", placeholder: '{"name": "SimpleTool", "version": "2.0", "tools": ["JSON Formatter", "Password Generator"]}' })}
+            ${createRichEditorPane({ id: "input", mode: "textarea", ariaLabel: "JSON input", placeholder: '{"name": "SimpleTool", "version": "2.0", "tools": ["JSON Formatter", "Password Generator"]}' })}
           </div>
 
            <!-- Output -->
