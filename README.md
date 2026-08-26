@@ -10,7 +10,7 @@ Browser-based developer and everyday utilities served from a single Cloudflare W
 
 SimpleTool is a collection of web utilities for formatting data, inspecting security artifacts, working with network formats, generating values, and transforming text or media. The Cloudflare Worker renders and routes the pages; tool input and output are processed in the browser.
 
-The production catalog contains 53 tools. Three additional game tools are available when the Worker runs in a development environment.
+The production catalog contains 47 tools. Three additional game tools are registered (50 total) but hidden unless the Worker runs in a development environment.
 
 ## Features
 
@@ -193,7 +193,7 @@ src/
 scripts/                  Build, translation, simulation, and QA scripts
 styles/input.css          Tailwind source and shared design tokens
 tests/e2e/                Playwright browser and accessibility tests
-docs/                     Release, advertising, safety, architecture, and handoff documentation
+docs/                     Release, advertising, and content-safety documentation
 dist/                     Generated browser assets
 wrangler.toml             Cloudflare Worker configuration and bindings
 ```

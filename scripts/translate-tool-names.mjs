@@ -218,6 +218,27 @@ const translations = {
       name: "JWK/JWKS 스튜디오",
       desc: "JSON 웹 키를 생성하고 관리합니다.",
     },
+    "network-reference": {
+      name: "네트워크 참조",
+      desc: "DNS 레코드, 일반 포트, HTTP 상태 코드, 프로토콜 헤더를 하나의 탭형 도구에서 제공하는 네 가지 참조입니다.",
+      ui: {
+        tab0: "DNS 레코드",
+        tab1: "포트",
+        tab2: "HTTP 상태",
+        tab3: "프로토콜 헤더",
+        aria0: "네트워크 참조 섹션",
+      },
+    },
+    "repo-ops": {
+      name: "저장소 운영",
+      desc: "공개 저장소 인벤토리, 수동 관리 기록, 리뷰 설명을 하나의 작업 공간에서 작성합니다.",
+      ui: {
+        tab0: "저장소 인벤토리",
+        tab1: "수동 관리",
+        tab2: "리뷰 설명",
+        aria0: "저장소 운영 섹션",
+      },
+    },
   },
   ja: {
     "json-formatter": {
@@ -431,6 +452,27 @@ const translations = {
     "jwk-jwks-studio": {
       name: "JWK/JWKSスタジオ",
       desc: "JSON Web Keyを生成・管理します。",
+    },
+    "network-reference": {
+      name: "ネットワークリファレンス",
+      desc: "DNSレコード、一般的なポート、HTTPステータスコード、プロトコルヘッダーの4つを1つのタブ形式ツールで参照できます。",
+      ui: {
+        tab0: "DNSレコード",
+        tab1: "ポート",
+        tab2: "HTTPステータス",
+        tab3: "プロトコルヘッダー",
+        aria0: "ネットワークリファレンスのセクション",
+      },
+    },
+    "repo-ops": {
+      name: "リポジトリ運用",
+      desc: "公開リポジトリ一覧、手動運用の記録、レビュー説明を1つのワークスペースで作成します。",
+      ui: {
+        tab0: "リポジトリ一覧",
+        tab1: "手動運用",
+        tab2: "レビュー説明",
+        aria0: "リポジトリ運用のセクション",
+      },
     },
   },
   es: {
@@ -646,6 +688,27 @@ const translations = {
       name: "Estudio JWK/JWKS",
       desc: "Genera y gestiona JSON Web Keys.",
     },
+    "network-reference": {
+      name: "Referencia de Red",
+      desc: "Registros DNS, puertos comunes, códigos de estado HTTP y cabeceras de protocolo: cuatro referencias en una sola herramienta con pestañas.",
+      ui: {
+        tab0: "Registros DNS",
+        tab1: "Puertos",
+        tab2: "Estado HTTP",
+        tab3: "Cabeceras de protocolo",
+        aria0: "Secciones de referencia de red",
+      },
+    },
+    "repo-ops": {
+      name: "Operaciones de Repositorios",
+      desc: "Crea inventarios de repositorios públicos, registros de gestión manual y descripciones de revisión en un solo espacio de trabajo.",
+      ui: {
+        tab0: "Inventario de repositorios",
+        tab1: "Gestión manual",
+        tab2: "Descripciones de revisión",
+        aria0: "Secciones de operaciones de repositorios",
+      },
+    },
   },
   "zh-CN": {
     "json-formatter": {
@@ -811,6 +874,27 @@ const translations = {
     "jwk-jwks-studio": {
       name: "JWK/JWKS 工作室",
       desc: "生成和管理 JSON Web Key。",
+    },
+    "network-reference": {
+      name: "网络参考",
+      desc: "在一个选项卡式工具中查看 DNS 记录、常用端口、HTTP 状态码和协议头四类参考。",
+      ui: {
+        tab0: "DNS 记录",
+        tab1: "端口",
+        tab2: "HTTP 状态",
+        tab3: "协议头",
+        aria0: "网络参考分区",
+      },
+    },
+    "repo-ops": {
+      name: "仓库运维",
+      desc: "在一个工作区中构建公共仓库清单、人工维护记录和评审说明。",
+      ui: {
+        tab0: "仓库清单",
+        tab1: "人工维护",
+        tab2: "评审说明",
+        aria0: "仓库运维分区",
+      },
     },
   },
   "zh-TW": {
@@ -983,6 +1067,27 @@ const translations = {
     "jwk-jwks-studio": {
       name: "JWK/JWKS 工作室",
       desc: "產生和管理 JSON Web Key。",
+    },
+    "network-reference": {
+      name: "網路參考",
+      desc: "在一個分頁式工具中查看 DNS 記錄、常用連接埠、HTTP 狀態碼和通訊協定標頭四類參考。",
+      ui: {
+        tab0: "DNS 記錄",
+        tab1: "連接埠",
+        tab2: "HTTP 狀態",
+        tab3: "通訊協定標頭",
+        aria0: "網路參考區段",
+      },
+    },
+    "repo-ops": {
+      name: "儲存庫作業",
+      desc: "在一個工作區中建立公開儲存庫清單、人工維護記錄和審查說明。",
+      ui: {
+        tab0: "儲存庫清單",
+        tab1: "人工維護",
+        tab2: "審查說明",
+        aria0: "儲存庫作業區段",
+      },
     },
   },
   fr: {
@@ -1198,6 +1303,27 @@ const translations = {
       name: "Studio JWK/JWKS",
       desc: "Générez et gérez des JSON Web Keys.",
     },
+    "network-reference": {
+      name: "Référence Réseau",
+      desc: "Enregistrements DNS, ports courants, codes d’état HTTP et en-têtes de protocole : quatre références dans un seul outil à onglets.",
+      ui: {
+        tab0: "Enregistrements DNS",
+        tab1: "Ports",
+        tab2: "État HTTP",
+        tab3: "En-têtes de protocole",
+        aria0: "Sections de référence réseau",
+      },
+    },
+    "repo-ops": {
+      name: "Opérations de Dépôts",
+      desc: "Créez des inventaires de dépôts publics, des registres de gestion manuelle et des descriptions de revue dans un espace de travail unique.",
+      ui: {
+        tab0: "Inventaire des dépôts",
+        tab1: "Gestion manuelle",
+        tab2: "Descriptions de revue",
+        aria0: "Sections des opérations de dépôts",
+      },
+    },
   },
   de: {
     "json-formatter": {
@@ -1411,6 +1537,27 @@ const translations = {
     "jwk-jwks-studio": {
       name: "JWK/JWKS-Studio",
       desc: "JSON Web Keys generieren und verwalten.",
+    },
+    "network-reference": {
+      name: "Netzwerkreferenz",
+      desc: "DNS-Einträge, gängige Ports, HTTP-Statuscodes und Protokollheader – vier Referenzen in einem Tool mit Registerkarten.",
+      ui: {
+        tab0: "DNS-Einträge",
+        tab1: "Ports",
+        tab2: "HTTP-Status",
+        tab3: "Protokollheader",
+        aria0: "Bereiche der Netzwerkreferenz",
+      },
+    },
+    "repo-ops": {
+      name: "Repository-Operationen",
+      desc: "Erstellen Sie Inventare öffentlicher Repositorys, Aufzeichnungen zur manuellen Pflege und Review-Beschreibungen in einem Arbeitsbereich.",
+      ui: {
+        tab0: "Repository-Inventar",
+        tab1: "Manuelle Pflege",
+        tab2: "Review-Beschreibungen",
+        aria0: "Bereiche der Repository-Operationen",
+      },
     },
   },
   pt: {
@@ -1626,6 +1773,27 @@ const translations = {
       name: "Estúdio JWK/JWKS",
       desc: "Gere e gerencie JSON Web Keys.",
     },
+    "network-reference": {
+      name: "Referência de Rede",
+      desc: "Registros DNS, portas comuns, códigos de status HTTP e cabeçalhos de protocolo — quatro referências em uma única ferramenta com abas.",
+      ui: {
+        tab0: "Registros DNS",
+        tab1: "Portas",
+        tab2: "Status HTTP",
+        tab3: "Cabeçalhos de protocolo",
+        aria0: "Seções de referência de rede",
+      },
+    },
+    "repo-ops": {
+      name: "Operações de Repositório",
+      desc: "Crie inventários de repositórios públicos, registros de manutenção manual e descrições de revisão em um único espaço de trabalho.",
+      ui: {
+        tab0: "Inventário de repositórios",
+        tab1: "Manutenção manual",
+        tab2: "Descrições de revisão",
+        aria0: "Seções de operações de repositório",
+      },
+    },
   },
   vi: {
     "json-formatter": {
@@ -1834,8 +2002,55 @@ const translations = {
       name: "Xưởng JWK/JWKS",
       desc: "Tạo và quản lý JSON Web Key.",
     },
+    "network-reference": {
+      name: "Tra Cứu Mạng",
+      desc: "Bản ghi DNS, cổng thông dụng, mã trạng thái HTTP và tiêu đề giao thức — bốn nội dung tra cứu trong một công cụ dạng thẻ.",
+      ui: {
+        tab0: "Bản ghi DNS",
+        tab1: "Cổng",
+        tab2: "Trạng thái HTTP",
+        tab3: "Tiêu đề giao thức",
+        aria0: "Các phần tra cứu mạng",
+      },
+    },
+    "repo-ops": {
+      name: "Vận Hành Kho Mã",
+      desc: "Tạo danh mục kho mã công khai, hồ sơ quản lý thủ công và mô tả đánh giá trong một không gian làm việc.",
+      ui: {
+        tab0: "Danh mục kho mã",
+        tab1: "Quản lý thủ công",
+        tab2: "Mô tả đánh giá",
+        aria0: "Các phần vận hành kho mã",
+      },
+    },
   },
 };
+
+function formatFullToolEntry(toolId, translation) {
+  const value = JSON.stringify(translation, null, 2).replace(/\n/g, "\n    ");
+  return `    ${JSON.stringify(toolId)}: ${value},`;
+}
+
+function upsertFullToolEntry(content, toolId, translation) {
+  const escapedToolId = toolId.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const entryPattern = new RegExp(
+    `^    ["']${escapedToolId}["']:\\s*\\{[\\s\\S]*?^    \\},?$`,
+    "m",
+  );
+  const entry = formatFullToolEntry(toolId, translation);
+
+  if (entryPattern.test(content)) {
+    return content.replace(entryPattern, entry);
+  }
+
+  const toolsEnd = content.lastIndexOf("\n  },\n};");
+  if (toolsEnd === -1) {
+    throw new Error(
+      `Could not find tools dictionary end while adding ${toolId}`,
+    );
+  }
+  return `${content.slice(0, toolsEnd)}\n${entry}${content.slice(toolsEnd)}`;
+}
 
 // Apply translations to each language file
 for (const [lang, tools] of Object.entries(translations)) {
@@ -1844,14 +2059,18 @@ for (const [lang, tools] of Object.entries(translations)) {
   let count = 0;
 
   for (const [toolId, trans] of Object.entries(tools)) {
-    // Match: 'tool-id': { name: "...", desc: "..."
-    const regex = new RegExp(
-      `'${toolId}':\\s*\\{\\s*name:\\s*"[^"]*",\\s*desc:\\s*"[^"]*"`,
-      "g",
-    );
-    const replacement = `'${toolId}': { name: "${trans.name}", desc: "${trans.desc}"`;
     const before = content;
-    content = content.replace(regex, replacement);
+    if (trans.ui) {
+      content = upsertFullToolEntry(content, toolId, trans);
+    } else {
+      // Match: 'tool-id': { name: "...", desc: "..."
+      const regex = new RegExp(
+        `'${toolId}':\\s*\\{\\s*name:\\s*"[^"]*",\\s*desc:\\s*"[^"]*"`,
+        "g",
+      );
+      const replacement = `'${toolId}': { name: "${trans.name}", desc: "${trans.desc}"`;
+      content = content.replace(regex, replacement);
+    }
     if (content !== before) count++;
   }
 
