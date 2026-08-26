@@ -1,5 +1,5 @@
 import { respondHTML } from "../utils/respond.js";
-import { createPageTemplate } from "../utils/common-ui.js";
+import { createPageTemplate, createToolHeader } from "../utils/common-ui.js";
 import { createRelatedToolsSection } from "../utils/content-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
 import {
@@ -94,13 +94,7 @@ export function renderRepoOpsPage(lang = DEFAULT_LANGUAGE, requestedTab) {
   const content = `
     <main class="tool-page-shell">
       <div class="tool-page-panel">
-        <div class="mb-6">
-        <div class="flex items-center gap-3 mb-2">
-          <span class="text-3xl" aria-hidden="true">📚</span>
-          <h1 class="tool-header-title" data-i18n="tools.repo-ops.name">${title}</h1>
-        </div>
-        <p class="text-surface-600 dark:text-surface-400 max-w-3xl" data-i18n="tools.repo-ops.desc">${description}</p>
-      </div>
+        ${createToolHeader({ emoji: "📚" }, title, description, [], { toolId: "repo-ops" })}
       <div class="tabs-list mb-6 flex-wrap" role="tablist" aria-label="Repository operations sections"
         data-repo-ops-tabs data-i18n-aria="tools.repo-ops.ui.aria0">
         ${tabButtons}

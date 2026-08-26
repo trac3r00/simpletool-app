@@ -7,8 +7,7 @@ import { respondHTML, respondJSON } from "../utils/respond.js";
 import {
   createPageTemplate,
   createCheatsheet,
-  infoHint,
-} from "../utils/common-ui.js";
+  infoHint, createToolHeader } from "../utils/common-ui.js";
 import {
   createEducationalSection,
   createRelatedToolsSection,
@@ -53,31 +52,27 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
   const content = `
     <main class="tool-page-shell">
       <div class="tool-page-panel">
-      <header class="bg-white/90 dark:bg-surface-900/80 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-8">
-        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
-          <div>
-            <p class="text-xs font-semibold uppercase tracking-[0.35em] text-primary-600 dark:text-primary-300 mb-3" data-i18n="tools.saml-decoder.ui.desc11">Enterprise SSO</p>
-            <h1 class="tool-header-title mb-4">${title}</h1>
-            <p class="text-lg text-surface-600 dark:text-surface-300 max-w-2xl" data-i18n="tools.saml-decoder.ui.desc12">Paste a Base64 SAML response or raw XML to inspect issuers, subjects, attributes, and validity windows instantly—no network requests.</p>
-          </div>
-          <div class="flex flex-col gap-3 text-sm text-surface-600 dark:text-surface-300">
-             <div class="flex items-center gap-3 bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-800 rounded-xl px-4 py-3">
-               <span class="text-xl">🔐</span>
-               <div>
-                 <p class="font-semibold" data-i18n="tools.saml-decoder.ui.heading11">Client-side only</p>
-                 <p class="text-surface-500 dark:text-surface-400" data-i18n="tools.saml-decoder.ui.desc13">Processed in your browser, not sent to our servers.</p>
-               </div>
-             </div>
-             <div class="flex items-center gap-3 bg-info-50 dark:bg-info-900/20 border border-info-200 dark:border-info-800 rounded-xl px-4 py-3">
-               <span class="text-xl">⚡</span>
-               <div>
-                 <p class="font-semibold" data-i18n="tools.saml-decoder.ui.heading12">Redirect & POST aware</p>
-                 <p class="text-surface-500 dark:text-surface-400" data-i18n="tools.saml-decoder.ui.desc14">Base64 + optional deflate.</p>
-               </div>
-             </div>
-          </div>
-        </div>
-      </header>
+      ${createToolHeader(
+        { emoji: "🛡️" },
+        title,
+        "Paste a Base64 SAML response or raw XML to inspect issuers, subjects, attributes, and validity windows instantly\u2014no network requests.",
+        [
+          {
+            text: "Client-side only",
+            i18nKey: "tools.saml-decoder.ui.heading11",
+            tooltip:
+              "Processed in your browser, not sent to our servers.",
+          },
+          {
+            text: "Redirect & POST aware",
+            i18nKey: "tools.saml-decoder.ui.heading12",
+          },
+        ],
+        {
+          toolId: "saml-decoder",
+          subtitleI18nKey: "tools.saml-decoder.ui.desc12",
+        },
+      )}
 
       <section class="grid gap-6 lg:grid-cols-2">
         <div class="tool-group p-6 space-y-4">

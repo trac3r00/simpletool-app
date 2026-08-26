@@ -4,7 +4,7 @@
  */
 
 import { respondHTML, respondJSON } from "../utils/respond.js";
-import { createPageTemplate, createCheatsheet } from "../utils/common-ui.js";
+import { createPageTemplate, createCheatsheet, createToolHeader } from "../utils/common-ui.js";
 import {
   createEducationalSection,
   createRelatedToolsSection,
@@ -52,31 +52,26 @@ function renderDataConverterPage(lang = DEFAULT_LANGUAGE) {
   const content = `
     <main class="tool-page-shell">
       <div class="tool-page-panel">
-      <header class="bg-white/90 dark:bg-surface-900/80 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-8">
-        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
-          <div>
-            <p class="text-xs font-semibold uppercase tracking-[0.35em] text-info-600 dark:text-info-300 mb-3" data-i18n="tools.yaml-toml-converter.ui.desc9">Data formats</p>
-            <h1 class="tool-header-title mb-4">${title}</h1>
-            <p class="text-lg text-surface-600 dark:text-surface-300 max-w-3xl" data-i18n="tools.yaml-toml-converter.ui.desc10">Validate and translate configs instantly. Paste once, get well-formed JSON, YAML, and TOML representations without leaking secrets.</p>
-          </div>
-          <div class="flex flex-col gap-3 text-sm text-surface-600 dark:text-surface-300">
-             <div class="flex items-center gap-3 bg-info-50 dark:bg-info-900/20 border border-info-200 dark:border-info-800 rounded-xl px-4 py-3">
-              <span class="text-xl">🧪</span>
-              <div>
-                <p class="font-semibold" data-i18n="tools.yaml-toml-converter.ui.feat0">Schema-less validation</p>
-                <p class="text-surface-500 dark:text-surface-400" data-i18n="tools.yaml-toml-converter.ui.desc11">Instant parse feedback.</p>
-              </div>
-            </div>
-             <div class="flex items-center gap-3 bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-800 rounded-xl px-4 py-3">
-              <span class="text-xl">🔒</span>
-              <div>
-                <p class="font-semibold" data-i18n="tools.yaml-toml-converter.ui.feat1">Offline friendly</p>
-                <p class="text-surface-500 dark:text-surface-400" data-i18n="tools.yaml-toml-converter.ui.desc12">Everything stays local.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
+      ${createToolHeader(
+        { emoji: "⚙️" },
+        title,
+        "Validate and translate configs instantly. Paste once, get well-formed JSON, YAML, and TOML representations without leaking secrets.",
+        [
+          {
+            text: "Schema-less validation",
+            i18nKey: "tools.yaml-toml-converter.ui.feat0",
+            tooltip: "Instant parse feedback.",
+          },
+          {
+            text: "Offline friendly",
+            i18nKey: "tools.yaml-toml-converter.ui.feat1",
+          },
+        ],
+        {
+          toolId: "yaml-toml-converter",
+          subtitleI18nKey: "tools.yaml-toml-converter.ui.desc10",
+        },
+      )}
 
       <section class="grid gap-6 lg:grid-cols-[3fr,3fr]">
         <div class="tool-group p-6 space-y-4">

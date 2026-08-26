@@ -21,7 +21,7 @@ export async function handlePipeRoutes(request, url) {
 
 function renderPipePage(lang = DEFAULT_LANGUAGE) {
   const content = `
-    <main class="tool-page-shell tool-page-shell--wide">
+    <main class="tool-page-shell">
       <div class="tool-page-panel">
       ${createToolHeader(
         { emoji: "⛓️" },

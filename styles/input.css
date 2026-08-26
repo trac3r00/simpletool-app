@@ -290,9 +290,6 @@
     @apply p-0;
   }
 
-  .tool-page-shell--wide {
-    max-width: none;
-  }
 
   .tool-page-panel--fill {
     display: flex;
