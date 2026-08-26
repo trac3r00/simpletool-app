@@ -30,7 +30,7 @@ export async function handleCronBuilderRoutes(request) {
       .filter(Boolean) || [];
 
   const content = `
-    <main class="tool-page-shell min-h-screen">
+    <main class="tool-page-shell">
       <div class="tool-page-panel">
       ${createToolHeader(
         { emoji: "⏰" },

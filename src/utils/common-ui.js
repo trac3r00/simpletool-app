@@ -1008,7 +1008,12 @@ export function getClipboardSafetyScript() {
  */
 export function createFeatureList(items = []) {
   if (!items || !items.length) return "";
-  const itemsHTML = items.map((item) => `<li>${item.text}</li>`).join("");
+  const itemsHTML = items
+    .map(
+      (item) =>
+        `<li${item.i18nKey ? ` data-i18n="${item.i18nKey}"` : ""}>${item.text}</li>`,
+    )
+    .join("");
   return `<ul data-feature-list class="tool-header-features mt-2 flex flex-wrap gap-2 text-xs text-surface-600 dark:text-surface-400">${itemsHTML}</ul>`;
 }
 
@@ -1023,12 +1028,18 @@ export function createToolHeader(
   badges = [],
   options = {},
 ) {
-  const { toolId, headingLevel = 1 } =
+  const { toolId, headingLevel = 1, subtitleI18nKey } =
     typeof options === "string" ? { toolId: options } : options || {};
   const headingTag = headingLevel === 2 ? "h2" : "h1";
 
   const titleAttr = toolId ? ` data-i18n="tools.${toolId}.name"` : "";
-  const subtitleAttr = toolId ? ` data-i18n="tools.${toolId}.desc"` : "";
+  // A route whose subtitle is bespoke copy (not the registry desc) passes its
+  // own catalog key so the canonical header keeps the existing translations.
+  const subtitleAttr = subtitleI18nKey
+    ? ` data-i18n="${subtitleI18nKey}"`
+    : toolId
+      ? ` data-i18n="tools.${toolId}.desc"`
+      : "";
 
   // Single-pill policy: first badge is the trust pill, rest are demoted features
   let trustPillHTML = "";
@@ -1041,7 +1052,7 @@ export function createToolHeader(
       ? ` data-tooltip="${badge.tooltip}" cursor-help`
       : "";
     const tipClass = badge.tooltip ? " cursor-help" : "";
-    trustPillHTML = `<span class="tool-header-trust inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300${tipClass}" data-trust-pill${tipAttr}>
+    trustPillHTML = `<span class="tool-header-trust inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300${tipClass}" data-trust-pill${tipAttr}${badge.i18nKey ? ` data-i18n="${badge.i18nKey}"` : ""}>
        ${badge.text}
      </span>`;
   } else if (badges.length >= 2) {
@@ -1051,7 +1062,7 @@ export function createToolHeader(
       ? ` data-tooltip="${trustBadge.tooltip}" cursor-help`
       : "";
     const tipClass = trustBadge.tooltip ? " cursor-help" : "";
-    trustPillHTML = `<span class="tool-header-trust inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300${tipClass}" data-trust-pill${tipAttr}>
+    trustPillHTML = `<span class="tool-header-trust inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300${tipClass}" data-trust-pill${tipAttr}${trustBadge.i18nKey ? ` data-i18n="${trustBadge.i18nKey}"` : ""}>
        ${trustBadge.text}
      </span>`;
     demotedFeaturesHTML = createFeatureList(badges.slice(1));

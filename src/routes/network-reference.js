@@ -1,5 +1,5 @@
 import { respondHTML } from "../utils/respond.js";
-import { createPageTemplate } from "../utils/common-ui.js";
+import { createPageTemplate, createToolHeader } from "../utils/common-ui.js";
 import { createRelatedToolsSection } from "../utils/content-ui.js";
 import {
   DEFAULT_LANGUAGE,
@@ -103,13 +103,7 @@ function renderNetworkReferencePage(lang = DEFAULT_LANGUAGE, requestedTab) {
   const content = `
     <main class="tool-page-shell">
       <div class="tool-page-panel">
-        <div class="mb-6">
-        <div class="flex items-center gap-3 mb-2">
-          <span class="text-3xl" aria-hidden="true">🌐</span>
-          <h1 class="tool-header-title" data-i18n="tools.network-reference.name">${title}</h1>
-        </div>
-        <p class="text-surface-600 dark:text-surface-400 max-w-3xl" data-i18n="tools.network-reference.desc">${description}</p>
-      </div>
+        ${createToolHeader({ emoji: "🌐" }, title, description, [], { toolId: "network-reference" })}
       <div class="tabs-list mb-6 flex-wrap" role="tablist" aria-label="Network reference sections"
         data-network-reference-tabs data-i18n-aria="tools.network-reference.ui.aria0">
         ${tabButtons}

@@ -4,7 +4,7 @@
  */
 
 import { respondHTML, respondJSON } from "../utils/respond.js";
-import { createPageTemplate, infoHint } from "../utils/common-ui.js";
+import { createPageTemplate, infoHint, createToolHeader } from "../utils/common-ui.js";
 import {
   createEducationalSection,
   createRelatedToolsSection,
@@ -52,31 +52,26 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
   const content = `
     <main class="tool-page-shell">
       <div class="tool-page-panel">
-       <header class="bg-white/90 dark:bg-surface-900/80 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-8">
-         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
-           <div>
-            <p class="text-xs font-semibold uppercase tracking-[0.35em] text-success-600 dark:text-success-300 mb-3" data-i18n="tools.htpasswd-generator.ui.desc20">Ops · Infra</p>
-            <h1 class="tool-header-title mb-4">${title}</h1>
-            <p class="text-lg text-surface-600 dark:text-surface-300 max-w-2xl" data-i18n="tools.htpasswd-generator.ui.desc21">Generate production-ready htpasswd entries using bcrypt (-B), Apache MD5 (-m), SHA1 (-s), or plaintext—completely client-side.</p>
-          </div>
-           <div class="grid gap-3 text-sm text-surface-600 dark:text-surface-300">
-             <div class="flex items-center gap-3 bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-800 rounded-xl px-4 py-3">
-               <span class="text-xl">🛡️</span>
-               <div>
-                 <p class="font-semibold" data-i18n="tools.htpasswd-generator.ui.desc24">Zero trust by design</p>
-                 <p class="text-surface-500 dark:text-surface-400" data-i18n="tools.htpasswd-generator.ui.desc22">No network calls.</p>
-               </div>
-             </div>
-             <div class="flex items-center gap-3 bg-info-50 dark:bg-info-900/20 border border-info-200 dark:border-info-800 rounded-xl px-4 py-3">
-               <span class="text-xl">⚙️</span>
-               <div>
-                 <p class="font-semibold" data-i18n="tools.htpasswd-generator.ui.desc25">Multiple algorithms</p>
-                 <p class="text-surface-500 dark:text-surface-400" data-i18n="tools.htpasswd-generator.ui.desc23">Bcrypt, apr1, SHA, plain.</p>
-               </div>
-             </div>
-           </div>
-        </div>
-      </header>
+      ${createToolHeader(
+        { emoji: "🔒" },
+        title,
+        "Generate production-ready htpasswd entries using bcrypt (-B), Apache MD5 (-m), SHA1 (-s), or plaintext\u2014completely client-side.",
+        [
+          {
+            text: "Zero trust by design",
+            i18nKey: "tools.htpasswd-generator.ui.desc24",
+            tooltip: "No network calls.",
+          },
+          {
+            text: "Multiple algorithms",
+            i18nKey: "tools.htpasswd-generator.ui.desc25",
+          },
+        ],
+        {
+          toolId: "htpasswd-generator",
+          subtitleI18nKey: "tools.htpasswd-generator.ui.desc21",
+        },
+      )}
 
       <section class="grid gap-6 lg:grid-cols-[3fr,2fr]">
         <div class="tool-group min-w-0 p-6 space-y-5">
