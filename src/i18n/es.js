@@ -141,7 +141,6 @@ export default {
         status1: "éxito",
         text2: "¡Copiado!",
         tpl3: "🔒 Toda la decodificación ocurre en su navegador. Sus tokens no se envían a nuestros servidores.",
-        tpl4: "' + match + '",
         tpl5: "Análisis de claims",
         status2: "No Token Provided",
         status3: "Please paste a JWT token to decode",
@@ -360,7 +359,6 @@ export default {
           "Longitud de hash inválida. Se esperan 64, 96 o 128 caracteres.",
         tpl3: "MD5 and SHA-1 are cryptographically broken and disabled by default. All processing occurs in a sandboxed client-side environment using the Web Crypto API. Your data is not sent to our servers.",
         tpl4: "Esperando entrada...",
-        tpl5: "Error: ' + error.message + '",
         text2: "Computed: ",
       },
       edu: {
@@ -394,7 +392,6 @@ export default {
         label6: "Familia de direcciones",
         label7: "Prefijo objetivo",
         placeholder8: "Examples: 192.168.1.10/24 · 2001:db8::/48",
-        option9: "/' + p + '",
         th10: "Prefijo",
         th11: "Máscara / hosts",
         th12: "Notas",
@@ -438,7 +435,7 @@ export default {
         th19: "Hosts",
         th20: "Use Case",
         th21: "Class",
-        title3: "tools.cidr-calculator.ui.title0",
+        title3: "Copiar al portapapeles",
       },
       js: {
         text0: "Este bloque ya tiene la granularidad mínima.",
@@ -448,7 +445,6 @@ export default {
         text4: "Ingrese cuántos hosts necesita.",
         text5: "Use at least /",
         text6: "IPv6 /",
-        tpl7: "2^' + (128 - targetPrefix) + '",
       },
       edu: {
         heading1: "\u00bfQu\u00e9 es CIDR?",
@@ -472,6 +468,40 @@ export default {
       name: "Referencia de Registros DNS",
       desc: "Referencia interactiva de tipos de registros DNS.",
       ui: {
+        title: {
+          A: "Ver detalles del registro A",
+          AAAA: "Ver detalles del registro AAAA",
+          CNAME: "Ver detalles del registro CNAME",
+          MX: "Ver detalles del registro MX",
+          TXT: "Ver detalles del registro TXT",
+          NS: "Ver detalles del registro NS",
+          SOA: "Ver detalles del registro SOA",
+          PTR: "Ver detalles del registro PTR",
+          SRV: "Ver detalles del registro SRV",
+          CAA: "Ver detalles del registro CAA",
+          DKIM: "Ver detalles del registro DKIM",
+          SPF: "Ver detalles del registro SPF",
+          DMARC: "Ver detalles del registro DMARC",
+          DS: "Ver detalles del registro DS",
+          DNSKEY: "Ver detalles del registro DNSKEY",
+        },
+        category: {
+          A: "Dirección",
+          AAAA: "Dirección",
+          CNAME: "Alias",
+          MX: "Correo",
+          TXT: "Texto",
+          NS: "Infraestructura",
+          SOA: "Infraestructura",
+          PTR: "Inversa",
+          SRV: "Servicio",
+          CAA: "Seguridad",
+          DKIM: "Seguridad de correo",
+          SPF: "Seguridad de correo",
+          DMARC: "Seguridad de correo",
+          DS: "DNSSEC",
+          DNSKEY: "DNSSEC",
+        },
         button0: "Copiar",
         label1: "Record Type",
         label2: "Domain",
@@ -550,6 +580,7 @@ export default {
       name: "Referencia de Puertos",
       desc: "Base de datos IANA de puertos con niveles de riesgo.",
       ui: {
+        tip0: "Escribe un número de puerto (p. ej., 443) o un nombre de servicio (p. ej., HTTPS)",
         button0: "All",
         button1: "Well-Known (0-1023)",
         button2: "Registered (1024-49151)",
@@ -615,6 +646,9 @@ export default {
         p4: "Use the risk filter to quickly identify high-risk ports in your network. The Top 50 Most Common Ports section gives you an instant overview of the most frequently used services.",
       },
       cheatsheet: {
+        c2: "\n          <ul>\n            <li><strong>Cierra los puertos sin usar:</strong> Reduce la superficie de ataque desactivando servicios que no necesitas</li>\n            <li><strong>Usa cortafuegos:</strong> Implementa controles de acceso a nivel de red</li>\n            <li><strong>Monitoriza el tráfico:</strong> Registra las conexiones a puertos sensibles (22, 443, 3389)</li>\n            <li><strong>Prefiere protocolos cifrados:</strong> Usa SSH (22) en lugar de Telnet (23), y SFTP en lugar de FTP</li>\n            <li><strong>Cambia los valores por defecto:</strong> Considera puertos no estándar para SSH/RDP (seguridad por ocultación)</li>\n          </ul>",
+        c1: '\n          <table>\n            <tr><th data-i18n="tools.port-reference.ui.th10">Puerto</th><th data-i18n="tools.port-reference.ui.th11">Servicio</th><th data-i18n="tools.port-reference.ui.th13">Riesgo</th></tr>\n            <tr><td><code>21</code></td><td>FTP</td><td>Transferencias de archivos sin cifrar</td></tr>\n            <tr><td><code>23</code></td><td>Telnet</td><td>Autenticación en texto plano</td></tr>\n            <tr><td><code>25</code></td><td>SMTP</td><td>Riesgo de reenvío de spam</td></tr>\n            <tr><td><code>53</code></td><td>DNS</td><td>Ataques de amplificación DDoS</td></tr>\n            <tr><td><code>445</code></td><td>SMB</td><td>Propagación de ransomware</td></tr>\n            <tr><td><code>3389</code></td><td>RDP</td><td>Ataques de fuerza bruta</td></tr>\n          </table>',
+        c0: '\n          <table>\n            <tr><th data-i18n="tools.port-reference.ui.th14">Rango</th><th data-i18n="tools.port-reference.ui.th15">Nombre</th><th data-i18n="tools.port-reference.ui.th12">Descripción</th></tr>\n            <tr><td><code>0-1023</code></td><td>Bien conocidos</td><td>Reservados para servicios del sistema (HTTP, SSH, etc.)</td></tr>\n            <tr><td><code>1024-49151</code></td><td>Registrados</td><td>Puertos registrados por usuarios para aplicaciones</td></tr>\n            <tr><td><code>49152-65535</code></td><td>Dinámicos/Privados</td><td>Puertos efímeros para conexiones de cliente</td></tr>\n          </table>',
         title: "Port Categories & Security Guide",
         h0: "Port Number Ranges",
         h1: "High Risk Ports",
@@ -791,7 +825,7 @@ export default {
         th32: "Command",
         th33: "Topology",
         th34: "Use Case",
-        heading35: "100% Client-Side Key Generation",
+        heading35: "Generación de claves en tu navegador",
         desc36:
           "Private keys are generated using libsodium.js directly in your browser. Keys stay in your browser and are not sent to our servers.",
         desc37: "⚠️ Never share your private key!",
@@ -803,7 +837,7 @@ export default {
         badge43: "Template Wizard",
         badge44: "Solo cliente",
         badge45: "Privacidad primero",
-        heading0: "100% Client-Side Key Generation",
+        heading0: "Generación de claves en tu navegador",
         desc0:
           "Private keys are generated using libsodium.js directly in your browser. Keys stay in your browser and are not sent to our servers.",
         heading1: "Key Pair Generator",
@@ -842,6 +876,7 @@ export default {
         placeholder9: "[Interface]\\nPrivateKey = ...\\nAddress = ...",
       },
       js: {
+        removePeer: "Eliminar par",
         text0: "Error:",
         tpl1: "Scan with the WireGuard mobile app to import configuration.",
         tpl2: "Command after interface down",
@@ -1018,6 +1053,10 @@ export default {
         p3: "Packet analysis to understand the structure of captured network traffic, protocol learning as a visual aid for studying network protocols, debugging to identify malformed headers or incorrect field values, and development reference when implementing network protocols.",
       },
       cheatsheet: {
+        c3: '\n          <table>\n            <tr><th data-i18n="tools.protocol-headers.ui.th12">Valor</th><th data-i18n="tools.protocol-headers.ui.th13">Protocolo</th></tr>\n            <tr><td><code>0x0800</code></td><td>IPv4</td></tr>\n            <tr><td><code>0x0806</code></td><td>ARP</td></tr>\n            <tr><td><code>0x86DD</code></td><td>IPv6</td></tr>\n            <tr><td><code>0x8100</code></td><td>VLAN (802.1Q)</td></tr>\n          </table>',
+        c2: '\n          <table>\n            <tr><th data-i18n="tools.protocol-headers.ui.th9">Campo</th><th data-i18n="tools.protocol-headers.ui.th10">Tamaño</th><th data-i18n="tools.protocol-headers.ui.th11">Descripción</th></tr>\n            <tr><td>Source Port</td><td>2 bytes</td><td>Número de puerto del emisor</td></tr>\n            <tr><td>Dest Port</td><td>2 bytes</td><td>Número de puerto del receptor</td></tr>\n            <tr><td>Seq Number</td><td>4 bytes</td><td>Número de secuencia</td></tr>\n            <tr><td>Ack Number</td><td>4 bytes</td><td>Número de acuse de recibo</td></tr>\n            <tr><td>Data Offset</td><td>4 bits</td><td>Longitud del encabezado / 4</td></tr>\n            <tr><td>Flags</td><td>9 bits</td><td>NS,CWR,ECE,URG,ACK,PSH,RST,SYN,FIN</td></tr>\n            <tr><td>Window</td><td>2 bytes</td><td>Tamaño de la ventana de recepción</td></tr>\n          </table>',
+        c1: '\n          <table>\n            <tr><th data-i18n="tools.protocol-headers.ui.th9">Campo</th><th data-i18n="tools.protocol-headers.ui.th10">Tamaño</th><th data-i18n="tools.protocol-headers.ui.th11">Descripción</th></tr>\n            <tr><td>Version</td><td>4 bits</td><td>Versión de IP (4)</td></tr>\n            <tr><td>IHL</td><td>4 bits</td><td>Longitud del encabezado en palabras de 32 bits</td></tr>\n            <tr><td>TOS</td><td>1 bytes</td><td>Tipo de servicio / DSCP</td></tr>\n            <tr><td>Total Length</td><td>2 bytes</td><td>Tamaño total del paquete</td></tr>\n            <tr><td>TTL</td><td>1 bytes</td><td>Tiempo de vida (límite de saltos)</td></tr>\n            <tr><td>Protocol</td><td>1 bytes</td><td>Protocolo siguiente (6=TCP, 17=UDP)</td></tr>\n            <tr><td>Checksum</td><td>2 bytes</td><td>Suma de comprobación del encabezado</td></tr>\n          </table>',
+        c0: '\n          <table>\n            <tr><th data-i18n="tools.protocol-headers.ui.th9">Campo</th><th data-i18n="tools.protocol-headers.ui.th10">Tamaño</th><th data-i18n="tools.protocol-headers.ui.th11">Descripción</th></tr>\n            <tr><td>Destination MAC</td><td>6 bytes</td><td>Dirección de hardware de destino</td></tr>\n            <tr><td>Source MAC</td><td>6 bytes</td><td>Dirección de hardware del emisor</td></tr>\n            <tr><td>EtherType</td><td>2 bytes</td><td>Tipo de protocolo (0x0800=IPv4, 0x86DD=IPv6)</td></tr>\n          </table>',
         title: "Protocol Quick Reference",
         h0: "Ethernet II",
         h1: "IPv4 Header",
@@ -1280,7 +1319,7 @@ export default {
         option8: "4096 bits (máxima seguridad, más lento)",
         stat9: "🔓 Clave pública",
         stat10: "🔐 Clave privada",
-        heading11: "100% del lado del cliente y privado",
+        heading11: "Claves generadas en tu navegador",
         heading12: "Huella digital (SHA-256)",
         desc13: "Agregado a la clave pública para identificación",
         desc14: "Agregue esto a ~/.ssh/authorized_keys en servidores remotos",
@@ -1350,7 +1389,6 @@ export default {
         tpl1: "Sin datos.",
         tpl2: "Sin nombres alternativos.",
         tpl3: "Sin extensiones analizadas.",
-        tpl4: "' + items + '",
       },
       edu: {
         heading1: "What are X.509 Certificates?",
@@ -1405,7 +1443,6 @@ export default {
         text0: "¡Copiado!",
         text1: "Copiar JSON",
         text2: "Copiar XML",
-        tpl3: "' + escapeHtml(value) + '",
       },
       edu: {
         heading1: "What is SAML?",
@@ -1701,7 +1738,6 @@ export default {
         text0: "Copiado",
         text1: "Copiar",
         text2: "¡Copiado!",
-        tpl3: "' + item.algorithm.toUpperCase() + '",
       },
       edu: {
         heading1: "What is htpasswd?",
@@ -1725,7 +1761,6 @@ export default {
         label4: "Nombre de tabla",
         option5: "SQL INSERT",
         th6: "Los campos aparecerán aquí...",
-        th7: "' + labelFor(field) + '",
         desc8: "Genere entre 10 y 500 registros.",
         desc9: "Cambie formatos al instante.",
         desc10: "Para sentencias INSERT.",
@@ -1745,7 +1780,6 @@ export default {
       js: {
         text0: "¡Copiado!",
         text1: "Copiar",
-        tpl2: "' + escapeHtml(row[field]) + '",
         text2: "No rows to preview.",
       },
       edu: {
@@ -1840,6 +1874,7 @@ export default {
       name: "Conversor de Mayúsculas",
       desc: "Convierte texto entre diferentes formatos de capitalización.",
       ui: {
+        resultsHeading: "Resultados de la conversión",
         label0: "Texto de entrada",
         placeholder1: "Ingrese su texto aquí...",
         stat2: "Tipos de caso soportados",
@@ -2121,7 +2156,6 @@ export default {
       },
       js: {
         tpl0: "Dibujando diagrama...",
-        tpl1: "Error de sintaxis: ' + e.message + '",
         text0: "Syntax Error: ",
       },
       cheatsheet: {
@@ -2255,10 +2289,6 @@ export default {
         desc10: "A dónde van las respuestas (a menudo se abusa en BEC)",
         desc11: "Saltos de correo + pistas de IP (spoofing / relés)",
         desc12: "Resultados SPF/DKIM/DMARC del receptor",
-        desc14:
-          "' + t('text50', 'Run analysis to see signals and mismatches.') + '",
-        desc15: "' + t('text51', 'No URLs extracted yet.') + '",
-        desc16: "' + t('text52', 'No routing data yet.') + '",
       },
       js: {
         text0: "Alta",
@@ -2346,6 +2376,8 @@ export default {
       name: "Contador de Tokens",
       desc: "Calcula el número de tokens de modelos IA.",
       ui: {
+        desc1:
+          "Cada familia de modelos usa un tokenizador distinto (BPE / SentencePiece / propio). Las filas corresponden a la familia de tokenizador, no a la versión del modelo: Gemini tokeniza igual que la fila de SentencePiece.",
         badge0: "Sin conexión",
         badge1: "Tus tarifas",
         button0: "Ejemplo",
@@ -2354,16 +2386,16 @@ export default {
         label0: "Texto",
         label1: "Tokens de salida esperados",
         label2: "Modo de estimación",
-        label3: "Clase GPT-4",
-        label4: "Clase Claude",
-        label5: "Clase Llama",
-        label6: "Clase GPT-4",
+        label3: "Familia GPT (BPE)",
+        label4: "Familia Claude",
+        label5: "Familia Llama / Gemini (SentencePiece)",
+        label6: "Familia GPT (BPE)",
         label7: "Entrada $/1M",
         label8: "Salida $/1M",
-        label9: "Clase Claude",
+        label9: "Familia Claude",
         label10: "Entrada $/1M",
         label11: "Salida $/1M",
-        label12: "Clase Llama",
+        label12: "Familia Llama / Gemini (SentencePiece)",
         label13: "Entrada $/1M",
         label14: "Salida $/1M",
         placeholder0:
@@ -2380,9 +2412,9 @@ export default {
         stat1: "Bytes (UTF-8)",
         stat2: "Palabras",
         stat3: "Líneas",
-        stat4: "GPT-4",
+        stat4: "GPT",
         stat5: "Claude",
-        stat6: "Llama",
+        stat6: "Llama / Gemini",
         heading0: "Estimaciones",
         heading1: "Costo (USD)",
         heading2: "Notas sobre la estimación de tokens",
@@ -2415,9 +2447,10 @@ export default {
         text3: "Palabras: {v}",
         text4: "Líneas: {v}",
         text5: "Tokens de salida esperados: {v}",
-        text6: "Clase GPT-4: entrada={in}, salida={out}, total={total}",
-        text7: "Clase Claude: entrada={in}, salida={out}, total={total}",
-        text8: "Clase Llama: entrada={in}, salida={out}, total={total}",
+        text6: "Familia GPT: entrada={in}, salida={out}, total={total}",
+        text7: "Familia Claude: entrada={in}, salida={out}, total={total}",
+        text8:
+          "Familia Llama / Gemini: entrada={in}, salida={out}, total={total}",
         text9:
           "Nota: son estimaciones heurísticas, no recuentos exactos del tokenizador.",
         text10: "✓ Copiado",
@@ -2442,6 +2475,7 @@ export default {
       name: "Constructor de Plantillas",
       desc: "Crea plantillas de prompts para IA.",
       ui: {
+        option11: "Gemini (instrucción de sistema)",
         badge0: "Reutilizable",
         badge1: "Resistente a inyección",
         button0: "Ejemplo",
@@ -2510,6 +2544,8 @@ export default {
         desc9: "Falta “qué hacer si falta información”",
       },
       js: {
+        text27:
+          "No solicites datos personales. Si aparecen en <inputs>, úsalos solo para esta tarea, no los repitas literalmente en la salida y refiérete a ellos con un marcador.",
         text0: "Sé conciso y de alta señal. Prefiere viñetas sobre párrafos.",
         text1: "Explica de forma breve y clara. Define jerga cuando ayude.",
         text2: "Prioriza un resumen ejecutivo y próximos pasos claros.",
@@ -2547,7 +2583,8 @@ export default {
           "Incluye una sección final de “Próximos pasos” cuando corresponda.",
         text27:
           "Si falta información crítica, haz preguntas de aclaración primero.",
-        text28: "Sé correcto. Declara supuestos. Que sea escaneable.",
+        text28:
+          "No solicites datos personales. Si aparecen en los Inputs, úsalos solo para esta tarea, no los repitas literalmente en la salida y refiérete a ellos con un marcador.",
         text29: "Tarea: ",
         text30: "Contexto:",
         text31: "Restricciones:",
@@ -2609,7 +2646,6 @@ export default {
         option7: "Snowflake",
         option8: "ClickHouse",
         option9: "SQLite",
-        desc14: "' + where + '",
       },
       js: {
         text0: "Paréntesis de cierre sin pareja",
@@ -2768,7 +2804,6 @@ export default {
         desc6: "Elimina enlaces externos en",
         desc7: "a menos que sea una referencia interna",
         desc8: "de anclaje.",
-        desc11: "' + t('text5', 'Preview an SVG to extract colors.') + '",
       },
       js: {
         text0: "Primero pega un SVG.",
@@ -3056,7 +3091,6 @@ export default {
         headingJwksOutput: "JWKS Output",
         headingEndpointInfo: "JWKS Endpoint Convention",
         textEndpointInfo: "Serve this JSON at",
-        desc51: "' + label + '",
         button7: "Remove",
         placeholderJwt:
           "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0....",
@@ -3308,10 +3342,6 @@ export default {
         bracketHeading: "Tournament Bracket",
         teamScoresHeading: "Team Scores",
         heading3: "Results",
-        label6:
-          "' + (window._t ? window._t('tools.ladder-game.js.tpl0', 'Player') : 'Player') + ' ' + (i + 1) + '",
-        label7:
-          "' + (window._t ? window._t('tools.ladder-game.js.tpl1', 'Result') : 'Result') + ' ' + (i + 1) + '",
         importPlayersPH: "Alice, Bob, Charlie&#10;or one per line",
         importResultsPH: "Prize A, Prize B&#10;or one per line",
         placeholder0: "Name",
@@ -3342,6 +3372,7 @@ export default {
       name: "Ruleta Giratoria",
       desc: "Gira la ruleta para decidir al azar.",
       ui: {
+        seriesCountLabel: "Número de giros de la serie",
         badge0: "Aleatoriedad criptográfica",
         badge1: "Solo cliente",
         "spin-button": "Girar",
@@ -3492,10 +3523,6 @@ export default {
         targetOrdinal: "Llegada N",
         replayLabel: "Slow-Mo Replay",
         buttonReplay: "Slow-Mo Replay",
-        desc16: "' + String(m.rank) + '",
-        desc17: "' + escapeHtml(m.name) + '",
-        desc18: "' + escapeHtml(r.name) + '",
-        desc19: "' + String(r.count) + '",
       },
       js: {
         text0: "—",
@@ -3511,6 +3538,201 @@ export default {
         err2: "Se necesitan al menos 2 nombres tras quitar al ganador.",
         text8: "Estadísticas borradas.",
         textReplay: "Replaying winner path...",
+      },
+    },
+    "network-reference": {
+      name: "Referencia de Red",
+      desc: "Registros DNS, puertos comunes, códigos de estado HTTP y cabeceras de protocolo: cuatro referencias en una sola herramienta con pestañas.",
+      ui: {
+        tab0: "Registros DNS",
+        tab1: "Puertos",
+        tab2: "Estado HTTP",
+        tab3: "Cabeceras de protocolo",
+        aria0: "Secciones de referencia de red",
+      },
+    },
+    "repo-ops": {
+      name: "Operaciones de Repositorios",
+      desc: "Crea inventarios de repositorios públicos, registros de gestión manual y descripciones de revisión en un solo espacio de trabajo.",
+      ui: {
+        tab0: "Inventario de repositorios",
+        tab1: "Gestión manual",
+        tab2: "Descripciones de revisión",
+        aria0: "Secciones de operaciones de repositorios",
+      },
+    },
+    "http-status-reference": {
+      name: "Referencia de Estados HTTP",
+      desc: "Referencia consultable de los códigos de estado HTTP estándar con guía de uso y de caché.",
+      ui: {
+        badge0: "RFC 9110",
+        badge1: "Consultable",
+        badge2: "Solo en el navegador",
+        button0: "Limpiar",
+        button1: "Todos",
+        button2: "1xx Informativo",
+        button3: "2xx Éxito",
+        button4: "3xx Redirección",
+        button5: "4xx Error de cliente",
+        button6: "5xx Error de servidor",
+        desc0: "Busca por código, frase, clase, descripción o guía de uso.",
+        heading0: "Buscar estados HTTP",
+        heading1: "Códigos de estado",
+        label0: "Búsqueda de código de estado",
+        placeholder0:
+          "p. ej., 404, redirección, cacheable, límite de peticiones",
+        stat0: "Estados totales",
+        stat1: "Resultados coincidentes",
+        stat2: "Clases de estado",
+        stat3: "Cacheable por defecto",
+        status0: "Mostrando todos los códigos de estado HTTP.",
+        status1:
+          "Ningún código de estado HTTP coincide con la búsqueda y el filtro de clase actuales.",
+        th0: "Clase",
+        th1: "Significado",
+        th2: "Uso habitual",
+      },
+      cheatsheet: {
+        title: "Guía de códigos de estado HTTP",
+        h0: "Significado de las clases",
+        c0: '\n          <table>\n            <tr><th data-i18n="tools.http-status-reference.ui.th0">Clase</th><th data-i18n="tools.http-status-reference.ui.th1">Significado</th><th data-i18n="tools.http-status-reference.ui.th2">Uso típico</th></tr>\n            <tr><td><code>1xx</code></td><td>Informativo</td><td>Respuestas provisionales mientras continúa una solicitud.</td></tr>\n            <tr><td><code>2xx</code></td><td>Correcto</td><td>La solicitud se recibió, se entendió y se aceptó.</td></tr>\n            <tr><td><code>3xx</code></td><td>Redirección</td><td>El cliente necesita otra solicitud o una representación en caché.</td></tr>\n            <tr><td><code>4xx</code></td><td>Error del cliente</td><td>La solicitud tiene un problema del lado del cliente o no puede completarse.</td></tr>\n            <tr><td><code>5xx</code></td><td>Error del servidor</td><td>El servidor no pudo completar una solicitud aparentemente válida.</td></tr>\n          </table>',
+        h1: "Seguridad, idempotencia y almacenamiento en caché",
+        c1: "\n          <p>Los códigos de estado por sí solos no hacen que una solicitud sea segura ni idempotente. La seguridad y la idempotencia provienen del método de la solicitud y de la semántica de la aplicación.</p>\n          <p>Las reglas de caché de los RFC permiten reutilizar algunas respuestas de forma predeterminada, incluidos estados comunes como <code>200</code>, <code>203</code>, <code>204</code>, <code>206</code>, <code>300</code>, <code>301</code>, <code>308</code>, <code>404</code>, <code>405</code>, <code>410</code>, <code>414</code>, <code>501</code>. Otros estados suelen requerir encabezados de caché explícitos.</p>",
+      },
+    },
+    "public-repos-yml-builder": {
+      name: "Generador de YAML de Repos Públicos",
+      desc: "Genera y valida inventarios repos.yml para la automatización de repositorios públicos.",
+      ui: {
+        placeholder0:
+          "example-api team=platform cadence=weekly sha=ok branch=protected secrets=ok monetization=ready\nhttps://github.com/example/docs-site team=docs cadence=monthly sha=ok branch=protected secrets=ok monetization=todo",
+        badge0: "Solo en el navegador",
+        badge1: "Automatización Kanban",
+        button0: "Ejemplo",
+        button1: "Generar YAML",
+        button2: "Limpiar",
+        button3: "Copiar",
+        desc0:
+          "Usa un repositorio por línea. Añade metadatos como pares key=value después del slug, por ejemplo team=platform cadence=weekly sha=ok.",
+        desc1:
+          "Metadatos admitidos: team, cadence, topic, sha, branch, secrets, monetization, notes.",
+        desc2:
+          "Pega los repositorios y genera el YAML para validar las necesidades recurrentes de la política de automatización.",
+        heading0: "Valores por defecto del inventario",
+        heading1: "repos.yml",
+        heading2: "Auditoría de GitHub Actions",
+        heading3: "Hallazgos de política",
+        label0: "Slugs o URLs de repositorios",
+        label1: "Propietario",
+        label2: "Cadencia por defecto",
+        option0: "Semanal",
+        option1: "Quincenal",
+        option2: "Mensual",
+        placeholder1: "repositories: []",
+        placeholder2: "name: Public repos audit",
+        text0: "Esperando entrada",
+      },
+      js: {
+        branchProtection:
+          "la protección de rama no está marcada como protegida.",
+        copied: "Copiado",
+        invalidJson:
+          "No se pudo analizar el array JSON de repositorios públicos de GitHub.",
+        invalidJsonRepo:
+          "No se pudo asignar el objeto de la API de GitHub a un slug o URL de repositorio.",
+        invalidRepo:
+          "No se pudo analizar el slug del repositorio o la URL de GitHub.",
+        monetizationReadiness:
+          "la preparación para monetización no está marcada como lista.",
+        needsReview: "Necesita revisión",
+        noFindings:
+          "Sin hallazgos para las comprobaciones de política seleccionadas.",
+        ready: "Listo",
+        secretsPosture:
+          "la gestión de secretos necesita confirmarse antes de la automatización pública.",
+        shaPinning:
+          "el anclaje por SHA debe revisarse en las acciones del flujo de trabajo y las referencias de terceros.",
+        waiting: "Esperando entrada",
+      },
+    },
+    "public-repos-not-automation": {
+      name: "Repos Públicos Sin Automatizar",
+      desc: "Decide qué tareas recurrentes de repositorios públicos deben seguir siendo manuales por ahora y genera un registro de decisión de no automatizar.",
+      ui: {
+        placeholder0:
+          "repo: trac3r00/simpletool-app\ntask: cerrar automáticamente issues públicos obsoletos por demanda recurrente de Kanban\nowner: maintainers\ncadence: monthly\nrisk: high\nnext-review: 2026-07-15",
+        badge0: "Solo en el navegador",
+        badge1: "Gestión manual",
+        button0: "Ejemplo",
+        button1: "Crear registro de decisión",
+        button2: "Limpiar",
+        button3: "Copiar",
+        desc0:
+          "Usa un par key:value por línea para repo, task, owner, cadence, risk, next-review y notes. También se admiten arrays JSON de repositorios públicos de GitHub y texto plano.",
+        desc1:
+          "Diseñado para trabajo en repositorios públicos con demanda recurrente en Kanban que aún requiere gestión manual y criterio humano. Pega arrays JSON de repositorios públicos de GitHub para partir de los metadatos del repositorio.",
+        heading0: "Razones para no automatizar",
+        heading1: "Registro de decisión",
+        heading2: "Lista de comprobación",
+        label0: "Tarea del repositorio",
+        label1: "Responsable de la decisión",
+        label2: "Periodo de revisión",
+        label3: "Evidencia necesaria antes de automatizar",
+        option0: "30 días",
+        option1: "60 días",
+        option2: "90 días",
+        option3: "Próxima versión",
+        placeholder1:
+          "p. ej., política escrita, responsable de reversión, registro de auditoría, evidencia de simulacro y 3 ejecuciones manuales repetidas.",
+        placeholder2:
+          "Aquí aparecerá el registro de decisión de no automatizar.",
+        placeholder3:
+          "Aquí aparecerá la lista de comprobación de gestión manual.",
+      },
+      js: {
+        copied: "Copiado",
+        copyFailed:
+          "Error al copiar. Selecciona la salida y cópiala manualmente.",
+        manual: "Manual",
+        missingReasons:
+          "Selecciona al menos una razón para no automatizar todavía.",
+        missingRepos: "Pega al menos un repositorio público de GitHub válido.",
+        missingTask:
+          "Añade una tarea del repositorio antes de crear el registro de decisión.",
+        needsReason: "Falta una razón",
+        reasonFrequency: "Baja frecuencia o demanda débil",
+        reasonObservability: "Falta de observabilidad",
+        reasonOwner: "Responsable o vía de aprobación poco clara",
+        reasonPolicy: "Límite de política ambiguo",
+        reasonSafety: "Riesgo de seguridad o reputación",
+      },
+    },
+    "review-description-generator": {
+      name: "Generador de Descripciones de Revisión",
+      desc: "Genera descripciones estructuradas de revisiones y comentarios de PR a partir de commits, diffs o notas.",
+      ui: {
+        badge0: "Solo en el navegador",
+        badge1: "6 plantillas",
+        button0: "Generar",
+        button1: "Copiar",
+        button2: "Limpiar",
+        heading0: "Cómo funciona",
+        label0: "Plantilla de revisión",
+        label1: "Descripción generada",
+        option0: "Actualización de dependencia",
+        option1: "Corrección de error",
+        option2: "Nueva funcionalidad",
+        option3: "Refactorización / limpieza",
+        option4: "Cambio de CI / pipeline",
+        option5: "Personalizada",
+        text0:
+          "Elige una plantilla que coincida con tu tipo de revisión (actualización de dependencia, corrección de error, funcionalidad, etc.).",
+        text1:
+          "Rellena los campos de contexto: la herramienta ofrece valores por defecto y orientación para cada plantilla.",
+        text2:
+          "Haz clic en Generar para producir una descripción estructurada en formato Markdown, lista para tu PR o comentario de revisión.",
+        text3:
+          "Todo el procesamiento es local: tus datos no se envían a nuestros servidores.",
       },
     },
   },
