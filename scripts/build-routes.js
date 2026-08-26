@@ -159,19 +159,9 @@ const TOOL_HANDLERS = [
     exp: "handlePromptTemplateBuilderRoutes",
   },
   {
-    id: "public-repos-yml-builder",
-    file: "public-repos-yml-builder.js",
-    exp: "handlePublicReposYmlBuilderRoutes",
-  },
-  {
-    id: "public-repos-not-automation",
-    file: "public-repos-not-automation.js",
-    exp: "handlePublicReposNotAutomationRoutes",
-  },
-  {
-    id: "review-description-generator",
-    file: "review-description-generator.js",
-    exp: "handleReviewDescriptionGeneratorRoutes",
+    id: "repo-ops",
+    file: "repo-ops.js",
+    exp: "handleRepoOpsRoutes",
   },
   {
     id: "sql-formatter",
@@ -201,19 +191,9 @@ const TOOL_HANDLERS = [
     exp: "handleSecretScannerRoutes",
   },
   {
-    id: "dns-reference",
-    file: "dns-reference.js",
-    exp: "handleDNSReferenceRoutes",
-  },
-  {
-    id: "port-reference",
-    file: "port-reference.js",
-    exp: "handlePortReferenceRoutes",
-  },
-  {
-    id: "http-status-reference",
-    file: "http-status-reference.js",
-    exp: "handleHTTPStatusReferenceRoutes",
+    id: "network-reference",
+    file: "network-reference.js",
+    exp: "handleNetworkReferenceRoutes",
   },
   {
     id: "bandwidth-calculator",
@@ -224,11 +204,6 @@ const TOOL_HANDLERS = [
     id: "wireshark-filter",
     file: "wireshark-filter.js",
     exp: "handleWiresharkFilterRoutes",
-  },
-  {
-    id: "protocol-headers",
-    file: "protocol-headers.js",
-    exp: "handleProtocolHeadersRoutes",
   },
   {
     id: "wireguard-config",

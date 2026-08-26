@@ -20,7 +20,9 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
-    "test:a11y": "playwright test tests/e2e/accessibility-audit.spec.js"
+    "test:a11y": "playwright test tests/e2e/accessibility-audit.spec.js",
+    "test:browser": "node scripts/browser-smoke.mjs",
+    "test:ui-audit": "node scripts/deep-ui-audit.mjs"
   },
   "dependencies": {
     "@noble/hashes": "^2.0.1",
@@ -47,7 +49,6 @@
     "axe-core": "^4.11.1",
     "baseline-browser-mapping": "^2.9.18",
     "esbuild": "^0.28.0",
-    "lighthouse": "^13.0.3",
     "postcss": "^8.4.32",
     "tailwindcss": "^3.4.19",
     "vitest": "^4.1.2",

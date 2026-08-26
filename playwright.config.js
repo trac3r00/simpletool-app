@@ -31,6 +31,14 @@ export default defineConfig({
         ...devices["Desktop Chrome"],
         launchOptions: {
           args: ["--disable-gpu"],
+          // The chromium build this Playwright version resolves (1208) is
+          // corrupt on this machine — truncated extraction, missing framework
+          // dylib — which reads as "Executable doesn't exist" and looks like a
+          // blanket environment failure. A working headless shell (Chromium
+          // 151) is installed alongside it; point at it explicitly.
+          ...(process.env.PW_CHROMIUM_PATH
+            ? { executablePath: process.env.PW_CHROMIUM_PATH }
+            : {}),
         },
         ...(useSystemChrome ? { channel: "chrome" } : {}),
       },
