@@ -2,74 +2,6 @@ import { DEFAULT_LANGUAGE, normalizeLanguage } from "../utils/i18n.js";
 
 const BLOG_LOCALE_OVERRIDES = {
   ko: {
-    "why-client-side-tools-matter": {
-      title: "개발자 프라이버시를 위해 클라이언트 사이드 도구가 중요한 이유",
-      description:
-        "민감한 데이터를 서버로 보내지 않고 브라우저에서 처리하는 것이 왜 중요한지 살펴봅니다.",
-      readingTime: "5분 읽기",
-      content: `
-        <p>온라인 도구에 민감한 데이터를 붙여넣는 순간 가장 먼저 확인해야 할 것은 "이 데이터가 어디로 가는가"입니다. 서버 전송이 필요한 구조라면, 입력값은 곧바로 보관, 분석, 유출의 위험에 노출됩니다.</p>
-        <h2>브라우저 안에서 끝나는 처리</h2>
-        <p>클라이언트 사이드 도구는 브라우저가 가진 연산 능력으로 작업을 로컬에서 끝냅니다. JSON 포맷팅, 해시 계산, 비밀번호 생성처럼 많은 작업은 서버 도움 없이도 충분히 처리할 수 있습니다.</p>
-        <h2>핵심 이점</h2>
-        <ul>
-          <li><strong>데이터 노출 최소화</strong> — 입력이 기기 밖으로 나가지 않습니다</li>
-          <li><strong>빠른 응답성</strong> — 서버 왕복 지연이 없습니다</li>
-          <li><strong>오프라인 친화성</strong> — 로드 후에는 네트워크 의존도가 낮습니다</li>
-          <li><strong>규제 대응 용이성</strong> — 개인정보 흐름을 단순하게 설명할 수 있습니다</li>
-        </ul>
-        <h2>무엇을 확인해야 하나요?</h2>
-        <p>개발자 도구의 네트워크 탭을 열고 입력 시 외부 요청이 발생하는지 보세요. 진짜 로컬 처리 도구라면, 광고나 정적 자산을 제외하고 도구 본문이 외부 서버로 전송되지 않아야 합니다.</p>
-      `,
-    },
-    "password-security-best-practices-2026": {
-      title: "2026년 비밀번호 보안 모범 사례",
-      description:
-        "현대적인 위협 환경에서 비밀번호를 만들고 저장하고 운영하는 핵심 원칙을 정리합니다.",
-      readingTime: "7분 읽기",
-      content: `
-        <p>패스키와 생체 인증이 늘고 있어도, 비밀번호는 여전히 대부분의 서비스에서 핵심 인증 수단입니다. 그래서 비밀번호 정책은 오래된 습관이 아니라 최신 위협 모델을 기준으로 다시 점검해야 합니다.</p>
-        <h2>복잡성보다 길이</h2>
-        <p>NIST 가이드라인은 억지 특수문자 규칙보다 충분한 길이를 더 중요하게 봅니다. 짧고 복잡한 비밀번호보다 긴 패스프레이즈가 실제로 더 강한 경우가 많습니다.</p>
-        <h2>비밀번호 관리자를 사용하세요</h2>
-        <p>서비스마다 고유한 비밀번호를 기억하는 것은 현실적으로 어렵습니다. 비밀번호 관리자는 무작위 비밀번호를 생성하고 안전하게 보관해, 재사용이라는 가장 큰 취약점을 줄여 줍니다.</p>
-        <h2>2단계 인증을 켜세요</h2>
-        <p>강한 비밀번호도 피싱과 유출 앞에서는 무력해질 수 있습니다. 2FA는 비밀번호가 노출됐을 때 피해를 줄여 주는 두 번째 방어선입니다.</p>
-        <h2>권장 기준</h2>
-        <ul>
-          <li><strong>중요 계정은 16자 이상</strong></li>
-          <li><strong>서비스마다 고유하게</strong></li>
-          <li><strong>무작위 생성 사용</strong></li>
-          <li><strong>관리자에 안전하게 저장</strong></li>
-          <li><strong>유출 시 즉시 교체</strong></li>
-        </ul>
-      `,
-    },
-    "understanding-json-web-tokens": {
-      title: "JSON Web Token 이해하기: 개발자 가이드",
-      description:
-        "JWT의 구조, 사용 시점, 그리고 피해야 할 대표적인 보안 실수를 빠르게 정리합니다.",
-      readingTime: "8분 읽기",
-      content: `
-        <p>JWT는 두 시스템 사이에서 클레임을 전달하기 위한 간결한 토큰 형식입니다. 현대 웹 애플리케이션에서 인증과 권한 부여 흐름에 널리 사용됩니다.</p>
-        <h2>JWT 구조</h2>
-        <p>JWT는 점으로 구분된 세 부분, 즉 <code>header.payload.signature</code> 로 구성됩니다. 각 부분은 Base64URL 형식으로 인코딩된 JSON입니다.</p>
-        <ul>
-          <li><strong>Header</strong> — 토큰 타입과 서명 알고리즘</li>
-          <li><strong>Payload</strong> — 등록/공개/비공개 클레임</li>
-          <li><strong>Signature</strong> — 토큰 위변조 여부 검증</li>
-        </ul>
-        <h2>보안 주의점</h2>
-        <ul>
-          <li><strong>민감정보를 payload에 넣지 마세요</strong> — JWT는 인코딩이지 암호화가 아닙니다</li>
-          <li><strong>서명 검증을 생략하지 마세요</strong></li>
-          <li><strong>짧은 만료 시간을 사용하세요</strong></li>
-          <li><strong>충분히 강한 서명 키를 사용하세요</strong></li>
-        </ul>
-        <h2>안전하게 점검하기</h2>
-        <p>토큰을 확인할 때는 브라우저 안에서 동작하는 검사 도구를 사용하는 편이 안전합니다. 서버 기반 디코더는 운영 토큰을 로그에 남길 위험이 있습니다.</p>
-      `,
-    },
     "what-is-json": {
       title: "JSON이란 무엇인가? 개발자를 위한 완전 가이드",
       description:
@@ -184,74 +116,6 @@ const BLOG_LOCALE_OVERRIDES = {
     },
   },
   ja: {
-    "why-client-side-tools-matter": {
-      title: "開発者のプライバシーにとってクライアントサイドツールが重要な理由",
-      description:
-        "機密データをサーバーへ送らず、ブラウザ内で処理することの価値を解説します。",
-      readingTime: "5分",
-      content: `
-        <p>オンラインツールへ機密データを貼り付けるとき、最初に確認すべきなのは「そのデータがどこへ送られるか」です。サーバー処理が前提の設計なら、入力値は保存・分析・漏えいのリスクにさらされます。</p>
-        <h2>ブラウザ内で完結する処理</h2>
-        <p>クライアントサイドツールは、ブラウザ自身の計算能力で処理をローカル完結させます。JSON 整形、ハッシュ計算、パスワード生成のような作業は、サーバーを使わなくても十分実現できます。</p>
-        <h2>主な利点</h2>
-        <ul>
-          <li><strong>データ露出の最小化</strong> — 入力が端末外へ出ません</li>
-          <li><strong>高速</strong> — サーバー往復の待ち時間がありません</li>
-          <li><strong>オフラインに強い</strong> — 読み込み後はネットワーク依存が小さいです</li>
-          <li><strong>コンプライアンスにやさしい</strong> — データフローを単純に説明できます</li>
-        </ul>
-        <h2>何を確認すべきか</h2>
-        <p>ブラウザのネットワークタブを開き、入力時に外部送信が発生するか確認してください。本当にローカル処理のツールなら、広告や静的アセットを除いて、ツール本文は外部サーバーへ送られないはずです。</p>
-      `,
-    },
-    "password-security-best-practices-2026": {
-      title: "2026 年のパスワードセキュリティ実践ガイド",
-      description:
-        "現代の脅威環境で安全なパスワードを作成・保管・運用するための要点を整理します。",
-      readingTime: "7分",
-      content: `
-        <p>パスキーや生体認証が広がっても、パスワードは依然として多くのサービスの中心的な認証要素です。だからこそ、古い慣習ではなく現在の脅威モデルに合わせて運用を見直す必要があります。</p>
-        <h2>複雑さより長さ</h2>
-        <p>NIST の推奨は、過剰な記号ルールより十分な長さを重視します。短く複雑な文字列より、長いパスフレーズの方が実用上強いことが多いです。</p>
-        <h2>パスワードマネージャーを使う</h2>
-        <p>サービスごとに固有のパスワードを人間が覚えるのは現実的ではありません。マネージャーを使えば、使い回しという最大の弱点を避けられます。</p>
-        <h2>二要素認証を有効にする</h2>
-        <p>強いパスワードでも、フィッシングや漏えいの前では十分ではありません。2FA は被害範囲を抑える第二の防御線です。</p>
-        <h2>推奨チェックリスト</h2>
-        <ul>
-          <li><strong>重要アカウントは 16 文字以上</strong></li>
-          <li><strong>サービスごとに一意</strong></li>
-          <li><strong>ランダム生成を使う</strong></li>
-          <li><strong>安全に保管する</strong></li>
-          <li><strong>漏えい時はすぐ更新する</strong></li>
-        </ul>
-      `,
-    },
-    "understanding-json-web-tokens": {
-      title: "JSON Web Token 入門: 開発者ガイド",
-      description:
-        "JWT の構造、使いどころ、避けるべき典型的なセキュリティミスを素早く理解します。",
-      readingTime: "8分",
-      content: `
-        <p>JWT は、2 つのシステム間でクレームをやり取りするためのコンパクトなトークン形式です。現代の Web アプリでは認証と認可で広く使われています。</p>
-        <h2>JWT の構造</h2>
-        <p>JWT は <code>header.payload.signature</code> の 3 部で構成され、それぞれが Base64URL 形式の JSON です。</p>
-        <ul>
-          <li><strong>Header</strong> — トークン種別と署名アルゴリズム</li>
-          <li><strong>Payload</strong> — 登録済み・公開・非公開のクレーム</li>
-          <li><strong>Signature</strong> — 改ざんの有無を検証</li>
-        </ul>
-        <h2>セキュリティ上の注意</h2>
-        <ul>
-          <li><strong>機密情報を payload に入れない</strong> — JWT は暗号化ではなくエンコードです</li>
-          <li><strong>署名検証を省略しない</strong></li>
-          <li><strong>短い有効期限を設定する</strong></li>
-          <li><strong>十分に強い署名鍵を使う</strong></li>
-        </ul>
-        <h2>安全に確認する</h2>
-        <p>トークン確認にはブラウザ内で動くインスペクタを使う方が安全です。サーバー側デコーダは本番トークンをログへ残す可能性があります。</p>
-      `,
-    },
     "what-is-json": {
       title: "JSONとは何か: 開発者のための完全ガイド",
       description:
@@ -366,143 +230,8 @@ const BLOG_LOCALE_OVERRIDES = {
     },
   },
   es: {
-    "why-client-side-tools-matter": {
-      title:
-        "Por qué las herramientas client-side importan para la privacidad del desarrollador",
-      description:
-        "Descubre por qué procesar datos en el navegador, y no en un servidor remoto, es una decisión clave de seguridad.",
-      readingTime: "5 min de lectura",
-      content: `
-        <p>Cada vez que pegas datos sensibles en una herramienta online, la primera pregunta debería ser: "¿a dónde se envían esos datos?". Si el procesamiento depende del servidor, la información queda expuesta a almacenamiento, análisis y posibles fugas.</p>
-        <h2>Procesamiento que termina en el navegador</h2>
-        <p>Las herramientas client-side aprovechan la capacidad de cómputo del navegador para resolver la tarea localmente. Formatear JSON, calcular hashes o generar contraseñas puede hacerse sin enviar el contenido a otro sistema.</p>
-        <h2>Beneficios clave</h2>
-        <ul>
-          <li><strong>Menor exposición de datos</strong> — la entrada permanece en tu dispositivo</li>
-          <li><strong>Más velocidad</strong> — sin latencia de ida y vuelta al servidor</li>
-          <li><strong>Mejor experiencia offline</strong> — menos dependencia de la red</li>
-          <li><strong>Más fácil de explicar en compliance</strong> — el flujo de datos es más simple</li>
-        </ul>
-        <h2>Qué debes comprobar</h2>
-        <p>Abre la pestaña de red de las herramientas de desarrollo y observa si aparece tráfico externo mientras usas la herramienta. Un flujo realmente local no debería enviar el contenido del trabajo a servidores externos, salvo activos estáticos o publicidad.</p>
-      `,
-    },
-    "password-security-best-practices-2026": {
-      title: "Buenas prácticas de seguridad de contraseñas para 2026",
-      description:
-        "Un resumen claro de cómo crear, guardar y operar contraseñas seguras en el panorama moderno de amenazas.",
-      readingTime: "7 min de lectura",
-      content: `
-        <p>Aunque las passkeys y la biometría avanzan, las contraseñas siguen siendo el mecanismo principal de autenticación en muchos servicios. Por eso conviene revisar las políticas con criterios modernos y no con reglas heredadas.</p>
-        <h2>La longitud importa más que la complejidad artificial</h2>
-        <p>La guía moderna de NIST prioriza contraseñas largas sobre requisitos arbitrarios de símbolos. Una passphrase larga suele ser más fuerte y más usable que una contraseña corta y compleja.</p>
-        <h2>Usa un gestor de contraseñas</h2>
-        <p>Recordar credenciales únicas para cada servicio no escala. Un gestor reduce la reutilización, que sigue siendo una de las mayores debilidades en seguridad personal y profesional.</p>
-        <h2>Activa 2FA</h2>
-        <p>Incluso una contraseña fuerte puede caer por phishing o filtraciones. La autenticación en dos pasos añade una segunda barrera cuando la primera falla.</p>
-        <h2>Lista recomendada</h2>
-        <ul>
-          <li><strong>16 caracteres o más</strong> para cuentas importantes</li>
-          <li><strong>Una contraseña distinta por servicio</strong></li>
-          <li><strong>Generación aleatoria</strong></li>
-          <li><strong>Almacenamiento seguro</strong></li>
-          <li><strong>Rotación si hubo compromiso</strong></li>
-        </ul>
-      `,
-    },
-    "understanding-json-web-tokens": {
-      title: "Entender JSON Web Tokens: guía para desarrolladores",
-      description:
-        "Aprende rápidamente la estructura de un JWT, cuándo usarlo y qué errores de seguridad evitar.",
-      readingTime: "8 min de lectura",
-      content: `
-        <p>Un JWT es un formato compacto de token para transportar claims entre dos sistemas. Se utiliza ampliamente en autenticación y autorización dentro de aplicaciones web modernas.</p>
-        <h2>Estructura del JWT</h2>
-        <p>Un JWT tiene tres partes separadas por puntos: <code>header.payload.signature</code>. Cada parte es JSON codificado en Base64URL.</p>
-        <ul>
-          <li><strong>Header</strong> — tipo de token y algoritmo de firma</li>
-          <li><strong>Payload</strong> — claims registradas, públicas y privadas</li>
-          <li><strong>Signature</strong> — verifica que el token no fue alterado</li>
-        </ul>
-        <h2>Consideraciones de seguridad</h2>
-        <ul>
-          <li><strong>No guardes datos sensibles en el payload</strong> — JWT no significa cifrado</li>
-          <li><strong>No omitas la validación de firma</strong></li>
-          <li><strong>Usa expiraciones cortas</strong></li>
-          <li><strong>Firma con claves robustas</strong></li>
-        </ul>
-        <h2>Inspección segura</h2>
-        <p>Para revisar tokens, es preferible usar un inspector que funcione en el navegador. Los decodificadores server-side pueden terminar registrando credenciales reales.</p>
-      `,
-    },
   },
   "zh-CN": {
-    "why-client-side-tools-matter": {
-      title: "为何客户端工具对开发者隐私至关重要",
-      description:
-        "探讨为什么在浏览器本地处理敏感数据，而非发送到远程服务器，是一个关键的安全决策。",
-      readingTime: "5 分钟阅读",
-      content: `
-        <p>每当你将敏感数据粘贴到在线工具时，首先应该问的是："这些数据会被发送到哪里？"如果处理依赖服务器，你的输入就会面临被存储、分析乃至泄露的风险。</p>
-        <h2>在浏览器内完成处理</h2>
-        <p>客户端工具利用浏览器本身的计算能力在本地完成任务。格式化 JSON、计算哈希、生成密码——这些操作完全不需要将内容发送给任何外部系统。</p>
-        <h2>核心优势</h2>
-        <ul>
-          <li><strong>数据暴露最小化</strong> — 输入内容不离开你的设备</li>
-          <li><strong>响应更快</strong> — 没有服务器往返延迟</li>
-          <li><strong>离线友好</strong> — 加载后对网络依赖极低</li>
-          <li><strong>合规更简单</strong> — 数据流向清晰易于说明</li>
-        </ul>
-        <h2>如何验证</h2>
-        <p>打开浏览器开发者工具的网络标签，观察使用工具时是否有外部请求。真正的本地处理工具在处理内容时不应向外部服务器发送任何数据（广告和静态资源除外）。</p>
-      `,
-    },
-    "password-security-best-practices-2026": {
-      title: "2026 年密码安全最佳实践",
-      description: "在现代威胁环境下，创建、存储和管理安全密码的核心原则。",
-      readingTime: "7 分钟阅读",
-      content: `
-        <p>尽管通行密钥和生物识别技术日益普及，密码仍是大多数服务的核心认证机制。因此，密码策略需要以当前的威胁模型为基准重新审视，而非沿用过时的习惯。</p>
-        <h2>长度比复杂度更重要</h2>
-        <p>NIST 指南优先强调足够的长度，而非强制要求特殊字符规则。一个较长的密码短语往往比短而复杂的密码实际上更难破解。</p>
-        <h2>使用密码管理器</h2>
-        <p>为每项服务记忆独特的密码在现实中并不可行。密码管理器能生成随机密码并安全存储，从而消除复用这一最大的安全弱点。</p>
-        <h2>开启双因素认证</h2>
-        <p>即使是强密码，在网络钓鱼和数据泄露面前也可能失效。2FA 是密码暴露时的第二道防线。</p>
-        <h2>推荐检查清单</h2>
-        <ul>
-          <li><strong>重要账户使用 16 位以上密码</strong></li>
-          <li><strong>每项服务使用唯一密码</strong></li>
-          <li><strong>使用随机生成</strong></li>
-          <li><strong>安全存储于管理器中</strong></li>
-          <li><strong>泄露时立即更换</strong></li>
-        </ul>
-      `,
-    },
-    "understanding-json-web-tokens": {
-      title: "理解 JSON Web Token：开发者指南",
-      description: "快速掌握 JWT 的结构、适用场景以及需要避免的典型安全错误。",
-      readingTime: "8 分钟阅读",
-      content: `
-        <p>JWT 是一种在两个系统之间传递声明的紧凑令牌格式，在现代 Web 应用的认证和授权流程中被广泛使用。</p>
-        <h2>JWT 的结构</h2>
-        <p>JWT 由三个以点分隔的部分组成：<code>header.payload.signature</code>，每部分都是经过 Base64URL 编码的 JSON。</p>
-        <ul>
-          <li><strong>Header</strong> — 令牌类型和签名算法</li>
-          <li><strong>Payload</strong> — 注册、公开和私有声明</li>
-          <li><strong>Signature</strong> — 验证令牌未被篡改</li>
-        </ul>
-        <h2>安全注意事项</h2>
-        <ul>
-          <li><strong>不要将敏感信息放入 payload</strong> — JWT 是编码而非加密</li>
-          <li><strong>不要跳过签名验证</strong></li>
-          <li><strong>使用较短的过期时间</strong></li>
-          <li><strong>使用足够强的签名密钥</strong></li>
-        </ul>
-        <h2>安全检查方式</h2>
-        <p>检查令牌时，建议使用在浏览器内运行的检查工具。服务器端解码器可能会将生产令牌记录到日志中。</p>
-      `,
-    },
     "what-is-json": {
       title: "JSON 是什么？开发者完全指南",
       description:
@@ -616,72 +345,6 @@ const BLOG_LOCALE_OVERRIDES = {
     },
   },
   "zh-TW": {
-    "why-client-side-tools-matter": {
-      title: "為何客戶端工具對開發者隱私至關重要",
-      description:
-        "探討為什麼在瀏覽器本地處理敏感資料，而非傳送至遠端伺服器，是一個關鍵的安全決策。",
-      readingTime: "5 分鐘閱讀",
-      content: `
-        <p>每當你將敏感資料貼入線上工具時，首先應該問的是：「這些資料會被傳送到哪裡？」如果處理仰賴伺服器，你的輸入就面臨被儲存、分析乃至外洩的風險。</p>
-        <h2>在瀏覽器內完成處理</h2>
-        <p>客戶端工具利用瀏覽器本身的運算能力在本地端完成任務。格式化 JSON、計算雜湊值、產生密碼——這些操作完全不需要將內容傳送給任何外部系統。</p>
-        <h2>核心優勢</h2>
-        <ul>
-          <li><strong>資料暴露最小化</strong> — 輸入內容不離開你的裝置</li>
-          <li><strong>回應更快</strong> — 沒有伺服器往返延遲</li>
-          <li><strong>離線友善</strong> — 載入後對網路依賴極低</li>
-          <li><strong>合規更簡單</strong> — 資料流向清晰易於說明</li>
-        </ul>
-        <h2>如何驗證</h2>
-        <p>打開瀏覽器開發者工具的網路分頁，觀察使用工具時是否有外部請求。真正的本地端處理工具在處理內容時不應向外部伺服器傳送任何資料（廣告和靜態資源除外）。</p>
-      `,
-    },
-    "password-security-best-practices-2026": {
-      title: "2026 年密碼安全最佳實踐",
-      description: "在現代威脅環境下，建立、儲存和管理安全密碼的核心原則。",
-      readingTime: "7 分鐘閱讀",
-      content: `
-        <p>儘管通行密鑰和生物辨識技術日益普及，密碼仍是大多數服務的核心驗證機制。因此，密碼策略需要以當前的威脅模型為基準重新檢視，而非沿用過時的習慣。</p>
-        <h2>長度比複雜度更重要</h2>
-        <p>NIST 指南優先強調足夠的長度，而非強制要求特殊字元規則。一個較長的密碼短語往往比短而複雜的密碼實際上更難破解。</p>
-        <h2>使用密碼管理器</h2>
-        <p>為每項服務記憶獨特的密碼在現實中並不可行。密碼管理器能產生隨機密碼並安全儲存，從而消除重複使用這一最大的安全弱點。</p>
-        <h2>開啟雙因素驗證</h2>
-        <p>即使是強密碼，在網路釣魚和資料外洩面前也可能失效。2FA 是密碼暴露時的第二道防線。</p>
-        <h2>推薦檢查清單</h2>
-        <ul>
-          <li><strong>重要帳戶使用 16 位以上密碼</strong></li>
-          <li><strong>每項服務使用唯一密碼</strong></li>
-          <li><strong>使用隨機產生</strong></li>
-          <li><strong>安全儲存於管理器中</strong></li>
-          <li><strong>外洩時立即更換</strong></li>
-        </ul>
-      `,
-    },
-    "understanding-json-web-tokens": {
-      title: "理解 JSON Web Token：開發者指南",
-      description: "快速掌握 JWT 的結構、適用場景以及需要避免的典型安全錯誤。",
-      readingTime: "8 分鐘閱讀",
-      content: `
-        <p>JWT 是一種在兩個系統之間傳遞宣告的緊湊令牌格式，在現代 Web 應用的驗證和授權流程中被廣泛使用。</p>
-        <h2>JWT 的結構</h2>
-        <p>JWT 由三個以點分隔的部分組成：<code>header.payload.signature</code>，每部分都是經過 Base64URL 編碼的 JSON。</p>
-        <ul>
-          <li><strong>Header</strong> — 令牌類型和簽名演算法</li>
-          <li><strong>Payload</strong> — 已登錄、公開和私有宣告</li>
-          <li><strong>Signature</strong> — 驗證令牌未被竄改</li>
-        </ul>
-        <h2>安全注意事項</h2>
-        <ul>
-          <li><strong>不要將敏感資訊放入 payload</strong> — JWT 是編碼而非加密</li>
-          <li><strong>不要跳過簽名驗證</strong></li>
-          <li><strong>使用較短的過期時間</strong></li>
-          <li><strong>使用足夠強的簽名金鑰</strong></li>
-        </ul>
-        <h2>安全檢查方式</h2>
-        <p>檢查令牌時，建議使用在瀏覽器內運行的檢查工具。伺服器端解碼器可能會將正式環境的令牌記錄到日誌中。</p>
-      `,
-    },
     "what-is-json": {
       title: "JSON 是什麼？開發者完全指南",
       description:
@@ -795,75 +458,6 @@ const BLOG_LOCALE_OVERRIDES = {
     },
   },
   fr: {
-    "why-client-side-tools-matter": {
-      title:
-        "Pourquoi les outils côté client sont essentiels pour la confidentialité des développeurs",
-      description:
-        "Découvrez pourquoi traiter les données sensibles dans le navigateur, plutôt que sur un serveur distant, est une décision de sécurité cruciale.",
-      readingTime: "5 min de lecture",
-      content: `
-        <p>Chaque fois que vous collez des données sensibles dans un outil en ligne, la première question à se poser est : "Où vont ces données ?" Si le traitement dépend d'un serveur, vos données sont exposées au risque d'être stockées, analysées ou divulguées.</p>
-        <h2>Un traitement qui reste dans le navigateur</h2>
-        <p>Les outils côté client utilisent la puissance de calcul du navigateur pour effectuer les tâches localement. Formater du JSON, calculer des hashs, générer des mots de passe — tout cela peut se faire sans envoyer le moindre contenu à un système externe.</p>
-        <h2>Avantages clés</h2>
-        <ul>
-          <li><strong>Exposition minimale des données</strong> — vos saisies ne quittent pas votre appareil</li>
-          <li><strong>Plus rapide</strong> — aucune latence de déplacement vers le serveur</li>
-          <li><strong>Compatible hors ligne</strong> — faible dépendance au réseau après le chargement</li>
-          <li><strong>Plus simple pour la conformité</strong> — les flux de données sont faciles à expliquer</li>
-        </ul>
-        <h2>Comment vérifier</h2>
-        <p>Ouvrez l'onglet Réseau des outils de développement et observez si des requêtes externes apparaissent pendant l'utilisation. Un outil vraiment local ne devrait pas envoyer le contenu traité à des serveurs externes, en dehors des publicités et des ressources statiques.</p>
-      `,
-    },
-    "password-security-best-practices-2026": {
-      title: "Bonnes pratiques de sécurité des mots de passe en 2026",
-      description:
-        "Un résumé des principes essentiels pour créer, stocker et gérer des mots de passe sécurisés dans le contexte des menaces actuelles.",
-      readingTime: "7 min de lecture",
-      content: `
-        <p>Même si les passkeys et la biométrie progressent, les mots de passe restent le mécanisme d'authentification principal pour la plupart des services. C'est pourquoi les politiques de mots de passe doivent être revues à l'aune des menaces actuelles, et non d'habitudes obsolètes.</p>
-        <h2>La longueur prime sur la complexité artificielle</h2>
-        <p>Les recommandations modernes du NIST privilégient une longueur suffisante plutôt que des règles de caractères spéciaux arbitraires. Une longue phrase secrète est souvent plus robuste qu'un mot de passe court et complexe.</p>
-        <h2>Utilisez un gestionnaire de mots de passe</h2>
-        <p>Se souvenir d'identifiants uniques pour chaque service n'est pas réaliste. Un gestionnaire génère des mots de passe aléatoires et les stocke de façon sécurisée, éliminant ainsi la réutilisation, principale faille de sécurité.</p>
-        <h2>Activez l'authentification à deux facteurs</h2>
-        <p>Même un mot de passe fort peut être compromis par le phishing ou une fuite de données. Le 2FA constitue une deuxième ligne de défense lorsque le mot de passe est exposé.</p>
-        <h2>Liste de contrôle recommandée</h2>
-        <ul>
-          <li><strong>16 caractères minimum</strong> pour les comptes importants</li>
-          <li><strong>Un mot de passe unique par service</strong></li>
-          <li><strong>Génération aléatoire</strong></li>
-          <li><strong>Stockage sécurisé</strong></li>
-          <li><strong>Remplacement immédiat en cas de compromission</strong></li>
-        </ul>
-      `,
-    },
-    "understanding-json-web-tokens": {
-      title: "Comprendre les JSON Web Tokens : guide du développeur",
-      description:
-        "Maîtrisez rapidement la structure d'un JWT, quand l'utiliser et quelles erreurs de sécurité éviter.",
-      readingTime: "8 min de lecture",
-      content: `
-        <p>Un JWT est un format de token compact permettant de transporter des claims entre deux systèmes. Il est largement utilisé dans les flux d'authentification et d'autorisation des applications web modernes.</p>
-        <h2>Structure d'un JWT</h2>
-        <p>Un JWT se compose de trois parties séparées par des points : <code>header.payload.signature</code>. Chaque partie est du JSON encodé en Base64URL.</p>
-        <ul>
-          <li><strong>Header</strong> — type de token et algorithme de signature</li>
-          <li><strong>Payload</strong> — claims enregistrées, publiques et privées</li>
-          <li><strong>Signature</strong> — vérifie que le token n'a pas été altéré</li>
-        </ul>
-        <h2>Considérations de sécurité</h2>
-        <ul>
-          <li><strong>Ne stockez pas de données sensibles dans le payload</strong> — JWT signifie encodage, pas chiffrement</li>
-          <li><strong>Ne sautez pas la validation de la signature</strong></li>
-          <li><strong>Utilisez des durées d'expiration courtes</strong></li>
-          <li><strong>Utilisez des clés de signature suffisamment robustes</strong></li>
-        </ul>
-        <h2>Inspection sécurisée</h2>
-        <p>Pour inspecter des tokens, préférez un outil fonctionnant dans le navigateur. Les décodeurs côté serveur risquent de consigner des tokens de production dans les journaux.</p>
-      `,
-    },
     "what-is-json": {
       title: "Qu'est-ce que JSON ? Le guide complet du développeur",
       description:
@@ -978,75 +572,6 @@ const BLOG_LOCALE_OVERRIDES = {
     },
   },
   de: {
-    "why-client-side-tools-matter": {
-      title:
-        "Warum clientseitige Tools für die Privatsphäre von Entwicklern wichtig sind",
-      description:
-        "Warum die Verarbeitung sensibler Daten im Browser statt auf einem Remote-Server eine entscheidende Sicherheitsentscheidung ist.",
-      readingTime: "5 Min. Lesezeit",
-      content: `
-        <p>Jedes Mal, wenn Sie sensible Daten in ein Online-Tool einfügen, sollten Sie zuerst fragen: "Wohin werden diese Daten gesendet?" Wenn die Verarbeitung einen Server erfordert, sind Ihre Eingaben dem Risiko der Speicherung, Analyse und des Verlusts ausgesetzt.</p>
-        <h2>Verarbeitung bleibt im Browser</h2>
-        <p>Clientseitige Tools nutzen die Rechenleistung des Browsers, um Aufgaben lokal zu erledigen. JSON formatieren, Hashes berechnen, Passwörter generieren — all das lässt sich erledigen, ohne Inhalte an externe Systeme zu senden.</p>
-        <h2>Wichtigste Vorteile</h2>
-        <ul>
-          <li><strong>Minimale Datenexposition</strong> — Eingaben verlassen Ihr Gerät nicht</li>
-          <li><strong>Schneller</strong> — keine Server-Roundtrip-Latenz</li>
-          <li><strong>Offline-freundlich</strong> — geringe Netzwerkabhängigkeit nach dem Laden</li>
-          <li><strong>Einfacher für Compliance</strong> — Datenflüsse lassen sich klar erklären</li>
-        </ul>
-        <h2>Wie Sie es überprüfen</h2>
-        <p>Öffnen Sie den Netzwerk-Tab der Entwicklertools und beobachten Sie, ob beim Verwenden externe Anfragen erscheinen. Ein echtes lokales Tool sollte den verarbeiteten Inhalt nicht an externe Server senden — außer für Werbung und statische Assets.</p>
-      `,
-    },
-    "password-security-best-practices-2026": {
-      title: "Passwort-Sicherheit 2026: Best Practices",
-      description:
-        "Die wichtigsten Prinzipien zum Erstellen, Speichern und Verwalten sicherer Passwörter in der modernen Bedrohungslandschaft.",
-      readingTime: "7 Min. Lesezeit",
-      content: `
-        <p>Auch wenn Passkeys und biometrische Verfahren zunehmen, sind Passwörter nach wie vor der zentrale Authentifizierungsmechanismus bei den meisten Diensten. Deshalb müssen Passwort-Richtlinien anhand aktueller Bedrohungsmodelle neu bewertet werden — nicht auf Basis veralteter Gewohnheiten.</p>
-        <h2>Länge ist wichtiger als erzwungene Komplexität</h2>
-        <p>Moderne NIST-Richtlinien priorisieren ausreichende Länge gegenüber willkürlichen Sonderzeichen-Regeln. Eine lange Passphrase ist oft stärker als ein kurzes, komplexes Passwort.</p>
-        <h2>Verwenden Sie einen Passwort-Manager</h2>
-        <p>Eindeutige Passwörter für jeden Dienst im Gedächtnis zu behalten ist unrealistisch. Ein Manager generiert zufällige Passwörter und speichert sie sicher, womit die Wiederverwendung als größte Schwachstelle eliminiert wird.</p>
-        <h2>Aktivieren Sie Zwei-Faktor-Authentifizierung</h2>
-        <p>Selbst starke Passwörter können durch Phishing und Datenlecks kompromittiert werden. 2FA ist die zweite Verteidigungslinie, wenn ein Passwort bekannt wird.</p>
-        <h2>Empfohlene Checkliste</h2>
-        <ul>
-          <li><strong>16 Zeichen oder mehr</strong> für wichtige Konten</li>
-          <li><strong>Eindeutiges Passwort pro Dienst</strong></li>
-          <li><strong>Zufällige Generierung verwenden</strong></li>
-          <li><strong>Sicher im Manager speichern</strong></li>
-          <li><strong>Bei Kompromittierung sofort ersetzen</strong></li>
-        </ul>
-      `,
-    },
-    "understanding-json-web-tokens": {
-      title: "JSON Web Tokens verstehen: Entwickler-Leitfaden",
-      description:
-        "Schnell die Struktur eines JWT verstehen, wann man ihn einsetzt und welche Sicherheitsfehler man vermeiden sollte.",
-      readingTime: "8 Min. Lesezeit",
-      content: `
-        <p>Ein JWT ist ein kompaktes Token-Format zum Übertragen von Claims zwischen zwei Systemen. Es wird in modernen Web-Apps für Authentifizierung und Autorisierung weit verbreitet eingesetzt.</p>
-        <h2>Struktur eines JWT</h2>
-        <p>Ein JWT besteht aus drei durch Punkte getrennten Teilen: <code>header.payload.signature</code>. Jeder Teil ist Base64URL-kodiertes JSON.</p>
-        <ul>
-          <li><strong>Header</strong> — Token-Typ und Signaturalgorithmus</li>
-          <li><strong>Payload</strong> — registrierte, öffentliche und private Claims</li>
-          <li><strong>Signature</strong> — überprüft, dass das Token nicht verändert wurde</li>
-        </ul>
-        <h2>Sicherheitshinweise</h2>
-        <ul>
-          <li><strong>Keine sensiblen Daten in den Payload</strong> — JWT bedeutet Kodierung, nicht Verschlüsselung</li>
-          <li><strong>Signaturvalidierung nicht überspringen</strong></li>
-          <li><strong>Kurze Ablaufzeiten verwenden</strong></li>
-          <li><strong>Ausreichend starke Signaturschlüssel nutzen</strong></li>
-        </ul>
-        <h2>Sichere Inspektion</h2>
-        <p>Zur Token-Prüfung empfiehlt sich ein im Browser laufendes Inspect-Tool. Server-seitige Decoder können Produktions-Tokens in Log-Dateien hinterlassen.</p>
-      `,
-    },
     "what-is-json": {
       title: "Was ist JSON? Der vollständige Leitfaden für Entwickler",
       description:
@@ -1162,75 +687,6 @@ const BLOG_LOCALE_OVERRIDES = {
     },
   },
   pt: {
-    "why-client-side-tools-matter": {
-      title:
-        "Por que ferramentas client-side importam para a privacidade dos desenvolvedores",
-      description:
-        "Por que processar dados sensíveis no navegador, em vez de enviá-los a um servidor remoto, é uma decisão de segurança fundamental.",
-      readingTime: "5 min de leitura",
-      content: `
-        <p>Sempre que você cola dados sensíveis em uma ferramenta online, a primeira pergunta deve ser: "Para onde esses dados estão sendo enviados?" Se o processamento depende de um servidor, sua entrada fica exposta ao risco de armazenamento, análise e vazamento.</p>
-        <h2>Processamento que fica no navegador</h2>
-        <p>Ferramentas client-side utilizam a capacidade de processamento do próprio navegador para executar tarefas localmente. Formatar JSON, calcular hashes, gerar senhas — tudo isso pode ser feito sem enviar nenhum conteúdo a sistemas externos.</p>
-        <h2>Principais benefícios</h2>
-        <ul>
-          <li><strong>Exposição mínima de dados</strong> — as entradas não saem do seu dispositivo</li>
-          <li><strong>Mais rápido</strong> — sem latência de ida e volta ao servidor</li>
-          <li><strong>Compatível com uso offline</strong> — baixa dependência de rede após o carregamento</li>
-          <li><strong>Mais fácil para compliance</strong> — fluxos de dados simples e claros de explicar</li>
-        </ul>
-        <h2>Como verificar</h2>
-        <p>Abra a aba Rede das ferramentas de desenvolvimento e observe se aparecem requisições externas durante o uso. Uma ferramenta realmente local não deve enviar o conteúdo processado a servidores externos, exceto para anúncios e ativos estáticos.</p>
-      `,
-    },
-    "password-security-best-practices-2026": {
-      title: "Boas práticas de segurança de senhas em 2026",
-      description:
-        "Os princípios essenciais para criar, armazenar e gerenciar senhas seguras no cenário de ameaças atual.",
-      readingTime: "7 min de leitura",
-      content: `
-        <p>Mesmo com o avanço das passkeys e da biometria, as senhas continuam sendo o mecanismo central de autenticação na maioria dos serviços. Por isso, as políticas de senhas precisam ser revisadas com base nas ameaças atuais, e não em hábitos desatualizados.</p>
-        <h2>Comprimento importa mais que complexidade forçada</h2>
-        <p>As diretrizes modernas do NIST priorizam comprimento suficiente em vez de regras arbitrárias de caracteres especiais. Uma passphrase longa geralmente é mais forte do que uma senha curta e complexa.</p>
-        <h2>Use um gerenciador de senhas</h2>
-        <p>Memorizar credenciais únicas para cada serviço não é viável. Um gerenciador gera senhas aleatórias e as armazena com segurança, eliminando a reutilização — a maior vulnerabilidade em segurança pessoal.</p>
-        <h2>Ative a autenticação de dois fatores</h2>
-        <p>Mesmo senhas fortes podem ser comprometidas por phishing ou vazamentos de dados. O 2FA é a segunda linha de defesa quando uma senha é exposta.</p>
-        <h2>Lista de verificação recomendada</h2>
-        <ul>
-          <li><strong>16 caracteres ou mais</strong> para contas importantes</li>
-          <li><strong>Senha única por serviço</strong></li>
-          <li><strong>Usar geração aleatória</strong></li>
-          <li><strong>Armazenar com segurança</strong></li>
-          <li><strong>Substituir imediatamente se comprometida</strong></li>
-        </ul>
-      `,
-    },
-    "understanding-json-web-tokens": {
-      title: "Entendendo JSON Web Tokens: guia para desenvolvedores",
-      description:
-        "Aprenda rapidamente a estrutura de um JWT, quando usá-lo e quais erros de segurança evitar.",
-      readingTime: "8 min de leitura",
-      content: `
-        <p>Um JWT é um formato compacto de token para transportar claims entre dois sistemas. É amplamente utilizado em fluxos de autenticação e autorização em aplicações web modernas.</p>
-        <h2>Estrutura de um JWT</h2>
-        <p>Um JWT é composto por três partes separadas por pontos: <code>header.payload.signature</code>. Cada parte é JSON codificado em Base64URL.</p>
-        <ul>
-          <li><strong>Header</strong> — tipo do token e algoritmo de assinatura</li>
-          <li><strong>Payload</strong> — claims registradas, públicas e privadas</li>
-          <li><strong>Signature</strong> — verifica que o token não foi alterado</li>
-        </ul>
-        <h2>Considerações de segurança</h2>
-        <ul>
-          <li><strong>Não coloque dados sensíveis no payload</strong> — JWT é codificação, não criptografia</li>
-          <li><strong>Não pule a validação da assinatura</strong></li>
-          <li><strong>Use tempos de expiração curtos</strong></li>
-          <li><strong>Use chaves de assinatura suficientemente fortes</strong></li>
-        </ul>
-        <h2>Inspeção segura</h2>
-        <p>Para inspecionar tokens, prefira uma ferramenta que funcione no navegador. Decodificadores server-side podem registrar tokens de produção nos logs.</p>
-      `,
-    },
     "what-is-json": {
       title: "O que é JSON? O guia completo para desenvolvedores",
       description:
@@ -1345,75 +801,6 @@ const BLOG_LOCALE_OVERRIDES = {
     },
   },
   vi: {
-    "why-client-side-tools-matter": {
-      title:
-        "Tại sao công cụ phía máy khách quan trọng với quyền riêng tư của lập trình viên",
-      description:
-        "Tìm hiểu tại sao xử lý dữ liệu nhạy cảm trong trình duyệt, thay vì gửi lên máy chủ từ xa, là một quyết định bảo mật quan trọng.",
-      readingTime: "5 phút đọc",
-      content: `
-        <p>Mỗi khi bạn dán dữ liệu nhạy cảm vào một công cụ trực tuyến, câu hỏi đầu tiên cần đặt ra là: "Dữ liệu này sẽ đi đâu?" Nếu quá trình xử lý phụ thuộc vào máy chủ, dữ liệu đầu vào của bạn có nguy cơ bị lưu trữ, phân tích hoặc rò rỉ.</p>
-        <h2>Xử lý ngay trong trình duyệt</h2>
-        <p>Các công cụ phía máy khách tận dụng sức mạnh tính toán của chính trình duyệt để hoàn thành công việc cục bộ. Định dạng JSON, tính toán hash, tạo mật khẩu — tất cả đều có thể thực hiện mà không cần gửi nội dung đến bất kỳ hệ thống bên ngoài nào.</p>
-        <h2>Lợi ích cốt lõi</h2>
-        <ul>
-          <li><strong>Giảm thiểu tiếp xúc dữ liệu</strong> — dữ liệu đầu vào không rời khỏi thiết bị của bạn</li>
-          <li><strong>Nhanh hơn</strong> — không có độ trễ khứ hồi đến máy chủ</li>
-          <li><strong>Thân thiện với chế độ ngoại tuyến</strong> — ít phụ thuộc vào mạng sau khi tải</li>
-          <li><strong>Đơn giản hơn cho tuân thủ</strong> — luồng dữ liệu rõ ràng, dễ giải thích</li>
-        </ul>
-        <h2>Cách kiểm tra</h2>
-        <p>Mở tab Mạng trong công cụ dành cho nhà phát triển và quan sát xem có yêu cầu bên ngoài nào xuất hiện khi sử dụng không. Một công cụ thực sự xử lý cục bộ không nên gửi nội dung đã xử lý đến máy chủ bên ngoài, ngoại trừ quảng cáo và tài nguyên tĩnh.</p>
-      `,
-    },
-    "password-security-best-practices-2026": {
-      title: "Thực hành bảo mật mật khẩu tốt nhất năm 2026",
-      description:
-        "Các nguyên tắc cốt lõi để tạo, lưu trữ và quản lý mật khẩu an toàn trong bối cảnh mối đe dọa hiện đại.",
-      readingTime: "7 phút đọc",
-      content: `
-        <p>Dù passkey và sinh trắc học đang phát triển, mật khẩu vẫn là cơ chế xác thực trung tâm ở hầu hết các dịch vụ. Vì vậy, chính sách mật khẩu cần được xem xét lại dựa trên mô hình mối đe dọa hiện tại, không phải thói quen lỗi thời.</p>
-        <h2>Độ dài quan trọng hơn độ phức tạp bắt buộc</h2>
-        <p>Hướng dẫn NIST hiện đại ưu tiên độ dài đủ thay vì các quy tắc ký tự đặc biệt tùy tiện. Một cụm mật khẩu dài thường mạnh hơn thực tế so với mật khẩu ngắn và phức tạp.</p>
-        <h2>Sử dụng trình quản lý mật khẩu</h2>
-        <p>Ghi nhớ thông tin đăng nhập duy nhất cho từng dịch vụ là không thực tế. Trình quản lý tạo mật khẩu ngẫu nhiên và lưu trữ an toàn, loại bỏ việc tái sử dụng — điểm yếu bảo mật lớn nhất.</p>
-        <h2>Bật xác thực hai yếu tố</h2>
-        <p>Ngay cả mật khẩu mạnh cũng có thể bị xâm phạm qua phishing và rò rỉ dữ liệu. 2FA là tuyến phòng thủ thứ hai khi mật khẩu bị lộ.</p>
-        <h2>Danh sách kiểm tra khuyến nghị</h2>
-        <ul>
-          <li><strong>16 ký tự trở lên</strong> cho các tài khoản quan trọng</li>
-          <li><strong>Mật khẩu duy nhất mỗi dịch vụ</strong></li>
-          <li><strong>Sử dụng tạo ngẫu nhiên</strong></li>
-          <li><strong>Lưu trữ an toàn trong trình quản lý</strong></li>
-          <li><strong>Thay thế ngay lập tức nếu bị xâm phạm</strong></li>
-        </ul>
-      `,
-    },
-    "understanding-json-web-tokens": {
-      title: "Hiểu JSON Web Token: hướng dẫn dành cho lập trình viên",
-      description:
-        "Nắm nhanh cấu trúc của JWT, khi nào nên dùng và những lỗi bảo mật điển hình cần tránh.",
-      readingTime: "8 phút đọc",
-      content: `
-        <p>JWT là định dạng token nhỏ gọn để truyền tải các claim giữa hai hệ thống. Nó được sử dụng rộng rãi trong luồng xác thực và phân quyền của các ứng dụng web hiện đại.</p>
-        <h2>Cấu trúc JWT</h2>
-        <p>JWT gồm ba phần được phân tách bằng dấu chấm: <code>header.payload.signature</code>. Mỗi phần là JSON được mã hóa Base64URL.</p>
-        <ul>
-          <li><strong>Header</strong> — loại token và thuật toán ký</li>
-          <li><strong>Payload</strong> — các claim đã đăng ký, công khai và riêng tư</li>
-          <li><strong>Signature</strong> — xác minh token chưa bị giả mạo</li>
-        </ul>
-        <h2>Lưu ý bảo mật</h2>
-        <ul>
-          <li><strong>Không đặt dữ liệu nhạy cảm vào payload</strong> — JWT là mã hóa, không phải mã hóa bảo mật</li>
-          <li><strong>Không bỏ qua xác thực chữ ký</strong></li>
-          <li><strong>Sử dụng thời gian hết hạn ngắn</strong></li>
-          <li><strong>Sử dụng khóa ký đủ mạnh</strong></li>
-        </ul>
-        <h2>Kiểm tra an toàn</h2>
-        <p>Khi kiểm tra token, nên dùng công cụ chạy trong trình duyệt. Các bộ giải mã phía máy chủ có thể ghi token sản xuất vào nhật ký.</p>
-      `,
-    },
     "what-is-json": {
       title: "JSON là gì? Hướng dẫn toàn diện dành cho lập trình viên",
       description:
@@ -1734,51 +1121,6 @@ const BLOG_LONG_LOCALE_OVERRIDES = {
         </ul>
       `,
     },
-    "regex-guide-for-beginners": {
-      title: "정규표현식 입문: 실용적인 초보자 가이드",
-      description:
-        "로그 파싱, 데이터 검증, 텍스트 처리에 자주 쓰는 regex 기초를 빠르게 익히는 가이드입니다.",
-      readingTime: "10분 읽기",
-      content: `
-        <p>정규표현식은 텍스트 패턴을 찾고 바꾸는 데 매우 강력한 도구입니다. 처음에는 난해해 보이지만, 핵심 기호만 익히면 반복 작업을 크게 줄일 수 있습니다.</p>
-        <h2>기본 구성 요소</h2>
-        <ul>
-          <li><code>.</code> — 임의의 한 글자</li>
-          <li><code>*</code>, <code>+</code>, <code>?</code> — 반복 수량자</li>
-          <li><code>[abc]</code> — 문자 집합</li>
-          <li><code>^</code>, <code>$</code> — 시작과 끝 앵커</li>
-        </ul>
-        <h2>실전 예시</h2>
-        <p>이메일 검증, IP 주소 추출, 로그 타임스탬프 검색처럼 규칙이 분명한 문자열에 특히 잘 맞습니다.</p>
-        <h2>흔한 함정</h2>
-        <ul>
-          <li>중첩 수량자로 인한 성능 저하</li>
-          <li>greedy와 lazy 매칭 혼동</li>
-          <li>문자 클래스 이스케이프 누락</li>
-        </ul>
-      `,
-    },
-    "hash-algorithms-compared": {
-      title: "해시 알고리즘 비교: MD5 vs SHA-256 vs SHA-3",
-      description:
-        "대표적인 해시 알고리즘의 차이와, 각 알고리즘을 언제 써야 하는지 간단하게 정리합니다.",
-      readingTime: "6분 읽기",
-      content: `
-        <p>해시 함수는 데이터를 고정 길이 결과로 바꿔 무결성 확인과 서명에 사용됩니다. 하지만 알고리즘마다 안전성과 용도가 다릅니다.</p>
-        <h2>MD5</h2>
-        <p>MD5는 빠르지만 보안 용도로는 깨진 알고리즘입니다. 의도적 충돌 공격이 가능하므로 신뢰 검증에는 부적합합니다.</p>
-        <h2>SHA-256</h2>
-        <p>SHA-256은 현재 가장 널리 쓰이는 기본 선택지입니다. 인증서, 코드 서명, 파일 무결성 확인 등에서 안정적인 기준이 됩니다.</p>
-        <h2>SHA-3</h2>
-        <p>SHA-3는 SHA-2와 내부 구조가 다른 대안입니다. 장기적인 방어 여지를 확보하려는 경우 유용합니다.</p>
-        <h2>빠른 선택 기준</h2>
-        <ul>
-          <li>파일 무결성: SHA-256</li>
-          <li>비밀번호 저장: bcrypt / Argon2</li>
-          <li>장기적 대안 검토: SHA-3</li>
-        </ul>
-      `,
-    },
   },
   ja: {
     "what-is-json": {
@@ -1981,51 +1323,6 @@ const BLOG_LONG_LOCALE_OVERRIDES = {
           <li>重複実行の防止</li>
           <li>ログとヘルスチェックの追加</li>
           <li>失敗時の再試行設計</li>
-        </ul>
-      `,
-    },
-    "regex-guide-for-beginners": {
-      title: "正規表現入門: 実践的な初心者ガイド",
-      description:
-        "ログ解析、入力検証、テキスト処理で役立つ regex の基本を短く整理します。",
-      readingTime: "10分",
-      content: `
-        <p>正規表現は文字列パターンを検索・変換するための強力な道具です。最初は難しく見えても、基本記号を覚えるだけで作業効率が大きく変わります。</p>
-        <h2>基本要素</h2>
-        <ul>
-          <li><code>.</code> — 任意の 1 文字</li>
-          <li><code>*</code>、<code>+</code>、<code>?</code> — 繰り返し</li>
-          <li><code>[abc]</code> — 文字クラス</li>
-          <li><code>^</code>、<code>$</code> — 先頭と末尾</li>
-        </ul>
-        <h2>実用例</h2>
-        <p>メール形式、IP アドレス、ログのタイムスタンプなど、規則が明確な文字列で特に便利です。</p>
-        <h2>よくある落とし穴</h2>
-        <ul>
-          <li>ネストした量指定による性能悪化</li>
-          <li>greedy と lazy の混同</li>
-          <li>文字クラスのエスケープ漏れ</li>
-        </ul>
-      `,
-    },
-    "hash-algorithms-compared": {
-      title: "ハッシュアルゴリズム比較: MD5 vs SHA-256 vs SHA-3",
-      description:
-        "代表的なハッシュアルゴリズムの違いと、用途ごとの選び方を簡潔に整理します。",
-      readingTime: "6分",
-      content: `
-        <p>ハッシュ関数はデータを固定長の値へ変換し、整合性確認や署名に使われます。ただし、アルゴリズムごとに安全性と用途は異なります。</p>
-        <h2>MD5</h2>
-        <p>MD5 は高速ですが、安全用途では壊れています。意図的な衝突攻撃が可能なため、信頼確認には向きません。</p>
-        <h2>SHA-256</h2>
-        <p>SHA-256 は現在の標準的な選択肢です。証明書、コード署名、ファイル整合性確認などで広く使われます。</p>
-        <h2>SHA-3</h2>
-        <p>SHA-3 は SHA-2 と異なる内部構造を持つ代替手段です。将来の防御余地を広げたい場合に検討できます。</p>
-        <h2>すぐ使える選び方</h2>
-        <ul>
-          <li>ファイル整合性: SHA-256</li>
-          <li>パスワード保存: bcrypt / Argon2</li>
-          <li>別系統の代替: SHA-3</li>
         </ul>
       `,
     },
@@ -2235,51 +1532,6 @@ const BLOG_LONG_LOCALE_OVERRIDES = {
         </ul>
       `,
     },
-    "regex-guide-for-beginners": {
-      title: "Expresiones regulares: guía práctica para principiantes",
-      description:
-        "Introducción rápida a los fundamentos de regex con ejemplos útiles para validación, logs y limpieza de texto.",
-      readingTime: "10 min de lectura",
-      content: `
-        <p>Las expresiones regulares permiten buscar y transformar patrones de texto con muy pocas líneas. Parecen crípticas al principio, pero los símbolos básicos cubren una gran parte del trabajo diario.</p>
-        <h2>Bloques básicos</h2>
-        <ul>
-          <li><code>.</code> — cualquier carácter</li>
-          <li><code>*</code>, <code>+</code>, <code>?</code> — repetición</li>
-          <li><code>[abc]</code> — clase de caracteres</li>
-          <li><code>^</code> y <code>$</code> — inicio y fin</li>
-        </ul>
-        <h2>Ejemplos útiles</h2>
-        <p>Son muy prácticas para validar emails, buscar direcciones IP o extraer marcas de tiempo en logs.</p>
-        <h2>Errores frecuentes</h2>
-        <ul>
-          <li>Backtracking catastrófico por cuantificadores anidados</li>
-          <li>Confundir comportamiento greedy y lazy</li>
-          <li>Olvidar escapes en clases de caracteres</li>
-        </ul>
-      `,
-    },
-    "hash-algorithms-compared": {
-      title: "Comparativa de algoritmos hash: MD5 vs SHA-256 vs SHA-3",
-      description:
-        "Resumen corto de las diferencias entre algoritmos hash populares y cuándo conviene usar cada uno.",
-      readingTime: "6 min de lectura",
-      content: `
-        <p>Las funciones hash convierten datos en salidas de longitud fija para verificar integridad y construir firmas. Elegir el algoritmo correcto depende del objetivo.</p>
-        <h2>MD5</h2>
-        <p>MD5 es rápido pero inseguro para propósitos de confianza. Las colisiones prácticas lo descartan para seguridad real.</p>
-        <h2>SHA-256</h2>
-        <p>SHA-256 es la elección por defecto más común para integridad, certificados y firma de artefactos.</p>
-        <h2>SHA-3</h2>
-        <p>SHA-3 ofrece una construcción interna distinta y puede servir como alternativa moderna cuando se busca diversidad criptográfica.</p>
-        <h2>Regla rápida</h2>
-        <ul>
-          <li>Integridad de archivos: SHA-256</li>
-          <li>Contraseñas: bcrypt / Argon2</li>
-          <li>Alternativa estructural: SHA-3</li>
-        </ul>
-      `,
-    },
   },
   "zh-CN": {
     "what-is-json": {
@@ -2479,49 +1731,6 @@ const BLOG_LONG_LOCALE_OVERRIDES = {
         </ul>
       `,
     },
-    "regex-guide-for-beginners": {
-      title: "正则表达式入门：实用初学者指南",
-      description: "快速掌握日志解析、数据验证、文本处理中常用的 regex 基础。",
-      readingTime: "10 分钟阅读",
-      content: `
-        <p>正则表达式是查找和替换文本模式的强大工具。初看晦涩，但掌握核心符号便能大幅减少重复工作。</p>
-        <h2>基本构成</h2>
-        <ul>
-          <li><code>.</code> — 任意单个字符</li>
-          <li><code>*</code>、<code>+</code>、<code>?</code> — 重复量词</li>
-          <li><code>[abc]</code> — 字符集</li>
-          <li><code>^</code>、<code>$</code> — 开始和结束锚点</li>
-        </ul>
-        <h2>实战示例</h2>
-        <p>邮箱验证、IP 地址提取、日志时间戳搜索等规则清晰的字符串场景尤为适合。</p>
-        <h2>常见陷阱</h2>
-        <ul>
-          <li>嵌套量词导致的性能下降</li>
-          <li>混淆 greedy 与 lazy 匹配</li>
-          <li>字符类中遗漏转义</li>
-        </ul>
-      `,
-    },
-    "hash-algorithms-compared": {
-      title: "哈希算法比较：MD5 vs SHA-256 vs SHA-3",
-      description: "简要梳理主流哈希算法的差异及各算法适用场景。",
-      readingTime: "6 分钟阅读",
-      content: `
-        <p>哈希函数将数据转换为固定长度结果，用于完整性验证和签名。但不同算法的安全性和适用场景各异。</p>
-        <h2>MD5</h2>
-        <p>MD5 快速但已被攻破，不可用于安全目的。可构造实际碰撞，不适合信任验证。</p>
-        <h2>SHA-256</h2>
-        <p>SHA-256 是当前最广泛使用的基本选择，在证书、代码签名和文件完整性验证中均可靠。</p>
-        <h2>SHA-3</h2>
-        <p>SHA-3 具有与 SHA-2 不同的内部结构，是寻求长期防御余地时的备选方案。</p>
-        <h2>快速选择标准</h2>
-        <ul>
-          <li>文件完整性：SHA-256</li>
-          <li>密码存储：bcrypt / Argon2</li>
-          <li>结构性备选：SHA-3</li>
-        </ul>
-      `,
-    },
   },
   "zh-TW": {
     "what-is-json": {
@@ -2718,49 +1927,6 @@ const BLOG_LONG_LOCALE_OVERRIDES = {
           <li>防止並發重複執行</li>
           <li>新增日誌和健康檢查</li>
           <li>單獨設計失敗重試策略</li>
-        </ul>
-      `,
-    },
-    "regex-guide-for-beginners": {
-      title: "正規表示式入門：實用初學者指南",
-      description: "快速掌握日誌解析、資料驗證、文字處理中常用的 regex 基礎。",
-      readingTime: "10 分鐘閱讀",
-      content: `
-        <p>正規表示式是查找和替換文字模式的強大工具。初看晦澀，但掌握核心符號便能大幅減少重複工作。</p>
-        <h2>基本構成</h2>
-        <ul>
-          <li><code>.</code> — 任意單個字元</li>
-          <li><code>*</code>、<code>+</code>、<code>?</code> — 重複量詞</li>
-          <li><code>[abc]</code> — 字元集</li>
-          <li><code>^</code>、<code>$</code> — 開始和結束錨點</li>
-        </ul>
-        <h2>實戰範例</h2>
-        <p>郵件驗證、IP 位址擷取、日誌時間戳搜尋等規則清晰的字串場景尤為適合。</p>
-        <h2>常見陷阱</h2>
-        <ul>
-          <li>巢狀量詞導致的效能下降</li>
-          <li>混淆 greedy 與 lazy 匹配</li>
-          <li>字元類中遺漏跳脫字元</li>
-        </ul>
-      `,
-    },
-    "hash-algorithms-compared": {
-      title: "雜湊演算法比較：MD5 vs SHA-256 vs SHA-3",
-      description: "簡要梳理主流雜湊演算法的差異及各演算法適用場景。",
-      readingTime: "6 分鐘閱讀",
-      content: `
-        <p>雜湊函數將資料轉換為固定長度結果，用於完整性驗證和簽名。但不同演算法的安全性和適用場景各異。</p>
-        <h2>MD5</h2>
-        <p>MD5 快速但已被攻破，不可用於安全目的。可構造實際碰撞，不適合信任驗證。</p>
-        <h2>SHA-256</h2>
-        <p>SHA-256 是當前最廣泛使用的基本選擇，在憑證、程式碼簽名和檔案完整性驗證中均可靠。</p>
-        <h2>SHA-3</h2>
-        <p>SHA-3 具有與 SHA-2 不同的內部結構，是尋求長期防禦余地時的備選方案。</p>
-        <h2>快速選擇標準</h2>
-        <ul>
-          <li>檔案完整性：SHA-256</li>
-          <li>密碼儲存：bcrypt / Argon2</li>
-          <li>結構性備選：SHA-3</li>
         </ul>
       `,
     },
@@ -2972,51 +2138,6 @@ const BLOG_LONG_LOCALE_OVERRIDES = {
         </ul>
       `,
     },
-    "regex-guide-for-beginners": {
-      title: "Expressions régulières : guide pratique pour débutants",
-      description:
-        "Introduction rapide aux fondamentaux des regex avec des exemples utiles pour la validation, les logs et le nettoyage de texte.",
-      readingTime: "10 min de lecture",
-      content: `
-        <p>Les expressions régulières permettent de rechercher et transformer des patterns de texte en très peu de lignes. Elles paraissent cryptiques au début, mais les symboles de base couvrent une grande partie du travail quotidien.</p>
-        <h2>Blocs de base</h2>
-        <ul>
-          <li><code>.</code> — n'importe quel caractère</li>
-          <li><code>*</code>, <code>+</code>, <code>?</code> — répétition</li>
-          <li><code>[abc]</code> — classe de caractères</li>
-          <li><code>^</code> et <code>$</code> — début et fin</li>
-        </ul>
-        <h2>Exemples utiles</h2>
-        <p>Elles sont très pratiques pour valider des e-mails, rechercher des adresses IP ou extraire des horodatages dans des logs.</p>
-        <h2>Erreurs fréquentes</h2>
-        <ul>
-          <li>Backtracking catastrophique dû à des quantificateurs imbriqués</li>
-          <li>Confondre comportement greedy et lazy</li>
-          <li>Oublier les échappements dans les classes de caractères</li>
-        </ul>
-      `,
-    },
-    "hash-algorithms-compared": {
-      title: "Comparaison des algorithmes de hachage : MD5 vs SHA-256 vs SHA-3",
-      description:
-        "Résumé concis des différences entre les algorithmes de hachage populaires et quand utiliser chacun.",
-      readingTime: "6 min de lecture",
-      content: `
-        <p>Les fonctions de hachage convertissent des données en sorties de longueur fixe pour vérifier l'intégrité et construire des signatures. Choisir le bon algorithme dépend de l'objectif.</p>
-        <h2>MD5</h2>
-        <p>MD5 est rapide mais peu sûr pour des usages de confiance. Les collisions pratiques le disqualifient pour la sécurité réelle.</p>
-        <h2>SHA-256</h2>
-        <p>SHA-256 est le choix par défaut le plus courant pour l'intégrité, les certificats et la signature d'artefacts.</p>
-        <h2>SHA-3</h2>
-        <p>SHA-3 offre une construction interne différente et peut servir d'alternative moderne quand on recherche une diversité cryptographique.</p>
-        <h2>Règle rapide</h2>
-        <ul>
-          <li>Intégrité de fichiers : SHA-256</li>
-          <li>Mots de passe : bcrypt / Argon2</li>
-          <li>Alternative structurelle : SHA-3</li>
-        </ul>
-      `,
-    },
   },
   de: {
     "what-is-json": {
@@ -3220,51 +2341,6 @@ const BLOG_LONG_LOCALE_OVERRIDES = {
           <li>Überlappende Ausführungen vermeiden</li>
           <li>Logs und Health Checks hinzufügen</li>
           <li>Wiederholungslogik separat designen</li>
-        </ul>
-      `,
-    },
-    "regex-guide-for-beginners": {
-      title: "Reguläre Ausdrücke: Praxisleitfaden für Einsteiger",
-      description:
-        "Schnelle Einführung in die Grundlagen von Regex mit nützlichen Beispielen für Validierung, Logs und Textbereinigung.",
-      readingTime: "10 Min. Lesezeit",
-      content: `
-        <p>Reguläre Ausdrücke ermöglichen das Suchen und Transformieren von Textmustern mit sehr wenig Code. Sie wirken anfangs kryptisch, aber die grundlegenden Symbole decken einen Großteil der täglichen Arbeit ab.</p>
-        <h2>Grundbausteine</h2>
-        <ul>
-          <li><code>.</code> — beliebiges Zeichen</li>
-          <li><code>*</code>, <code>+</code>, <code>?</code> — Wiederholung</li>
-          <li><code>[abc]</code> — Zeichenklasse</li>
-          <li><code>^</code> und <code>$</code> — Anfang und Ende</li>
-        </ul>
-        <h2>Nützliche Beispiele</h2>
-        <p>Sie eignen sich hervorragend zur E-Mail-Validierung, zum Suchen von IP-Adressen oder zum Extrahieren von Zeitstempeln aus Logs.</p>
-        <h2>Häufige Fehler</h2>
-        <ul>
-          <li>Catastrophic backtracking durch verschachtelte Quantoren</li>
-          <li>Greedy- und Lazy-Verhalten verwechseln</li>
-          <li>Escapes in Zeichenklassen vergessen</li>
-        </ul>
-      `,
-    },
-    "hash-algorithms-compared": {
-      title: "Hash-Algorithmen im Vergleich: MD5 vs SHA-256 vs SHA-3",
-      description:
-        "Kurze Übersicht der Unterschiede zwischen gängigen Hash-Algorithmen und wann man welchen einsetzt.",
-      readingTime: "6 Min. Lesezeit",
-      content: `
-        <p>Hash-Funktionen wandeln Daten in Ausgaben fester Länge um, um Integrität zu prüfen und Signaturen zu erstellen. Den richtigen Algorithmus zu wählen hängt vom Ziel ab.</p>
-        <h2>MD5</h2>
-        <p>MD5 ist schnell, aber für Vertrauenszwecke unsicher. Praktische Kollisionen disqualifizieren es für echte Sicherheitsanwendungen.</p>
-        <h2>SHA-256</h2>
-        <p>SHA-256 ist die häufigste Standardwahl für Integrität, Zertifikate und Artefakt-Signierung.</p>
-        <h2>SHA-3</h2>
-        <p>SHA-3 bietet eine andere interne Konstruktion und kann als moderne Alternative dienen, wenn kryptografische Diversität gewünscht ist.</p>
-        <h2>Schnelle Entscheidungshilfe</h2>
-        <ul>
-          <li>Dateiintegrität: SHA-256</li>
-          <li>Passwörter: bcrypt / Argon2</li>
-          <li>Strukturelle Alternative: SHA-3</li>
         </ul>
       `,
     },
@@ -3474,51 +2550,6 @@ const BLOG_LONG_LOCALE_OVERRIDES = {
         </ul>
       `,
     },
-    "regex-guide-for-beginners": {
-      title: "Expressões regulares: guia prático para iniciantes",
-      description:
-        "Introdução rápida aos fundamentos de regex com exemplos úteis para validação, logs e limpeza de texto.",
-      readingTime: "10 min de leitura",
-      content: `
-        <p>As expressões regulares permitem buscar e transformar padrões de texto com poucas linhas de código. Parecem crípticas no início, mas os símbolos básicos cobrem grande parte do trabalho diário.</p>
-        <h2>Blocos básicos</h2>
-        <ul>
-          <li><code>.</code> — qualquer caractere</li>
-          <li><code>*</code>, <code>+</code>, <code>?</code> — repetição</li>
-          <li><code>[abc]</code> — classe de caracteres</li>
-          <li><code>^</code> e <code>$</code> — início e fim</li>
-        </ul>
-        <h2>Exemplos úteis</h2>
-        <p>São muito práticas para validar e-mails, buscar endereços IP ou extrair timestamps em logs.</p>
-        <h2>Erros frequentes</h2>
-        <ul>
-          <li>Backtracking catastrófico por quantificadores aninhados</li>
-          <li>Confundir comportamento greedy e lazy</li>
-          <li>Esquecer escapes em classes de caracteres</li>
-        </ul>
-      `,
-    },
-    "hash-algorithms-compared": {
-      title: "Comparação de algoritmos hash: MD5 vs SHA-256 vs SHA-3",
-      description:
-        "Resumo conciso das diferenças entre algoritmos hash populares e quando usar cada um.",
-      readingTime: "6 min de leitura",
-      content: `
-        <p>As funções hash convertem dados em saídas de comprimento fixo para verificar integridade e construir assinaturas. Escolher o algoritmo correto depende do objetivo.</p>
-        <h2>MD5</h2>
-        <p>O MD5 é rápido, mas inseguro para fins de confiança. Colisões práticas o descartam para segurança real.</p>
-        <h2>SHA-256</h2>
-        <p>O SHA-256 é a escolha padrão mais comum para integridade, certificados e assinatura de artefatos.</p>
-        <h2>SHA-3</h2>
-        <p>O SHA-3 oferece uma construção interna diferente e pode servir como alternativa moderna quando se busca diversidade criptográfica.</p>
-        <h2>Regra rápida</h2>
-        <ul>
-          <li>Integridade de arquivos: SHA-256</li>
-          <li>Senhas: bcrypt / Argon2</li>
-          <li>Alternativa estrutural: SHA-3</li>
-        </ul>
-      `,
-    },
   },
   vi: {
     "what-is-json": {
@@ -3721,51 +2752,6 @@ const BLOG_LONG_LOCALE_OVERRIDES = {
           <li>Tránh các lần chạy chồng chéo</li>
           <li>Thêm log và health check</li>
           <li>Thiết kế logic thử lại riêng biệt</li>
-        </ul>
-      `,
-    },
-    "regex-guide-for-beginners": {
-      title: "Biểu thức chính quy: hướng dẫn thực hành cho người mới bắt đầu",
-      description:
-        "Giới thiệu nhanh về kiến thức cơ bản của regex với các ví dụ hữu ích cho xác thực, log và làm sạch văn bản.",
-      readingTime: "10 phút đọc",
-      content: `
-        <p>Biểu thức chính quy cho phép tìm kiếm và chuyển đổi các mẫu văn bản chỉ với vài dòng code. Chúng có vẻ khó hiểu lúc đầu, nhưng các ký hiệu cơ bản đã bao gồm phần lớn công việc hàng ngày.</p>
-        <h2>Các khối cơ bản</h2>
-        <ul>
-          <li><code>.</code> — bất kỳ ký tự nào</li>
-          <li><code>*</code>, <code>+</code>, <code>?</code> — lặp lại</li>
-          <li><code>[abc]</code> — lớp ký tự</li>
-          <li><code>^</code> và <code>$</code> — đầu và cuối</li>
-        </ul>
-        <h2>Ví dụ hữu ích</h2>
-        <p>Chúng rất hữu ích để xác thực email, tìm kiếm địa chỉ IP hoặc trích xuất timestamp trong log.</p>
-        <h2>Lỗi thường gặp</h2>
-        <ul>
-          <li>Catastrophic backtracking do các bộ định lượng lồng nhau</li>
-          <li>Nhầm lẫn hành vi greedy và lazy</li>
-          <li>Quên escape trong lớp ký tự</li>
-        </ul>
-      `,
-    },
-    "hash-algorithms-compared": {
-      title: "So sánh các thuật toán hash: MD5 vs SHA-256 vs SHA-3",
-      description:
-        "Tóm tắt ngắn gọn về sự khác biệt giữa các thuật toán hash phổ biến và khi nào nên dùng từng loại.",
-      readingTime: "6 phút đọc",
-      content: `
-        <p>Hàm hash chuyển đổi dữ liệu thành đầu ra có độ dài cố định để xác minh tính toàn vẹn và xây dựng chữ ký. Chọn thuật toán đúng phụ thuộc vào mục tiêu.</p>
-        <h2>MD5</h2>
-        <p>MD5 nhanh nhưng không an toàn cho mục đích tin cậy. Các va chạm thực tế loại nó ra khỏi bảo mật thực sự.</p>
-        <h2>SHA-256</h2>
-        <p>SHA-256 là lựa chọn mặc định phổ biến nhất cho tính toàn vẹn, chứng chỉ và ký artifact.</p>
-        <h2>SHA-3</h2>
-        <p>SHA-3 cung cấp cấu trúc nội bộ khác và có thể phục vụ như một giải pháp thay thế hiện đại khi tìm kiếm sự đa dạng mật mã.</p>
-        <h2>Quy tắc nhanh</h2>
-        <ul>
-          <li>Tính toàn vẹn tệp: SHA-256</li>
-          <li>Mật khẩu: bcrypt / Argon2</li>
-          <li>Giải pháp thay thế cấu trúc: SHA-3</li>
         </ul>
       `,
     },
