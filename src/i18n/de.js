@@ -140,7 +140,6 @@ export default {
         status1: "success",
         text2: "Copied!",
         tpl3: "🔒 All decoding happens in your browser. Your tokens are not sent to our servers.",
-        tpl4: "' + match + '",
         tpl5: "Claim Analysis",
         status2: "No Token Provided",
         status3: "Please paste a JWT token to decode",
@@ -357,7 +356,6 @@ export default {
         alert2: "Invalid hash length. Expected 64, 96, or 128 characters.",
         tpl3: "MD5 and SHA-1 are cryptographically broken and disabled by default. All processing occurs in a sandboxed client-side environment using the Web Crypto API. Your data is not sent to our servers.",
         tpl4: "Awaiting input...",
-        tpl5: "Error: ' + error.message + '",
         text2: "Computed: ",
       },
       edu: {
@@ -391,7 +389,6 @@ export default {
         label6: "Address family",
         label7: "Target prefix",
         placeholder8: "Examples: 192.168.1.10/24 · 2001:db8::/48",
-        option9: "/' + p + '",
         th10: "Prefix",
         th11: "Mask / hosts",
         th12: "Notes",
@@ -435,7 +432,7 @@ export default {
         th19: "Hosts",
         th20: "Use Case",
         th21: "Class",
-        title3: "tools.cidr-calculator.ui.title0",
+        title3: "Copy to clipboard",
       },
       js: {
         text0: "This block is already at the smallest granularity.",
@@ -445,7 +442,6 @@ export default {
         text4: "Enter how many hosts you need.",
         text5: "Use at least /",
         text6: "IPv6 /",
-        tpl7: "2^' + (128 - targetPrefix) + '",
       },
       edu: {
         heading1: "Was ist CIDR?",
@@ -469,6 +465,40 @@ export default {
       name: "DNS-Eintragsreferenz",
       desc: "Interaktive Referenz für DNS-Eintragstypen.",
       ui: {
+        title: {
+          A: "Details zum A-Record anzeigen",
+          AAAA: "Details zum AAAA-Record anzeigen",
+          CNAME: "Details zum CNAME-Record anzeigen",
+          MX: "Details zum MX-Record anzeigen",
+          TXT: "Details zum TXT-Record anzeigen",
+          NS: "Details zum NS-Record anzeigen",
+          SOA: "Details zum SOA-Record anzeigen",
+          PTR: "Details zum PTR-Record anzeigen",
+          SRV: "Details zum SRV-Record anzeigen",
+          CAA: "Details zum CAA-Record anzeigen",
+          DKIM: "Details zum DKIM-Record anzeigen",
+          SPF: "Details zum SPF-Record anzeigen",
+          DMARC: "Details zum DMARC-Record anzeigen",
+          DS: "Details zum DS-Record anzeigen",
+          DNSKEY: "Details zum DNSKEY-Record anzeigen",
+        },
+        category: {
+          A: "Adresse",
+          AAAA: "Adresse",
+          CNAME: "Alias",
+          MX: "Mail",
+          TXT: "Text",
+          NS: "Infrastruktur",
+          SOA: "Infrastruktur",
+          PTR: "Reverse",
+          SRV: "Dienst",
+          CAA: "Sicherheit",
+          DKIM: "E-Mail-Sicherheit",
+          SPF: "E-Mail-Sicherheit",
+          DMARC: "E-Mail-Sicherheit",
+          DS: "DNSSEC",
+          DNSKEY: "DNSSEC",
+        },
         button0: "Copy",
         label1: "Record Type",
         label2: "Domain",
@@ -547,6 +577,7 @@ export default {
       name: "Port-Referenz",
       desc: "IANA-Port-Datenbank mit Sicherheitsrisikostufen.",
       ui: {
+        tip0: "Geben Sie eine Portnummer (z. B. 443) oder einen Dienstnamen (z. B. HTTPS) ein",
         button0: "All",
         button1: "Well-Known (0-1023)",
         button2: "Registered (1024-49151)",
@@ -612,6 +643,9 @@ export default {
         p4: "Use the risk filter to quickly identify high-risk ports in your network. The Top 50 Most Common Ports section gives you an instant overview of the most frequently used services.",
       },
       cheatsheet: {
+        c2: "\n          <ul>\n            <li><strong>Nicht genutzte Ports schließen:</strong> Verkleinern Sie die Angriffsfläche, indem Sie unnötige Dienste deaktivieren</li>\n            <li><strong>Firewalls einsetzen:</strong> Implementieren Sie Zugriffskontrollen auf Netzwerkebene</li>\n            <li><strong>Datenverkehr überwachen:</strong> Protokollieren Sie Verbindungen zu sensiblen Ports (22, 443, 3389)</li>\n            <li><strong>Verschlüsselte Protokolle bevorzugen:</strong> Nutzen Sie SSH (22) statt Telnet (23) und SFTP statt FTP</li>\n            <li><strong>Standardwerte ändern:</strong> Erwägen Sie nicht standardmäßige Ports für SSH/RDP (Sicherheit durch Verschleierung)</li>\n          </ul>",
+        c1: '\n          <table>\n            <tr><th data-i18n="tools.port-reference.ui.th10">Port</th><th data-i18n="tools.port-reference.ui.th11">Dienst</th><th data-i18n="tools.port-reference.ui.th13">Risiko</th></tr>\n            <tr><td><code>21</code></td><td>FTP</td><td>Unverschlüsselte Dateiübertragungen</td></tr>\n            <tr><td><code>23</code></td><td>Telnet</td><td>Authentifizierung im Klartext</td></tr>\n            <tr><td><code>25</code></td><td>SMTP</td><td>Risiko als Spam-Relay</td></tr>\n            <tr><td><code>53</code></td><td>DNS</td><td>DDoS-Amplifikationsangriffe</td></tr>\n            <tr><td><code>445</code></td><td>SMB</td><td>Verbreitung von Ransomware</td></tr>\n            <tr><td><code>3389</code></td><td>RDP</td><td>Brute-Force-Angriffe</td></tr>\n          </table>',
+        c0: '\n          <table>\n            <tr><th data-i18n="tools.port-reference.ui.th14">Bereich</th><th data-i18n="tools.port-reference.ui.th15">Name</th><th data-i18n="tools.port-reference.ui.th12">Beschreibung</th></tr>\n            <tr><td><code>0-1023</code></td><td>Well-Known</td><td>Reserviert für Systemdienste (HTTP, SSH usw.)</td></tr>\n            <tr><td><code>1024-49151</code></td><td>Registriert</td><td>Von Nutzern für Anwendungen registrierte Ports</td></tr>\n            <tr><td><code>49152-65535</code></td><td>Dynamisch/Privat</td><td>Ephemere Ports für Client-Verbindungen</td></tr>\n          </table>',
         title: "Port Categories & Security Guide",
         h0: "Port Number Ranges",
         h1: "High Risk Ports",
@@ -788,7 +822,7 @@ export default {
         th32: "Command",
         th33: "Topology",
         th34: "Use Case",
-        heading35: "100% Client-Side Key Generation",
+        heading35: "Schlüsselerzeugung in Ihrem Browser",
         desc36:
           "Private keys are generated using libsodium.js directly in your browser. Keys stay in your browser and are not sent to our servers.",
         desc37: "⚠️ Never share your private key!",
@@ -800,7 +834,7 @@ export default {
         badge43: "Template Wizard",
         badge44: "Client-Side Only",
         badge45: "Privacy First",
-        heading0: "100% Client-Side Key Generation",
+        heading0: "Schlüsselerzeugung in Ihrem Browser",
         desc0:
           "Private keys are generated using libsodium.js directly in your browser. Keys stay in your browser and are not sent to our servers.",
         heading1: "Key Pair Generator",
@@ -839,6 +873,7 @@ export default {
         placeholder9: "[Interface]\\nPrivateKey = ...\\nAddress = ...",
       },
       js: {
+        removePeer: "Peer entfernen",
         text0: "Error:",
         tpl1: "Scan with the WireGuard mobile app to import configuration.",
         tpl2: "Command after interface down",
@@ -1015,6 +1050,10 @@ export default {
         p3: "Packet analysis to understand the structure of captured network traffic, protocol learning as a visual aid for studying network protocols, debugging to identify malformed headers or incorrect field values, and development reference when implementing network protocols.",
       },
       cheatsheet: {
+        c3: '\n          <table>\n            <tr><th data-i18n="tools.protocol-headers.ui.th12">Wert</th><th data-i18n="tools.protocol-headers.ui.th13">Protokoll</th></tr>\n            <tr><td><code>0x0800</code></td><td>IPv4</td></tr>\n            <tr><td><code>0x0806</code></td><td>ARP</td></tr>\n            <tr><td><code>0x86DD</code></td><td>IPv6</td></tr>\n            <tr><td><code>0x8100</code></td><td>VLAN (802.1Q)</td></tr>\n          </table>',
+        c2: '\n          <table>\n            <tr><th data-i18n="tools.protocol-headers.ui.th9">Feld</th><th data-i18n="tools.protocol-headers.ui.th10">Größe</th><th data-i18n="tools.protocol-headers.ui.th11">Beschreibung</th></tr>\n            <tr><td>Source Port</td><td>2 Bytes</td><td>Portnummer des Senders</td></tr>\n            <tr><td>Dest Port</td><td>2 Bytes</td><td>Portnummer des Empfängers</td></tr>\n            <tr><td>Seq Number</td><td>4 Bytes</td><td>Sequenznummer</td></tr>\n            <tr><td>Ack Number</td><td>4 Bytes</td><td>Bestätigungsnummer</td></tr>\n            <tr><td>Data Offset</td><td>4 Bit</td><td>Header-Länge / 4</td></tr>\n            <tr><td>Flags</td><td>9 Bit</td><td>NS,CWR,ECE,URG,ACK,PSH,RST,SYN,FIN</td></tr>\n            <tr><td>Window</td><td>2 Bytes</td><td>Größe des Empfangsfensters</td></tr>\n          </table>',
+        c1: '\n          <table>\n            <tr><th data-i18n="tools.protocol-headers.ui.th9">Feld</th><th data-i18n="tools.protocol-headers.ui.th10">Größe</th><th data-i18n="tools.protocol-headers.ui.th11">Beschreibung</th></tr>\n            <tr><td>Version</td><td>4 Bit</td><td>IP-Version (4)</td></tr>\n            <tr><td>IHL</td><td>4 Bit</td><td>Header-Länge in 32-Bit-Wörtern</td></tr>\n            <tr><td>TOS</td><td>1 Bytes</td><td>Type of Service / DSCP</td></tr>\n            <tr><td>Total Length</td><td>2 Bytes</td><td>Gesamtgröße des Pakets</td></tr>\n            <tr><td>TTL</td><td>1 Bytes</td><td>Time to Live (Hop-Limit)</td></tr>\n            <tr><td>Protocol</td><td>1 Bytes</td><td>Nächstes Protokoll (6=TCP, 17=UDP)</td></tr>\n            <tr><td>Checksum</td><td>2 Bytes</td><td>Header-Prüfsumme</td></tr>\n          </table>',
+        c0: '\n          <table>\n            <tr><th data-i18n="tools.protocol-headers.ui.th9">Feld</th><th data-i18n="tools.protocol-headers.ui.th10">Größe</th><th data-i18n="tools.protocol-headers.ui.th11">Beschreibung</th></tr>\n            <tr><td>Destination MAC</td><td>6 Bytes</td><td>Ziel-Hardwareadresse</td></tr>\n            <tr><td>Source MAC</td><td>6 Bytes</td><td>Hardwareadresse des Senders</td></tr>\n            <tr><td>EtherType</td><td>2 Bytes</td><td>Protokolltyp (0x0800=IPv4, 0x86DD=IPv6)</td></tr>\n          </table>',
         title: "Protocol Quick Reference",
         h0: "Ethernet II",
         h1: "IPv4 Header",
@@ -1279,7 +1318,7 @@ export default {
         option8: "4096 bits (Maximum security, slower)",
         stat9: "🔓 Public Key",
         stat10: "🔐 Private Key",
-        heading11: "100% Client-Side & Private",
+        heading11: "Schlüssel werden in Ihrem Browser erzeugt",
         heading12: "Fingerprint (SHA-256)",
         desc13: "Appended to public key for identification",
         desc14: "Add this to ~/.ssh/authorized_keys on remote servers",
@@ -1349,7 +1388,6 @@ export default {
         tpl1: "No data present.",
         tpl2: "No Subject Alternative Names present.",
         tpl3: "No extensions parsed.",
-        tpl4: "' + items + '",
       },
       edu: {
         heading1: "What are X.509 Certificates?",
@@ -1403,7 +1441,6 @@ export default {
         text0: "Copied!",
         text1: "Copy JSON",
         text2: "Copy XML",
-        tpl3: "' + escapeHtml(value) + '",
       },
       edu: {
         heading1: "What is SAML?",
@@ -1698,7 +1735,6 @@ export default {
         text0: "Copied",
         text1: "Copy",
         text2: "Copied!",
-        tpl3: "' + item.algorithm.toUpperCase() + '",
       },
       edu: {
         heading1: "What is htpasswd?",
@@ -1722,7 +1758,6 @@ export default {
         label4: "Table Name",
         option5: "SQL INSERT",
         th6: "Fields will appear here...",
-        th7: "' + labelFor(field) + '",
         desc8: "Generate between 10 and 500 records.",
         desc9: "Switch formats instantly.",
         desc10: "For INSERT statements.",
@@ -1742,7 +1777,6 @@ export default {
       js: {
         text0: "Copied!",
         text1: "Copy",
-        tpl2: "' + escapeHtml(row[field]) + '",
         text2: "No rows to preview.",
       },
       edu: {
@@ -1837,6 +1871,7 @@ export default {
       name: "Groß-/Kleinschreibung-Konverter",
       desc: "Text zwischen verschiedenen Schreibweisen konvertieren.",
       ui: {
+        resultsHeading: "Konvertierungsergebnisse",
         label0: "Input Text",
         placeholder1: "Enter your text here...",
         stat2: "Supported Case Types",
@@ -2118,7 +2153,6 @@ export default {
       },
       js: {
         tpl0: "Rendering diagram...",
-        tpl1: "Syntax Error: ' + e.message + '",
         text0: "Syntax Error: ",
       },
       cheatsheet: {
@@ -2246,10 +2280,6 @@ export default {
         desc10: "Where replies go (often abused in BEC)",
         desc11: "Mail hops + IP clues (spoofing / relays)",
         desc12: "SPF/DKIM/DMARC outcomes from the receiver",
-        desc14:
-          "' + t('text50', 'Run analysis to see signals and mismatches.') + '",
-        desc15: "' + t('text51', 'No URLs extracted yet.') + '",
-        desc16: "' + t('text52', 'No routing data yet.') + '",
       },
       js: {
         text0: "High",
@@ -2336,6 +2366,8 @@ export default {
       name: "Token-Zähler",
       desc: "Token-Anzahl für KI-Modelle berechnen.",
       ui: {
+        desc1:
+          "Jede Modellfamilie verwendet einen anderen Tokenizer (BPE / SentencePiece / eigener). Die Zeilen beziehen sich auf die Tokenizer-Familie, nicht auf die Modellversion – Gemini tokenisiert wie die SentencePiece-Zeile.",
         badge0: "Offline",
         badge1: "Bring Your Pricing",
         button0: "Sample",
@@ -2344,16 +2376,16 @@ export default {
         label0: "Text",
         label1: "Expected output tokens",
         label2: "Estimate mode",
-        label3: "GPT-4 class",
-        label4: "Claude class",
-        label5: "Llama class",
-        label6: "GPT-4 class",
+        label3: "GPT-Familie (BPE)",
+        label4: "Claude-Familie",
+        label5: "Llama-/Gemini-Familie (SentencePiece)",
+        label6: "GPT-Familie (BPE)",
         label7: "Input $/1M",
         label8: "Output $/1M",
-        label9: "Claude class",
+        label9: "Claude-Familie",
         label10: "Input $/1M",
         label11: "Output $/1M",
-        label12: "Llama class",
+        label12: "Llama-/Gemini-Familie (SentencePiece)",
         label13: "Input $/1M",
         label14: "Output $/1M",
         placeholder0: "Paste your prompt, docs, code, or any text...",
@@ -2369,9 +2401,9 @@ export default {
         stat1: "Bytes (UTF-8)",
         stat2: "Words",
         stat3: "Lines",
-        stat4: "GPT-4",
+        stat4: "GPT",
         stat5: "Claude",
-        stat6: "Llama",
+        stat6: "Llama / Gemini",
         heading0: "Estimates",
         heading1: "Cost (USD)",
         heading2: "Notes on Token Estimates",
@@ -2403,9 +2435,10 @@ export default {
         text3: "Words: {v}",
         text4: "Lines: {v}",
         text5: "Expected output tokens: {v}",
-        text6: "GPT-4 class: in={in}, out={out}, total={total}",
-        text7: "Claude class: in={in}, out={out}, total={total}",
-        text8: "Llama class: in={in}, out={out}, total={total}",
+        text6: "GPT-Familie: Eingabe={in}, Ausgabe={out}, gesamt={total}",
+        text7: "Claude-Familie: Eingabe={in}, Ausgabe={out}, gesamt={total}",
+        text8:
+          "Llama-/Gemini-Familie: Eingabe={in}, Ausgabe={out}, gesamt={total}",
         text9:
           "Note: These are heuristic estimates, not exact tokenizer counts.",
         text10: "✓ Copied",
@@ -2430,6 +2463,7 @@ export default {
       name: "Prompt-Vorlagenersteller",
       desc: "KI-Prompt-Vorlagen erstellen.",
       ui: {
+        option11: "Gemini (Systemanweisung)",
         badge0: "Reusable",
         badge1: "Injection-Resistant",
         button0: "Sample",
@@ -2500,6 +2534,8 @@ export default {
         desc9: "Missing “what to do if info is missing”",
       },
       js: {
+        text27:
+          "Fordern Sie keine personenbezogenen Daten an. Falls solche in <inputs> vorkommen, verwenden Sie sie nur für diese Aufgabe, geben Sie sie nie wörtlich in der Ausgabe wieder und verweisen Sie über einen Platzhalter darauf.",
         text0: "Be concise and high-signal. Prefer bullets over paragraphs.",
         text1: "Explain briefly and clearly. Define jargon when helpful.",
         text2: "Prioritize an executive summary and clear next actions.",
@@ -2533,7 +2569,8 @@ export default {
         text26: "Provide a final “Next Steps” section when appropriate.",
         text27:
           "If critical information is missing, ask clarifying questions first.",
-        text28: "Be correct. State assumptions. Keep it scannable.",
+        text28:
+          "Fordern Sie keine personenbezogenen Daten an. Falls solche in den Inputs vorkommen, verwenden Sie sie nur für diese Aufgabe, geben Sie sie nie wörtlich in der Ausgabe wieder und verweisen Sie über einen Platzhalter darauf.",
         text29: "Task: ",
         text30: "Context:",
         text31: "Constraints:",
@@ -2595,7 +2632,6 @@ export default {
         option7: "Snowflake",
         option8: "ClickHouse",
         option9: "SQLite",
-        desc14: "' + where + '",
       },
       js: {
         text0: "Unmatched closing parenthesis",
@@ -2752,7 +2788,6 @@ export default {
         desc6: "Strips external",
         desc7: "unless it’s an internal",
         desc8: "reference.",
-        desc11: "' + t('text5', 'Preview an SVG to extract colors.') + '",
       },
       js: {
         text0: "Paste an SVG first.",
@@ -3034,7 +3069,6 @@ export default {
         headingJwksOutput: "JWKS Output",
         headingEndpointInfo: "JWKS Endpoint Convention",
         textEndpointInfo: "Serve this JSON at",
-        desc51: "' + label + '",
         button7: "Remove",
         placeholderJwt:
           "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0....",
@@ -3284,10 +3318,6 @@ export default {
         bracketHeading: "Tournament Bracket",
         teamScoresHeading: "Team Scores",
         heading3: "Results",
-        label6:
-          "' + (window._t ? window._t('tools.ladder-game.js.tpl0', 'Player') : 'Player') + ' ' + (i + 1) + '",
-        label7:
-          "' + (window._t ? window._t('tools.ladder-game.js.tpl1', 'Result') : 'Result') + ' ' + (i + 1) + '",
         importPlayersPH: "Alice, Bob, Charlie&#10;or one per line",
         importResultsPH: "Prize A, Prize B&#10;or one per line",
         placeholder0: "Name",
@@ -3318,6 +3348,7 @@ export default {
       name: "Glücksrad",
       desc: "Drehe das Rad für eine zufällige Entscheidung.",
       ui: {
+        seriesCountLabel: "Anzahl der Drehungen in der Serie",
         badge0: "Crypto-Random Fair",
         badge1: "Client-Side Only",
         "spin-button": "SPIN",
@@ -3467,10 +3498,6 @@ export default {
         targetOrdinal: "Nth finisher",
         replayLabel: "Slow-Mo Replay",
         buttonReplay: "Slow-Mo Replay",
-        desc16: "' + String(m.rank) + '",
-        desc17: "' + escapeHtml(m.name) + '",
-        desc18: "' + escapeHtml(r.name) + '",
-        desc19: "' + String(r.count) + '",
       },
       js: {
         text0: "—",
@@ -3486,6 +3513,198 @@ export default {
         err2: "Need at least 2 names after removing winner.",
         text8: "Stats cleared.",
         textReplay: "Replaying winner path...",
+      },
+    },
+    "network-reference": {
+      name: "Netzwerkreferenz",
+      desc: "DNS-Einträge, gängige Ports, HTTP-Statuscodes und Protokollheader – vier Referenzen in einem Tool mit Registerkarten.",
+      ui: {
+        tab0: "DNS-Einträge",
+        tab1: "Ports",
+        tab2: "HTTP-Status",
+        tab3: "Protokollheader",
+        aria0: "Bereiche der Netzwerkreferenz",
+      },
+    },
+    "repo-ops": {
+      name: "Repository-Operationen",
+      desc: "Erstellen Sie Inventare öffentlicher Repositorys, Aufzeichnungen zur manuellen Pflege und Review-Beschreibungen in einem Arbeitsbereich.",
+      ui: {
+        tab0: "Repository-Inventar",
+        tab1: "Manuelle Pflege",
+        tab2: "Review-Beschreibungen",
+        aria0: "Bereiche der Repository-Operationen",
+      },
+    },
+    "http-status-reference": {
+      name: "HTTP-Status-Referenz",
+      desc: "Durchsuchbare Referenz der HTTP-Standardstatuscodes mit Hinweisen zu Verwendung und Caching.",
+      ui: {
+        badge0: "RFC 9110",
+        badge1: "Durchsuchbar",
+        badge2: "Nur im Browser",
+        button0: "Zurücksetzen",
+        button1: "Alle",
+        button2: "1xx Information",
+        button3: "2xx Erfolg",
+        button4: "3xx Weiterleitung",
+        button5: "4xx Client-Fehler",
+        button6: "5xx Server-Fehler",
+        desc0:
+          "Suche nach Code, Begriff, Klasse, Beschreibung oder Einsatzhinweisen.",
+        heading0: "HTTP-Status suchen",
+        heading1: "Statuscodes",
+        label0: "Statuscode-Suche",
+        placeholder0: "z. B. 404, Weiterleitung, cachebar, Ratenbegrenzung",
+        stat0: "Statuscodes gesamt",
+        stat1: "Passende Ergebnisse",
+        stat2: "Statusklassen",
+        stat3: "Standardmäßig cachebar",
+        status0: "Es werden alle HTTP-Statuscodes angezeigt.",
+        status1:
+          "Keine HTTP-Statuscodes entsprechen der aktuellen Suche und dem Klassenfilter.",
+        th0: "Klasse",
+        th1: "Bedeutung",
+        th2: "Typische Verwendung",
+      },
+      cheatsheet: {
+        title: "Leitfaden für HTTP-Statuscodes",
+        h0: "Bedeutung der Klassen",
+        c0: '\n          <table>\n            <tr><th data-i18n="tools.http-status-reference.ui.th0">Klasse</th><th data-i18n="tools.http-status-reference.ui.th1">Bedeutung</th><th data-i18n="tools.http-status-reference.ui.th2">Typische Verwendung</th></tr>\n            <tr><td><code>1xx</code></td><td>Information</td><td>Vorläufige Antworten, während eine Anfrage fortgesetzt wird.</td></tr>\n            <tr><td><code>2xx</code></td><td>Erfolg</td><td>Die Anfrage wurde empfangen, verstanden und akzeptiert.</td></tr>\n            <tr><td><code>3xx</code></td><td>Umleitung</td><td>Der Client benötigt eine weitere Anfrage oder eine zwischengespeicherte Repräsentation.</td></tr>\n            <tr><td><code>4xx</code></td><td>Client-Fehler</td><td>Die Anfrage hat ein clientseitiges Problem oder kann nicht erfüllt werden.</td></tr>\n            <tr><td><code>5xx</code></td><td>Server-Fehler</td><td>Der Server konnte eine scheinbar gültige Anfrage nicht erfüllen.</td></tr>\n          </table>',
+        h1: "Sicherheit, Idempotenz und Caching",
+        c1: "\n          <p>Statuscodes allein machen eine Anfrage weder sicher noch idempotent. Sicherheit und Idempotenz ergeben sich aus der Anfragemethode und der Anwendungssemantik.</p>\n          <p>Die Caching-Regeln der RFCs erlauben die standardmäßige Wiederverwendung einiger Antworten, darunter gängige Status wie <code>200</code>, <code>203</code>, <code>204</code>, <code>206</code>, <code>300</code>, <code>301</code>, <code>308</code>, <code>404</code>, <code>405</code>, <code>410</code>, <code>414</code>, <code>501</code>. Andere Status benötigen in der Regel explizite Cache-Header.</p>",
+      },
+    },
+    "public-repos-yml-builder": {
+      name: "YAML-Builder für öffentliche Repositorys",
+      desc: "Erstellt und prüft repos.yml-Inventare für die Automatisierung öffentlicher Repositorys.",
+      ui: {
+        placeholder0:
+          "example-api team=platform cadence=weekly sha=ok branch=protected secrets=ok monetization=ready\nhttps://github.com/example/docs-site team=docs cadence=monthly sha=ok branch=protected secrets=ok monetization=todo",
+        badge0: "Nur im Browser",
+        badge1: "Kanban-Automatisierung",
+        button0: "Beispiel",
+        button1: "YAML erstellen",
+        button2: "Zurücksetzen",
+        button3: "Kopieren",
+        desc0:
+          "Ein Repository pro Zeile. Metadaten als key=value-Paare nach dem Slug ergänzen, zum Beispiel team=platform cadence=weekly sha=ok.",
+        desc1:
+          "Unterstützte Metadaten: team, cadence, topic, sha, branch, secrets, monetization, notes.",
+        desc2:
+          "Repositorys einfügen und YAML erzeugen, um wiederkehrende Anforderungen der Automatisierungsrichtlinie zu prüfen.",
+        heading0: "Inventar-Standardwerte",
+        heading1: "repos.yml",
+        heading2: "GitHub-Actions-Audit",
+        heading3: "Richtlinienbefunde",
+        label0: "Repository-Slugs oder URLs",
+        label1: "Eigentümer",
+        label2: "Standardintervall",
+        option0: "Wöchentlich",
+        option1: "Zweiwöchentlich",
+        option2: "Monatlich",
+        placeholder1: "repositories: []",
+        placeholder2: "name: Public repos audit",
+        text0: "Warte auf Eingabe",
+      },
+      js: {
+        branchProtection: "Branch-Schutz ist nicht als geschützt markiert.",
+        copied: "Kopiert",
+        invalidJson:
+          "Das JSON-Array der öffentlichen GitHub-Repositorys konnte nicht gelesen werden.",
+        invalidJsonRepo:
+          "Das GitHub-API-Objekt konnte keinem Repository-Slug oder keiner URL zugeordnet werden.",
+        invalidRepo:
+          "Repository-Slug oder GitHub-URL konnte nicht gelesen werden.",
+        monetizationReadiness:
+          "Die Monetarisierungsbereitschaft ist nicht als bereit markiert.",
+        needsReview: "Prüfung nötig",
+        noFindings: "Keine Befunde für die ausgewählten Richtlinienprüfungen.",
+        ready: "Bereit",
+        secretsPosture:
+          "Der Umgang mit Secrets muss vor der öffentlichen Automatisierung bestätigt werden.",
+        shaPinning:
+          "Die SHA-Fixierung von Workflow-Actions und Drittanbieter-Referenzen muss geprüft werden.",
+        waiting: "Warte auf Eingabe",
+      },
+    },
+    "public-repos-not-automation": {
+      name: "Öffentliche Repositorys ohne Automatisierung",
+      desc: "Entscheiden Sie, welche wiederkehrenden Aufgaben in öffentlichen Repositorys vorerst manuell bleiben, und erzeugen Sie einen Beschluss gegen die Automatisierung.",
+      ui: {
+        placeholder0:
+          "repo: trac3r00/simpletool-app\ntask: veraltete öffentliche Issues aus wiederkehrendem Kanban-Bedarf automatisch schließen\nowner: maintainers\ncadence: monthly\nrisk: high\nnext-review: 2026-07-15",
+        badge0: "Nur im Browser",
+        badge1: "Manuelle Betreuung",
+        button0: "Beispiel",
+        button1: "Beschluss erstellen",
+        button2: "Zurücksetzen",
+        button3: "Kopieren",
+        desc0:
+          "Ein key:value-Paar pro Zeile für repo, task, owner, cadence, risk, next-review und notes. JSON-Arrays öffentlicher GitHub-Repositorys und einfacher Text werden ebenfalls akzeptiert.",
+        desc1:
+          "Gedacht für Arbeit an öffentlichen Repositorys mit wiederkehrendem Kanban-Bedarf, die dennoch manuelle Betreuung und menschliches Urteil erfordert. Fügen Sie JSON-Arrays öffentlicher GitHub-Repositorys ein, um mit den Repository-Metadaten zu starten.",
+        heading0: "Gründe gegen eine Automatisierung",
+        heading1: "Beschluss",
+        heading2: "Checkliste",
+        label0: "Repository-Aufgabe",
+        label1: "Verantwortlich für den Beschluss",
+        label2: "Prüfintervall",
+        label3: "Nachweise vor einer Automatisierung",
+        option0: "30 Tage",
+        option1: "60 Tage",
+        option2: "90 Tage",
+        option3: "Nächstes Release",
+        placeholder1:
+          "z. B. schriftliche Richtlinie, Rollback-Verantwortliche, Audit-Log, Testlaufergebnis und 3 wiederholte manuelle Ausführungen.",
+        placeholder2: "Der Beschluss gegen die Automatisierung erscheint hier.",
+        placeholder3: "Die Checkliste zur manuellen Betreuung erscheint hier.",
+      },
+      js: {
+        copied: "Kopiert",
+        copyFailed:
+          "Kopieren fehlgeschlagen. Markieren Sie die Ausgabe und kopieren Sie sie manuell.",
+        manual: "Manuell",
+        missingReasons:
+          "Wählen Sie mindestens einen Grund, vorerst nicht zu automatisieren.",
+        missingRepos:
+          "Fügen Sie mindestens ein gültiges öffentliches GitHub-Repository ein.",
+        missingTask:
+          "Ergänzen Sie eine Repository-Aufgabe, bevor Sie den Beschluss erstellen.",
+        needsReason: "Grund erforderlich",
+        reasonFrequency: "Geringe Häufigkeit oder schwacher Bedarf",
+        reasonObservability: "Fehlende Beobachtbarkeit",
+        reasonOwner: "Unklare Verantwortung oder Freigabe",
+        reasonPolicy: "Unklare Richtliniengrenze",
+        reasonSafety: "Sicherheits- oder Reputationsrisiko",
+      },
+    },
+    "review-description-generator": {
+      name: "Generator für Review-Beschreibungen",
+      desc: "Erzeugt strukturierte PR-Review- und Kommentarbeschreibungen aus Commits, Diffs oder Notizen.",
+      ui: {
+        badge0: "Nur im Browser",
+        badge1: "6 Vorlagen",
+        button0: "Erzeugen",
+        button1: "Kopieren",
+        button2: "Zurücksetzen",
+        heading0: "So funktioniert es",
+        label0: "Review-Vorlage",
+        label1: "Erzeugte Beschreibung",
+        option0: "Abhängigkeits-Update",
+        option1: "Fehlerbehebung",
+        option2: "Neue Funktion",
+        option3: "Refactoring / Aufräumen",
+        option4: "CI-/Pipeline-Änderung",
+        option5: "Benutzerdefiniert",
+        text0:
+          "Wählen Sie eine Vorlage, die zu Ihrem Review-Typ passt (Abhängigkeits-Update, Fehlerbehebung, Funktion usw.).",
+        text1:
+          "Füllen Sie die Kontextfelder aus — das Tool liefert sinnvolle Standardwerte und Hinweise für jede Vorlage.",
+        text2:
+          "Klicken Sie auf Erzeugen, um eine strukturierte Beschreibung im Markdown-Format für Ihren PR oder Review-Kommentar zu erhalten.",
+        text3:
+          "Die gesamte Verarbeitung erfolgt lokal — Ihre Daten werden nicht an unsere Server gesendet.",
       },
     },
   },

@@ -140,7 +140,6 @@ export default {
         status1: "success",
         text2: "Copied!",
         tpl3: "🔒 All decoding happens in your browser. Your tokens are not sent to our servers.",
-        tpl4: "' + match + '",
         tpl5: "Claim Analysis",
         status2: "No Token Provided",
         status3: "Please paste a JWT token to decode",
@@ -357,7 +356,6 @@ export default {
         alert2: "Invalid hash length. Expected 64, 96, or 128 characters.",
         tpl3: "MD5 and SHA-1 are cryptographically broken and disabled by default. All processing occurs in a sandboxed client-side environment using the Web Crypto API. Your data is not sent to our servers.",
         tpl4: "Awaiting input...",
-        tpl5: "Error: ' + error.message + '",
         text2: "Computed: ",
       },
       edu: {
@@ -391,7 +389,6 @@ export default {
         label6: "Address family",
         label7: "Target prefix",
         placeholder8: "Examples: 192.168.1.10/24 · 2001:db8::/48",
-        option9: "/' + p + '",
         th10: "Prefix",
         th11: "Mask / hosts",
         th12: "Notes",
@@ -435,7 +432,7 @@ export default {
         th19: "Hosts",
         th20: "Use Case",
         th21: "Class",
-        title3: "tools.cidr-calculator.ui.title0",
+        title3: "Copy to clipboard",
       },
       js: {
         text0: "This block is already at the smallest granularity.",
@@ -445,7 +442,6 @@ export default {
         text4: "Enter how many hosts you need.",
         text5: "Use at least /",
         text6: "IPv6 /",
-        tpl7: "2^' + (128 - targetPrefix) + '",
       },
       edu: {
         heading1: "CIDR là gì?",
@@ -469,6 +465,40 @@ export default {
       name: "Tra Cứu Bản Ghi DNS",
       desc: "Tham chiếu tương tác cho các loại bản ghi DNS.",
       ui: {
+        title: {
+          A: "Xem chi tiết bản ghi A",
+          AAAA: "Xem chi tiết bản ghi AAAA",
+          CNAME: "Xem chi tiết bản ghi CNAME",
+          MX: "Xem chi tiết bản ghi MX",
+          TXT: "Xem chi tiết bản ghi TXT",
+          NS: "Xem chi tiết bản ghi NS",
+          SOA: "Xem chi tiết bản ghi SOA",
+          PTR: "Xem chi tiết bản ghi PTR",
+          SRV: "Xem chi tiết bản ghi SRV",
+          CAA: "Xem chi tiết bản ghi CAA",
+          DKIM: "Xem chi tiết bản ghi DKIM",
+          SPF: "Xem chi tiết bản ghi SPF",
+          DMARC: "Xem chi tiết bản ghi DMARC",
+          DS: "Xem chi tiết bản ghi DS",
+          DNSKEY: "Xem chi tiết bản ghi DNSKEY",
+        },
+        category: {
+          A: "Địa chỉ",
+          AAAA: "Địa chỉ",
+          CNAME: "Bí danh",
+          MX: "Thư",
+          TXT: "Văn bản",
+          NS: "Hạ tầng",
+          SOA: "Hạ tầng",
+          PTR: "Phân giải ngược",
+          SRV: "Dịch vụ",
+          CAA: "Bảo mật",
+          DKIM: "Bảo mật email",
+          SPF: "Bảo mật email",
+          DMARC: "Bảo mật email",
+          DS: "DNSSEC",
+          DNSKEY: "DNSSEC",
+        },
         button0: "Copy",
         label1: "Record Type",
         label2: "Domain",
@@ -547,6 +577,7 @@ export default {
       name: "Tra Cứu Cổng",
       desc: "Cơ sở dữ liệu cổng IANA với mức độ rủi ro bảo mật.",
       ui: {
+        tip0: "Nhập số cổng (ví dụ: 443) hoặc tên dịch vụ (ví dụ: HTTPS)",
         button0: "All",
         button1: "Well-Known (0-1023)",
         button2: "Registered (1024-49151)",
@@ -612,6 +643,9 @@ export default {
         p4: "Use the risk filter to quickly identify high-risk ports in your network. The Top 50 Most Common Ports section gives you an instant overview of the most frequently used services.",
       },
       cheatsheet: {
+        c2: "\n          <ul>\n            <li><strong>Đóng các cổng không dùng:</strong> Giảm bề mặt tấn công bằng cách tắt những dịch vụ không cần thiết</li>\n            <li><strong>Dùng tường lửa:</strong> Triển khai kiểm soát truy cập ở mức mạng</li>\n            <li><strong>Theo dõi lưu lượng:</strong> Ghi lại các kết nối tới cổng quan trọng (22, 443, 3389)</li>\n            <li><strong>Ưu tiên giao thức mã hoá:</strong> Dùng SSH (22) thay cho Telnet (23), SFTP thay cho FTP</li>\n            <li><strong>Thay đổi giá trị mặc định:</strong> Cân nhắc dùng cổng không chuẩn cho SSH/RDP (bảo mật nhờ ẩn giấu)</li>\n          </ul>",
+        c1: '\n          <table>\n            <tr><th data-i18n="tools.port-reference.ui.th10">Cổng</th><th data-i18n="tools.port-reference.ui.th11">Dịch vụ</th><th data-i18n="tools.port-reference.ui.th13">Rủi ro</th></tr>\n            <tr><td><code>21</code></td><td>FTP</td><td>Truyền tệp không được mã hoá</td></tr>\n            <tr><td><code>23</code></td><td>Telnet</td><td>Xác thực bằng văn bản thuần</td></tr>\n            <tr><td><code>25</code></td><td>SMTP</td><td>Rủi ro chuyển tiếp thư rác</td></tr>\n            <tr><td><code>53</code></td><td>DNS</td><td>Tấn công khuếch đại DDoS</td></tr>\n            <tr><td><code>445</code></td><td>SMB</td><td>Lây lan mã độc tống tiền</td></tr>\n            <tr><td><code>3389</code></td><td>RDP</td><td>Tấn công dò mật khẩu</td></tr>\n          </table>',
+        c0: '\n          <table>\n            <tr><th data-i18n="tools.port-reference.ui.th14">Phạm vi</th><th data-i18n="tools.port-reference.ui.th15">Tên</th><th data-i18n="tools.port-reference.ui.th12">Mô tả</th></tr>\n            <tr><td><code>0-1023</code></td><td>Cổng phổ biến</td><td>Dành riêng cho dịch vụ hệ thống (HTTP, SSH, v.v.)</td></tr>\n            <tr><td><code>1024-49151</code></td><td>Cổng đã đăng ký</td><td>Cổng do người dùng đăng ký cho ứng dụng</td></tr>\n            <tr><td><code>49152-65535</code></td><td>Động/Riêng tư</td><td>Cổng tạm thời cho kết nối máy khách</td></tr>\n          </table>',
         title: "Port Categories & Security Guide",
         h0: "Port Number Ranges",
         h1: "High Risk Ports",
@@ -788,7 +822,7 @@ export default {
         th32: "Command",
         th33: "Topology",
         th34: "Use Case",
-        heading35: "100% Client-Side Key Generation",
+        heading35: "Tạo khóa trong trình duyệt của bạn",
         desc36:
           "Private keys are generated using libsodium.js directly in your browser. Keys stay in your browser and are not sent to our servers.",
         desc37: "⚠️ Never share your private key!",
@@ -800,7 +834,7 @@ export default {
         badge43: "Template Wizard",
         badge44: "Client-Side Only",
         badge45: "Privacy First",
-        heading0: "100% Client-Side Key Generation",
+        heading0: "Tạo khóa trong trình duyệt của bạn",
         desc0:
           "Private keys are generated using libsodium.js directly in your browser. Keys stay in your browser and are not sent to our servers.",
         heading1: "Key Pair Generator",
@@ -839,6 +873,7 @@ export default {
         placeholder9: "[Interface]\\nPrivateKey = ...\\nAddress = ...",
       },
       js: {
+        removePeer: "Xóa peer",
         text0: "Error:",
         tpl1: "Scan with the WireGuard mobile app to import configuration.",
         tpl2: "Command after interface down",
@@ -1015,6 +1050,10 @@ export default {
         p3: "Packet analysis to understand the structure of captured network traffic, protocol learning as a visual aid for studying network protocols, debugging to identify malformed headers or incorrect field values, and development reference when implementing network protocols.",
       },
       cheatsheet: {
+        c3: '\n          <table>\n            <tr><th data-i18n="tools.protocol-headers.ui.th12">Giá trị</th><th data-i18n="tools.protocol-headers.ui.th13">Giao thức</th></tr>\n            <tr><td><code>0x0800</code></td><td>IPv4</td></tr>\n            <tr><td><code>0x0806</code></td><td>ARP</td></tr>\n            <tr><td><code>0x86DD</code></td><td>IPv6</td></tr>\n            <tr><td><code>0x8100</code></td><td>VLAN (802.1Q)</td></tr>\n          </table>',
+        c2: '\n          <table>\n            <tr><th data-i18n="tools.protocol-headers.ui.th9">Trường</th><th data-i18n="tools.protocol-headers.ui.th10">Kích thước</th><th data-i18n="tools.protocol-headers.ui.th11">Mô tả</th></tr>\n            <tr><td>Source Port</td><td>2 byte</td><td>Số cổng bên gửi</td></tr>\n            <tr><td>Dest Port</td><td>2 byte</td><td>Số cổng bên nhận</td></tr>\n            <tr><td>Seq Number</td><td>4 byte</td><td>Số thứ tự</td></tr>\n            <tr><td>Ack Number</td><td>4 byte</td><td>Số xác nhận</td></tr>\n            <tr><td>Data Offset</td><td>4 bit</td><td>Độ dài tiêu đề / 4</td></tr>\n            <tr><td>Flags</td><td>9 bit</td><td>NS,CWR,ECE,URG,ACK,PSH,RST,SYN,FIN</td></tr>\n            <tr><td>Window</td><td>2 byte</td><td>Kích thước cửa sổ nhận</td></tr>\n          </table>',
+        c1: '\n          <table>\n            <tr><th data-i18n="tools.protocol-headers.ui.th9">Trường</th><th data-i18n="tools.protocol-headers.ui.th10">Kích thước</th><th data-i18n="tools.protocol-headers.ui.th11">Mô tả</th></tr>\n            <tr><td>Version</td><td>4 bit</td><td>Phiên bản IP (4)</td></tr>\n            <tr><td>IHL</td><td>4 bit</td><td>Độ dài tiêu đề theo từ 32 bit</td></tr>\n            <tr><td>TOS</td><td>1 byte</td><td>Loại dịch vụ / DSCP</td></tr>\n            <tr><td>Total Length</td><td>2 byte</td><td>Tổng kích thước gói tin</td></tr>\n            <tr><td>TTL</td><td>1 byte</td><td>Thời gian sống (giới hạn bước nhảy)</td></tr>\n            <tr><td>Protocol</td><td>1 byte</td><td>Giao thức tiếp theo (6=TCP, 17=UDP)</td></tr>\n            <tr><td>Checksum</td><td>2 byte</td><td>Tổng kiểm tra tiêu đề</td></tr>\n          </table>',
+        c0: '\n          <table>\n            <tr><th data-i18n="tools.protocol-headers.ui.th9">Trường</th><th data-i18n="tools.protocol-headers.ui.th10">Kích thước</th><th data-i18n="tools.protocol-headers.ui.th11">Mô tả</th></tr>\n            <tr><td>Destination MAC</td><td>6 byte</td><td>Địa chỉ phần cứng đích</td></tr>\n            <tr><td>Source MAC</td><td>6 byte</td><td>Địa chỉ phần cứng của bên gửi</td></tr>\n            <tr><td>EtherType</td><td>2 byte</td><td>Loại giao thức (0x0800=IPv4, 0x86DD=IPv6)</td></tr>\n          </table>',
         title: "Protocol Quick Reference",
         h0: "Ethernet II",
         h1: "IPv4 Header",
@@ -1279,7 +1318,7 @@ export default {
         option8: "4096 bits (Maximum security, slower)",
         stat9: "🔓 Public Key",
         stat10: "🔐 Private Key",
-        heading11: "100% Client-Side & Private",
+        heading11: "Khóa được tạo trong trình duyệt của bạn",
         heading12: "Fingerprint (SHA-256)",
         desc13: "Appended to public key for identification",
         desc14: "Add this to ~/.ssh/authorized_keys on remote servers",
@@ -1349,7 +1388,6 @@ export default {
         tpl1: "No data present.",
         tpl2: "No Subject Alternative Names present.",
         tpl3: "No extensions parsed.",
-        tpl4: "' + items + '",
       },
       edu: {
         heading1: "What are X.509 Certificates?",
@@ -1403,7 +1441,6 @@ export default {
         text0: "Copied!",
         text1: "Copy JSON",
         text2: "Copy XML",
-        tpl3: "' + escapeHtml(value) + '",
       },
       edu: {
         heading1: "What is SAML?",
@@ -1698,7 +1735,6 @@ export default {
         text0: "Copied",
         text1: "Copy",
         text2: "Copied!",
-        tpl3: "' + item.algorithm.toUpperCase() + '",
       },
       edu: {
         heading1: "What is htpasswd?",
@@ -1722,7 +1758,6 @@ export default {
         label4: "Table Name",
         option5: "SQL INSERT",
         th6: "Fields will appear here...",
-        th7: "' + labelFor(field) + '",
         desc8: "Generate between 10 and 500 records.",
         desc9: "Switch formats instantly.",
         desc10: "For INSERT statements.",
@@ -1742,7 +1777,6 @@ export default {
       js: {
         text0: "Copied!",
         text1: "Copy",
-        tpl2: "' + escapeHtml(row[field]) + '",
         text2: "No rows to preview.",
       },
       edu: {
@@ -1837,6 +1871,7 @@ export default {
       name: "Chuyển Đổi Chữ Hoa/Thường",
       desc: "Chuyển đổi văn bản giữa các định dạng viết hoa khác nhau.",
       ui: {
+        resultsHeading: "Kết quả chuyển đổi",
         label0: "Input Text",
         placeholder1: "Enter your text here...",
         stat2: "Supported Case Types",
@@ -2118,7 +2153,6 @@ export default {
       },
       js: {
         tpl0: "Rendering diagram...",
-        tpl1: "Syntax Error: ' + e.message + '",
         text0: "Syntax Error: ",
       },
       cheatsheet: {
@@ -2246,10 +2280,6 @@ export default {
         desc10: "Where replies go (often abused in BEC)",
         desc11: "Mail hops + IP clues (spoofing / relays)",
         desc12: "SPF/DKIM/DMARC outcomes from the receiver",
-        desc14:
-          "' + t('text50', 'Run analysis to see signals and mismatches.') + '",
-        desc15: "' + t('text51', 'No URLs extracted yet.') + '",
-        desc16: "' + t('text52', 'No routing data yet.') + '",
       },
       js: {
         text0: "High",
@@ -2336,6 +2366,8 @@ export default {
       name: "Đếm Token",
       desc: "Tính số lượng token cho mô hình AI.",
       ui: {
+        desc1:
+          "Mỗi họ mô hình dùng một bộ tách token khác nhau (BPE / SentencePiece / riêng). Các hàng được chia theo họ bộ tách token, không theo phiên bản mô hình — Gemini tách token giống hàng SentencePiece.",
         badge0: "Offline",
         badge1: "Bring Your Pricing",
         button0: "Sample",
@@ -2344,16 +2376,16 @@ export default {
         label0: "Text",
         label1: "Expected output tokens",
         label2: "Estimate mode",
-        label3: "GPT-4 class",
-        label4: "Claude class",
-        label5: "Llama class",
-        label6: "GPT-4 class",
+        label3: "Họ GPT (BPE)",
+        label4: "Họ Claude",
+        label5: "Họ Llama / Gemini (SentencePiece)",
+        label6: "Họ GPT (BPE)",
         label7: "Input $/1M",
         label8: "Output $/1M",
-        label9: "Claude class",
+        label9: "Họ Claude",
         label10: "Input $/1M",
         label11: "Output $/1M",
-        label12: "Llama class",
+        label12: "Họ Llama / Gemini (SentencePiece)",
         label13: "Input $/1M",
         label14: "Output $/1M",
         placeholder0: "Paste your prompt, docs, code, or any text...",
@@ -2369,9 +2401,9 @@ export default {
         stat1: "Bytes (UTF-8)",
         stat2: "Words",
         stat3: "Lines",
-        stat4: "GPT-4",
+        stat4: "GPT",
         stat5: "Claude",
-        stat6: "Llama",
+        stat6: "Llama / Gemini",
         heading0: "Estimates",
         heading1: "Cost (USD)",
         heading2: "Notes on Token Estimates",
@@ -2403,9 +2435,9 @@ export default {
         text3: "Words: {v}",
         text4: "Lines: {v}",
         text5: "Expected output tokens: {v}",
-        text6: "GPT-4 class: in={in}, out={out}, total={total}",
-        text7: "Claude class: in={in}, out={out}, total={total}",
-        text8: "Llama class: in={in}, out={out}, total={total}",
+        text6: "Họ GPT: vào={in}, ra={out}, tổng={total}",
+        text7: "Họ Claude: vào={in}, ra={out}, tổng={total}",
+        text8: "Họ Llama / Gemini: vào={in}, ra={out}, tổng={total}",
         text9:
           "Note: These are heuristic estimates, not exact tokenizer counts.",
         text10: "✓ Copied",
@@ -2430,6 +2462,7 @@ export default {
       name: "Trình Tạo Mẫu Prompt",
       desc: "Tạo mẫu prompt cho AI.",
       ui: {
+        option11: "Gemini (chỉ dẫn hệ thống)",
         badge0: "Reusable",
         badge1: "Injection-Resistant",
         button0: "Sample",
@@ -2500,6 +2533,8 @@ export default {
         desc9: "Missing “what to do if info is missing”",
       },
       js: {
+        text27:
+          "Không yêu cầu dữ liệu cá nhân. Nếu có trong <inputs>, chỉ dùng cho tác vụ này, không lặp lại nguyên văn trong đầu ra và hãy tham chiếu bằng chỗ giữ chỗ.",
         text0: "Be concise and high-signal. Prefer bullets over paragraphs.",
         text1: "Explain briefly and clearly. Define jargon when helpful.",
         text2: "Prioritize an executive summary and clear next actions.",
@@ -2533,7 +2568,8 @@ export default {
         text26: "Provide a final “Next Steps” section when appropriate.",
         text27:
           "If critical information is missing, ask clarifying questions first.",
-        text28: "Be correct. State assumptions. Keep it scannable.",
+        text28:
+          "Không yêu cầu dữ liệu cá nhân. Nếu có trong Inputs, chỉ dùng cho tác vụ này, không lặp lại nguyên văn trong đầu ra và hãy tham chiếu bằng chỗ giữ chỗ.",
         text29: "Task: ",
         text30: "Context:",
         text31: "Constraints:",
@@ -2595,7 +2631,6 @@ export default {
         option7: "Snowflake",
         option8: "ClickHouse",
         option9: "SQLite",
-        desc14: "' + where + '",
       },
       js: {
         text0: "Unmatched closing parenthesis",
@@ -2752,7 +2787,6 @@ export default {
         desc6: "Strips external",
         desc7: "unless it’s an internal",
         desc8: "reference.",
-        desc11: "' + t('text5', 'Preview an SVG to extract colors.') + '",
       },
       js: {
         text0: "Paste an SVG first.",
@@ -3034,7 +3068,6 @@ export default {
         headingJwksOutput: "JWKS Output",
         headingEndpointInfo: "JWKS Endpoint Convention",
         textEndpointInfo: "Serve this JSON at",
-        desc51: "' + label + '",
         button7: "Remove",
         placeholderJwt:
           "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0....",
@@ -3284,10 +3317,6 @@ export default {
         bracketHeading: "Tournament Bracket",
         teamScoresHeading: "Team Scores",
         heading3: "Results",
-        label6:
-          "' + (window._t ? window._t('tools.ladder-game.js.tpl0', 'Player') : 'Player') + ' ' + (i + 1) + '",
-        label7:
-          "' + (window._t ? window._t('tools.ladder-game.js.tpl1', 'Result') : 'Result') + ' ' + (i + 1) + '",
         importPlayersPH: "Alice, Bob, Charlie&#10;or one per line",
         importResultsPH: "Prize A, Prize B&#10;or one per line",
         placeholder0: "Name",
@@ -3318,6 +3347,7 @@ export default {
       name: "Vòng Quay May Mắn",
       desc: "Quay vòng quay để quyết định ngẫu nhiên.",
       ui: {
+        seriesCountLabel: "Số lần quay trong chuỗi",
         badge0: "Crypto-Random Fair",
         badge1: "Client-Side Only",
         "spin-button": "SPIN",
@@ -3467,10 +3497,6 @@ export default {
         targetOrdinal: "Nth finisher",
         replayLabel: "Slow-Mo Replay",
         buttonReplay: "Slow-Mo Replay",
-        desc16: "' + String(m.rank) + '",
-        desc17: "' + escapeHtml(m.name) + '",
-        desc18: "' + escapeHtml(r.name) + '",
-        desc19: "' + String(r.count) + '",
       },
       js: {
         text0: "—",
@@ -3486,6 +3512,197 @@ export default {
         err2: "Need at least 2 names after removing winner.",
         text8: "Stats cleared.",
         textReplay: "Replaying winner path...",
+      },
+    },
+    "network-reference": {
+      name: "Tra Cứu Mạng",
+      desc: "Bản ghi DNS, cổng thông dụng, mã trạng thái HTTP và tiêu đề giao thức — bốn nội dung tra cứu trong một công cụ dạng thẻ.",
+      ui: {
+        tab0: "Bản ghi DNS",
+        tab1: "Cổng",
+        tab2: "Trạng thái HTTP",
+        tab3: "Tiêu đề giao thức",
+        aria0: "Các phần tra cứu mạng",
+      },
+    },
+    "repo-ops": {
+      name: "Vận Hành Kho Mã",
+      desc: "Tạo danh mục kho mã công khai, hồ sơ quản lý thủ công và mô tả đánh giá trong một không gian làm việc.",
+      ui: {
+        tab0: "Danh mục kho mã",
+        tab1: "Quản lý thủ công",
+        tab2: "Mô tả đánh giá",
+        aria0: "Các phần vận hành kho mã",
+      },
+    },
+    "http-status-reference": {
+      name: "Tra Cứu Mã Trạng Thái HTTP",
+      desc: "Tra cứu các mã trạng thái HTTP tiêu chuẩn kèm hướng dẫn sử dụng và bộ nhớ đệm.",
+      ui: {
+        badge0: "RFC 9110",
+        badge1: "Có thể tìm kiếm",
+        badge2: "Chỉ xử lý trên trình duyệt",
+        button0: "Xóa",
+        button1: "Tất cả",
+        button2: "1xx Thông tin",
+        button3: "2xx Thành công",
+        button4: "3xx Chuyển hướng",
+        button5: "4xx Lỗi phía client",
+        button6: "5xx Lỗi máy chủ",
+        desc0:
+          "Tìm theo mã, cụm từ, nhóm, mô tả hoặc hướng dẫn tình huống sử dụng.",
+        heading0: "Tìm mã trạng thái HTTP",
+        heading1: "Mã trạng thái",
+        label0: "Tìm mã trạng thái",
+        placeholder0:
+          "ví dụ: 404, chuyển hướng, có thể lưu đệm, giới hạn tần suất",
+        stat0: "Tổng số mã trạng thái",
+        stat1: "Kết quả phù hợp",
+        stat2: "Nhóm trạng thái",
+        stat3: "Mặc định lưu đệm được",
+        status0: "Đang hiển thị tất cả mã trạng thái HTTP.",
+        status1:
+          "Không có mã trạng thái HTTP nào khớp với từ khóa và bộ lọc nhóm hiện tại.",
+        th0: "Nhóm",
+        th1: "Ý nghĩa",
+        th2: "Trường hợp dùng phổ biến",
+      },
+      cheatsheet: {
+        title: "Hướng dẫn mã trạng thái HTTP",
+        h0: "Ý nghĩa của các lớp",
+        c0: '\n          <table>\n            <tr><th data-i18n="tools.http-status-reference.ui.th0">Lớp</th><th data-i18n="tools.http-status-reference.ui.th1">Ý nghĩa</th><th data-i18n="tools.http-status-reference.ui.th2">Cách dùng điển hình</th></tr>\n            <tr><td><code>1xx</code></td><td>Thông tin</td><td>Phản hồi tạm thời trong khi một yêu cầu vẫn đang tiếp tục.</td></tr>\n            <tr><td><code>2xx</code></td><td>Thành công</td><td>Yêu cầu đã được nhận, hiểu và chấp nhận.</td></tr>\n            <tr><td><code>3xx</code></td><td>Chuyển hướng</td><td>Máy khách cần một yêu cầu khác hoặc một biểu diễn đã lưu trong bộ nhớ đệm.</td></tr>\n            <tr><td><code>4xx</code></td><td>Lỗi máy khách</td><td>Yêu cầu có vấn đề phía máy khách hoặc không thể được đáp ứng.</td></tr>\n            <tr><td><code>5xx</code></td><td>Lỗi máy chủ</td><td>Máy chủ không thể đáp ứng một yêu cầu có vẻ hợp lệ.</td></tr>\n          </table>',
+        h1: "Tính an toàn, tính bất biến và bộ nhớ đệm",
+        c1: "\n          <p>Bản thân mã trạng thái không làm cho một yêu cầu trở nên an toàn hay bất biến. Tính an toàn và tính bất biến đến từ phương thức yêu cầu và ngữ nghĩa của ứng dụng.</p>\n          <p>Các quy tắc bộ nhớ đệm của RFC cho phép tái sử dụng một số phản hồi theo mặc định, bao gồm các trạng thái phổ biến như <code>200</code>, <code>203</code>, <code>204</code>, <code>206</code>, <code>300</code>, <code>301</code>, <code>308</code>, <code>404</code>, <code>405</code>, <code>410</code>, <code>414</code>, <code>501</code>. Các trạng thái khác thường cần tiêu đề bộ nhớ đệm rõ ràng.</p>",
+      },
+    },
+    "public-repos-yml-builder": {
+      name: "Trình Tạo YAML Cho Kho Mã Công Khai",
+      desc: "Tạo và kiểm tra danh mục repos.yml cho việc tự động hóa kho mã công khai.",
+      ui: {
+        placeholder0:
+          "example-api team=platform cadence=weekly sha=ok branch=protected secrets=ok monetization=ready\nhttps://github.com/example/docs-site team=docs cadence=monthly sha=ok branch=protected secrets=ok monetization=todo",
+        badge0: "Chỉ xử lý trên trình duyệt",
+        badge1: "Tự động hóa Kanban",
+        button0: "Mẫu",
+        button1: "Tạo YAML",
+        button2: "Xóa",
+        button3: "Sao chép",
+        desc0:
+          "Mỗi dòng một kho mã. Thêm siêu dữ liệu theo dạng key=value sau slug, ví dụ team=platform cadence=weekly sha=ok.",
+        desc1:
+          "Siêu dữ liệu được hỗ trợ: team, cadence, topic, sha, branch, secrets, monetization, notes.",
+        desc2:
+          "Dán danh sách kho mã rồi tạo YAML để kiểm tra các yêu cầu chính sách tự động hóa lặp lại.",
+        heading0: "Giá trị mặc định của danh mục",
+        heading1: "repos.yml",
+        heading2: "Kiểm tra GitHub Actions",
+        heading3: "Phát hiện về chính sách",
+        label0: "Slug hoặc URL kho mã",
+        label1: "Chủ sở hữu",
+        label2: "Chu kỳ mặc định",
+        option0: "Hàng tuần",
+        option1: "Hai tuần một lần",
+        option2: "Hàng tháng",
+        placeholder1: "repositories: []",
+        placeholder2: "name: Public repos audit",
+        text0: "Đang chờ nhập liệu",
+      },
+      js: {
+        branchProtection: "bảo vệ nhánh chưa được đánh dấu là đã bật.",
+        copied: "Đã sao chép",
+        invalidJson:
+          "Không thể phân tích mảng JSON kho mã công khai của GitHub.",
+        invalidJsonRepo:
+          "Không thể ánh xạ đối tượng GitHub API sang slug hoặc URL kho mã.",
+        invalidRepo: "Không thể phân tích slug kho mã hoặc URL GitHub.",
+        monetizationReadiness:
+          "mức độ sẵn sàng kiếm tiền chưa được đánh dấu là sẵn sàng.",
+        needsReview: "Cần xem xét",
+        noFindings:
+          "Không có phát hiện nào với các kiểm tra chính sách đã chọn.",
+        ready: "Sẵn sàng",
+        secretsPosture:
+          "cần xác nhận cách quản lý khóa bí mật trước khi tự động hóa công khai.",
+        shaPinning:
+          "cần rà soát việc ghim theo SHA cho các action trong workflow và tham chiếu bên thứ ba.",
+        waiting: "Đang chờ nhập liệu",
+      },
+    },
+    "public-repos-not-automation": {
+      name: "Kho Mã Công Khai Chưa Tự Động Hóa",
+      desc: "Quyết định những công việc lặp lại nào của kho mã công khai nên tiếp tục làm thủ công và tạo hồ sơ quyết định chưa tự động hóa.",
+      ui: {
+        placeholder0:
+          "repo: trac3r00/simpletool-app\ntask: tự động đóng các issue công khai đã cũ phát sinh từ nhu cầu Kanban lặp lại\nowner: maintainers\ncadence: monthly\nrisk: high\nnext-review: 2026-07-15",
+        badge0: "Chỉ xử lý trên trình duyệt",
+        badge1: "Quản lý thủ công",
+        button0: "Mẫu",
+        button1: "Tạo hồ sơ quyết định",
+        button2: "Xóa",
+        button3: "Sao chép",
+        desc0:
+          "Mỗi dòng một cặp key:value cho repo, task, owner, cadence, risk, next-review và notes. Cũng hỗ trợ mảng JSON kho mã công khai của GitHub và văn bản thuần.",
+        desc1:
+          "Được thiết kế cho công việc trên kho mã công khai có nhu cầu lặp lại trên Kanban nhưng vẫn cần quản lý thủ công và phán đoán của con người. Dán mảng JSON kho mã công khai của GitHub để bắt đầu từ siêu dữ liệu kho mã.",
+        heading0: "Lý do chưa tự động hóa",
+        heading1: "Hồ sơ quyết định",
+        heading2: "Danh sách kiểm tra",
+        label0: "Công việc của kho mã",
+        label1: "Người chịu trách nhiệm quyết định",
+        label2: "Chu kỳ xem xét lại",
+        label3: "Bằng chứng cần có trước khi tự động hóa",
+        option0: "30 ngày",
+        option1: "60 ngày",
+        option2: "90 ngày",
+        option3: "Bản phát hành kế tiếp",
+        placeholder1:
+          "ví dụ: chính sách bằng văn bản, người phụ trách khôi phục, nhật ký kiểm toán, kết quả chạy thử và 3 lần thực hiện thủ công lặp lại.",
+        placeholder2: "Hồ sơ quyết định chưa tự động hóa sẽ hiển thị ở đây.",
+        placeholder3: "Danh sách kiểm tra quản lý thủ công sẽ hiển thị ở đây.",
+      },
+      js: {
+        copied: "Đã sao chép",
+        copyFailed:
+          "Sao chép thất bại. Hãy chọn nội dung đầu ra và sao chép thủ công.",
+        manual: "Thủ công",
+        missingReasons: "Hãy chọn ít nhất một lý do chưa tự động hóa.",
+        missingRepos: "Hãy dán ít nhất một kho mã công khai GitHub hợp lệ.",
+        missingTask:
+          "Hãy thêm công việc của kho mã trước khi tạo hồ sơ quyết định.",
+        needsReason: "Cần lý do",
+        reasonFrequency: "Tần suất thấp hoặc nhu cầu yếu",
+        reasonObservability: "Thiếu khả năng quan sát",
+        reasonOwner: "Người phụ trách hoặc quy trình phê duyệt chưa rõ",
+        reasonPolicy: "Ranh giới chính sách chưa rõ ràng",
+        reasonSafety: "Rủi ro về an toàn hoặc uy tín",
+      },
+    },
+    "review-description-generator": {
+      name: "Trình Tạo Mô Tả Đánh Giá",
+      desc: "Tạo mô tả đánh giá PR và bình luận có cấu trúc từ commit, diff hoặc ghi chú.",
+      ui: {
+        badge0: "Chỉ xử lý trên trình duyệt",
+        badge1: "6 mẫu",
+        button0: "Tạo",
+        button1: "Sao chép",
+        button2: "Xóa",
+        heading0: "Cách hoạt động",
+        label0: "Mẫu đánh giá",
+        label1: "Mô tả đã tạo",
+        option0: "Nâng cấp phụ thuộc",
+        option1: "Sửa lỗi",
+        option2: "Thêm tính năng",
+        option3: "Tái cấu trúc / dọn dẹp",
+        option4: "Thay đổi CI / pipeline",
+        option5: "Tùy chỉnh",
+        text0:
+          "Chọn mẫu phù hợp với loại đánh giá của bạn (nâng cấp phụ thuộc, sửa lỗi, thêm tính năng, v.v.).",
+        text1:
+          "Điền các trường ngữ cảnh — công cụ cung cấp giá trị mặc định hợp lý và hướng dẫn cho từng mẫu.",
+        text2:
+          "Nhấn Tạo để có mô tả có cấu trúc ở định dạng Markdown, sẵn sàng dùng cho PR hoặc bình luận đánh giá.",
+        text3:
+          "Mọi xử lý đều diễn ra cục bộ — dữ liệu của bạn không được gửi tới máy chủ của chúng tôi.",
       },
     },
   },
