@@ -96,7 +96,7 @@ function renderEmailAnalyzerPage(lang = DEFAULT_LANGUAGE) {
               <span data-i18n="tools.email-analyzer.ui.label0">Raw Email (Headers + Body)</span>
               ${infoHint("Paste a raw email source (RFC 5322). Many clients have “View original / Show raw source”.", "Help", { i18nKey: "tools.email-analyzer.ui.desc0" })}
             </label>
-            <textarea id="email-input" rows="18" class="input-mono resize-y" placeholder="Paste the full email source here..." data-i18n-placeholder="tools.email-analyzer.ui.placeholder0"></textarea>
+            <textarea id="email-input" rows="18" aria-label="Raw email source" class="input-mono resize-y" placeholder="Paste the full email source here..." data-i18n-placeholder="tools.email-analyzer.ui.placeholder0"></textarea>
 
             <div class="flex flex-wrap items-center gap-4 text-sm text-surface-600 dark:text-surface-400">
               <label class="inline-flex items-center gap-2 cursor-pointer">

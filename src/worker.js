@@ -452,12 +452,14 @@ const worker = {
       }
 
       // Favicon
-      if (path === "/favicon.ico") {
-        // SVG favicon converted to ICO format (embedded as SVG)
+      if (path === "/favicon.ico" || path === "/favicon.svg") {
+        // One SVG mark serves both paths. Pages link /favicon.svg (correct
+        // extension/MIME pairing); /favicon.ico stays for browsers that probe
+        // that path blindly. Violet per the Modern Utility identity.
         const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-          <rect width="64" height="64" rx="12" fill="#2563eb"/>
+          <rect width="64" height="64" rx="12" fill="#7c3aed"/>
           <path d="M32 16c-8.8 0-16 7.2-16 16s7.2 16 16 16 16-7.2 16-16-7.2-16-16-16zm0 6c5.5 0 10 4.5 10 10s-4.5 10-10 10-10-4.5-10-10 4.5-10 10-10z" fill="#fff"/>
-          <circle cx="32" cy="32" r="4" fill="#60a5fa"/>
+          <circle cx="32" cy="32" r="4" fill="#a78bfa"/>
         </svg>`;
         return new Response(svg, {
           headers: {

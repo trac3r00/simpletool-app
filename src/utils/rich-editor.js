@@ -65,24 +65,27 @@ export function createRichEditorPane(opts = {}) {
   const hiddenClass = hidden ? " hidden" : "";
   const extraWrap = wrapClass ? ` ${wrapClass}` : "";
 
+  const ariaAttr = ariaLabel ? ` aria-label="${escapeAttribute(ariaLabel)}"` : "";
+
   if (mode === "textarea") {
     // Placeholders here are code samples that legitimately contain quotes and
     // angle brackets (JSON, SQL, XML). Interpolating them raw closed the
     // attribute early: the JSON sample rendered as placeholder="{" and the
     // rest of the sample was parsed as bogus attributes on the <textarea>.
+    // ariaAttr applies here too — this branch used to drop it, which left
+    // every editor textarea without an accessible name.
     const phAttr = placeholder
       ? ` placeholder="${escapeAttribute(placeholder)}"`
       : "";
     return (
       `<div id="${wrapId}" class="re-wrap${extraWrap}${hiddenClass}">` +
       `<div id="${lineId}" class="re-line-numbers" aria-hidden="true">1</div>` +
-      `<textarea id="re-${id}" rows="${rows}" spellcheck="false"${phAttr} class="input-mono resize-none re-textarea"></textarea>` +
+      `<textarea id="re-${id}" rows="${rows}" spellcheck="false"${phAttr}${ariaAttr} class="input-mono resize-none re-textarea"></textarea>` +
       `</div>`
     );
   }
 
   // mode === 'pre'
-  const ariaAttr = ariaLabel ? ` aria-label="${escapeAttribute(ariaLabel)}"` : "";
   return (
     `<div id="${wrapId}" class="re-wrap${extraWrap}${hiddenClass}">` +
     `<div id="${lineId}" class="re-line-numbers" aria-hidden="true">1</div>` +

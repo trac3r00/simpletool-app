@@ -99,7 +99,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
 
           <!-- Input -->
           <div class="mb-4">
-            <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
+            <label for="enc-input" class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
               <span data-i18n="tools.encoding-workbench.ui.label0">Input</span>
             </label>
             <textarea

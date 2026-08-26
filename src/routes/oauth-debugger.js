@@ -80,14 +80,14 @@ function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
                 <div>
                   <label class="block text-xs font-semibold uppercase tracking-wide text-surface-500 dark:text-surface-400 mb-1" data-i18n="tools.oauth-debugger.ui.label0">code_verifier <span class="normal-case font-normal">(43–128 URL-safe chars)</span></label>
                   <div class="flex gap-2">
-                    <input id="pkce-verifier" readonly class="input-mono w-full" placeholder="Click Generate..." data-i18n-placeholder="tools.oauth-debugger.ui.placeholder0" />
+                    <input id="pkce-verifier" readonly aria-label="PKCE code verifier" class="input-mono w-full" placeholder="Click Generate..." data-i18n-placeholder="tools.oauth-debugger.ui.placeholder0" />
                     <button id="copy-pkce-verifier" class="btn btn-secondary flex-shrink-0" data-i18n="tools.oauth-debugger.ui.button1">Copy</button>
                   </div>
                 </div>
                 <div>
                   <label class="block text-xs font-semibold uppercase tracking-wide text-surface-500 dark:text-surface-400 mb-1" data-i18n="tools.oauth-debugger.ui.label1">code_challenge <span class="normal-case font-normal">(SHA-256, base64url)</span></label>
                   <div class="flex gap-2">
-                    <input id="pkce-challenge" readonly class="input-mono w-full" placeholder="Derived after generation..." data-i18n-placeholder="tools.oauth-debugger.ui.placeholder1" />
+                    <input id="pkce-challenge" readonly aria-label="PKCE code challenge" class="input-mono w-full" placeholder="Derived after generation..." data-i18n-placeholder="tools.oauth-debugger.ui.placeholder1" />
                     <button id="copy-pkce-challenge" class="btn btn-secondary flex-shrink-0" data-i18n="tools.oauth-debugger.ui.button2">Copy</button>
                   </div>
                 </div>

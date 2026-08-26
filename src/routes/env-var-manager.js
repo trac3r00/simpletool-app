@@ -91,7 +91,7 @@ function renderEnvVarManagerPage(lang = DEFAULT_LANGUAGE) {
               </label>
               <input id="name-a" class="input w-40" value="Dev" aria-label="Name A" data-i18n-aria="tools.env-var-manager.ui.aria0" />
             </div>
-            <textarea id="env-a" rows="16" class="input-mono resize-y" placeholder="API_URL=https://dev.example.com&#10;JWT_SECRET=..." data-i18n-placeholder="tools.env-var-manager.ui.placeholder0"></textarea>
+            <textarea id="env-a" rows="16" aria-label="Environment A variables" class="input-mono resize-y" placeholder="API_URL=https://dev.example.com&#10;JWT_SECRET=..." data-i18n-placeholder="tools.env-var-manager.ui.placeholder0"></textarea>
             <div id="parse-a" class="hidden text-xs rounded-lg p-3 border"></div>
           </div>
 
@@ -100,7 +100,7 @@ function renderEnvVarManagerPage(lang = DEFAULT_LANGUAGE) {
               <label class="label" data-i18n="tools.env-var-manager.ui.label1">Environment B</label>
               <input id="name-b" class="input w-40" value="Prod" aria-label="Name B" data-i18n-aria="tools.env-var-manager.ui.aria1" />
             </div>
-            <textarea id="env-b" rows="16" class="input-mono resize-y" placeholder="API_URL=https://example.com&#10;JWT_SECRET=..." data-i18n-placeholder="tools.env-var-manager.ui.placeholder1"></textarea>
+            <textarea id="env-b" rows="16" aria-label="Environment B variables" class="input-mono resize-y" placeholder="API_URL=https://example.com&#10;JWT_SECRET=..." data-i18n-placeholder="tools.env-var-manager.ui.placeholder1"></textarea>
             <div id="parse-b" class="hidden text-xs rounded-lg p-3 border"></div>
           </div>
         </div>
@@ -115,7 +115,7 @@ function renderEnvVarManagerPage(lang = DEFAULT_LANGUAGE) {
               </label>
               <div class="mt-3">
                 <label class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" data-i18n="tools.env-var-manager.ui.label3">Filter keys</label>
-                <input id="filter" class="input font-mono" placeholder="e.g., AWS_, SECRET, DB_" data-i18n-placeholder="tools.env-var-manager.ui.placeholder2" />
+                <input id="filter" aria-label="Filter variables" class="input font-mono" placeholder="e.g., AWS_, SECRET, DB_" data-i18n-placeholder="tools.env-var-manager.ui.placeholder2" />
               </div>
             </div>
 
@@ -143,7 +143,7 @@ function renderEnvVarManagerPage(lang = DEFAULT_LANGUAGE) {
 
             <div class="tool-group p-5">
               <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400 mb-3" data-i18n="tools.env-var-manager.ui.heading2">Share-safe report</h2>
-              <textarea id="share" rows="10" class="input-mono resize-y bg-surface-50 dark:bg-surface-950" readonly placeholder="Click Compare to generate..." data-i18n-placeholder="tools.env-var-manager.ui.placeholder3"></textarea>
+              <textarea id="share" rows="10" aria-label="Shareable comparison output" class="input-mono resize-y bg-surface-50 dark:bg-surface-950" readonly placeholder="Click Compare to generate..." data-i18n-placeholder="tools.env-var-manager.ui.placeholder3"></textarea>
             </div>
           </div>
 

@@ -6,10 +6,12 @@
  * - Never cache: sitemap, robots.txt, ad scripts, analytics
  */
 
-var CACHE_NAME = "simpletool-v1";
+var CACHE_NAME = "simpletool-v2";
 
 var STATIC_ASSETS = [
-  "/styles.css",
+  // NOTE: /styles.css is intentionally NOT pre-cached. Pages reference the
+  // versioned /styles.css?v=<hash>, so an unversioned pre-cache entry never
+  // matched anything; the versioned URL is cached at runtime on first fetch.
   "/favicon.ico",
   "/manifest.json",
   "/fonts/material-symbols.css",
