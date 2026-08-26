@@ -50,16 +50,16 @@ function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
       .filter(Boolean) || [];
   const pageContent = `
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
         ${toolHeader}
 
       <!-- Language Tabs -->
       <div class="flex justify-center mb-6 border-b-2 border-surface-200 dark:border-surface-700">
         <div class="flex gap-2">
-          <button class="language-tab active" data-lang="javascript" data-tooltip="Minify JavaScript code" data-i18n-tooltip="tools.code-minifier.ui.tip0"><span data-i18n="tools.code-minifier.ui.button0">JavaScript</span></button>
-          <button class="language-tab" data-lang="css" data-tooltip="Minify CSS stylesheets" data-i18n-tooltip="tools.code-minifier.ui.tip1"><span data-i18n="tools.code-minifier.ui.button6">CSS</span></button>
-          <button class="language-tab" data-lang="html" data-tooltip="Minify HTML markup" data-i18n-tooltip="tools.code-minifier.ui.tip2"><span data-i18n="tools.code-minifier.ui.button7">HTML</span></button>
+          <button class="tab-trigger language-tab active" data-lang="javascript" data-tooltip="Minify JavaScript code" data-i18n-tooltip="tools.code-minifier.ui.tip0"><span data-i18n="tools.code-minifier.ui.button0">JavaScript</span></button>
+          <button class="tab-trigger language-tab" data-lang="css" data-tooltip="Minify CSS stylesheets" data-i18n-tooltip="tools.code-minifier.ui.tip1"><span data-i18n="tools.code-minifier.ui.button6">CSS</span></button>
+          <button class="tab-trigger language-tab" data-lang="html" data-tooltip="Minify HTML markup" data-i18n-tooltip="tools.code-minifier.ui.tip2"><span data-i18n="tools.code-minifier.ui.button7">HTML</span></button>
         </div>
       </div>
 
@@ -85,7 +85,7 @@ function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
             </button>
           </div>
 
-          <textarea id="input-code" class="code-editor w-full p-4 border-2 border-surface-300 dark:border-surface-700 rounded-lg bg-surface-50 dark:bg-surface-950 text-surface-900 dark:text-surface-100 resize-vertical" placeholder="Paste your code here..." data-i18n-placeholder="tools.code-minifier.ui.placeholder6"></textarea>
+          <textarea id="input-code" class="input w-full resize-vertical" placeholder="Paste your code here..." data-i18n-placeholder="tools.code-minifier.ui.placeholder6"></textarea>
 
           <div class="mt-3 text-sm text-surface-600 dark:text-surface-400">
             <span id="input-size">Size: 0 bytes</span>
@@ -106,7 +106,7 @@ function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
             </div>
           </div>
 
-          <textarea id="output-code" class="code-editor w-full p-4 border-2 border-surface-300 dark:border-surface-700 rounded-lg bg-surface-50 dark:bg-surface-950 text-surface-900 dark:text-surface-100 resize-vertical" readonly placeholder="Output will appear here..." data-i18n-placeholder="tools.code-minifier.ui.placeholder7"></textarea>
+          <textarea id="output-code" class="input w-full resize-vertical" readonly placeholder="Output will appear here..." data-i18n-placeholder="tools.code-minifier.ui.placeholder7"></textarea>
 
           <div id="output-stats" class="mt-3 text-sm text-surface-600 dark:text-surface-400 hidden">
             <span id="output-size"></span>
@@ -238,22 +238,34 @@ function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
           });
           tab.classList.add('active');
           currentLang = tab.dataset.lang;
+          // The mode buttons below re-run processCode(); this did not, so after
+          // switching language the output pane kept showing the result computed
+          // with the PREVIOUS language until the user touched something else.
+          processCode();
         });
       });
 
       // ── Mode button switching ─────────────────────────────────────────────
-      document.getElementById('minify-btn').addEventListener('click', function() {
-        document.getElementById('minify-btn').classList.add('active');
-        document.getElementById('beautify-btn').classList.remove('active');
-        currentMode = 'minify';
+      // The solid btn-primary fill is the dominant "selected" signal, so it has
+      // to move with .active — otherwise the deselected button keeps its fill
+      // and both modes read as active at once.
+      function setMode(mode) {
+        var selected = document.getElementById(mode === 'minify' ? 'minify-btn' : 'beautify-btn');
+        var other = document.getElementById(mode === 'minify' ? 'beautify-btn' : 'minify-btn');
+        selected.classList.add('active', 'btn-primary');
+        selected.classList.remove('btn-secondary');
+        other.classList.remove('active', 'btn-primary');
+        other.classList.add('btn-secondary');
+        currentMode = mode;
         processCode();
+      }
+
+      document.getElementById('minify-btn').addEventListener('click', function() {
+        setMode('minify');
       });
 
       document.getElementById('beautify-btn').addEventListener('click', function() {
-        document.getElementById('beautify-btn').classList.add('active');
-        document.getElementById('minify-btn').classList.remove('active');
-        currentMode = 'beautify';
-        processCode();
+        setMode('beautify');
       });
 
       // ── Input size display ────────────────────────────────────────────────
@@ -506,17 +518,22 @@ function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
         while (i < len) {
           var ch = stripped[i];
           if (ch === '{') {
-            result += ' {\\n';
+            // trimTrailingSpaces: the separator space before the brace is
+            // already accounted for by the ' {' we emit here.
+            result = result.replace(/ +$/, '') + ' {\\n';
             indent++;
             result += indentStr.repeat(indent);
           } else if (ch === '}') {
-            // Remove trailing space/indent before }
-            result = result.trimEnd() + '\\n}\\n\\n';
+            // Remove trailing space/indent before }, close the block at the
+            // PARENT indent level so nested blocks (@media) line their braces
+            // up, then re-indent for whatever follows inside that parent.
             indent = Math.max(0, indent - 1);
+            result = result.trimEnd() + '\\n' + indentStr.repeat(indent) + '}\\n\\n' +
+              indentStr.repeat(indent);
           } else if (ch === ';') {
-            result += ';\\n' + indentStr.repeat(indent);
+            result = result.replace(/ +$/, '') + ';\\n' + indentStr.repeat(indent);
           } else if (ch === ':' && indent > 0) {
-            result += ': ';
+            result = result.replace(/ +$/, '') + ': ';
             // Skip following space if any
             if (stripped[i+1] === ' ') i++;
           } else if (ch === ',') {
@@ -527,7 +544,10 @@ function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
               result += ', ';
             }
           } else {
-            result += ch;
+            // The \\s+ collapse above leaves a separator space between rules,
+            // which would land after the newline emitted by '}' and show up as
+            // a stray leading space on the next selector.
+            if (!(ch === ' ' && /\\n *$/.test(result))) result += ch;
           }
           i++;
         }
@@ -559,6 +579,7 @@ function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
         var inlineTags = /^(a|abbr|acronym|b|bdo|big|br|button|cite|code|dfn|em|i|img|input|kbd|label|map|object|output|q|samp|select|small|span|strong|sub|sup|textarea|time|tt|u|var)$/i;
 
         // Simple tag-by-tag pass
+        var prevWasInline = false;
         var re = /(<[^>]+>|[^<]+)/g;
         var match;
         while ((match = re.exec(normalized)) !== null) {
@@ -570,8 +591,10 @@ function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
             if (!inlineTags.test(name)) {
               indent = Math.max(0, indent - 1);
               result += '\\n' + indentStr.repeat(indent) + piece;
+              prevWasInline = false;
             } else {
               result += piece;
+              prevWasInline = true;
             }
           } else if (piece.startsWith('<')) {
             // Opening or self-closing tag
@@ -581,16 +604,25 @@ function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
             if (!inlineTags.test(name2)) {
               result += '\\n' + indentStr.repeat(indent) + piece;
               if (!selfClosing) indent++;
+              prevWasInline = false;
             } else {
               result += piece;
+              prevWasInline = true;
             }
           } else {
-            // Text node
-            var text = piece.replace(/\\s+/g, ' ').trim();
-            if (text) result += text;
+            // Text node — collapse runs, but keep the boundary space that
+            // separates text from an adjacent inline tag; trimming it glued
+            // "Hello <b>world</b>" into "Hello<b>world</b>".
+            var text = piece.replace(/\\s+/g, ' ');
+            if (text.trim()) {
+              // Only an inline neighbour makes the leading space meaningful;
+              // after a block tag (or at the start of a line) it is noise.
+              if (!prevWasInline) text = text.replace(/^ /, '');
+              result += text;
+            }
           }
         }
-        return result.replace(/^\\n/, '').replace(/\\n{3,}/g, '\\n\\n');
+        return result.replace(/^\\n/, '').replace(/ +\\n/g, '\\n').replace(/\\n{3,}/g, '\\n\\n');
       }
     </script>
   `;

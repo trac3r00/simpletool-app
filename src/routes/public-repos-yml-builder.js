@@ -1,33 +1,11 @@
-import { respondHTML } from "../utils/respond.js";
-import {
-  createPageTemplate,
-  createToolHeader,
-  infoHint,
-} from "../utils/common-ui.js";
+import { createToolHeader, infoHint } from "../utils/common-ui.js";
 import { createRelatedToolsSection } from "../utils/content-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
 import {
   DEFAULT_LANGUAGE,
   getToolTranslation,
   normalizeLanguage,
-  resolveRequestLanguage,
 } from "../utils/i18n.js";
-
-export async function handlePublicReposYmlBuilderRoutes(request, url) {
-  const { pathname } = url;
-  if (
-    pathname === "/public-repos-yml-builder" ||
-    pathname === "/public-repos-yml-builder/"
-  ) {
-    if (request.method === "GET") {
-      return respondHTML(
-        renderPublicReposYmlBuilderPage(resolveRequestLanguage(request, url)),
-      );
-    }
-    return new Response("Method not allowed", { status: 405 });
-  }
-  return null;
-}
 
 function coerceText(value) {
   return value == null ? "" : "" + value;
@@ -305,7 +283,7 @@ const publicReposParserScript = String.raw`
         }
 `;
 
-function renderPublicReposYmlBuilderPage(lang = DEFAULT_LANGUAGE) {
+export function renderPublicReposYmlBuilderSection(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
   const translation = getToolTranslation(
     "public-repos-yml-builder",
@@ -343,12 +321,12 @@ function renderPublicReposYmlBuilderPage(lang = DEFAULT_LANGUAGE) {
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+      <div class="tool-group p-6 sm:p-8">
         ${header}
 
         <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
           <section class="lg:col-span-2 space-y-5">
-            <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+            <div class="tool-group p-5">
               <div class="flex items-center justify-between gap-3 mb-3">
                 <label for="repo-input" class="label flex items-center gap-2">
                   <span data-i18n="tools.public-repos-yml-builder.ui.label0">Repository slugs or URLs</span>
@@ -400,7 +378,7 @@ function renderPublicReposYmlBuilderPage(lang = DEFAULT_LANGUAGE) {
             </div>
 
             <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
-              <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+              <div class="tool-group p-5">
                 <div class="flex items-center justify-between gap-3 mb-3">
                   <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400" data-i18n="tools.public-repos-yml-builder.ui.heading1">repos.yml</h2>
                   <button id="copy-yaml" class="btn btn-secondary btn-xs" type="button" disabled data-i18n="tools.public-repos-yml-builder.ui.button3">Copy</button>
@@ -408,7 +386,7 @@ function renderPublicReposYmlBuilderPage(lang = DEFAULT_LANGUAGE) {
                 <textarea id="repos-yaml-output" rows="18" class="input-mono resize-y bg-surface-50 dark:bg-surface-950" readonly placeholder="repositories: []" data-i18n-placeholder="tools.public-repos-yml-builder.ui.placeholder1"></textarea>
               </div>
 
-              <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+              <div class="tool-group p-5">
                 <div class="flex items-center justify-between gap-3 mb-3">
                   <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400" data-i18n="tools.public-repos-yml-builder.ui.heading2">GitHub Actions audit</h2>
                   <button id="copy-actions" class="btn btn-secondary btn-xs" type="button" disabled data-i18n="tools.public-repos-yml-builder.ui.button3">Copy</button>
@@ -417,7 +395,7 @@ function renderPublicReposYmlBuilderPage(lang = DEFAULT_LANGUAGE) {
               </div>
             </div>
 
-            <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+            <div class="tool-group p-5">
               <div class="flex items-center justify-between gap-3 mb-3">
                 <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400" data-i18n="tools.public-repos-yml-builder.ui.heading3">Policy findings</h2>
                 <span id="validation-status" class="text-xs font-medium text-surface-500 dark:text-surface-400" data-i18n="tools.public-repos-yml-builder.ui.text0">Waiting for input</span>
@@ -662,19 +640,19 @@ ${publicReposParserScript}
     </script>
   `;
 
-  return createPageTemplate({
-    title,
-    description,
-    path: "/public-repos-yml-builder",
-    content,
+  return {
+    content: content
+      .replace(/^\s*<main\b[^>]*>/, '<section class="py-2">')
+      .replace(/<\/main>\s*$/, "</section>")
+      .replace(/<h1\b/, "<h2")
+      .replace("</h1>", "</h2>"),
     scripts,
-    lang: currentLang,
-  });
+  };
 }
 
 function policyCheckbox(id, label, help, checked) {
   return `
-    <label class="flex items-start gap-3 rounded-lg border border-surface-200 dark:border-surface-800 bg-white dark:bg-surface-900 p-3 cursor-pointer">
+    <label class="tool-group flex items-start gap-3 p-3 cursor-pointer">
       <input id="policy-${id}" type="checkbox" class="mt-1 w-4 h-4 rounded border-surface-300 text-primary-600 focus:ring-primary-500" ${checked ? "checked" : ""}>
       <span>
         <span class="block text-sm font-semibold text-surface-900 dark:text-surface-100">${label}</span>

@@ -50,12 +50,13 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
       .filter(Boolean) || [];
 
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
        <header class="bg-white/90 dark:bg-surface-900/80 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-8">
          <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
            <div>
             <p class="text-xs font-semibold uppercase tracking-[0.35em] text-success-600 dark:text-success-300 mb-3" data-i18n="tools.htpasswd-generator.ui.desc20">Ops · Infra</p>
-            <h1 class="text-4xl sm:text-5xl font-extrabold text-surface-900 dark:text-white mb-4">${title}</h1>
+            <h1 class="tool-header-title mb-4">${title}</h1>
             <p class="text-lg text-surface-600 dark:text-surface-300 max-w-2xl" data-i18n="tools.htpasswd-generator.ui.desc21">Generate production-ready htpasswd entries using bcrypt (-B), Apache MD5 (-m), SHA1 (-s), or plaintext—completely client-side.</p>
           </div>
            <div class="grid gap-3 text-sm text-surface-600 dark:text-surface-300">
@@ -78,10 +79,10 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
       </header>
 
       <section class="grid gap-6 lg:grid-cols-[3fr,2fr]">
-        <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 space-y-5">
+        <div class="tool-group min-w-0 p-6 space-y-5">
           <div class="space-y-2">
             <label for="username-input" class="text-sm font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide"><span data-i18n="tools.htpasswd-generator.ui.label7">Username</span></label>
-            <input id="username-input" type="text" data-tooltip="Username for the htpasswd entry" data-i18n-tooltip="tools.htpasswd-generator.ui.tip0" class="w-full px-4 py-3 rounded-xl border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-950 text-surface-900 dark:text-surface-100" placeholder="deploy" data-i18n-placeholder="tools.htpasswd-generator.ui.placeholder11" autocomplete="off" />
+            <input id="username-input" type="text" data-tooltip="Username for the htpasswd entry" data-i18n-tooltip="tools.htpasswd-generator.ui.tip0" class="input w-full" placeholder="deploy" data-i18n-placeholder="tools.htpasswd-generator.ui.placeholder11" autocomplete="off" />
           </div>
 
           <div class="space-y-2">
@@ -92,12 +93,12 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
                    <button id="generate-password" type="button" class="btn btn-ghost btn-xs text-primary-600 dark:text-primary-400"><span data-i18n="tools.htpasswd-generator.ui.button1">Generate strong</span></button>
                  </div>
              </div>
-            <input id="password-input" type="password" data-tooltip="Password to hash for the entry" data-i18n-tooltip="tools.htpasswd-generator.ui.tip1" class="w-full px-4 py-3 rounded-xl border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-950 text-surface-900 dark:text-surface-100 font-mono" placeholder="•••••••" autocomplete="new-password" />
+            <input id="password-input" type="password" data-tooltip="Password to hash for the entry" data-i18n-tooltip="tools.htpasswd-generator.ui.tip1" class="input-mono w-full" placeholder="•••••••" autocomplete="new-password" />
           </div>
 
           <div class="space-y-2">
             <label for="algorithm-select" class="text-sm font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide"><span data-i18n="tools.htpasswd-generator.ui.label9">Algorithm</span> ${infoHint("Pick bcrypt/apr1/SHA1/plain to match your htpasswd setup; bcrypt is strongest.")}</label>
-            <select id="algorithm-select" class="w-full px-4 py-3 rounded-xl border border-surface-200 dark:border-surface-700 bg-white dark:bg-surface-950 text-surface-900 dark:text-surface-100">
+            <select id="algorithm-select" class="input">
               <option value="bcrypt" data-i18n="tools.htpasswd-generator.ui.option13">Bcrypt (-B)</option>
               <option value="apr1" data-i18n="tools.htpasswd-generator.ui.option14">Apache MD5 (-m)</option>
               <option value="sha" data-i18n="tools.htpasswd-generator.ui.option15">SHA1 (-s)</option>
@@ -118,7 +119,7 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
                <label for="salt-input" class="text-sm font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide"><span data-i18n="tools.htpasswd-generator.ui.label10">Salt</span> ${infoHint("Salt is 8 chars (./0-9A-Za-z) for apr1 hashes; randomize for uniqueness.")}</label>
               <button id="random-salt" type="button" class="btn btn-ghost btn-xs"><span data-i18n="tools.htpasswd-generator.ui.button2">Randomize</span></button>
             </div>
-            <input id="salt-input" type="text" maxlength="8" class="w-full px-4 py-3 rounded-xl border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-950 text-surface-900 dark:text-surface-100 font-mono" placeholder="8 chars (./0-9A-Za-z)" data-i18n-placeholder="tools.htpasswd-generator.ui.placeholder12" />
+            <input id="salt-input" type="text" maxlength="8" class="input-mono w-full" placeholder="8 chars (./0-9A-Za-z)" data-i18n-placeholder="tools.htpasswd-generator.ui.placeholder12" />
           </div>
 
            <div id="htpasswd-error" class="hidden rounded-xl border border-danger-200 dark:border-danger-800 bg-danger-50 dark:bg-danger-900/30 text-sm text-danger-700 dark:text-danger-200 px-4 py-3">Error</div>
@@ -126,8 +127,8 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
            <button id="generate-btn" class="btn btn-primary w-full"><span data-i18n="tools.htpasswd-generator.ui.button3">Generate entry</span></button>
         </div>
 
-        <div class="space-y-6">
-          <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6">
+        <div class="min-w-0 space-y-6">
+          <div class="tool-group p-6">
             <div class="flex items-center justify-between mb-3">
               <h2 class="text-lg font-bold text-surface-900 dark:text-white" data-i18n="tools.htpasswd-generator.ui.heading18">Current entry</h2>
               <div class="flex gap-2">
@@ -138,7 +139,7 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
             <pre id="entry-output" role="status" class="min-h-[80px] bg-surface-900 text-surface-100 p-4 rounded-xl overflow-x-auto text-sm" data-i18n="tools.htpasswd-generator.ui.desc26">No entry yet.</pre>
           </div>
 
-          <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6">
+          <div class="tool-group p-6">
              <div class="flex items-center justify-between mb-3">
                <h2 class="text-lg font-bold text-surface-900 dark:text-white" data-i18n="tools.htpasswd-generator.ui.heading19">Recent history</h2>
                <button id="clear-history" class="btn btn-ghost btn-xs text-error-600 dark:text-error-400"><span data-i18n="tools.htpasswd-generator.ui.button6">Clear</span></button>
@@ -160,6 +161,7 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
           </div>
         </div>
       </section>
+      </div>
     </main>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
       ${createEducationalSection(

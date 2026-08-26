@@ -90,25 +90,25 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
       .filter(Boolean) || [];
 
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
 
         ${toolHeader}
 
         <!-- Tabs -->
         <div class="border-b border-surface-200 dark:border-surface-700 mb-8">
           <nav class="flex flex-wrap gap-2" aria-label="Password generator modes" role="tablist">
-            <button id="tab-trigger-password" class="tab-button active px-4 py-2 border-b-2 border-primary-600 font-medium text-sm text-primary-600 dark:text-primary-400 transition-colors" data-tab="password" role="tab" aria-controls="tab-password" aria-selected="true" tabindex="0">
-              <span class="material-symbols-rounded text-base align-middle">lock</span> <span data-i18n="tools.password-generator.ui.tab0">Password</span>
+            <button id="tab-trigger-password" class="tab-trigger tab-button active" data-tab="password" role="tab" aria-controls="tab-password" aria-selected="true" tabindex="0">
+              <span class="material-symbols-rounded text-base align-middle" aria-hidden="true">lock</span> <span data-i18n="tools.password-generator.ui.tab0">Password</span>
             </button>
-            <button id="tab-trigger-username" class="tab-button px-4 py-2 border-b-2 border-transparent font-medium text-sm text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-200 transition-colors" data-tab="username" role="tab" aria-controls="tab-username" aria-selected="false" tabindex="-1">
-              <span class="material-symbols-rounded text-base align-middle">person</span> <span data-i18n="tools.password-generator.ui.tab1">Username</span>
+            <button id="tab-trigger-username" class="tab-trigger tab-button" data-tab="username" role="tab" aria-controls="tab-username" aria-selected="false" tabindex="-1">
+              <span class="material-symbols-rounded text-base align-middle" aria-hidden="true">person</span> <span data-i18n="tools.password-generator.ui.tab1">Username</span>
             </button>
-            <button id="tab-trigger-passphrase" class="tab-button px-4 py-2 border-b-2 border-transparent font-medium text-sm text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-200 transition-colors" data-tab="passphrase" role="tab" aria-controls="tab-passphrase" aria-selected="false" tabindex="-1">
-              <span class="material-symbols-rounded text-base align-middle">description</span> <span data-i18n="tools.password-generator.ui.tab2">Passphrase</span>
+            <button id="tab-trigger-passphrase" class="tab-trigger tab-button" data-tab="passphrase" role="tab" aria-controls="tab-passphrase" aria-selected="false" tabindex="-1">
+              <span class="material-symbols-rounded text-base align-middle" aria-hidden="true">description</span> <span data-i18n="tools.password-generator.ui.tab2">Passphrase</span>
             </button>
-            <button id="tab-trigger-email" class="tab-button px-4 py-2 border-b-2 border-transparent font-medium text-sm text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-200 transition-colors" data-tab="email" role="tab" aria-controls="tab-email" aria-selected="false" tabindex="-1">
-              <span class="material-symbols-rounded text-base align-middle">email</span> <span data-i18n="tools.password-generator.ui.tab3">Email</span>
+            <button id="tab-trigger-email" class="tab-trigger tab-button" data-tab="email" role="tab" aria-controls="tab-email" aria-selected="false" tabindex="-1">
+              <span class="material-symbols-rounded text-base align-middle" aria-hidden="true">email</span> <span data-i18n="tools.password-generator.ui.tab3">Email</span>
             </button>
           </nav>
         </div>
@@ -156,7 +156,7 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
                     <p id="password-output" class="text-2xl font-mono font-bold text-surface-900 dark:text-white break-all"></p>
                   </div>
                    <button id="copy-password" class="flex-shrink-0 btn btn-secondary" aria-label="Copy password to clipboard">
-                     <span class="material-symbols-rounded">content_copy</span>
+                     <span class="material-symbols-rounded" aria-hidden="true">content_copy</span>
                    </button>
                 </div>
                 <div id="password-strength" class="mt-4">
@@ -213,7 +213,7 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
                     <p id="username-output" class="text-2xl font-mono font-bold text-surface-900 dark:text-white break-all"></p>
                   </div>
                    <button id="copy-username" class="flex-shrink-0 btn btn-secondary" aria-label="Copy username to clipboard">
-                     <span class="material-symbols-rounded">content_copy</span>
+                     <span class="material-symbols-rounded" aria-hidden="true">content_copy</span>
                    </button>
                 </div>
               </div>
@@ -259,7 +259,7 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
                     <p id="passphrase-output" class="text-2xl font-mono font-bold text-surface-900 dark:text-white break-all"></p>
                   </div>
                    <button id="copy-passphrase" class="flex-shrink-0 btn btn-secondary" aria-label="Copy passphrase to clipboard">
-                     <span class="material-symbols-rounded">content_copy</span>
+                     <span class="material-symbols-rounded" aria-hidden="true">content_copy</span>
                    </button>
                 </div>
               </div>
@@ -269,7 +269,7 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
 
         <!-- Email Tools Tab -->
         <div id="tab-email" class="tab-content hidden" role="tabpanel" aria-labelledby="tab-trigger-email">
-          <h3 class="text-xl font-semibold text-surface-900 dark:text-white mb-6" data-i18n="tools.password-generator.ui.heading22">📬 Catch-all Address</h3>
+          <h2 class="text-xl font-semibold text-surface-900 dark:text-white mb-6" data-i18n="tools.password-generator.ui.heading22">📬 Catch-all Address</h2>
           <div class="space-y-6">
             <div>
               <label for="email-prefix" class="label"><span data-i18n="tools.password-generator.ui.label7">Custom Prefix (optional)</span></label>
@@ -308,7 +308,7 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
                      <p id="catchall-output" class="text-xl font-mono font-bold text-surface-900 dark:text-white break-all"></p>
                    </div>
                     <button id="copy-catchall" class="flex-shrink-0 btn btn-secondary" aria-label="Copy catch-all email to clipboard">
-                      <span class="material-symbols-rounded">content_copy</span>
+                      <span class="material-symbols-rounded" aria-hidden="true">content_copy</span>
                     </button>
                  </div>
                </div>
@@ -317,7 +317,7 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
 
           <hr class="my-8 border-surface-200 dark:border-surface-700">
 
-          <h3 class="text-xl font-semibold text-surface-900 dark:text-white mb-6" data-i18n="tools.password-generator.ui.heading23">➕ Plus Alias</h3>
+          <h2 class="text-xl font-semibold text-surface-900 dark:text-white mb-6" data-i18n="tools.password-generator.ui.heading23">➕ Plus Alias</h2>
           <div class="space-y-6">
             <div>
               <label for="alias-base-email" class="label"><span data-i18n="tools.password-generator.ui.label9">Base Email Address</span></label>
@@ -345,7 +345,7 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
                      <p id="alias-output" class="text-xl font-mono font-bold text-surface-900 dark:text-white break-all"></p>
                    </div>
                     <button id="copy-alias" class="flex-shrink-0 btn btn-secondary" aria-label="Copy email alias to clipboard">
-                      <span class="material-symbols-rounded">content_copy</span>
+                      <span class="material-symbols-rounded" aria-hidden="true">content_copy</span>
                     </button>
                  </div>
                </div>
@@ -502,7 +502,7 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
         if (useSymbols) charsets.push('!@#$%^&*()_+-=[]{}|;:,.<>?');
 
          if (charsets.length === 0) {
-           document.getElementById('pw-error').textContent = _t('tools.password-generator.js.text0', 'Please select at least one character type.');
+           document.getElementById('pw-error').textContent = _t('tools.password-generator.js.alert1', 'Please select at least one character type!');
            document.getElementById('pw-error').classList.remove('hidden');
            return;
          }

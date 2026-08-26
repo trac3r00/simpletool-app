@@ -68,58 +68,25 @@ export const TOOLS = [
       "curl-studio",
       "user-agent-decoder",
       "csp-builder",
-      "dns-reference",
+      "network-reference",
     ],
   },
   {
-    id: "dns-reference",
-    name: "DNS Record Reference",
-    icon: "📇",
+    id: "network-reference",
+    name: "Network Reference",
+    icon: "🌐",
     description:
-      "Interactive reference for DNS record types with syntax, examples, and command builders.",
-    path: "/dns-reference",
+      "DNS records, common ports, HTTP status codes, and protocol headers — four references in one tabbed tool.",
+    path: "/network-reference",
     category: "network",
-    keywords: "dns, record, dig, nslookup, domain, resolver",
-    tip: "Comprehensive DNS reference — click any record type to see syntax, examples, TTL recommendations, and generate dig/nslookup commands",
+    keywords:
+      "dns, record, dig, nslookup, port, iana, tcp, udp, http, status, rfc 9110, ethernet, ipv4, ipv6, icmp, arp, protocol, header, reference",
+    tip: "Four network references in one — DNS record types, IANA ports, HTTP status codes, and protocol header diagrams.",
     relatedTools: [
       "cidr-calculator",
       "curl-studio",
       "email-analyzer",
       "csp-builder",
-    ],
-  },
-  {
-    id: "port-reference",
-    name: "Port Reference",
-    icon: "🌐",
-    description:
-      "Searchable IANA port database with security risk levels and protocol filters.",
-    path: "/port-reference",
-    category: "network",
-    keywords: "port, iana, tcp, udp, service, socket, well-known",
-    tip: "Search ports by number or service name — includes 100+ well-known and registered ports with security risk ratings",
-    relatedTools: [
-      "cidr-calculator",
-      "curl-studio",
-      "dns-reference",
-      "csp-builder",
-    ],
-  },
-  {
-    id: "http-status-reference",
-    name: "HTTP Status Reference",
-    icon: "📡",
-    description:
-      "Search HTTP status codes with usage, safety, idempotency, and cacheability guidance.",
-    path: "/http-status-reference",
-    category: "network",
-    keywords: "http, status, response, rfc 9110, cache, idempotent, rest, api",
-    tip: "Search HTTP status codes by code, class, phrase, or when-to-use guidance",
-    relatedTools: [
-      "curl-studio",
-      "protocol-headers",
-      "dns-reference",
-      "port-reference",
     ],
   },
   {
@@ -159,7 +126,7 @@ export const TOOLS = [
     relatedTools: [
       "cidr-calculator",
       "curl-studio",
-      "dns-reference",
+      "network-reference",
       "certificate-decoder",
     ],
   },
@@ -173,29 +140,7 @@ export const TOOLS = [
     category: "network",
     keywords: "wireshark, pcap, bpf, display filter, capture, packet analysis",
     tip: "Create complex Wireshark filters without memorizing syntax — supports display filters and BPF capture filters",
-    relatedTools: [
-      "cidr-calculator",
-      "curl-studio",
-      "dns-reference",
-      "port-reference",
-    ],
-  },
-  {
-    id: "protocol-headers",
-    name: "Protocol Header Visualizer",
-    icon: "📡",
-    description:
-      "Interactive bit-level diagrams for Ethernet, IPv4, IPv6, TCP, UDP, ICMP, and ARP.",
-    path: "/protocol-headers",
-    category: "network",
-    keywords: "ethernet, ipv4, ipv6, tcp, udp, icmp, arp, packet, rfc, binary",
-    tip: "Visualize network protocol headers with interactive bit-level diagrams — click fields for detailed info",
-    relatedTools: [
-      "wireshark-filter",
-      "cidr-calculator",
-      "curl-studio",
-      "dns-reference",
-    ],
+    relatedTools: ["cidr-calculator", "curl-studio", "network-reference"],
   },
   {
     id: "text-diff",
@@ -283,7 +228,6 @@ export const TOOLS = [
     keywords:
       "jwt, jwk, jwks, token, auth, jose, oidc, rsa, ec, sign, verify, kid, thumbprint",
     tip: "All-in-one JWT inspect/generate, JWK key management, and JWKS endpoint simulation",
-    badge: "NEW",
     relatedTools: [
       "certificate-decoder",
       "saml-decoder",
@@ -301,7 +245,6 @@ export const TOOLS = [
     keywords:
       "base64, hex, url, html, hash, md5, sha, bcrypt, decode, encode, identify",
     tip: "Auto-detect encoding layers, hash with all algorithms, identify unknown hashes",
-    badge: "NEW",
     relatedTools: [
       "token-studio",
       "certificate-decoder",
@@ -336,7 +279,6 @@ export const TOOLS = [
     keywords:
       "oauth, pkce, authorization, code, flow, openid, oidc, implicit, token",
     tip: "Generate PKCE code verifier/challenge pairs and check OAuth configuration security",
-    badge: "NEW",
     relatedTools: [
       "token-studio",
       "saml-decoder",
@@ -634,7 +576,7 @@ export const TOOLS = [
     name: "Token Counter & Cost Estimator",
     icon: "🧮",
     description:
-      "Estimate tokens for GPT/Claude/Llama and calculate cost with your pricing.",
+      "Estimate tokens for GPT/Claude/Llama/Gemini and calculate cost with your pricing.",
     path: "/token-counter",
     category: "utils",
     keywords: "llm, tokens, pricing, estimate, cost",
@@ -662,57 +604,21 @@ export const TOOLS = [
     ],
   },
   {
-    id: "public-repos-yml-builder",
-    name: "Public Repos YAML Builder",
-    icon: "📦",
+    id: "repo-ops",
+    name: "Repo Operations",
+    icon: "📚",
     description:
-      "Generate repos.yml inventories and audit snippets for public repo automation.",
-    path: "/public-repos-yml-builder",
+      "Build public repository inventories, manual-stewardship records, and review descriptions in one workspace.",
+    path: "/repo-ops",
     category: "utils",
     keywords:
-      "repos.yml, public repositories, github actions, kanban, automation, branch protection, sha pinning",
+      "repos.yml, public repositories, github actions, automation, manual stewardship, decision record, review description, pull request",
     badge: "NEW",
     relatedTools: [
       "yaml-toml-converter",
-      "secret-scanner",
-      "env-var-manager",
       "markdown-editor",
-    ],
-  },
-  {
-    id: "public-repos-not-automation",
-    name: "Public Repos Not Automation",
-    icon: "🛑",
-    description:
-      "Decide which public repository tasks should stay manual and generate a no-automation decision record.",
-    path: "/public-repos-not-automation",
-    category: "utils",
-    keywords:
-      "public repositories, no automation, kanban, maintainers, manual stewardship, decision record, checklist",
-    badge: "NEW",
-    relatedTools: [
-      "public-repos-yml-builder",
-      "markdown-editor",
-      "secret-scanner",
       "prompt-template-builder",
-    ],
-  },
-  {
-    id: "review-description-generator",
-    name: "Review Description Generator",
-    icon: "📝",
-    description:
-      "Generate structured PR review and comment descriptions from commits, diffs, or notes.",
-    path: "/review-description-generator",
-    category: "utils",
-    keywords:
-      "review, pr, pull request, description, comment, template, dependency bump, changelog",
-    badge: "NEW",
-    relatedTools: [
-      "markdown-editor",
-      "text-diff",
-      "prompt-template-builder",
-      "public-repos-yml-builder",
+      "secret-scanner",
     ],
   },
   {

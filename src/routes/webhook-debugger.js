@@ -62,11 +62,12 @@ function renderWebhookDebuggerPage(lang = DEFAULT_LANGUAGE) {
       .filter(Boolean) || [];
 
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      ${header}
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
+        ${header}
 
       <!-- Webhook URL display + start/stop -->
-      <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 p-5 mb-6">
+      <div class="tool-group p-5 mb-6">
         <div class="flex flex-wrap items-center justify-between gap-4">
           <div class="flex-1 min-w-0">
             <label class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1"><span data-i18n="tools.webhook-debugger.ui.label0">Local Endpoint</span></label>
@@ -89,9 +90,9 @@ function renderWebhookDebuggerPage(lang = DEFAULT_LANGUAGE) {
       <div id="webhook-log" class="space-y-3 mb-6"></div>
 
       <!-- Selected request detail -->
-      <div id="request-detail" class="hidden bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 overflow-hidden mb-6">
+      <div id="request-detail" class="tool-group tool-group--flush hidden overflow-hidden mb-6">
         <!-- Request summary bar -->
-        <button id="detail-close-btn" class="w-full flex items-center justify-between px-5 py-3 bg-surface-50 dark:bg-surface-800 hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors text-left">
+        <button id="detail-close-btn" class="btn-ghost w-full justify-between">
           <div class="flex items-center gap-3 min-w-0">
             <span id="detail-seq" class="shrink-0 text-xs font-mono font-bold text-surface-500 dark:text-surface-400"></span>
             <span id="detail-method" class="shrink-0 inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300"></span>
@@ -107,7 +108,7 @@ function renderWebhookDebuggerPage(lang = DEFAULT_LANGUAGE) {
         <div id="detail-panels" class="border-t border-surface-200 dark:border-surface-700">
           <!-- Headers panel -->
           <div class="border-b border-surface-200 dark:border-surface-700">
-            <button id="headers-toggle" class="w-full flex items-center gap-2 px-5 py-3 hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors text-left">
+            <button id="headers-toggle" class="btn-ghost w-full justify-between">
               <span class="text-xs font-bold uppercase text-surface-500 dark:text-surface-400 w-20">Headers</span>
               <span id="headers-count" class="text-xs font-mono text-surface-500 dark:text-surface-400"></span>
               <svg id="headers-chevron" class="w-4 h-4 text-surface-400 ml-auto transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
@@ -119,7 +120,7 @@ function renderWebhookDebuggerPage(lang = DEFAULT_LANGUAGE) {
 
           <!-- Body panel -->
           <div class="border-b border-surface-200 dark:border-surface-700">
-            <button id="body-toggle" class="w-full flex items-center gap-2 px-5 py-3 hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors text-left">
+            <button id="body-toggle" class="btn-ghost w-full justify-between">
               <span class="text-xs font-bold uppercase text-surface-500 dark:text-surface-400 w-20">Body</span>
               <span id="body-type" class="text-xs font-mono text-surface-500 dark:text-surface-400"></span>
               <svg id="body-chevron" class="w-4 h-4 text-surface-400 ml-auto transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
@@ -138,20 +139,20 @@ function renderWebhookDebuggerPage(lang = DEFAULT_LANGUAGE) {
 
           <!-- Signature verification panel -->
           <div>
-            <button id="sig-toggle" class="w-full flex items-center gap-2 px-5 py-3 hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors text-left">
+            <button id="sig-toggle" class="btn-ghost w-full justify-between">
               <span class="text-xs font-bold uppercase text-surface-500 dark:text-surface-400 w-20">Signature</span>
               <span id="sig-status" class="text-xs font-medium"></span>
               <svg id="sig-chevron" class="w-4 h-4 text-surface-400 ml-auto transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
             </button>
             <div id="sig-panel" class="hidden px-5 pb-4">
               <div class="flex flex-wrap gap-2 items-center mb-3">
-                <select id="sig-algorithm" class="bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg text-xs px-2 py-1.5 focus:ring-primary-500">
+                <select id="sig-algorithm" class="input">
                   <option value="sha256">HMAC-SHA256</option>
                   <option value="sha1">HMAC-SHA1</option>
                   <option value="sha512">HMAC-SHA512</option>
                 </select>
                 <input type="text" id="sig-secret" placeholder="Enter secret..." data-i18n-placeholder="tools.webhook-debugger.ui.placeholder9"
-                  class="flex-1 min-w-0 px-2 py-1.5 bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg text-xs focus:ring-primary-500">
+                  class="input flex-1 min-w-0">
                 <button id="verify-sig-btn" class="btn btn-secondary btn-xs" data-i18n="tools.webhook-debugger.ui.button5">Verify</button>
               </div>
               <div id="sig-result" class="hidden font-mono text-xs p-3 rounded-lg"></div>
@@ -184,6 +185,7 @@ function renderWebhookDebuggerPage(lang = DEFAULT_LANGUAGE) {
       </div>
 
       ${relatedToolsData.length > 0 ? createRelatedToolsSection(relatedToolsData) : ""}
+      </div>
     </main>
 
     <script>
@@ -398,7 +400,7 @@ function renderWebhookDebuggerPage(lang = DEFAULT_LANGUAGE) {
           var shortHeaders = req.headersObj || {};
           var contentLen = req.body ? req.body.length : 0;
           var methodColor = methodColorClass(req.method);
-          return '<div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 p-4 cursor-pointer hover:border-primary-300 dark:hover:border-primary-700 transition-colors webhook-log-item" data-id="' + req.id + '" role="button" tabindex="0" aria-label="View request ' + req.id + '">' +
+          return '<div class="tool-group p-4 cursor-pointer hover:border-primary-300 dark:hover:border-primary-700 transition-colors webhook-log-item" data-id="' + req.id + '" role="button" tabindex="0" aria-label="View request ' + req.id + '">' +
             '<div class="flex items-center gap-3 mb-2">' +
               '<span class="text-xs font-mono font-bold text-surface-500 dark:text-surface-400 shrink-0">#' + req.seq + '</span>' +
               '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold ' + methodColor + '">' + (req.method || 'GET') + '</span>' +
@@ -701,6 +703,10 @@ function renderWebhookDebuggerPage(lang = DEFAULT_LANGUAGE) {
         requests.push(req);
         // Persist
         setCapture(req);
+        // Already in the in-memory list: advance the poller watermark so
+        // pollCaptures() does not re-ingest this same capture from
+        // sessionStorage as a second, duplicate entry.
+        lastCaptureTime = ts;
         renderLog();
       }
 

@@ -76,7 +76,8 @@ function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
   const content = `
     <script src="/vendor/forge.min.js" integrity="sha384-wX64sW+w67fcBkYc40eYEvKyZMtpFujAPnxJPPMvE6fT3WDOJDZOAAny4rWgoBYq" crossorigin="anonymous"></script>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
       <div class="space-y-8">
         
         <!-- Header & Input -->
@@ -205,6 +206,7 @@ function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
           </table>`,
         },
       ])}
+      </div>
     </main>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
       ${createEducationalSection(

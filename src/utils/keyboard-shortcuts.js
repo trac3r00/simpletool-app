@@ -274,7 +274,7 @@ export function getKeyboardShortcutsScript() {
 
   // Add visual indicator for shortcut availability
   const indicator = document.createElement('button');
-  indicator.className = 'fixed bottom-4 left-4 z-40 p-2 bg-surface-900/90 dark:bg-surface-800 text-white rounded-full shadow-lg hover:bg-surface-900 dark:hover:bg-surface-700 transition-all opacity-70 hover:opacity-100';
+  indicator.className = 'btn-fab fixed bottom-4 left-4 z-40';
   indicator.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>';
   indicator.title = 'Press ' + modKeyName + '+/ for keyboard shortcuts';
   indicator.addEventListener('click', showHelpModal);

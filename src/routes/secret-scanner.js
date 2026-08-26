@@ -51,7 +51,8 @@ function renderSecretScannerPage(lang = DEFAULT_LANGUAGE) {
     [
       {
         text: '<span data-i18n="tools.secret-scanner.ui.badge0">Local Only</span>',
-        tooltip: "Nothing is uploaded — scanning happens in your browser.",
+        tooltip:
+          "Scanning happens in your browser; the text you paste is not sent to our servers.",
       },
       {
         text: '<span data-i18n="tools.secret-scanner.ui.badge1">Actionable</span>',
@@ -68,8 +69,8 @@ function renderSecretScannerPage(lang = DEFAULT_LANGUAGE) {
       .filter(Boolean) || [];
 
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
         ${header}
 
         <div class="flex flex-wrap gap-3 mb-6 bg-surface-50 dark:bg-surface-950/50 p-2 rounded-lg border border-surface-100 dark:border-surface-800">
@@ -113,7 +114,7 @@ function renderSecretScannerPage(lang = DEFAULT_LANGUAGE) {
               </div>
             </div>
 
-            <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+            <div class="tool-group p-5">
               <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400 mb-3" data-i18n="tools.secret-scanner.ui.heading0">Findings</h2>
               <div id="findings" class="space-y-2 text-sm text-surface-700 dark:text-surface-200">
                 <p class="text-surface-500 dark:text-surface-400" data-i18n="tools.secret-scanner.ui.desc1">Click Scan to find secrets.</p>
@@ -122,7 +123,7 @@ function renderSecretScannerPage(lang = DEFAULT_LANGUAGE) {
           </div>
 
           <div class="space-y-3">
-            <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+            <div class="tool-group p-5">
               <label class="label flex items-center gap-2">
                 <span data-i18n="tools.secret-scanner.ui.label3">Redacted output (share-safe)</span>
                 ${infoHint("Use this when pasting logs into tickets or chats. Always rotate credentials if a real secret leaked.", "Help", { i18nKey: "tools.secret-scanner.ui.desc2" })}
@@ -228,7 +229,7 @@ function renderSecretScannerPage(lang = DEFAULT_LANGUAGE) {
           labelKey: 'text0',
           label: 'Private key block',
           severity: 'high',
-          re: /-----BEGIN [A-Z0-9 ]*PRIVATE KEY-----/g,
+          re: /-----BEGIN [A-Z0-9 ]*PRIVATE KEY-----[\s\S]*?(?:-----END [A-Z0-9 ]*PRIVATE KEY-----|$)/g,
           adviceKey: 'text1',
           advice: 'Revoke/rotate the key. Treat as compromised.'
         },
@@ -240,6 +241,31 @@ function renderSecretScannerPage(lang = DEFAULT_LANGUAGE) {
 	          re: /\b(AKIA|ASIA)[0-9A-Z]{16}\b/g,
 	          adviceKey: 'text3',
 	          advice: 'Rotate AWS keys and investigate CloudTrail usage.'
+	        },
+	        {
+	          id: 'aws_secret_access_key',
+	          labelKey: 'text23',
+	          label: 'AWS Secret Access Key',
+	          severity: 'high',
+	          // Context-anchored: a bare 40-char base64 string is far too common
+	          // to flag on its own, so require the AWS key name beside it.
+	          // redactGroup keeps the label visible and masks only the value.
+	          re: /\b(AWS_?SECRET_?ACCESS_?KEY|aws_secret_access_key)(\s*[:=]\s*)(['"]?)([A-Za-z0-9\/+=]{40})\3/g,
+	          redactGroup: 4,
+	          adviceKey: 'text24',
+	          advice: 'Rotate this key immediately in IAM. A secret access key grants full API access.'
+	        },
+	        {
+	          id: 'generic_secret_assign',
+	          labelKey: 'text25',
+	          label: 'Secret assignment (unquoted)',
+	          severity: 'medium',
+	          // The quoted api_key_assign pattern below misses env-file style
+	          // NAME=value with no quotes, which is how secrets usually leak.
+	          re: /\b([A-Za-z0-9_]*(?:SECRET|TOKEN|PASSWORD|PASSWD|APIKEY|API_KEY|PRIVATE_KEY)[A-Za-z0-9_]*)(\s*[:=]\s*)([^\s'"#\[(){};,<>]{16,})/gi,
+	          redactGroup: 3,
+	          adviceKey: 'text26',
+	          advice: 'Move this value to a secret manager and rotate it.'
 	        },
 	        {
 	          id: 'github_pat',
@@ -385,7 +411,16 @@ function renderSecretScannerPage(lang = DEFAULT_LANGUAGE) {
         patterns.forEach(p => {
           // Rebuild regex without global state issues per replace
           const re = new RegExp(p.re.source, p.re.flags.includes('g') ? p.re.flags : (p.re.flags + 'g'));
-          out = out.replace(re, (m) => '[REDACTED:' + p.id + ']');
+          out = out.replace(re, function(m) {
+            if (!p.redactGroup) return '[REDACTED:' + p.id + ']';
+            // Mask only the captured secret so the surrounding assignment stays
+            // readable: AWS_SECRET_ACCESS_KEY=[REDACTED:...]
+            var groups = Array.prototype.slice.call(arguments, 1, -2);
+            var value = groups[p.redactGroup - 1];
+            if (!value) return '[REDACTED:' + p.id + ']';
+            var at = m.lastIndexOf(value);
+            return m.slice(0, at) + '[REDACTED:' + p.id + ']' + m.slice(at + value.length);
+          });
         });
         return out;
       }

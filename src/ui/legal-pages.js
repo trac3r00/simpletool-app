@@ -14,7 +14,7 @@ import { getLegalSections } from "./legal-content.js";
 
 const SITE_NAME = "SimpleTool App";
 const CONTACT_EMAIL = "hello@simpletool.app";
-const LAST_UPDATED_ISO = "2026-08-17";
+const LAST_UPDATED_ISO = "2026-08-19";
 
 function renderLegalShell({
   title,
@@ -54,8 +54,8 @@ function wrapLegalPage({
     : "";
 
   const content = `
-    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
-      <div class="card p-6 sm:p-10">
+    <main class="content-page-shell">
+      <div class="content-page-panel">
         <header class="mb-8">
           <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-surface-900 dark:text-surface-50">${heading}</h1>
           ${updated}

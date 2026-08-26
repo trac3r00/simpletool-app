@@ -3,7 +3,6 @@
  * Never Auto ads. Never load the script on deny-listed tools.
  */
 
-export const ADSENSE_PUBLISHER_ID = "ca-pub-5134881365131182";
 export const ADS_TXT_LINE =
   "google.com, pub-5134881365131182, DIRECT, f08c47fec0942fa0";
 

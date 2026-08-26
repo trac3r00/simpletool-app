@@ -3,22 +3,7 @@
  */
 
 import { respondHTML } from "../utils/respond.js";
-import {
-  getThemeScript,
-  getThemeBootstrapScript,
-  getNavigationHTML,
-  getStylesheetLinks,
-  getGtagScript,
-  getAdSenseScript,
-  getAdSlotHTML,
-  getFooterHTML,
-  getSearchScript,
-  t,
-  getLanguageScript,
-  getLanguageBootstrapScript,
-  getAnalyticsScript,
-  getAlternateLanguageLinks,
-} from "../utils/common-ui.js";
+import { createPageTemplate, getAdSlotHTML, t } from "../utils/common-ui.js";
 import { getToolsForEnvironment, CATEGORIES } from "../utils/tool-registry.js";
 import {
   DEFAULT_LANGUAGE,
@@ -40,45 +25,11 @@ export function renderHomePage({
   const homeUrl = `https://simpletool.app${homePath}`;
   const searchTarget = `https://simpletool.app${withLanguageQuery("/?q={search_term_string}", currentLang)}`;
 
-  const html = `<!DOCTYPE html>
-<html lang="${currentLang}" class="scroll-smooth" style="visibility:hidden">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${homeTitle}</title>
-  <meta name="description" content="${homeDescription}">
-  <link rel="canonical" href="${homeUrl}">
-  ${getAlternateLanguageLinks("/", currentLang)}
-  <link rel="icon" type="image/svg+xml" href="/favicon.ico">
-  <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#2563eb">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="${homeUrl}">
-  <meta property="og:title" content="${homeTitle}">
-  <meta property="og:description" content="${homeDescription}">
-  <meta property="og:site_name" content="SimpleTool">
-  <meta property="og:image" content="https://simpletool.app/og-image.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:type" content="image/png">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="${homeTitle}">
-  <meta name="twitter:description" content="${homeDescription}">
-  <meta name="twitter:image" content="https://simpletool.app/og-image.png">
-  <meta name="keywords" content="${t("home.meta.keywords", currentLang)}">
-  ${getThemeBootstrapScript()}
-  ${getLanguageBootstrapScript(currentLang)}
-  ${getGtagScript()}
-  ${getAdSenseScript("/")}
-  ${getStylesheetLinks()}
-</head>
-<body class="bg-surface-50 text-surface-900 dark:bg-surface-950 dark:text-surface-50 transition-colors duration-200 flex flex-col min-h-screen">
-  <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary-600 focus:text-white focus:rounded">Skip to main content</a>
-
-  ${getNavigationHTML({ maxWidth: "max-w-7xl", lang: currentLang })}
-
+  const content = `
   <!-- Hero Section -->
-  <div id="main-content" tabindex="-1"></div>
+  <!-- Hero band keeps a bespoke surface pair on purpose: no semantic token is
+       white+surface-950. bg-card would lift the dark band off the page and
+       bg-background would flatten the light one into it. -->
   <header class="pt-16 pb-12 sm:pt-24 sm:pb-16 bg-white dark:bg-surface-950 border-b border-surface-200 dark:border-surface-800 hexagon-pattern">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
       <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-surface-900 dark:text-surface-50 mb-6" data-i18n="home.heroTitle">
@@ -98,7 +49,7 @@ export function renderHomePage({
         </div>
          <input type="text"
                 id="tool-search"
-                class="block w-full pl-11 pr-4 py-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl text-surface-900 dark:text-surface-50 placeholder-surface-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-shadow shadow-sm"
+                class="input w-full pl-11 pr-4 py-4 text-base"
                 placeholder="${t("nav.search", currentLang)}"
                 data-i18n-placeholder="nav.search"
                 aria-label="${t("nav.search", currentLang)}"
@@ -117,7 +68,7 @@ export function renderHomePage({
       <div class="flex items-center gap-3">
         <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-lg bg-warning-100 text-warning-700 dark:bg-warning-900/30 dark:text-warning-300">⭐</span>
         <h2 class="text-xl font-bold text-surface-900 dark:text-surface-100 uppercase tracking-wide" data-i18n="home.favorites">${t("home.favorites", currentLang)}</h2>
-        <span id="favorites-count" class="text-xs font-medium text-surface-400 bg-surface-100 dark:bg-surface-800 dark:text-surface-500 px-2 py-0.5 rounded-full">0</span>
+        <span id="favorites-count" class="text-xs font-medium text-surface-500 bg-surface-100 dark:bg-surface-800 dark:text-surface-400 px-2 py-0.5 rounded-full">0</span>
       </div>
       <div id="favorites-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
     </div>
@@ -127,7 +78,7 @@ export function renderHomePage({
       <div class="flex items-center gap-3">
         <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-lg bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300">🕐</span>
         <h2 class="text-xl font-bold text-surface-900 dark:text-surface-100 uppercase tracking-wide" data-i18n="home.recentlyUsed">${t("home.recentlyUsed", currentLang)}</h2>
-        <span id="recent-count" class="text-xs font-medium text-surface-400 bg-surface-100 dark:bg-surface-800 dark:text-surface-500 px-2 py-0.5 rounded-full">0</span>
+        <span id="recent-count" class="text-xs font-medium text-surface-500 bg-surface-100 dark:bg-surface-800 dark:text-surface-400 px-2 py-0.5 rounded-full">0</span>
       </div>
       <div id="recent-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
     </div>
@@ -135,7 +86,7 @@ export function renderHomePage({
     <div id="search-results-container" class="hidden space-y-8">
       <h2 id="search-results-heading" class="text-lg font-bold text-surface-900 dark:text-surface-100 mb-6 flex items-center gap-2 uppercase tracking-wide">
         🔍 <span id="search-results-label" data-i18n="home.searchResultsLabel">${t("home.searchResultsLabel", currentLang)}</span>
-        <span id="search-results-count" class="text-xs font-medium text-surface-400 bg-surface-100 dark:bg-surface-800 dark:text-surface-500 px-2 py-0.5 rounded-full"></span>
+        <span id="search-results-count" class="text-xs font-medium text-surface-500 bg-surface-100 dark:bg-surface-800 dark:text-surface-400 px-2 py-0.5 rounded-full"></span>
       </h2>
       <div id="search-results-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <!-- Search results injected here -->
@@ -158,45 +109,39 @@ export function renderHomePage({
         ${t("home.noResults", currentLang)}
         <span id="search-empty-query" class="font-semibold text-surface-900 dark:text-surface-100"></span>
       </p>
-      <p class="text-sm text-surface-500 dark:text-surface-500 mt-2" data-i18n="home.noResultsHint">Try a different search term.</p>
+      <p class="text-sm text-surface-500 dark:text-surface-400 mt-2" data-i18n="home.noResultsHint">Try a different search term.</p>
     </div>
-  </main>
+  </main>`;
 
-  <script type="application/ld+json">
-  ${JSON.stringify({
+  const schema = {
     "@context": "https://schema.org",
-    "@type": "WebSite",
-    name: "SimpleTool",
-    url: homeUrl,
-    description: homeDescription,
-    potentialAction: {
-      "@type": "SearchAction",
-      target: searchTarget,
-      "query-input": "required name=search_term_string",
-    },
-  })}
-  </script>
-  <script type="application/ld+json">
-  ${JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    name: t("home.heroTitle", currentLang),
-    numberOfItems: tools.length,
-    itemListElement: tools.map((tool, i) => ({
-      "@type": "ListItem",
-      position: i + 1,
-      name: tool.name,
-      url: `https://simpletool.app${withLanguageQuery(tool.path, currentLang)}`,
-    })),
-  })}
-  </script>
+    "@graph": [
+      {
+        "@type": "WebSite",
+        name: "SimpleTool",
+        url: homeUrl,
+        description: homeDescription,
+        potentialAction: {
+          "@type": "SearchAction",
+          target: searchTarget,
+          "query-input": "required name=search_term_string",
+        },
+      },
+      {
+        "@type": "ItemList",
+        name: t("home.heroTitle", currentLang),
+        numberOfItems: tools.length,
+        itemListElement: tools.map((tool, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          name: tool.name,
+          url: `https://simpletool.app${withLanguageQuery(tool.path, currentLang)}`,
+        })),
+      },
+    ],
+  };
 
-  <!-- Footer -->
-  ${getFooterHTML({ lang: currentLang })}
-
-  ${getThemeScript()}
-  ${getLanguageScript("", currentLang)}
-  ${getSearchScript({ lang: currentLang })}
+  const scripts = `
   <script>
     (function() {
       const heroSearch = document.getElementById('tool-search');
@@ -341,8 +286,8 @@ export function renderHomePage({
       function renderCard(tool) {
         var badge = tool.badge ? '<span class="px-2 py-0.5 text-xs font-semibold bg-primary-100 text-primary-700 dark:bg-primary-900/40 dark:text-primary-400 rounded-full">' + tool.badge + '</span>' : '';
         var dataAttrs = 'data-tool-id="' + escAttr(tool.id) + '" data-tool-name="' + escAttr(tool.name) + '" data-tool-desc="' + escAttr(tool.description) + '" data-tool-tags="' + escAttr(tool.keywords || '') + '"';
-        return '<a href="' + tool.path + '" ' + dataAttrs + ' class="tool-card group flex flex-col p-4 bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl hover:border-primary-400 dark:hover:border-primary-600 hover:shadow-md transition-all duration-200">' +
-          '<div class="flex items-start justify-between mb-3"><div class="text-3xl bg-surface-50 dark:bg-surface-800 p-2 rounded-lg border border-surface-100 dark:border-surface-700 group-hover:scale-110 transition-transform duration-200">' + tool.icon + '</div>' + badge + '</div>' +
+        return '<a href="' + tool.path + '" ' + dataAttrs + ' class="tool-card tool-card-link group flex flex-col p-4">' +
+          '<div class="flex items-start justify-between mb-3"><div class="text-3xl bg-surface-50 dark:bg-surface-800 group-hover:bg-primary-50 dark:group-hover:bg-primary-900/30 p-2 rounded-lg border border-surface-100 dark:border-surface-700 group-hover:border-primary-200 dark:group-hover:border-primary-800 group-hover:scale-110 transition-all duration-200">' + tool.icon + '</div>' + badge + '</div>' +
           '<h3 class="tool-name font-bold text-surface-900 dark:text-surface-50 mb-1 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">' + tool.name + '</h3>' +
           '<p class="tool-desc text-sm text-surface-500 dark:text-surface-400 leading-relaxed line-clamp-2">' + tool.description + '</p></a>';
       }
@@ -358,13 +303,22 @@ export function renderHomePage({
       populate('favorites-section', 'favorites-grid', 'favorites-count', readLS(FAV_KEY));
       populate('recent-section', 'recent-grid', 'recent-count', readLS(RECENT_KEY));
     })();
-  </script>
-  ${getAnalyticsScript()}
-  <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){});}</script>
-</body>
-</html>`;
+  </script>`;
 
-  return respondHTML(html);
+  return respondHTML(
+    createPageTemplate({
+      title: homeTitle,
+      titleSuffix: "",
+      description: homeDescription,
+      keywords: t("home.meta.keywords", currentLang),
+      content,
+      path: "/",
+      lang: currentLang,
+      schema,
+      scripts,
+      includeToolUtilities: false,
+    }),
+  );
 }
 
 function renderCategories(categories, lang = DEFAULT_LANGUAGE) {
@@ -376,7 +330,7 @@ function renderCategories(categories, lang = DEFAULT_LANGUAGE) {
         <h2 class="text-xl font-bold text-surface-900 dark:text-surface-100 uppercase tracking-wide" data-i18n="home.cat.${key}">
           ${t("home.cat." + key, lang)}
         </h2>
-        <span class="category-count text-xs font-medium text-surface-400 bg-surface-100 dark:bg-surface-800 dark:text-surface-500 px-2 py-0.5 rounded-full">${section.tools.length}</span>
+        <span class="category-count text-xs font-medium text-surface-500 bg-surface-100 dark:bg-surface-800 dark:text-surface-400 px-2 py-0.5 rounded-full">${section.tools.length}</span>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         ${section.tools.map((tool) => renderToolCard(tool, lang)).join("")}
@@ -400,14 +354,14 @@ function renderToolCard(tool, lang = DEFAULT_LANGUAGE) {
     .filter(Boolean)
     .join(" ");
   return `
-    <a href="${withLanguageQuery(tool.path, lang)}" 
-       class="tool-card group flex flex-col p-4 bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl hover:border-primary-400 dark:hover:border-primary-600 hover:shadow-md transition-all duration-200"
+    <a href="${withLanguageQuery(tool.path, lang)}"
+       class="tool-card tool-card-link group flex flex-col p-4"
        data-tool-id="${escapeAttr(tool.id)}"
        data-tool-name="${escapeAttr(tool.name)}"
        data-tool-desc="${escapeAttr(tool.description)}"
        data-tool-tags="${escapeAttr(tags)}">
       <div class="flex items-start justify-between mb-3">
-        <div class="text-3xl bg-surface-50 dark:bg-surface-800 p-2 rounded-lg border border-surface-100 dark:border-surface-700 group-hover:scale-110 transition-transform duration-200">
+        <div class="text-3xl bg-surface-50 dark:bg-surface-800 group-hover:bg-primary-50 dark:group-hover:bg-primary-900/30 p-2 rounded-lg border border-surface-100 dark:border-surface-700 group-hover:border-primary-200 dark:group-hover:border-primary-800 group-hover:scale-110 transition-all duration-200">
           ${tool.icon}
         </div>
         ${tool.badge ? `<span class="px-2 py-0.5 text-xs font-semibold bg-primary-100 text-primary-700 dark:bg-primary-900/40 dark:text-primary-400 rounded-full">${tool.badge}</span>` : ""}

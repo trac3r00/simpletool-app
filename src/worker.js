@@ -298,11 +298,19 @@ const worker = {
 
       // Robots.txt
       if (path === "/robots.txt") {
-        const robotsTxt = [
-          "User-agent: *",
-          "Allow: /",
-          `Sitemap: ${url.origin}/sitemap.xml`,
-        ].join("\n");
+        // A preview deployment serves the whole site on a *.workers.dev host.
+        // If it advertised Allow + a sitemap it would be crawled and compete
+        // with the real domain for identical content, so non-production
+        // deployments disallow everything.
+        const isProduction =
+          (env?.ENVIRONMENT || "").toLowerCase() === "production";
+        const robotsTxt = isProduction
+          ? [
+              "User-agent: *",
+              "Allow: /",
+              `Sitemap: ${url.origin}/sitemap.xml`,
+            ].join("\n")
+          : ["User-agent: *", "Disallow: /"].join("\n");
         return respondText(robotsTxt);
       }
 
@@ -371,17 +379,27 @@ const worker = {
         path.startsWith("/vendor/") ||
         path.startsWith("/fonts/") ||
         path === "/manifest.json" ||
+        path === "/manifest.webmanifest" ||
         path === "/sw.js" ||
         path === "/og-image.png"
       ) {
         if (env && env.ASSETS && typeof env.ASSETS.fetch === "function") {
+          // /manifest.webmanifest is the standard extension for a web app
+          // manifest. Serve the same asset instead of 404ing on it; pages
+          // link /manifest.json, but crawlers and installers probe both.
+          let baseRequest = request;
+          if (path === "/manifest.webmanifest") {
+            const aliasUrl = new URL(request.url);
+            aliasUrl.pathname = "/manifest.json";
+            baseRequest = new Request(aliasUrl.toString(), request);
+          }
           const assetRequest = isDev
-            ? stripConditionalHeaders(request)
-            : request;
+            ? stripConditionalHeaders(baseRequest)
+            : baseRequest;
           let assetResponse = await env.ASSETS.fetch(assetRequest);
 
           if (isDev && assetResponse.status === 304) {
-            const bustUrl = new URL(request.url);
+            const bustUrl = new URL(baseRequest.url);
             bustUrl.searchParams.set("dev-cache-bust", String(Date.now()));
             assetResponse = await env.ASSETS.fetch(
               new Request(bustUrl.toString(), assetRequest),
@@ -394,11 +412,19 @@ const worker = {
             return respond404();
           }
 
+          // Web app manifests have their own media type; the asset store
+          // serves plain application/json for the .json file.
+          const isManifest =
+            path === "/manifest.json" || path === "/manifest.webmanifest";
+
           if (!isDev) {
             const headers = new Headers(assetResponse.headers);
             const securityHeaders = getAssetSecurityHeaders();
             for (const [key, value] of Object.entries(securityHeaders)) {
               headers.set(key, value);
+            }
+            if (isManifest) {
+              headers.set("Content-Type", "application/manifest+json");
             }
             return new Response(assetResponse.body, {
               status: assetResponse.status,
@@ -412,6 +438,9 @@ const worker = {
           const securityHeaders = getAssetSecurityHeaders();
           for (const [key, value] of Object.entries(securityHeaders)) {
             headers.set(key, value);
+          }
+          if (isManifest) {
+            headers.set("Content-Type", "application/manifest+json");
           }
           return new Response(assetResponse.body, {
             status: assetResponse.status === 304 ? 200 : assetResponse.status,

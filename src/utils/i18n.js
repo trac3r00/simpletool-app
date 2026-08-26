@@ -200,12 +200,20 @@ export function getLanguageBootstrapScript(serverLang = DEFAULT_LANGUAGE) {
 /**
  * Get the language management script for the client
  */
-export function getLanguageScript(toolId, serverLang = DEFAULT_LANGUAGE) {
+export function getLanguageScript(
+  toolId,
+  serverLang = DEFAULT_LANGUAGE,
+  i18nToolIds,
+) {
   const normalized = normalizeLanguage(serverLang);
   const langsToSend =
     normalized === DEFAULT_LANGUAGE
       ? [DEFAULT_LANGUAGE]
       : [DEFAULT_LANGUAGE, normalized];
+  const fullToolIds = new Set([
+    toolId,
+    ...(Array.isArray(i18nToolIds) ? i18nToolIds : []),
+  ]);
   const slim = {};
   for (const lang of langsToSend) {
     const data = getLanguageCatalog(lang);
@@ -213,7 +221,7 @@ export function getLanguageScript(toolId, serverLang = DEFAULT_LANGUAGE) {
     if (data.tools) {
       const tools = {};
       for (const [id, info] of Object.entries(data.tools)) {
-        if (id === toolId) {
+        if (fullToolIds.has(id)) {
           tools[id] = info;
         } else {
           const { ui, js, edu, cheatsheet, ...rest } = info;
@@ -466,7 +474,7 @@ export function getLanguageSelectorHTML(lang = DEFAULT_LANGUAGE) {
     .map(
       ([code, { name, flag }]) => `
     <button data-lang="${code}" 
-            class="flex items-center gap-2 w-full px-4 py-2 text-sm text-surface-700 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors ${current === code ? "bg-surface-50 dark:bg-surface-800/50 font-semibold" : ""}"
+            class="btn-ghost w-full justify-start gap-2"bg-surface-50 dark:bg-surface-800/50 font-semibold" : ""}"
             role="menuitem">
       <span>${flag}</span>
       <span>${name}</span>
@@ -478,7 +486,7 @@ export function getLanguageSelectorHTML(lang = DEFAULT_LANGUAGE) {
   return `
     <div class="relative inline-block text-left group">
       <button type="button"
-              class="flex items-center gap-2 p-2 rounded-lg text-surface-600 hover:bg-surface-100 dark:text-surface-400 dark:hover:bg-surface-800 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500"
+              class="btn-ghost gap-2"
               aria-haspopup="true"
               aria-expanded="false"
               aria-label="${changeLanguageLabel}"

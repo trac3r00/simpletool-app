@@ -67,19 +67,19 @@ function renderQRCodePage(lang = DEFAULT_LANGUAGE) {
     <script src="/vendor/qrcode.min.js" integrity="sha384-B3w4ObQEXH2D3E8FlVZ+pBTHHTrPFwqbXjfU/95D5ekt8DVTeG+cB6s6nVpsvh3m" crossorigin="anonymous"></script>
     <script src="/vendor/jsqr.min.js" integrity="sha384-b5Ya4Bq3qCyz39m2ISh+4DxjAIljdeFwK/BsXLuj9gugaNwAcj/ia15fxNZL9Nlx" crossorigin="anonymous"></script>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
 
         ${toolHeader}
 
         <!-- Tabs -->
         <div class="border-b border-surface-200 dark:border-surface-700 mb-8">
           <nav class="flex flex-wrap gap-2" aria-label="QR code tool modes" role="tablist">
-            <button id="tab-trigger-generate" class="tab-button active px-4 py-2 border-b-2 border-primary-600 font-medium text-sm text-primary-600 dark:text-primary-400 transition-colors" data-tab="generate" role="tab" aria-controls="tab-generate" aria-selected="true" tabindex="0">
-              <span class="material-symbols-rounded text-base align-middle">qr_code_2</span> <span data-i18n="tools.qr-code.ui.tab0">Generate</span>
+            <button id="tab-trigger-generate" class="tab-trigger tab-button active" data-tab="generate" role="tab" aria-controls="tab-generate" aria-selected="true" tabindex="0">
+              <span class="material-symbols-rounded text-base align-middle" aria-hidden="true">qr_code_2</span> <span data-i18n="tools.qr-code.ui.tab0">Generate</span>
             </button>
-            <button id="tab-trigger-decode" class="tab-button px-4 py-2 border-b-2 border-transparent font-medium text-sm text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-200 transition-colors" data-tab="decode" role="tab" aria-controls="tab-decode" aria-selected="false" tabindex="-1">
-              <span class="material-symbols-rounded text-base align-middle">qr_code_scanner</span> <span data-i18n="tools.qr-code.ui.tab1">Decode</span>
+            <button id="tab-trigger-decode" class="tab-trigger tab-button" data-tab="decode" role="tab" aria-controls="tab-decode" aria-selected="false" tabindex="-1">
+              <span class="material-symbols-rounded text-base align-middle" aria-hidden="true">qr_code_scanner</span> <span data-i18n="tools.qr-code.ui.tab1">Decode</span>
             </button>
           </nav>
         </div>
@@ -91,7 +91,7 @@ function renderQRCodePage(lang = DEFAULT_LANGUAGE) {
             <div class="space-y-6">
               <div>
                 <label for="qr-data" class="label"><span data-i18n="tools.qr-code.ui.label4">Text or URL to Encode</span></label>
-                <textarea id="qr-data" rows="4" data-tooltip="Text or URL to encode as QR code" data-i18n-tooltip="tools.qr-code.ui.tip0" placeholder="Enter URL, text, or any content..." data-i18n-placeholder="tools.qr-code.ui.placeholder12" class="input resize-vertical font-mono"></textarea>
+                <textarea id="qr-data" rows="4" data-tooltip="Text or URL to encode as QR code" data-i18n-tooltip="tools.qr-code.ui.tip0" placeholder="Enter URL, text, or any content..." data-i18n-placeholder="tools.qr-code.ui.placeholder12" class="input resize-vertical font-mono" aria-describedby="qr-error-msg"></textarea>
               </div>
 
               <div class="grid grid-cols-2 gap-4">
@@ -118,14 +118,14 @@ function renderQRCodePage(lang = DEFAULT_LANGUAGE) {
                 <div>
                   <label for="qr-fg-color" class="label"><span data-i18n="tools.qr-code.ui.label6">Foreground Color</span></label>
                   <div class="flex gap-2 items-center">
-                    <input type="color" id="qr-fg-color" value="#000000" class="h-9 w-12 cursor-pointer rounded border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 p-1">
+                    <input type="color" id="qr-fg-color" value="#000000" class="h-9 w-12 cursor-pointer rounded border border-input bg-background p-1">
                     <input type="text" id="qr-fg-text" value="#000000" maxlength="7" class="input flex-1 font-mono text-sm" aria-label="Foreground color hex value">
                   </div>
                 </div>
                 <div>
                   <label for="qr-bg-color" class="label"><span data-i18n="tools.qr-code.ui.label7">Background Color</span></label>
                   <div class="flex gap-2 items-center">
-                    <input type="color" id="qr-bg-color" value="#ffffff" class="h-9 w-12 cursor-pointer rounded border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 p-1">
+                    <input type="color" id="qr-bg-color" value="#ffffff" class="h-9 w-12 cursor-pointer rounded border border-input bg-background p-1">
                     <input type="text" id="qr-bg-text" value="#ffffff" maxlength="7" class="input flex-1 font-mono text-sm" aria-label="Background color hex value">
                   </div>
                 </div>
@@ -133,18 +133,18 @@ function renderQRCodePage(lang = DEFAULT_LANGUAGE) {
 
               <!-- Generate Button -->
               <button id="generate-qr" class="btn btn-primary w-full">
-                <span class="material-symbols-rounded text-base align-middle">qr_code_2</span>
+                <span class="material-symbols-rounded text-base align-middle" aria-hidden="true">qr_code_2</span>
                 <span data-i18n="tools.qr-code.ui.btnGenerate">Generate QR Code</span>
               </button>
 
               <!-- Error Message -->
-              <div id="qr-error-msg" class="hidden rounded-lg p-3 text-sm border bg-error-50 dark:bg-error-900/20 text-error-700 dark:text-error-300 border-error-200 dark:border-error-800"></div>
+              <div id="qr-error-msg" role="alert" class="hidden rounded-lg p-3 text-sm border bg-error-50 dark:bg-error-900/20 text-error-700 dark:text-error-300 border-error-200 dark:border-error-800"></div>
             </div>
 
             <!-- Right: Preview & Download -->
             <div class="space-y-4">
               <div id="qr-preview" class="flex items-center justify-center min-h-[256px] rounded-xl border-2 border-dashed border-surface-300 dark:border-surface-600 bg-surface-50 dark:bg-surface-950" aria-label="QR code preview (awaiting input)">
-                <div class="text-center text-surface-400 dark:text-surface-600">
+                <div class="text-center text-surface-500 dark:text-surface-400">
                   <span class="material-symbols-rounded text-5xl">qr_code_2</span>
                   <p class="mt-2 text-sm" data-i18n="tools.qr-code.ui.previewPlaceholder">Your QR code will appear here</p>
                 </div>
@@ -154,11 +154,11 @@ function renderQRCodePage(lang = DEFAULT_LANGUAGE) {
               <!-- Download Buttons -->
               <div class="flex gap-3">
                 <button id="download-qr-png" disabled class="btn btn-secondary flex-1">
-                  <span class="material-symbols-rounded text-base align-middle">download</span>
+                  <span class="material-symbols-rounded text-base align-middle" aria-hidden="true">download</span>
                   <span data-i18n="tools.qr-code.ui.btnDownloadPng">Download PNG</span>
                 </button>
                 <button id="download-qr-svg" disabled class="btn btn-secondary flex-1">
-                  <span class="material-symbols-rounded text-base align-middle">download</span>
+                  <span class="material-symbols-rounded text-base align-middle" aria-hidden="true">download</span>
                   <span data-i18n="tools.qr-code.ui.btnDownloadSvg">Download SVG</span>
                 </button>
               </div>
@@ -177,7 +177,7 @@ function renderQRCodePage(lang = DEFAULT_LANGUAGE) {
               </div>
 
               <div id="decode-preview" class="flex items-center justify-center min-h-[200px] rounded-xl border-2 border-dashed border-surface-300 dark:border-surface-600 bg-surface-50 dark:bg-surface-950">
-                <div class="text-center text-surface-400 dark:text-surface-600">
+                <div class="text-center text-surface-500 dark:text-surface-400">
                   <span class="material-symbols-rounded text-5xl">image</span>
                   <p class="mt-2 text-sm" data-i18n="tools.qr-code.ui.decodePlaceholder">Upload an image to decode</p>
                 </div>
@@ -185,7 +185,7 @@ function renderQRCodePage(lang = DEFAULT_LANGUAGE) {
               </div>
 
               <button id="decode-qr" disabled class="btn btn-primary w-full">
-                <span class="material-symbols-rounded text-base align-middle">qr_code_scanner</span>
+                <span class="material-symbols-rounded text-base align-middle" aria-hidden="true">qr_code_scanner</span>
                 <span data-i18n="tools.qr-code.ui.btnDecode">Decode QR Code</span>
               </button>
             </div>
@@ -199,7 +199,7 @@ function renderQRCodePage(lang = DEFAULT_LANGUAGE) {
                   <pre id="qr-decode-output" class="input font-mono text-sm whitespace-pre-wrap break-all min-h-[120px]"></pre>
                 </div>
                 <button id="copy-decoded" class="btn btn-secondary w-full">
-                  <span class="material-symbols-rounded text-base align-middle">content_copy</span>
+                  <span class="material-symbols-rounded text-base align-middle" aria-hidden="true">content_copy</span>
                   <span data-i18n="tools.qr-code.ui.btnCopyDecoded">Copy Decoded Text</span>
                 </button>
               </div>
@@ -339,12 +339,19 @@ function renderQRCodePage(lang = DEFAULT_LANGUAGE) {
       const generateButton = document.getElementById('generate-qr');
       const generateButtonOriginalHTML = generateButton.innerHTML;
 
+      // Clear the validation error the moment the input becomes valid again.
+      document.getElementById('qr-data').addEventListener('input', (e) => {
+        if (!e.target.value.trim()) return;
+        const errMsg = document.getElementById('qr-error-msg');
+        if (errMsg) errMsg.classList.add('hidden');
+      });
+
       generateButton.addEventListener('click', async () => {
         const data = document.getElementById('qr-data').value.trim();
         if (!data) {
           const errMsg = document.getElementById('qr-error-msg');
           if (errMsg) {
-            errMsg.textContent = _t('tools.qr-code.js.text0', 'Please enter text or URL to encode.');
+            errMsg.textContent = _t('tools.qr-code.js.alert1', 'Please enter text or URL to encode.');
             errMsg.classList.remove('hidden');
           }
           return;

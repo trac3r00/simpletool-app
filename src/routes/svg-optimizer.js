@@ -73,8 +73,8 @@ function renderSVGOptimizerPage(lang = DEFAULT_LANGUAGE) {
       .filter(Boolean) || [];
 
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
         ${header}
 
         <div class="flex flex-wrap gap-3 mb-6 bg-surface-50 dark:bg-surface-950/50 p-2 rounded-lg border border-surface-100 dark:border-surface-800">
@@ -125,7 +125,7 @@ function renderSVGOptimizerPage(lang = DEFAULT_LANGUAGE) {
               </div>
             </div>
 
-            <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+            <div class="tool-group p-5">
               <div class="flex items-center justify-between gap-3 mb-3">
                 <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400" data-i18n="tools.svg-optimizer.ui.heading0">Colors</h2>
                 <div class="flex items-center gap-2">
@@ -140,14 +140,14 @@ function renderSVGOptimizerPage(lang = DEFAULT_LANGUAGE) {
           </div>
 
           <div class="space-y-3">
-            <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+            <div class="tool-group p-5">
               <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400 mb-3" data-i18n="tools.svg-optimizer.ui.heading1">Preview</h2>
               <div id="preview" class="bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-800 rounded-xl p-4 min-h-[320px] flex items-center justify-center overflow-auto" aria-label="SVG preview" data-i18n-aria="tools.svg-optimizer.ui.aria0">
                 <div class="text-sm text-surface-500 dark:text-surface-400" data-i18n="tools.svg-optimizer.ui.desc2">No preview yet.</div>
               </div>
             </div>
 
-            <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+            <div class="tool-group p-5">
               <div class="flex items-center justify-between mb-3">
                 <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400" data-i18n="tools.svg-optimizer.ui.heading2">Output SVG</h2>
               </div>
@@ -469,7 +469,7 @@ function renderSVGOptimizerPage(lang = DEFAULT_LANGUAGE) {
         if (!res.ok) {
           setPreviewMessage(res.error);
           els.output.value = '';
-          els.colors.innerHTML = '<p class="text-surface-500 dark:text-surface-400" data-i18n="tools.svg-optimizer.ui.desc11">' + t('text5', 'Preview an SVG to extract colors.') + '</p>';
+          els.colors.innerHTML = '<p class="text-surface-500 dark:text-surface-400">' + t('text5', 'Preview an SVG to extract colors.') + '</p>';
           els.colorCount.textContent = '0';
           syncOutputButtons();
           updateStats();
@@ -548,7 +548,7 @@ function renderSVGOptimizerPage(lang = DEFAULT_LANGUAGE) {
         els.input.value = '';
         els.output.value = '';
         setPreviewMessage(t('text7', 'No preview yet.'));
-        els.colors.innerHTML = '<p class="text-surface-500 dark:text-surface-400" data-i18n="tools.svg-optimizer.ui.desc11">' + t('text5', 'Preview an SVG to extract colors.') + '</p>';
+        els.colors.innerHTML = '<p class="text-surface-500 dark:text-surface-400">' + t('text5', 'Preview an SVG to extract colors.') + '</p>';
         els.colorCount.textContent = '0';
         current = { input: '', sanitized: '', optimized: '', doc: null, editDoc: null, editSvg: null, mapping: null, lastMinify: false };
         els.applyColors.disabled = true;

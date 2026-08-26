@@ -205,8 +205,8 @@ function renderLadderGamePage(lang = "en") {
       .share-success { color: #10b981 !important; }
     </style>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 ladder-page" data-theme="neon">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+    <main class="tool-page-shell ladder-page" data-theme="neon">
+      <div class="tool-page-panel">
         ${toolHeader}
 
         <section aria-label="Ladder game" class="space-y-6">
@@ -230,11 +230,11 @@ function renderLadderGamePage(lang = "en") {
               <div class="mb-8">
                 <p class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-3" data-i18n="tools.ladder-game.ui.modeLabel">${tr("tools.ladder-game.ui.modeLabel", "Game Mode")}</p>
                 <div class="flex flex-wrap justify-center gap-2" role="group" aria-label="Game mode">
-                  <button type="button" class="mode-tab active" data-mode="classic" data-i18n="tools.ladder-game.ui.modeClassic">${tr("tools.ladder-game.ui.modeClassic", "Classic")}</button>
-                  <button type="button" class="mode-tab" data-mode="speed" data-i18n="tools.ladder-game.ui.modeSpeed">${tr("tools.ladder-game.ui.modeSpeed", "Speed Race")}</button>
-                  <button type="button" class="mode-tab" data-mode="mystery" data-i18n="tools.ladder-game.ui.modeMystery">${tr("tools.ladder-game.ui.modeMystery", "Mystery")}</button>
-                  <button type="button" class="mode-tab" data-mode="tournament" data-i18n="tools.ladder-game.ui.modeTournament">${tr("tools.ladder-game.ui.modeTournament", "Tournament")}</button>
-                  <button type="button" class="mode-tab" data-mode="team" data-i18n="tools.ladder-game.ui.modeTeam">${tr("tools.ladder-game.ui.modeTeam", "Team")}</button>
+                  <button type="button" class="tab-trigger mode-tab active" data-mode="classic" data-i18n="tools.ladder-game.ui.modeClassic">${tr("tools.ladder-game.ui.modeClassic", "Classic")}</button>
+                  <button type="button" class="tab-trigger mode-tab" data-mode="speed" data-i18n="tools.ladder-game.ui.modeSpeed">${tr("tools.ladder-game.ui.modeSpeed", "Speed Race")}</button>
+                  <button type="button" class="tab-trigger mode-tab" data-mode="mystery" data-i18n="tools.ladder-game.ui.modeMystery">${tr("tools.ladder-game.ui.modeMystery", "Mystery")}</button>
+                  <button type="button" class="tab-trigger mode-tab" data-mode="tournament" data-i18n="tools.ladder-game.ui.modeTournament">${tr("tools.ladder-game.ui.modeTournament", "Tournament")}</button>
+                  <button type="button" class="tab-trigger mode-tab" data-mode="team" data-i18n="tools.ladder-game.ui.modeTeam">${tr("tools.ladder-game.ui.modeTeam", "Team")}</button>
                 </div>
                 <p id="mode-desc" class="mt-2 text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.ladder-game.ui.modeDescClassic">${tr("tools.ladder-game.ui.modeDescClassic", "Trace one path at a time to reveal results.")}</p>
               </div>
@@ -243,10 +243,10 @@ function renderLadderGamePage(lang = "en") {
               <div class="mb-8">
                 <p class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-3" data-i18n="tools.ladder-game.ui.themeLabel">${tr("tools.ladder-game.ui.themeLabel", "Visual Theme")}</p>
                 <div class="flex flex-wrap justify-center gap-2" role="group" aria-label="Visual theme">
-                  <button type="button" class="mode-tab active" data-theme-pick="neon" data-i18n="tools.ladder-game.ui.themeNeon">${tr("tools.ladder-game.ui.themeNeon", "Neon")}</button>
-                  <button type="button" class="mode-tab" data-theme-pick="pastel" data-i18n="tools.ladder-game.ui.themePastel">${tr("tools.ladder-game.ui.themePastel", "Pastel")}</button>
-                  <button type="button" class="mode-tab" data-theme-pick="corporate" data-i18n="tools.ladder-game.ui.themeCorporate">${tr("tools.ladder-game.ui.themeCorporate", "Corporate")}</button>
-                  <button type="button" class="mode-tab" data-theme-pick="retro" data-i18n="tools.ladder-game.ui.themeRetro">${tr("tools.ladder-game.ui.themeRetro", "Retro")}</button>
+                  <button type="button" class="tab-trigger mode-tab active" data-theme-pick="neon" data-i18n="tools.ladder-game.ui.themeNeon">${tr("tools.ladder-game.ui.themeNeon", "Neon")}</button>
+                  <button type="button" class="tab-trigger mode-tab" data-theme-pick="pastel" data-i18n="tools.ladder-game.ui.themePastel">${tr("tools.ladder-game.ui.themePastel", "Pastel")}</button>
+                  <button type="button" class="tab-trigger mode-tab" data-theme-pick="corporate" data-i18n="tools.ladder-game.ui.themeCorporate">${tr("tools.ladder-game.ui.themeCorporate", "Corporate")}</button>
+                  <button type="button" class="tab-trigger mode-tab" data-theme-pick="retro" data-i18n="tools.ladder-game.ui.themeRetro">${tr("tools.ladder-game.ui.themeRetro", "Retro")}</button>
                 </div>
               </div>
 
@@ -325,7 +325,7 @@ function renderLadderGamePage(lang = "en") {
               <div>
                 <div class="flex items-center justify-between mb-2">
                   <h3 class="label" data-i18n="tools.ladder-game.ui.label2">${tr("tools.ladder-game.ui.label2", "Players (Top)")}</h3>
-                  <span class="text-xs text-surface-400 dark:text-surface-500" data-i18n="tools.ladder-game.ui.dragHint">${tr("tools.ladder-game.ui.dragHint", "Drag to reorder")}</span>
+                  <span class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.ladder-game.ui.dragHint">${tr("tools.ladder-game.ui.dragHint", "Drag to reorder")}</span>
                 </div>
                 <div id="players-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
                   <!-- Dynamically populated -->
@@ -336,7 +336,7 @@ function renderLadderGamePage(lang = "en") {
               <div>
                 <div class="flex items-center justify-between mb-2">
                   <h3 class="label" data-i18n="tools.ladder-game.ui.label3">${tr("tools.ladder-game.ui.label3", "Results (Bottom)")}</h3>
-                  <button id="btn-undo-rung" type="button" class="text-xs text-surface-400 hover:text-surface-600 dark:text-surface-500 dark:hover:text-surface-300 disabled:opacity-40 disabled:cursor-not-allowed" disabled data-i18n="tools.ladder-game.ui.undoBtn">${tr("tools.ladder-game.ui.undoBtn", "Undo Last Randomize")}</button>
+                  <button id="btn-undo-rung" type="button" class="text-xs text-surface-500 hover:text-surface-600 dark:text-surface-400 dark:hover:text-surface-300 disabled:opacity-40 disabled:cursor-not-allowed" disabled data-i18n="tools.ladder-game.ui.undoBtn">${tr("tools.ladder-game.ui.undoBtn", "Undo Last Randomize")}</button>
                 </div>
                 <div id="results-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
                   <!-- Dynamically populated -->
@@ -840,8 +840,8 @@ function renderLadderGamePage(lang = "en") {
             pWrap.dataset.dragType = 'player';
             pWrap.innerHTML =
               '<label class="text-xs text-surface-500 dark:text-surface-400 mb-1 flex items-center gap-1">' +
-              '<span class="cursor-grab text-surface-300 dark:text-surface-600 select-none" aria-hidden="true">&#9776;</span>' +
-              '<span data-i18n="tools.ladder-game.ui.label6">' + (window._t ? window._t('tools.ladder-game.js.tpl0', 'Player') : 'Player') + ' ' + (i + 1) + '</span></label>' +
+              '<span class="cursor-grab text-surface-500 dark:text-surface-400 select-none" aria-hidden="true">&#9776;</span>' +
+              '<span>' + (window._t ? window._t('tools.ladder-game.js.tpl0', 'Player') : 'Player') + ' ' + (i + 1) + '</span></label>' +
               '<div class="flex gap-1 items-center">' +
               '<span class="text-base select-none" aria-hidden="true">' + state.selectedAvatar + '</span>' +
               '<input type="text" class="input flex-1 player-name-input" data-index="' + i + '" value="' + escapeHtml(state.players[i]) + '" placeholder="' + (window._t ? window._t('tools.ladder-game.ui.placeholder0', 'Name') : 'Name') + '" data-i18n-placeholder="tools.ladder-game.ui.placeholder0">' +
@@ -852,7 +852,7 @@ function renderLadderGamePage(lang = "en") {
             const rWrap = document.createElement('div');
             rWrap.className = 'flex flex-col';
             rWrap.innerHTML =
-              '<label class="text-xs text-surface-500 dark:text-surface-400 mb-1"><span data-i18n="tools.ladder-game.ui.label7">' + (window._t ? window._t('tools.ladder-game.js.tpl1', 'Result') : 'Result') + ' ' + (i + 1) + '</span></label>' +
+              '<label class="text-xs text-surface-500 dark:text-surface-400 mb-1"><span>' + (window._t ? window._t('tools.ladder-game.js.tpl1', 'Result') : 'Result') + ' ' + (i + 1) + '</span></label>' +
               '<input type="text" class="input result-input" data-index="' + i + '" value="' + escapeHtml(state.results[i]) + '" placeholder="' + (window._t ? window._t('tools.ladder-game.ui.placeholder1', 'Result') : 'Result') + '" data-i18n-placeholder="tools.ladder-game.ui.placeholder1">';
             elResultsContainer.appendChild(rWrap);
           }
@@ -1355,7 +1355,7 @@ function renderLadderGamePage(lang = "en") {
           const color = COLOR_PALETTE[playerIndex % COLOR_PALETTE.length];
           state.traces = [{ playerIndex, color, progress: 0, done: false, reverse: false }];
 
-          const tracingMsg = window._t ? window._t('tools.ladder-game.js.status1', 'Tracing...') : 'Tracing...';
+          const tracingMsg = 'Tracing...';
           setGameStatus(tracingMsg);
           startAnimationLoop();
         }
@@ -1373,7 +1373,7 @@ function renderLadderGamePage(lang = "en") {
           const color = COLOR_PALETTE[playerIndex % COLOR_PALETTE.length];
           state.traces = [{ playerIndex, color, progress: 0, done: false, reverse: true, resultIndex }];
 
-          const tracingMsg = window._t ? window._t('tools.ladder-game.js.status1', 'Tracing...') : 'Tracing...';
+          const tracingMsg = 'Tracing...';
           setGameStatus(tracingMsg);
           startAnimationLoop();
         }

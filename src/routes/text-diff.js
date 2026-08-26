@@ -64,20 +64,20 @@ function renderTextDiffPage(lang = DEFAULT_LANGUAGE) {
       .filter(Boolean) || [];
 
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
 
         ${toolHeader}
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           <div class="card p-4">
             <h2 class="text-lg font-semibold mb-2 text-surface-900 dark:text-surface-50" data-i18n="tools.text-diff.ui.heading3">Original Text</h2>
-            <textarea id="text1" rows="15" data-tooltip="Paste the original text here" data-i18n-tooltip="tools.text-diff.ui.tip0" class="w-full px-4 py-3 bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-800 rounded-lg font-mono text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow resize-none" placeholder="Enter original text..." data-i18n-placeholder="tools.text-diff.ui.placeholder1"></textarea>
+            <textarea id="text1" rows="15" data-tooltip="Paste the original text here" data-i18n-tooltip="tools.text-diff.ui.tip0" class="input-mono w-full resize-none" placeholder="Enter original text..." data-i18n-placeholder="tools.text-diff.ui.placeholder1"></textarea>
           </div>
 
           <div class="card p-4">
             <h2 class="text-lg font-semibold mb-2 text-surface-900 dark:text-surface-50" data-i18n="tools.text-diff.ui.heading4">Modified Text</h2>
-            <textarea id="text2" rows="15" data-tooltip="Paste the modified text here" data-i18n-tooltip="tools.text-diff.ui.tip2" class="w-full px-4 py-3 bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-800 rounded-lg font-mono text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 transition-shadow resize-none" placeholder="Enter modified text..." data-i18n-placeholder="tools.text-diff.ui.placeholder2"></textarea>
+            <textarea id="text2" rows="15" data-tooltip="Paste the modified text here" data-i18n-tooltip="tools.text-diff.ui.tip2" class="input-mono w-full resize-none" placeholder="Enter modified text..." data-i18n-placeholder="tools.text-diff.ui.placeholder2"></textarea>
           </div>
         </div>
 

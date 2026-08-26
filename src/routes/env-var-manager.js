@@ -70,8 +70,8 @@ function renderEnvVarManagerPage(lang = DEFAULT_LANGUAGE) {
       .filter(Boolean) || [];
 
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
         ${header}
 
         <div class="flex flex-wrap gap-3 mb-6 bg-surface-50 dark:bg-surface-950/50 p-2 rounded-lg border border-surface-100 dark:border-surface-800">
@@ -107,7 +107,7 @@ function renderEnvVarManagerPage(lang = DEFAULT_LANGUAGE) {
 
         <div class="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div class="lg:col-span-1 space-y-4">
-            <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+            <div class="tool-group p-5">
               <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400 mb-3" data-i18n="tools.env-var-manager.ui.heading0">Options</h2>
               <label class="inline-flex items-center gap-2 cursor-pointer text-sm text-surface-700 dark:text-surface-300">
                 <input id="mask" type="checkbox" class="w-4 h-4 rounded border-surface-300 text-primary-600 focus:ring-primary-500" checked>
@@ -122,33 +122,33 @@ function renderEnvVarManagerPage(lang = DEFAULT_LANGUAGE) {
             <div class="p-5 bg-surface-50 dark:bg-surface-950 rounded-xl border border-surface-200 dark:border-surface-800">
               <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400 mb-3" data-i18n="tools.env-var-manager.ui.heading1">Summary</h2>
               <div class="grid grid-cols-2 gap-3 text-sm">
-                <div class="p-3 bg-white dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-800">
+                <div class="tool-group p-3">
                   <div class="text-xs text-surface-500 dark:text-surface-400 uppercase" data-i18n="tools.env-var-manager.ui.stat0">Same</div>
                   <div class="text-xl font-bold font-mono" id="same-count">0</div>
                 </div>
-                <div class="p-3 bg-white dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-800">
+                <div class="tool-group p-3">
                   <div class="text-xs text-surface-500 dark:text-surface-400 uppercase" data-i18n="tools.env-var-manager.ui.stat1">Changed</div>
                   <div class="text-xl font-bold font-mono" id="changed-count">0</div>
                 </div>
-                <div class="p-3 bg-white dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-800">
+                <div class="tool-group p-3">
                   <div class="text-xs text-surface-500 dark:text-surface-400 uppercase" data-i18n="tools.env-var-manager.ui.stat2">Only A</div>
                   <div class="text-xl font-bold font-mono" id="only-a-count">0</div>
                 </div>
-                <div class="p-3 bg-white dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-800">
+                <div class="tool-group p-3">
                   <div class="text-xs text-surface-500 dark:text-surface-400 uppercase" data-i18n="tools.env-var-manager.ui.stat3">Only B</div>
                   <div class="text-xl font-bold font-mono" id="only-b-count">0</div>
                 </div>
               </div>
             </div>
 
-            <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+            <div class="tool-group p-5">
               <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400 mb-3" data-i18n="tools.env-var-manager.ui.heading2">Share-safe report</h2>
               <textarea id="share" rows="10" class="input-mono resize-y bg-surface-50 dark:bg-surface-950" readonly placeholder="Click Compare to generate..." data-i18n-placeholder="tools.env-var-manager.ui.placeholder3"></textarea>
             </div>
           </div>
 
           <div class="lg:col-span-2">
-            <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+            <div class="tool-group p-5">
               <div class="flex items-center justify-between mb-3 gap-3">
                 <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400" data-i18n="tools.env-var-manager.ui.heading3">Diff</h2>
                 <span id="row-count" class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.env-var-manager.ui.text0">0 rows</span>

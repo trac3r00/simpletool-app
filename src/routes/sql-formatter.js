@@ -62,8 +62,8 @@ function renderSQLFormatterPage(lang = DEFAULT_LANGUAGE) {
       .filter(Boolean) || [];
 
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
         ${header}
 
         <div class="flex flex-wrap gap-3 mb-6 bg-surface-50 dark:bg-surface-950/50 p-2 rounded-lg border border-surface-100 dark:border-surface-800">
@@ -75,7 +75,7 @@ function renderSQLFormatterPage(lang = DEFAULT_LANGUAGE) {
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div class="space-y-2">
+          <div class="space-y-2 min-w-0">
             <label class="label flex items-center gap-2">
               <span data-i18n="tools.sql-formatter.ui.label0">Input SQL</span>
               ${infoHint("This tool does not execute SQL. Validation is heuristic (not a full parser).", "Help", { i18nKey: "tools.sql-formatter.ui.desc0" })}
@@ -84,7 +84,7 @@ function renderSQLFormatterPage(lang = DEFAULT_LANGUAGE) {
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
-                <label class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" data-i18n="tools.sql-formatter.ui.label1">Dialect</label>
+                <label for="dialect" class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" data-i18n="tools.sql-formatter.ui.label1">Dialect</label>
                 <select id="dialect" class="input">
                   <option value="postgres" data-i18n="tools.sql-formatter.ui.option0">Postgres</option>
                   <option value="mysql" data-i18n="tools.sql-formatter.ui.option1">MySQL</option>
@@ -95,7 +95,7 @@ function renderSQLFormatterPage(lang = DEFAULT_LANGUAGE) {
                 </select>
               </div>
               <div>
-                <label class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" data-i18n="tools.sql-formatter.ui.label2">Keyword case</label>
+                <label for="kwcase" class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" data-i18n="tools.sql-formatter.ui.label2">Keyword case</label>
                 <select id="kwcase" class="input">
                   <option value="upper" data-i18n="tools.sql-formatter.ui.option2">UPPER</option>
                   <option value="lower" data-i18n="tools.sql-formatter.ui.option3">lower</option>
@@ -103,7 +103,7 @@ function renderSQLFormatterPage(lang = DEFAULT_LANGUAGE) {
                 </select>
               </div>
               <div>
-                <label class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" data-i18n="tools.sql-formatter.ui.label3">Indent</label>
+                <label for="indent" class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" data-i18n="tools.sql-formatter.ui.label3">Indent</label>
                 <select id="indent" class="input">
                   <option value="2" data-i18n="tools.sql-formatter.ui.option5">2 spaces</option>
                   <option value="4" data-i18n="tools.sql-formatter.ui.option10">4 spaces</option>
@@ -114,7 +114,7 @@ function renderSQLFormatterPage(lang = DEFAULT_LANGUAGE) {
             <div id="issues" class="hidden rounded-lg p-3 text-sm border"></div>
           </div>
 
-          <div class="space-y-2">
+          <div class="space-y-2 min-w-0">
             <label class="label" data-i18n="tools.sql-formatter.ui.label4">Output</label>
             ${createEmptyState({ icon: "🗄️", title: "No output yet", description: "Paste SQL on the left, then click Format or Validate.", id: "sql-empty-state", i18nTitle: "tools.sql-formatter.ui.desc9", i18nDesc: "tools.sql-formatter.ui.desc10" })}
             ${createRichEditorPane({ id: "sql-out", mode: "pre", ariaLabel: "Formatted SQL output", hidden: true })}
@@ -675,7 +675,7 @@ function renderSQLFormatterPage(lang = DEFAULT_LANGUAGE) {
         const kind = hasError ? 'error' : 'warn';
         const items = issues.slice(0, 12).map(i => {
           const where = 'L' + i.line + ':' + i.col;
-          return '<li><span class="font-mono text-xs" data-i18n="tools.sql-formatter.ui.desc14">' + where + '</span> — ' + i.msg + '</li>';
+          return '<li><span class="font-mono text-xs">' + where + '</span> — ' + i.msg + '</li>';
         }).join('');
 	        const note = issues.length > 12 ? '<div class="mt-2 text-xs opacity-80">' + fmtVars(t('text8', 'Showing first {n} issues.'), { n: 12 }) + '</div>' : '';
         setIssues(kind, '<ul class="list-disc ml-5 space-y-1">' + items + '</ul>' + note);

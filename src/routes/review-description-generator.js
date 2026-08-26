@@ -5,36 +5,18 @@
  * diff summaries, or free-form notes.  All processing is client-side.
  */
 
-import { respondHTML } from "../utils/respond.js";
-import { createPageTemplate, createToolHeader } from "../utils/common-ui.js";
+import { createToolHeader } from "../utils/common-ui.js";
 import { createRelatedToolsSection } from "../utils/content-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
 import {
   DEFAULT_LANGUAGE,
   getToolTranslation,
   normalizeLanguage,
-  resolveRequestLanguage,
 } from "../utils/i18n.js";
 
-export async function handleReviewDescriptionGeneratorRoutes(request, url) {
-  const { pathname } = url;
-  if (
-    pathname === "/review-description-generator" ||
-    pathname === "/review-description-generator/"
-  ) {
-    if (request.method === "GET") {
-      return respondHTML(
-        renderReviewDescriptionGeneratorPage(
-          resolveRequestLanguage(request, url),
-        ),
-      );
-    }
-    return new Response("Method not allowed", { status: 405 });
-  }
-  return null;
-}
-
-function renderReviewDescriptionGeneratorPage(lang = DEFAULT_LANGUAGE) {
+export function renderReviewDescriptionGeneratorSection(
+  lang = DEFAULT_LANGUAGE,
+) {
   const currentLang = normalizeLanguage(lang);
   const translation = getToolTranslation(
     "review-description-generator",
@@ -62,7 +44,7 @@ function renderReviewDescriptionGeneratorPage(lang = DEFAULT_LANGUAGE) {
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+      <div class="tool-group p-6 sm:p-8">
         ${toolHeader}
 
         <!-- Template selector -->
@@ -88,15 +70,15 @@ function renderReviewDescriptionGeneratorPage(lang = DEFAULT_LANGUAGE) {
         <!-- Action buttons -->
         <div class="flex flex-wrap gap-3 mb-6">
           <button id="generate-btn" class="btn btn-primary">
-            <span class="material-symbols-rounded text-sm">auto_awesome</span>
+            <span class="material-symbols-rounded text-sm" aria-hidden="true">auto_awesome</span>
             <span data-i18n="tools.review-description-generator.ui.button0">Generate</span>
           </button>
           <button id="copy-btn" class="btn btn-secondary hidden">
-            <span class="material-symbols-rounded text-sm">content_copy</span>
+            <span class="material-symbols-rounded text-sm" aria-hidden="true">content_copy</span>
             <span data-i18n="tools.review-description-generator.ui.button1">Copy</span>
           </button>
           <button id="clear-btn" class="btn btn-ghost">
-            <span class="material-symbols-rounded text-sm">delete</span>
+            <span class="material-symbols-rounded text-sm" aria-hidden="true">delete</span>
             <span data-i18n="tools.review-description-generator.ui.button2">Clear</span>
           </button>
         </div>
@@ -353,12 +335,12 @@ function renderReviewDescriptionGeneratorPage(lang = DEFAULT_LANGUAGE) {
     </script>
   `;
 
-  return createPageTemplate({
-    title: translation?.name || "Review Description Generator",
-    description:
-      translation?.desc ||
-      "Generate structured PR review and comment descriptions from commits, diffs, or notes.",
-    content,
-    path: "/review-description-generator",
-  });
+  return {
+    content: content
+      .replace(/<main\b[^>]*>/, '<section class="py-2">')
+      .replace("</main>", "</section>")
+      .replace(/<h1\b/, "<h2")
+      .replace("</h1>", "</h2>"),
+    scripts: "",
+  };
 }

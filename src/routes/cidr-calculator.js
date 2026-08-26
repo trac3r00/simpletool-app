@@ -69,8 +69,9 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
       ?.map((id) => TOOLS.find((t) => t.id === id))
       .filter(Boolean) || [];
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-      
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
+
       ${toolHeader}
 
       <section class="grid gap-6 lg:grid-cols-[3fr,2fr]">
@@ -399,6 +400,7 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
           </table>`,
         },
       ])}
+      </div>
     </main>
     ${createRelatedToolsSection(relatedToolsData)}
 
@@ -694,7 +696,7 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
           const maxPrefix = details.family === 'IPv6' ? 128 : 32;
           const options = [];
           for (let p = details.prefix + 1; p <= Math.min(details.prefix + 8, maxPrefix); p++) {
-            options.push('<option value="' + p + '" data-i18n="tools.cidr-calculator.ui.option9">/' + p + '</option>');
+            options.push('<option value="' + p + '">/' + p + '</option>');
           }
           subnetPrefixSelect.innerHTML = options.join('');
           if (!options.length) {
@@ -733,7 +735,7 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
               const usable = targetPrefix >= 31 ? 'Point-to-point' : formatNumber(Math.max(Math.pow(2, 32 - targetPrefix) - 2, 0)) + ' hosts';
               rows.push('<tr><td class="py-2 pr-4 font-mono font-semibold">' + intToIPv4(start) + '/' + targetPrefix + '</td><td class="py-2 pr-4 font-mono text-xs sm:text-sm">' + intToIPv4(start) + ' – ' + intToIPv4(end) + '</td><td class="py-2 text-xs sm:text-sm">' + usable + '</td></tr>');
             }
-            subnetSummary.textContent = (window._t ? window._t('tools.cidr-calculator.js.text5', 'Total subnets: ') : 'Total subnets: ') + formatNumber(subnetCount) + ' · ' + (window._t ? window._t('tools.cidr-calculator.js.text6', 'Showing first ') : 'Showing first ') + Math.min(subnetCount, limit);
+            subnetSummary.textContent = (window._t ? window._t('tools.cidr-calculator.js.text2', 'Total subnets:') + ' ' : 'Total subnets: ') + formatNumber(subnetCount) + ' · ' + 'Showing first ' + Math.min(subnetCount, limit);
           } else {
             const increment = 1n << BigInt(128 - targetPrefix);
             const subnetCount = 1n << BigInt(targetPrefix - details.prefix);
@@ -772,8 +774,11 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
           const ipInt = ipv4ToInt(parsed.address);
           const mask = prefixToMask(parsed.prefix);
           const wildcard = (~mask) >>> 0;
-          const networkInt = ipInt & mask;
-          const broadcastInt = networkInt | wildcard;
+          // Bitwise & / | in JS produce SIGNED 32-bit ints. Any address at or
+          // above 128.0.0.0 comes back negative, which breaks range comparison
+          // in classifyIPv4 and puts a '-' in the binary string. Force unsigned.
+          const networkInt = (ipInt & mask) >>> 0;
+          const broadcastInt = (networkInt | wildcard) >>> 0;
           const hostBits = 32 - parsed.prefix;
           const totalAddresses = Math.pow(2, hostBits);
           const usable = parsed.prefix >= 31 ? totalAddresses : Math.max(totalAddresses - 2, 0);
@@ -801,7 +806,7 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
             special: classification.special,
             ipClass: determineIPv4Class(networkInt),
             expanded: intToIPv4(networkInt),
-            binary: toBinaryString(networkInt, 32, 8),
+            binary: toBinaryString(networkInt, 32, 8, parsed.prefix),
             networkBigInt: null
           };
         }
@@ -837,7 +842,7 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
             special: classification.special,
             ipClass: null,
             expanded,
-            binary: toBinaryStringBigInt(networkBigInt, 128, 16)
+            binary: toBinaryStringBigInt(networkBigInt, 128, 16, parsed.prefix)
           };
         }
 
@@ -880,12 +885,23 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
           return zeroIndex === -1 ? 32 : zeroIndex;
         }
 
-        function toBinaryString(value, bits, group) {
-          const binary = value.toString(2).padStart(bits, '0');
-          return binary.match(new RegExp('.{1,' + group + '}', 'g')).join(' ');
+        function toBinaryString(value, bits, group, boundary) {
+          const binary = (value >>> 0).toString(2).padStart(bits, '0');
+          const grouped = binary.match(new RegExp('.{1,' + group + '}', 'g')).join(' ');
+          return insertPrefixBoundary(grouped, bits, group, boundary);
         }
 
-        function toBinaryStringBigInt(value, bits, group) {
+        // Insert a '|' between the network and host portions at the prefix
+        // length, counting the separator spaces already added by grouping.
+        function insertPrefixBoundary(grouped, bits, group, boundary) {
+          if (typeof boundary !== 'number' || boundary < 0 || boundary > bits) return grouped;
+          if (boundary === bits) return grouped + ' |';
+          const index = boundary + Math.floor(boundary / group);
+          const marker = boundary % group === 0 && boundary !== 0 ? '| ' : '|';
+          return grouped.slice(0, index) + marker + grouped.slice(index);
+        }
+
+        function toBinaryStringBigInt(value, bits, group, boundary) {
           let binary = value.toString(2);
           while (binary.length < bits) {
             binary = '0' + binary;
@@ -894,7 +910,7 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
           for (let i = 0; i < binary.length; i += group) {
             chunks.push(binary.slice(i, i + group));
           }
-          return chunks.join(' ');
+          return insertPrefixBoundary(chunks.join(' '), bits, group, boundary);
         }
 
         function expandIPv6(address) {
@@ -994,6 +1010,7 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
 
         function classifyIPv4(networkInt) {
           const ranges = [
+            { range: [ipv4ToInt('0.0.0.0'), ipv4ToInt('0.255.255.255')], label: 'This network (0.0.0.0/8)', special: 'RFC1122 "this host on this network"' },
             { range: [ipv4ToInt('10.0.0.0'), ipv4ToInt('10.255.255.255')], label: 'Private RFC1918 /8', special: 'Internal addressing' },
             { range: [ipv4ToInt('172.16.0.0'), ipv4ToInt('172.31.255.255')], label: 'Private RFC1918 /12', special: 'Internal addressing' },
             { range: [ipv4ToInt('192.168.0.0'), ipv4ToInt('192.168.255.255')], label: 'Private RFC1918 /16', special: 'Internal addressing' },
@@ -1004,6 +1021,7 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
             { range: [ipv4ToInt('198.51.100.0'), ipv4ToInt('198.51.100.255')], label: 'TEST-NET-2', special: 'Documentation only' },
             { range: [ipv4ToInt('203.0.113.0'), ipv4ToInt('203.0.113.255')], label: 'TEST-NET-3', special: 'Documentation only' },
             { range: [ipv4ToInt('224.0.0.0'), ipv4ToInt('239.255.255.255')], label: 'Multicast', special: 'RFC5771 special use' },
+            { range: [ipv4ToInt('255.255.255.255'), ipv4ToInt('255.255.255.255')], label: 'Limited broadcast', special: 'RFC919 local-link broadcast' },
             { range: [ipv4ToInt('240.0.0.0'), ipv4ToInt('255.255.255.254')], label: 'Future use', special: 'Reserved / experimental' }
           ];
 

@@ -11,8 +11,38 @@ import {
   localizeTool,
   localizeTools,
   getLanguageBootstrapScript,
+  getLanguageScript,
   getLanguageSelectorHTML,
 } from "./i18n.js";
+import en from "../i18n/en.js";
+import ko from "../i18n/ko.js";
+import ja from "../i18n/ja.js";
+import es from "../i18n/es.js";
+import zhCN from "../i18n/zh-CN.js";
+import zhTW from "../i18n/zh-TW.js";
+import fr from "../i18n/fr.js";
+import de from "../i18n/de.js";
+import pt from "../i18n/pt.js";
+import vi from "../i18n/vi.js";
+
+const LOCALE_MODULES = {
+  en,
+  ko,
+  ja,
+  es,
+  "zh-CN": zhCN,
+  "zh-TW": zhTW,
+  fr,
+  de,
+  pt,
+  vi,
+};
+
+function extractLanguageCatalog(script) {
+  const match = script.match(/var _T = ([\s\S]*?);\n\s*var _supported/);
+  expect(match).not.toBeNull();
+  return JSON.parse(match[1]);
+}
 
 describe("SUPPORTED_LANGUAGES", () => {
   it("contains 10 languages", () => {
@@ -245,6 +275,101 @@ describe("getToolTranslation", () => {
   });
 });
 
+describe("composite tool translations", () => {
+  it("defines canonical metadata and tab labels in every locale module", () => {
+    expect(Object.keys(LOCALE_MODULES)).toEqual(
+      Object.keys(SUPPORTED_LANGUAGES),
+    );
+
+    for (const [lang, locale] of Object.entries(LOCALE_MODULES)) {
+      const network = locale.tools["network-reference"];
+      const repoOps = locale.tools["repo-ops"];
+
+      expect(network, `${lang} network-reference`).toMatchObject({
+        name: expect.any(String),
+        desc: expect.any(String),
+        ui: {
+          tab0: expect.any(String),
+          tab1: expect.any(String),
+          tab2: expect.any(String),
+          tab3: expect.any(String),
+          aria0: expect.any(String),
+        },
+      });
+      expect(Object.keys(network.ui)).toEqual([
+        "tab0",
+        "tab1",
+        "tab2",
+        "tab3",
+        "aria0",
+      ]);
+      expect(repoOps, `${lang} repo-ops`).toMatchObject({
+        name: expect.any(String),
+        desc: expect.any(String),
+        ui: {
+          tab0: expect.any(String),
+          tab1: expect.any(String),
+          tab2: expect.any(String),
+          aria0: expect.any(String),
+        },
+      });
+      expect(Object.keys(repoOps.ui)).toEqual([
+        "tab0",
+        "tab1",
+        "tab2",
+        "aria0",
+      ]);
+
+      for (const value of [
+        network.name,
+        network.desc,
+        ...Object.values(network.ui),
+        repoOps.name,
+        repoOps.desc,
+        ...Object.values(repoOps.ui),
+      ]) {
+        expect(
+          value.trim(),
+          `${lang} has a blank composite translation`,
+        ).not.toBe("");
+      }
+
+      if (lang !== DEFAULT_LANGUAGE) {
+        expect(network.name).not.toBe(
+          LOCALE_MODULES[DEFAULT_LANGUAGE].tools["network-reference"].name,
+        );
+        expect(repoOps.name).not.toBe(
+          LOCALE_MODULES[DEFAULT_LANGUAGE].tools["repo-ops"].name,
+        );
+      }
+    }
+  });
+
+  it("keeps the approved English source strings", () => {
+    expect(en.tools["network-reference"]).toEqual({
+      name: "Network Reference",
+      desc: "DNS records, common ports, HTTP status codes, and protocol headers — four references in one tabbed tool.",
+      ui: {
+        tab0: "DNS records",
+        tab1: "Ports",
+        tab2: "HTTP status",
+        tab3: "Protocol headers",
+        aria0: "Network reference sections",
+      },
+    });
+    expect(en.tools["repo-ops"]).toEqual({
+      name: "Repo Operations",
+      desc: "Build public repository inventories, manual-stewardship records, and review descriptions in one workspace.",
+      ui: {
+        tab0: "Repository inventory",
+        tab1: "Manual stewardship",
+        tab2: "Review descriptions",
+        aria0: "Repository operations sections",
+      },
+    });
+  });
+});
+
 describe("localizeTool", () => {
   it("applies translation to tool object", () => {
     const tool = {
@@ -292,6 +417,49 @@ describe("getLanguageBootstrapScript", () => {
     const script = getLanguageBootstrapScript();
     expect(script).toContain("zh-CN");
     expect(script).toContain("zh-TW");
+  });
+});
+
+describe("getLanguageScript", () => {
+  it("preserves the canonical-only full dictionary behavior by default", () => {
+    const catalog = extractLanguageCatalog(
+      getLanguageScript("dns-reference", "en"),
+    );
+
+    expect(catalog.en.tools["dns-reference"]).toHaveProperty("ui");
+    expect(catalog.en.tools["dns-reference"]).toHaveProperty("js");
+    expect(catalog.en.tools["port-reference"]).not.toHaveProperty("ui");
+    expect(catalog.en.tools["port-reference"]).not.toHaveProperty("js");
+  });
+
+  it("retains full dictionaries only for the canonical and allowlisted tools", () => {
+    const embeddedToolIds = [
+      "dns-reference",
+      "port-reference",
+      "http-status-reference",
+      "protocol-headers",
+    ];
+    const catalog = extractLanguageCatalog(
+      getLanguageScript("network-reference", "ja", embeddedToolIds),
+    );
+
+    for (const lang of ["en", "ja"]) {
+      expect(catalog[lang].tools["network-reference"]).toHaveProperty("ui");
+      for (const toolId of [
+        "dns-reference",
+        "port-reference",
+        "protocol-headers",
+      ]) {
+        expect(catalog[lang].tools[toolId], `${lang} ${toolId}`).toHaveProperty(
+          "ui",
+        );
+        expect(catalog[lang].tools[toolId], `${lang} ${toolId}`).toHaveProperty(
+          "js",
+        );
+      }
+      expect(catalog[lang].tools["json-formatter"]).not.toHaveProperty("ui");
+      expect(catalog[lang].tools["json-formatter"]).not.toHaveProperty("js");
+    }
   });
 });
 

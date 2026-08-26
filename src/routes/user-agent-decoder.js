@@ -71,8 +71,8 @@ function renderUserAgentDecoderPage(lang = DEFAULT_LANGUAGE) {
       .filter(Boolean) || [];
 
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
 
         ${toolHeader}
 
@@ -81,7 +81,7 @@ function renderUserAgentDecoderPage(lang = DEFAULT_LANGUAGE) {
           <div class="flex items-start justify-between gap-4">
             <div class="flex-1">
               <h2 class="text-sm font-bold text-primary-900 dark:text-primary-300 mb-2" data-i18n="tools.user-agent-decoder.ui.heading12">🌐 Your Current Browser</h2>
-              <div id="current-ua" class="text-xs font-mono text-surface-700 dark:text-surface-300 bg-white dark:bg-surface-950 p-3 rounded border border-primary-200 dark:border-primary-700 break-all"></div>
+              <div id="current-ua" class="text-xs font-mono text-surface-700 dark:text-surface-300 bg-background p-3 rounded border border-primary-200 dark:border-primary-700 break-all"></div>
             </div>
             <button id="use-current" type="button" class="btn btn-secondary whitespace-nowrap text-sm py-2" data-tooltip="Use your current browser User-Agent string" data-i18n-tooltip="tools.user-agent-decoder.ui.tip0">
               <span data-i18n="tools.user-agent-decoder.ui.button0">Use This</span>

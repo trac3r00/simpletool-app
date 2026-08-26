@@ -20,275 +20,202 @@ const AXE_MIN_JS = "node_modules/axe-core/axe.min.js";
 
 const BASELINE_VIOLATIONS = {
   "/": [
-    { id: "color-contrast", impact: "serious" },
+    { id: "color-contrast", impact: "serious", optional: true },
     { id: "link-in-text-block", impact: "serious" },
   ],
-
-  "/bandwidth-calculator": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "heading-order", impact: "moderate" },
+  "/about": [
     { id: "link-in-text-block", impact: "serious" },
-    { id: "select-name", impact: "critical" },
+  ],
+  "/bandwidth-calculator": [
+    { id: "link-in-text-block", impact: "serious" },
+    { id: "select-name", impact: "critical", optional: true },
+  ],
+  "/blog": [
+    { id: "heading-order", impact: "moderate", optional: true },
+    { id: "link-in-text-block", impact: "serious" },
+    { id: "list", impact: "serious", optional: true },
+  ],
+  "/caffeinate": [
+    { id: "link-in-text-block", impact: "serious" },
   ],
   "/case-converter": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "heading-order", impact: "moderate" },
     { id: "link-in-text-block", impact: "serious" },
   ],
   "/certificate-decoder": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "heading-order", impact: "moderate" },
+    { id: "link-in-text-block", impact: "serious" },
+  ],
+  "/changelog": [
     { id: "link-in-text-block", impact: "serious" },
   ],
   "/cidr-calculator": [
-    { id: "color-contrast", impact: "serious" },
     { id: "link-in-text-block", impact: "serious" },
   ],
   "/code-minifier": [
-    { id: "color-contrast", impact: "serious" },
     { id: "link-in-text-block", impact: "serious" },
   ],
   "/color-converter": [
-    { id: "color-contrast", impact: "serious" },
     { id: "link-in-text-block", impact: "serious" },
   ],
   "/cron-builder": [
-    { id: "aria-allowed-role", impact: "minor" },
-    { id: "aria-required-children", impact: "critical" },
-    { id: "aria-required-parent", impact: "critical" },
-    { id: "color-contrast", impact: "serious" },
+    { id: "aria-allowed-role", impact: "minor", optional: true },
+    { id: "aria-required-children", impact: "critical", optional: true },
+    { id: "aria-required-parent", impact: "critical", optional: true },
+    { id: "link-in-text-block", impact: "serious" },
+  ],
+  "/csp-builder": [
     { id: "link-in-text-block", impact: "serious" },
   ],
   "/css-gradient": [
-    { id: "color-contrast", impact: "serious" },
     { id: "link-in-text-block", impact: "serious" },
     { id: "scrollable-region-focusable", impact: "serious", optional: true },
   ],
   "/curl-studio": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "link-in-text-block", impact: "serious" },
-  ],
-  "/dns-reference": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "link-in-text-block", impact: "serious" },
-    { id: "select-name", impact: "critical" },
-  ],
-  "/encoding-workbench": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "link-in-text-block", impact: "serious" },
-  ],
-  "/htpasswd-generator": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "link-in-text-block", impact: "serious" },
-  ],
-  "/http-status-reference": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "link-in-text-block", impact: "serious" },
-  ],
-  "/image-converter": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "link-in-text-block", impact: "serious" },
-  ],
-  "/json-formatter": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "link-in-text-block", impact: "serious" },
-  ],
-  "/json-schema-studio": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "link-in-text-block", impact: "serious" },
-  ],
-  "/log-masker": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "link-in-text-block", impact: "serious" },
-  ],
-  "/log-viewer": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "link-in-text-block", impact: "serious" },
-  ],
-  "/markdown-editor": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "heading-order", impact: "moderate" },
-    { id: "link-in-text-block", impact: "serious" },
-  ],
-  "/mermaid-studio": [
-    { id: "aria-required-parent", impact: "critical" },
-    { id: "color-contrast", impact: "serious" },
-    { id: "heading-order", impact: "moderate" },
-    { id: "link-in-text-block", impact: "serious" },
-  ],
-  "/mock-data-generator": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "link-in-text-block", impact: "serious" },
-  ],
-  "/oauth-debugger": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "label", impact: "critical" },
-    { id: "link-in-text-block", impact: "serious" },
-  ],
-  "/password-generator": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "link-in-text-block", impact: "serious" },
-  ],
-  "/port-reference": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "link-in-text-block", impact: "serious" },
-  ],
-  "/protocol-headers": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "heading-order", impact: "moderate" },
-    { id: "link-in-text-block", impact: "serious" },
-  ],
-  "/public-repos-not-automation": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "link-in-text-block", impact: "serious" },
-  ],
-  "/public-repos-yml-builder": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "link-in-text-block", impact: "serious" },
-  ],
-  "/public-repos-not-automation": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "link-in-text-block", impact: "serious" },
-  ],
-  "/qr-code": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "link-in-text-block", impact: "serious" },
-  ],
-  "/regex-visualizer": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "link-in-text-block", impact: "serious" },
-    { id: "scrollable-region-focusable", impact: "serious" },
-    { id: "select-name", impact: "critical" },
-  ],
-  "/review-description-generator": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "heading-order", impact: "moderate" },
-    { id: "link-in-text-block", impact: "serious" },
-  ],
-  "/saml-decoder": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "heading-order", impact: "moderate" },
-    { id: "link-in-text-block", impact: "serious" },
-  ],
-  "/ssh-key-generator": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "link-in-text-block", impact: "serious" },
-  ],
-  "/text-diff": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "link-in-text-block", impact: "serious" },
-  ],
-  "/timestamp-converter": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "link-in-text-block", impact: "serious" },
-  ],
-  "/token-studio": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "link-in-text-block", impact: "serious" },
-  ],
-  "/unit-converter": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "link-in-text-block", impact: "serious" },
-  ],
-  "/user-agent-decoder": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "link-in-text-block", impact: "serious" },
-  ],
-  "/uuid-generator": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "link-in-text-block", impact: "serious" },
-  ],
-  "/webhook-debugger": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "link-in-text-block", impact: "serious" },
-  ],
-  "/wireguard-config": [
-    { id: "button-name", impact: "critical" },
-    { id: "color-contrast", impact: "serious" },
-    { id: "link-in-text-block", impact: "serious" },
-    { id: "select-name", impact: "critical" },
-  ],
-  "/wireshark-filter": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "link-in-text-block", impact: "serious" },
-    { id: "select-name", impact: "critical" },
-  ],
-  "/yaml-toml-converter": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "link-in-text-block", impact: "serious" },
-  ],
-
-  // ── Routes that are intermittently unavailable ──────────────
-  // These routes loaded during a subsequent run — baselines
-  // captured from actual axe output when the dev server was stable.
-
-  "/caffeinate": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "link-in-text-block", impact: "serious" },
-  ],
-  "/changelog": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "link-in-text-block", impact: "serious" },
-  ],
-  "/csp-builder": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "label", impact: "critical" },
     { id: "link-in-text-block", impact: "serious" },
   ],
   "/email-analyzer": [
-    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
+  ],
+  "/encoding-workbench": [
     { id: "link-in-text-block", impact: "serious" },
   ],
   "/env-var-manager": [
-    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
+  ],
+  "/faq": [
+    { id: "landmark-unique", impact: "moderate", optional: true },
+    { id: "link-in-text-block", impact: "serious" },
+    { id: "list", impact: "serious", optional: true },
+  ],
+  "/htpasswd-generator": [
+    { id: "color-contrast", impact: "serious", optional: true },
+    { id: "link-in-text-block", impact: "serious" },
+  ],
+  "/image-converter": [
+    { id: "link-in-text-block", impact: "serious" },
+  ],
+  "/json-formatter": [
+    { id: "link-in-text-block", impact: "serious" },
+  ],
+  "/json-schema-studio": [
     { id: "link-in-text-block", impact: "serious" },
   ],
   "/ladder-game": [
-    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
+  ],
+  "/log-masker": [
+    { id: "link-in-text-block", impact: "serious" },
+  ],
+  "/log-viewer": [
     { id: "link-in-text-block", impact: "serious" },
   ],
   "/marble-roulette": [
-    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
+  ],
+  "/markdown-editor": [
+    { id: "link-in-text-block", impact: "serious" },
+  ],
+  "/mermaid-studio": [
+    { id: "aria-required-parent", impact: "critical", optional: true },
+    { id: "color-contrast", impact: "serious", optional: true },
+    { id: "link-in-text-block", impact: "serious" },
+  ],
+  "/mock-data-generator": [
+    { id: "color-contrast", impact: "serious", optional: true },
+    { id: "link-in-text-block", impact: "serious" },
+  ],
+  "/network-reference": [
+    { id: "link-in-text-block", impact: "serious" },
+    { id: "select-name", impact: "critical", optional: true },
+  ],
+  "/oauth-debugger": [
+    { id: "link-in-text-block", impact: "serious" },
+  ],
+  "/password-generator": [
     { id: "link-in-text-block", impact: "serious" },
   ],
   "/pipe": [
-    { id: "aria-allowed-role", impact: "minor" },
-    { id: "color-contrast", impact: "serious" },
+    { id: "aria-allowed-role", impact: "minor", optional: true },
+    { id: "link-in-text-block", impact: "serious" },
+  ],
+  "/privacy": [
     { id: "link-in-text-block", impact: "serious" },
   ],
   "/prompt-template-builder": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "label", impact: "critical" },
     { id: "link-in-text-block", impact: "serious" },
-    { id: "select-name", impact: "critical" },
+    { id: "select-name", impact: "critical", optional: true },
+  ],
+  "/qr-code": [
+    { id: "link-in-text-block", impact: "serious" },
+  ],
+  "/regex-visualizer": [
+    { id: "link-in-text-block", impact: "serious" },
+    { id: "scrollable-region-focusable", impact: "serious", optional: true },
+    { id: "select-name", impact: "critical", optional: true },
+  ],
+  "/repo-ops": [
+    { id: "link-in-text-block", impact: "serious" },
   ],
   "/roulette-wheel": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "heading-order", impact: "moderate" },
-    { id: "label", impact: "critical" },
     { id: "link-in-text-block", impact: "serious" },
-    { id: "nested-interactive", impact: "serious" },
-    { id: "select-name", impact: "critical" },
+    { id: "nested-interactive", impact: "serious", optional: true },
+    { id: "select-name", impact: "critical", optional: true },
+  ],
+  "/saml-decoder": [
+    { id: "color-contrast", impact: "serious", optional: true },
+    { id: "link-in-text-block", impact: "serious" },
   ],
   "/secret-scanner": [
-    { id: "color-contrast", impact: "serious" },
     { id: "link-in-text-block", impact: "serious" },
   ],
   "/sql-formatter": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "heading-order", impact: "moderate" },
     { id: "link-in-text-block", impact: "serious" },
-    { id: "select-name", impact: "critical" },
+    { id: "select-name", impact: "critical", optional: true },
+  ],
+  "/ssh-key-generator": [
+    { id: "link-in-text-block", impact: "serious" },
   ],
   "/svg-optimizer": [
-    { id: "color-contrast", impact: "serious" },
+    { id: "link-in-text-block", impact: "serious" },
+  ],
+  "/terms": [
+    { id: "link-in-text-block", impact: "serious" },
+  ],
+  "/text-diff": [
+    { id: "link-in-text-block", impact: "serious" },
+  ],
+  "/timestamp-converter": [
     { id: "link-in-text-block", impact: "serious" },
   ],
   "/token-counter": [
-    { id: "color-contrast", impact: "serious" },
-    { id: "label", impact: "critical" },
     { id: "link-in-text-block", impact: "serious" },
-    { id: "select-name", impact: "critical" },
+    { id: "select-name", impact: "critical", optional: true },
+  ],
+  "/token-studio": [
+    { id: "link-in-text-block", impact: "serious" },
+  ],
+  "/unit-converter": [
+    { id: "link-in-text-block", impact: "serious" },
+  ],
+  "/user-agent-decoder": [
+    { id: "link-in-text-block", impact: "serious" },
+  ],
+  "/uuid-generator": [
+    { id: "link-in-text-block", impact: "serious" },
+  ],
+  "/webhook-debugger": [
+    { id: "link-in-text-block", impact: "serious" },
+  ],
+  "/wireguard-config": [
+    { id: "link-in-text-block", impact: "serious" },
+    { id: "select-name", impact: "critical", optional: true },
+  ],
+  "/wireshark-filter": [
+    { id: "link-in-text-block", impact: "serious" },
+    { id: "select-name", impact: "critical", optional: true },
+  ],
+  "/yaml-toml-converter": [
+    { id: "color-contrast", impact: "serious", optional: true },
+    { id: "link-in-text-block", impact: "serious" },
   ],
 };
 
@@ -297,6 +224,15 @@ const BASELINE_VIOLATIONS = {
 const AUDITED_ROUTES = [
   "/", // home page
   ...tools.map((t) => t.path), // every registered tool
+  // Content and legal pages. These were previously unaudited, which meant the
+  // blog, FAQ and legal copy — the pages most likely to be read start to
+  // finish by a screen-reader user — had no accessibility coverage at all.
+  "/about",
+  "/faq",
+  "/privacy",
+  "/terms",
+  "/blog",
+  "/changelog",
 ];
 
 // ── Helpers ──────────────────────────────────────────────────────

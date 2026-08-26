@@ -176,7 +176,7 @@ test.describe("Generator and utility tools UI interactions", () => {
   test("public-repos-yml-builder generates YAML, audit workflow, and findings", async ({
     page,
   }) => {
-    await openTool(page, "/public-repos-yml-builder");
+    await openTool(page, "/repo-ops?tab=inventory");
 
     await page
       .locator("#repo-input")
@@ -204,7 +204,7 @@ test.describe("Generator and utility tools UI interactions", () => {
   test("public-repos-yml-builder imports GitHub public repos API JSON", async ({
     page,
   }) => {
-    await openTool(page, "/public-repos-yml-builder");
+    await openTool(page, "/repo-ops?tab=inventory");
 
     await page.locator("#repo-input").fill(
       JSON.stringify([
@@ -256,7 +256,7 @@ test.describe("Generator and utility tools UI interactions", () => {
   test("public-repos-not-automation builds a manual decision record and checklist", async ({
     page,
   }) => {
-    await openTool(page, "/public-repos-not-automation");
+    await openTool(page, "/repo-ops?tab=manual");
 
     await page
       .locator("#repo-task-input")

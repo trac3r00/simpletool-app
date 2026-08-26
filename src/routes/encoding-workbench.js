@@ -74,21 +74,21 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
       .filter(Boolean) || [];
 
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
 
         ${toolHeader}
 
         <!-- Tab Navigation -->
         <div class="mb-8">
-          <div class="flex bg-surface-100 dark:bg-surface-800 p-1 rounded-xl border border-surface-200 dark:border-surface-700 w-fit" role="tablist">
-            <button id="tab-encode" class="tab-btn active px-5 py-2 rounded-lg font-medium text-sm transition-all duration-200 bg-white dark:bg-surface-900 text-primary-600 dark:text-primary-400 shadow-sm" role="tab" aria-controls="panel-encode" aria-selected="true" data-tooltip="Encode and decode text between formats" data-i18n-tooltip="tools.encoding-workbench.ui.tip0">
+          <div class="tabs-list flex bg-surface-100 dark:bg-surface-800 p-1 rounded-xl border border-surface-200 dark:border-surface-700 w-fit" role="tablist">
+            <button id="tab-encode" class="tab-trigger tab-btn active" role="tab" aria-controls="panel-encode" aria-selected="true" data-tooltip="Encode and decode text between formats" data-i18n-tooltip="tools.encoding-workbench.ui.tip0">
               <span data-i18n="tools.encoding-workbench.ui.tab0">🔄 Encode / Decode</span>
             </button>
-            <button id="tab-hash" class="tab-btn px-5 py-2 rounded-lg font-medium text-sm transition-all duration-200 text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-200" role="tab" aria-controls="panel-hash" aria-selected="false" data-tooltip="Generate cryptographic hashes" data-i18n-tooltip="tools.encoding-workbench.ui.tip1">
+            <button id="tab-hash" class="tab-trigger tab-btn" role="tab" aria-controls="panel-hash" aria-selected="false" data-tooltip="Generate cryptographic hashes" data-i18n-tooltip="tools.encoding-workbench.ui.tip1">
               <span data-i18n="tools.encoding-workbench.ui.tab1"># Hash</span>
             </button>
-            <button id="tab-identify" class="tab-btn px-5 py-2 rounded-lg font-medium text-sm transition-all duration-200 text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-200" role="tab" aria-controls="panel-identify" aria-selected="false" data-tooltip="Identify unknown hashes or encoded strings" data-i18n-tooltip="tools.encoding-workbench.ui.tip2">
+            <button id="tab-identify" class="tab-trigger tab-btn" role="tab" aria-controls="panel-identify" aria-selected="false" data-tooltip="Identify unknown hashes or encoded strings" data-i18n-tooltip="tools.encoding-workbench.ui.tip2">
               <span data-i18n="tools.encoding-workbench.ui.tab2">🔍 Identify</span>
             </button>
           </div>
@@ -107,7 +107,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
               rows="5"
               placeholder="Paste text or encoded data here…"
               data-i18n-placeholder="tools.encoding-workbench.ui.placeholder0"
-              class="w-full p-3 font-mono text-sm bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg text-surface-900 dark:text-surface-100 placeholder-surface-400 dark:placeholder-surface-600 resize-none focus:outline-none focus:ring-2 focus:ring-primary-500"
+              class="input-mono w-full resize-none"
             ></textarea>
           </div>
 
@@ -150,7 +150,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
               rows="5"
               readonly
               placeholder=""
-              class="hidden w-full p-3 font-mono text-sm bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg text-surface-900 dark:text-surface-100 resize-none focus:outline-none focus:ring-2 focus:ring-primary-500"
+              class="input-mono hidden w-full resize-none"
             ></textarea>
             <div id="enc-error" class="hidden mt-2 px-3 py-2 rounded-lg bg-error-50 dark:bg-error-900/20 text-error-700 dark:text-error-300 border border-error-200 dark:border-error-800 text-sm"></div>
           </div>
@@ -183,7 +183,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
                   rows="6"
                   placeholder="Enter text to hash…"
                   data-i18n-placeholder="tools.encoding-workbench.ui.hashPlaceholder"
-                  class="w-full p-3 font-mono text-sm bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg text-surface-900 dark:text-surface-100 placeholder-surface-400 dark:placeholder-surface-600 resize-none focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  class="input-mono w-full resize-none"
                 ></textarea>
               </div>
 
@@ -233,7 +233,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
                     id="hmac-key"
                     placeholder="Enter HMAC secret key…"
                     data-i18n-placeholder="tools.encoding-workbench.ui.hmacPlaceholder"
-                    class="w-full p-3 font-mono text-sm bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg text-surface-900 dark:text-surface-100 placeholder-surface-400 dark:placeholder-surface-600 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    class="input-mono w-full"
                   >
                 </div>
               </div>
@@ -246,7 +246,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
                 </label>
                 <div id="bcrypt-section" class="hidden flex items-center gap-3">
                   <label class="text-sm text-surface-600 dark:text-surface-400" data-i18n="tools.encoding-workbench.ui.bcryptRoundsLabel">Cost rounds:</label>
-                  <select id="bcrypt-rounds" class="bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg px-3 py-1.5 text-sm text-surface-900 dark:text-surface-100 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                  <select id="bcrypt-rounds" class="input">
                     <option value="4" data-i18n="tools.encoding-workbench.ui.option29">4 (fastest)</option>
                     <option value="6">6</option>
                     <option value="8">8</option>
@@ -266,7 +266,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
             <div>
               <div class="bg-surface-50 dark:bg-surface-950 rounded-xl border border-surface-200 dark:border-surface-800 p-5 min-h-[300px]">
                 <div class="flex items-center justify-between mb-4">
-                  <h3 class="text-sm font-semibold text-surface-700 dark:text-surface-300" data-i18n="tools.encoding-workbench.ui.hashResultsLabel">Hash Results</h3>
+                  <h2 class="text-sm font-semibold text-surface-700 dark:text-surface-300" data-i18n="tools.encoding-workbench.ui.hashResultsLabel">Hash Results</h2>
                 </div>
                 <div id="hash-results">
                   ${createEmptyState({ icon: "#️⃣", title: "No hashes yet", description: "Enter text or select a file and click Hash All.", id: "hash-empty-state", i18nTitle: "tools.encoding-workbench.ui.desc2", i18nDesc: "tools.encoding-workbench.ui.desc3" })}
@@ -288,7 +288,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
               rows="4"
               placeholder="Paste a hash or encoded string…"
               data-i18n-placeholder="tools.encoding-workbench.ui.identifyPlaceholder"
-              class="w-full p-3 font-mono text-sm bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg text-surface-900 dark:text-surface-100 placeholder-surface-400 dark:placeholder-surface-600 resize-none focus:outline-none focus:ring-2 focus:ring-primary-500"
+              class="input-mono w-full resize-none"
             ></textarea>
           </div>
 

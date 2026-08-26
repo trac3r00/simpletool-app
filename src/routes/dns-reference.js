@@ -1,6 +1,4 @@
-import { respondHTML } from "../utils/respond.js";
 import {
-  createPageTemplate,
   createToolHeader,
   createCheatsheet,
 } from "../utils/common-ui.js";
@@ -10,18 +8,12 @@ import {
   DEFAULT_LANGUAGE,
   getToolTranslation,
   normalizeLanguage,
-  resolveRequestLanguage,
 } from "../utils/i18n.js";
 
-export async function handleDNSReferenceRoutes(request, url) {
-  if (url.pathname !== "/dns-reference" && url.pathname !== "/dns-reference/")
-    return null;
-  if (request.method !== "GET") return null;
-  const lang = resolveRequestLanguage(request, url);
-  return respondHTML(renderDnsReferencePage(lang));
-}
-
-function renderDnsReferencePage(lang = DEFAULT_LANGUAGE) {
+// Merged into /network-reference (Track A). Renders the DNS tab's inner
+// content + script; the tabbed shell in network-reference.js provides the
+// <main>, page header, and tab bar. Old /dns-reference path 301s (redirects.js).
+export function renderDnsReferenceSection(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
   const translation = getToolTranslation("dns-reference", currentLang);
   const title = translation?.name || "DNS Record Reference";
@@ -48,7 +40,7 @@ function renderDnsReferencePage(lang = DEFAULT_LANGUAGE) {
         tooltip: "Generate dig and nslookup commands with one click.",
       },
     ],
-    { toolId: "dns-reference" },
+    { toolId: "dns-reference", headingLevel: 2 },
   );
 
   const currentTool = TOOLS.find((t) => t.id === "dns-reference");
@@ -58,7 +50,7 @@ function renderDnsReferencePage(lang = DEFAULT_LANGUAGE) {
       .filter(Boolean) || [];
 
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="net-ref-section">
       <div class="tool-card">
         ${header}
 
@@ -141,7 +133,7 @@ function renderDnsReferencePage(lang = DEFAULT_LANGUAGE) {
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             <div>
-              <label class="label" data-i18n="tools.dns-reference.ui.label0">Record Type</label>
+              <label for="cmd-record-type" class="label" data-i18n="tools.dns-reference.ui.label0">Record Type</label>
               <select id="cmd-record-type" class="input w-full">
                 <option value="A">A</option>
                 <option value="AAAA">AAAA</option>
@@ -162,11 +154,11 @@ function renderDnsReferencePage(lang = DEFAULT_LANGUAGE) {
               <p class="text-xs text-surface-500 dark:text-surface-400 mt-1">DKIM/SPF/DMARC use TXT records at specific subdomains.</p>
             </div>
             <div>
-              <label class="label" data-i18n="tools.dns-reference.ui.label1">Domain</label>
+              <label for="cmd-domain" class="label" data-i18n="tools.dns-reference.ui.label1">Domain</label>
               <input type="text" id="cmd-domain" class="input w-full" placeholder="example.com" data-i18n-placeholder="tools.dns-reference.ui.placeholder1">
             </div>
             <div>
-              <label class="label" data-i18n="tools.dns-reference.ui.label2">DNS Server (optional)</label>
+              <label for="cmd-server" class="label" data-i18n="tools.dns-reference.ui.label2">DNS Server (optional)</label>
               <input type="text" id="cmd-server" class="input w-full" placeholder="8.8.8.8" data-i18n-placeholder="tools.dns-reference.ui.placeholder2">
             </div>
           </div>
@@ -233,11 +225,12 @@ function renderDnsReferencePage(lang = DEFAULT_LANGUAGE) {
         )}
       </div>
       ${createRelatedToolsSection(relatedToolsData)}
-    </main>
+    </div>
   `;
 
   const scripts = `
     <script>
+      (function(){
       const t = (k, fb) => (window._t ? window._t('tools.dns-reference.js.' + k, fb) : (fb || k));
 
       // DNS Record Type Data
@@ -588,17 +581,11 @@ function renderDnsReferencePage(lang = DEFAULT_LANGUAGE) {
 
       // Initialize
       updateCommands();
+      })();
     </script>
   `;
 
-  return createPageTemplate({
-    title,
-    description,
-    lang: currentLang,
-    path: "/dns-reference",
-    content,
-    scripts,
-  });
+  return { content, scripts };
 }
 
 function recordTypeCards() {

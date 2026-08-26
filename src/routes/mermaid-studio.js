@@ -52,14 +52,15 @@ export async function handleMermaidStudioRoutes(request, url) {
       .filter(Boolean) || [];
 
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main class="tool-page-shell min-h-[calc(100vh-4rem)] flex flex-col">
+      <div class="tool-page-panel tool-page-panel--fill">
       ${header}
 
       ${createMobileTabView({ leftPaneId: "editor-pane", rightPaneId: "preview-pane", leftLabel: '<span data-i18n="tools.mermaid-studio.ui.stat3">Mermaid Code</span>', rightLabel: '<span data-i18n="tools.mermaid-studio.ui.stat4">Preview</span>' })}
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 h-[calc(100vh-350px)] min-h-[600px]">
         <!-- Editor -->
-        <div id="editor-pane" class="lg:col-span-5 flex flex-col bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 overflow-hidden">
+        <div id="editor-pane" class="tool-group tool-group--flush lg:col-span-5 flex flex-col overflow-hidden">
           <div class="px-4 py-3 border-b border-surface-200 dark:border-surface-800 flex justify-between items-center bg-surface-50 dark:bg-surface-950">
             <span class="text-sm font-semibold text-surface-900 dark:text-white uppercase tracking-wider" data-i18n="tools.mermaid-studio.ui.stat3">Mermaid Code</span>
             <div class="flex gap-2">
@@ -70,14 +71,14 @@ export async function handleMermaidStudioRoutes(request, url) {
         </div>
 
         <!-- Preview -->
-        <div id="preview-pane" class="lg:col-span-7 flex flex-col bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 overflow-hidden">
+        <div id="preview-pane" class="tool-group tool-group--flush lg:col-span-7 flex flex-col overflow-hidden">
           <div class="px-4 py-3 border-b border-surface-200 dark:border-surface-800 flex justify-between items-center bg-surface-50 dark:bg-surface-950">
             <span class="text-sm font-semibold text-surface-900 dark:text-white uppercase tracking-wider" data-i18n="tools.mermaid-studio.ui.stat4">Preview</span>
             <div class="flex gap-3">
               <button id="download-svg" data-tooltip="Download the rendered diagram as SVG" class="btn btn-secondary btn-xs"><span data-i18n="tools.mermaid-studio.ui.button1">Download SVG</span></button>
             </div>
           </div>
-          <div id="mermaid-render" class="flex-1 p-8 overflow-auto flex items-center justify-center bg-white dark:bg-surface-950">
+          <div id="mermaid-render" class="flex-1 min-h-[24rem] p-8 overflow-auto flex items-center justify-center bg-background">
             ${createEmptyState({ icon: "🧜‍♀️", title: "No diagram yet", description: "Write Mermaid code on the left to see it rendered here.", id: "mermaid-empty-state", i18nTitle: "tools.mermaid-studio.ui.desc10", i18nDesc: "tools.mermaid-studio.ui.desc11" })}
           </div>
         </div>
@@ -114,6 +115,7 @@ export async function handleMermaidStudioRoutes(request, url) {
         },
       ])}
     ${createRelatedToolsSection(relatedToolsData)}
+      </div>
     </main>
   `;
 
@@ -151,9 +153,20 @@ export async function handleMermaidStudioRoutes(request, url) {
          if (err) err.remove();
        }
 
+       let pendingRender = false;
+
        async function renderDiagram() {
          const code = editor.getValue().trim();
          if (!code) { showEmptyState(); return; }
+
+         // Rendering into a 0x0 box (pane hidden by the mobile tab switcher)
+         // makes mermaid emit a degenerate 16px svg. Defer until the observer
+         // reports a real layout box.
+         if (!renderArea.clientWidth || !renderArea.clientHeight) {
+           pendingRender = true;
+           return;
+         }
+         pendingRender = false;
 
          if (emptyState) emptyState.classList.add('hidden');
 
@@ -210,8 +223,32 @@ export async function handleMermaidStudioRoutes(request, url) {
         renderDiagram();
       });
 
-      // Initial render
-      setTimeout(renderDiagram, 500);
+      // The preview pane starts hidden (the editor/preview toggle defaults to
+      // the editor), so the initial render would run against a display:none
+      // container. Mermaid measures edge-label positions off real geometry and
+      // throws "Could not find a suitable point for the given distance" on a
+      // 0x0 box — which is why a perfectly valid flowchart showed an error and
+      // switching to Preview then revealed that stale error rather than a
+      // diagram. Render only once the area actually has a layout box, and
+      // re-render whenever it regains one.
+      let lastArea = 0;
+      const ensureRendered = () => {
+        const w = renderArea.clientWidth;
+        const h = renderArea.clientHeight;
+        if (!w || !h) { lastArea = 0; return; }
+        const area = w * h;
+        if (lastArea === 0 && (pendingRender || !renderArea.querySelector('svg'))) {
+          lastArea = area;
+          renderDiagram();
+          return;
+        }
+        lastArea = area;
+      };
+
+      if (typeof ResizeObserver === 'function') {
+        new ResizeObserver(ensureRendered).observe(renderArea);
+      }
+      setTimeout(ensureRendered, 500);
     </script>
   `;
 

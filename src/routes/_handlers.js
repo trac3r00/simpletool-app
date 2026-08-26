@@ -35,9 +35,7 @@ import { handleCaffeinateRoutes as caffeinate } from './caffeinate.js';
 import { handleEmailAnalyzerRoutes as email_analyzer } from './email-analyzer.js';
 import { handleTokenCounterRoutes as token_counter } from './token-counter.js';
 import { handlePromptTemplateBuilderRoutes as prompt_template_builder } from './prompt-template-builder.js';
-import { handlePublicReposYmlBuilderRoutes as public_repos_yml_builder } from './public-repos-yml-builder.js';
-import { handlePublicReposNotAutomationRoutes as public_repos_not_automation } from './public-repos-not-automation.js';
-import { handleReviewDescriptionGeneratorRoutes as review_description_generator } from './review-description-generator.js';
+import { handleRepoOpsRoutes as repo_ops } from './repo-ops.js';
 import { handleSQLFormatterRoutes as sql_formatter } from './sql-formatter.js';
 import { handleEnvVarManagerRoutes as env_var_manager } from './env-var-manager.js';
 import { handleLadderGameRoutes as ladder_game } from './ladder-game.js';
@@ -45,12 +43,9 @@ import { handleRouletteWheelRoutes as roulette_wheel } from './roulette-wheel.js
 import { handleSVGOptimizerRoutes as svg_optimizer } from './svg-optimizer.js';
 import { handleCSPBuilderRoutes as csp_builder } from './csp-builder.js';
 import { handleSecretScannerRoutes as secret_scanner } from './secret-scanner.js';
-import { handleDNSReferenceRoutes as dns_reference } from './dns-reference.js';
-import { handlePortReferenceRoutes as port_reference } from './port-reference.js';
-import { handleHTTPStatusReferenceRoutes as http_status_reference } from './http-status-reference.js';
+import { handleNetworkReferenceRoutes as network_reference } from './network-reference.js';
 import { handleBandwidthCalculatorRoutes as bandwidth_calculator } from './bandwidth-calculator.js';
 import { handleWiresharkFilterRoutes as wireshark_filter } from './wireshark-filter.js';
-import { handleProtocolHeadersRoutes as protocol_headers } from './protocol-headers.js';
 import { handleWireguardConfigRoutes as wireguard_config } from './wireguard-config.js';
 import { handleMarbleRouletteRoutes as marble_roulette } from './marble-roulette.js';
 import { handleTokenStudioRoutes as token_studio } from './token-studio.js';
@@ -92,9 +87,7 @@ export const handlersById = {
   'email-analyzer': email_analyzer,
   'token-counter': token_counter,
   'prompt-template-builder': prompt_template_builder,
-  'public-repos-yml-builder': public_repos_yml_builder,
-  'public-repos-not-automation': public_repos_not_automation,
-  'review-description-generator': review_description_generator,
+  'repo-ops': repo_ops,
   'sql-formatter': sql_formatter,
   'env-var-manager': env_var_manager,
   'ladder-game': ladder_game,
@@ -102,12 +95,9 @@ export const handlersById = {
   'svg-optimizer': svg_optimizer,
   'csp-builder': csp_builder,
   'secret-scanner': secret_scanner,
-  'dns-reference': dns_reference,
-  'port-reference': port_reference,
-  'http-status-reference': http_status_reference,
+  'network-reference': network_reference,
   'bandwidth-calculator': bandwidth_calculator,
   'wireshark-filter': wireshark_filter,
-  'protocol-headers': protocol_headers,
   'wireguard-config': wireguard_config,
   'marble-roulette': marble_roulette,
   'token-studio': token_studio,

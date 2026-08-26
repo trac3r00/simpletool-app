@@ -47,15 +47,15 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
       .filter(Boolean) || [];
   const pageContent = `
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
         ${toolHeader}
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Left Column: Controls -->
         <div class="space-y-6">
           <!-- Gradient Type -->
-          <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm p-6">
+          <div class="tool-group p-6">
             <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50 mb-4" data-i18n="tools.css-gradient.ui.heading18">🔧 Gradient Type</h2>
 
             <div class="grid grid-cols-2 gap-3">
@@ -86,13 +86,13 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
             <!-- Radial Options -->
             <div id="radial-options" class="mt-4 hidden">
               <label for="radial-shape" class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2"><span data-i18n="tools.css-gradient.ui.label5">Shape</span></label>
-              <select id="radial-shape" class="w-full px-4 py-2 border border-surface-300 dark:border-surface-700 rounded-lg bg-white dark:bg-surface-950 text-surface-900 dark:text-surface-100">
+              <select id="radial-shape" class="input">
                 <option value="circle" data-i18n="tools.css-gradient.ui.option7">Circle</option>
                 <option value="ellipse" data-i18n="tools.css-gradient.ui.option8">Ellipse</option>
               </select>
 
               <label for="radial-position" class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mt-3 mb-2"><span data-i18n="tools.css-gradient.ui.label6">Position</span></label>
-              <select id="radial-position" class="w-full px-4 py-2 border border-surface-300 dark:border-surface-700 rounded-lg bg-white dark:bg-surface-950 text-surface-900 dark:text-surface-100">
+              <select id="radial-position" class="input">
                 <option value="center" data-i18n="tools.css-gradient.ui.option9">Center</option>
                 <option value="top" data-i18n="tools.css-gradient.ui.option10">Top</option>
                 <option value="bottom" data-i18n="tools.css-gradient.ui.option11">Bottom</option>
@@ -107,10 +107,10 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
           </div>
 
           <!-- Color Stops -->
-          <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm p-6">
+          <div class="tool-group p-6">
             <div class="flex justify-between items-center mb-4">
               <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50" data-i18n="tools.css-gradient.ui.heading19">🎨 Color Stops</h2>
-                <button id="add-color-stop" data-tooltip="Add another color to the gradient" data-i18n-tooltip="tools.css-gradient-generator.ui.tip3" class="px-4 py-2 bg-success-600 text-white rounded-lg hover:bg-success-700 transition text-sm font-semibold">
+                <button id="add-color-stop" data-tooltip="Add another color to the gradient" data-i18n-tooltip="tools.css-gradient-generator.ui.tip3" class="btn-primary">
                 <span data-i18n="tools.css-gradient.ui.button2">+ Add Color</span>
               </button>
             </div>
@@ -121,7 +121,7 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
           </div>
 
           <!-- Preset Gradients -->
-          <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm p-6">
+          <div class="tool-group p-6">
             <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50 mb-4" data-i18n="tools.css-gradient.ui.heading20">✨ Preset Gradients</h2>
 
             <div class="grid grid-cols-2 gap-3">
@@ -138,16 +138,16 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
         <!-- Right Column: Preview & Code -->
         <div class="space-y-6">
           <!-- Live Preview -->
-          <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm p-6">
+          <div class="tool-group p-6">
             <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50 mb-4" data-i18n="tools.css-gradient.ui.heading21">👁️ Live Preview</h2>
             <div id="gradient-preview" class="gradient-preview border-2 border-surface-200 dark:border-surface-700"></div>
           </div>
 
           <!-- CSS Code -->
-          <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm p-6">
+          <div class="tool-group p-6">
             <div class="flex justify-between items-center mb-4">
               <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50" data-i18n="tools.css-gradient.ui.heading22">📋 CSS Code</h2>
-               <button id="copy-css-btn" class="px-4 py-2 bg-primary-700 text-white rounded-lg hover:bg-primary-800 transition text-sm font-semibold">
+               <button id="copy-css-btn" class="btn-primary">
                 <span data-i18n="tools.css-gradient.ui.button3">📋 Copy CSS</span>
               </button>
             </div>
@@ -377,7 +377,7 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
             }, 2000);
           } catch (err) {
             const btn = document.getElementById('copy-css-btn');
-            btn.textContent = _t('tools.css-gradient.js.text0', 'Copy failed');
+            btn.textContent = 'Copy failed';
             btn.classList.remove('bg-primary-700', 'hover:bg-primary-800');
             btn.classList.add('bg-error-600', 'hover:bg-error-700');
             setTimeout(() => {

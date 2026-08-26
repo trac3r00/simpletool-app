@@ -42,7 +42,7 @@ export function createEducationalSection(
     <details class="group border-l-4 border-primary-500 dark:border-primary-400 bg-white dark:bg-surface-900 rounded-r-lg shadow-sm"${i === 0 ? " open" : ""}>
       <summary class="flex items-center justify-between w-full px-5 py-4 cursor-pointer select-none text-left text-surface-900 dark:text-surface-50 font-semibold text-base hover:bg-surface-50 dark:hover:bg-surface-800/50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500" data-i18n="${headingKey}">
         <span>${headingText}</span>
-        <svg class="w-5 h-5 text-surface-400 dark:text-surface-500 transition-transform duration-200 group-open:rotate-180 flex-shrink-0 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <svg class="w-5 h-5 text-surface-500 dark:text-surface-400 transition-transform duration-200 group-open:rotate-180 flex-shrink-0 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
         </svg>
       </summary>
@@ -76,7 +76,7 @@ export function createFaqAccordion(items, options = {}) {
     <details id="${item.id || "q" + (i + 1)}" class="group border border-surface-200 dark:border-surface-800 rounded-lg bg-white dark:bg-surface-900 shadow-sm" data-faq-item>
       <summary class="flex items-center justify-between w-full px-5 py-4 cursor-pointer select-none text-left font-medium text-surface-900 dark:text-surface-50 hover:bg-surface-50 dark:hover:bg-surface-800/50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"${withI18n ? ` data-i18n="content.faq.q${i}"` : ""}>
         <span>${item.question}</span>
-        <svg class="w-5 h-5 text-surface-400 dark:text-surface-500 transition-transform duration-200 group-open:rotate-180 flex-shrink-0 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <svg class="w-5 h-5 text-surface-500 dark:text-surface-400 transition-transform duration-200 group-open:rotate-180 flex-shrink-0 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
         </svg>
       </summary>
@@ -125,7 +125,7 @@ export function createBlogArticleCard(article, options = {}) {
       <p class="text-sm text-surface-600 dark:text-surface-400 leading-relaxed mb-3">
         ${article.description}
       </p>
-      ${dateFormatted ? `<time datetime="${article.datePublished}" class="text-xs text-surface-400 dark:text-surface-500">${dateFormatted}</time>` : ""}
+      ${dateFormatted ? `<time datetime="${article.datePublished}" class="text-xs text-surface-500 dark:text-surface-400">${dateFormatted}</time>` : ""}
     </a>
   `;
 }
@@ -196,7 +196,7 @@ export function createBreadcrumbs(items, options = {}) {
       return `<a href="${withLanguageQuery(item.url, lang)}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">${item.label}</a>`;
     })
     .join(
-      `<svg class="w-4 h-4 text-surface-400 dark:text-surface-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>`,
+      `<svg class="w-4 h-4 text-surface-500 dark:text-surface-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>`,
     );
 
   return `

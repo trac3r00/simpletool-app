@@ -45,8 +45,8 @@ function renderUnitConverterPage(lang = DEFAULT_LANGUAGE) {
       ?.map((id) => TOOLS.find((t) => t.id === id))
       .filter(Boolean) || [];
   const pageContent = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
         ${toolHeader}
         
         <!-- Category Selection -->
@@ -64,19 +64,19 @@ function renderUnitConverterPage(lang = DEFAULT_LANGUAGE) {
           <div class="space-y-4">
             <div>
               <label for="from-unit" class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2"><span data-i18n="tools.unit-converter.ui.label1">From</span></label>
-              <select id="from-unit" class="w-full px-4 py-3 bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg focus:ring-2 focus:ring-primary-500 text-surface-900 dark:text-surface-50 transition-colors">
+              <select id="from-unit" class="input w-full">
                 <!-- Units injected by JS -->
               </select>
             </div>
             <div>
               <label for="from-value" class="sr-only"><span data-i18n="tools.unit-converter.ui.label0">Input value</span></label>
-              <input type="number" id="from-value" placeholder="0" data-tooltip="Enter the value to convert" data-i18n-tooltip="tools.unit-converter.ui.tip0" class="w-full px-4 py-3 bg-white dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg focus:ring-2 focus:ring-primary-500 text-surface-900 dark:text-surface-50 text-lg font-mono" />
+              <input type="number" id="from-value" placeholder="0" data-tooltip="Enter the value to convert" data-i18n-tooltip="tools.unit-converter.ui.tip0" class="input-mono text-lg" />
             </div>
           </div>
 
           <!-- Swap Button -->
           <div class="flex justify-center md:pt-6">
-            <button id="swap-btn" data-tooltip="Swap input and output units" data-i18n-tooltip="tools.unit-converter.ui.tip1" class="p-3 rounded-full bg-surface-100 dark:bg-surface-800 hover:bg-primary-100 dark:hover:bg-primary-900/30 text-surface-600 dark:text-surface-300 hover:text-primary-600 dark:hover:text-primary-400 transition-all group" title="Swap Units" data-i18n-title="tools.unit-converter.ui.title3">
+            <button id="swap-btn" data-tooltip="Swap input and output units" data-i18n-tooltip="tools.unit-converter.ui.tip1" class="btn-ghost btn-icon rounded-full rounded-full" title="Swap Units" data-i18n-title="tools.unit-converter.ui.title3">
               <span class="material-symbols-rounded transform rotate-90 md:rotate-0 transition-transform group-hover:scale-110">swap_horiz</span>
             </button>
           </div>
@@ -85,13 +85,13 @@ function renderUnitConverterPage(lang = DEFAULT_LANGUAGE) {
           <div class="space-y-4">
             <div>
               <label for="to-unit" class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2"><span data-i18n="tools.unit-converter.ui.label2">To</span></label>
-              <select id="to-unit" class="w-full px-4 py-3 bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg focus:ring-2 focus:ring-primary-500 text-surface-900 dark:text-surface-50 transition-colors">
+              <select id="to-unit" class="input w-full">
                 <!-- Units injected by JS -->
               </select>
             </div>
             <div>
               <label for="to-value" class="sr-only"><span data-i18n="tools.unit-converter.ui.label1">Converted value</span></label>
-              <input type="number" id="to-value" placeholder="0" readonly class="w-full px-4 py-3 bg-surface-50 dark:bg-surface-900 border border-surface-300 dark:border-surface-700 rounded-lg text-surface-900 dark:text-surface-50 text-lg font-mono cursor-not-allowed" />
+              <input type="number" id="to-value" placeholder="0" readonly class="input-mono w-full" />
               <span id="to-value-live" role="status" class="sr-only"></span>
             </div>
           </div>

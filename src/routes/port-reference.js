@@ -1,6 +1,4 @@
-import { respondHTML } from "../utils/respond.js";
 import {
-  createPageTemplate,
   createToolHeader,
   createCheatsheet,
 } from "../utils/common-ui.js";
@@ -10,18 +8,12 @@ import {
   DEFAULT_LANGUAGE,
   getToolTranslation,
   normalizeLanguage,
-  resolveRequestLanguage,
 } from "../utils/i18n.js";
 
-export async function handlePortReferenceRoutes(request, url) {
-  if (url.pathname !== "/port-reference" && url.pathname !== "/port-reference/")
-    return null;
-  if (request.method !== "GET") return null;
-  const lang = resolveRequestLanguage(request, url);
-  return respondHTML(renderPortReferencePage(lang));
-}
-
-function renderPortReferencePage(lang = DEFAULT_LANGUAGE) {
+// Merged into /network-reference (Track A). Returns the Ports tab's inner
+// content (its <script> is inline in content, already IIFE-wrapped). Old
+// /port-reference path 301s (redirects.js).
+export function renderPortReferenceSection(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
   const translation = getToolTranslation("port-reference", currentLang);
   const title = translation?.name || "Port Reference";
@@ -47,7 +39,7 @@ function renderPortReferencePage(lang = DEFAULT_LANGUAGE) {
         tooltip: "All data is embedded locally — no network requests.",
       },
     ],
-    { toolId: "port-reference" },
+    { toolId: "port-reference", headingLevel: 2 },
   );
 
   const currentTool = TOOLS.find((t) => t.id === "port-reference");
@@ -57,7 +49,7 @@ function renderPortReferencePage(lang = DEFAULT_LANGUAGE) {
       .filter(Boolean) || [];
 
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="net-ref-section">
       ${header}
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -203,7 +195,7 @@ function renderPortReferencePage(lang = DEFAULT_LANGUAGE) {
       ])}
 
       ${createRelatedToolsSection(relatedToolsData)}
-    </main>
+    </div>
 
     <script>
       (function() {
@@ -999,11 +991,5 @@ function renderPortReferencePage(lang = DEFAULT_LANGUAGE) {
     </script>
   `;
 
-  return createPageTemplate({
-    title,
-    description,
-    lang: currentLang,
-    path: "/port-reference",
-    content,
-  });
+  return { content };
 }

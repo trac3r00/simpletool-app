@@ -166,8 +166,8 @@ function renderRouletteWheelPage(lang = "en") {
 
   const content = `
     ${styles}
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
         ${toolHeader}
         <div class="rw-container">
           <div class="rw-wheel-wrapper">
@@ -302,7 +302,7 @@ function renderRouletteWheelPage(lang = "en") {
               <div class="rw-section-content">
                 <div class="rw-section-inner">
                   <div class="rw-mode-row">
-                    <input type="number" id="series-count" class="rw-mode-input" value="10" min="1" max="50">
+                    <input type="number" id="series-count" class="rw-mode-input" value="10" min="1" max="50" aria-label="${t("tools.roulette-wheel.ui.seriesCountLabel", lang)}" data-i18n-aria="tools.roulette-wheel.ui.seriesCountLabel">
                     <button id="start-series-btn" class="btn btn-primary btn-sm" data-i18n="tools.roulette-wheel.ui.start-series">${t("tools.roulette-wheel.ui.start-series", lang)}</button>
                     <button id="stop-series-btn" class="btn btn-ghost btn-sm" disabled data-i18n="tools.roulette-wheel.ui.stop-series">${t("tools.roulette-wheel.ui.stop-series", lang)}</button>
                   </div>

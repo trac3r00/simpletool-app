@@ -81,9 +81,9 @@ export function renderFaqPage(lang = DEFAULT_LANGUAGE) {
     `;
 
   const content = `
-    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
+    <main class="content-page-shell">
       ${breadcrumbs}
-      <div class="card p-6 sm:p-10">
+      <div class="content-page-panel">
         <header class="mb-8">
           <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-surface-900 dark:text-surface-50" data-i18n="content.faq.heading">${t("content.faq.heading", currentLang)}</h1>
           <p class="mt-2 text-sm text-surface-500 dark:text-surface-400" data-i18n="content.faq.subheading">${t("content.faq.subheading", currentLang)}</p>

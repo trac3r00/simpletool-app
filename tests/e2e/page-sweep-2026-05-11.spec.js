@@ -35,7 +35,7 @@ test.describe("Page sweep 2026-05-11 regressions", () => {
   test("ssh-key-generator: ECDSA produces OpenSSH wire format", async ({
     page,
   }) => {
-    await page.goto("http://localhost:8787/ssh-key-generator");
+    await page.goto("/ssh-key-generator");
     await page.locator("#generate-btn").click();
     await expect(page.locator("#results")).toBeVisible();
 
@@ -49,7 +49,7 @@ test.describe("Page sweep 2026-05-11 regressions", () => {
   test("ssh-key-generator: RSA produces OpenSSH wire format", async ({
     page,
   }) => {
-    await page.goto("http://localhost:8787/ssh-key-generator");
+    await page.goto("/ssh-key-generator");
     await page.locator('input[name="keyType"][value="rsa"]').check();
     await page.locator("#rsa-size").selectOption("2048");
     await page.locator("#generate-btn").click();
@@ -60,7 +60,7 @@ test.describe("Page sweep 2026-05-11 regressions", () => {
   });
 
   test("/pipe: renders valid page with proper title", async ({ page }) => {
-    const response = await page.goto("http://localhost:8787/pipe");
+    const response = await page.goto("/pipe");
     expect(response.status()).toBe(200);
     const title = await page.title();
     expect(title).not.toContain("undefined");
@@ -72,7 +72,7 @@ test.describe("Page sweep 2026-05-11 regressions", () => {
   test("htpasswd-generator: Generate entry produces bcrypt output", async ({
     page,
   }) => {
-    await page.goto("http://localhost:8787/htpasswd-generator");
+    await page.goto("/htpasswd-generator");
     await page.fill(
       'input[name="username"], #username, #username-input, input[placeholder*="username" i]',
       "admin",
@@ -99,7 +99,7 @@ test.describe("Page sweep 2026-05-11 regressions", () => {
   });
 
   test("home search: json query filters cards correctly", async ({ page }) => {
-    await page.goto("http://localhost:8787/");
+    await page.goto("/");
     const search = page.locator("#tool-search");
     await expect(search).toBeVisible();
 
@@ -130,7 +130,7 @@ test.describe("Page sweep 2026-05-11 regressions", () => {
   test("home search: empty state shows when no tools match", async ({
     page,
   }) => {
-    await page.goto("http://localhost:8787/");
+    await page.goto("/");
     const search = page.locator("#tool-search");
     await search.fill("xyznomatch12345");
     await page.waitForTimeout(300);
@@ -147,7 +147,7 @@ test.describe("Page sweep 2026-05-11 regressions", () => {
     page,
   }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
-    await page.goto("http://localhost:8787/");
+    await page.goto("/");
     const heroSearch = page.locator("#tool-search");
     await expect(heroSearch).toBeVisible();
 

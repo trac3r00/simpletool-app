@@ -47,8 +47,8 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
       .filter(Boolean) || [];
   const pageContent = `
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
         ${toolHeader}
 
        <!-- Privacy Notice -->
@@ -62,7 +62,7 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
         <!-- Left Column: Upload & Settings -->
         <div class="space-y-6">
           <!-- File Upload -->
-          <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm p-6">
+          <div class="tool-group p-6">
             <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50 mb-4" data-i18n="tools.image-converter.ui.heading11">📤 Upload Image</h2>
 
             <div id="drop-zone" class="drop-zone">
@@ -94,7 +94,7 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
           </div>
 
           <!-- Format Selection -->
-          <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm p-6">
+          <div class="tool-group p-6">
             <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50 mb-4" data-i18n="tools.image-converter.ui.heading12">🔄 Convert Format</h2>
 
             <div class="grid grid-cols-2 gap-3">
@@ -138,13 +138,13 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
           </div>
 
           <!-- Resize Options -->
-          <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm p-6">
+          <div class="tool-group p-6">
             <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50 mb-4" data-i18n="tools.image-converter.ui.heading13">📏 Resize Image</h2>
 
             <!-- Resize Mode -->
             <div class="mb-4">
               <label for="resize-mode" class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2"><span data-i18n="tools.image-converter.ui.label2">Resize Mode</span></label>
-              <select id="resize-mode" class="w-full px-4 py-2 border border-surface-300 dark:border-surface-700 rounded-lg bg-white dark:bg-surface-950 text-surface-900 dark:text-surface-50">
+              <select id="resize-mode" class="input">
                 <option value="none" data-i18n="tools.image-converter.ui.option7">No Resize (Keep Original)</option>
                 <option value="percentage" data-i18n="tools.image-converter.ui.option8">Percentage</option>
                 <option value="dimensions" data-i18n="tools.image-converter.ui.option9">Custom Dimensions</option>
@@ -166,12 +166,12 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
               <div>
                 <label for="custom-width" class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-1"><span data-i18n="tools.image-converter.ui.label3">Width (px)</span></label>
                 <input type="number" id="custom-width" placeholder="800" min="1"
-                  class="w-full px-4 py-2 border border-surface-300 dark:border-surface-700 rounded-lg bg-white dark:bg-surface-950 text-surface-900 dark:text-surface-50" />
+                  class="input" />
               </div>
               <div>
                 <label for="custom-height" class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-1"><span data-i18n="tools.image-converter.ui.label4">Height (px)</span></label>
                 <input type="number" id="custom-height" placeholder="600" min="1"
-                  class="w-full px-4 py-2 border border-surface-300 dark:border-surface-700 rounded-lg bg-white dark:bg-surface-950 text-surface-900 dark:text-surface-50" />
+                  class="input" />
               </div>
               <label for="maintain-aspect" class="flex items-center">
                 <input type="checkbox" id="maintain-aspect" checked data-tooltip="Keep original width-to-height ratio when resizing" data-i18n-tooltip="tools.image-converter.ui.tip1" class="mr-2" />
@@ -184,12 +184,12 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
               <div>
                 <label for="max-width" class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-1"><span data-i18n="tools.image-converter.ui.label5">Max Width (px)</span></label>
                 <input type="number" id="max-width" placeholder="1920" min="1"
-                  class="w-full px-4 py-2 border border-surface-300 dark:border-surface-700 rounded-lg bg-white dark:bg-surface-950 text-surface-900 dark:text-surface-50" />
+                  class="input" />
               </div>
               <div>
                 <label for="max-height" class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-1"><span data-i18n="tools.image-converter.ui.label6">Max Height (px)</span></label>
                 <input type="number" id="max-height" placeholder="1080" min="1"
-                  class="w-full px-4 py-2 border border-surface-300 dark:border-surface-700 rounded-lg bg-white dark:bg-surface-950 text-surface-900 dark:text-surface-50" />
+                  class="input" />
               </div>
             </div>
            </div>
@@ -208,10 +208,10 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
         <!-- Right Column: Preview & Download -->
         <div class="space-y-6">
           <!-- Original Preview -->
-          <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm p-6">
+          <div class="tool-group p-6">
             <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50 mb-4" data-i18n="tools.image-converter.ui.heading14">📷 Original Image</h2>
             <div class="preview-container">
-              <div id="original-placeholder" class="text-center text-surface-400 dark:text-surface-500">
+              <div id="original-placeholder" class="text-center text-surface-500 dark:text-surface-400">
                 <svg class="w-24 h-24 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                 </svg>
@@ -222,10 +222,10 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
           </div>
 
           <!-- Converted Preview -->
-          <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm p-6">
+          <div class="tool-group p-6">
             <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50 mb-4" data-i18n="tools.image-converter.ui.heading15">✨ Converted Image</h2>
             <div class="preview-container">
-              <div id="converted-placeholder" class="text-center text-surface-400 dark:text-surface-500">
+              <div id="converted-placeholder" class="text-center text-surface-500 dark:text-surface-400">
                 <svg class="w-24 h-24 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                 </svg>
@@ -263,21 +263,21 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
 
       <!-- Features Info -->
       <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="bg-white dark:bg-surface-900 rounded-xl shadow-lg p-6">
+        <div class="tool-group shadow-lg p-6">
           <div class="text-3xl mb-3">🎨</div>
           <h3 class="font-bold text-surface-900 dark:text-surface-50 mb-2" data-i18n="tools.image-converter.ui.heading16">Multiple Formats</h3>
           <p class="text-sm text-surface-600 dark:text-surface-300" data-i18n="tools.image-converter.ui.desc29">
             Convert between PNG, JPG, WebP, and GIF formats with quality control
           </p>
         </div>
-        <div class="bg-white dark:bg-surface-900 rounded-xl shadow-lg p-6">
+        <div class="tool-group shadow-lg p-6">
           <div class="text-3xl mb-3">📐</div>
           <h3 class="font-bold text-surface-900 dark:text-surface-50 mb-2" data-i18n="tools.image-converter.ui.heading17">Flexible Resizing</h3>
           <p class="text-sm text-surface-600 dark:text-surface-300" data-i18n="tools.image-converter.ui.desc30">
             Resize by percentage, dimensions, or max width/height with aspect ratio control
           </p>
         </div>
-        <div class="bg-white dark:bg-surface-900 rounded-xl shadow-lg p-6">
+        <div class="tool-group shadow-lg p-6">
           <div class="text-3xl mb-3">⚡</div>
           <h3 class="font-bold text-surface-900 dark:text-surface-50 mb-2" data-i18n="tools.image-converter.ui.heading18">Instant Processing</h3>
           <p class="text-sm text-surface-600 dark:text-surface-300" data-i18n="tools.image-converter.ui.desc31">

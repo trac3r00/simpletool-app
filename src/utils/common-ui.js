@@ -8,10 +8,7 @@ import { bundledStylesHash } from "./bundled-styles.js";
 import { getKeyboardShortcutsScript } from "./keyboard-shortcuts.js";
 import { TOOLS } from "./tool-registry.js";
 import { getPersonalizationScript } from "./personalization.js";
-import {
-  getAdSenseScript,
-  getGtagScript,
-} from "./ads.js";
+import { getAdSenseScript, getGtagScript } from "./ads.js";
 import {
   DEFAULT_LANGUAGE,
   SUPPORTED_LANGUAGES,
@@ -47,7 +44,8 @@ export function createCheatsheet(toolId, title, sections) {
 
   return `
     <div class="cheatsheet mt-6" id="${id}">
-      <button class="cheatsheet-toggle" aria-expanded="false" aria-controls="${id}-content" data-cheatsheet-id="${toolId}">
+      <h2 class="cheatsheet-heading">
+      <button class="cheatsheet-toggle" id="${id}-toggle" aria-expanded="false" aria-controls="${id}-content" data-cheatsheet-id="${toolId}">
         <span class="flex items-center gap-2">
           <span class="text-base">📖</span>
           <span data-i18n="${prefix}.title">${title}</span>
@@ -56,7 +54,8 @@ export function createCheatsheet(toolId, title, sections) {
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
         </svg>
       </button>
-      <div class="cheatsheet-content" id="${id}-content" role="region" aria-labelledby="${id}">
+      </h2>
+      <div class="cheatsheet-content" id="${id}-content" role="region" aria-labelledby="${id}-toggle">
         <div class="cheatsheet-inner">
           ${sectionsHTML}
         </div>
@@ -155,152 +154,6 @@ export function getAnalyticsScript() {
 <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "${analyticsToken}"}'></script>`;
 }
 
-/**
- * Shared tool layout abstraction.
- * Provides consistent inner content structure for tool pages.
- * Modes: 'two-panel' (input/output grid), 'single-panel' (centered), 'custom' (pass-through).
- */
-export function createToolLayout(options) {
-  const {
-    mode = "two-panel",
-    toolHeader = "",
-    controls = "",
-    leftPanel = "",
-    rightPanel = "",
-    content = "",
-    footer = "",
-    actionBar,
-  } = options;
-
-  const actionBarHTML = actionBar ? getActionBarHTML(actionBar) : "";
-
-  let innerContent;
-  if (mode === "two-panel") {
-    innerContent = `
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="flex flex-col gap-2">${leftPanel}</div>
-        <div class="flex flex-col gap-2 relative">
-          ${actionBarHTML}
-          ${rightPanel}
-        </div>
-      </div>`;
-  } else if (mode === "single-panel") {
-    innerContent = `
-      <div class="max-w-3xl mx-auto">
-        ${actionBarHTML}
-        ${content}
-      </div>`;
-  } else {
-    innerContent = content;
-  }
-
-  return `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
-        ${toolHeader}
-        ${controls ? `<div class="flex flex-wrap gap-3 mb-6 bg-surface-50 dark:bg-surface-950/50 p-2 rounded-lg border border-surface-100 dark:border-surface-800">${controls}</div>` : ""}
-        ${innerContent}
-      </div>
-      ${footer}
-    </main>`;
-}
-
-/**
- * Universal action bar for tool output areas.
- */
-export function getActionBarHTML(options = {}) {
-  const {
-    copy = true,
-    download = false,
-    share = false,
-    fullscreen = false,
-    outputId = "output",
-  } = options;
-  const buttons = [];
-
-  if (copy) {
-    buttons.push(`<button type="button" class="action-btn" data-action="copy" data-target="${outputId}" title="Copy to clipboard">
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
-      <span class="action-label">Copy</span>
-    </button>`);
-  }
-  if (download) {
-    buttons.push(`<button type="button" class="action-btn" data-action="download" data-target="${outputId}" title="Download">
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-      <span class="action-label">Download</span>
-    </button>`);
-  }
-  if (share) {
-    buttons.push(`<button type="button" class="action-btn" data-action="share" title="Share permalink">
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
-      <span class="action-label">Share</span>
-    </button>`);
-  }
-  if (fullscreen) {
-    buttons.push(`<button type="button" class="action-btn" data-action="fullscreen" title="Fullscreen">
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
-      <span class="action-label">Fullscreen</span>
-    </button>`);
-  }
-
-  if (buttons.length === 0) return "";
-
-  return `<div class="flex items-center justify-end gap-1 mb-2">
-    ${buttons.join("\n    ")}
-  </div>`;
-}
-
-/**
- * Script for universal action bar interactions (copy with feedback, download, share).
- * @returns {string} Script tag
- */
-export function getActionBarScript() {
-  return `<script>
-  (function() {
-    document.addEventListener('click', function(e) {
-      var btn = e.target.closest('[data-action]');
-      if (!btn) return;
-      var action = btn.dataset.action;
-      var targetId = btn.dataset.target;
-
-      if (action === 'copy') {
-        var el = document.getElementById(targetId);
-        var text = el ? (el.value || el.textContent || el.innerText) : '';
-        if (text && navigator.clipboard) {
-          navigator.clipboard.writeText(text).then(function() {
-            var label = btn.querySelector('.action-label');
-            if (label) { var orig = label.textContent; label.textContent = '✓ Copied'; setTimeout(function() { label.textContent = orig; }, 2000); }
-          });
-        }
-      }
-      if (action === 'download') {
-        var el = document.getElementById(targetId);
-        var text = el ? (el.value || el.textContent || el.innerText) : '';
-        if (text) {
-          var blob = new Blob([text], { type: 'text/plain' });
-          var a = document.createElement('a');
-          a.href = URL.createObjectURL(blob);
-          a.download = (targetId || 'output') + '.txt';
-          a.click();
-          URL.revokeObjectURL(a.href);
-        }
-      }
-      if (action === 'share') {
-        var url = new URL(window.location.href);
-        navigator.clipboard.writeText(url.href).then(function() {
-          var label = btn.querySelector('.action-label');
-          if (label) { var orig = label.textContent; label.textContent = '✓ Link copied'; setTimeout(function() { label.textContent = orig; }, 2000); }
-        });
-      }
-      if (action === 'fullscreen') {
-        var main = document.querySelector('main');
-        if (main) { if (document.fullscreenElement) document.exitFullscreen(); else main.requestFullscreen(); }
-      }
-    });
-  })();
-  </script>`;
-}
-
 export {
   getAdConfig,
   getAdSenseScript,
@@ -327,17 +180,12 @@ export function getThemeToggleButton(options = {}) {
     dark: t("nav.switchLight", lang),
   };
 
-  // Uses btn-ghost style but manual classes to avoid dependency loop if CSS isn't loaded yet
-  const classes = [
-    "p-2 rounded-lg",
-    "text-surface-600 hover:bg-surface-100 dark:text-surface-400 dark:hover:bg-surface-800",
-    "transition-colors duration-200",
-    "focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2",
-    "focus:ring-offset-white dark:focus:ring-offset-surface-950",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
+  // `.btn-ghost` carries the identical hover treatment (`--accent` IS
+  // surface-100/surface-800) and a strictly better focus ring: focus-visible
+  // fires for keyboard only, where the hand-rolled `focus:ring` also fired on
+  // mouse click. There is no load-order concern — component classes ship in
+  // the same compiled stylesheet as the utilities they replace.
+  const classes = ["btn-ghost btn-icon", className].filter(Boolean).join(" ");
 
   return `
     <button id="${id}" type="button" aria-label="${label}" title="${labels.system}" class="${classes}" data-theme-toggle="true" data-theme-label-system="${labels.system}" data-theme-label-light="${labels.light}" data-theme-label-dark="${labels.dark}">
@@ -388,13 +236,13 @@ export function getNavigationHTML(options = {}) {
 
            <div class="flex items-center gap-2">
              <!-- Mobile search button (icon only) -->
-             <button type="button" id="mobile-search-btn" class="md:hidden p-2 rounded-lg text-surface-600 hover:bg-surface-100 dark:text-surface-400 dark:hover:bg-surface-800 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500" aria-label="${t("nav.searchTools", currentLang)}">
+             <button type="button" id="mobile-search-btn" class="btn-ghost btn-icon md:hidden" aria-label="${t("nav.searchTools", currentLang)}">
                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
              </button>
              <!-- Desktop search input (readonly, triggers modal on click/focus) -->
              <div class="hidden md:flex items-center mr-2 relative">
-                 <svg class="absolute left-3 w-3.5 h-3.5 text-surface-400 dark:text-surface-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                 <input type="text" readonly id="nav-search-btn" placeholder="${t("nav.search", currentLang)}" data-i18n-placeholder="nav.search" class="w-48 lg:w-64 pl-8 pr-3 py-1.5 bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-md text-xs text-surface-500 dark:text-surface-400 placeholder-surface-500 dark:placeholder-surface-400 hover:border-surface-300 dark:hover:border-surface-600 cursor-pointer transition-all focus:outline-none focus:ring-2 focus:ring-primary-500" aria-label="${t("nav.searchTools", currentLang)}" />
+                 <svg class="absolute left-3 w-3.5 h-3.5 text-surface-500 dark:text-surface-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                 <input type="text" readonly id="nav-search-btn" placeholder="${t("nav.search", currentLang)}" data-i18n-placeholder="nav.search" class="input-search w-48 lg:w-64" aria-label="${t("nav.searchTools", currentLang)}" />
              </div>
              ${getLanguageSelectorHTML(currentLang)}
              ${getThemeToggleButton({ currentLang })}
@@ -914,12 +762,12 @@ export function getFooterHTML(options = {}) {
                <span class="font-bold text-lg text-surface-900 dark:text-surface-50">SimpleTool</span>
              </div>
              <p class="text-sm text-surface-600 dark:text-surface-400 mb-4" data-i18n="footer.tagline">${t("footer.tagline", currentLang)}</p>
-              <p class="text-xs text-surface-500 dark:text-surface-500">© ${new Date().getFullYear()} SimpleTool · <a href="/changelog" class="hover:text-primary-500 transition-colors">v2.4.3</a></p>
+              <p class="text-xs text-surface-500 dark:text-surface-400">© ${new Date().getFullYear()} SimpleTool · <a href="/changelog" class="hover:text-primary-500 transition-colors">v2.4.3</a></p>
            </div>
            
            <!-- Column 2: Top Tools -->
            <div class="flex flex-col">
-             <h3 class="font-semibold text-surface-900 dark:text-surface-50 mb-4 text-sm uppercase tracking-wide" data-i18n="footer.popularTools">${t("footer.popularTools", currentLang)}</h3>
+             <h2 class="font-semibold text-surface-900 dark:text-surface-50 mb-4 text-sm uppercase tracking-wide" data-i18n="footer.popularTools">${t("footer.popularTools", currentLang)}</h2>
              <ul class="space-y-2 flex-1">
                ${toolsHTML}
                <li class="pt-2 border-t border-surface-200 dark:border-surface-800">
@@ -930,7 +778,7 @@ export function getFooterHTML(options = {}) {
            
             <!-- Column 3: Resources -->
             <div class="flex flex-col">
-              <h3 class="font-semibold text-surface-900 dark:text-surface-50 mb-4 text-sm uppercase tracking-wide" data-i18n="footer.resources">${t("footer.resources", currentLang)}</h3>
+              <h2 class="font-semibold text-surface-900 dark:text-surface-50 mb-4 text-sm uppercase tracking-wide" data-i18n="footer.resources">${t("footer.resources", currentLang)}</h2>
               <ul class="space-y-2">
                 <li>
                  <a href="${withLanguageQuery("/blog", currentLang)}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.blog">${t("footer.blog", currentLang)}</a>
@@ -943,7 +791,7 @@ export function getFooterHTML(options = {}) {
             
             <!-- Column 4: Legal & Support -->
             <div class="flex flex-col">
-              <h3 class="font-semibold text-surface-900 dark:text-surface-50 mb-4 text-sm uppercase tracking-wide" data-i18n="footer.legal">${t("footer.legal", currentLang)}</h3>
+              <h2 class="font-semibold text-surface-900 dark:text-surface-50 mb-4 text-sm uppercase tracking-wide" data-i18n="footer.legal">${t("footer.legal", currentLang)}</h2>
              <ul class="space-y-2">
                <li>
                  <a href="${withLanguageQuery("/about", currentLang)}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" data-i18n="footer.about">${t("footer.about", currentLang)}</a>
@@ -967,7 +815,7 @@ export function getFooterHTML(options = {}) {
          
          <!-- Divider -->
          <div class="border-t border-surface-200 dark:border-surface-800 pt-6">
-           <p class="text-xs text-surface-500 dark:text-surface-500 text-center">
+           <p class="text-xs text-surface-500 dark:text-surface-400 text-center">
              ${t("footer.privacyNote", currentLang)} <a href="${withLanguageQuery("/privacy", currentLang)}" class="text-primary-600 dark:text-primary-400 hover:underline" data-i18n="footer.learnMore">${t("footer.learnMore", currentLang)}</a>
            </p>
          </div>
@@ -989,6 +837,10 @@ export function createPageTemplate(options) {
     schema,
     robots,
     canonicalUrl,
+    titleSuffix = " | SimpleTool",
+    keywords = "",
+    includeToolUtilities = true,
+    i18nToolIds,
   } = options;
   const currentLang = normalizeLanguage(options.lang || DEFAULT_LANGUAGE);
   const toolId = path ? path.replace(/^\//, "") : "";
@@ -996,10 +848,19 @@ export function createPageTemplate(options) {
   const pagePath = path || "/";
   const pageUrl = `${siteUrl}${withLanguageQuery(pagePath, currentLang)}`;
   const canonicalHref = canonicalUrl || pageUrl;
-  const robotsTag = robots
-    ? `<meta name="robots" content="${robots}">`
+  const robotsTag = robots ? `<meta name="robots" content="${robots}">` : "";
+  const fullTitle = `${title}${titleSuffix}`;
+  const keywordsTag = keywords
+    ? `<meta name="keywords" content="${keywords}">`
     : "";
-  const fullTitle = `${title} | SimpleTool`;
+  const toolUtilities = includeToolUtilities
+    ? `${getToastScript()}
+   ${getKeyboardShortcutsScript()}
+   ${getCheatsheetToggleScript()}
+   ${getCopyToClipboardScript()}
+   ${getClipboardSafetyScript()}
+   ${toolId ? getPersonalizationScript(toolId) : ""}`
+    : "";
 
   return `<!DOCTYPE html>
 <html lang="${currentLang}" class="scroll-smooth">
@@ -1013,7 +874,8 @@ export function createPageTemplate(options) {
   ${getAlternateLanguageLinks(pagePath, currentLang)}
   <link rel="icon" type="image/svg+xml" href="/favicon.ico">
   <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#2563eb">
+  <meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f0f12" media="(prefers-color-scheme: dark)">
   <meta property="og:type" content="website">
   <meta property="og:url" content="${pageUrl}">
   <meta property="og:title" content="${fullTitle}">
@@ -1027,6 +889,7 @@ export function createPageTemplate(options) {
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
   <meta name="twitter:image" content="https://simpletool.app/og-image.png">
+  ${keywordsTag}
   ${getThemeBootstrapScript()}
   ${getLanguageBootstrapScript(currentLang)}
   ${getGtagScript()}
@@ -1046,14 +909,9 @@ export function createPageTemplate(options) {
   ${getFooterHTML({ lang: currentLang })}
   ${schema !== undefined ? (schema ? `<script type="application/ld+json">${JSON.stringify(schema)}</script>` : "") : path ? `<script type="application/ld+json">${JSON.stringify({ "@context": "https://schema.org", "@type": "SoftwareApplication", name: title, url: pageUrl, description, applicationCategory: "DeveloperApplication", operatingSystem: "Any", offers: { "@type": "Offer", price: "0", priceCurrency: "USD" } })}</script>` : ""}
    ${getThemeScript()}
-   ${getLanguageScript(toolId, currentLang)}
+   ${getLanguageScript(toolId, currentLang, i18nToolIds)}
    ${getSearchScript({ lang: currentLang })}
-   ${getToastScript()}
-   ${getKeyboardShortcutsScript()}
-   ${getCheatsheetToggleScript()}
-   ${getCopyToClipboardScript()}
-   ${getClipboardSafetyScript()}
-   ${toolId ? getPersonalizationScript(toolId) : ""}
+   ${toolUtilities}
    ${scripts}
   ${getAnalyticsScript()}
   <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(){});}</script>
@@ -1151,7 +1009,7 @@ export function getClipboardSafetyScript() {
 export function createFeatureList(items = []) {
   if (!items || !items.length) return "";
   const itemsHTML = items.map((item) => `<li>${item.text}</li>`).join("");
-  return `<ul data-feature-list class="mt-2 flex flex-wrap gap-2 text-xs text-surface-600 dark:text-surface-400">${itemsHTML}</ul>`;
+  return `<ul data-feature-list class="tool-header-features mt-2 flex flex-wrap gap-2 text-xs text-surface-600 dark:text-surface-400">${itemsHTML}</ul>`;
 }
 
 /**
@@ -1165,8 +1023,9 @@ export function createToolHeader(
   badges = [],
   options = {},
 ) {
-  const { toolId } =
+  const { toolId, headingLevel = 1 } =
     typeof options === "string" ? { toolId: options } : options || {};
+  const headingTag = headingLevel === 2 ? "h2" : "h1";
 
   const titleAttr = toolId ? ` data-i18n="tools.${toolId}.name"` : "";
   const subtitleAttr = toolId ? ` data-i18n="tools.${toolId}.desc"` : "";
@@ -1182,7 +1041,7 @@ export function createToolHeader(
       ? ` data-tooltip="${badge.tooltip}" cursor-help`
       : "";
     const tipClass = badge.tooltip ? " cursor-help" : "";
-    trustPillHTML = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300${tipClass}" data-trust-pill${tipAttr}>
+    trustPillHTML = `<span class="tool-header-trust inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300${tipClass}" data-trust-pill${tipAttr}>
        ${badge.text}
      </span>`;
   } else if (badges.length >= 2) {
@@ -1192,7 +1051,7 @@ export function createToolHeader(
       ? ` data-tooltip="${trustBadge.tooltip}" cursor-help`
       : "";
     const tipClass = trustBadge.tooltip ? " cursor-help" : "";
-    trustPillHTML = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300${tipClass}" data-trust-pill${tipAttr}>
+    trustPillHTML = `<span class="tool-header-trust inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300${tipClass}" data-trust-pill${tipAttr}>
        ${trustBadge.text}
      </span>`;
     demotedFeaturesHTML = createFeatureList(badges.slice(1));
@@ -1201,36 +1060,56 @@ export function createToolHeader(
   }
 
   return `
-    <div class="mb-8 border-b border-surface-200 dark:border-surface-800 pb-8">
+    <header class="tool-header mb-8 border-b border-surface-200 dark:border-surface-800 pb-8">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div class="flex items-start gap-4">
-          <div class="flex-shrink-0 p-3 bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-lg shadow-sm">
+        <div class="tool-header-layout flex items-start gap-4">
+          <div class="tool-header-icon flex-shrink-0 p-3 bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-lg shadow-sm" aria-hidden="true">
              <span class="text-3xl">${icon.emoji || "🛠️"}</span>
           </div>
-          <div>
-            <div class="flex items-center gap-3 mb-1 flex-wrap">
-              <h1 class="text-2xl sm:text-3xl font-bold text-surface-900 dark:text-surface-50 tracking-tight"${titleAttr}>${title}</h1>
+          <div class="tool-header-copy">
+            <div class="tool-header-title-row flex items-center gap-3 mb-1 flex-wrap">
+              <${headingTag} class="tool-header-title text-2xl sm:text-3xl font-bold text-surface-900 dark:text-surface-50 tracking-tight"${titleAttr}>${title}</${headingTag}>
               ${trustPillHTML}
             </div>
-            <p class="text-surface-600 dark:text-surface-400 text-sm sm:text-base max-w-2xl"${subtitleAttr}>${subtitle}</p>
+            <p class="tool-header-subtitle text-surface-600 dark:text-surface-400 text-sm sm:text-base max-w-2xl"${subtitleAttr}>${subtitle}</p>
             ${demotedFeaturesHTML}
           </div>
         </div>
       </div>
-    </div>
+    </header>
   `;
 }
 
 /**
  * Create download/export button functionality
  */
+/** Escapes a value for interpolation into a double-quoted HTML attribute. */
+function escapeAttribute(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
 export function infoHint(tooltip, ariaLabel, options = {}) {
   const { large = false, position, i18nKey, icon = "help" } = options;
   const sizeClass = large ? " info-hint-lg" : "";
   const posAttr = position ? ` data-tooltip-pos="${position}"` : "";
   const i18nAttr = i18nKey ? ` data-i18n-tooltip="${i18nKey}"` : "";
-  const label = ariaLabel || tooltip;
-  return `<button type="button" class="info-hint${sizeClass}" data-tooltip="${tooltip}"${posAttr}${i18nAttr} aria-label="${label}"><span class="material-symbols-rounded" aria-hidden="true">${icon}</span></button>`;
+
+  // The tooltip is painted as a CSS ::after pseudo-element (`content:
+  // attr(data-tooltip)`), which assistive technology cannot read. Nine call
+  // sites passed a generic "Help" as ariaLabel, so a screen reader announced
+  // "Help" and the actual explanation was unreachable. Whatever the caller
+  // passes, the explanatory text must also reach the accessible name.
+  const label =
+    !ariaLabel || ariaLabel === tooltip ? tooltip : `${ariaLabel}: ${tooltip}`;
+
+  // Tooltips are prose containing quotes and apostrophes; interpolating them
+  // raw would terminate the attribute and inject stray ones, exactly as the
+  // rich-editor placeholder did.
+  return `<button type="button" class="info-hint${sizeClass}" data-tooltip="${escapeAttribute(tooltip)}"${posAttr}${i18nAttr} aria-label="${escapeAttribute(label)}"><span class="material-symbols-rounded" aria-hidden="true">${icon}</span></button>`;
 }
 
 export function createEmptyState(options = {}) {
@@ -1362,13 +1241,11 @@ export function getMobileTabScript() {
           
           // Initialize visibility
           const showTab = (tabName) => {
-            if (tabName === 'left') {
-              leftPane.style.display = '';
-              rightPane.style.display = 'none';
-            } else {
-              leftPane.style.display = 'none';
-              rightPane.style.display = '';
-            }
+            // A class scoped to below-lg, never an inline display: an inline
+            // style outranks the responsive CSS and blanked the right pane at
+            // desktop too (mermaid rendered into a 0x0 box as a 16px svg).
+            leftPane.classList.toggle('mobile-pane-hidden', tabName !== 'left');
+            rightPane.classList.toggle('mobile-pane-hidden', tabName === 'left');
             
             // Update button states
             buttons.forEach(btn => {
