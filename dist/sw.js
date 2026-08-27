@@ -6,7 +6,7 @@
  * - Never cache: sitemap, robots.txt, ad scripts, analytics
  */
 
-var CACHE_NAME = "simpletool-v2";
+var CACHE_NAME = "simpletool-v3";
 
 var STATIC_ASSETS = [
   // NOTE: /styles.css is intentionally NOT pre-cached. Pages reference the

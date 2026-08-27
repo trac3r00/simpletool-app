@@ -77,3 +77,7 @@ test-results/*
 .clawhip/
 .design-capture/
 .fablize/
+
+# local build cache (holds the unsubsetted 5.3MB Material Symbols font for
+# comparison; scripts/download-fonts.js never reads it — see DESIGN.md)
+.cache/

@@ -51,6 +51,23 @@
 - **Icon font:** Material Symbols Rounded, **self-hosted** at
   `/fonts/material-symbols.woff2` (`@font-face` in `common-ui.js`). Used by
   `.info-hint`. Keep it self-hosted — a CDN load previously 404'd.
+- **The icon font is a subset, and stays one.** The full family is 5.3MB; it was
+  98.5% of the home page's transfer until it was cut to the ~38KB of glyphs the
+  site actually uses. `scripts/icon-inventory.mjs` scans `src/` for every icon
+  name — literal `<span class="material-symbols-rounded">content_copy</span>`
+  markup, the `data-i18n` keys on those spans, and data-driven `icon: '…'`
+  properties — and `scripts/download-fonts.js` asks Google Fonts for exactly
+  those ligatures via its `icon_names` parameter. **Adding an icon to a route is
+  enough:** the next `npm run build` sees the manifest
+  (`scripts/icon-manifest.json`) is stale and refetches. An icon the
+  scanner cannot see must be declared in `ALWAYS_INCLUDE`, or it renders as its
+  raw text instead of a glyph. `src/utils/icon-subset.test.js` fails when the
+  shipped subset and the scanned list drift apart.
+  - The subset keeps the FILL/GRAD/opsz/wght axes, because
+    `.info-hint .material-symbols-rounded` sets `font-variation-settings`.
+  - To get the unsubsetted font back for comparison, fetch the CSS at
+    `https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap`
+    and download the woff2 it points at.
 - **Roles:**
   - Display/Hero: Geist 700
   - Body / UI: Geist 400/500/600
