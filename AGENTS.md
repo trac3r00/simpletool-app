@@ -42,6 +42,16 @@ node scripts/deep-ui-audit.mjs --json report.json      # machine-readable
 AUDIT_VERBOSE=1 node scripts/deep-ui-audit.mjs --only pipe   # per-phase trace
 ```
 
+**Icon font.** `build:fonts` ships a *subset* of Material Symbols Rounded — the
+full family is 5.3MB and was 98.5% of the home page's transfer. The icon list is
+scanned out of `src/` by `scripts/icon-inventory.mjs`, so adding
+`<span class="material-symbols-rounded">new_icon</span>` to a route needs no
+extra step: the next `npm run build` refetches a subset that includes it. An icon
+the scanner cannot see (injected by a helper's default, say) must be added to
+`ALWAYS_INCLUDE` in that file, or it renders as the raw text `new_icon`.
+`src/utils/icon-subset.test.js` fails if the shipped font and the scan disagree.
+See DESIGN.md for the full contract.
+
 **Vitest** collects `src/**/*.test.js`. **Playwright** collects `tests/**/*.spec.js`. They do not overlap (vitest.config.js excludes `tests/**/*.spec.*`).
 
 **If Playwright cannot launch** (`browserType.launch: Executable doesn't exist`),
