@@ -102,15 +102,15 @@ export const TOOLS = [
   },
   {
     id: "webhook-debugger",
-    name: "Webhook Debugger",
+    name: "Webhook Payload Inspector",
     icon: "🪝",
     description:
-      "Capture, inspect, and replay webhook payloads locally in your browser.",
+      "Paste a captured webhook request to inspect its headers, body, and HMAC signature.",
     path: "/webhook-debugger",
     category: "network",
     keywords:
-      "webhook, hmac, signature, stripe, github webhook, payload, inspect, capture, replay",
-    tip: "Inspect incoming webhook payloads — headers, body, HMAC signature verification, and replay as cURL",
+      "webhook, hmac, signature, stripe, github webhook, slack, shopify, payload, inspect, parse, verify",
+    tip: "Paste a webhook delivery to inspect headers and body, verify its HMAC signature, and rebuild it as cURL",
     relatedTools: ["curl-studio", "json-formatter", "log-viewer"],
   },
   {
@@ -768,4 +768,21 @@ export const CATEGORIES = {
 export function getToolsForEnvironment(isDev = false) {
   if (isDev) return TOOLS;
   return TOOLS.filter((tool) => !tool.hiddenInProduction);
+}
+
+export const HIDDEN_IN_PRODUCTION_TOOL_IDS = new Set(
+  TOOLS.filter((tool) => tool.hiddenInProduction).map((tool) => tool.id),
+);
+
+// Render helpers reached from deep inside a page template have no request in
+// scope, so worker.js publishes the environment here once per request. Without
+// it, dev-only tools reach production HTML and only get filtered client-side.
+let devRuntime = false;
+
+export function setRuntimeEnvironment(isDev) {
+  devRuntime = Boolean(isDev);
+}
+
+export function isDevRuntime() {
+  return devRuntime;
 }

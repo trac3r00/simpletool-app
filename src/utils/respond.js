@@ -169,6 +169,20 @@ export function respond404() {
   });
 }
 
+export function respond405(allowedMethods = ["GET", "HEAD"]) {
+  const allow = allowedMethods.join(", ");
+  return respondJSON(
+    {
+      error: "Method not allowed",
+      message: `This resource only supports ${allow}.`,
+    },
+    {
+      status: 405,
+      headers: { Allow: allow, "Cache-Control": "no-store" },
+    },
+  );
+}
+
 export function respond429(options = {}) {
   const { retryAfterSeconds } = options;
   const headers = { "Cache-Control": "no-store" };
