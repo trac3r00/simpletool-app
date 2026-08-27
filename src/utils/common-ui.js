@@ -6,7 +6,11 @@
 
 import { bundledStylesHash } from "./bundled-styles.js";
 import { getKeyboardShortcutsScript } from "./keyboard-shortcuts.js";
-import { TOOLS } from "./tool-registry.js";
+import {
+  TOOLS,
+  getToolsForEnvironment,
+  isDevRuntime,
+} from "./tool-registry.js";
 import { getPersonalizationScript } from "./personalization.js";
 import { getAdSenseScript, getGtagScript } from "./ads.js";
 import {
@@ -236,13 +240,13 @@ export function getNavigationHTML(options = {}) {
 
            <div class="flex items-center gap-2">
              <!-- Mobile search button (icon only) -->
-             <button type="button" id="mobile-search-btn" class="btn-ghost btn-icon md:hidden" aria-label="${t("nav.searchTools", currentLang)}">
+             <button type="button" id="mobile-search-btn" class="btn-ghost btn-icon md:hidden" aria-label="${t("nav.searchTools", currentLang)}" data-i18n-aria="nav.searchTools">
                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
              </button>
              <!-- Desktop search input (readonly, triggers modal on click/focus) -->
              <div class="hidden md:flex items-center mr-2 relative">
                  <svg class="absolute left-3 w-3.5 h-3.5 text-surface-500 dark:text-surface-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                 <input type="text" readonly id="nav-search-btn" placeholder="${t("nav.search", currentLang)}" data-i18n-placeholder="nav.search" class="input-search w-48 lg:w-64" aria-label="${t("nav.searchTools", currentLang)}" />
+                 <input type="text" readonly id="nav-search-btn" placeholder="${t("nav.search", currentLang)}" data-i18n-placeholder="nav.search" class="input-search w-48 lg:w-64" aria-label="${t("nav.searchTools", currentLang)}" data-i18n-aria="nav.searchTools" />
              </div>
              ${getLanguageSelectorHTML(currentLang)}
              ${getThemeToggleButton({ currentLang })}
@@ -390,17 +394,17 @@ export function getThemeScript() {
 export function getSearchScript(options = {}) {
   const { lang = DEFAULT_LANGUAGE } = options;
   const currentLang = normalizeLanguage(lang);
-  const tools = localizeTools(TOOLS, currentLang).map(
-    ({ id, name, path, icon, description, keywords, hiddenInProduction }) => ({
-      id,
-      name,
-      path: withLanguageQuery(path, currentLang),
-      icon,
-      description,
-      keywords: keywords || "",
-      hiddenInProduction: Boolean(hiddenInProduction),
-    }),
-  );
+  const tools = localizeTools(
+    getToolsForEnvironment(isDevRuntime()),
+    currentLang,
+  ).map(({ id, name, path, icon, description, keywords }) => ({
+    id,
+    name,
+    path: withLanguageQuery(path, currentLang),
+    icon,
+    description,
+    keywords: keywords || "",
+  }));
 
   return `
     <div id="search-modal" class="fixed inset-0 z-[100] hidden" role="dialog" aria-modal="true">
@@ -411,7 +415,7 @@ export function getSearchScript(options = {}) {
             <svg class="pointer-events-none absolute left-4 top-3.5 h-5 w-5 text-surface-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
               <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
             </svg>
-            <input type="text" class="h-12 w-full border-0 bg-transparent pl-11 pr-4 text-surface-900 dark:text-white placeholder:text-surface-400 focus:ring-0 sm:text-sm" placeholder="${t("nav.searchTools", currentLang)}" data-i18n-placeholder="nav.searchTools" id="global-search-input" role="combobox" aria-label="Search tools" aria-expanded="false" aria-controls="search-results">
+            <input type="text" class="h-12 w-full border-0 bg-transparent pl-11 pr-4 text-surface-900 dark:text-white placeholder:text-surface-400 focus:ring-0 sm:text-sm" placeholder="${t("nav.searchTools", currentLang)}" data-i18n-placeholder="nav.searchTools" id="global-search-input" role="combobox" aria-label="${t("nav.searchTools", currentLang)}" data-i18n-aria="nav.searchTools" aria-expanded="false" aria-controls="search-results">
           </div>
           <ul class="max-h-96 scroll-py-3 overflow-y-auto p-3" id="search-results" role="listbox">
             <!-- Results injected here -->
@@ -425,10 +429,7 @@ export function getSearchScript(options = {}) {
 
     <script>
       (function() {
-        const allTools = ${JSON.stringify(tools)};
-        const hostname = window.location.hostname;
-        const isLocal = hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1';
-        const tools = isLocal ? allTools : allTools.filter((tool) => !tool.hiddenInProduction);
+        const tools = ${JSON.stringify(tools)};
         const modal = document.getElementById('search-modal');
         const overlay = document.getElementById('search-overlay');
         const panel = document.getElementById('search-panel');
@@ -816,7 +817,7 @@ export function getFooterHTML(options = {}) {
          <!-- Divider -->
          <div class="border-t border-surface-200 dark:border-surface-800 pt-6">
            <p class="text-xs text-surface-500 dark:text-surface-400 text-center">
-             ${t("footer.privacyNote", currentLang)} <a href="${withLanguageQuery("/privacy", currentLang)}" class="text-primary-600 dark:text-primary-400 hover:underline" data-i18n="footer.learnMore">${t("footer.learnMore", currentLang)}</a>
+             ${t("footer.privacyNote", currentLang)} <a href="${withLanguageQuery("/privacy", currentLang)}" class="text-primary-700 dark:text-primary-300 underline underline-offset-2 hover:text-primary-800 dark:hover:text-primary-200" data-i18n="footer.privacy">${t("footer.privacy", currentLang)}</a>
            </p>
          </div>
        </div>

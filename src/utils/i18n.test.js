@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import { runInNewContext } from "node:vm";
 import {
   SUPPORTED_LANGUAGES,
   DEFAULT_LANGUAGE,
@@ -474,5 +475,204 @@ describe("getLanguageSelectorHTML", () => {
   it("marks current language as active", () => {
     const html = getLanguageSelectorHTML("ko");
     expect(html).toContain("font-semibold");
+  });
+
+  it("marks only the current language as active", () => {
+    const html = getLanguageSelectorHTML("ko");
+    const active = [...html.matchAll(/data-lang="([a-zA-Z-]+)"[^>]*/g)].filter(
+      (match) => match[0].includes("font-semibold"),
+    );
+
+    expect(active).toHaveLength(1);
+    expect(active[0][1]).toBe("ko");
+    expect(html).toContain('aria-current="true"');
+  });
+});
+
+/**
+ * A locale change has to be one transaction: title, meta, html[lang],
+ * aria-labels and server-only prose (blog article bodies carry no data-i18n
+ * keys) must all agree afterwards. Only the server can restate all of that, so
+ * both the switcher and the load-time reconciliation navigate rather than
+ * patch. These tests execute the emitted scripts to prove the navigation
+ * happens — asserting on the source text would not.
+ */
+describe("locale changes are atomic", () => {
+  function scriptBody(html) {
+    const match = html.match(/<script[^>]*>([\s\S]*?)<\/script>/);
+    expect(match).not.toBeNull();
+    return match[1];
+  }
+
+  function createBrowser({ href, stored }) {
+    const calls = { assign: [], replace: [] };
+    const storage = new Map();
+    if (stored) storage.set("language", stored);
+    const url = new URL(href);
+    const patched = {
+      key: "footer.privacy",
+      textContent: "SERVER RENDERED",
+      getAttribute: (name) => (name === "data-i18n" ? "footer.privacy" : null),
+    };
+
+    const location = {
+      href: url.href,
+      pathname: url.pathname,
+      search: url.search,
+      hash: url.hash,
+      assign: (next) => calls.assign.push(next),
+      replace: (next) => calls.replace.push(next),
+    };
+
+    return {
+      calls,
+      patched,
+      storage,
+      sandbox: {
+        URL,
+        URLSearchParams,
+        navigator: { language: "ja" },
+        localStorage: {
+          getItem: (key) => storage.get(key) ?? null,
+          setItem: (key, value) => storage.set(key, String(value)),
+        },
+        document: {
+          documentElement: { lang: "" },
+          body: { getAttribute: () => null },
+          querySelectorAll: (selector) =>
+            selector === "[data-i18n]" ? [patched] : [],
+          querySelector: () => null,
+          addEventListener: () => {},
+        },
+        window: {
+          location,
+          history: { pushState: () => {} },
+          addEventListener: () => {},
+        },
+      },
+    };
+  }
+
+  describe("getLanguageBootstrapScript", () => {
+    it("re-requests the page when the stored locale is not the rendered one", () => {
+      const browser = createBrowser({
+        href: "https://simpletool.app/blog/some-article",
+        stored: "es",
+      });
+
+      runInNewContext(
+        scriptBody(getLanguageBootstrapScript("en")),
+        browser.sandbox,
+      );
+
+      expect(browser.calls.replace).toEqual(["/blog/some-article?lang=es"]);
+    });
+
+    it("does not re-request when the URL already names a locale", () => {
+      const browser = createBrowser({
+        href: "https://simpletool.app/?lang=en",
+        stored: "es",
+      });
+
+      runInNewContext(
+        scriptBody(getLanguageBootstrapScript("en")),
+        browser.sandbox,
+      );
+
+      expect(browser.calls.replace).toEqual([]);
+      expect(browser.sandbox.document.documentElement.lang).toBe("en");
+    });
+
+    it("does not re-request for a visitor with no stored preference", () => {
+      const browser = createBrowser({ href: "https://simpletool.app/" });
+
+      runInNewContext(
+        scriptBody(getLanguageBootstrapScript("es")),
+        browser.sandbox,
+      );
+
+      expect(browser.calls.replace).toEqual([]);
+      expect(browser.sandbox.document.documentElement.lang).toBe("es");
+    });
+  });
+
+  describe("setLanguage", () => {
+    it("navigates instead of patching the reachable half of the page", () => {
+      const browser = createBrowser({
+        href: "https://simpletool.app/json-formatter?lang=es",
+      });
+
+      runInNewContext(
+        scriptBody(getLanguageScript("json-formatter", "es")),
+        browser.sandbox,
+      );
+      browser.sandbox.window.setLanguage("en");
+
+      expect(browser.calls.assign).toEqual([
+        "https://simpletool.app/json-formatter?lang=en",
+      ]);
+      expect(browser.patched.textContent).toBe("SERVER RENDERED");
+      expect(browser.storage.get("language")).toBe("en");
+    });
+
+    it("keeps lang=en explicit so Accept-Language cannot override the choice", () => {
+      const browser = createBrowser({
+        href: "https://simpletool.app/?lang=es",
+      });
+
+      runInNewContext(
+        scriptBody(getLanguageScript(null, "es")),
+        browser.sandbox,
+      );
+      browser.sandbox.window.setLanguage("en");
+
+      expect(browser.calls.assign[0]).toContain(`${LANGUAGE_QUERY_KEY}=en`);
+    });
+
+    it("preserves the rest of the query string and the path", () => {
+      const browser = createBrowser({
+        href: "https://simpletool.app/repo-ops?tab=gitignore&lang=en",
+      });
+
+      runInNewContext(
+        scriptBody(getLanguageScript("repo-ops", "en")),
+        browser.sandbox,
+      );
+      browser.sandbox.window.setLanguage("ja");
+
+      const next = new URL(browser.calls.assign[0]);
+      expect(next.pathname).toBe("/repo-ops");
+      expect(next.searchParams.get("tab")).toBe("gitignore");
+      expect(next.searchParams.get("lang")).toBe("ja");
+    });
+
+    it("ignores an unsupported locale", () => {
+      const browser = createBrowser({ href: "https://simpletool.app/" });
+
+      runInNewContext(
+        scriptBody(getLanguageScript(null, "en")),
+        browser.sandbox,
+      );
+      browser.sandbox.window.setLanguage("xx");
+
+      expect(browser.calls.assign).toEqual([]);
+      expect(browser.storage.has("language")).toBe(false);
+    });
+
+    it("falls back to an in-place patch where navigation is unavailable", () => {
+      const browser = createBrowser({
+        href: "https://simpletool.app/?lang=ja",
+      });
+      delete browser.sandbox.window.location.assign;
+
+      runInNewContext(
+        scriptBody(getLanguageScript(null, "ja")),
+        browser.sandbox,
+      );
+      browser.sandbox.window.setLanguage("en");
+
+      expect(browser.patched.textContent).toBe(t("footer.privacy", "en"));
+      expect(browser.sandbox.document.documentElement.lang).toBe("en");
+    });
   });
 });

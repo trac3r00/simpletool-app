@@ -5,6 +5,10 @@
  */
 
 import { CONTENT_TRANSLATIONS } from "./content-metadata.js";
+import {
+  HIDDEN_IN_PRODUCTION_TOOL_IDS,
+  isDevRuntime,
+} from "./tool-registry.js";
 import en from "../i18n/en.js";
 import ko from "../i18n/ko.js";
 import ja from "../i18n/ja.js";
@@ -175,6 +179,7 @@ export function getLanguageBootstrapScript(serverLang = DEFAULT_LANGUAGE) {
     <script data-i18n-bootstrap>
       (function() {
         var supported = ${JSON.stringify(Object.keys(SUPPORTED_LANGUAGES))};
+        var serverLang = ${JSON.stringify(normalizeLanguage(serverLang))};
         var params = new URLSearchParams(window.location.search);
         function normLang(s) {
           s = (s || '').trim().toLowerCase();
@@ -185,13 +190,26 @@ export function getLanguageBootstrapScript(serverLang = DEFAULT_LANGUAGE) {
           }
           return p[0];
         }
-        var lang = params.get('${LANGUAGE_QUERY_KEY}') || localStorage.getItem('language') || ${JSON.stringify(serverLang)};
-        lang = normLang(lang);
+        var explicit = params.get('${LANGUAGE_QUERY_KEY}');
+        var stored = null;
+        try { stored = localStorage.getItem('language'); } catch (e) {}
+        var lang = normLang(explicit || stored || serverLang);
         if (supported.indexOf(lang) === -1) {
           lang = normLang(navigator.language);
           if (supported.indexOf(lang) === -1) lang = ${JSON.stringify(DEFAULT_LANGUAGE)};
         }
         document.documentElement.lang = lang;
+        // A stored preference the server did not render leaves <title>, meta,
+        // and server-only prose in the other locale — a half-translated page no
+        // client-side patch can finish. Re-request it in the stored locale
+        // instead. The '?lang=' the redirect adds is what stops it repeating.
+        if (!explicit && stored && lang !== serverLang &&
+            window.location && typeof window.location.replace === 'function') {
+          params.set('${LANGUAGE_QUERY_KEY}', lang);
+          window.location.replace(
+            window.location.pathname + '?' + params.toString() + window.location.hash
+          );
+        }
       })();
     </script>
   `;
@@ -221,6 +239,11 @@ export function getLanguageScript(
     if (data.tools) {
       const tools = {};
       for (const [id, info] of Object.entries(data.tools)) {
+        // Dev-only tools must not appear in production HTML at all — their
+        // routes 404 there, so shipping their names only advertises them.
+        if (!isDevRuntime() && HIDDEN_IN_PRODUCTION_TOOL_IDS.has(id)) {
+          continue;
+        }
         if (fullToolIds.has(id)) {
           tools[id] = info;
         } else {
@@ -238,6 +261,7 @@ export function getLanguageScript(
         var _T = ${translationsJSON};
         var _supported = ${JSON.stringify(Object.keys(SUPPORTED_LANGUAGES))};
         var _langs = ${JSON.stringify(SUPPORTED_LANGUAGES)};
+        var _serverLang = ${JSON.stringify(normalized)};
 
         function _normLang(s) {
           s = (s || '').trim().toLowerCase();
@@ -322,11 +346,12 @@ export function getLanguageScript(
           }
           var flagEl = document.querySelector('[aria-haspopup="true"] .text-lg');
           if (flagEl && _langs[lang]) flagEl.textContent = _langs[lang].flag;
-          document.querySelectorAll('.language-dropdown [role="menuitem"]').forEach(function(btn) {
-            btn.classList.remove('bg-surface-50', 'dark:bg-surface-800/50', 'font-semibold');
+          document.querySelectorAll('.language-dropdown [data-lang]').forEach(function(btn) {
+            var active = btn.getAttribute('data-lang') === lang;
+            btn.classList[active ? 'add' : 'remove']('bg-surface-50', 'dark:bg-surface-800/50', 'font-semibold');
+            if (active) btn.setAttribute('aria-current', 'true');
+            else btn.removeAttribute('aria-current');
           });
-          var activeBtn = document.querySelector('.language-dropdown [role="menuitem"]:nth-child(' + (_supported.indexOf(lang) + 1) + ')');
-          if (activeBtn) activeBtn.classList.add('bg-surface-50', 'dark:bg-surface-800/50', 'font-semibold');
           var langButton = document.querySelector('[aria-haspopup="true"]');
           if (langButton) {
             var changeLanguageLabel = _resolve(lang, 'nav.changeLanguage');
@@ -374,18 +399,25 @@ export function getLanguageScript(
         };
 
         window.setLanguage = function(lang) {
-          localStorage.setItem('language', lang);
+          if (_supported.indexOf(lang) === -1) return;
+          try { localStorage.setItem('language', lang); } catch (e) {}
           var next = new URL(window.location.href);
-          if (lang === ${JSON.stringify(DEFAULT_LANGUAGE)}) {
-            next.searchParams.delete('${LANGUAGE_QUERY_KEY}');
-          } else {
-            next.searchParams.set('${LANGUAGE_QUERY_KEY}', lang);
-          }
-          if (!_T[lang]) {
-            window.location.href = next.toString();
+          // Always explicit, English included: without the param the server
+          // re-resolves from Accept-Language and can hand back a locale other
+          // than the one just chosen.
+          next.searchParams.set('${LANGUAGE_QUERY_KEY}', lang);
+          // One transaction. Only the server can restate <title>, the meta
+          // description, and the prose that carries no data-i18n key (blog
+          // article bodies), so switching locale re-requests the page rather
+          // than patching the half of it the client can reach.
+          if (window.location && typeof window.location.assign === 'function') {
+            window.location.assign(next.toString());
             return;
           }
-          window.history.pushState({ lang: lang }, '', next.toString());
+          // No navigation available (non-browser host): best-effort patch.
+          if (window.history && typeof window.history.pushState === 'function') {
+            window.history.pushState({ lang: lang }, '', next.toString());
+          }
           document.documentElement.lang = lang;
           _patchDOM(lang);
         };
@@ -398,7 +430,14 @@ export function getLanguageScript(
 
         document.addEventListener('DOMContentLoaded', function() {
           var lang = _getLang();
-          if (lang !== 'en') _patchDOM(lang);
+          // Skip only when the server already rendered this exact locale in
+          // the default language. Everything else — including a wanted locale
+          // of 'en' on a page the server rendered in another language — needs
+          // the patch, since the bootstrap redirect cannot fix a route that
+          // ignores the lang param.
+          if (lang !== _serverLang || lang !== ${JSON.stringify(DEFAULT_LANGUAGE)}) {
+            _patchDOM(lang);
+          }
 
           var langButton = document.querySelector('[aria-haspopup="true"]');
           var langDropdown = document.querySelector('.language-dropdown');
@@ -473,9 +512,9 @@ export function getLanguageSelectorHTML(lang = DEFAULT_LANGUAGE) {
   const options = Object.entries(SUPPORTED_LANGUAGES)
     .map(
       ([code, { name, flag }]) => `
-    <button data-lang="${code}" 
-            class="btn-ghost w-full justify-start gap-2"bg-surface-50 dark:bg-surface-800/50 font-semibold" : ""}"
-            role="menuitem">
+    <button data-lang="${code}"
+            class="btn-ghost w-full justify-start gap-2${code === current ? " bg-surface-50 dark:bg-surface-800/50 font-semibold" : ""}"
+            role="menuitem"${code === current ? ' aria-current="true"' : ""}>
       <span>${flag}</span>
       <span>${name}</span>
     </button>
