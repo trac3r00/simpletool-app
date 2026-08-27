@@ -8,7 +8,10 @@ import * as Sentry from "@sentry/cloudflare";
 import { handlersById } from "./routes/_handlers.js";
 import { handlePipeRoutes } from "./routes/pipe.js";
 import { handleMarkdownEditorRoutes } from "./routes/markdown-editor.js";
-import { getToolsForEnvironment } from "./utils/tool-registry.js";
+import {
+  getToolsForEnvironment,
+  setRuntimeEnvironment,
+} from "./utils/tool-registry.js";
 import {
   renderTermsPage,
   renderPrivacyPage,
@@ -33,6 +36,7 @@ import {
   respondJSON,
   respondText,
   respond404,
+  respond405,
   respond429,
 } from "./utils/respond.js";
 import { tryLegacyRedirect } from "./utils/redirects.js";
@@ -114,13 +118,21 @@ function buildSitemapXml(origin, tools) {
 
   paths.add("/blog");
   paths.add("/faq");
+
+  // <lastmod> is optional, and only blog articles carry a real content date.
+  // Every other page omits it: stamping the request date told crawlers all 66
+  // URLs had changed every time the sitemap was fetched, which is untrue and
+  // teaches them to ignore the signal.
+  const lastmodByPath = new Map();
   for (const article of BLOG_ARTICLES) {
-    if (article?.slug) {
-      paths.add(`/blog/${article.slug}`);
+    if (!article?.slug) continue;
+    const articlePath = `/blog/${article.slug}`;
+    paths.add(articlePath);
+    if (/^\d{4}-\d{2}-\d{2}$/.test(article.datePublished || "")) {
+      lastmodByPath.set(articlePath, article.datePublished);
     }
   }
 
-  const today = new Date().toISOString().split("T")[0];
   const contentPaths = new Set(["/blog", "/faq"]);
   const legalPaths = new Set([
     "/terms",
@@ -152,7 +164,15 @@ function buildSitemapXml(origin, tools) {
           : isContent
             ? "weekly"
             : "weekly";
-      return `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`;
+      const lastmod = lastmodByPath.get(path);
+      return [
+        "  <url>",
+        `    <loc>${loc}</loc>`,
+        ...(lastmod ? [`    <lastmod>${lastmod}</lastmod>`] : []),
+        `    <changefreq>${changefreq}</changefreq>`,
+        `    <priority>${priority}</priority>`,
+        "  </url>",
+      ].join("\n");
     });
 
   return [
@@ -199,242 +219,266 @@ async function checkRateLimitDO(
   }
 }
 
-const worker = {
-  async fetch(request, env, ctx) {
-    const now = Date.now();
-    const url = new URL(request.url);
-    const path = url.pathname;
-    const ip = request.headers.get("CF-Connecting-IP") || "unknown";
-    const requestId = crypto.randomUUID();
-    const isDev = isDevEnvironment(env, url);
-    const runtimeTools = getToolsForEnvironment(isDev);
+// Every route in the app renders a page, so anything other than GET/HEAD gets
+// 405 rather than the page body. Any endpoint that later accepts a real POST
+// (an API, a form target) must be listed here or the wrapper below will 405 it
+// before its handler ever runs.
+const METHOD_PERMISSIVE_PATHS = new Set();
 
-    setSiteUrl(env?.SITE_URL || "https://simpletool.app");
+/**
+ * Re-issue a request under a different method without carrying a body.
+ * Preserves `cf` (used by the shared-IP rate limit) whenever possible.
+ */
+function reissueWithoutBody(request, method) {
+  if (!request.body) {
+    return new Request(request, { method });
+  }
+  const headers = new Headers(request.headers);
+  headers.delete("content-length");
+  headers.delete("content-type");
+  return new Request(request.url, { method, headers, cf: request.cf });
+}
 
-    if (isDev) {
-      setAdConfig({
-        client: null,
-        slots: {},
-        path,
-      });
-      setAnalyticsToken("");
-    } else {
-      setAdConfig({
-        client: env?.ADSENSE_CLIENT,
-        slots: parseAdSlots(env),
-        path,
-      });
-      setAnalyticsToken(env?.CF_ANALYTICS_TOKEN);
+function stripBody(response) {
+  return new Response(null, {
+    status: response.status,
+    statusText: response.statusText,
+    headers: response.headers,
+  });
+}
+
+async function handleRequest(request, env, ctx) {
+  const now = Date.now();
+  const url = new URL(request.url);
+  const path = url.pathname;
+  const ip = request.headers.get("CF-Connecting-IP") || "unknown";
+  const requestId = crypto.randomUUID();
+  const isDev = isDevEnvironment(env, url);
+  const runtimeTools = getToolsForEnvironment(isDev);
+
+  // Page templates filter dev-only tools out of their catalog payloads off
+  // this flag; it must be set before anything renders.
+  setRuntimeEnvironment(isDev);
+  setSiteUrl(env?.SITE_URL || "https://simpletool.app");
+
+  if (isDev) {
+    setAdConfig({
+      client: null,
+      slots: {},
+      path,
+    });
+    setAnalyticsToken("");
+  } else {
+    setAdConfig({
+      client: env?.ADSENSE_CLIENT,
+      slots: parseAdSlots(env),
+      path,
+    });
+    setAnalyticsToken(env?.CF_ANALYTICS_TOKEN);
+  }
+
+  // Periodic rate limiter cleanup (always run to prevent memory growth)
+  if (!globalThis.rateLimiterSweepCounter) {
+    globalThis.rateLimiterSweepCounter = 0;
+  }
+  globalThis.rateLimiterSweepCounter++;
+  if (globalThis.rateLimiterSweepCounter >= 100) {
+    sweepRateLimiter(rateLimiter, now);
+    globalThis.rateLimiterSweepCounter = 0;
+  }
+
+  if (!isDev) {
+    const effectiveLimit = isLikelySharedIP(request)
+      ? RATE_LIMIT_MAX_REQUESTS_SHARED_IP
+      : RATE_LIMIT_MAX_REQUESTS;
+
+    if (shouldRateLimit(rateLimiter, ip, now, effectiveLimit)) {
+      return respond429();
     }
 
-    // Periodic rate limiter cleanup (always run to prevent memory growth)
-    if (!globalThis.rateLimiterSweepCounter) {
-      globalThis.rateLimiterSweepCounter = 0;
-    }
-    globalThis.rateLimiterSweepCounter++;
-    if (globalThis.rateLimiterSweepCounter >= 100) {
-      sweepRateLimiter(rateLimiter, now);
-      globalThis.rateLimiterSweepCounter = 0;
-    }
-
-    if (!isDev) {
-      const effectiveLimit = isLikelySharedIP(request)
-        ? RATE_LIMIT_MAX_REQUESTS_SHARED_IP
-        : RATE_LIMIT_MAX_REQUESTS;
-
-      if (shouldRateLimit(rateLimiter, ip, now, effectiveLimit)) {
-        return respond429();
-      }
-
-      const doRateLimitResult = await checkRateLimitDO(
-        env,
-        ip,
-        now,
-        effectiveLimit,
+    const doRateLimitResult = await checkRateLimitDO(
+      env,
+      ip,
+      now,
+      effectiveLimit,
+    );
+    if (doRateLimitResult?.limited) {
+      const retryAfterSeconds = Math.ceil(
+        (doRateLimitResult.retryAfterMs || 0) / 1000,
       );
-      if (doRateLimitResult?.limited) {
-        const retryAfterSeconds = Math.ceil(
-          (doRateLimitResult.retryAfterMs || 0) / 1000,
-        );
-        return respond429({ retryAfterSeconds });
-      }
-      // If DO is unavailable (fallback: true), rely on in-memory rate limiter above
+      return respond429({ retryAfterSeconds });
+    }
+    // If DO is unavailable (fallback: true), rely on in-memory rate limiter above
+  }
+
+  // Route handling with path-based routing
+  try {
+    // Plain HTTP is only legitimate for local dev. Anywhere else, send the
+    // client to the canonical https origin instead of serving over cleartext.
+    // Derived from url.protocol alone: x-forwarded-proto is client-settable
+    // and trusting it would let a spoofed header loop an https request.
+    if (!isDev && url.protocol === "http:") {
+      const httpsUrl = new URL(request.url);
+      httpsUrl.protocol = "https:";
+      return Response.redirect(httpsUrl.href, 301);
     }
 
-    // Route handling with path-based routing
-    try {
-      // Health check endpoint
-      if (path === "/health" || path === "/api/health") {
-        return respondJSON(
-          {
-            status: "healthy",
-            uptime: now - workerStartedAt,
-            timestamp: new Date().toISOString(),
-            version: "2.4.3",
-          },
-          {
-            headers: { "Cache-Control": "no-store" },
-          },
-        );
-      }
+    // Health check endpoint
+    if (path === "/health" || path === "/api/health") {
+      return respondJSON(
+        {
+          status: "healthy",
+          uptime: now - workerStartedAt,
+          timestamp: new Date().toISOString(),
+          version: "2.4.3",
+        },
+        {
+          headers: { "Cache-Control": "no-store" },
+        },
+      );
+    }
 
-      if (path === "/debug-sentry") {
-        // Dev-only Sentry wiring probe. In prod, must not throw/capture
-        // (would let anonymous clients flood Sentry quota — see issue #13).
-        if (!isDev) {
-          return respond404();
-        }
-        throw new Error("Sentry test error");
+    if (path === "/debug-sentry") {
+      // Dev-only Sentry wiring probe. In prod, must not throw/capture
+      // (would let anonymous clients flood Sentry quota — see issue #13).
+      if (!isDev) {
+        return respond404();
       }
+      throw new Error("Sentry test error");
+    }
 
-      if (path === "/ads.txt") {
-        if (!shouldServeAdsTxt()) {
-          return respond404();
-        }
-        return respondText(getAdsTxtBody(), {
-          headers: { "Cache-Control": "public, max-age=86400" },
-        });
+    if (path === "/ads.txt") {
+      if (!shouldServeAdsTxt()) {
+        return respond404();
       }
+      return respondText(getAdsTxtBody(), {
+        headers: { "Cache-Control": "public, max-age=86400" },
+      });
+    }
 
-      // Robots.txt
-      if (path === "/robots.txt") {
-        // A preview deployment serves the whole site on a *.workers.dev host.
-        // If it advertised Allow + a sitemap it would be crawled and compete
-        // with the real domain for identical content, so non-production
-        // deployments disallow everything.
-        const isProduction =
-          (env?.ENVIRONMENT || "").toLowerCase() === "production";
-        const robotsTxt = isProduction
-          ? [
-              "User-agent: *",
-              "Allow: /",
-              `Sitemap: ${url.origin}/sitemap.xml`,
-            ].join("\n")
-          : ["User-agent: *", "Disallow: /"].join("\n");
-        return respondText(robotsTxt);
-      }
+    // Robots.txt
+    if (path === "/robots.txt") {
+      // A preview deployment serves the whole site on a *.workers.dev host.
+      // If it advertised Allow + a sitemap it would be crawled and compete
+      // with the real domain for identical content, so non-production
+      // deployments disallow everything.
+      const isProduction =
+        (env?.ENVIRONMENT || "").toLowerCase() === "production";
+      const robotsTxt = isProduction
+        ? [
+            "User-agent: *",
+            "Allow: /",
+            `Sitemap: ${url.origin}/sitemap.xml`,
+          ].join("\n")
+        : ["User-agent: *", "Disallow: /"].join("\n");
+      return respondText(robotsTxt);
+    }
 
-      // Sitemap.xml
-      if (path === "/sitemap.xml") {
-        const sitemapXml = buildSitemapXml(url.origin, runtimeTools);
-        return respondText(sitemapXml, {
-          headers: { "Content-Type": "application/xml; charset=utf-8" },
-        });
-      }
+    // Sitemap.xml
+    if (path === "/sitemap.xml") {
+      const sitemapXml = buildSitemapXml(url.origin, runtimeTools);
+      return respondText(sitemapXml, {
+        headers: { "Content-Type": "application/xml; charset=utf-8" },
+      });
+    }
 
-      // Security.txt
-      if (path === "/.well-known/security.txt") {
-        const expiresAt = new Date(
-          Date.now() + 365 * 24 * 60 * 60 * 1000,
-        ).toISOString();
-        const securityTxt = [
-          "Contact: mailto:security@simpletool.app",
-          `Expires: ${expiresAt}`,
-          "Policy: https://simpletool.app/security",
-          "Hiring: https://simpletool.app/careers",
-        ].join("\n");
-        return respondText(securityTxt);
-      }
+    // Security.txt
+    if (path === "/.well-known/security.txt") {
+      const expiresAt = new Date(
+        Date.now() + 365 * 24 * 60 * 60 * 1000,
+      ).toISOString();
+      const securityTxt = [
+        "Contact: mailto:security@simpletool.app",
+        `Expires: ${expiresAt}`,
+        "Policy: https://simpletool.app/security",
+        "Hiring: https://simpletool.app/careers",
+      ].join("\n");
+      return respondText(securityTxt);
+    }
 
-      if (path === "/styles.css") {
-        const etag = `"${bundledStylesHash}"`;
-        if (isDev) {
-          if (request.headers.get("If-None-Match") === etag) {
-            return new Response(null, {
-              status: 304,
-              headers: {
-                ETag: etag,
-                "Cache-Control": "no-cache",
-              },
-            });
-          }
-          return new Response(bundledStyles, {
-            headers: {
-              ...getSecurityHeaders("text/css; charset=utf-8"),
-              "Cache-Control": "no-cache",
-              ETag: etag,
-            },
-          });
-        }
+    if (path === "/styles.css") {
+      const etag = `"${bundledStylesHash}"`;
+      if (isDev) {
         if (request.headers.get("If-None-Match") === etag) {
           return new Response(null, {
             status: 304,
             headers: {
               ETag: etag,
-              "Cache-Control": "public, max-age=31536000, immutable",
+              "Cache-Control": "no-cache",
             },
           });
         }
-
         return new Response(bundledStyles, {
           headers: {
             ...getSecurityHeaders("text/css; charset=utf-8"),
-            "Cache-Control": "public, max-age=31536000, immutable",
+            "Cache-Control": "no-cache",
             ETag: etag,
           },
         });
       }
+      if (request.headers.get("If-None-Match") === etag) {
+        return new Response(null, {
+          status: 304,
+          headers: {
+            ETag: etag,
+            "Cache-Control": "public, max-age=31536000, immutable",
+          },
+        });
+      }
 
-      if (
-        path.startsWith("/vendor/") ||
-        path.startsWith("/fonts/") ||
-        path === "/manifest.json" ||
-        path === "/manifest.webmanifest" ||
-        path === "/sw.js" ||
-        path === "/og-image.png"
-      ) {
-        if (env && env.ASSETS && typeof env.ASSETS.fetch === "function") {
-          // /manifest.webmanifest is the standard extension for a web app
-          // manifest. Serve the same asset instead of 404ing on it; pages
-          // link /manifest.json, but crawlers and installers probe both.
-          let baseRequest = request;
-          if (path === "/manifest.webmanifest") {
-            const aliasUrl = new URL(request.url);
-            aliasUrl.pathname = "/manifest.json";
-            baseRequest = new Request(aliasUrl.toString(), request);
-          }
-          const assetRequest = isDev
-            ? stripConditionalHeaders(baseRequest)
-            : baseRequest;
-          let assetResponse = await env.ASSETS.fetch(assetRequest);
+      return new Response(bundledStyles, {
+        headers: {
+          ...getSecurityHeaders("text/css; charset=utf-8"),
+          "Cache-Control": "public, max-age=31536000, immutable",
+          ETag: etag,
+        },
+      });
+    }
 
-          if (isDev && assetResponse.status === 304) {
-            const bustUrl = new URL(baseRequest.url);
-            bustUrl.searchParams.set("dev-cache-bust", String(Date.now()));
-            assetResponse = await env.ASSETS.fetch(
-              new Request(bustUrl.toString(), assetRequest),
-            );
-          }
+    if (
+      path.startsWith("/vendor/") ||
+      path.startsWith("/fonts/") ||
+      path === "/manifest.json" ||
+      path === "/manifest.webmanifest" ||
+      path === "/sw.js" ||
+      path === "/og-image.png"
+    ) {
+      if (env && env.ASSETS && typeof env.ASSETS.fetch === "function") {
+        // /manifest.webmanifest is the standard extension for a web app
+        // manifest. Serve the same asset instead of 404ing on it; pages
+        // link /manifest.json, but crawlers and installers probe both.
+        let baseRequest = request;
+        if (path === "/manifest.webmanifest") {
+          const aliasUrl = new URL(request.url);
+          aliasUrl.pathname = "/manifest.json";
+          baseRequest = new Request(aliasUrl.toString(), request);
+        }
+        const assetRequest = isDev
+          ? stripConditionalHeaders(baseRequest)
+          : baseRequest;
+        let assetResponse = await env.ASSETS.fetch(assetRequest);
 
-          // If asset not found, return 404 immediately
-          if (assetResponse.status === 404) {
-            console.warn(`Asset not found: ${path}`);
-            return respond404();
-          }
+        if (isDev && assetResponse.status === 304) {
+          const bustUrl = new URL(baseRequest.url);
+          bustUrl.searchParams.set("dev-cache-bust", String(Date.now()));
+          assetResponse = await env.ASSETS.fetch(
+            new Request(bustUrl.toString(), assetRequest),
+          );
+        }
 
-          // Web app manifests have their own media type; the asset store
-          // serves plain application/json for the .json file.
-          const isManifest =
-            path === "/manifest.json" || path === "/manifest.webmanifest";
+        // If asset not found, return 404 immediately
+        if (assetResponse.status === 404) {
+          console.warn(`Asset not found: ${path}`);
+          return respond404();
+        }
 
-          if (!isDev) {
-            const headers = new Headers(assetResponse.headers);
-            const securityHeaders = getAssetSecurityHeaders();
-            for (const [key, value] of Object.entries(securityHeaders)) {
-              headers.set(key, value);
-            }
-            if (isManifest) {
-              headers.set("Content-Type", "application/manifest+json");
-            }
-            return new Response(assetResponse.body, {
-              status: assetResponse.status,
-              headers,
-            });
-          }
+        // Web app manifests have their own media type; the asset store
+        // serves plain application/json for the .json file.
+        const isManifest =
+          path === "/manifest.json" || path === "/manifest.webmanifest";
+
+        if (!isDev) {
           const headers = new Headers(assetResponse.headers);
-          headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
-          headers.delete("ETag");
-          headers.delete("Last-Modified");
           const securityHeaders = getAssetSecurityHeaders();
           for (const [key, value] of Object.entries(securityHeaders)) {
             headers.set(key, value);
@@ -443,140 +487,196 @@ const worker = {
             headers.set("Content-Type", "application/manifest+json");
           }
           return new Response(assetResponse.body, {
-            status: assetResponse.status === 304 ? 200 : assetResponse.status,
+            status: assetResponse.status,
             headers,
           });
         }
-        console.error("ASSETS binding missing for path:", path);
-        return respond404();
-      }
-
-      // Favicon
-      if (path === "/favicon.ico" || path === "/favicon.svg") {
-        // One SVG mark serves both paths. Pages link /favicon.svg (correct
-        // extension/MIME pairing); /favicon.ico stays for browsers that probe
-        // that path blindly. Violet per the Modern Utility identity.
-        const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-          <rect width="64" height="64" rx="12" fill="#7c3aed"/>
-          <path d="M32 16c-8.8 0-16 7.2-16 16s7.2 16 16 16 16-7.2 16-16-7.2-16-16-16zm0 6c5.5 0 10 4.5 10 10s-4.5 10-10 10-10-4.5-10-10 4.5-10 10-10z" fill="#fff"/>
-          <circle cx="32" cy="32" r="4" fill="#a78bfa"/>
-        </svg>`;
-        return new Response(svg, {
-          headers: {
-            ...getAssetSecurityHeaders(),
-            "Content-Type": "image/svg+xml",
-            "Cache-Control": "public, max-age=31536000, immutable",
-          },
-        });
-      }
-
-      // Home page
-      if (path === "/" || path === "/index.html") {
-        return renderHomePage({
-          isDev,
-          lang: resolveRequestLanguage(request, url),
-        });
-      }
-
-      // Tool routes - path-based
-
-      // Legacy tool redirects (map-driven) — before /tools/ prefix so single-hop works
-      const legacyRedirect = tryLegacyRedirect(url);
-      if (legacyRedirect) return legacyRedirect;
-
-      // Legacy routing compatibility: older docs/links used the /tools/<tool-id> prefix.
-      if (path === "/tools") {
-        const redirectUrl = new URL(request.url);
-        redirectUrl.pathname = "/";
-        return Response.redirect(redirectUrl.href, 301);
-      }
-
-      if (path.startsWith("/tools/")) {
-        const redirectUrl = new URL(request.url);
-        redirectUrl.pathname = path.slice("/tools".length).replace(/^\/+/, "/");
-        return Response.redirect(redirectUrl.href, 301);
-      }
-
-      // Pipe Mode
-      if (path === "/pipe" || path === "/pipe/") {
-        const pipeResponse = await handlePipeRoutes(request, url);
-        if (pipeResponse) return pipeResponse;
-      }
-
-      // Markdown Editor
-      if (path === "/markdown-editor" || path === "/markdown-editor/") {
-        const mdResponse = await handleMarkdownEditorRoutes(request, url);
-        if (mdResponse) return mdResponse;
-      }
-
-      // Active tool routes (registry-driven)
-      for (const tool of runtimeTools) {
-        const handler = handlersById[tool.id];
-        if (!handler) continue;
-        if (matchesToolPath(path, tool.path)) {
-          return resolveToolResponse(handler, request, url);
+        const headers = new Headers(assetResponse.headers);
+        headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
+        headers.delete("ETag");
+        headers.delete("Last-Modified");
+        const securityHeaders = getAssetSecurityHeaders();
+        for (const [key, value] of Object.entries(securityHeaders)) {
+          headers.set(key, value);
         }
+        if (isManifest) {
+          headers.set("Content-Type", "application/manifest+json");
+        }
+        return new Response(assetResponse.body, {
+          status: assetResponse.status === 304 ? 200 : assetResponse.status,
+          headers,
+        });
       }
-
-      // Legal & Static pages
-      if (path === "/terms" || path === "/terms.html") {
-        return renderTermsPage(resolveRequestLanguage(request, url));
-      }
-
-      if (path === "/privacy" || path === "/privacy.html") {
-        return renderPrivacyPage(resolveRequestLanguage(request, url));
-      }
-
-      if (path === "/about" || path === "/about.html") {
-        return renderAboutPage(resolveRequestLanguage(request, url));
-      }
-
-      if (path === "/contact" || path === "/contact.html") {
-        return renderContactPage(resolveRequestLanguage(request, url));
-      }
-
-      if (path === "/security" || path === "/security.html") {
-        return renderSecurityPage(resolveRequestLanguage(request, url));
-      }
-
-      if (path === "/careers" || path === "/careers.html") {
-        return renderCareersPage(resolveRequestLanguage(request, url));
-      }
-
-      // Content pages (blog, FAQ)
-      if (path === "/blog" || path === "/blog/" || path.startsWith("/blog/")) {
-        const blogResponse = handleBlogRoutes(request, url);
-        if (blogResponse) return blogResponse;
-      }
-
-      if (path === "/faq" || path === "/faq/") {
-        const faqResponse = handleFaqRoutes(request, url);
-        if (faqResponse) return faqResponse;
-      }
-
-      if (path === "/changelog" || path === "/changelog/") {
-        const changelogResponse = await handleChangelogRoutes(request, url);
-        if (changelogResponse) return changelogResponse;
-      }
-
-      // 404 for everything else
+      console.error("ASSETS binding missing for path:", path);
       return respond404();
-    } catch (error) {
-      Sentry.captureException(error);
-      console.error("Worker error", {
-        requestId,
-        path,
-        method: request.method,
-        error: error?.message || String(error),
-      });
-      return respondJSON(
-        { error: "Internal server error" },
-        {
-          status: 500,
-          headers: { "Cache-Control": "no-store" },
-        },
-      );
     }
+
+    // Favicon
+    if (path === "/favicon.ico" || path === "/favicon.svg") {
+      // One SVG mark serves both paths. Pages link /favicon.svg (correct
+      // extension/MIME pairing); /favicon.ico stays for browsers that probe
+      // that path blindly. Violet per the Modern Utility identity.
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+        <rect width="64" height="64" rx="12" fill="#7c3aed"/>
+        <path d="M32 16c-8.8 0-16 7.2-16 16s7.2 16 16 16 16-7.2 16-16-7.2-16-16-16zm0 6c5.5 0 10 4.5 10 10s-4.5 10-10 10-10-4.5-10-10 4.5-10 10-10z" fill="#fff"/>
+        <circle cx="32" cy="32" r="4" fill="#a78bfa"/>
+      </svg>`;
+      return new Response(svg, {
+        headers: {
+          ...getAssetSecurityHeaders(),
+          "Content-Type": "image/svg+xml",
+          "Cache-Control": "public, max-age=31536000, immutable",
+        },
+      });
+    }
+
+    // Home page
+    if (path === "/" || path === "/index.html") {
+      return renderHomePage({
+        isDev,
+        lang: resolveRequestLanguage(request, url),
+      });
+    }
+
+    // Tool routes - path-based
+
+    // Legacy tool redirects (map-driven) — before /tools/ prefix so single-hop works
+    const legacyRedirect = tryLegacyRedirect(url);
+    if (legacyRedirect) return legacyRedirect;
+
+    // Legacy routing compatibility: older docs/links used the /tools/<tool-id> prefix.
+    if (path === "/tools") {
+      const redirectUrl = new URL(request.url);
+      redirectUrl.pathname = "/";
+      return Response.redirect(redirectUrl.href, 301);
+    }
+
+    if (path.startsWith("/tools/")) {
+      const redirectUrl = new URL(request.url);
+      redirectUrl.pathname = path.slice("/tools".length).replace(/^\/+/, "/");
+      return Response.redirect(redirectUrl.href, 301);
+    }
+
+    // Pipe Mode
+    if (path === "/pipe" || path === "/pipe/") {
+      const pipeResponse = await handlePipeRoutes(request, url);
+      if (pipeResponse) return pipeResponse;
+    }
+
+    // Markdown Editor
+    if (path === "/markdown-editor" || path === "/markdown-editor/") {
+      const mdResponse = await handleMarkdownEditorRoutes(request, url);
+      if (mdResponse) return mdResponse;
+    }
+
+    // Active tool routes (registry-driven)
+    for (const tool of runtimeTools) {
+      const handler = handlersById[tool.id];
+      if (!handler) continue;
+      if (matchesToolPath(path, tool.path)) {
+        return resolveToolResponse(handler, request, url);
+      }
+    }
+
+    // Legal & Static pages
+    if (path === "/terms" || path === "/terms.html") {
+      return renderTermsPage(resolveRequestLanguage(request, url));
+    }
+
+    if (path === "/privacy" || path === "/privacy.html") {
+      return renderPrivacyPage(resolveRequestLanguage(request, url));
+    }
+
+    if (path === "/about" || path === "/about.html") {
+      return renderAboutPage(resolveRequestLanguage(request, url));
+    }
+
+    if (path === "/contact" || path === "/contact.html") {
+      return renderContactPage(resolveRequestLanguage(request, url));
+    }
+
+    if (path === "/security" || path === "/security.html") {
+      return renderSecurityPage(resolveRequestLanguage(request, url));
+    }
+
+    if (path === "/careers" || path === "/careers.html") {
+      return renderCareersPage(resolveRequestLanguage(request, url));
+    }
+
+    // Content pages (blog, FAQ)
+    if (path === "/blog" || path === "/blog/" || path.startsWith("/blog/")) {
+      const blogResponse = handleBlogRoutes(request, url);
+      if (blogResponse) return blogResponse;
+    }
+
+    if (path === "/faq" || path === "/faq/") {
+      const faqResponse = handleFaqRoutes(request, url);
+      if (faqResponse) return faqResponse;
+    }
+
+    if (path === "/changelog" || path === "/changelog/") {
+      const changelogResponse = await handleChangelogRoutes(request, url);
+      if (changelogResponse) return changelogResponse;
+    }
+
+    // 404 for everything else
+    return respond404();
+  } catch (error) {
+    Sentry.captureException(error);
+    console.error("Worker error", {
+      requestId,
+      path,
+      method: request.method,
+      error: error?.message || String(error),
+    });
+    return respondJSON(
+      { error: "Internal server error" },
+      {
+        status: 500,
+        headers: { "Cache-Control": "no-store" },
+      },
+    );
+  }
+}
+
+const worker = {
+  async fetch(request, env, ctx) {
+    const method = request.method;
+
+    // HEAD must mirror GET exactly — same status, same headers, no body.
+    // Routing it as GET is the only way handlers that test for "GET" agree
+    // with what a GET actually returns.
+    if (method === "HEAD") {
+      const response = await handleRequest(
+        reissueWithoutBody(request, "GET"),
+        env,
+        ctx,
+      );
+      return stripBody(response);
+    }
+
+    if (method === "GET") {
+      return handleRequest(request, env, ctx);
+    }
+
+    const path = new URL(request.url).pathname;
+    if (METHOD_PERMISSIVE_PATHS.has(path)) {
+      return handleRequest(request, env, ctx);
+    }
+
+    // Every other route renders a page. Route the request as a GET to find out
+    // whether the resource exists at all: a missing path still deserves its
+    // 404 (and a redirect still applies to any method), while a path that
+    // would have rendered gets 405 rather than the page body.
+    const probe = await handleRequest(
+      reissueWithoutBody(request, "GET"),
+      env,
+      ctx,
+    );
+    if (probe.status === 200 || probe.status === 304) {
+      return respond405(["GET", "HEAD"]);
+    }
+    return probe;
   },
 };
 
