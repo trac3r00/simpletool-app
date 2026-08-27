@@ -3,8 +3,6 @@ import {
   createPageTemplate,
   createToolHeader,
   createCheatsheet,
-  createMobileTabView,
-  getMobileTabScript,
   createEmptyState,
 } from "../utils/common-ui.js";
 import {
@@ -56,11 +54,14 @@ export async function handleMermaidStudioRoutes(request, url) {
       <div class="tool-page-panel tool-page-panel--fill">
       ${header}
 
-      ${createMobileTabView({ leftPaneId: "editor-pane", rightPaneId: "preview-pane", leftLabel: '<span data-i18n="tools.mermaid-studio.ui.stat3">Mermaid Code</span>', rightLabel: '<span data-i18n="tools.mermaid-studio.ui.stat4">Preview</span>' })}
+      <div class="mobile-tabs-bar flex lg:hidden items-center gap-1 rounded-lg bg-muted p-1 mb-4 text-muted-foreground" role="tablist" aria-label="Editor or preview">
+        <button type="button" id="mobile-tab-editor" class="tab-trigger flex-1" role="tab" aria-selected="true" aria-controls="editor-pane" data-tab="left" tabindex="0"><span data-i18n="tools.mermaid-studio.ui.stat3">Mermaid Code</span></button>
+        <button type="button" id="mobile-tab-preview" class="tab-trigger flex-1" role="tab" aria-selected="false" aria-controls="preview-pane" data-tab="right" tabindex="-1"><span data-i18n="tools.mermaid-studio.ui.stat4">Preview</span></button>
+      </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 h-[calc(100vh-350px)] min-h-[600px]">
         <!-- Editor -->
-        <div id="editor-pane" class="tool-group tool-group--flush lg:col-span-5 flex flex-col overflow-hidden">
+        <div id="editor-pane" class="tool-group tool-group--flush lg:col-span-5 flex flex-col overflow-hidden" role="tabpanel" aria-labelledby="mobile-tab-editor" tabindex="0">
           <div class="px-4 py-3 border-b border-surface-200 dark:border-surface-800 flex justify-between items-center bg-surface-50 dark:bg-surface-950">
             <span class="text-sm font-semibold text-surface-900 dark:text-white uppercase tracking-wider" data-i18n="tools.mermaid-studio.ui.stat3">Mermaid Code</span>
             <div class="flex gap-2">
@@ -71,7 +72,7 @@ export async function handleMermaidStudioRoutes(request, url) {
         </div>
 
         <!-- Preview -->
-        <div id="preview-pane" class="tool-group tool-group--flush lg:col-span-7 flex flex-col overflow-hidden">
+        <div id="preview-pane" class="tool-group tool-group--flush lg:col-span-7 flex flex-col overflow-hidden" role="tabpanel" aria-labelledby="mobile-tab-preview" tabindex="0">
           <div class="px-4 py-3 border-b border-surface-200 dark:border-surface-800 flex justify-between items-center bg-surface-50 dark:bg-surface-950">
             <span class="text-sm font-semibold text-surface-900 dark:text-white uppercase tracking-wider" data-i18n="tools.mermaid-studio.ui.stat4">Preview</span>
             <div class="flex gap-3">
@@ -120,18 +121,108 @@ export async function handleMermaidStudioRoutes(request, url) {
   `;
 
   const scripts = `
-    <style>${getRichEditorStyles()}</style>
+    <style>
+      ${getRichEditorStyles()}
+      /* Scoped override: the shared .re-line-numbers gutter text/background
+         (surface-400 on surface-100, ~2.31:1) falls short of WCAG AA. Reuse
+         the app's --muted-foreground/--muted pair, already calibrated for
+         >=4.5:1 against each other in both themes (see styles/input.css). */
+      #re-mermaid-input-wrap .re-line-numbers {
+        color: hsl(var(--muted-foreground));
+        background: hsl(var(--muted));
+        border-right-color: hsl(var(--border));
+      }
+    </style>
     ${getRichEditorScript()}
-    ${getMobileTabScript()}
+    <script>
+      // Mobile editor/preview tab switch — role="tablist"/"tab"/"tabpanel"
+      // with roving tabindex and Arrow key navigation (WAI-ARIA APG tabs
+      // pattern). Kept local to this route: the shared mobile-tab helper in
+      // common-ui.js emitted role="tab" buttons with no role="tablist"
+      // parent (axe: aria-required-parent).
+      (function() {
+        const tabBar = document.querySelector('.mobile-tabs-bar');
+        if (!tabBar) return;
+        const tabs = Array.from(tabBar.querySelectorAll('[role="tab"]'));
+        const panes = {
+          left: document.getElementById('editor-pane'),
+          right: document.getElementById('preview-pane'),
+        };
+        if (!panes.left || !panes.right) return;
+
+        let savedTab = 'left';
+        try {
+          savedTab = localStorage.getItem('mobile-tab-preference') || 'left';
+        } catch (e) {}
+
+        function showTab(tabName, focusTab) {
+          panes.left.classList.toggle('mobile-pane-hidden', tabName !== 'left');
+          panes.right.classList.toggle('mobile-pane-hidden', tabName === 'left');
+          tabs.forEach((tab) => {
+            const isActive = tab.getAttribute('data-tab') === tabName;
+            tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+            tab.setAttribute('tabindex', isActive ? '0' : '-1');
+            if (isActive && focusTab) tab.focus();
+          });
+          try { localStorage.setItem('mobile-tab-preference', tabName); } catch (e) {}
+        }
+
+        tabs.forEach((tab) => {
+          tab.addEventListener('click', () => showTab(tab.getAttribute('data-tab')));
+        });
+
+        tabBar.addEventListener('keydown', (e) => {
+          if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+          e.preventDefault();
+          const currentIdx = tabs.findIndex((t) => t.getAttribute('aria-selected') === 'true');
+          const dir = e.key === 'ArrowLeft' ? -1 : 1;
+          const nextIdx = (currentIdx + dir + tabs.length) % tabs.length;
+          showTab(tabs[nextIdx].getAttribute('data-tab'), true);
+        });
+
+        showTab(savedTab, false);
+      })();
+    </script>
     <script src="/vendor/mermaid.min.js" integrity="sha384-yQ4mmBBT+vhTAwjFH0toJXNYJ6O4usWnt6EPIdWwrRvx2V/n5lXuDZQwQFeSFydF" crossorigin="anonymous"></script>
     <script>
       const mermaid = window.mermaid;
 
-      mermaid.initialize({
-        startOnLoad: false,
-        theme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default',
-        securityLevel: 'strict'
-      });
+      // Mermaid's own theme must track the SITE's active theme (the "dark"
+      // class the theme toggle puts on <html>), not a fresh, independent
+      // prefers-color-scheme check: those two can disagree (system dark +
+      // user-selected light, or vice versa), which rendered a dark-theme
+      // diagram (light node/edge-label text) onto the page's light
+      // background — measured 1.53:1. themeVariables pin the text colors to
+      // the same tokens the rest of the page uses for --foreground, so
+      // contrast holds even if mermaid's built-in theme defaults drift.
+      function isSiteDark() {
+        return document.documentElement.classList.contains('dark');
+      }
+
+      function mermaidThemeVariables(dark) {
+        const textColor = dark ? '#f8fafc' /* --foreground dark */ : '#12141c' /* --foreground light */;
+        return {
+          primaryTextColor: textColor,
+          textColor: textColor,
+          secondaryTextColor: textColor,
+          tertiaryTextColor: textColor,
+          nodeTextColor: textColor,
+          taskTextColor: textColor,
+          taskTextOutsideColor: textColor,
+        };
+      }
+
+      function applyMermaidTheme() {
+        const dark = isSiteDark();
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: dark ? 'dark' : 'default',
+          securityLevel: 'strict',
+          themeVariables: mermaidThemeVariables(dark),
+        });
+      }
+
+      applyMermaidTheme();
 
       const editor = new RichEditor('mermaid-input');
       editor.setHighlighter('mermaid');
@@ -217,11 +308,14 @@ export async function handleMermaidStudioRoutes(request, url) {
         document.body.removeChild(link);
       });
 
-      // Handle theme changes
-      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-        mermaid.initialize({ theme: e.matches ? 'dark' : 'default' });
+      // Handle theme changes — watch the <html class="dark"> attribute
+      // directly rather than only prefers-color-scheme, so a manual click on
+      // the site's light/dark toggle (which doesn't fire a matchMedia event)
+      // re-themes the diagram too, not just an OS-level scheme change.
+      new MutationObserver(() => {
+        applyMermaidTheme();
         renderDiagram();
-      });
+      }).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 
       // The preview pane starts hidden (the editor/preview toggle defaults to
       // the editor), so the initial render would run against a display:none

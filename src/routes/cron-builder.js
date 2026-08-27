@@ -473,10 +473,8 @@ export async function handleCronBuilderRoutes(request) {
               cb.checked = isSelected;
               if (isSelected) {
                 label.classList.add('bg-primary-50', 'dark:bg-primary-900/30', 'border-primary-200', 'dark:border-primary-800');
-                label.setAttribute('aria-selected', 'true');
               } else {
                 label.classList.remove('bg-primary-50', 'dark:bg-primary-900/30', 'border-primary-200', 'dark:border-primary-800');
-                label.setAttribute('aria-selected', 'false');
               }
             });
           });
@@ -584,17 +582,23 @@ export async function handleCronBuilderRoutes(request) {
           renderGrid('dow', 0, 6, (i) => DAYS[i]);
         }
 
-function renderGrid(part, start, end, labelFn) {
+const GRID_LABELS = {
+          minute: 'Minute selector',
+          hour: 'Hour selector',
+          dom: 'Day of month selector',
+          month: 'Month selector',
+          dow: 'Day of week selector',
+        };
+
+        function renderGrid(part, start, end, labelFn) {
           const container = document.getElementById(\`\${part}-grid\`);
           container.innerHTML = '';
-          container.setAttribute('role', 'grid');
-          container.setAttribute('aria-label', 'Minute selector');
+          container.setAttribute('role', 'group');
+          container.setAttribute('aria-label', GRID_LABELS[part] || 'Value selector');
 
           for (let i = start; i <= end; i++) {
             const label = document.createElement('label');
             label.className = 'flex items-center justify-center w-8 h-8 border border-surface-200 dark:border-surface-700 rounded-full cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors select-none text-sm';
-            label.setAttribute('role', 'gridcell');
-            label.setAttribute('aria-selected', 'false');
 
             const input = document.createElement('input');
             input.type = 'checkbox';
@@ -608,10 +612,8 @@ function renderGrid(part, start, end, labelFn) {
             input.addEventListener('change', () => {
               if (input.checked) {
                 label.classList.add('bg-primary-50', 'dark:bg-primary-900/30', 'border-primary-200', 'dark:border-primary-800');
-                label.setAttribute('aria-selected', 'true');
               } else {
                 label.classList.remove('bg-primary-50', 'dark:bg-primary-900/30', 'border-primary-200', 'dark:border-primary-800');
-                label.setAttribute('aria-selected', 'false');
               }
               updatePartFromGrid(part);
             });

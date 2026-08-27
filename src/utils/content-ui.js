@@ -80,7 +80,7 @@ export function createFaqAccordion(items, options = {}) {
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
         </svg>
       </summary>
-      <div class="px-5 pb-5 pt-1 text-sm text-surface-700 dark:text-surface-300 leading-relaxed border-t border-surface-100 dark:border-surface-800 mt-1 prose dark:prose-invert max-w-none"${withI18n ? ` data-i18n-html="content.faq.a${i}"` : ""}>
+      <div class="px-5 pb-5 pt-1 text-sm text-surface-700 dark:text-surface-300 leading-relaxed border-t border-surface-100 dark:border-surface-800 mt-1 prose dark:prose-invert max-w-none prose-a:text-primary-700 dark:prose-a:text-primary-300 prose-a:underline prose-a:underline-offset-2"${withI18n ? ` data-i18n-html="content.faq.a${i}"` : ""}>
         ${item.answer}
       </div>
     </details>
@@ -119,9 +119,9 @@ export function createBlogArticleCard(article, options = {}) {
         ${article.category ? `<span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300">${article.category}</span>` : ""}
         ${article.readingTime ? `<span class="text-xs text-surface-500 dark:text-surface-400">${article.readingTime}</span>` : ""}
       </div>
-      <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-50 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-200 mb-2">
+      <h2 class="text-lg font-semibold text-surface-900 dark:text-surface-50 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-200 mb-2">
         ${article.title}
-      </h3>
+      </h2>
       <p class="text-sm text-surface-600 dark:text-surface-400 leading-relaxed mb-3">
         ${article.description}
       </p>
@@ -187,17 +187,17 @@ export function createBreadcrumbs(items, options = {}) {
     itemListElement: schemaItems,
   };
 
+  const separator = `<svg class="w-4 h-4 text-surface-500 dark:text-surface-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>`;
+
   const links = items
     .map((item, i) => {
       const isLast = i === items.length - 1;
-      if (isLast) {
-        return `<span class="text-sm text-surface-500 dark:text-surface-400" aria-current="page">${item.label}</span>`;
-      }
-      return `<a href="${withLanguageQuery(item.url, lang)}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">${item.label}</a>`;
+      const label = isLast
+        ? `<span class="text-sm text-surface-500 dark:text-surface-400" aria-current="page">${item.label}</span>`
+        : `<a href="${withLanguageQuery(item.url, lang)}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">${item.label}</a>`;
+      return `<li class="flex items-center gap-2">${label}${isLast ? "" : separator}</li>`;
     })
-    .join(
-      `<svg class="w-4 h-4 text-surface-500 dark:text-surface-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>`,
-    );
+    .join("");
 
   return `
     <nav aria-label="Breadcrumb" class="mb-6">

@@ -117,7 +117,7 @@ function renderColorConverterPage(lang = DEFAULT_LANGUAGE) {
               <div class="card p-4">
                 <div class="flex justify-between items-center mb-2">
                   <span class="text-xs font-bold text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-tooltip="6-digit hexadecimal color code" data-i18n-tooltip="tools.color-converter.ui.tip1">HEX</span>
-                   <button data-copy-target="hex-value" class="copy-btn text-surface-500 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" aria-label="Copy HEX color value">
+                   <button data-copy-target="hex-value" class="copy-btn inline-flex items-center justify-center w-6 h-6 rounded text-surface-500 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" aria-label="Copy HEX color value">
                      <span class="material-symbols-rounded text-sm" aria-hidden="true" data-i18n="tools.color-converter.ui.desc5">content_copy</span>
                    </button>
                 </div>
@@ -127,7 +127,7 @@ function renderColorConverterPage(lang = DEFAULT_LANGUAGE) {
               <div class="card p-4">
                 <div class="flex justify-between items-center mb-2">
                   <span class="text-xs font-bold text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-tooltip="Red, Green, Blue — 0 to 255 each" data-i18n-tooltip="tools.color-converter.ui.tip2">RGB</span>
-                   <button data-copy-target="rgb-value" class="copy-btn text-surface-500 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" aria-label="Copy RGB color value">
+                   <button data-copy-target="rgb-value" class="copy-btn inline-flex items-center justify-center w-6 h-6 rounded text-surface-500 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" aria-label="Copy RGB color value">
                      <span class="material-symbols-rounded text-sm" aria-hidden="true" data-i18n="tools.color-converter.ui.desc5">content_copy</span>
                    </button>
                 </div>
@@ -137,7 +137,7 @@ function renderColorConverterPage(lang = DEFAULT_LANGUAGE) {
               <div class="card p-4">
                 <div class="flex justify-between items-center mb-2">
                   <span class="text-xs font-bold text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-tooltip="Hue 0-360°, Saturation 0-100%, Lightness 0-100%" data-i18n-tooltip="tools.color-converter.ui.tip3">HSL</span>
-                   <button data-copy-target="hsl-value" class="copy-btn text-surface-500 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" aria-label="Copy HSL color value">
+                   <button data-copy-target="hsl-value" class="copy-btn inline-flex items-center justify-center w-6 h-6 rounded text-surface-500 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" aria-label="Copy HSL color value">
                      <span class="material-symbols-rounded text-sm" aria-hidden="true" data-i18n="tools.color-converter.ui.desc5">content_copy</span>
                    </button>
                 </div>
@@ -147,7 +147,7 @@ function renderColorConverterPage(lang = DEFAULT_LANGUAGE) {
               <div class="card p-4">
                 <div class="flex justify-between items-center mb-2">
                   <span class="text-xs font-bold text-surface-500 dark:text-surface-400 uppercase tracking-wide">HSV</span>
-                   <button data-copy-target="hsv-value" class="copy-btn text-surface-500 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" aria-label="Copy HSV color value">
+                   <button data-copy-target="hsv-value" class="copy-btn inline-flex items-center justify-center w-6 h-6 rounded text-surface-500 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" aria-label="Copy HSV color value">
                      <span class="material-symbols-rounded text-sm" aria-hidden="true" data-i18n="tools.color-converter.ui.desc5">content_copy</span>
                    </button>
                 </div>

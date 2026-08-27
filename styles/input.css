@@ -137,6 +137,30 @@
   textarea:focus:not(:focus-visible) {
     outline: none;
   }
+
+  /* WCAG 2.2 §2.5.8 minimum target size (24×24 CSS px). min-* beats the
+     w-4/h-4 utilities on width/height, so legacy per-route sizes need no
+     edits. sr-only controls (peer toggles) are exempt — their visible peer
+     carries the target. */
+  input[type="checkbox"]:not(.sr-only),
+  input[type="radio"]:not(.sr-only) {
+    min-width: 1.5rem;
+    min-height: 1.5rem;
+  }
+
+  input[type="range"] {
+    min-height: 1.5rem;
+  }
+
+  /* Links inside running prose need a non-color cue (axe link-in-text-block).
+     Scoped to text containers so nav, cards, and button-shaped anchors keep
+     their existing treatment. */
+  main p a:not([class*="btn"]),
+  main li a:not([class*="btn"]),
+  main td a:not([class*="btn"]) {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
 }
 
 @layer components {

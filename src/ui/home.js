@@ -289,7 +289,7 @@ export function renderHomePage({
         return '<a href="' + tool.path + '" ' + dataAttrs + ' class="tool-card tool-card-link group flex flex-col p-4">' +
           '<div class="flex items-start justify-between mb-3"><div class="text-3xl bg-surface-50 dark:bg-surface-800 group-hover:bg-primary-50 dark:group-hover:bg-primary-900/30 p-2 rounded-lg border border-surface-100 dark:border-surface-700 group-hover:border-primary-200 dark:group-hover:border-primary-800 group-hover:scale-110 transition-all duration-200">' + tool.icon + '</div>' + badge + '</div>' +
           '<h3 class="tool-name font-bold text-surface-900 dark:text-surface-50 mb-1 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">' + tool.name + '</h3>' +
-          '<p class="tool-desc text-sm text-surface-500 dark:text-surface-400 leading-relaxed line-clamp-2">' + tool.description + '</p></a>';
+          '<p class="tool-desc text-sm text-surface-500 dark:text-surface-400 leading-relaxed line-clamp-3">' + tool.description + '</p></a>';
       }
 
       function populate(sectionId, gridId, countId, ids) {
@@ -330,7 +330,7 @@ function renderCategories(categories, lang = DEFAULT_LANGUAGE) {
         <h2 class="text-xl font-bold text-surface-900 dark:text-surface-100 uppercase tracking-wide" data-i18n="home.cat.${key}">
           ${t("home.cat." + key, lang)}
         </h2>
-        <span class="category-count text-xs font-medium text-surface-500 bg-surface-100 dark:bg-surface-800 dark:text-surface-400 px-2 py-0.5 rounded-full">${section.tools.length}</span>
+        <span class="category-count text-xs font-medium text-surface-600 bg-surface-100 dark:bg-surface-800 dark:text-surface-400 px-2 py-0.5 rounded-full">${section.tools.length}</span>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         ${section.tools.map((tool) => renderToolCard(tool, lang)).join("")}
@@ -369,7 +369,7 @@ function renderToolCard(tool, lang = DEFAULT_LANGUAGE) {
       <h3 class="tool-name font-bold text-surface-900 dark:text-surface-50 mb-1 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
         ${tool.name}
       </h3>
-      <p class="tool-desc text-sm text-surface-500 dark:text-surface-400 leading-relaxed line-clamp-2">
+      <p class="tool-desc text-sm text-surface-500 dark:text-surface-400 leading-relaxed line-clamp-3">
         ${tool.description}
       </p>
     </a>

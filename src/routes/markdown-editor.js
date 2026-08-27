@@ -95,31 +95,31 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
             <div class="h-4 w-px bg-surface-300 dark:bg-surface-700 mx-1 hidden sm:block"></div>
 
             <div class="relative group">
-              <button id="export-menu-btn" class="btn-ghost btn-sm flex items-center gap-2">
+              <button id="export-menu-btn" class="btn-ghost btn-sm flex items-center gap-2" aria-haspopup="true" aria-expanded="false" aria-controls="export-menu">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                 <span data-i18n="tools.markdown-editor.ui.button11">Export</span>
                 <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
               </button>
-              <div class="absolute right-0 mt-1 w-48 bg-popover text-popover-foreground border border-border rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-10">
-                <button id="copy-md-btn" class="btn-ghost btn-sm w-full justify-start">
+              <div id="export-menu" role="menu" aria-labelledby="export-menu-btn" class="absolute right-0 mt-1 w-48 bg-popover text-popover-foreground border border-border rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-10">
+                <button id="copy-md-btn" class="btn-ghost btn-sm w-full justify-start" role="menuitem">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
                   <span data-i18n="tools.markdown-editor.ui.button4">Copy MD</span>
                 </button>
-                <button id="copy-html-btn" class="btn-ghost btn-sm w-full justify-start">
+                <button id="copy-html-btn" class="btn-ghost btn-sm w-full justify-start" role="menuitem">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
                   <span data-i18n="tools.markdown-editor.ui.button5">Copy HTML</span>
                 </button>
                 <div class="border-t border-surface-200 dark:border-surface-700"></div>
-                <button id="download-md-btn" class="btn-ghost btn-sm w-full justify-start">
+                <button id="download-md-btn" class="btn-ghost btn-sm w-full justify-start" role="menuitem">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                   <span data-i18n="tools.markdown-editor.ui.button6">Download .md</span>
                 </button>
-                <button id="download-html-btn" class="btn-ghost btn-sm w-full justify-start">
+                <button id="download-html-btn" class="btn-ghost btn-sm w-full justify-start" role="menuitem">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                   <span data-i18n="tools.markdown-editor.ui.button7">Download .html</span>
                 </button>
                 <div class="border-t border-surface-200 dark:border-surface-700"></div>
-                <button id="print-btn" class="btn-ghost btn-sm w-full justify-start">
+                <button id="print-btn" class="btn-ghost btn-sm w-full justify-start" role="menuitem">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6v-8z"></path></svg>
                   <span data-i18n="tools.markdown-editor.ui.title8">Print</span>
                 </button>
@@ -185,6 +185,13 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
         textarea::-webkit-scrollbar-thumb:hover,
         #preview-output::-webkit-scrollbar-thumb:hover {
           background-color: rgba(156, 163, 175, 0.8);
+        }
+
+        /* Export dropdown: keyboard-openable counterpart to the hover state */
+        #export-menu[data-open="true"],
+        #export-menu:focus-within {
+          opacity: 1;
+          visibility: visible;
         }
 
         /* Default Split View Layout */
@@ -798,13 +805,42 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
           setTimeout(() => w.print(), 250);
         });
 
+         // Export dropdown: click/keyboard disclosure alongside the CSS hover state
+         const exportMenu = document.getElementById('export-menu');
+         function setExportMenuOpen(open) {
+           if (!exportMenu || !exportMenuBtn) return;
+           exportMenu.dataset.open = open ? 'true' : 'false';
+           exportMenuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+         }
+         setExportMenuOpen(false);
+
+         exportMenuBtn?.addEventListener('click', (e) => {
+           e.stopPropagation();
+           setExportMenuOpen(exportMenu?.dataset.open !== 'true');
+         });
+
+         exportMenu?.addEventListener('keydown', (e) => {
+           if (e.key === 'Escape') {
+             setExportMenuOpen(false);
+             exportMenuBtn?.focus();
+           }
+         });
+
+         exportMenuBtn?.addEventListener('keydown', (e) => {
+           if (e.key === 'Escape') setExportMenuOpen(false);
+         });
+
+         exportMenu?.addEventListener('click', (e) => {
+           if (e.target.closest('[role="menuitem"]')) setExportMenuOpen(false);
+         });
+
          // Close export dropdown on click outside
          document.addEventListener('click', (e) => {
-           const exportMenu = exportMenuBtn?.closest('.group');
-           if (exportMenu && !exportMenu.contains(e.target)) {
-             exportMenu.classList.remove('group-hover:opacity-100', 'group-hover:visible');
+           const exportGroup = exportMenuBtn?.closest('.group');
+           if (exportGroup && !exportGroup.contains(e.target)) {
+             setExportMenuOpen(false);
            }
-           
+
            const toggleBtn = e.target.closest('[data-theme-toggle]');
            if (!toggleBtn) return;
            setTimeout(updatePreview, 200);

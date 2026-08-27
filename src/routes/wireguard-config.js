@@ -288,7 +288,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
                 <button id="generate-qr-btn" class="btn btn-primary btn-sm" data-i18n="tools.wireguard-config.ui.button7">Generate QR</button>
               </div>
               <div id="qr-container" class="flex items-center justify-center p-8 bg-white rounded-lg">
-                <p class="text-surface-400 text-sm" data-i18n="tools.wireguard-config.ui.desc2">Generate a config to create QR code</p>
+                <p class="text-surface-600 text-sm" data-i18n="tools.wireguard-config.ui.desc2">Generate a config to create QR code</p>
               </div>
               <p class="mt-3 text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.wireguard-config.ui.desc3">Scan with the WireGuard mobile app to import configuration.</p>
             </div>
@@ -550,7 +550,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
               </div>
 
               <div>
-                <label class="label" for="peer-preshared-key-\${peerId}">PresharedKey <span class="text-xs text-surface-400">(optional)</span></label>
+                <label class="label" for="peer-preshared-key-\${peerId}">PresharedKey <span class="text-xs text-muted-foreground">(optional)</span></label>
                 <input type="text" id="peer-preshared-key-\${peerId}" class="peer-preshared-key input font-mono text-sm" placeholder="Additional symmetric key..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder21" value="\${peerData.presharedKey}">
               </div>
 

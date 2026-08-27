@@ -67,8 +67,8 @@ export async function handleLogViewerRoutes(request, url) {
                 class="input pl-10 pr-12">
               <div class="absolute inset-y-0 right-0 flex items-center">
                 <label for="regex-toggle" class="flex items-center px-2 cursor-pointer" title="Use Regex" data-i18n-title="tools.log-viewer.ui.title3">
-                  <input type="checkbox" id="regex-toggle" class="sr-only peer" data-tooltip="Enable regex pattern matching in search" data-i18n-tooltip="tools.log-viewer.ui.tip1">
-                  <span class="text-xs font-bold text-surface-400 peer-checked:text-primary-600 dark:peer-checked:text-primary-400 select-none">.*</span>
+                  <input type="checkbox" id="regex-toggle" class="sr-only peer" aria-label="Use Regex" data-i18n-aria="tools.log-viewer.ui.title3" data-tooltip="Enable regex pattern matching in search" data-i18n-tooltip="tools.log-viewer.ui.tip1">
+                  <span class="inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-muted-foreground peer-checked:text-primary-600 dark:peer-checked:text-primary-400 select-none">.*</span>
                 </label>
               </div>
             </div>
