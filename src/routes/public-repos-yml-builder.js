@@ -328,11 +328,11 @@ export function renderPublicReposYmlBuilderSection(lang = DEFAULT_LANGUAGE) {
           <section class="lg:col-span-2 space-y-5">
             <div class="tool-group p-5">
               <div class="flex items-center justify-between gap-3 mb-3">
-                <label for="repo-input" class="label flex items-center gap-2">
+                <label for="repo-input" class="label flex items-center gap-2 min-w-0">
                   <span data-i18n="tools.public-repos-yml-builder.ui.label0">Repository slugs or URLs</span>
                   ${infoHint("Use one repository per line. Add metadata as key=value pairs after the slug, for example team=platform cadence=weekly sha=ok.", "Help", { i18nKey: "tools.public-repos-yml-builder.ui.desc0" })}
                 </label>
-                <button id="load-sample" class="btn btn-ghost btn-xs" type="button" data-i18n="tools.public-repos-yml-builder.ui.button0">Sample</button>
+                <button id="load-sample" class="btn btn-ghost btn-xs flex-shrink-0" type="button" data-i18n="tools.public-repos-yml-builder.ui.button0">Sample</button>
               </div>
               <textarea id="repo-input" rows="13" class="input-mono resize-y" placeholder="${sampleRepos}" data-i18n-placeholder="tools.public-repos-yml-builder.ui.placeholder0"></textarea>
               <p class="mt-3 text-xs font-semibold uppercase tracking-wide text-surface-700 dark:text-surface-300" data-i18n="tools.public-repos-yml-builder.ui.badge1">Kanban Automation</p>
@@ -381,7 +381,7 @@ export function renderPublicReposYmlBuilderSection(lang = DEFAULT_LANGUAGE) {
               <div class="tool-group p-5">
                 <div class="flex items-center justify-between gap-3 mb-3">
                   <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400" data-i18n="tools.public-repos-yml-builder.ui.heading1">repos.yml</h2>
-                  <button id="copy-yaml" class="btn btn-secondary btn-xs" type="button" disabled data-i18n="tools.public-repos-yml-builder.ui.button3">Copy</button>
+                  <button id="copy-yaml" class="btn btn-secondary btn-xs flex-shrink-0" type="button" disabled data-i18n="tools.public-repos-yml-builder.ui.button3">Copy</button>
                 </div>
                 <textarea id="repos-yaml-output" rows="18" aria-label="Generated repositories YAML" class="input-mono resize-y bg-surface-50 dark:bg-surface-950" readonly placeholder="repositories: []" data-i18n-placeholder="tools.public-repos-yml-builder.ui.placeholder1"></textarea>
               </div>
@@ -389,7 +389,7 @@ export function renderPublicReposYmlBuilderSection(lang = DEFAULT_LANGUAGE) {
               <div class="tool-group p-5">
                 <div class="flex items-center justify-between gap-3 mb-3">
                   <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400" data-i18n="tools.public-repos-yml-builder.ui.heading2">GitHub Actions audit</h2>
-                  <button id="copy-actions" class="btn btn-secondary btn-xs" type="button" disabled data-i18n="tools.public-repos-yml-builder.ui.button3">Copy</button>
+                  <button id="copy-actions" class="btn btn-secondary btn-xs flex-shrink-0" type="button" disabled data-i18n="tools.public-repos-yml-builder.ui.button3">Copy</button>
                 </div>
                 <textarea id="actions-output" rows="18" aria-label="Generated GitHub Actions workflow" class="input-mono resize-y bg-surface-50 dark:bg-surface-950" readonly placeholder="name: Public repos audit" data-i18n-placeholder="tools.public-repos-yml-builder.ui.placeholder2"></textarea>
               </div>

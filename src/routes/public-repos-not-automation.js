@@ -313,11 +313,11 @@ export function renderPublicReposNotAutomationSection(lang = DEFAULT_LANGUAGE) {
           <section class="lg:col-span-2 space-y-5">
             <div class="tool-group p-5">
               <div class="flex items-center justify-between gap-3 mb-3">
-                <label for="repo-task-input" class="label flex items-center gap-2">
+                <label for="repo-task-input" class="label flex items-center gap-2 min-w-0">
                   <span data-i18n="tools.public-repos-not-automation.ui.label0">Repository task</span>
                   ${infoHint("Use one key:value per line for repo, task, owner, cadence, risk, next-review, and notes. GitHub public repos JSON arrays and plain text are also accepted.", "Help", { i18nKey: "tools.public-repos-not-automation.ui.desc0" })}
                 </label>
-                <button id="load-no-automation-sample" class="btn btn-ghost btn-xs" type="button" data-i18n="tools.public-repos-not-automation.ui.button0">Sample</button>
+                <button id="load-no-automation-sample" class="btn btn-ghost btn-xs flex-shrink-0" type="button" data-i18n="tools.public-repos-not-automation.ui.button0">Sample</button>
               </div>
               <textarea id="repo-task-input" rows="10" class="input-mono resize-y" placeholder="${sampleTask}" data-i18n-placeholder="tools.public-repos-not-automation.ui.placeholder0"></textarea>
               <p class="mt-3 text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.public-repos-not-automation.ui.desc1">Designed for public repository work that has recurring Kanban demand but still needs manual stewardship and human judgment. Paste GitHub public repos JSON arrays to start from repo metadata.</p>
@@ -375,7 +375,7 @@ export function renderPublicReposNotAutomationSection(lang = DEFAULT_LANGUAGE) {
               <div class="tool-group p-5">
                 <div class="flex items-center justify-between gap-3 mb-3">
                   <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400" data-i18n="tools.public-repos-not-automation.ui.heading1">Decision record</h2>
-                  <button id="copy-decision" class="btn btn-secondary btn-xs" type="button" disabled data-i18n="tools.public-repos-not-automation.ui.button3">Copy</button>
+                  <button id="copy-decision" class="btn btn-secondary btn-xs flex-shrink-0" type="button" disabled data-i18n="tools.public-repos-not-automation.ui.button3">Copy</button>
                 </div>
                 <textarea id="decision-output" rows="20" class="input-mono resize-y bg-surface-50 dark:bg-surface-950" readonly placeholder="No automation decision record will appear here." data-i18n-placeholder="tools.public-repos-not-automation.ui.placeholder2"></textarea>
               </div>
@@ -383,7 +383,7 @@ export function renderPublicReposNotAutomationSection(lang = DEFAULT_LANGUAGE) {
               <div class="tool-group p-5">
                 <div class="flex items-center justify-between gap-3 mb-3">
                   <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400" data-i18n="tools.public-repos-not-automation.ui.heading2">Checklist</h2>
-                  <button id="copy-checklist" class="btn btn-secondary btn-xs" type="button" disabled data-i18n="tools.public-repos-not-automation.ui.button3">Copy</button>
+                  <button id="copy-checklist" class="btn btn-secondary btn-xs flex-shrink-0" type="button" disabled data-i18n="tools.public-repos-not-automation.ui.button3">Copy</button>
                 </div>
                 <textarea id="checklist-output" rows="20" class="input-mono resize-y bg-surface-50 dark:bg-surface-950" readonly placeholder="Manual stewardship checklist will appear here." data-i18n-placeholder="tools.public-repos-not-automation.ui.placeholder3"></textarea>
               </div>

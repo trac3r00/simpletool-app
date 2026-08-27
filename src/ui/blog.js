@@ -35,7 +35,7 @@ export const BLOG_ARTICLES = [
       <h2 data-i18n="content.blog.what-is-json.h2_2">The Anatomy of JSON</h2>
       <p data-i18n-html="content.blog.what-is-json.p3">JSON is built on two universal data structures: a collection of name/value pairs (an object) and an ordered list of values (an array). This simplicity is its greatest strength. Unlike XML, which requires complex parsing and verbose tags, JSON is lightweight and easy for both humans and machines to read.</p>
 
-      <pre><code>{
+      <pre tabindex="0" role="region" aria-label="Code sample"><code>{
   "name": "SimpleTool",
   "version": "2.3.0",
   "features": ["Privacy", "Speed", "Simplicity"],
@@ -140,7 +140,7 @@ export const BLOG_ARTICLES = [
       <p data-i18n-html="content.blog.password-security-guide.p1">In 2026, the landscape of password security has shifted dramatically. With the rise of quantum computing threats and increasingly sophisticated phishing attacks, developers must move beyond outdated practices and embrace modern standards for authentication. The days of simple complexity rules and forced rotations are over, replaced by a focus on entropy, hardware-backed security, and phishing-resistant protocols.</p>
 
       <h2 data-i18n="content.blog.password-security-guide.h2_1">Entropy: Why Length Matters More Than Complexity</h2>
-      <p data-i18n-html="content.blog.password-security-guide.p2">For years, we were told that a "strong" password must include uppercase letters, numbers, and special characters. However, modern research shows that <strong>entropy</strong>—the measure of randomness—is more effectively achieved through length. A 16-character passphrase like <code>correct-horse-battery-staple</code> is significantly harder to crack than a short, complex password like <code>P@ssw0rd!</code>. This is because the search space for a long passphrase is exponentially larger, making brute-force attacks computationally infeasible.</p>
+      <p data-i18n-html="content.blog.password-security-guide.p2">For years, we were told that a "strong" password must include uppercase letters, numbers, and special characters. However, modern research shows that <strong>entropy</strong>—the measure of randomness—is more effectively achieved through length. A 28-character passphrase like <code>correct-horse-battery-staple</code> is significantly harder to crack than a short, complex password like <code>P@ssw0rd!</code>. This is because the search space for a long passphrase is exponentially larger, making brute-force attacks computationally infeasible.</p>
 
       <div class="bg-primary-50 dark:bg-primary-900/20 p-4 rounded-lg border-l-4 border-primary-500 my-6">
         <p class="text-sm text-primary-800 dark:text-primary-200" data-i18n-html="content.blog.password-security-guide.callout1"><strong>Key Concept:</strong> Entropy is calculated as <code>log2(pool_size ^ length)</code>. Increasing the length has a much greater impact on the total entropy than increasing the pool size (complexity).</p>
@@ -158,7 +158,7 @@ export const BLOG_ARTICLES = [
       <h2 data-i18n="content.blog.password-security-guide.h2_3">Secure Hashing: bcrypt vs. Argon2</h2>
       <p data-i18n-html="content.blog.password-security-guide.p4">Never store passwords in plain text. Instead, use a slow, salted cryptographic hash function. While <code>bcrypt</code> has been the industry standard for years, <strong>Argon2</strong> (specifically Argon2id) is now the recommended choice for new applications. It won the Password Hashing Competition and provides superior resistance to GPU and ASIC-based brute-force attacks by allowing you to tune memory, time, and parallelism parameters.</p>
 
-      <pre><code>// Example of Argon2id hashing in Node.js
+      <pre tabindex="0" role="region" aria-label="Code sample"><code>// Example of Argon2id hashing in Node.js
 const argon2 = require('argon2');
 const hash = await argon2.hash('user-password', {
   type: argon2.argon2id,
@@ -250,7 +250,7 @@ const hash = await argon2.hash('user-password', {
       <h2 data-i18n="content.blog.understanding-hashes.h2_3">SHA-256: The Industry Standard</h2>
       <p data-i18n-html="content.blog.understanding-hashes.p4"><strong>SHA-256 (Secure Hash Algorithm 256-bit)</strong> is part of the SHA-2 family and is currently the workhorse of the internet. It is used in TLS/SSL certificates, Bitcoin, and many other security protocols. With a 256-bit output, the number of possible hashes is astronomical (2^256), making it virtually immune to brute-force attacks with current technology. It strikes an excellent balance between security and performance.</p>
 
-      <pre><code>// Calculating SHA-256 in the browser using Web Crypto API
+      <pre tabindex="0" role="region" aria-label="Code sample"><code>// Calculating SHA-256 in the browser using Web Crypto API
 async function getHash(message) {
   const msgUint8 = new TextEncoder().encode(message);
   const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
@@ -327,7 +327,7 @@ async function getHash(message) {
         <li data-i18n-html="content.blog.jwt-explained.li3"><strong>Signature:</strong> Used to verify that the sender of the JWT is who it says it is and to ensure that the message wasn't changed along the way. It is created by signing the encoded header and payload with a secret key.</li>
       </ol>
 
-      <pre><code>// Example of a decoded JWT Payload
+      <pre tabindex="0" role="region" aria-label="Code sample"><code>// Example of a decoded JWT Payload
 {
   "sub": "1234567890",
   "name": "John Doe",
@@ -540,46 +540,46 @@ async function getHash(message) {
 
       <h2 data-i18n="content.blog.curl-essentials.h2_3">Working with JSON APIs</h2>
       <p data-i18n-html="content.blog.curl-essentials.p4">Modern development is dominated by JSON. To send a JSON payload to an endpoint, you must explicitly set the <code>Content-Type</code> header, otherwise the server might reject the request or misinterpret the data.</p>
-      <pre><code>curl -X POST https://api.example.com/v1/users \\
+      <pre tabindex="0" role="region" aria-label="Code sample"><code>curl -X POST https://api.example.com/v1/users \\
   -H "Content-Type: application/json" \\
   -d '{"name": "Jane Doe", "email": "jane@example.com"}'</code></pre>
       <p data-i18n-html="content.blog.curl-essentials.p5">If you have a large JSON payload, you can store it in a file and tell cURL to read from it using the <code>@</code> symbol. This avoids issues with shell escaping and keeps your command history clean:</p>
-      <pre><code>curl -X POST https://api.example.com/v1/bulk-upload \\
+      <pre tabindex="0" role="region" aria-label="Code sample"><code>curl -X POST https://api.example.com/v1/bulk-upload \\
   -H "Content-Type: application/json" \\
   -d @data.json</code></pre>
       <p data-i18n-html="content.blog.curl-essentials.p6">For multipart form data (like file uploads), use the <code>-F</code> flag. This automatically sets the <code>Content-Type</code> to <code>multipart/form-data</code> and handles the boundary generation for you:</p>
-      <pre><code>curl -X POST https://api.example.com/v1/upload \\
+      <pre tabindex="0" role="region" aria-label="Code sample"><code>curl -X POST https://api.example.com/v1/upload \\
   -F "profile_pic=@photo.jpg" \\
   -F "username=janesmith"</code></pre>
 
       <h2 data-i18n="content.blog.curl-essentials.h2_4">Authentication Patterns</h2>
       <p data-i18n-html="content.blog.curl-essentials.p7">Securing APIs is a top priority, and cURL supports all major authentication schemes. For Basic Authentication, use the <code>-u</code> flag, which Base64-encodes the credentials for you:</p>
-      <pre><code>curl -u username:password https://api.example.com/protected</code></pre>
+      <pre tabindex="0" role="region" aria-label="Code sample"><code>curl -u username:password https://api.example.com/protected</code></pre>
       <p data-i18n-html="content.blog.curl-essentials.p8">For modern APIs using OAuth 2.0 or OIDC, you'll typically pass a Bearer token in the <code>Authorization</code> header. This is the most common pattern for cloud services and microservices:</p>
-      <pre><code>curl -H "Authorization: Bearer YOUR_ACCESS_TOKEN" https://api.example.com/userinfo</code></pre>
+      <pre tabindex="0" role="region" aria-label="Code sample"><code>curl -H "Authorization: Bearer YOUR_ACCESS_TOKEN" https://api.example.com/userinfo</code></pre>
       <p data-i18n-html="content.blog.curl-essentials.p9">If you're working with AWS or other services that use custom signing algorithms (like SigV4), you might need to use a wrapper or a specialized tool, but the core principle of passing headers remains the same.</p>
 
       <h2 data-i18n="content.blog.curl-essentials.h2_5">Cookies and Session Management</h2>
       <p data-i18n-html="content.blog.curl-essentials.p10">While many APIs are stateless, web applications often rely on cookies for session management. cURL can handle cookies with ease. To save cookies from a response to a file (a "cookie jar"), use the <code>-c</code> flag:</p>
-      <pre><code>curl -c cookies.txt https://example.com/login -d "user=admin&amp;pass=123"</code></pre>
+      <pre tabindex="0" role="region" aria-label="Code sample"><code>curl -c cookies.txt https://example.com/login -d "user=admin&amp;pass=123"</code></pre>
       <p data-i18n-html="content.blog.curl-essentials.p11">To send those cookies back in subsequent requests, use the <code>-b</code> flag:</p>
-      <pre><code>curl -b cookies.txt https://example.com/dashboard</code></pre>
+      <pre tabindex="0" role="region" aria-label="Code sample"><code>curl -b cookies.txt https://example.com/dashboard</code></pre>
       <p data-i18n-html="content.blog.curl-essentials.p12">This allows you to simulate a full browser session from the command line, which is invaluable for testing login flows and protected routes.</p>
 
       <h2 data-i18n="content.blog.curl-essentials.h2_6">Proxy and Network Settings</h2>
       <p data-i18n-html="content.blog.curl-essentials.p13">In corporate environments or when debugging traffic, you may need to route your requests through a proxy. cURL supports this via the <code>-x</code> or <code>--proxy</code> flag:</p>
-      <pre><code>curl -x http://proxy.example.com:8080 https://api.external.com</code></pre>
+      <pre tabindex="0" role="region" aria-label="Code sample"><code>curl -x http://proxy.example.com:8080 https://api.external.com</code></pre>
       <p data-i18n-html="content.blog.curl-essentials.p14">If your proxy requires authentication, you can include it in the URL: <code>http://user:pass@proxy.example.com:8080</code>. You can also tell cURL to ignore SSL certificate errors (useful for self-signed certs in dev) using the <code>-k</code> or <code>--insecure</code> flag, though this should never be used in production.</p>
 
       <h2 data-i18n="content.blog.curl-essentials.h2_7">Advanced Debugging and Troubleshooting</h2>
       <p data-i18n-html="content.blog.curl-essentials.p15">When an API is behaving unexpectedly, cURL's verbose mode is your best friend. However, sometimes you need even more detail. The <code>--trace</code> and <code>--trace-ascii</code> flags provide a full dump of all incoming and outgoing data, including the TLS handshake and raw byte transfers. This is invaluable for debugging binary protocols, character encoding issues, or complex TLS version mismatches.</p>
       <p data-i18n-html="content.blog.curl-essentials.p16">Another common challenge is performance tuning. How long is the DNS lookup taking? How long until the first byte is received? You can use the <code>-w</code> (write-out) flag to extract specific metrics and format them into a readable report:</p>
-      <pre><code>curl -o /dev/null -s -w "DNS: %{time_namelookup}s | Connect: %{time_connect}s | AppConnect: %{time_appconnect}s | Total: %{time_total}s\\n" https://google.com</code></pre>
+      <pre tabindex="0" role="region" aria-label="Code sample"><code>curl -o /dev/null -s -w "DNS: %{time_namelookup}s | Connect: %{time_connect}s | AppConnect: %{time_appconnect}s | Total: %{time_total}s\\n" https://google.com</code></pre>
 
       <h2 data-i18n="content.blog.curl-essentials.h2_8">cURL for Automation and CI/CD</h2>
       <p data-i18n-html="content.blog.curl-essentials.p17">Beyond manual testing, cURL is a cornerstone of modern CI/CD pipelines. Whether you're triggering a webhook, checking the health of a deployment, or uploading build artifacts, cURL's reliability and low overhead make it the perfect tool for the job. Its exit codes (0 for success, non-zero for various errors) make it easy to integrate into shell scripts and automation workflows.</p>
       <p data-i18n-html="content.blog.curl-essentials.p18">In a GitHub Action or GitLab CI runner, you might use cURL to verify that a service has started correctly before running integration tests. This "wait-for-it" pattern ensures that your tests don't fail due to race conditions during deployment:</p>
-      <pre><code># Wait for service to be ready
+      <pre tabindex="0" role="region" aria-label="Code sample"><code># Wait for service to be ready
 until curl -s --head --request GET http://localhost:8080/health | grep "200 OK"; do
   echo "Waiting for service..."
   sleep 5
@@ -786,7 +786,7 @@ done</code></pre>
 
       <h2 data-i18n="content.blog.cron-expressions-guide.h2_1">The Anatomy of a Cron Expression</h2>
       <p data-i18n-html="content.blog.cron-expressions-guide.p2">A standard cron expression consists of five fields separated by spaces. Some systems (like Quartz or certain cloud providers) add a sixth field for seconds or years, but the classic format is:</p>
-      <pre><code>* * * * *
+      <pre tabindex="0" role="region" aria-label="Code sample"><code>* * * * *
 | | | | | |
 | | | | | +----- Day of Week (0 - 6) (Sunday to Saturday)
 | | | | +------- Month (1 - 12)
@@ -1057,7 +1057,9 @@ export function renderBlogPostPage(slug, lang = DEFAULT_LANGUAGE) {
     "@type": "BlogPosting",
     headline: localizedArticle.title,
     description: localizedArticle.description,
-    datePublished: localizedArticle.datePublished || "",
+    ...(localizedArticle.datePublished
+      ? { datePublished: localizedArticle.datePublished }
+      : {}),
     author: { "@type": "Organization", name: "SimpleTool" },
     publisher: {
       "@type": "Organization",
@@ -1081,7 +1083,7 @@ export function renderBlogPostPage(slug, lang = DEFAULT_LANGUAGE) {
           ${dateFormatted ? `<time datetime="${localizedArticle.datePublished}" class="block mt-2 text-sm text-surface-500 dark:text-surface-400">${dateFormatted}</time>` : ""}
         </header>
 
-        <div class="prose dark:prose-invert max-w-none prose-pre:bg-surface-100 dark:prose-pre:bg-surface-950 prose-pre:border prose-pre:border-surface-200 dark:prose-pre:border-surface-800">
+        <div class="prose dark:prose-invert max-w-none prose-pre:bg-surface-900 dark:prose-pre:bg-surface-950 prose-pre:text-surface-100 prose-pre:border prose-pre:border-surface-200 dark:prose-pre:border-surface-800 prose-a:text-primary-700 dark:prose-a:text-primary-300 prose-a:underline prose-a:underline-offset-2">
           ${localizedArticle.content || ""}
         </div>
       </article>
