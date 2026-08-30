@@ -2,6 +2,13 @@
 
 This changelog is a snapshot-style record of major changes in this workspace.
 
+## 2026-08-30 — AdSense site-connect
+
+- Serve `/ads.txt` and the `google-adsense-account` meta whenever a publisher ID is configured, without loading ad scripts.
+- JSON Formatter now requests the `json` slot after its educational section (the retired `tool` key never rendered).
+- Ads stay off Contact, Security, and Careers (too thin). About, Privacy, Terms, and changelog remain on the legal allow list.
+- Terms and Privacy in all ten languages disclose non-personalized AdSense, cookies, and opt-out links instead of claiming ads are off.
+
 ## 2026-08-19 — v2.4.4 Honest copy & catalog freeze
 
 - Homepage and About copy reworded to match the honest ads-vs-privacy stance: tool data is processed in the browser, but ads and analytics can make third-party requests in production.

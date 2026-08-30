@@ -8,8 +8,10 @@
 
 Manual Display units only. Non-personalized ads. Never Auto ads.
 
-Ads stay off until `ADSENSE_SLOTS` contains real slot IDs. `ads.txt` is served
-only after that. A publisher ID with empty slots is not enough.
+A publisher ID (`ADSENSE_CLIENT`) is enough for site connection: `/ads.txt`
+and the `google-adsense-account` meta ship without loading ad scripts. Ad
+units, `adsbygoogle.js`, and the Google Ads CSP hosts stay off until
+`ADSENSE_SLOTS` contains real slot IDs.
 
 ## Current implementation
 
@@ -23,11 +25,12 @@ only after that. A publisher ID with empty slots is not enough.
 - `ADSENSE_CLIENT` = `ca-pub-5134881365131182`
 - `ADSENSE_SLOTS` JSON keys:
   - `home` — homepage, below the tool grid
-  - `json` — JSON Formatter, below the editor
-  - `legal` — changelog / about / privacy / terms / contact / security / careers
+  - `json` — JSON Formatter, below the educational section
+  - `legal` — About, Privacy, Terms, and changelog only
 - `ADSENSE_SLOT` can fill those three keys if a unit is reused.
 - `tool`, `sidebar`, and `bottom` are ignored.
-- Dev / local environments disable ads.
+- Contact, Security, and Careers stay off the allow list (too thin for ads).
+- Dev / local environments disable ads, ads.txt, and the account meta.
 
 Example:
 
@@ -49,7 +52,8 @@ Example:
 
 ## Verification
 
-1. Empty `ADSENSE_SLOTS` → no `ads.txt`, no `ca-pub` script, no `<ins>`.
+1. Publisher ID, empty `ADSENSE_SLOTS` → `/ads.txt` + `google-adsense-account` meta, no `adsbygoogle.js`, no `<ins>`.
 2. Configured slots → `/ads.txt` ends with a newline and `/` plus `/json-formatter` plus `/about` render one reserved slot each.
 3. `/password-generator` still has no ads script.
-4. CSP includes `pagead2.googlesyndication.com` only while ads are enabled, and never GTM/GA.
+4. `/contact`, `/security`, and `/careers` have no ads script.
+5. CSP includes `pagead2.googlesyndication.com` only while ads are enabled, and never GTM/GA.

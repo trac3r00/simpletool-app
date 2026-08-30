@@ -108,6 +108,7 @@ function buildSitemapXml(origin, tools) {
     "/contact",
     "/security",
     "/careers",
+    "/changelog",
   ]);
 
   for (const tool of tools) {
@@ -120,8 +121,8 @@ function buildSitemapXml(origin, tools) {
   paths.add("/faq");
 
   // <lastmod> is optional, and only blog articles carry a real content date.
-  // Every other page omits it: stamping the request date told crawlers all 66
-  // URLs had changed every time the sitemap was fetched, which is untrue and
+  // Every other page omits it: stamping the request date told crawlers every
+  // URL had changed every time the sitemap was fetched, which is untrue and
   // teaches them to ignore the signal.
   const lastmodByPath = new Map();
   for (const article of BLOG_ARTICLES) {
@@ -141,6 +142,7 @@ function buildSitemapXml(origin, tools) {
     "/contact",
     "/security",
     "/careers",
+    "/changelog",
   ]);
 
   const urls = Array.from(paths)
@@ -270,7 +272,8 @@ async function handleRequest(request, env, ctx) {
     setAnalyticsToken("");
   } else {
     setAdConfig({
-      client: env?.ADSENSE_CLIENT,
+      client:
+        typeof env?.ADSENSE_CLIENT === "string" ? env.ADSENSE_CLIENT : null,
       slots: parseAdSlots(env),
       path,
     });

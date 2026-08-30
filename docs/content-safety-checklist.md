@@ -44,7 +44,7 @@ Extra review required for these tool categories:
 
 - [ ] Privacy policy mentions third-party advertising (Google AdSense) and cookie/identifier usage
 - [ ] Terms of service includes an advertising section
-- [ ] Legal page ad slot (`legal`) is outside the primary policy text body
+- [ ] Legal page ad slot (`legal`) is outside the primary policy text body and only on About, Privacy, Terms, and changelog
 - [ ] No ad is placed in a way that interrupts a user reading required legal disclosures
 
 ## Educational content panels

@@ -162,6 +162,8 @@ export function respond404() {
         </div>
       </main>
     `,
+    path: "/404",
+    robots: "noindex, nofollow",
   });
   return respondHTML(html, {
     status: 404,

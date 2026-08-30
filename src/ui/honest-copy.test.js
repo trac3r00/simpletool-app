@@ -17,7 +17,7 @@ const LANGS = Object.keys(SUPPORTED_LANGUAGES);
 const GAME_POSITIONING = /marble roulette|marble-roulette|roulette à billes|마블 룰렛|マーブルルーレット|弹珠轮盘|彈珠輪盤/i;
 
 const VAPOR_ENTERPRISE =
-  /white-label|white label|화이트라벨|ホワイトラベル|白標|enterprise licensing|enterprise & partnership|엔터프라이즈 라이선스/i;
+  /white-label|white label|화이트라벨|ホワイトラベル|白標|nhãn trắng|enterprise licensing|enterprise & partnership|엔터프라이즈 라이선스|cấp phép doanh nghiệp/i;
 
 const ABSOLUTE_NO_TRACKING =
   /no tracking|never track|without surveillance|추적 없음|トラッキングなし|never leaves your (device|browser|machine)|no data is sent to any server|nothing (ever )?leaves your (device|browser)|0 bytes stored|100% (client-side|private)|(^|[^\d])0 (tool )?(inputs|bytes|data)( \w+)? stored|zero (tool )?inputs stored|nothing is (sent|uploaded|transmitted)|zero data exposure|no data (ever )?leaves/i;
@@ -114,7 +114,7 @@ describe("ads vs no-tracking story", () => {
     en: /ads?\b|advertis/i,
     ko: /광고|ads?\b|advertis/i,
     ja: /広告|ads?\b|advertis/i,
-    es: /anuncio|publicidad|ads?\b|advertis/i,
+    es: /anuncio|publicidad/i,
     "zh-CN": /广告|ads?\b|advertis/i,
     "zh-TW": /廣告|ads?\b|advertis/i,
     fr: /publicit|annonce|ads?\b|advertis/i,
@@ -218,6 +218,37 @@ describe("ads vs no-tracking story", () => {
         "/token-studio",
       ]),
     );
+    expect([...LEGAL_AD_PATHS]).toEqual([
+      "/about",
+      "/privacy",
+      "/terms",
+      "/changelog",
+    ]);
+  });
+
+  const NO_ADS_NOW = /現在広告は掲載しておらず|ahora mismo no mostramos|ahora mismo no cargamos|当前不投放|当前也不加载|目前不投放|目前也不載入|pour le moment|ne chargeons actuellement|Derzeit schalten wir keine|laden derzeit keine|No momento não exibimos|atualmente não carregamos|Hiện chúng tôi không phục vụ|hiện không tải script quảng cáo|広告・分析ベンダーなし|Sin proveedores de publicidad|无广告或分析服务商|無廣告或分析服務商|Aucun prestataire publicitaire|Keine Werbe- oder Analyseanbieter|Nenhum fornecedor de publicidade|Không có nhà cung cấp quảng cáo/i;
+
+  it("does not claim ads are off on terms or privacy in any language", () => {
+    for (const lang of LANGS) {
+      expect(flattenLegal("terms", lang), `terms ${lang}`).not.toMatch(
+        NO_ADS_NOW,
+      );
+      expect(flattenLegal("privacy", lang), `privacy ${lang}`).not.toMatch(
+        NO_ADS_NOW,
+      );
+    }
+  });
+
+  it("names AdSense cookies and an opt-out on the privacy policy in every language", () => {
+    for (const lang of LANGS) {
+      const text = flattenLegal("privacy", lang);
+      expect(text, `privacy ${lang} AdSense`).toMatch(/AdSense|애드센스/i);
+      expect(text, `privacy ${lang} cookie`).toMatch(/cookie|쿠키/i);
+      expect(text, `privacy ${lang} opt-out`).toMatch(
+        /adssettings\.google\.com/,
+      );
+      expect(text, `privacy ${lang} aboutads`).toMatch(/aboutads\.info/);
+    }
   });
 });
 

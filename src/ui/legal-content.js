@@ -35,7 +35,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Advertising",
           paragraphs: [
-            "The service is free to use and may show non-personalized Google ads on a small allow list of pages: the homepage below the tool grid, JSON Formatter below the editor, and changelog, about, and legal footers. Password, SSH, Token Studio, WireGuard, certificates, secret scanner, encoding, and pipe pages never load advertising scripts.",
+            "The service is free to use and may show non-personalized Google ads on a small allow list of pages: the homepage below the tool grid, JSON Formatter below the editor, and the About, Privacy, Terms, and changelog pages. Password, SSH, Token Studio, WireGuard, certificates, secret scanner, encoding, and pipe pages never load advertising scripts.",
           ],
         },
         {
@@ -119,7 +119,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. 광고",
           paragraphs: [
-            "서비스는 무료이며, 홈 그리드 아래·JSON Formatter 에디터 아래·changelog/about/legal 푸터에만 비개인화 Google 광고를 둘 수 있습니다. 비밀번호, SSH, Token Studio, WireGuard, 인증서, 시크릿 스캐너, 인코딩, pipe 페이지는 광고 스크립트를 로드하지 않습니다.",
+            "서비스는 무료이며, 홈 그리드 아래·JSON Formatter 에디터 아래·About / Privacy / Terms / changelog 페이지에만 비개인화 Google 광고를 둘 수 있습니다. 비밀번호, SSH, Token Studio, WireGuard, 인증서, 시크릿 스캐너, 인코딩, pipe 페이지는 광고 스크립트를 로드하지 않습니다.",
           ],
         },
         {
@@ -202,7 +202,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. 広告",
           paragraphs: [
-            "本サービスは無料です。現在広告は掲載しておらず、広告・分析スクリプトも読み込みません。",
+            "本サービスは無料です。非パーソナライズの Google 広告を、ホームページのツールグリッド下、JSON Formatter のエディタ下、About / Privacy / Terms / changelog ページに掲載する場合があります。パスワード、SSH、Token Studio、WireGuard、証明書、シークレットスキャナー、エンコーディング、pipe のページでは広告スクリプトを読み込みません。",
           ],
         },
         {
@@ -284,7 +284,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Publicidad",
           paragraphs: [
-            "El servicio es gratuito. Ahora mismo no mostramos anuncios ni cargamos scripts de publicidad o analítica.",
+            "El servicio es gratuito y puede mostrar anuncios no personalizados de Google en una lista reducida de páginas: la página de inicio debajo de la cuadrícula de herramientas, JSON Formatter debajo del editor, y las páginas About, Privacy, Terms y changelog. Las páginas de contraseñas, SSH, Token Studio, WireGuard, certificados, secret scanner, encoding y pipe nunca cargan scripts publicitarios.",
           ],
         },
         {
@@ -369,7 +369,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. 广告",
           paragraphs: [
-            "本服务免费。当前不投放广告，也不加载广告或分析脚本。",
+            "本服务免费，并可能在少量允许的页面展示非个性化 Google 广告：首页工具网格下方、JSON Formatter 编辑器下方，以及 About、Privacy、Terms 和 changelog 页面。密码、SSH、Token Studio、WireGuard、证书、密钥扫描、编码和 pipe 页面不会加载广告脚本。",
           ],
         },
         {
@@ -449,7 +449,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. 廣告",
           paragraphs: [
-            "本服務免費。目前不投放廣告，也不載入廣告或分析指令碼。",
+            "本服務免費，並可能在少量允許的頁面展示非個人化 Google 廣告：首頁工具網格下方、JSON Formatter 編輯器下方，以及 About、Privacy、Terms 與 changelog 頁面。密碼、SSH、Token Studio、WireGuard、憑證、祕密掃描、編碼與 pipe 頁面不會載入廣告指令碼。",
           ],
         },
         {
@@ -530,7 +530,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Publicité",
           paragraphs: [
-            "Le service est gratuit. Nous ne diffusons pas d'annonces pour le moment et nous ne chargeons pas de scripts publicitaires ou d'analyse.",
+            "Le service est gratuit et peut afficher des publicités Google non personnalisées sur une liste limitée de pages : la page d'accueil sous la grille d'outils, JSON Formatter sous l'éditeur, ainsi que les pages About, Privacy, Terms et changelog. Les pages mot de passe, SSH, Token Studio, WireGuard, certificats, secret scanner, encodage et pipe ne chargent jamais de scripts publicitaires.",
           ],
         },
         {
@@ -616,7 +616,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Werbung",
           paragraphs: [
-            "Der Dienst ist kostenlos. Derzeit schalten wir keine Anzeigen und laden keine Werbe- oder Analyseskripte.",
+            "Der Dienst ist kostenlos und kann nicht personalisierte Google-Anzeigen auf einer kleinen Freigabeliste zeigen: auf der Startseite unter dem Tool-Raster, in JSON Formatter unter dem Editor sowie auf den Seiten About, Privacy, Terms und Changelog. Passwort-, SSH-, Token-Studio-, WireGuard-, Zertifikats-, Secret-Scanner-, Encoding- und Pipe-Seiten laden keine Werbeskripte.",
           ],
         },
         {
@@ -702,7 +702,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Publicidade",
           paragraphs: [
-            "O serviço é gratuito. No momento não exibimos anúncios nem carregamos scripts de publicidade ou análise.",
+            "O serviço é gratuito e pode exibir anúncios não personalizados do Google numa lista reduzida de páginas: a página inicial abaixo da grelha de ferramentas, o JSON Formatter abaixo do editor, e as páginas About, Privacy, Terms e changelog. As páginas de palavra-passe, SSH, Token Studio, WireGuard, certificados, secret scanner, encoding e pipe nunca carregam scripts de publicidade.",
           ],
         },
         {
@@ -788,7 +788,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Quảng cáo",
           paragraphs: [
-            "Dịch vụ miễn phí. Hiện chúng tôi không phục vụ quảng cáo và không tải script quảng cáo hay phân tích.",
+            "Dịch vụ miễn phí và có thể hiển thị quảng cáo Google không cá nhân hóa trên một danh sách trang cho phép: trang chủ dưới lưới công cụ, JSON Formatter dưới trình soạn thảo, và các trang About, Privacy, Terms, changelog. Các trang mật khẩu, SSH, Token Studio, WireGuard, chứng chỉ, quét bí mật, encoding và pipe không bao giờ tải script quảng cáo.",
           ],
         },
         {
@@ -1302,7 +1302,7 @@ const LEGAL_CONTENT = {
           heading: "Compromiso con la privacidad",
           paragraphs: [
             "La privacidad no es una función añadida al final. Es la restricción de diseño por defecto de cada herramienta.",
-            "Evitamos píxeles de seguimiento, grabación de sesión y almacenamiento persistente de datos de herramientas.",
+            "Evitamos píxeles de seguimiento, grabación de sesión y almacenamiento persistente de datos de herramientas. Pueden aparecer anuncios no personalizados y etiquetados en páginas de la lista permitida; las herramientas de contraseñas y claves permanecen sin publicidad.",
           ],
           list: [
             "Sin cuentas para el uso normal",
@@ -1335,16 +1335,16 @@ const LEGAL_CONTENT = {
           `,
         },
         {
-          heading: "Para empresas",
+          heading: "Para quién es",
           paragraphs: [
-            "SimpleTool App está pensado para entornos donde el tratamiento de datos, el cumplimiento y la auditoría importan.",
-            "Como las entradas permanecen en el dispositivo del usuario, el equipo puede adoptar las herramientas sin pasar información sensible por un backend centralizado.",
+            "SimpleTool App es para desarrolladores individuales y equipos pequeños que quieren utilidades del lado del cliente sin enviar cargas a un backend.",
+            "No hay producto de pago ni programa de licencias.",
           ],
           list: [
-            "Diseño favorable al cumplimiento",
-            "Arquitectura privacy-by-design",
-            "Menor carga de residencia de datos",
-            "Alineado con modelos de confianza cero",
+            "No se requiere cuenta",
+            "Las entradas de las herramientas permanecen en el dispositivo",
+            "Pueden aparecer anuncios etiquetados en una lista reducida de páginas",
+            "Las herramientas de contraseñas y claves permanecen sin publicidad",
           ],
         },
         {
@@ -1733,16 +1733,16 @@ const LEGAL_CONTENT = {
           `,
         },
         {
-          heading: "Pour les entreprises",
+          heading: "Pour qui",
           paragraphs: [
-            "SimpleTool App est conçu pour les environnements où la gestion des données, la conformité et l'auditabilité sont importantes.",
-            "Comme les saisies restent sur l'appareil de l'utilisateur, les équipes peuvent adopter les outils sans faire transiter des informations sensibles par un backend centralisé.",
+            "SimpleTool App s'adresse aux développeurs individuels et aux petites équipes qui veulent des utilitaires côté client sans envoyer de charges utiles à un backend.",
+            "Il n'existe pas d'offre payante ni de programme de licences.",
           ],
           list: [
-            "Conception favorable à la conformité",
-            "Architecture privacy-by-design",
-            "Charge réduite en matière de résidence des données",
-            "Aligné sur les modèles opérationnels zéro confiance",
+            "Aucun compte requis",
+            "Les saisies des outils restent sur l'appareil",
+            "Des annonces identifiées peuvent apparaître sur une petite liste de pages",
+            "Les outils de mots de passe et de clés restent sans publicité",
           ],
         },
         {
@@ -2001,16 +2001,16 @@ const LEGAL_CONTENT = {
           `,
         },
         {
-          heading: "Para empresas",
+          heading: "Para quem é",
           paragraphs: [
-            "O SimpleTool App é projetado para ambientes onde o tratamento de dados, conformidade e auditabilidade são importantes.",
-            "Como as entradas das ferramentas permanecem no dispositivo do usuário, as equipes podem adotar as ferramentas sem rotearem informações sensíveis por um backend centralizado.",
+            "O SimpleTool App é para programadores individuais e equipas pequenas que querem utilitários no lado do cliente sem enviar cargas para um backend.",
+            "Não existe produto pago nem programa de licenças.",
           ],
           list: [
-            "Design favorável à conformidade",
-            "Arquitetura privacy-by-design",
-            "Redução do ônus de residência de dados",
-            "Alinhado com modelos operacionais de confiança zero",
+            "Não é necessária conta",
+            "As entradas das ferramentas permanecem no dispositivo",
+            "Anúncios identificados podem aparecer numa lista reduzida de páginas",
+            "As ferramentas de palavra-passe e chaves permanecem sem anúncios",
           ],
         },
         {
@@ -2135,16 +2135,16 @@ const LEGAL_CONTENT = {
           `,
         },
         {
-          heading: "Dành cho doanh nghiệp",
+          heading: "Dành cho ai",
           paragraphs: [
-            "SimpleTool App được thiết kế cho các môi trường đòi hỏi xử lý dữ liệu, tuân thủ quy định và khả năng kiểm toán.",
-            "Vì dữ liệu nhập của công cụ ở lại trên thiết bị người dùng, các nhóm có thể áp dụng mà không cần định tuyến thông tin nhạy cảm qua backend tập trung.",
+            "SimpleTool App dành cho lập trình viên cá nhân và nhóm nhỏ muốn công cụ chạy phía trình duyệt mà không gửi dữ liệu lên backend.",
+            "Không có sản phẩm trả phí hay chương trình cấp phép.",
           ],
           list: [
-            "Thiết kế thân thiện với tuân thủ",
-            "Kiến trúc privacy-by-design",
-            "Giảm gánh nặng lưu trữ dữ liệu",
-            "Phù hợp với mô hình vận hành không tin tưởng mặc định",
+            "Không cần tài khoản",
+            "Dữ liệu nhập của công cụ ở lại trên thiết bị",
+            "Quảng cáo có nhãn có thể xuất hiện trên một danh sách trang nhỏ",
+            "Công cụ mật khẩu và khóa luôn không tải quảng cáo",
           ],
         },
         {
@@ -2167,8 +2167,8 @@ const LEGAL_CONTENT = {
                 <p class="text-xs text-surface-500 mt-2">Thời gian phản hồi: Ưu tiên, trong vòng 3 ngày làm việc</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
-                <h3 class="font-bold mb-1">Hợp tác kinh doanh</h3>
-                <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Quan hệ đối tác, cấp phép doanh nghiệp hoặc truyền thông.</p>
+                <h3 class="font-bold mb-1">Liên hệ khác</h3>
+                <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Báo chí, truyền thông hoặc câu hỏi không liên quan đến sản phẩm.</p>
                 <a href="mailto:business@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">business@simpletool.app</a>
                 <p class="text-xs text-surface-500 mt-2">Thời gian phản hồi: 2-3 ngày làm việc</p>
               </div>
@@ -2211,13 +2211,14 @@ const LEGAL_CONTENT = {
         {
           heading: "3. Browser Storage and Preferences",
           paragraphs: [
-            "The app may use local browser storage for product preferences such as theme, language, or game settings. This storage remains on your device and is not treated as a hosted user account.",
+            "The app may use local browser storage (localStorage) for product preferences such as theme, language, or game settings. This storage remains on your device and is not treated as a hosted user account. It is separate from any third-party cookies Google may set when ads load on allow-listed pages.",
           ],
         },
         {
           heading: "4. Cookies and Advertising",
           paragraphs: [
-            "We do not use first-party tracking cookies for core tool functionality. On allow-listed pages we may load Google AdSense in non-personalized mode to serve ads. We do not use Google Tag Manager or Google Analytics. Sensitive tools never load advertising scripts.",
+            "We do not use first-party tracking cookies for core tool functionality. On allow-listed pages (the homepage, JSON Formatter, About, Privacy, Terms, and changelog) we may load Google AdSense in non-personalized mode. Google and its partners may set cookies and similar identifiers — including cookies associated with doubleclick.net and Google domains — to serve ads, cap frequency, measure aggregated performance, and detect fraud or abuse. These ads are not personalized from your browsing history on other sites. We do not use Google Tag Manager or Google Analytics. Password, SSH, Token Studio, WireGuard, certificates, secret scanner, encoding, and pipe pages never load advertising scripts.",
+            "You can review or opt out of personalized advertising at https://adssettings.google.com and industry opt-outs at https://www.aboutads.info. Google explains how it uses data at https://policies.google.com/technologies/ads and https://policies.google.com/privacy.",
           ],
         },
         {
@@ -2305,7 +2306,8 @@ const LEGAL_CONTENT = {
         {
           heading: "4. 쿠키와 광고",
           paragraphs: [
-            "핵심 도구 기능을 위해 1st-party 추적 쿠키를 사용하지 않습니다. 허용된 페이지에서만 비개인화 Google AdSense를 로드할 수 있습니다. GTM과 GA는 쓰지 않으며, 민감 도구는 광고 스크립트를 로드하지 않습니다.",
+            "핵심 도구 기능을 위해 1st-party 추적 쿠키를 사용하지 않습니다. 허용된 페이지(홈, JSON Formatter, About, Privacy, Terms, changelog)에서만 비개인화 Google AdSense를 로드할 수 있습니다. Google과 파트너는 doubleclick.net 및 Google 도메인과 연결된 쿠키·식별자를 사용해 광고 게재, 노출 빈도 제한, 집계 보고, 사기 방지에 쓸 수 있습니다. 이 광고는 다른 사이트 방문 이력을 바탕으로 개인화되지 않습니다. GTM과 GA는 쓰지 않으며, 비밀번호·SSH·Token Studio·WireGuard·인증서·시크릿 스캐너·인코딩·pipe 페이지는 광고 스크립트를 로드하지 않습니다.",
+            "맞춤 광고 설정은 https://adssettings.google.com 에서, 업계 옵트아웃은 https://www.aboutads.info 에서 확인할 수 있습니다. Google의 데이터 이용은 https://policies.google.com/technologies/ads 및 https://policies.google.com/privacy 를 참고하세요.",
           ],
         },
         {
@@ -2388,7 +2390,8 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Cookie と広告",
           paragraphs: [
-            "中核ツール機能のためにファーストパーティの追跡 Cookie は使いません。現在、広告・分析スクリプトも読み込みません。",
+            "中核ツール機能のためにファーストパーティの追跡 Cookie は使いません。許可ページ（ホーム、JSON Formatter、About、Privacy、Terms、changelog）でのみ非パーソナライズの Google AdSense を読み込む場合があります。Google とそのパートナーは、doubleclick.net や Google ドメインの Cookie・識別子を、広告配信、表示回数の制限、集計レポート、不正防止のために使用することがあります。これらの広告は他サイトの閲覧履歴に基づいてパーソナライズされません。GTM と GA は使用せず、パスワード、SSH、Token Studio、WireGuard、証明書、シークレットスキャナー、エンコーディング、pipe のページでは広告スクリプトを読み込みません。",
+            "パーソナライズド広告の確認・オプトアウトは https://adssettings.google.com 、業界オプトアウトは https://www.aboutads.info です。Google のデータ利用は https://policies.google.com/technologies/ads と https://policies.google.com/privacy を参照してください。",
           ],
         },
         {
@@ -2396,7 +2399,7 @@ const LEGAL_CONTENT = {
           paragraphs: ["サイト運営には少数の第三者サービスを利用します。"],
           list: [
             "ホスティング、CDN、悪用対策のための Cloudflare",
-            "広告・分析ベンダーなし",
+            "許可ページのみの非パーソナライズ Google AdSense",
             "ユーザー体験上必要な場合に限って読み込まれるその他のブラウザ向けアセット",
           ],
         },
@@ -2474,7 +2477,8 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Cookies y publicidad",
           paragraphs: [
-            "No usamos cookies propias de seguimiento para la funcionalidad principal, y ahora mismo no cargamos scripts de publicidad o analítica.",
+            "No usamos cookies propias de seguimiento para la funcionalidad principal. En páginas de la lista permitida (inicio, JSON Formatter, About, Privacy, Terms y changelog) podemos cargar Google AdSense en modo no personalizado. Google y sus socios pueden establecer cookies e identificadores —incluidas cookies de doubleclick.net y dominios de Google— para mostrar anuncios, limitar frecuencia, medir el rendimiento agregado y detectar fraude. Estos anuncios no se personalizan con tu historial de navegación en otros sitios. No usamos Google Tag Manager ni Google Analytics. Las páginas de contraseñas, SSH, Token Studio, WireGuard, certificados, secret scanner, encoding y pipe nunca cargan scripts publicitarios.",
+            "Puedes revisar u optar por no recibir publicidad personalizada en https://adssettings.google.com y en https://www.aboutads.info. Google explica cómo usa los datos en https://policies.google.com/technologies/ads y https://policies.google.com/privacy.",
           ],
         },
         {
@@ -2484,7 +2488,7 @@ const LEGAL_CONTENT = {
           ],
           list: [
             "Cloudflare para hosting, CDN y protección contra abuso",
-            "Sin proveedores de publicidad o analítica",
+            "Google AdSense no personalizado solo en páginas de la lista permitida",
             "Otros recursos entregados al navegador solo cuando son necesarios para la experiencia",
           ],
         },
@@ -2562,7 +2566,8 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Cookie 与广告",
           paragraphs: [
-            "我们不依赖第一方追踪 Cookie 实现核心工具功能，当前也不加载广告或分析脚本。",
+            "我们不依赖第一方追踪 Cookie 实现核心工具功能。仅在允许列表页面（首页、JSON Formatter、About、Privacy、Terms 和 changelog）可能加载非个性化 Google AdSense。Google 及其合作伙伴可能设置 cookie 和类似标识符（包括 doubleclick.net 与 Google 域下的 cookie），用于投放广告、限制展示频次、汇总效果衡量以及欺诈防护。这些广告不会根据你在其他网站的浏览记录进行个性化。我们不使用 Google Tag Manager 或 Google Analytics。密码、SSH、Token Studio、WireGuard、证书、密钥扫描、编码和 pipe 页面不会加载广告脚本。",
+            "你可以在 https://adssettings.google.com 查看或退出个性化广告，并在 https://www.aboutads.info 使用行业退出选项。Google 如何使用数据见 https://policies.google.com/technologies/ads 和 https://policies.google.com/privacy。",
           ],
         },
         {
@@ -2570,7 +2575,7 @@ const LEGAL_CONTENT = {
           paragraphs: ["我们使用少量第三方服务来运营本站。"],
           list: [
             "Cloudflare 提供托管、CDN 分发和滥用防护",
-            "无广告或分析服务商",
+            "仅在允许列表页面使用非个性化 Google AdSense",
             "仅在用户体验需要时加载的其他浏览器资源",
           ],
         },
@@ -2645,7 +2650,8 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Cookie 與廣告",
           paragraphs: [
-            "我們不依賴第一方追蹤 Cookie 實現核心工具功能，目前也不載入廣告或分析指令碼。",
+            "我們不依賴第一方追蹤 Cookie 實現核心工具功能。僅在允許清單頁面（首頁、JSON Formatter、About、Privacy、Terms 與 changelog）可能載入非個人化 Google AdSense。Google 及其合作夥伴可能設定 cookie 與類似識別碼（包括 doubleclick.net 與 Google 網域下的 cookie），用於投放廣告、限制曝光頻率、彙總成效衡量以及詐欺防護。這些廣告不會依你在其他網站的瀏覽紀錄個人化。我們不使用 Google Tag Manager 或 Google Analytics。密碼、SSH、Token Studio、WireGuard、憑證、祕密掃描、編碼與 pipe 頁面不會載入廣告指令碼。",
+            "你可以在 https://adssettings.google.com 查看或退出個人化廣告，並在 https://www.aboutads.info 使用產業退出選項。Google 如何使用資料見 https://policies.google.com/technologies/ads 與 https://policies.google.com/privacy。",
           ],
         },
         {
@@ -2653,7 +2659,7 @@ const LEGAL_CONTENT = {
           paragraphs: ["我們使用少量第三方服務來營運本站。"],
           list: [
             "Cloudflare 提供託管、CDN 分發和濫用防護",
-            "無廣告或分析服務商",
+            "僅在允許清單頁面使用非個人化 Google AdSense",
             "僅在使用者體驗需要時載入的其他瀏覽器資源",
           ],
         },
@@ -2729,7 +2735,8 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Cookies et publicité",
           paragraphs: [
-            "Nous n'utilisons pas de cookies de suivi propriétaires pour les fonctionnalités principales, et nous ne chargeons actuellement aucun script publicitaire ou d'analyse.",
+            "Nous n'utilisons pas de cookies de suivi propriétaires pour les fonctionnalités principales. Sur les pages autorisées (accueil, JSON Formatter, About, Privacy, Terms et changelog), nous pouvons charger Google AdSense en mode non personnalisé. Google et ses partenaires peuvent déposer des cookies et identifiants similaires — y compris des cookies associés à doubleclick.net et aux domaines Google — pour diffuser des annonces, limiter la fréquence, mesurer les performances agrégées et détecter la fraude. Ces annonces ne sont pas personnalisées à partir de votre historique de navigation sur d'autres sites. Nous n'utilisons pas Google Tag Manager ni Google Analytics. Les pages mot de passe, SSH, Token Studio, WireGuard, certificats, secret scanner, encodage et pipe ne chargent jamais de scripts publicitaires.",
+            "Vous pouvez consulter ou refuser la publicité personnalisée sur https://adssettings.google.com et via https://www.aboutads.info. Google explique l'usage des données sur https://policies.google.com/technologies/ads et https://policies.google.com/privacy.",
           ],
         },
         {
@@ -2739,7 +2746,7 @@ const LEGAL_CONTENT = {
           ],
           list: [
             "Cloudflare pour l'hébergement, la livraison CDN et la protection contre les abus",
-            "Aucun prestataire publicitaire ou d'analyse",
+            "Google AdSense non personnalisé uniquement sur les pages autorisées",
             "D'autres ressources délivrées par le navigateur uniquement lorsque nécessaires pour l'expérience utilisateur",
           ],
         },
@@ -2817,7 +2824,8 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Cookies und Werbung",
           paragraphs: [
-            "Wir verwenden keine Erstanbieter-Tracking-Cookies für die Kernfunktionalität und laden derzeit keine Werbe- oder Analyseskripte.",
+            "Wir verwenden keine Erstanbieter-Tracking-Cookies für die Kernfunktionalität. Auf freigegebenen Seiten (Startseite, JSON Formatter, About, Privacy, Terms und Changelog) können wir Google AdSense im nicht personalisierten Modus laden. Google und Partner können Cookies und ähnliche Kennungen setzen — einschließlich Cookies von doubleclick.net und Google-Domains — um Anzeigen auszuliefern, die Häufigkeit zu begrenzen, aggregierte Leistung zu messen und Betrug zu erkennen. Diese Anzeigen werden nicht anhand Ihres Surfverlaufs auf anderen Websites personalisiert. Wir nutzen weder Google Tag Manager noch Google Analytics. Passwort-, SSH-, Token-Studio-, WireGuard-, Zertifikats-, Secret-Scanner-, Encoding- und Pipe-Seiten laden keine Werbeskripte.",
+            "Personalisierte Werbung können Sie unter https://adssettings.google.com prüfen oder deaktivieren; branchenweite Opt-outs gibt es unter https://www.aboutads.info. Google beschreibt die Datennutzung unter https://policies.google.com/technologies/ads und https://policies.google.com/privacy.",
           ],
         },
         {
@@ -2827,7 +2835,7 @@ const LEGAL_CONTENT = {
           ],
           list: [
             "Cloudflare für Hosting, CDN-Auslieferung und Missbrauchsschutz",
-            "Keine Werbe- oder Analyseanbieter",
+            "Nicht personalisiertes Google AdSense nur auf freigegebenen Seiten",
             "Andere vom Browser gelieferte Assets nur wenn für die Benutzererfahrung erforderlich",
           ],
         },
@@ -2905,7 +2913,8 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Cookies e publicidade",
           paragraphs: [
-            "Não usamos cookies de rastreamento próprios para a funcionalidade principal das ferramentas e atualmente não carregamos scripts de publicidade ou análise.",
+            "Não usamos cookies de rastreamento próprios para a funcionalidade principal das ferramentas. Nas páginas da lista permitida (página inicial, JSON Formatter, About, Privacy, Terms e changelog) podemos carregar o Google AdSense em modo não personalizado. A Google e os seus parceiros podem definir cookies e identificadores semelhantes — incluindo cookies associados a doubleclick.net e a domínios Google — para veicular anúncios, limitar a frequência, medir o desempenho agregado e detetar fraude. Estes anúncios não são personalizados a partir do seu histórico de navegação noutros sites. Não usamos Google Tag Manager nem Google Analytics. As páginas de palavra-passe, SSH, Token Studio, WireGuard, certificados, secret scanner, encoding e pipe nunca carregam scripts de publicidade.",
+            "Pode rever ou recusar publicidade personalizada em https://adssettings.google.com e em https://www.aboutads.info. A Google explica o uso de dados em https://policies.google.com/technologies/ads e https://policies.google.com/privacy.",
           ],
         },
         {
@@ -2915,7 +2924,7 @@ const LEGAL_CONTENT = {
           ],
           list: [
             "Cloudflare para hospedagem, entrega CDN e proteção contra abusos",
-            "Nenhum fornecedor de publicidade ou análise",
+            "Google AdSense não personalizado apenas nas páginas da lista permitida",
             "Outros recursos entregues pelo navegador apenas quando necessários para a experiência do usuário",
           ],
         },
@@ -2993,7 +3002,8 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Cookie và quảng cáo",
           paragraphs: [
-            "Chúng tôi không dùng cookie theo dõi nội bộ cho chức năng công cụ cốt lõi và hiện không tải script quảng cáo hay phân tích.",
+            "Chúng tôi không dùng cookie theo dõi nội bộ cho chức năng công cụ cốt lõi. Trên các trang được phép (trang chủ, JSON Formatter, About, Privacy, Terms và changelog) chúng tôi có thể tải Google AdSense ở chế độ không cá nhân hóa. Google và các đối tác có thể đặt cookie và định danh tương tự — gồm cookie gắn với doubleclick.net và các tên miền Google — để phục vụ quảng cáo, giới hạn tần suất, đo lường tổng hợp và chống gian lận. Các quảng cáo này không được cá nhân hóa theo lịch sử duyệt web của bạn trên các trang khác. Chúng tôi không dùng Google Tag Manager hay Google Analytics. Các trang mật khẩu, SSH, Token Studio, WireGuard, chứng chỉ, quét bí mật, encoding và pipe không bao giờ tải script quảng cáo.",
+            "Bạn có thể xem hoặc tắt quảng cáo cá nhân hóa tại https://adssettings.google.com và https://www.aboutads.info. Google mô tả cách dùng dữ liệu tại https://policies.google.com/technologies/ads và https://policies.google.com/privacy.",
           ],
         },
         {
@@ -3003,7 +3013,7 @@ const LEGAL_CONTENT = {
           ],
           list: [
             "Cloudflare để lưu trữ, phân phối CDN và bảo vệ chống lạm dụng",
-            "Không có nhà cung cấp quảng cáo hoặc phân tích",
+            "Google AdSense không cá nhân hóa chỉ trên các trang được phép",
             "Các tài nguyên được phân phối qua trình duyệt khác chỉ khi cần thiết cho trải nghiệm người dùng",
           ],
         },
@@ -3875,10 +3885,10 @@ const LEGAL_CONTENT = {
           ],
         },
         {
-          heading: "Doanh nghiệp & Đối tác",
+          heading: "Báo chí và câu hỏi khác",
           paragraphs: [
-            "Quan tâm đến cấp phép doanh nghiệp, giải pháp nhãn trắng hoặc quan hệ đối tác?",
-            "business@simpletool.app",
+            "Với báo chí, truyền thông hoặc câu hỏi không liên quan đến sản phẩm:",
+            "hello@simpletool.app",
           ],
         },
         {

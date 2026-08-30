@@ -319,7 +319,7 @@ Enforced by `npm run test:ui-audit`, which reports `handrolled-button` /
 The design must never imply absolute privacy. Current honest stance (enforced by
 `src/ui/honest-copy.test.js`):
 
-- Non-personalized AdSense only; Auto ads off; `ads.txt` only after real slot IDs.
+- Non-personalized AdSense only; Auto ads off; `ads.txt` and the account meta ship with a publisher ID, ad units only after real slot IDs.
 - **Allow-list** (ads may appear): `home`, `json`, `legal`.
 - **Deny-list** (never load ad scripts): password, SSH keys, Token Studio,
   WireGuard, certificates, secret scanner, encoding tools, and Pipe Mode.

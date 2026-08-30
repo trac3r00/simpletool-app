@@ -23,13 +23,11 @@ export const LEGAL_AD_PATHS = Object.freeze([
   "/about",
   "/privacy",
   "/terms",
-  "/contact",
-  "/security",
-  "/careers",
   "/changelog",
 ]);
 
 const SLOT_ID_RE = /^\d{10,}$/;
+const PUBLISHER_CLIENT_RE = /^ca-pub-\d+$/;
 
 let adConfig = {
   client: null,
@@ -93,12 +91,15 @@ export function parseAdSlots(env) {
   return slots;
 }
 
-export function isAdsEnabled() {
+export function hasPublisherClient() {
   return (
     typeof adConfig.client === "string" &&
-    /^ca-pub-\d+$/.test(adConfig.client) &&
-    Object.keys(adConfig.slots).length > 0
+    PUBLISHER_CLIENT_RE.test(adConfig.client)
   );
+}
+
+export function isAdsEnabled() {
+  return hasPublisherClient() && Object.keys(adConfig.slots).length > 0;
 }
 
 export function setAdConfig(config = {}) {
@@ -108,7 +109,7 @@ export function setAdConfig(config = {}) {
   }
   if (typeof client === "string") {
     const trimmed = client.trim();
-    adConfig.client = /^ca-pub-\d+$/.test(trimmed) ? trimmed : null;
+    adConfig.client = PUBLISHER_CLIENT_RE.test(trimmed) ? trimmed : null;
   }
   if (slots && typeof slots === "object") {
     const next = {};
@@ -131,11 +132,23 @@ export function getAdConfig() {
 }
 
 export function shouldServeAdsTxt() {
-  return isAdsEnabled();
+  return hasPublisherClient();
 }
 
 export function getAdsTxtBody() {
-  return `${ADS_TXT_LINE}\n`;
+  const publisherId = hasPublisherClient()
+    ? adConfig.client.replace(/^ca-/, "")
+    : "pub-5134881365131182";
+  return `google.com, ${publisherId}, DIRECT, f08c47fec0942fa0\n`;
+}
+
+/**
+ * Site-connect meta. Does not load ads. Present whenever a publisher ID exists
+ * so AdSense can verify the site without Auto ads or a head snippet on every page.
+ */
+export function getAdSenseAccountMeta() {
+  if (!hasPublisherClient()) return "";
+  return `<meta name="google-adsense-account" content="${adConfig.client}">`;
 }
 
 /**
