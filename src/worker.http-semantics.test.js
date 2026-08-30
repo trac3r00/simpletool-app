@@ -185,6 +185,46 @@ describe("plain HTTP redirects to HTTPS (audit M2)", () => {
   });
 });
 
+describe("AdSense site-connect without slots", () => {
+  it("serves ads.txt when a publisher id is set", async () => {
+    const res = await fetchWorker(
+      "https://simpletool.app/ads.txt",
+      {},
+      makeEnv({
+        ADSENSE_CLIENT: "ca-pub-5134881365131182",
+        ADSENSE_SLOTS: "{}",
+      }),
+    );
+    expect(res.status).toBe(200);
+    expect(res.headers.get("Content-Type")).toContain("text/plain");
+    expect(await res.text()).toBe(
+      "google.com, pub-5134881365131182, DIRECT, f08c47fec0942fa0\n",
+    );
+  });
+
+  it("puts the account meta on the homepage without loading ads", async () => {
+    const res = await fetchWorker(
+      "https://simpletool.app/",
+      {},
+      makeEnv({
+        ADSENSE_CLIENT: "ca-pub-5134881365131182",
+        ADSENSE_SLOTS: "{}",
+      }),
+    );
+    const html = await res.text();
+    expect(html).toContain(
+      '<meta name="google-adsense-account" content="ca-pub-5134881365131182">',
+    );
+    expect(html).not.toContain("adsbygoogle.js");
+    expect(html).not.toContain("<ins");
+  });
+
+  it("404s ads.txt without a publisher id", async () => {
+    const res = await fetchWorker("https://simpletool.app/ads.txt");
+    expect(res.status).toBe(404);
+  });
+});
+
 describe("sitemap lastmod reflects content, not the request", () => {
   async function getSitemap() {
     return (await fetchWorker("https://simpletool.app/sitemap.xml")).text();

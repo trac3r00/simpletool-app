@@ -14,7 +14,7 @@ import { getLegalSections } from "./legal-content.js";
 
 const SITE_NAME = "SimpleTool App";
 const CONTACT_EMAIL = "hello@simpletool.app";
-const LAST_UPDATED_ISO = "2026-08-19";
+const LAST_UPDATED_ISO = "2026-08-30";
 
 function renderLegalShell({
   title,

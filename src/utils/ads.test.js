@@ -1,28 +1,46 @@
 import { afterEach, describe, expect, it } from "vitest";
 import {
   ADS_TXT_LINE,
+  getAdSenseAccountMeta,
   getAdSenseScript,
   getAdSlotHTML,
   getAdsTxtBody,
+  hasPublisherClient,
   isAdsEnabled,
+  LEGAL_AD_PATHS,
   pageAllowsAds,
   parseAdSlots,
   setAdConfig,
   shouldServeAdsTxt,
   slotKeyForPath,
 } from "./ads.js";
+import { handlersById } from "../routes/_handlers.js";
 
 afterEach(() => {
   setAdConfig({ client: null, slots: {}, path: "/" });
 });
 
 describe("pageAllowsAds", () => {
-  it("allows homepage, json formatter, and legal/changelog", () => {
+  it("allows homepage, json formatter, and content-bearing legal pages", () => {
     expect(pageAllowsAds("/")).toBe(true);
     expect(pageAllowsAds("/json-formatter")).toBe(true);
     expect(pageAllowsAds("/about")).toBe(true);
     expect(pageAllowsAds("/privacy")).toBe(true);
+    expect(pageAllowsAds("/terms")).toBe(true);
     expect(pageAllowsAds("/changelog/")).toBe(true);
+    expect([...LEGAL_AD_PATHS]).toEqual([
+      "/about",
+      "/privacy",
+      "/terms",
+      "/changelog",
+    ]);
+  });
+
+  it("does not place ads on thin legal pages", () => {
+    expect(pageAllowsAds("/contact")).toBe(false);
+    expect(pageAllowsAds("/security")).toBe(false);
+    expect(pageAllowsAds("/careers")).toBe(false);
+    expect(slotKeyForPath("/contact")).toBeNull();
   });
 
   it("denies secret and credential tools even with a trailing slash", () => {
@@ -80,16 +98,36 @@ describe("parseAdSlots", () => {
 });
 
 describe("ad rendering", () => {
-  it("does not enable ads or ads.txt without slot ids", () => {
+  it("does not render ad units without slot ids", () => {
     setAdConfig({
       client: "ca-pub-5134881365131182",
       slots: {},
       path: "/",
     });
     expect(isAdsEnabled()).toBe(false);
-    expect(shouldServeAdsTxt()).toBe(false);
     expect(getAdSenseScript("/")).toBe("");
     expect(getAdSlotHTML("home")).toBe("");
+  });
+
+  it("serves ads.txt and the account meta with a publisher id even before slots exist", () => {
+    setAdConfig({
+      client: "ca-pub-5134881365131182",
+      slots: {},
+      path: "/",
+    });
+    expect(hasPublisherClient()).toBe(true);
+    expect(shouldServeAdsTxt()).toBe(true);
+    expect(getAdsTxtBody()).toBe(`${ADS_TXT_LINE}\n`);
+    expect(getAdSenseAccountMeta()).toBe(
+      '<meta name="google-adsense-account" content="ca-pub-5134881365131182">',
+    );
+  });
+
+  it("omits ads.txt and the account meta without a publisher id", () => {
+    setAdConfig({ client: null, slots: {}, path: "/" });
+    expect(hasPublisherClient()).toBe(false);
+    expect(shouldServeAdsTxt()).toBe(false);
+    expect(getAdSenseAccountMeta()).toBe("");
   });
 
   it("renders a reserved NPA slot on allow-list pages only", () => {
@@ -119,6 +157,25 @@ describe("ad rendering", () => {
       "requestNonPersonalizedAds = 1",
     );
     expect(getAdSenseScript("/json-formatter")).toContain("adsbygoogle.js");
+  });
+
+  it("JSON Formatter page requests the json slot after the educational block", async () => {
+    setAdConfig({
+      client: "ca-pub-5134881365131182",
+      slots: { json: "2222222222" },
+      path: "/json-formatter",
+    });
+    const handler = handlersById["json-formatter"];
+    const url = new URL("https://simpletool.app/json-formatter");
+    const html = await (await handler(new Request(url), url)).text();
+    const placement = html.indexOf('data-ad-placement="json"');
+    const education = html.indexOf(
+      'data-i18n="tools.json-formatter.edu.heading1"',
+    );
+    expect(placement).toBeGreaterThan(-1);
+    expect(html).not.toContain('data-ad-placement="tool"');
+    expect(education).toBeGreaterThan(-1);
+    expect(placement).toBeGreaterThan(education);
   });
 
   it("never emits Auto ads or leftover slot keys", () => {

@@ -60,9 +60,15 @@ describe("respond404", () => {
     expect(res.status).toBe(404);
   });
 
-  it("returns HTML content", () => {
+  it("returns HTML content", async () => {
     const res = respond404();
     expect(res.headers.get("Content-Type")).toContain("text/html");
+    const html = await res.text();
+    expect(html).toContain('content="noindex, nofollow"');
+    expect(html).toContain('rel="canonical" href="https://simpletool.app/404"');
+    expect(html).not.toContain(
+      '<link rel="canonical" href="https://simpletool.app">',
+    );
   });
 });
 

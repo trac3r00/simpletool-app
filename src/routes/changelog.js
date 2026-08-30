@@ -12,6 +12,29 @@ import {
 
 const RELEASES = [
   {
+    version: "2.4.5",
+    date: "2026-08-30",
+    title: "AdSense site-connect without Auto ads",
+    changes: [
+      {
+        type: "feat",
+        text: "ads.txt and the google-adsense-account meta ship with a publisher ID; ad units still wait for real slot IDs",
+      },
+      {
+        type: "fix",
+        text: "JSON Formatter uses the json slot below its educational section instead of the retired tool key",
+      },
+      {
+        type: "fix",
+        text: "Terms and Privacy in every language disclose non-personalized Google ads, cookies, and opt-out links",
+      },
+      {
+        type: "fix",
+        text: "Ads stay off Contact, Security, and Careers; legal inventory is About, Privacy, Terms, and changelog",
+      },
+    ],
+  },
+  {
     version: "2.4.3",
     date: "2026-08-17",
     title: "Non-personalized ads on an allow list",

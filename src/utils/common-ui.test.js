@@ -1,8 +1,9 @@
-import { describe, it, expect } from "vitest";
+import { afterEach, describe, it, expect } from "vitest";
 import {
   createFeatureList,
   createPageTemplate,
   createToolHeader,
+  setAdConfig,
 } from "./common-ui.js";
 
 function extractLanguageCatalog(html) {
@@ -186,6 +187,10 @@ describe("createToolHeader", () => {
 });
 
 describe("createPageTemplate", () => {
+  afterEach(() => {
+    setAdConfig({ client: null, slots: {}, path: "/" });
+  });
+
   const renderPage = (options = {}) =>
     createPageTemplate({
       title: "Test Tool",
@@ -206,9 +211,23 @@ describe("createPageTemplate", () => {
       '<meta name="twitter:title" content="Test Tool | SimpleTool">',
     );
     expect(html).not.toContain('<meta name="keywords"');
+    expect(html).not.toContain('name="google-adsense-account"');
     expect(html).toContain("keyboard-shortcuts-modal");
     expect(html).toContain("function copyToClipboard");
     expect(html).toContain('var TOOL_ID = "test-tool"');
+  });
+
+  it("emits the AdSense account meta when a publisher id is configured", () => {
+    setAdConfig({
+      client: "ca-pub-5134881365131182",
+      slots: {},
+      path: "/test-tool",
+    });
+    const html = renderPage();
+    expect(html).toContain(
+      '<meta name="google-adsense-account" content="ca-pub-5134881365131182">',
+    );
+    expect(html).not.toContain("adsbygoogle.js");
   });
 
   it("supports an exact title and optional keywords", () => {

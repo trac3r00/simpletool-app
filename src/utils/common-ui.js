@@ -12,7 +12,11 @@ import {
   isDevRuntime,
 } from "./tool-registry.js";
 import { getPersonalizationScript } from "./personalization.js";
-import { getAdSenseScript, getGtagScript } from "./ads.js";
+import {
+  getAdSenseAccountMeta,
+  getAdSenseScript,
+  getGtagScript,
+} from "./ads.js";
 import {
   DEFAULT_LANGUAGE,
   SUPPORTED_LANGUAGES,
@@ -160,9 +164,11 @@ export function getAnalyticsScript() {
 
 export {
   getAdConfig,
+  getAdSenseAccountMeta,
   getAdSenseScript,
   getAdSlotHTML,
   getGtagScript,
+  hasPublisherClient,
   isAdsEnabled,
   setAdConfig,
 } from "./ads.js";
@@ -868,6 +874,7 @@ export function createPageTemplate(options) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  ${getAdSenseAccountMeta()}
   <title>${fullTitle}</title>
   <meta name="description" content="${description}">
   ${robotsTag}
