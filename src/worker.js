@@ -506,6 +506,12 @@ async function handleRequest(request, env, ctx) {
           if (isManifest) {
             headers.set("Content-Type", "application/manifest+json");
           }
+          if (path.startsWith("/fonts/")) {
+            headers.set(
+              "Cache-Control",
+              "public, max-age=31536000, immutable",
+            );
+          }
           return new Response(assetResponse.body, {
             status: assetResponse.status,
             headers,

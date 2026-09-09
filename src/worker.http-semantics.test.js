@@ -372,3 +372,28 @@ describe("dev-only tools stay out of production HTML (audit M8)", () => {
     }
   });
 });
+
+describe("Material Symbols font asset", () => {
+  it("serves the woff2 with a long-lived cache and no 503", async () => {
+    const body = new Uint8Array([0x77, 0x4f, 0x46, 0x32]);
+    const res = await fetchWorker(
+      "https://simpletool.app/fonts/material-symbols.woff2",
+      {},
+      makeEnv({
+        ASSETS: {
+          fetch: async () =>
+            new Response(body, {
+              status: 200,
+              headers: { "Content-Type": "font/woff2" },
+            }),
+        },
+      }),
+    );
+
+    expect(res.status).toBe(200);
+    expect(res.headers.get("Content-Type")).toBe("font/woff2");
+    expect(res.headers.get("Cache-Control")).toBe(
+      "public, max-age=31536000, immutable",
+    );
+  });
+});

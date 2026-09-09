@@ -39,6 +39,8 @@ describe("renderHomePage", () => {
     expect(html).toContain('data-i18n="home.trustClient"');
     expect(html).toContain('href="/json-formatter"');
     expect(html).toContain("material-symbols-rounded");
+    expect(html).toContain("url(/fonts/material-symbols.woff2)");
+    expect(html).not.toContain('rel="prefetch" as="font"');
     expect(html).not.toContain("🔄 Formatters");
     expect(html.indexOf('id="tools-categories-container"')).toBeLessThan(
       html.indexOf('data-i18n="home.editorialTitle"'),

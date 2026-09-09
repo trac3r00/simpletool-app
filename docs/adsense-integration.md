@@ -20,7 +20,9 @@ slot IDs. Secret tools never load the script.
 - Policy and rendering live in [`src/utils/ads.js`](../src/utils/ads.js).
 - Worker wiring lives in [`src/worker.js`](../src/worker.js).
 - CSP adds Google Ads hosts on pages that may load the client script
-  (`pageAllowsAdScript`), even before slot IDs exist.
+  (`pageAllowsAdScript`), even before slot IDs exist. `frame-src` includes
+  `www.google.com` and `www.googleadservices.com` so the traffic-quality
+  iframe is not blocked.
 - GTM and GA stay out of CSP.
 
 ## Configuration
