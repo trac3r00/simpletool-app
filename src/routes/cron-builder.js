@@ -6,8 +6,8 @@ import {
   infoHint,
 } from "../utils/common-ui.js";
 import {
-  createEducationalSection,
   createRelatedToolsSection,
+  createVisibleArticle,
 } from "../utils/content-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
 import {
@@ -47,6 +47,15 @@ export async function handleCronBuilderRoutes(request) {
         ],
         { toolId: "cron-builder" },
       )}
+
+      ${createVisibleArticle({
+        title: "Five-field crontab, explained in this tab",
+        paragraphs: [
+          `This builder speaks classic Vixie/crontab syntax: minute, hour, day of month, month, day of week. It does not accept a sixth seconds field, Quartz, or systemd <code>OnCalendar=</code>. If your scheduler wants those, this page will not silently translate them.`,
+          `The next-run list is computed in the browser from the expression and your current timezone. It is a preview, not a job runner. Nothing is stored and no webhook is registered.`,
+          `Day-of-week <code>0</code> and <code>7</code> are both Sunday. Lists, ranges, and steps (<code>1,15</code>, <code>1-5</code>, <code>*/5</code>) work; named months and days are accepted where crontab does. If the parser cannot read a field, the preview stays empty instead of inventing a schedule.`,
+        ],
+      })}
 
       <div class="flex-grow flex flex-col lg:flex-row gap-6 min-h-0">
         

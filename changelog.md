@@ -2,6 +2,16 @@
 
 This changelog is a snapshot-style record of major changes in this workspace.
 
+## 2026-09-08 — v2.4.6 WireGuard keys, Ed25519, AdSense site-connect
+
+- **WireGuard**: Generate Key Pair exports X25519 via JWK when raw private export throws. It no longer invents an uncorrelated public key.
+- **SSH**: Ed25519 is the default; ECDSA and RSA remain.
+- **UUID**: v7 (RFC 9562); v1 sets the random-node multicast bit.
+- **AdSense**: official static `adsbygoogle.js` snippet in `<head>` on script-allow pages (home, JSON, legal, blog, FAQ) so Google can verify the site before slot IDs exist. Units still wait for real slots. Secret tools stay script-free. `www` 301s to the apex host.
+- **Copy**: About shows 47 production tools; homepage and JSON Formatter add original visible articles for the thin-content review.
+- **SEO**: legal trailing slashes resolve; sitemap home loc uses the canonical slash; SoftwareApplication JSON-LD is limited to registered tools.
+- **Version**: footer, `/health`, changelog, and package.json share `2.4.6`.
+
 ## 2026-08-30 — AdSense site-connect
 
 - Serve `/ads.txt` and the `google-adsense-account` meta whenever a publisher ID is configured, without loading ad scripts.

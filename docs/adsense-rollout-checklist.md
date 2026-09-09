@@ -8,6 +8,8 @@
 
 - Confirm `/ads.txt` is the publisher line plus a trailing newline (needs `ADSENSE_CLIENT`, not slot IDs).
 - Confirm every page includes `<meta name="google-adsense-account" content="ca-pub-…">`.
+- Confirm allow-listed HTML (home, JSON, legal, blog, FAQ) has the official static `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-…">` in `<head>`.
+- Confirm the AdSense Sites URL is `https://simpletool.app` (apex). `www.simpletool.app` has no DNS unless you add it.
 - Confirm Privacy names Google AdSense, cookies (including doubleclick.net / Google domains), and opt-out links (`adssettings.google.com`, `aboutads.info`) in every language.
 - Confirm Terms does not say ads are off in any language.
 - Confirm `/robots.txt` allows crawling and lists `/sitemap.xml`.
@@ -28,5 +30,5 @@
 - `/json-formatter` has one reserved slot below the educational section.
 - `/about` and `/changelog` have one reserved slot.
 - `/contact`, `/security`, `/careers`, and `/password-generator` have no `adsbygoogle`.
-- Script request happens after first paint.
+- Homepage `<head>` contains the official `adsbygoogle.js?client=` tag even with empty slots (no `<ins>` until slot IDs exist).
 - No GTM / GA hosts in CSP.

@@ -1,5 +1,16 @@
-import { describe, it, expect } from "vitest";
-import { respondJSON, respondText, respond404, respond429 } from "./respond.js";
+import { afterEach, describe, it, expect } from "vitest";
+import {
+  respondHTML,
+  respondJSON,
+  respondText,
+  respond404,
+  respond429,
+} from "./respond.js";
+import { setAdConfig } from "./ads.js";
+
+afterEach(() => {
+  setAdConfig({ client: null, slots: {}, path: "/" });
+});
 
 describe("respondJSON", () => {
   it("returns a Response with JSON content-type", async () => {
@@ -98,5 +109,51 @@ describe("respond429", () => {
     const body = await res.json();
     expect(body).toHaveProperty("error");
     expect(body.error).toContain("Rate limit");
+  });
+});
+
+describe("respondHTML AdSense injection", () => {
+  const bare = "<!DOCTYPE html><html><head></head><body></body></html>";
+
+  it("falls back to adConfig.path when url is omitted", async () => {
+    setAdConfig({
+      client: "ca-pub-5134881365131182",
+      slots: {},
+      path: "/",
+    });
+    const home = await respondHTML(bare).text();
+    expect(home).toContain(
+      'src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5134881365131182"',
+    );
+
+    setAdConfig({ path: "/password-generator" });
+    const secret = await respondHTML(bare).text();
+    expect(secret).not.toContain("adsbygoogle.js");
+  });
+
+  it("injects the client on an allow-listed url", async () => {
+    setAdConfig({
+      client: "ca-pub-5134881365131182",
+      slots: {},
+      path: "/",
+    });
+    const html = await respondHTML(bare, {
+      url: new URL("https://simpletool.app/"),
+    }).text();
+    expect(html).toContain(
+      'src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5134881365131182"',
+    );
+  });
+
+  it("does not inject the client on a deny-listed url", async () => {
+    setAdConfig({
+      client: "ca-pub-5134881365131182",
+      slots: {},
+      path: "/",
+    });
+    const html = await respondHTML(bare, {
+      url: new URL("https://simpletool.app/password-generator"),
+    }).text();
+    expect(html).not.toContain("adsbygoogle.js");
   });
 });

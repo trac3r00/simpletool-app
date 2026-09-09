@@ -72,18 +72,44 @@ describe("getSecurityHeaders", () => {
     expect(frameSrc).not.toContain("doubleclick.net");
   });
 
-  it("includes ad hosts only while ads are enabled", async () => {
+  it("includes ad hosts on allow-listed pages once a publisher id exists", async () => {
     const { setAdConfig } = await import("./ads.js");
     setAdConfig({
       client: "ca-pub-5134881365131182",
+      slots: {},
+      path: "/",
+    });
+    const homeHeaders = getSecurityHeaders("text/html; charset=utf-8");
+    expect(homeHeaders["Content-Security-Policy"]).toContain(
+      "pagead2.googlesyndication.com",
+    );
+
+    setAdConfig({ path: "/password-generator" });
+    const secretHeaders = getSecurityHeaders("text/html; charset=utf-8");
+    expect(secretHeaders["Content-Security-Policy"]).not.toContain(
+      "pagead2.googlesyndication.com",
+    );
+
+    setAdConfig({
+      client: "ca-pub-5134881365131182",
+      slots: {},
+      path: "/blog",
+    });
+    expect(getSecurityHeaders("text/html; charset=utf-8")["Content-Security-Policy"]).toContain(
+      "pagead2.googlesyndication.com",
+    );
+
+    setAdConfig({
+      client: "ca-pub-5134881365131182",
       slots: { home: "1111111111" },
+      path: "/",
     });
     const headers = getSecurityHeaders("text/html; charset=utf-8");
     const csp = headers["Content-Security-Policy"];
     expect(csp).toContain("pagead2.googlesyndication.com");
     expect(csp).not.toContain("googletagmanager.com");
     expect(csp).not.toContain("google-analytics.com");
-    setAdConfig({ client: null, slots: {} });
+    setAdConfig({ client: null, slots: {}, path: "/" });
   });
 
   it("uses unsafe-inline fallback without unused ad or analytics hosts", () => {

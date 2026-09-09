@@ -13,6 +13,7 @@ import {
 import {
   createEducationalSection,
   createRelatedToolsSection,
+  createVisibleArticle,
 } from "../utils/content-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
 import {
@@ -73,6 +74,15 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
       <div class="tool-page-panel">
 
       ${toolHeader}
+
+      ${createVisibleArticle({
+        title: "Subnet math in the browser, not against a live network",
+        paragraphs: [
+          `Enter an IPv4 or IPv6 prefix and this planner derives network, broadcast (IPv4), host range, and reverse-DNS labels with integer arithmetic in the page. It does not ping hosts, query WHOIS, or walk a routing table.`,
+          `IPv4 still reserves network and broadcast addresses in a subnet, so a <code>/24</code> has 254 usable hosts. IPv6 assignments are usually <code>/64</code> on a LAN; compressing zeros is display only and does not change the prefix.`,
+          `Use it to size a VPC, check that two CIDRs overlap, or mint a PTR name before you write the zone file. The result is a calculation, not a guarantee that the addresses are free on the wire.`,
+        ],
+      })}
 
       <section class="grid gap-6 lg:grid-cols-[3fr,2fr]">
         <!-- Input Panel -->

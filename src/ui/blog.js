@@ -15,6 +15,29 @@ import { getLocalizedBlogArticle } from "./blog-content-locales.js";
 
 export const BLOG_ARTICLES = [
   {
+    slug: "inspect-jwt-in-the-browser",
+    title: "Inspect a JWT in the browser, not on someone else's server",
+    description:
+      "How JSON Web Tokens are structured, what a client-side inspector can and cannot prove, and why pasting a production token into a random decoder is a bad habit.",
+    category: "Security",
+    readingTime: "8 min read",
+    datePublished: "2026-09-08",
+    content: `
+      <p>A JSON Web Token is three Base64URL segments: a header, a payload, and a signature. Anyone who can read the token can read the claims. The signature is the only part that is supposed to be hard to forge, and verifying it needs the matching secret or public key.</p>
+      <p>Online JWT decoders that <em>upload</em> the token create a second copy of whatever you pasted: session identifiers, internal emails, tenant ids, sometimes the signing secret if it was stuffed into a custom claim. A decoder that runs <code>atob</code> in your tab never receives that copy. SimpleTool's <a href="/token-studio">Token Studio</a> is that kind of decoder. It also generates keys and inspects JWKS locally. It does not phone a verification API.</p>
+      <h2>What a local inspector is good for</h2>
+      <ul>
+        <li>Confirming <code>alg</code>, <code>kid</code>, expiry, and audience before you drop a token into a ticket.</li>
+        <li>Seeing whether a token is a JWT at all, or just three dotted blobs.</li>
+        <li>Building a test token you will sign yourself, still in the browser.</li>
+      </ul>
+      <h2>What it cannot do</h2>
+      <p>Without the key, a client-side tool cannot honestly say a production token is valid. Treat an unsigned or unverified payload as untrusted JSON. If you need a server to accept the token, verify it on the server with the real JWKS.</p>
+      <p>Also remember the rest of the browser: extensions, screenshots, and the clipboard. Local is not the same as air-gapped. It is still the right default over a pastebin with a sequential URL.</p>
+      <p>Related: the <a href="/json-formatter">JSON Formatter</a> on this site uses the same rule for API bodies. Format in the tab. Do not send the document to a third-party history page.</p>
+    `,
+  },
+  {
     slug: "what-is-json",
     title: "What is JSON? A Developer's Complete Guide",
     description:

@@ -2,7 +2,7 @@
  * Security utilities for rate limiting and headers
  */
 
-import { isAdsEnabled } from "./ads.js";
+import { hasPublisherClient, pageAllowsAdScript, getAdConfig } from "./ads.js";
 
 export const RATE_LIMIT_WINDOW_MS = 60_000;
 export const RATE_LIMIT_MAX_REQUESTS = 120;
@@ -83,7 +83,7 @@ export function getSecurityHeaders(
   const extraFrameSrc = [];
   const extraConnectSrc = ["https://cloudflareinsights.com"];
 
-  if (isAdsEnabled()) {
+  if (hasPublisherClient() && pageAllowsAdScript(getAdConfig().path)) {
     extraScriptSrc.push(
       "https://pagead2.googlesyndication.com",
       "https://www.googletagservices.com",

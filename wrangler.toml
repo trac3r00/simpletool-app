@@ -13,7 +13,8 @@ binding = "CF_VERSION_METADATA"
 [vars]
 ENVIRONMENT = "production"
 SITE_URL = "https://simpletool.app"
-# Publisher ID is enough for ads.txt + google-adsense-account meta (site connect).
+# Publisher ID ships ads.txt, google-adsense-account meta, and the official
+# adsbygoogle.js head snippet on script-allow pages (site connect).
 # Ad units stay off until real slot IDs exist. Create three Display units
 # (NPA, no Auto ads) and paste the IDs:
 #   home  = homepage below the tool grid
@@ -25,9 +26,9 @@ ADSENSE_SLOTS = "{}"
 SENTRY_DSN = ""
 CF_ANALYTICS_TOKEN = ""
 
-# Note: Custom domain will be configured via Cloudflare Dashboard after deployment
-# Dashboard: Workers & Pages → simpletool-app → Settings → Triggers → Custom Domains
-# Add: simpletool.app
+# Custom domain: simpletool.app (Cloudflare Dashboard → Workers → Triggers).
+# Also add www.simpletool.app as a CNAME/ALIAS to the apex and 301 to https://simpletool.app
+# AdSense site-connect fails if the account URL is www and that hostname has no DNS.
 
 [durable_objects]
 bindings = [{ name = "RATE_LIMITER", class_name = "RateLimiter" }]

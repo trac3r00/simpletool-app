@@ -278,6 +278,24 @@ describe("createPageTemplate", () => {
     expect(catalog.en.tools["port-reference"]).not.toHaveProperty("js");
   });
 
+  it("emits SoftwareApplication JSON-LD only for registered tool paths", () => {
+    const toolHtml = createPageTemplate({
+      title: "JSON Formatter",
+      description: "Validate JSON",
+      content: "<main></main>",
+      path: "/json-formatter",
+    });
+    expect(toolHtml).toContain('"@type":"SoftwareApplication"');
+
+    const legalHtml = createPageTemplate({
+      title: "Terms of Service",
+      description: "Terms",
+      content: "<main></main>",
+      path: "/terms",
+    });
+    expect(legalHtml).not.toContain('"@type":"SoftwareApplication"');
+  });
+
   it("uses a supplied schema instead of the automatic tool schema", () => {
     const schema = {
       "@context": "https://schema.org",

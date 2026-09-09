@@ -9,6 +9,7 @@ import {
   isAdsEnabled,
   LEGAL_AD_PATHS,
   pageAllowsAds,
+  pageAllowsAdScript,
   parseAdSlots,
   setAdConfig,
   shouldServeAdsTxt,
@@ -58,6 +59,17 @@ describe("pageAllowsAds", () => {
     expect(pageAllowsAds("/uuid-generator")).toBe(false);
     expect(slotKeyForPath("/uuid-generator")).toBeNull();
   });
+
+  it("loads the client script on blog and FAQ without making them unit inventory", () => {
+    expect(pageAllowsAds("/blog")).toBe(false);
+    expect(pageAllowsAds("/faq")).toBe(false);
+    expect(slotKeyForPath("/blog")).toBeNull();
+    expect(pageAllowsAdScript("/blog")).toBe(true);
+    expect(pageAllowsAdScript("/blog/inspect-jwt-in-the-browser")).toBe(true);
+    expect(pageAllowsAdScript("/faq")).toBe(true);
+    expect(pageAllowsAdScript("/password-generator")).toBe(false);
+    expect(pageAllowsAdScript("/uuid-generator")).toBe(false);
+  });
 });
 
 describe("parseAdSlots", () => {
@@ -105,8 +117,25 @@ describe("ad rendering", () => {
       path: "/",
     });
     expect(isAdsEnabled()).toBe(false);
-    expect(getAdSenseScript("/")).toBe("");
+    expect(getAdSenseScript("/")).toContain(
+      'src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5134881365131182"',
+    );
+    expect(getAdSenseScript("/")).toContain("requestNonPersonalizedAds = 1");
+    expect(getAdSenseScript("/")).not.toContain("document.createElement");
     expect(getAdSlotHTML("home")).toBe("");
+  });
+
+  it("loads the AdSense client on allow-listed pages before slot ids exist", () => {
+    setAdConfig({
+      client: "ca-pub-5134881365131182",
+      slots: {},
+      path: "/",
+    });
+    expect(getAdSenseScript("/")).toContain(
+      'src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-',
+    );
+    expect(getAdSenseScript("/blog")).toContain("adsbygoogle.js?client=ca-pub-");
+    expect(getAdSenseScript("/password-generator")).toBe("");
   });
 
   it("serves ads.txt and the account meta with a publisher id even before slots exist", () => {
@@ -144,6 +173,7 @@ describe("ad rendering", () => {
     expect(home).toContain("min-height:280px");
     expect(home).toContain('data-npa-on="1"');
     expect(home).toContain('data-ad-slot="1111111111"');
+    expect(home).toContain("adsbygoogle || []).push({})");
     expect(home).not.toContain("display:none");
 
     setAdConfig({ path: "/password-generator" });
@@ -176,6 +206,26 @@ describe("ad rendering", () => {
     expect(html).not.toContain('data-ad-placement="tool"');
     expect(education).toBeGreaterThan(-1);
     expect(placement).toBeGreaterThan(education);
+    expect(html).toContain("Why this JSON formatter does not upload your document");
+    expect(html.indexOf("Why this JSON formatter does not upload your document")).toBeLessThan(
+      html.indexOf('id="format-btn"'),
+    );
+  });
+
+  it("puts unique visible articles on curl, cron, regex, and CIDR", async () => {
+    const cases = [
+      ["curl-studio", "This curl parser never fires the request", 'id="curl-input"'],
+      ["cron-builder", "Five-field crontab, explained in this tab", 'id="builder-tabs"'],
+      ["regex-visualizer", "Railroad diagrams for the pattern you actually typed", 'id="regex-input"'],
+      ["cidr-calculator", "Subnet math in the browser, not against a live network", 'id="cidr-input"'],
+    ];
+    for (const [id, heading, before] of cases) {
+      const handler = handlersById[id];
+      const url = new URL(`https://simpletool.app/${id}`);
+      const html = await (await handler(new Request(url), url)).text();
+      expect(html, id).toContain(`<h2>${heading}</h2>`);
+      expect(html.indexOf(`<h2>${heading}</h2>`), id).toBeLessThan(html.indexOf(before));
+    }
   });
 
   it("never emits Auto ads or leftover slot keys", () => {

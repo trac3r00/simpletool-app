@@ -18,6 +18,7 @@ import {
 import {
   createEducationalSection,
   createRelatedToolsSection,
+  createVisibleArticle,
 } from "../utils/content-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
 import {
@@ -80,6 +81,15 @@ function renderJSONFormatterPage(lang = "en") {
       <div class="tool-page-panel">
 
         ${toolHeader}
+
+        ${createVisibleArticle({
+          title: "Why this JSON formatter does not upload your document",
+          paragraphs: [
+            `This page calls the browser's <code>JSON.parse</code> and <code>JSON.stringify</code>. There is no "save" action, no paste history, and no shareable link with a sequential id. That is the product: a formatter you can use on an API envelope that still contains session cookies or internal hostnames.`,
+            `In November 2025, security researchers showed that long-running online formatters which <em>do</em> store pastes had leaked years of JSON through predictable "recent" URLs. The documents included cloud access keys, JWTs, and internal configs. If a site can show you last week's paste, it had to receive it. This tool never gets that chance because the Worker only serves the HTML and static assets.`,
+            `Valid JSON is RFC 8259: double-quoted keys and strings, no trailing commas, no comments, no single quotes. The validator reports the first parse error with a line number. Pretty-print is lossless whitespace; minify is the inverse. Neither step sends a byte of the document off this origin.`,
+          ],
+        })}
 
         <!-- Controls -->
         <div class="flex flex-wrap gap-3 mb-6 bg-surface-50 dark:bg-surface-950/50 p-2 rounded-lg border border-surface-100 dark:border-surface-800">

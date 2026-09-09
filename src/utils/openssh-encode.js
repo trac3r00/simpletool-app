@@ -91,6 +91,21 @@ export function encodeOpenSSHPublicKey({ algo, params }) {
     return `ecdsa-sha2-nistp256 ${toBase64(wireBytes)}`;
   }
 
+  if (algo === "ssh-ed25519") {
+    const { key } = params ?? {};
+    assertUint8Array(key, "params.key");
+    if (key.length !== 32) {
+      throw new RangeError("Ed25519 public keys must be 32 bytes");
+    }
+
+    const wireBytes = concat(
+      writeString(toUtf8Bytes("ssh-ed25519")),
+      writeString(key),
+    );
+
+    return `ssh-ed25519 ${toBase64(wireBytes)}`;
+  }
+
   if (algo === "ssh-rsa") {
     const { e, n } = params ?? {};
     assertUint8Array(e, "params.e");

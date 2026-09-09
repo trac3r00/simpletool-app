@@ -41,7 +41,7 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
   const title = translation?.name || "Htpasswd Entry Generator";
   const description =
     translation?.desc ||
-    "Create bcrypt, apr1-md5, SHA, or plaintext htpasswd entries securely in your browser.";
+    "Create bcrypt htpasswd entries in the browser. Apache MD5, SHA-1, and plaintext remain as legacy options.";
 
   const currentTool = TOOLS.find((t) => t.id === "htpasswd-generator");
   const relatedToolsData =
@@ -55,7 +55,7 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
       ${createToolHeader(
         { emoji: "🔒" },
         title,
-        "Generate production-ready htpasswd entries using bcrypt (-B), Apache MD5 (-m), SHA1 (-s), or plaintext\u2014completely client-side.",
+        "Generate htpasswd entries in the browser. bcrypt (-B) is the default for new files. Apache MD5, unsalted SHA-1, and plaintext are legacy compatibility options only.",
         [
           {
             text: "Zero trust by design",

@@ -8,6 +8,7 @@ import {
 import {
   createEducationalSection,
   createRelatedToolsSection,
+  createVisibleArticle,
 } from "../utils/content-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
 import {
@@ -46,6 +47,15 @@ export async function handleRegexVisualizerRoutes(request) {
     <main class="tool-page-shell">
       <div class="tool-page-panel">
       ${header}
+
+      ${createVisibleArticle({
+        title: "Railroad diagrams for the pattern you actually typed",
+        paragraphs: [
+          `Regex Studio draws a railroad diagram from the expression in the box and highlights matches in the sample text as you type. The diagram is generated here; there is no "explain this regex" API and the corpus never leaves the page.`,
+          `Use it when you need to show a reviewer what <code>(?=…)</code> or a nested group is doing, or to confirm a pattern against logs you should not paste into a hosted tester. Code snippets for common languages are templates, not an execution environment.`,
+          `JavaScript regex semantics apply (no Python <code>re.VERBOSE</code>, no lookbehind in engines that lack it). If the pattern is invalid, the diagram stays empty and the error is shown next to the input instead of failing closed with a generic "no matches".`,
+        ],
+      })}
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
         <!-- Left Column: Input & Controls -->
