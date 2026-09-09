@@ -106,7 +106,10 @@ describe("getSecurityHeaders", () => {
     });
     const headers = getSecurityHeaders("text/html; charset=utf-8");
     const csp = headers["Content-Security-Policy"];
+    const frameSrc = getCspDirective(csp, "frame-src");
     expect(csp).toContain("pagead2.googlesyndication.com");
+    expect(frameSrc).toContain("https://www.google.com");
+    expect(frameSrc).toContain("https://www.googleadservices.com");
     expect(csp).not.toContain("googletagmanager.com");
     expect(csp).not.toContain("google-analytics.com");
     setAdConfig({ client: null, slots: {}, path: "/" });

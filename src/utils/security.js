@@ -94,6 +94,8 @@ export function getSecurityHeaders(
       "https://tpc.googlesyndication.com",
       "https://pagead2.googlesyndication.com",
       "https://*.adtrafficquality.google",
+      "https://www.google.com",
+      "https://www.googleadservices.com",
     );
     extraConnectSrc.push(
       "https://pagead2.googlesyndication.com",
