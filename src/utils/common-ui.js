@@ -221,7 +221,11 @@ export function getThemeToggleButton(options = {}) {
  * Get common navigation HTML
  */
 export function getNavigationHTML(options = {}) {
-  const { maxWidth = "max-w-7xl", lang = DEFAULT_LANGUAGE } = options;
+  const {
+    maxWidth = "max-w-7xl",
+    lang = DEFAULT_LANGUAGE,
+    hideDesktopSearch = false,
+  } = options;
   const currentLang = normalizeLanguage(lang);
   const homeHref = withLanguageQuery("/", currentLang);
 
@@ -250,11 +254,15 @@ export function getNavigationHTML(options = {}) {
              <button type="button" id="mobile-search-btn" class="btn-ghost btn-icon md:hidden" aria-label="${t("nav.searchTools", currentLang)}" data-i18n-aria="nav.searchTools">
                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
              </button>
-             <!-- Desktop search input (readonly, triggers modal on click/focus) -->
+             ${
+               hideDesktopSearch
+                 ? ""
+                 : `<!-- Desktop search input (readonly, triggers modal on click/focus) -->
              <div class="hidden md:flex items-center mr-2 relative">
                  <svg class="absolute left-3 w-3.5 h-3.5 text-surface-500 dark:text-surface-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                  <input type="text" readonly id="nav-search-btn" placeholder="${t("nav.search", currentLang)}" data-i18n-placeholder="nav.search" class="input-search w-48 lg:w-64" aria-label="${t("nav.searchTools", currentLang)}" data-i18n-aria="nav.searchTools" />
-             </div>
+             </div>`
+             }
              ${getLanguageSelectorHTML(currentLang)}
              ${getThemeToggleButton({ currentLang })}
            </div>
@@ -749,7 +757,7 @@ export function getFooterHTML(options = {}) {
   const toolsHTML = topTools
     .map(
       (tool) =>
-        `<li><a href="${withLanguageQuery(tool.path, currentLang)}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors flex items-center gap-2"><span>${tool.icon}</span><span>${tool.name}</span></a></li>`,
+        `<li><a href="${withLanguageQuery(tool.path, currentLang)}" class="text-sm text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">${tool.name}</a></li>`,
     )
     .join("");
 
@@ -937,7 +945,10 @@ export function createPageTemplate(options) {
 </head>
 <body class="bg-surface-50 text-surface-900 dark:bg-surface-950 dark:text-surface-50 transition-colors duration-200 flex flex-col min-h-screen" data-tool-page-id="${toolId}">
   <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary-600 focus:text-white focus:rounded">Skip to main content</a>
-  ${getNavigationHTML({ lang: currentLang })}
+  ${getNavigationHTML({
+    lang: currentLang,
+    hideDesktopSearch: pagePath === "/",
+  })}
   <div class="flex-grow" role="presentation">
     <div class="flex">
       <div id="main-content" tabindex="-1" class="flex-1 min-w-0 overflow-x-hidden">

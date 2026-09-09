@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { t } from "../utils/i18n.js";
+import { TOOLS } from "../utils/tool-registry.js";
 import { renderHomePage } from "./home.js";
+import { TOOL_SYMBOLS, toolSymbol } from "./home-icons.js";
 
 function countOccurrences(text, value) {
   return text.split(value).length - 1;
@@ -33,9 +35,49 @@ describe("renderHomePage", () => {
     expect(html).toContain('data-i18n="home.editorialTitle"');
     expect(html).toContain('data-i18n="home.flagshipJson"');
     expect(html).toContain("JSON.parse");
-    expect(html.indexOf('data-i18n="home.editorialTitle"')).toBeLessThan(
+    expect(html).toContain("Developer tools that stay in the browser");
+    expect(html).toContain('data-i18n="home.trustClient"');
+    expect(html).toContain('href="/json-formatter"');
+    expect(html).toContain("material-symbols-rounded");
+    expect(html).not.toContain("🔄 Formatters");
+    expect(html.indexOf('id="tools-categories-container"')).toBeLessThan(
+      html.indexOf('data-i18n="home.editorialTitle"'),
+    );
+    expect(html.indexOf('id="tool-search"')).toBeLessThan(
       html.indexOf('id="tools-categories-container"'),
     );
+  });
+
+  it("aligns the hero with the catalog and uses Material tiles, not emoji", async () => {
+    const html = await renderHomePage({ lang: "en" }).text();
+    const header = html.slice(
+      html.indexOf("<header"),
+      html.indexOf("</header>"),
+    );
+    expect(header).toContain("max-w-7xl");
+    expect(header).toContain('id="tool-search"');
+    expect(header).toContain('data-i18n-aria="home.flagshipsNav"');
+    expect(header).not.toContain("person_off");
+    expect(header).toContain("nav.searchTools");
+    expect(html).not.toContain('id="nav-search-btn"');
+    expect(html).toContain('id="home-below-catalog"');
+
+    const jsonCard = html.slice(
+      html.indexOf('data-tool-id="json-formatter"'),
+      html.indexOf('data-tool-id="json-formatter"') + 900,
+    );
+    expect(jsonCard).toContain(toolSymbol("json-formatter"));
+    expect(jsonCard).not.toContain("📋");
+    expect(html).not.toContain("scale-110");
+    const footer = html.slice(html.indexOf("<footer"), html.indexOf("</footer>"));
+    expect(footer).not.toContain("📋");
+  });
+
+  it("maps every registered tool to a Material Symbols ligature", () => {
+    for (const tool of TOOLS) {
+      expect(TOOL_SYMBOLS[tool.id], tool.id).toBeTruthy();
+      expect(toolSymbol(tool.id)).toMatch(/^[a-z][a-z0-9_]*$/);
+    }
   });
 
   it("keeps localized shell metadata and alternate links", async () => {

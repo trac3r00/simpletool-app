@@ -155,17 +155,14 @@ test.describe("Page sweep 2026-05-11 regressions", () => {
     await expect(emptyState).toBeHidden();
   });
 
-  test("home: clicking nav-search-btn focuses hero search", async ({
-    page,
-  }) => {
+  test("home: Cmd+K focuses hero search", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto("/");
     const heroSearch = page.locator("#tool-search");
     await expect(heroSearch).toBeVisible();
 
-    await page.locator("#tool-search").evaluate((el) => el.blur());
-    await page.locator("#nav-search-btn").click();
-    await page.waitForTimeout(200);
+    await heroSearch.evaluate((el) => el.blur());
+    await page.keyboard.press("Meta+k");
 
     const focused = await page.evaluate(
       () => document.activeElement && document.activeElement.id,
