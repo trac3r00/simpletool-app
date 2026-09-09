@@ -9,7 +9,8 @@
 - Confirm `/ads.txt` is the publisher line plus a trailing newline (needs `ADSENSE_CLIENT`, not slot IDs).
 - Confirm every page includes `<meta name="google-adsense-account" content="ca-pub-…">`.
 - Confirm allow-listed HTML (home, JSON, legal, blog, FAQ) has the official static `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-…">` in `<head>`.
-- Confirm the AdSense Sites URL is `https://simpletool.app` (apex). `www.simpletool.app` has no DNS unless you add it.
+- Confirm the AdSense Sites URL is `https://simpletool.app` (apex). Do not submit `www` until that hostname is a **Workers custom domain** (DNS-only orange-cloud www currently returns Cloudflare **522** and never hits this Worker).
+- Cloudflare Dashboard: **Bot Fight Mode off**. Skip/WAF rules cannot bypass it, and it is a documented cause of AdSense “site unreachable” for `Google-Display-Ads-Bot`.
 - Confirm Privacy names Google AdSense, cookies (including doubleclick.net / Google domains), and opt-out links (`adssettings.google.com`, `aboutads.info`) in every language.
 - Confirm Terms does not say ads are off in any language.
 - Confirm `/robots.txt` allows crawling and lists `/sitemap.xml`.

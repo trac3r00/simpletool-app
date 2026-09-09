@@ -261,6 +261,38 @@ describe("AdSense site-connect without slots", () => {
     const res = await fetchWorker("https://simpletool.app/ads.txt");
     expect(res.status).toBe(404);
   });
+
+  it("keeps ads.txt and robots crawlable after the HTML rate cap", async () => {
+    const env = makeEnv({
+      ADSENSE_CLIENT: "ca-pub-5134881365131182",
+      ADSENSE_SLOTS: "{}",
+    });
+    const headers = { "CF-Connecting-IP": "203.0.113.88" };
+    let lastHome;
+    for (let i = 0; i < 121; i += 1) {
+      lastHome = await fetchWorker("https://simpletool.app/", { headers }, env);
+    }
+    expect(lastHome.status).toBe(429);
+
+    const ads = await fetchWorker(
+      "https://simpletool.app/ads.txt",
+      { headers },
+      env,
+    );
+    expect(ads.status).toBe(200);
+    expect(await ads.text()).toContain("pub-5134881365131182");
+
+    const robots = await fetchWorker(
+      "https://simpletool.app/robots.txt",
+      { headers },
+      env,
+    );
+    expect(robots.status).toBe(200);
+    const robotsBody = await robots.text();
+    expect(robotsBody).toContain("User-agent: Mediapartners-Google");
+    expect(robotsBody).toContain("User-agent: Google-Display-Ads-Bot");
+    expect(robotsBody).toContain("Allow: /");
+  });
 });
 
 describe("sitemap lastmod reflects content, not the request", () => {

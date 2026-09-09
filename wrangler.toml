@@ -27,8 +27,10 @@ SENTRY_DSN = ""
 CF_ANALYTICS_TOKEN = ""
 
 # Custom domain: simpletool.app (Cloudflare Dashboard → Workers → Triggers).
-# Also add www.simpletool.app as a CNAME/ALIAS to the apex and 301 to https://simpletool.app
-# AdSense site-connect fails if the account URL is www and that hostname has no DNS.
+# www currently resolves on Cloudflare IPs but is not a Worker custom domain,
+# so HTTPS www returns 522 and the in-Worker 301 never runs. Add
+# www.simpletool.app as a custom domain on this Worker, then it 301s to apex.
+# AdSense crawls apex and www separately — submit https://simpletool.app.
 
 [durable_objects]
 bindings = [{ name = "RATE_LIMITER", class_name = "RateLimiter" }]

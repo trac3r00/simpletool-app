@@ -5,6 +5,8 @@ import {
   generateNonce,
   getSecurityHeaders,
   isLikelySharedIP,
+  isRateLimitExemptPath,
+  isVerifiedBot,
   RATE_LIMIT_MAX_REQUESTS_SHARED_IP,
   KNOWN_SHARED_IP_ASNS,
 } from "./security.js";
@@ -171,7 +173,27 @@ describe("Rate limit constants", () => {
 
   it("contains known VPN ASNs", () => {
     expect(KNOWN_SHARED_IP_ASNS.has(13335)).toBe(true); // Cloudflare
+    expect(KNOWN_SHARED_IP_ASNS.has(15169)).toBe(true); // Google crawlers
     expect(KNOWN_SHARED_IP_ASNS.has(396982)).toBe(true); // Google Cloud
-    expect(KNOWN_SHARED_IP_ASNS.size).toBeGreaterThanOrEqual(7);
+    expect(KNOWN_SHARED_IP_ASNS.size).toBeGreaterThanOrEqual(8);
+  });
+});
+
+describe("crawler rate-limit exemptions", () => {
+  it("exempts ads.txt, robots, sitemap, and health", () => {
+    expect(isRateLimitExemptPath("/ads.txt")).toBe(true);
+    expect(isRateLimitExemptPath("/robots.txt")).toBe(true);
+    expect(isRateLimitExemptPath("/sitemap.xml")).toBe(true);
+    expect(isRateLimitExemptPath("/health/")).toBe(true);
+    expect(isRateLimitExemptPath("/")).toBe(false);
+    expect(isRateLimitExemptPath("/json-formatter")).toBe(false);
+  });
+
+  it("treats Cloudflare verified bots as exempt", () => {
+    expect(isVerifiedBot({ cf: { botManagement: { verifiedBot: true } } })).toBe(
+      true,
+    );
+    expect(isVerifiedBot({ cf: {} })).toBe(false);
+    expect(isVerifiedBot(null)).toBe(false);
   });
 });

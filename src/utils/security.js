@@ -10,6 +10,7 @@ export const RATE_LIMIT_MAX_REQUESTS_SHARED_IP = 240;
 
 export const KNOWN_SHARED_IP_ASNS = new Set([
   13335, // Cloudflare (WARP VPN)
+  15169, // Google (Googlebot / AdSense crawlers)
   396982, // Google LLC (Cloud VPN)
   14618, // Amazon (AWS VPN endpoints)
   8075, // Microsoft (Azure VPN)
@@ -18,10 +19,30 @@ export const KNOWN_SHARED_IP_ASNS = new Set([
   209242, // Cloudflare WARP consumer
 ]);
 
+export const RATE_LIMIT_EXEMPT_PATHS = Object.freeze([
+  "/ads.txt",
+  "/robots.txt",
+  "/sitemap.xml",
+  "/health",
+  "/api/health",
+]);
+
 export function isLikelySharedIP(request) {
   if (!request || !request.cf) return false;
   const asn = request.cf.asn;
   return typeof asn === "number" && KNOWN_SHARED_IP_ASNS.has(asn);
+}
+
+export function isVerifiedBot(request) {
+  return Boolean(request?.cf?.botManagement?.verifiedBot);
+}
+
+export function isRateLimitExemptPath(pathname = "/") {
+  const path =
+    pathname.length > 1 && pathname.endsWith("/")
+      ? pathname.slice(0, -1)
+      : pathname;
+  return RATE_LIMIT_EXEMPT_PATHS.includes(path);
 }
 
 /**
