@@ -9,8 +9,51 @@ import {
   normalizeLanguage,
   resolveRequestLanguage,
 } from "../utils/i18n.js";
+import { APP_VERSION } from "../utils/version.js";
 
 const RELEASES = [
+  {
+    version: APP_VERSION,
+    date: "2026-09-08",
+    title: "WireGuard keys, Ed25519, and AdSense site-connect",
+    changes: [
+      {
+        type: "fix",
+        text: "WireGuard Generate Key Pair now exports X25519 via JWK when raw private export is blocked, and refuses to invent an uncorrelated public key",
+      },
+      {
+        type: "feat",
+        text: "SSH Key Generator defaults to Ed25519; UUID generator adds RFC 9562 v7",
+      },
+      {
+        type: "feat",
+        text: "Official adsbygoogle.js snippet ships in <head> on script-allow pages (home, JSON, legal, blog, FAQ) so Google can verify ownership before slot IDs exist; units still wait for real slots",
+      },
+      {
+        type: "fix",
+        text: "About lists 47 production tools; homepage and JSON Formatter ship original visible copy for the thin-content review",
+      },
+      {
+        type: "fix",
+        text: "Legal URLs accept a trailing slash; sitemap home loc matches the canonical slash; footer and /health share one version string",
+      },
+    ],
+  },
+  {
+    version: "2.4.4",
+    date: "2026-08-19",
+    title: "Honest copy and catalog freeze",
+    changes: [
+      {
+        type: "fix",
+        text: "Homepage and About copy match the ads-vs-privacy stance: tool data is processed in the browser, but ads and analytics can make third-party requests in production",
+      },
+      {
+        type: "fix",
+        text: "Catalog frozen until the eight flagships beat the bookmarks people already use",
+      },
+    ],
+  },
   {
     version: "2.4.5",
     date: "2026-08-30",

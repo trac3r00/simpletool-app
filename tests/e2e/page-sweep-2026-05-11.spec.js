@@ -32,10 +32,22 @@ test.describe("Page sweep 2026-05-11 regressions", () => {
     });
   }
 
+  test("ssh-key-generator: default Ed25519 produces OpenSSH wire format", async ({
+    page,
+  }) => {
+    await page.goto("/ssh-key-generator");
+    await page.locator("#generate-btn").click();
+    await expect(page.locator("#results")).toBeVisible();
+
+    const publicKey = page.locator("#public-key");
+    await expect(publicKey).toHaveValue(/^ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAA/);
+  });
+
   test("ssh-key-generator: ECDSA produces OpenSSH wire format", async ({
     page,
   }) => {
     await page.goto("/ssh-key-generator");
+    await page.locator('input[name="keyType"][value="ecdsa"]').check();
     await page.locator("#generate-btn").click();
     await expect(page.locator("#results")).toBeVisible();
 

@@ -62,6 +62,21 @@ export function createEducationalSection(
 }
 
 /**
+ * Always-open article for crawlers and AdSense reviewers. Use this for the
+ * unique how-this-tool-works copy; keep FAQs in createEducationalSection.
+ * @param {{ title: string, paragraphs: string[] }} options
+ */
+export function createVisibleArticle({ title, paragraphs = [] } = {}) {
+  if (!title || paragraphs.length === 0) return "";
+  const body = paragraphs.map((p) => `<p>${p}</p>`).join("\n        ");
+  return `
+      <article class="prose dark:prose-invert max-w-none mb-10">
+        <h2>${title}</h2>
+        ${body}
+      </article>`;
+}
+
+/**
  * FAQ Accordion with accessible details/summary and anchor IDs.
  * @param {Array<{id: string, question: string, answer: string}>} items
  * @returns {string} HTML

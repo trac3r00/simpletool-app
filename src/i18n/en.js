@@ -44,6 +44,36 @@ export default {
     recentlyUsed: "Recently Used",
     searchResultsLabel: "Search Results",
     noResults: "No tools found matching your search.",
+    noResultsHint: "Try a different search term.",
+    editorialTitle: "What runs in your browser",
+    editorialP1:
+      "SimpleTool is a catalog of developer utilities that format, inspect, and generate data in the page you already have open. JSON.parse, Web Crypto, and the other browser APIs do the work. The Worker that serves the HTML does not receive the payload you paste into a tool.",
+    editorialP2:
+      "That distinction matters because several popular formatter sites store pastes and expose them through predictable share URLs. In November 2025, researchers showed that years of saved JSON and code from those services included cloud keys, JWTs, and internal configs. A formatter that never uploads the document has no Recent Links page to scrape.",
+    editorialP3:
+      "Ads, when they appear, are labeled and non-personalized, and they stay off password, SSH, Token Studio, WireGuard, certificate, secret-scanner, encoding, and pipe pages. Use those tools for credentials. Use the JSON formatter, regex studio, cron builder, curl studio, and CIDR planner for the daily paste-and-inspect loop.",
+    flagshipsTitle: "The eight tools people actually bookmark",
+    flagshipJson:
+      "JSON Formatter pretty-prints, minifies, and validates RFC 8259 JSON with line-level errors. It does not store the document or mint a share URL.",
+    flagshipJwt:
+      "Token Studio inspects JWT header and payload locally, generates keys, and simulates JWKS. Paste a production token only if you accept that the browser, extensions, and clipboard still see it.",
+    flagshipRegex:
+      "Regex Studio draws railroad diagrams and live matches so you can explain a pattern before you ship it.",
+    flagshipCron:
+      "Cron Builder edits a classic five-field crontab and shows the next run times in plain language.",
+    flagshipPassword:
+      "Password Generator draws from crypto.getRandomValues. It does not phone home. Prefer a password manager for storage.",
+    flagshipSsh:
+      "SSH Key Generator now defaults to Ed25519, with ECDSA P-256 and RSA for older appliances. Private keys stay in the tab.",
+    flagshipCurl:
+      "Curl Studio parses a curl command into method, URL, headers, and body, or builds one from the form.",
+    flagshipCidr:
+      "IP Subnet Planner expands IPv4 and IPv6 CIDR into network, broadcast, host range, and reverse DNS labels.",
+    howToTitle: "How to use SimpleTool",
+    howToP1:
+      "Open a tool, paste or type, copy the result. There is no account. Language and theme stay in localStorage on this device. Search on the homepage filters the catalog; ?q= deep-links that filter.",
+    howToP2:
+      "Read the About, Privacy, and Terms pages for the ads allow-list, what we log at the edge for abuse prevention, and how to reach hello@simpletool.app. Security reports go to security@simpletool.app.",
     meta: {
       title: "SimpleTool - Free Online Developer Tools",
       description: "Client-side developer tools: JSON formatter, JWT inspector, regex tester, cron builder, password generator, SSH/certs, curl studio, and CIDR calculator.",
@@ -92,7 +122,7 @@ export default {
       },
       edu: {
         heading1: "What is JSON?",
-        p1: "<p>JSON (JavaScript Object Notation) is a lightweight data-interchange format that is easy for humans to read and write and easy for machines to parse and generate. It is based on a subset of the JavaScript Programming Language Standard. JSON is a text format that is completely language independent but uses conventions that are familiar to programmers of the C-family of languages.</p><p>These properties make JSON an ideal data-interchange language for web applications, APIs, and configuration files. It has become the de facto standard for data exchange on the web, largely replacing XML due to its smaller footprint and better performance.</p>",
+        p1: "<p>JSON (JavaScript Object Notation) is the text format most HTTP APIs and many config files speak. RFC 8259 is the grammar: objects, arrays, strings, numbers, booleans, and null. It is language-independent. A Python service and a browser tab can exchange the same bytes.</p><p>This formatter exists because production JSON is usually minified, and minified JSON is where people miss a missing comma or an extra trailing one. Parse it here, in the tab, instead of posting it to a site that keeps a copy.</p>",
         heading2: "How to Use This Tool",
         p2: "<ol><li>Paste your raw or messy JSON data into the Input JSON editor on the left.</li><li>Click the Format button to beautify the code with proper indentation and syntax highlighting.</li><li>Alternatively, use the Minify button to remove all whitespace for production use.</li><li>Check the Status indicator to ensure your JSON is valid; if there is an error, the tool will highlight the exact line.</li><li>Click Copy to save the formatted result to your clipboard or Clear to start over.</li></ol>",
         heading3: "Common Use Cases",
@@ -167,7 +197,7 @@ export default {
     },
     "uuid-generator": {
       name: "UUID Generator",
-      desc: "Generate standard UUIDs (v1, v4).",
+      desc: "Generate UUID v4, v7, v1, and NIL identifiers.",
       ui: {
         button0: "Generate UUID",
         label1: "UUID Version",
@@ -175,6 +205,7 @@ export default {
         label3: "Generated UUID(s)",
         label4: "Quantity: 1",
         option5: "UUID v4 (Random)",
+        optionV7: "UUID v7 (Unix time, RFC 9562)",
         option6: "UUID v1 (Timestamp)",
         option7: "NIL UUID (All zeros)",
         option8: "GUID (Microsoft)",
@@ -810,7 +841,7 @@ export default {
         th33: "Topology",
         th34: "Use Case",
         heading35: "Key Generation in Your Browser",
-        desc36: "Private keys are generated using libsodium.js directly in your browser. Keys stay in your browser and are not sent to our servers.",
+        desc36: "Private keys are generated with the Web Crypto X25519 API in your browser. Keys stay in your browser and are not sent to our servers.",
         desc37: "⚠️ Never share your private key!",
         desc38: "Paste an existing .conf file to populate the form.",
         desc39: "Generate a config to create QR code",
@@ -821,7 +852,7 @@ export default {
         badge44: "Client-Side Only",
         badge45: "Privacy First",
         heading0: "Key Generation in Your Browser",
-        desc0: "Private keys are generated using libsodium.js directly in your browser. Keys stay in your browser and are not sent to our servers.",
+        desc0: "Private keys are generated with the Web Crypto X25519 API in your browser. Keys stay in your browser and are not sent to our servers.",
         heading1: "Key Pair Generator",
         label0: "Private Key",
         warning0: "⚠️ Never share your private key!",
@@ -1288,7 +1319,7 @@ export default {
     },
     "ssh-key-generator": {
       name: "SSH Key Generator",
-      desc: "Generate RSA and ECDSA SSH keys.",
+      desc: "Generate Ed25519, ECDSA, and RSA SSH keys.",
       ui: {
         button0: "Copy",
         button1: "Download",

@@ -63,6 +63,27 @@ export function renderHomePage({
 
   <!-- Tools Grid -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16 flex-grow">
+    <section class="max-w-3xl space-y-6" aria-labelledby="home-editorial-title">
+      <h2 id="home-editorial-title" class="text-2xl font-bold text-surface-900 dark:text-surface-50" data-i18n="home.editorialTitle">${t("home.editorialTitle", currentLang)}</h2>
+      <p class="text-base leading-relaxed text-surface-700 dark:text-surface-300" data-i18n="home.editorialP1">${t("home.editorialP1", currentLang)}</p>
+      <p class="text-base leading-relaxed text-surface-700 dark:text-surface-300" data-i18n="home.editorialP2">${t("home.editorialP2", currentLang)}</p>
+      <p class="text-base leading-relaxed text-surface-700 dark:text-surface-300" data-i18n="home.editorialP3">${t("home.editorialP3", currentLang)}</p>
+      <h2 class="text-2xl font-bold text-surface-900 dark:text-surface-50 pt-4" data-i18n="home.flagshipsTitle">${t("home.flagshipsTitle", currentLang)}</h2>
+      <ul class="list-disc pl-5 space-y-3 text-base text-surface-700 dark:text-surface-300">
+        <li data-i18n="home.flagshipJson">${t("home.flagshipJson", currentLang)}</li>
+        <li data-i18n="home.flagshipJwt">${t("home.flagshipJwt", currentLang)}</li>
+        <li data-i18n="home.flagshipRegex">${t("home.flagshipRegex", currentLang)}</li>
+        <li data-i18n="home.flagshipCron">${t("home.flagshipCron", currentLang)}</li>
+        <li data-i18n="home.flagshipPassword">${t("home.flagshipPassword", currentLang)}</li>
+        <li data-i18n="home.flagshipSsh">${t("home.flagshipSsh", currentLang)}</li>
+        <li data-i18n="home.flagshipCurl">${t("home.flagshipCurl", currentLang)}</li>
+        <li data-i18n="home.flagshipCidr">${t("home.flagshipCidr", currentLang)}</li>
+      </ul>
+      <h2 class="text-2xl font-bold text-surface-900 dark:text-surface-50 pt-4" data-i18n="home.howToTitle">${t("home.howToTitle", currentLang)}</h2>
+      <p class="text-base leading-relaxed text-surface-700 dark:text-surface-300" data-i18n="home.howToP1">${t("home.howToP1", currentLang)}</p>
+      <p class="text-base leading-relaxed text-surface-700 dark:text-surface-300" data-i18n="home.howToP2">${t("home.howToP2", currentLang)}</p>
+    </section>
+
     <!-- Favorites Section (populated client-side from localStorage) -->
     <div id="favorites-section" class="hidden space-y-6">
       <div class="flex items-center gap-3">

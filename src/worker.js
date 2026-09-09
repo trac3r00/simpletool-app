@@ -40,6 +40,7 @@ import {
   respond429,
 } from "./utils/respond.js";
 import { tryLegacyRedirect } from "./utils/redirects.js";
+import { APP_VERSION } from "./utils/version.js";
 import { bundledStyles, bundledStylesHash } from "./utils/bundled-styles.js";
 import {
   setAdConfig,
@@ -55,7 +56,12 @@ import { resolveRequestLanguage } from "./utils/i18n.js";
 
 // Rate limiting state (memory fallback)
 const rateLimiter = new Map();
-const workerStartedAt = Date.now();
+let workerStartedAt = 0;
+
+function ensureWorkerStartedAt(now) {
+  if (!workerStartedAt) workerStartedAt = now;
+  return workerStartedAt;
+}
 
 // handlersById is imported from ./routes/_handlers.js (auto-generated)
 
@@ -148,7 +154,7 @@ function buildSitemapXml(origin, tools) {
   const urls = Array.from(paths)
     .sort()
     .map((path) => {
-      const loc = `${base}${path === "/" ? "" : path}`;
+      const loc = `${base}${path === "/" ? "/" : path}`;
       const isHome = path === "/";
       const isLegal = legalPaths.has(path);
       const isContent = contentPaths.has(path) || path.startsWith("/blog/");
@@ -252,7 +258,10 @@ function stripBody(response) {
 async function handleRequest(request, env, ctx) {
   const now = Date.now();
   const url = new URL(request.url);
-  const path = url.pathname;
+  const path =
+    url.pathname.length > 1 && url.pathname.endsWith("/")
+      ? url.pathname.slice(0, -1)
+      : url.pathname;
   const ip = request.headers.get("CF-Connecting-IP") || "unknown";
   const requestId = crypto.randomUUID();
   const isDev = isDevEnvironment(env, url);
@@ -326,14 +335,23 @@ async function handleRequest(request, env, ctx) {
       return Response.redirect(httpsUrl.href, 301);
     }
 
+    // Apex is the canonical host. www has no DNS today; once it points here,
+    // send AdSense and everyone else to https://simpletool.app.
+    if (!isDev && url.hostname === "www.simpletool.app") {
+      const apex = new URL(request.url);
+      apex.protocol = "https:";
+      apex.hostname = "simpletool.app";
+      return Response.redirect(apex.href, 301);
+    }
+
     // Health check endpoint
     if (path === "/health" || path === "/api/health") {
       return respondJSON(
         {
           status: "healthy",
-          uptime: now - workerStartedAt,
+          uptime: now - ensureWorkerStartedAt(now),
           timestamp: new Date().toISOString(),
-          version: "2.4.3",
+          version: APP_VERSION,
         },
         {
           headers: { "Cache-Control": "no-store" },
@@ -394,7 +412,6 @@ async function handleRequest(request, env, ctx) {
         "Contact: mailto:security@simpletool.app",
         `Expires: ${expiresAt}`,
         "Policy: https://simpletool.app/security",
-        "Hiring: https://simpletool.app/careers",
       ].join("\n");
       return respondText(securityTxt);
     }

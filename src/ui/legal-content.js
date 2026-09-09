@@ -861,7 +861,7 @@ const LEGAL_CONTENT = {
           html: `
             <div class="not-prose grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">50</div>
+                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">47</div>
                 <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Professional Tools</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
@@ -918,7 +918,7 @@ const LEGAL_CONTENT = {
                 <ul class="space-y-2 text-sm">
                   <li><strong>Cloudflare Workers:</strong> Edge delivery with low latency and a small attack surface.</li>
                   <li><strong>Web Crypto API:</strong> Browser-native cryptography for secure client-side work.</li>
-                  <li><strong>WebAssembly:</strong> Used where performance-critical execution benefits from it.</li>
+                  <li><strong>Subresource Integrity:</strong> Vendor scripts load from this origin with SRI hashes.</li>
                 </ul>
               </div>
               <div>
@@ -995,7 +995,7 @@ const LEGAL_CONTENT = {
           html: `
             <div class="not-prose grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">50</div>
+                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">47</div>
                 <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">전문 도구</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
@@ -1052,7 +1052,7 @@ const LEGAL_CONTENT = {
                 <ul class="space-y-2 text-sm">
                   <li><strong>Cloudflare Workers:</strong> 낮은 지연과 작은 공격면을 제공하는 엣지 배포.</li>
                   <li><strong>Web Crypto API:</strong> 안전한 클라이언트 사이드 작업을 위한 브라우저 네이티브 암호화.</li>
-                  <li><strong>WebAssembly:</strong> 성능이 중요한 경우 활용하는 실행 형식.</li>
+                  <li><strong>Subresource Integrity:</strong> 벤더 스크립트는 이 출처에서 SRI 해시와 함께 로드됩니다.</li>
                 </ul>
               </div>
               <div>
@@ -1129,7 +1129,7 @@ const LEGAL_CONTENT = {
           html: `
             <div class="not-prose grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">50</div>
+                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">47</div>
                 <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Professional Tools</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
@@ -1186,7 +1186,7 @@ const LEGAL_CONTENT = {
                 <ul class="space-y-2 text-sm">
                   <li><strong>Cloudflare Workers:</strong> 低遅延で攻撃面の小さいエッジ配信。</li>
                   <li><strong>Web Crypto API:</strong> 安全なクライアント処理のためのブラウザネイティブ暗号。</li>
-                  <li><strong>WebAssembly:</strong> パフォーマンスが重要な場面で活用。</li>
+                  <li><strong>Subresource Integrity:</strong> ベンダースクリプトはこのオリジンから SRI ハッシュ付きで読み込みます。</li>
                 </ul>
               </div>
               <div>
@@ -1263,7 +1263,7 @@ const LEGAL_CONTENT = {
           html: `
             <div class="not-prose grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">50</div>
+                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">47</div>
                 <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Professional Tools</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
@@ -1320,7 +1320,7 @@ const LEGAL_CONTENT = {
                 <ul class="space-y-2 text-sm">
                   <li><strong>Cloudflare Workers:</strong> Distribución en el borde con baja latencia y menor superficie de ataque.</li>
                   <li><strong>Web Crypto API:</strong> Criptografía nativa del navegador para trabajos seguros del lado del cliente.</li>
-                  <li><strong>WebAssembly:</strong> Se usa donde el rendimiento lo justifica.</li>
+                  <li><strong>Subresource Integrity:</strong> Los scripts de terceros se cargan desde este origen con hashes SRI.</li>
                 </ul>
               </div>
               <div>
@@ -1397,7 +1397,7 @@ const LEGAL_CONTENT = {
           html: `
             <div class="not-prose grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">50</div>
+                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">47</div>
                 <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">专业工具</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
@@ -1454,7 +1454,7 @@ const LEGAL_CONTENT = {
                 <ul class="space-y-2 text-sm">
                   <li><strong>Cloudflare Workers：</strong>低延迟、小攻击面的边缘分发。</li>
                   <li><strong>Web Crypto API：</strong>浏览器原生加密，支持安全的客户端操作。</li>
-                  <li><strong>WebAssembly：</strong>在需要高性能执行的场景下使用。</li>
+                  <li><strong>Subresource Integrity：</strong>第三方脚本从本站加载并带有 SRI 哈希。</li>
                 </ul>
               </div>
               <div>
@@ -1529,7 +1529,7 @@ const LEGAL_CONTENT = {
           html: `
             <div class="not-prose grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">50</div>
+                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">47</div>
                 <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">專業工具</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
@@ -1586,7 +1586,7 @@ const LEGAL_CONTENT = {
                 <ul class="space-y-2 text-sm">
                   <li><strong>Cloudflare Workers：</strong>低延遲、小攻擊面的邊緣分發。</li>
                   <li><strong>Web Crypto API：</strong>瀏覽器原生加密，支援安全的用戶端操作。</li>
-                  <li><strong>WebAssembly：</strong>在需要高效能執行的場景下使用。</li>
+                  <li><strong>Subresource Integrity：</strong>第三方指令碼從本站載入並帶有 SRI 雜湊。</li>
                 </ul>
               </div>
               <div>
@@ -1661,7 +1661,7 @@ const LEGAL_CONTENT = {
           html: `
             <div class="not-prose grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">50</div>
+                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">47</div>
                 <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Outils professionnels</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
@@ -1718,7 +1718,7 @@ const LEGAL_CONTENT = {
                 <ul class="space-y-2 text-sm">
                   <li><strong>Cloudflare Workers :</strong> Distribution en périphérie avec faible latence et surface d'attaque réduite.</li>
                   <li><strong>Web Crypto API :</strong> Cryptographie native du navigateur pour un travail sécurisé côté client.</li>
-                  <li><strong>WebAssembly :</strong> Utilisé là où l'exécution haute performance en bénéficie.</li>
+                  <li><strong>Subresource Integrity :</strong> Les scripts tiers sont chargés depuis cette origine avec des hachages SRI.</li>
                 </ul>
               </div>
               <div>
@@ -1795,7 +1795,7 @@ const LEGAL_CONTENT = {
           html: `
             <div class="not-prose grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">50</div>
+                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">47</div>
                 <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Professionelle Tools</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
@@ -1852,7 +1852,7 @@ const LEGAL_CONTENT = {
                 <ul class="space-y-2 text-sm">
                   <li><strong>Cloudflare Workers:</strong> Edge-Auslieferung mit niedriger Latenz und kleiner Angriffsfläche.</li>
                   <li><strong>Web Crypto API:</strong> Browser-native Kryptographie für sichere clientseitige Arbeit.</li>
-                  <li><strong>WebAssembly:</strong> Wird dort eingesetzt, wo leistungskritische Ausführung davon profitiert.</li>
+                  <li><strong>Subresource Integrity:</strong> Drittanbieter-Skripte werden von diesem Ursprung mit SRI-Hashes geladen.</li>
                 </ul>
               </div>
               <div>
@@ -1929,7 +1929,7 @@ const LEGAL_CONTENT = {
           html: `
             <div class="not-prose grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">50</div>
+                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">47</div>
                 <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Ferramentas profissionais</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
@@ -1986,7 +1986,7 @@ const LEGAL_CONTENT = {
                 <ul class="space-y-2 text-sm">
                   <li><strong>Cloudflare Workers:</strong> Entrega de borda com baixa latência e superfície de ataque reduzida.</li>
                   <li><strong>Web Crypto API:</strong> Criptografia nativa do navegador para trabalho seguro do lado do cliente.</li>
-                  <li><strong>WebAssembly:</strong> Usado onde a execução de alto desempenho se beneficia disso.</li>
+                  <li><strong>Subresource Integrity:</strong> Scripts de terceiros são carregados nesta origem com hashes SRI.</li>
                 </ul>
               </div>
               <div>
@@ -2063,7 +2063,7 @@ const LEGAL_CONTENT = {
           html: `
             <div class="not-prose grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">50</div>
+                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">47</div>
                 <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Công cụ chuyên nghiệp</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
@@ -2120,7 +2120,7 @@ const LEGAL_CONTENT = {
                 <ul class="space-y-2 text-sm">
                   <li><strong>Cloudflare Workers:</strong> Phân phối tại biên với độ trễ thấp và bề mặt tấn công nhỏ.</li>
                   <li><strong>Web Crypto API:</strong> Mã hóa gốc của trình duyệt cho công việc phía máy khách an toàn.</li>
-                  <li><strong>WebAssembly:</strong> Được sử dụng khi cần hiệu năng thực thi cao.</li>
+                  <li><strong>Subresource Integrity:</strong> Script bên thứ ba được tải từ origin này kèm hash SRI.</li>
                 </ul>
               </div>
               <div>

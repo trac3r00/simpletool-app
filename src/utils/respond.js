@@ -3,6 +3,7 @@
  */
 
 import { getSecurityHeaders, generateNonce } from "./security.js";
+import { getAdConfig } from "./ads.js";
 import {
   createPageTemplate,
   getThemeBootstrapScript,
@@ -53,7 +54,8 @@ function injectLanguageBootstrap(html) {
   return `${bootstrap}\n${html}`;
 }
 
-function injectAdSenseScript(html, pathname = "/") {
+function injectAdSenseScript(html, pathname) {
+  if (!pathname) return html;
   if (html.includes("adsbygoogle.js") || html.includes("requestNonPersonalizedAds")) {
     return html;
   }
@@ -103,7 +105,7 @@ export function respondHTML(html, options = {}) {
   const htmlWithLang = injectLanguageBootstrap(htmlWithTheme);
   const htmlWithAds = injectAdSenseScript(
     htmlWithLang,
-    url ? url.pathname : "/",
+    url ? url.pathname : getAdConfig().path,
   );
 
   // Inject nonce into ALL script tags (both inline and external)

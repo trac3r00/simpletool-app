@@ -8,16 +8,19 @@
 
 Manual Display units only. Non-personalized ads. Never Auto ads.
 
-A publisher ID (`ADSENSE_CLIENT`) is enough for site connection: `/ads.txt`
-and the `google-adsense-account` meta ship without loading ad scripts. Ad
-units, `adsbygoogle.js`, and the Google Ads CSP hosts stay off until
-`ADSENSE_SLOTS` contains real slot IDs.
+A publisher ID (`ADSENSE_CLIENT`) is enough for site connection: `/ads.txt`,
+the `google-adsense-account` meta, and Google's official `adsbygoogle.js`
+snippet as a **static** `<head>` script on script-allow pages (home, JSON
+Formatter, About/Privacy/Terms/changelog, blog, FAQ). Ad **units**
+(`<ins class="adsbygoogle">`) stay off until `ADSENSE_SLOTS` contains real
+slot IDs. Secret tools never load the script.
 
 ## Current implementation
 
 - Policy and rendering live in [`src/utils/ads.js`](../src/utils/ads.js).
 - Worker wiring lives in [`src/worker.js`](../src/worker.js).
-- CSP adds Google Ads hosts only while ads are enabled.
+- CSP adds Google Ads hosts on pages that may load the client script
+  (`pageAllowsAdScript`), even before slot IDs exist.
 - GTM and GA stay out of CSP.
 
 ## Configuration
@@ -29,7 +32,8 @@ units, `adsbygoogle.js`, and the Google Ads CSP hosts stay off until
   - `legal` — About, Privacy, Terms, and changelog only
 - `ADSENSE_SLOT` can fill those three keys if a unit is reused.
 - `tool`, `sidebar`, and `bottom` are ignored.
-- Contact, Security, and Careers stay off the allow list (too thin for ads).
+- Contact, Security, and Careers stay off the unit allow list (too thin for ads).
+- Blog and FAQ load the client script for site-connect but are not unit inventory.
 - Dev / local environments disable ads, ads.txt, and the account meta.
 
 Example:
@@ -45,15 +49,15 @@ Example:
 ## Hard rules
 
 - Non-personalized only (`requestNonPersonalizedAds = 1`, `data-npa-on="1"`).
-- Script loads after first paint, and only if a reserved slot exists on the page.
+- Client script is the official static tag in `<head>` (required for AdSense site-connect). Units still wait for slot IDs. Auto ads stay off in the AdSense UI.
 - Visible `Advertisement` label and reserved height (`min-height: 280px`).
 - Deny list never loads the script: password, SSH, Token Studio, WireGuard, certs, secret scanner, encoding workbench, pipe.
 - Other tool pages also stay off unless they are on the allow list.
 
 ## Verification
 
-1. Publisher ID, empty `ADSENSE_SLOTS` → `/ads.txt` + `google-adsense-account` meta, no `adsbygoogle.js`, no `<ins>`.
+1. Publisher ID, empty `ADSENSE_SLOTS` → `/ads.txt` + `google-adsense-account` meta + static `adsbygoogle.js?client=` in `<head>`, no `<ins>`.
 2. Configured slots → `/ads.txt` ends with a newline and `/` plus `/json-formatter` plus `/about` render one reserved slot each.
 3. `/password-generator` still has no ads script.
 4. `/contact`, `/security`, and `/careers` have no ads script.
-5. CSP includes `pagead2.googlesyndication.com` only while ads are enabled, and never GTM/GA.
+5. CSP includes `pagead2.googlesyndication.com` on script-allow pages (including `/blog`) once a publisher ID exists, and never GTM/GA.

@@ -5,6 +5,7 @@
  */
 
 import { bundledStylesHash } from "./bundled-styles.js";
+import { APP_VERSION } from "./version.js";
 import { getKeyboardShortcutsScript } from "./keyboard-shortcuts.js";
 import {
   TOOLS,
@@ -769,7 +770,7 @@ export function getFooterHTML(options = {}) {
                <span class="font-bold text-lg text-surface-900 dark:text-surface-50">SimpleTool</span>
              </div>
              <p class="text-sm text-surface-600 dark:text-surface-400 mb-4" data-i18n="footer.tagline">${t("footer.tagline", currentLang)}</p>
-              <p class="text-xs text-surface-500 dark:text-surface-400">© ${new Date().getFullYear()} SimpleTool · <a href="/changelog" class="hover:text-primary-500 transition-colors">v2.4.3</a></p>
+              <p class="text-xs text-surface-500 dark:text-surface-400">© ${new Date().getFullYear()} SimpleTool · <a href="/changelog" class="hover:text-primary-500 transition-colors">v${APP_VERSION}</a></p>
            </div>
            
            <!-- Column 2: Top Tools -->
@@ -834,6 +835,33 @@ export function getFooterHTML(options = {}) {
 /**
  * Create a complete base HTML template
  */
+function isRegisteredToolPath(pagePath) {
+  const normalized =
+    pagePath.length > 1 && pagePath.endsWith("/")
+      ? pagePath.slice(0, -1)
+      : pagePath;
+  return TOOLS.some((tool) => tool.path === normalized);
+}
+
+function renderJsonLd(schema, pagePath, title, pageUrl, description) {
+  if (schema !== undefined) {
+    return schema
+      ? `<script type="application/ld+json">${JSON.stringify(schema)}</script>`
+      : "";
+  }
+  if (!isRegisteredToolPath(pagePath)) return "";
+  return `<script type="application/ld+json">${JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: title,
+    url: pageUrl,
+    description,
+    applicationCategory: "DeveloperApplication",
+    operatingSystem: "Any",
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  })}</script>`;
+}
+
 export function createPageTemplate(options) {
   const {
     title,
@@ -885,6 +913,7 @@ export function createPageTemplate(options) {
   <meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#0f0f12" media="(prefers-color-scheme: dark)">
   <meta property="og:type" content="website">
+  <meta property="og:locale" content="${currentLang.replace("-", "_")}">
   <meta property="og:url" content="${pageUrl}">
   <meta property="og:title" content="${fullTitle}">
   <meta property="og:description" content="${description}">
@@ -896,7 +925,9 @@ export function createPageTemplate(options) {
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="SimpleTool">
   <meta name="twitter:image" content="https://simpletool.app/og-image.png">
+  <meta name="twitter:image:alt" content="SimpleTool">
   ${keywordsTag}
   ${getThemeBootstrapScript()}
   ${getLanguageBootstrapScript(currentLang)}
@@ -915,7 +946,7 @@ export function createPageTemplate(options) {
     </div>
   </div>
   ${getFooterHTML({ lang: currentLang })}
-  ${schema !== undefined ? (schema ? `<script type="application/ld+json">${JSON.stringify(schema)}</script>` : "") : path ? `<script type="application/ld+json">${JSON.stringify({ "@context": "https://schema.org", "@type": "SoftwareApplication", name: title, url: pageUrl, description, applicationCategory: "DeveloperApplication", operatingSystem: "Any", offers: { "@type": "Offer", price: "0", priceCurrency: "USD" } })}</script>` : ""}
+  ${renderJsonLd(schema, pagePath, title, pageUrl, description)}
    ${getThemeScript()}
    ${getLanguageScript(toolId, currentLang, i18nToolIds)}
    ${getSearchScript({ lang: currentLang })}

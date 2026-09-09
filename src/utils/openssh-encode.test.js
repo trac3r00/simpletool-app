@@ -63,9 +63,24 @@ describe("encodeOpenSSHPublicKey", () => {
     expect(encoded.startsWith("ssh-rsa AAAAB3NzaC1yc2E")).toBe(true);
   });
 
+  it("encodes Ed25519 public keys in OpenSSH wire format", () => {
+    const key = hexToBytes(
+      "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a",
+    );
+    const encoded = encodeOpenSSHPublicKey({
+      algo: "ssh-ed25519",
+      params: { key },
+    });
+
+    expect(encoded.startsWith("ssh-ed25519 AAAA")).toBe(true);
+    expect(encoded).toBe(
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINdamAGCsQq31Uv+08lkBzoO4XLz2qYjJa8CGmj3B1Ea",
+    );
+  });
+
   it("throws for unsupported algorithms", () => {
     expect(() =>
-      encodeOpenSSHPublicKey({ algo: "ssh-ed25519", params: {} }),
-    ).toThrow("Unsupported OpenSSH public key algorithm: ssh-ed25519");
+      encodeOpenSSHPublicKey({ algo: "ssh-dss", params: {} }),
+    ).toThrow("Unsupported OpenSSH public key algorithm: ssh-dss");
   });
 });

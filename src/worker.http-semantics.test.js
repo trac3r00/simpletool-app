@@ -60,6 +60,14 @@ describe("HEAD mirrors GET (audit M1)", () => {
     expect(mismatches).toEqual([]);
   });
 
+  it("serves legal pages with or without a trailing slash", async () => {
+    const slash = await fetchWorker("https://simpletool.app/terms/");
+    const bare = await fetchWorker("https://simpletool.app/terms");
+    expect(slash.status).toBe(200);
+    expect(bare.status).toBe(200);
+    expect(await slash.text()).toContain("Terms of Service");
+  });
+
   it("HEAD on an unknown path still 404s like GET", async () => {
     const res = await fetchWorker("https://simpletool.app/no-such-page", {
       method: "HEAD",
@@ -202,7 +210,7 @@ describe("AdSense site-connect without slots", () => {
     );
   });
 
-  it("puts the account meta on the homepage without loading ads", async () => {
+  it("puts the account meta and client script on the homepage without ad units", async () => {
     const res = await fetchWorker(
       "https://simpletool.app/",
       {},
@@ -215,8 +223,38 @@ describe("AdSense site-connect without slots", () => {
     expect(html).toContain(
       '<meta name="google-adsense-account" content="ca-pub-5134881365131182">',
     );
-    expect(html).not.toContain("adsbygoogle.js");
-    expect(html).not.toContain("<ins");
+    expect(html).toMatch(
+      /<script[^>]*src="https:\/\/pagead2\.googlesyndication\.com\/pagead\/js\/adsbygoogle\.js\?client=ca-pub-5134881365131182"/,
+    );
+    expect(html).toContain("requestNonPersonalizedAds = 1");
+    expect(html).not.toContain("<ins class=\"adsbygoogle\"");
+  });
+
+  it("keeps the client script off secret tools", async () => {
+    const res = await fetchWorker(
+      "https://simpletool.app/password-generator",
+      {},
+      makeEnv({
+        ADSENSE_CLIENT: "ca-pub-5134881365131182",
+        ADSENSE_SLOTS: "{}",
+      }),
+    );
+    const html = await res.text();
+    expect(html).toContain(
+      '<meta name="google-adsense-account" content="ca-pub-5134881365131182">',
+    );
+    expect(html).not.toMatch(
+      /pagead2\.googlesyndication\.com\/pagead\/js\/adsbygoogle\.js/,
+    );
+    expect(html).not.toContain("requestNonPersonalizedAds");
+  });
+
+  it("301s www to the apex host", async () => {
+    const res = await fetchWorker("https://www.simpletool.app/json-formatter?q=1");
+    expect(res.status).toBe(301);
+    expect(res.headers.get("Location")).toBe(
+      "https://simpletool.app/json-formatter?q=1",
+    );
   });
 
   it("404s ads.txt without a publisher id", async () => {
@@ -248,7 +286,7 @@ describe("sitemap lastmod reflects content, not the request", () => {
     const xml = await getSitemap();
 
     for (const loc of [
-      "https://simpletool.app",
+      "https://simpletool.app/",
       "https://simpletool.app/json-formatter",
       "https://simpletool.app/privacy",
       "https://simpletool.app/faq",

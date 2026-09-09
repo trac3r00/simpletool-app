@@ -49,6 +49,20 @@ export function pageAllowsAds(pathname = "/") {
   return LEGAL_AD_PATHS.includes(path);
 }
 
+/**
+ * Client-script pages. Broader than unit inventory so AdSense site-connect
+ * and content URLs (blog, FAQ) carry the official head snippet. Secret
+ * tools stay off.
+ */
+export function pageAllowsAdScript(pathname = "/") {
+  const path = normalizePath(pathname);
+  if (DENY_AD_PATHS.some((denied) => path === denied)) return false;
+  if (pageAllowsAds(path)) return true;
+  if (path === "/blog" || path.startsWith("/blog/")) return true;
+  if (path === "/faq") return true;
+  return false;
+}
+
 export function slotKeyForPath(pathname = "/") {
   const path = normalizePath(pathname);
   if (!pageAllowsAds(path)) return null;
@@ -152,50 +166,29 @@ export function getAdSenseAccountMeta() {
 }
 
 /**
- * Google AdSense script tag. Loads after first paint. NPA only.
+ * Google AdSense script tag. NPA only. No GTM.
  */
 export function getGtagScript() {
   return "";
 }
 
+/**
+ * Official AdSense head snippet. Static tags — Google's site-connect crawler
+ * looks for adsbygoogle.js between <head> and </head>, not a post-load
+ * createElement. Units still require real slot IDs (see getAdSlotHTML).
+ * https://support.google.com/adsense/answer/12176698
+ */
 export function getAdSenseScript(pathname = adConfig.path) {
-  if (!isAdsEnabled()) return "";
-  if (!pageAllowsAds(pathname)) return "";
+  if (!hasPublisherClient()) return "";
+  if (!pageAllowsAdScript(pathname)) return "";
   const client = adConfig.client;
 
   return `
     <script>
       window.adsbygoogle = window.adsbygoogle || [];
       window.adsbygoogle.requestNonPersonalizedAds = 1;
-      (function() {
-        function bootAds() {
-          if (document.querySelector('script[data-ad-client="${client}"]')) return;
-          var slots = document.querySelectorAll('ins.adsbygoogle[data-ad-slot]');
-          if (!slots.length) return;
-          var script = document.createElement('script');
-          script.async = true;
-          script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${client}';
-          script.crossOrigin = 'anonymous';
-          script.dataset.adClient = '${client}';
-          script.onload = function() {
-            slots.forEach(function() {
-              try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) {}
-            });
-          };
-          script.onerror = function() { this.remove(); };
-          document.head.appendChild(script);
-        }
-        function afterPaint() {
-          if (window.requestAnimationFrame) {
-            requestAnimationFrame(function() { setTimeout(bootAds, 0); });
-          } else {
-            setTimeout(bootAds, 0);
-          }
-        }
-        if (document.readyState === 'complete') afterPaint();
-        else window.addEventListener('load', afterPaint, { once: true });
-      })();
     </script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${client}" crossorigin="anonymous"></script>
   `;
 }
 
@@ -231,6 +224,7 @@ export function getAdSlotHTML(slotKey, options = {}) {
            data-ad-format="${format}"
            data-npa-on="1"
            data-full-width-responsive="true"></ins>
+      <script>(window.adsbygoogle = window.adsbygoogle || []).push({});</script>
     </aside>
   `;
 }

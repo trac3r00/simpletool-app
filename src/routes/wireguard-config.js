@@ -1,7 +1,7 @@
 /**
  * WireGuard Config Studio
  * Generate, parse, and manage WireGuard configurations client-side
- * All key generation happens locally using libsodium.js
+ * All key generation happens locally using Web Crypto X25519.
  */
 
 import { respondHTML } from "../utils/respond.js";
@@ -47,7 +47,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
       {
         text: translation?.ui?.badge41 || "Client-Side Keys",
         tooltip:
-          "All private keys generated locally in your browser using libsodium.js. Keys stay in your browser and are not sent to our servers.",
+          "Private keys are generated in the browser with the Web Crypto X25519 API. Keys stay in your browser and are not sent to our servers.",
       },
     ],
     { toolId: "wireguard-config" },
@@ -60,34 +60,37 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
       .filter(Boolean) || [];
 
   const content = `
-    <!-- Libsodium for WireGuard key generation -->
-    <!-- WireGuard key generation uses Web Crypto API (X25519) with libsodium fallback -->
     <script>
     (function() {
-      // Polyfill sodium API using Web Crypto or fallback
-      var _sodium = { ready: Promise.resolve(), _ready: false };
+      function base64UrlToBytes(value) {
+        var normalized = value.replace(/-/g, '+').replace(/_/g, '/');
+        var padded = normalized + '='.repeat((4 - (normalized.length % 4)) % 4);
+        var binary = atob(padded);
+        var bytes = new Uint8Array(binary.length);
+        for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+        return bytes;
+      }
 
       async function generateX25519KeyPair() {
-        // Try Web Crypto X25519 first
-        try {
-          var keyPair = await crypto.subtle.generateKey({ name: 'X25519' }, true, ['deriveBits']);
-          var privRaw = new Uint8Array(await crypto.subtle.exportKey('raw', keyPair.privateKey));
-          var pubRaw = new Uint8Array(await crypto.subtle.exportKey('raw', keyPair.publicKey));
-          return { privateKey: privRaw, publicKey: pubRaw };
-        } catch(e) {
-          // Fallback: generate random 32-byte Curve25519 private key and derive public key
-          var priv = new Uint8Array(32);
-          crypto.getRandomValues(priv);
-          // Clamp private key per Curve25519 spec
-          priv[0] &= 248;
-          priv[31] &= 127;
-          priv[31] |= 64;
-          // For WireGuard, we generate random keys - public key derivation requires Curve25519 math
-          // Use a simplified approach: generate both keys randomly (user can replace with real keys)
-          var pub = new Uint8Array(32);
-          crypto.getRandomValues(pub);
-          return { privateKey: priv, publicKey: pub };
+        if (!crypto.subtle || !crypto.subtle.generateKey) {
+          throw new Error('Web Crypto is not available in this browser');
         }
+        var keyPair = await crypto.subtle.generateKey({ name: 'X25519' }, true, ['deriveBits']);
+        var pubRaw = new Uint8Array(await crypto.subtle.exportKey('raw', keyPair.publicKey));
+        var privRaw;
+        try {
+          privRaw = new Uint8Array(await crypto.subtle.exportKey('raw', keyPair.privateKey));
+        } catch (rawErr) {
+          var jwk = await crypto.subtle.exportKey('jwk', keyPair.privateKey);
+          if (!jwk || typeof jwk.d !== 'string') {
+            throw new Error('X25519 private key export is not supported in this browser');
+          }
+          privRaw = base64UrlToBytes(jwk.d);
+        }
+        if (privRaw.length !== 32 || pubRaw.length !== 32) {
+          throw new Error('X25519 keys must be 32 bytes');
+        }
+        return { privateKey: privRaw, publicKey: pubRaw };
       }
 
       function toBase64(arr) {
@@ -96,13 +99,8 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
         return btoa(bin);
       }
 
-      window.sodium = {
-        ready: Promise.resolve(),
-        crypto_box_keypair: function() { return null; },
-        to_base64: function(arr) { return toBase64(arr); },
-        base64_variants: { ORIGINAL: 0 },
-        _generateKeyPair: generateX25519KeyPair
-      };
+      window.generateWireGuardKeyPair = generateX25519KeyPair;
+      window.wireGuardToBase64 = toBase64;
     })();
     </script>
     <script src="/vendor/qrcode.min.js" integrity="sha384-B3w4ObQEXH2D3E8FlVZ+pBTHHTrPFwqbXjfU/95D5ekt8DVTeG+cB6s6nVpsvh3m" crossorigin="anonymous"></script>
@@ -365,70 +363,39 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
 
   const script = `
     <script>
-      // Wait for sodium polyfill
-      let sodiumReady = false;
-
-      async function initSodium() {
-        try {
-          if (typeof sodium !== 'undefined' && sodium && sodium.ready) {
-            await sodium.ready;
-            sodiumReady = true;
-          }
-        } catch (e) {
-          console.warn('sodium init:', e.message);
-        }
-      }
-
-      initSodium();
-
       // Peer counter for unique IDs
       let peerCounter = 0;
       const peers = new Map();
 
       function toBase64(arr) {
-        var bin = '';
-        for (var i = 0; i < arr.length; i++) bin += String.fromCharCode(arr[i]);
-        return btoa(bin);
+        return (window.wireGuardToBase64 || function(bytes) {
+          var bin = '';
+          for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+          return btoa(bin);
+        })(arr);
       }
 
-      // Key Generation
       document.getElementById('generate-keys-btn').addEventListener('click', async () => {
-        if (!sodiumReady) await initSodium();
-
         try {
-          let privateKey, publicKey;
-          // Try Web Crypto X25519 first
-          try {
-            const keyPair = await crypto.subtle.generateKey({ name: 'X25519' }, true, ['deriveBits']);
-            const privRaw = new Uint8Array(await crypto.subtle.exportKey('raw', keyPair.privateKey));
-            const pubRaw = new Uint8Array(await crypto.subtle.exportKey('raw', keyPair.publicKey));
-            privateKey = toBase64(privRaw);
-            publicKey = toBase64(pubRaw);
-          } catch (wcErr) {
-            // Fallback to sodium polyfill
-            if (sodiumReady && sodium._generateKeyPair) {
-              const kp = await sodium._generateKeyPair();
-              privateKey = toBase64(kp.privateKey);
-              publicKey = toBase64(kp.publicKey);
-            } else {
-              showValidation('error', ['Key generation not supported in this browser. Please use a modern browser.']);
-              return;
-            }
+          if (typeof generateWireGuardKeyPair !== 'function') {
+            throw new Error('Key generator failed to load');
           }
+          const kp = await generateWireGuardKeyPair();
+          const privateKey = toBase64(kp.privateKey);
+          const publicKey = toBase64(kp.publicKey);
 
           document.getElementById('private-key').value = privateKey;
           document.getElementById('public-key').value = publicKey;
-          
-          // Also fill in the interface private key if empty
+
           const ifacePrivateKey = document.getElementById('iface-private-key');
           if (!ifacePrivateKey.value) {
             ifacePrivateKey.value = privateKey;
           }
-          
+
           updateConfigPreview();
           showValidation('success', ['Key pair generated successfully!']);
         } catch (error) {
-          showValidation('error', ['Failed to generate keys: ' + error.message]);
+          showValidation('error', ['Failed to generate keys: ' + error.message + '. Use a current Chrome, Firefox, or Safari, or run wg genkey locally.']);
         }
       });
 

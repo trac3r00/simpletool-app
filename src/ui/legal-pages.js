@@ -14,7 +14,7 @@ import { getLegalSections } from "./legal-content.js";
 
 const SITE_NAME = "SimpleTool App";
 const CONTACT_EMAIL = "hello@simpletool.app";
-const LAST_UPDATED_ISO = "2026-08-30";
+const LAST_UPDATED_ISO = "2026-09-08";
 
 function renderLegalShell({
   title,
@@ -30,6 +30,13 @@ function renderLegalShell({
     content,
     path,
     lang,
+    schema: {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      name: title,
+      description,
+      url: `https://simpletool.app${path}`,
+    },
   });
 
   return respondHTML(html);

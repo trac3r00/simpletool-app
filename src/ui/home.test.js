@@ -30,6 +30,12 @@ describe("renderHomePage", () => {
     expect(countOccurrences(html, "data-i18n-bootstrap")).toBe(1);
     expect(countOccurrences(html, "data-bundled-stylesheet")).toBe(1);
     expect(countOccurrences(html, "serviceWorker.register")).toBe(1);
+    expect(html).toContain('data-i18n="home.editorialTitle"');
+    expect(html).toContain('data-i18n="home.flagshipJson"');
+    expect(html).toContain("JSON.parse");
+    expect(html.indexOf('data-i18n="home.editorialTitle"')).toBeLessThan(
+      html.indexOf('id="tools-categories-container"'),
+    );
   });
 
   it("keeps localized shell metadata and alternate links", async () => {

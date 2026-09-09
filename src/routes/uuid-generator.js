@@ -45,7 +45,7 @@ function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
     { emoji: "🔑" },
     translation?.name || "UUID Generator",
     translation?.desc ||
-      "Generate unique identifiers instantly (UUID v4, v1, NIL, GUID)",
+      "Generate unique identifiers instantly (UUID v4, v7, v1, NIL, GUID)",
     [
       {
         text: translation?.ui?.badge16 || "Bulk Generation",
@@ -75,8 +75,9 @@ function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
             <!-- UUID Type Selection -->
             <div>
               <label for="uuid-version" class="label"><span data-i18n="tools.uuid-generator.ui.label1">UUID Version</span></label>
-              <select id="uuid-version" class="input" data-tooltip="v4 is random and most common. v1 is time-based." data-i18n-tooltip="tools.uuid-generator.ui.tip0">
+              <select id="uuid-version" class="input" data-tooltip="v4 is random. v7 is time-sortable. v1 is legacy time-based." data-i18n-tooltip="tools.uuid-generator.ui.tip0">
                 <option value="v4" selected data-i18n="tools.uuid-generator.ui.option5">UUID v4 (Random)</option>
+                <option value="v7" data-i18n="tools.uuid-generator.ui.optionV7">UUID v7 (Unix time, RFC 9562)</option>
                 <option value="v1" data-i18n="tools.uuid-generator.ui.option6">UUID v1 (Timestamp)</option>
                 <option value="nil" data-i18n="tools.uuid-generator.ui.option7">NIL UUID (All zeros)</option>
               </select>
@@ -186,7 +187,8 @@ function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
 
       const descriptions = {
         v4: 'Cryptographically strong random UUID',
-        v1: 'Timestamp-based UUID with system info',
+        v7: 'Unix-time sortable UUID (RFC 9562)',
+        v1: 'Timestamp-based UUID with a random node (not a MAC address)',
         nil: 'All-zero UUID used as null value'
       };
 
@@ -233,19 +235,42 @@ function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
         // Use crypto.getRandomValues for clock sequence and node
         const randomBytes = new Uint8Array(8);
         crypto.getRandomValues(randomBytes);
+        randomBytes[2] |= 0x01;
 
         // Clock sequence: 14 bits with variant bits set
         const clockSeqLow = randomBytes[0];
         const clockSeqHi = (randomBytes[1] & 0x3f) | 0x80; // Variant 10
         const clockSeq = ((clockSeqHi << 8) | clockSeqLow).toString(16).padStart(4, '0');
 
-        // Node: 48 bits (6 bytes)
+        // Node: 48 bits (6 bytes). RFC 4122 requires the multicast bit when the node is random.
         const node = Array.from(randomBytes.slice(2, 8), b => b.toString(16).padStart(2, '0')).join('');
 
         return \`\${timeLow}-\${timeMid}-\${timeHi}-\${clockSeq}-\${node}\`;
       }
 
       // NIL UUID
+      function generateUUIDv7() {
+        const bytes = new Uint8Array(16);
+        crypto.getRandomValues(bytes);
+        const ts = BigInt(Date.now());
+        bytes[0] = Number((ts >> 40n) & 0xffn);
+        bytes[1] = Number((ts >> 32n) & 0xffn);
+        bytes[2] = Number((ts >> 24n) & 0xffn);
+        bytes[3] = Number((ts >> 16n) & 0xffn);
+        bytes[4] = Number((ts >> 8n) & 0xffn);
+        bytes[5] = Number(ts & 0xffn);
+        bytes[6] = (bytes[6] & 0x0f) | 0x70;
+        bytes[8] = (bytes[8] & 0x3f) | 0x80;
+        const hex = Array.from(bytes, b => b.toString(16).padStart(2, '0'));
+        return [
+          hex.slice(0, 4).join(''),
+          hex.slice(4, 6).join(''),
+          hex.slice(6, 8).join(''),
+          hex.slice(8, 10).join(''),
+          hex.slice(10, 16).join('')
+        ].join('-');
+      }
+
       function generateNIL() {
         return '00000000-0000-0000-0000-000000000000';
       }
@@ -276,6 +301,8 @@ function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
 
           if (version === 'v4') {
             uuid = generateUUIDv4();
+          } else if (version === 'v7') {
+            uuid = generateUUIDv7();
           } else if (version === 'v1') {
             uuid = generateUUIDv1();
           } else if (version === 'nil') {
