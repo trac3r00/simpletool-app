@@ -37,55 +37,60 @@ export default {
     download: "Download",
   },
   home: {
-    heroTitle: "Free Online Developer Tools",
-    heroLine1: "A collection of free, privacy-first tools for your daily workflow.",
+    heroTitle: "Developer tools that stay in the browser",
+    heroLine1: "Format, inspect, and generate in this tab. No account.",
     heroLine2: "Labeled non-personalized ads may appear on some pages. Password and key tools stay ad-free.",
+    trustClient: "Runs in the tab",
+    trustAccount: "No account",
+    trustCount: "47 tools",
+    trustLangs: "10 languages",
+    flagshipsNav: "Flagship tools",
     favorites: "Favorites",
     recentlyUsed: "Recently Used",
     searchResultsLabel: "Search Results",
     noResults: "No tools found matching your search.",
     noResultsHint: "Try a different search term.",
-    editorialTitle: "What runs in your browser",
+    editorialTitle: "What runs in the tab",
     editorialP1:
-      "SimpleTool is a catalog of developer utilities that format, inspect, and generate data in the page you already have open. JSON.parse, Web Crypto, and the other browser APIs do the work. The Worker that serves the HTML does not receive the payload you paste into a tool.",
+      "JSON.parse, Web Crypto, and the other browser APIs do the work. The Worker that serves the HTML does not receive the payload you paste into a tool.",
     editorialP2:
-      "That distinction matters because several popular formatter sites store pastes and expose them through predictable share URLs. In November 2025, researchers showed that years of saved JSON and code from those services included cloud keys, JWTs, and internal configs. A formatter that never uploads the document has no Recent Links page to scrape.",
+      "Several formatter sites store pastes and expose them through predictable share URLs. In November 2025, researchers showed years of saved JSON and code from those services included cloud keys, JWTs, and internal configs. A formatter that never uploads the document has no Recent Links page to scrape.",
     editorialP3:
-      "Ads, when they appear, are labeled and non-personalized, and they stay off password, SSH, Token Studio, WireGuard, certificate, secret-scanner, encoding, and pipe pages. Use those tools for credentials. Use the JSON formatter, regex studio, cron builder, curl studio, and CIDR planner for the daily paste-and-inspect loop.",
-    flagshipsTitle: "The eight tools people actually bookmark",
+      "Ads, when they appear, are labeled and non-personalized. They stay off password, SSH, Token Studio, WireGuard, certificate, secret-scanner, encoding, and pipe pages.",
+    flagshipsTitle: "Eight tools people bookmark",
     flagshipJson:
-      "JSON Formatter pretty-prints, minifies, and validates RFC 8259 JSON with line-level errors. It does not store the document or mint a share URL.",
+      "Pretty-print, minify, and validate RFC 8259 JSON with line-level errors. No stored document, no share URL.",
     flagshipJwt:
-      "Token Studio inspects JWT header and payload locally, generates keys, and simulates JWKS. Paste a production token only if you accept that the browser, extensions, and clipboard still see it.",
+      "Inspect JWT header and payload locally, generate keys, and simulate JWKS. The browser, extensions, and clipboard still see what you paste.",
     flagshipRegex:
-      "Regex Studio draws railroad diagrams and live matches so you can explain a pattern before you ship it.",
+      "Railroad diagrams and live matches so you can explain a pattern before you ship it.",
     flagshipCron:
-      "Cron Builder edits a classic five-field crontab and shows the next run times in plain language.",
+      "Edit a five-field crontab and see the next run times in plain language.",
     flagshipPassword:
-      "Password Generator draws from crypto.getRandomValues. It does not phone home. Prefer a password manager for storage.",
+      "Draws from crypto.getRandomValues. Prefer a password manager for storage.",
     flagshipSsh:
-      "SSH Key Generator now defaults to Ed25519, with ECDSA P-256 and RSA for older appliances. Private keys stay in the tab.",
+      "Defaults to Ed25519, with ECDSA P-256 and RSA for older appliances. Private keys stay in the tab.",
     flagshipCurl:
-      "Curl Studio parses a curl command into method, URL, headers, and body, or builds one from the form.",
+      "Parse a curl command into method, URL, headers, and body, or build one from the form.",
     flagshipCidr:
-      "IP Subnet Planner expands IPv4 and IPv6 CIDR into network, broadcast, host range, and reverse DNS labels.",
-    howToTitle: "How to use SimpleTool",
+      "Expand IPv4 and IPv6 CIDR into network, broadcast, host range, and reverse DNS labels.",
+    howToTitle: "How to use it",
     howToP1:
-      "Open a tool, paste or type, copy the result. There is no account. Language and theme stay in localStorage on this device. Search on the homepage filters the catalog; ?q= deep-links that filter.",
+      "Open a tool, paste or type, copy the result. Language and theme stay in localStorage on this device. Homepage search filters the catalog; ?q= deep-links that filter.",
     howToP2:
-      "Read the About, Privacy, and Terms pages for the ads allow-list, what we log at the edge for abuse prevention, and how to reach hello@simpletool.app. Security reports go to security@simpletool.app.",
+      "About, Privacy, and Terms cover the ads allow-list and edge logs. Security reports go to security@simpletool.app.",
     meta: {
-      title: "SimpleTool - Free Online Developer Tools",
+      title: "SimpleTool — Developer tools in the browser",
       description: "Client-side developer tools: JSON formatter, JWT inspector, regex tester, cron builder, password generator, SSH/certs, curl studio, and CIDR calculator.",
       keywords: "online tools, developer tools, JSON formatter, password generator, hash calculator, UUID generator, regex tester, base64 decoder, QR code generator, free tools, privacy tools",
     },
     cat: {
-      formatters: "🔄 Formatters & Converters",
-      security: "🛡️ Security & Crypto",
-      network: "🌐 Network & Web",
-      generators: "⚡ Generators",
-      game: "🎮 Games & Fun",
-      utils: "🛠️ Utilities",
+      formatters: "Formatters & Converters",
+      security: "Security & Crypto",
+      network: "Network & Web",
+      generators: "Generators",
+      game: "Games & Fun",
+      utils: "Utilities",
     },
   },
   tools: {

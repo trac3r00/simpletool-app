@@ -2,6 +2,12 @@
 
 This changelog is a snapshot-style record of major changes in this workspace.
 
+## 2026-09-09 — Homepage as a product catalog
+
+- Homepage is catalog-first: search and the tool grid sit above the article.
+- Hero is a left-aligned product header (trust line, flagship chips) instead of a centered poster.
+- Home cards use Material Symbols tiles instead of emoji. Unique copy and the ads disclosure stay.
+
 ## 2026-09-08 — v2.4.6 WireGuard keys, Ed25519, AdSense site-connect
 
 - **WireGuard**: Generate Key Pair exports X25519 via JWK when raw private export throws. It no longer invents an uncorrelated public key.

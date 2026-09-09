@@ -272,12 +272,14 @@ Enforced by `npm run test:ui-audit`, which reports `handrolled-button` /
   panels don't animate.
 - `.tool-card-link` — modifier added to the home grid's clickable cards for the
   **signature hover**: `shadow-sm`→`shadow-md`, a 2px rise (`-translate-y-0.5`),
-  and a violet border tint, on a 200ms `transition-all`. The icon tile also tints
-  violet and scales on hover. Cards contain emoji icon, title, description; Pipe
-  Mode tools get a "Works with Pipe Mode" affordance.
+  and a violet border tint, on a 200ms `transition-all`. Home cards use a 36px
+  Material Symbols tile (`bg-muted`, `text-primary`), title, and description —
+  not registry emoji. The card itself lifts; the glyph does not scale.
 - **Hero wash** — `.hexagon-pattern` (home hero) is a low-opacity violet→cyan
   radial glow, the identity's hero signature. Kept subtle so it never competes with
-  the H1/search contrast.
+  the H1/search contrast. The home hero is a **left-aligned product header** in
+  the same `max-w-7xl` column as the catalog (search, middot trust line, flagship
+  chips), not a centered marketing poster.
 
 ### Forms
 
@@ -353,3 +355,4 @@ deletions. (Also stated in `AGENTS.md`.)
 | 2026-08-26 | **Pipe Mode re-skinned onto the identity** | The last teal holdout: header rebuilt on `createToolHeader` (gradient icon tile + cyan Beta pill), `.btn-teal`→`.btn-info` (cyan, AA-safe fills both themes), final-output/banner/links teal→`info-*`, palette items on new `.menu-item`, step-card chrome on semantic `border-border`/`bg-muted`, recipe cards on `.tool-card-link` signature hover, icon buttons on `.btn-icon-sm`. Behavior, IDs, and the client contract registry untouched. Follow-up same day: `.tool-page-shell--wide` (full-bleed, pipe-only) and cron-builder's `min-h-screen` removed — every tool route now shares the identical `max-w-7xl` shell + panel. |
 | 2026-08-26 | **AA contrast pass on shared tokens** | Browser audit (`test:ui-audit`) measured: trust pill / `.badge-info` cyan-on-tint 3.39:1 → text `info-700`/`info-300`; `--muted-foreground` 47%→44% (was 4.49:1 on `--background`, 4.30:1 on `--muted`); dark `--primary` 66%→64% (white button text was 4.29:1); ~90 `text-primary-600` route usages gained missing `dark:text-primary-400`. Also: `tool-group` never carries `shadow-*`; button decoration beyond the variant removed (mock-data CTA); `accent-primary-600` is the checkbox accent everywhere; bandwidth unit toggle moved onto `.tabs-list`/`.tab-trigger`. |
 | 2026-08-24 | **Nested groups are delineation, not elevation** | `--card` is #fff/#12141c — the same colour as `.tool-page-panel` — so the pre-rebuild nested card was a card inside an identical card. `bg-muted` would invert elevation between themes against `.input` (`bg-background`). `.tool-group` therefore adds border+radius+padding and **no fill**; `--flush` for child-padded containers, `--inset` for output-only regions, `bg-popover` for surfaces that leave the panel's plane. 104 group edits + 27 form controls to `.input`; guarded by `src/ui/card-contract.test.js`. |
+| 2026-09-09 | **Home is a product catalog, not a poster** | Hero left-aligns to the same `max-w-7xl` column as the grid. Cards use Material Symbols tiles (`src/ui/home-icons.js`) instead of registry emoji. Flagships are chips; trust is a middot line. Editorial stays below the catalog. |

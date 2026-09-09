@@ -35,6 +35,8 @@ export const ALWAYS_INCLUDE = {
   // infoHint() in src/utils/common-ui.js defaults to this icon and ~40 call
   // sites rely on the default, so it never appears as literal markup.
   help: "default icon of infoHint() in src/utils/common-ui.js",
+  // Returned when a tool id or category is missing from home-icons.js.
+  apps: "fallback tile in src/ui/home-icons.js",
 };
 
 function listJsFiles(dir) {
