@@ -25,6 +25,7 @@ import {
   t,
 } from "../utils/i18n.js";
 import { countKeys } from "../utils/json-stats.js";
+import { formatJsonLosslessly } from "../utils/lossless-json.js";
 
 export async function handleJSONFormatterRoutes(request, url) {
   const { pathname } = url;
@@ -193,6 +194,7 @@ function renderJSONFormatterPage(lang = "en") {
         // Inlined from src/utils/json-stats.js — keep in sync via the import above.
         // The same function powers the unit tests in src/utils/json-stats.test.js.
         ${countKeys.toString()}
+        ${formatJsonLosslessly.toString()}
 
         function updateStats(jsonObj, formatted) {
           var result = countKeys(jsonObj);
@@ -216,8 +218,8 @@ function renderJSONFormatterPage(lang = "en") {
            try {
              var input = inputEditor.getValue().trim();
              if (!input) return showStatus(_t('tools.json-formatter.js.status0', 'Please enter JSON'), 'error');
+             var formatted = formatJsonLosslessly(input, 2);
              var parsed = JSON.parse(input);
-             var formatted = JSON.stringify(parsed, null, 2);
              outputEl.value = formatted;
              outputEditor.setValue(formatted);
              document.getElementById('json-empty-state').classList.add('hidden');
@@ -233,8 +235,8 @@ function renderJSONFormatterPage(lang = "en") {
            try {
              var input = inputEditor.getValue().trim();
              if (!input) return showStatus(_t('tools.json-formatter.js.status0', 'Please enter JSON'), 'error');
+             var minified = formatJsonLosslessly(input, 0);
              var parsed = JSON.parse(input);
-             var minified = JSON.stringify(parsed);
              outputEl.value = minified;
              outputEditor.setValue(minified);
              document.getElementById('json-empty-state').classList.add('hidden');

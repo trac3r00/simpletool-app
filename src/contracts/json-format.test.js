@@ -18,6 +18,40 @@ describe("json-format transform", () => {
     expect(result).toBe('{"a":1,"b":2}');
   });
 
+  it("preserves every numeric and string lexeme while formatting", () => {
+    const input =
+      '{"max":9007199254740993,"min":-9007199254740993,"huge":1e400,"fixed":1.2300,"negativeZero":-0,"nested":[[9007199254740993],{"text":"quote: \\" slash: \\\\"}]}';
+
+    expect(jsonFormat.transform(input, { mode: "format", indent: 2 })).toBe(
+      [
+        "{",
+        '  "max": 9007199254740993,',
+        '  "min": -9007199254740993,',
+        '  "huge": 1e400,',
+        '  "fixed": 1.2300,',
+        '  "negativeZero": -0,',
+        '  "nested": [',
+        "    [",
+        "      9007199254740993",
+        "    ],",
+        "    {",
+        '      "text": "quote: \\" slash: \\\\"',
+        "    }",
+        "  ]",
+        "}",
+      ].join("\n"),
+    );
+  });
+
+  it("preserves every numeric and string lexeme while minifying", () => {
+    const input =
+      ' { "max" : 9007199254740993, "min" : -9007199254740993, "huge" : 1e400, "fixed" : 1.2300, "negativeZero" : -0, "nested" : [ [ 9007199254740993 ], { "text" : "quote: \\" slash: \\\\" } ] } ';
+
+    expect(jsonFormat.transform(input, { mode: "minify" })).toBe(
+      '{"max":9007199254740993,"min":-9007199254740993,"huge":1e400,"fixed":1.2300,"negativeZero":-0,"nested":[[9007199254740993],{"text":"quote: \\" slash: \\\\"}]}',
+    );
+  });
+
   it("defaults to format", () => {
     const result = jsonFormat.transform('{"x":1}');
     expect(result).toContain("\n");
