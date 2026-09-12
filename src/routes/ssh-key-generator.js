@@ -242,6 +242,58 @@ chmod 600 ~/.ssh/authorized_keys</pre>
 
   const script = `
     <script>
+      function encodeEd25519PrivateKey({ seed, publicKey, comment }) {
+        if (seed.length !== 32 || publicKey.length !== 32) {
+          throw new Error('Unexpected Ed25519 key length');
+        }
+
+        const joinBytes = (...arrays) => {
+          const output = new Uint8Array(
+            arrays.reduce((length, array) => length + array.length, 0)
+          );
+          let offset = 0;
+          for (const array of arrays) {
+            output.set(array, offset);
+            offset += array.length;
+          }
+          return output;
+        };
+        const uint32 = (value) => {
+          const bytes = new Uint8Array(4);
+          new DataView(bytes.buffer).setUint32(0, value, false);
+          return bytes;
+        };
+        const sshString = (bytes) => joinBytes(uint32(bytes.length), bytes);
+        const algorithm = textEncoder.encode('ssh-ed25519');
+        const publicBlob = joinBytes(sshString(algorithm), sshString(publicKey));
+        const check = crypto.getRandomValues(new Uint8Array(4));
+        let privateBlock = joinBytes(
+          check,
+          check,
+          sshString(algorithm),
+          sshString(publicKey),
+          sshString(joinBytes(seed, publicKey)),
+          sshString(textEncoder.encode(comment))
+        );
+        const paddingLength = 8 - (privateBlock.length % 8);
+        privateBlock = joinBytes(
+          privateBlock,
+          Uint8Array.from({ length: paddingLength }, (_, index) => index + 1)
+        );
+        const payload = joinBytes(
+          textEncoder.encode('openssh-key-v1\\0'),
+          sshString(textEncoder.encode('none')),
+          sshString(textEncoder.encode('none')),
+          sshString(new Uint8Array()),
+          uint32(1),
+          sshString(publicBlob),
+          sshString(privateBlock)
+        );
+        const body = (toBase64(payload).match(/.{1,70}/g) || []).join('\\n');
+        return '-----BEGIN OPENSSH PRIVATE KEY-----\\n' + body +
+          '\\n-----END OPENSSH PRIVATE KEY-----';
+      }
+
       const keyTypeInputs = document.querySelectorAll('input[name="keyType"]');
       const rsaOptions = document.getElementById('rsa-options');
       const rsaSize = document.getElementById('rsa-size');
@@ -306,15 +358,19 @@ chmod 600 ~/.ssh/authorized_keys</pre>
          );
 
          const publicKeyRaw = new Uint8Array(await window.crypto.subtle.exportKey('raw', keyPair.publicKey));
-         const privateKeyRaw = await window.crypto.subtle.exportKey('pkcs8', keyPair.privateKey);
+         const privateKeyJwk = await window.crypto.subtle.exportKey('jwk', keyPair.privateKey);
 
-         if (publicKeyRaw.length !== 32) {
-           throw new Error('Unexpected Ed25519 public key format');
+         if (publicKeyRaw.length !== 32 || !privateKeyJwk.d) {
+           throw new Error('Unexpected Ed25519 key format');
          }
 
          const comment = keyComment.value.trim() || 'user@simpletool';
          const { key: publicKeySSH, wireBytes } = encodeEd25519PublicKey(publicKeyRaw, comment);
-         const privateKeySSH = arrayBufferToPEM(privateKeyRaw, 'PRIVATE KEY');
+         const privateKeySSH = encodeEd25519PrivateKey({
+           seed: decodeBase64UrlToBytes(privateKeyJwk.d),
+           publicKey: publicKeyRaw,
+           comment
+         });
          const fingerprint = await calculateFingerprint(wireBytes);
 
          publicKeyEl.value = publicKeySSH;
