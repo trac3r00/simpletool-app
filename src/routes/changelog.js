@@ -9,6 +9,7 @@ import {
   normalizeLanguage,
   resolveRequestLanguage,
 } from "../utils/i18n.js";
+import { PRODUCTION_TOOL_COUNT } from "../utils/tool-registry.js";
 import { APP_VERSION } from "../utils/version.js";
 
 const RELEASES = [
@@ -31,7 +32,7 @@ const RELEASES = [
       },
       {
         type: "fix",
-        text: "About lists 47 production tools; homepage and JSON Formatter ship original visible copy for the thin-content review",
+        text: `About derives its ${PRODUCTION_TOOL_COUNT} public-tool count from the production-visible registry`,
       },
       {
         type: "fix",
@@ -50,7 +51,7 @@ const RELEASES = [
       },
       {
         type: "fix",
-        text: "Catalog frozen until the eight flagships beat the bookmarks people already use",
+        text: "Catalog freeze adopted while the eight flagship workflows are improved",
       },
     ],
   },

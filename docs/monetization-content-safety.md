@@ -12,6 +12,8 @@ This document is the operator checklist for keeping monetization changes compati
 - Do not require ads for a page to function.
 - Do not insert misleading UI that makes ads look like tool controls.
 - Do not weaken privacy/security copy to accommodate monetization.
+- Never click live ads or ask others to click them; automated verification must inspect HTML only and must not request ad creatives.
+- Treat consent/CMP configuration, Auto ads state, traffic quality, and account notices as operator-owned AdSense settings that repository tests cannot prove.
 
 ## Placement guidance
 
@@ -54,6 +56,8 @@ Before each monetization-related release:
 3. Verify pages remain usable when the AdSense script never loads.
 4. Verify no route shows an empty sponsored box when ads are disabled.
 5. Verify no game or tool result panel looks like ad content.
+6. Verify consent messaging/CMP requirements for EEA, UK, and Switzerland in the AdSense account; NPA alone does not waive consent for cookies or local storage where legally required.
+7. Verify Auto ads remains disabled and only intended manual Display unit IDs are configured.
 
 ## Non-goals
 

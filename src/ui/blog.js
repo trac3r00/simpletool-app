@@ -39,918 +39,217 @@ export const BLOG_ARTICLES = [
   },
   {
     slug: "what-is-json",
-    title: "What is JSON? A Developer's Complete Guide",
+    title: "JSON syntax that actually breaks parsers",
     description:
-      "A comprehensive guide to JSON structure, data types, when to use JSON vs XML vs YAML, formatting best practices, and common parsing errors.",
+      "A practical guide to JSON values, number limits, duplicate keys, and the syntax errors that stop real parsers.",
     category: "Development",
-    readingTime: "12 min read",
+    readingTime: "7 min read",
     datePublished: "2026-02-08",
     content: `
-      <p data-i18n-html="content.blog.what-is-json.p1">JSON, or JavaScript Object Notation, has become the ubiquitous language of the modern web. From RESTful APIs to configuration files like <code>package.json</code>, it is the invisible thread that connects disparate systems across the globe. But despite its simplicity, many developers only scratch the surface of what JSON can do—and where it can fail.</p>
+      <p>JSON is a data-interchange format defined by <a href="https://www.rfc-editor.org/rfc/rfc8259" rel="noopener noreferrer">RFC 8259</a>. A document contains one value: an object, array, string, number, boolean, or <code>null</code>. Property names and string values require double quotes; comments, trailing commas, <code>NaN</code>, and <code>Infinity</code> are not JSON.</p>
+      <h2>Start with a parser failure you can reproduce</h2>
+      <pre tabindex="0" role="region" aria-label="Invalid and valid JSON examples"><code>// invalid: trailing comma and single quotes
+{'enabled': true,}
 
-      <h2 data-i18n="content.blog.what-is-json.h2_1">The Discovery of JSON</h2>
-      <p data-i18n-html="content.blog.what-is-json.p2">Unlike many technologies that are "invented" by committee, JSON was "discovered" by Douglas Crockford in the early 2000s. At the time, XML was the dominant format for data exchange, but it was verbose, complex to parse, and often overkill for the needs of web applications. Crockford realized that a subset of JavaScript's object literal syntax could serve as a lightweight, language-independent data format. This realization led to the standardization of JSON, which eventually supplanted XML as the preferred choice for web APIs.</p>
+// valid
+{"enabled": true}</code></pre>
+      <p>The <a href="/json-formatter">JSON Formatter</a> reports the syntax error and can format or minify valid input. Formatting changes whitespace, not the data model.</p>
+      <h2>Numbers need special care</h2>
+      <p>JSON defines decimal number syntax but does not define an integer width. JavaScript's ordinary <code>Number</code> type cannot exactly represent every integer above <code>9,007,199,254,740,991</code>. This formatter preserves numeric lexemes such as <code>9007199254740993</code>, <code>1.2300</code>, and <code>1e400</code> while re-indenting, but downstream software may still round or reject them. Use strings or an arbitrary-precision type when exact identifiers or monetary values cross systems.</p>
+      <h2>Duplicate keys are ambiguous</h2>
+      <p>The RFC says object names should be unique, but parsers differ: many keep only the last duplicate. Validate that condition separately when data is a contract. JSON Schema can validate required fields and types; syntax validation alone cannot tell whether <code>{"port": -1}</code> is acceptable to your application.</p>
+      <h2>Choose another format when the job differs</h2>
+      <p>YAML is convenient for hand-edited configuration but has a larger syntax surface. XML supports mixed document content and namespaces. JSON is a good fit for predictable API payloads, not an automatic winner for every document.</p>
 
-      <div class="bg-primary-50 dark:bg-primary-900/20 p-4 rounded-lg border-l-4 border-primary-500 my-6">
-        <p class="text-sm text-primary-800 dark:text-primary-200" data-i18n-html="content.blog.what-is-json.callout1"><strong>Pro Tip:</strong> YAML 1.2 was designed to be JSON-compatible, so in practice almost any JSON document parses as YAML. It is not a perfect subset — duplicate keys and a few escape and whitespace rules still differ — but the overlap is close enough that many modern tools support both formats through the same parser.</p>
-      </div>
-
-      <h2 data-i18n="content.blog.what-is-json.h2_2">The Anatomy of JSON</h2>
-      <p data-i18n-html="content.blog.what-is-json.p3">JSON is built on two universal data structures: a collection of name/value pairs (an object) and an ordered list of values (an array). This simplicity is its greatest strength. Unlike XML, which requires complex parsing and verbose tags, JSON is lightweight and easy for both humans and machines to read.</p>
-
-      <pre tabindex="0" role="region" aria-label="Code sample"><code>{
-  "name": "SimpleTool",
-  "version": "2.3.0",
-  "features": ["Privacy", "Speed", "Simplicity"],
-  "active": true,
-  "metadata": null
-}</code></pre>
-
-      <h2 data-i18n="content.blog.what-is-json.h2_3">Data Types in Depth</h2>
-      <p data-i18n-html="content.blog.what-is-json.p4">JSON supports six basic data types, each with its own rules and nuances:</p>
-      <ul>
-        <li data-i18n-html="content.blog.what-is-json.li1"><strong>String:</strong> A sequence of zero or more Unicode characters, wrapped in double quotes. Backslashes are used for escaping. Special characters like newlines (<code>\\n</code>) or tabs (<code>\\t</code>) must be escaped.</li>
-        <li data-i18n-html="content.blog.what-is-json.li2"><strong>Number:</strong> A signed decimal number that may contain a fractional part or use exponential notation. JSON does not distinguish between integers and floats, which can lead to precision issues in languages with strict type systems.</li>
-        <li data-i18n-html="content.blog.what-is-json.li3"><strong>Object:</strong> An unordered set of name/value pairs. Each name is followed by a colon, and pairs are separated by commas. Objects can be nested to represent complex hierarchies.</li>
-        <li data-i18n-html="content.blog.what-is-json.li4"><strong>Array:</strong> An ordered collection of values. Values are separated by commas and enclosed in square brackets. Arrays can contain any valid JSON data type, including other arrays or objects.</li>
-        <li data-i18n-html="content.blog.what-is-json.li5"><strong>Boolean:</strong> Either <code>true</code> or <code>false</code>. These are literal values and should not be wrapped in quotes.</li>
-        <li data-i18n-html="content.blog.what-is-json.li6"><strong>Null:</strong> An empty value, represented by the keyword <code>null</code>. It is often used to indicate the absence of a value.</li>
-      </ul>
-
-      <h2 data-i18n="content.blog.what-is-json.h2_4">JSON vs. XML vs. YAML</h2>
-      <p data-i18n-html="content.blog.what-is-json.p5">Choosing the right data format depends on your use case. <strong>XML</strong> is powerful for document-centric data and supports schemas and namespaces, but its verbosity makes it heavy for web APIs. <strong>YAML</strong> is highly readable and great for configuration, but its reliance on indentation can lead to subtle bugs, especially in large files. <strong>JSON</strong> strikes a balance, offering enough structure for complex data while remaining compact enough for high-performance networking. It is the "just right" format for most modern applications.</p>
-
-      <h2 data-i18n="content.blog.what-is-json.h2_5">Best Practices for Production</h2>
-      <p data-i18n-html="content.blog.what-is-json.p6">When working with JSON in production, follow these guidelines to ensure maintainability and performance:</p>
-      <ul>
-        <li data-i18n-html="content.blog.what-is-json.li7"><strong>Use CamelCase or snake_case consistently:</strong> Pick a convention and stick to it across your entire API. Consistency reduces friction for developers consuming your data.</li>
-        <li data-i18n-html="content.blog.what-is-json.li8"><strong>Avoid deep nesting:</strong> Deeply nested objects are harder to parse and maintain. Aim for a flat structure where possible. If you find yourself nesting more than three or four levels deep, consider refactoring your data model.</li>
-        <li data-i18n-html="content.blog.what-is-json.li9"><strong>Validate your schemas:</strong> Use tools like <a href="/json-schema-studio">JSON Schema Studio</a> to ensure your data conforms to expected patterns. This prevents "garbage in, garbage out" scenarios.</li>
-        <li data-i18n-html="content.blog.what-is-json.li10"><strong>Minify for transport:</strong> While pretty-printed JSON is great for debugging, minified JSON saves bandwidth. Use a <a href="/json-formatter">JSON Formatter</a> to switch between the two.</li>
-      </ul>
-
-      <h2 data-i18n="content.blog.what-is-json.h2_6">Common Parsing Pitfalls</h2>
-      <p data-i18n-html="content.blog.what-is-json.p7">Even experienced developers fall into these traps:</p>
-      <ul>
-        <li data-i18n-html="content.blog.what-is-json.li11"><strong>Trailing commas:</strong> Unlike JavaScript objects, JSON does not allow trailing commas after the last element in an array or object. This is a frequent cause of syntax errors.</li>
-        <li data-i18n-html="content.blog.what-is-json.li12"><strong>Single quotes:</strong> JSON requires double quotes for both keys and string values. Single quotes will result in an invalid JSON error.</li>
-        <li data-i18n-html="content.blog.what-is-json.li13"><strong>Unquoted keys:</strong> All keys must be wrapped in double quotes. This is a common mistake for developers used to JavaScript's more relaxed object syntax.</li>
-        <li data-i18n-html="content.blog.what-is-json.li14"><strong>Date handling:</strong> JSON has no native Date type. The industry standard is to use ISO 8601 strings (e.g., <code>"2026-02-08T12:00:00Z"</code>). Always parse these strings into Date objects in your application logic.</li>
-      </ul>
-
-      <h2 data-i18n="content.blog.what-is-json.h2_7">JSON Schema: The Contract for Your Data</h2>
-      <p data-i18n-html="content.blog.what-is-json.p8">As applications grow, keeping track of JSON structures becomes a challenge. This is where JSON Schema comes in. It is a powerful tool for validating the structure of your JSON data, ensuring that it meets specific requirements before your application processes it. By defining a schema, you create a clear contract between your frontend and backend, or between different microservices.</p>
-      <p data-i18n-html="content.blog.what-is-json.p9">A JSON Schema can define required fields, data types, string patterns (using regex), and even minimum or maximum values for numbers. Tools like <a href="/json-schema-studio">JSON Schema Studio</a> allow you to generate these schemas automatically from sample data, saving you hours of manual work and reducing the risk of human error. In a microservices architecture, sharing schemas is the best way to ensure that services can communicate reliably.</p>
-
-      <h2 data-i18n="content.blog.what-is-json.h2_8">Performance Optimization: Beyond Plain Text</h2>
-      <p data-i18n-html="content.blog.what-is-json.p10">While JSON's text-based nature is great for readability, it can be a bottleneck for high-performance applications or those dealing with massive datasets. In these cases, developers often look toward binary serializations like <strong>BSON</strong> (used by MongoDB) or <strong>MessagePack</strong>. These formats maintain the flexibility of JSON but offer faster parsing and smaller payload sizes.</p>
-      <p data-i18n-html="content.blog.what-is-json.p11">However, for most web applications, the overhead of JSON is negligible compared to network latency. Before switching to a binary format, ensure you are using Gzip or Brotli compression on your server, which can reduce JSON payload sizes by up to 80%. Compression is often more effective than switching to a binary format, as it leverages the repetitive nature of JSON keys.</p>
-
-      <h2 data-i18n="content.blog.what-is-json.h2_9">JSON in the Database: The Rise of JSONB</h2>
-      <p data-i18n-html="content.blog.what-is-json.p12">Modern relational databases like PostgreSQL have embraced JSON with open arms. The <code>JSONB</code> data type allows you to store structured JSON data directly in a column while still being able to index and query it with high performance. This "best of both worlds" approach gives you the flexibility of a NoSQL database with the ACID compliance and relational power of a traditional SQL engine. You can even perform complex joins between relational tables and JSON data, making it a versatile tool for modern data modeling.</p>
-
-      <h2 data-i18n="content.blog.what-is-json.h2_10">Streaming JSON for Large Datasets</h2>
-      <p data-i18n-html="content.blog.what-is-json.p13">When dealing with gigabytes of data, loading an entire JSON array into memory can crash your application. Streaming JSON parsers (like Oboe.js or Clarinet) allow you to process data piece by piece as it arrives over the network. This is essential for building responsive dashboards or processing large log files without exhausting server resources. By processing data in chunks, you can start rendering the UI before the entire payload has been downloaded.</p>
-
-      <h2 data-i18n="content.blog.what-is-json.h2_11">JSON-LD and the Semantic Web</h2>
-      <p data-i18n-html="content.blog.what-is-json.p14">JSON-LD (JSON for Linked Data) is a method of encoding Linked Data using JSON. It is used to provide context to your data, making it easier for machines to understand the relationships between different entities. This is particularly important for SEO, as search engines use JSON-LD to power rich snippets and knowledge graphs. By adding a <code>@context</code> and <code>@type</code> to your JSON, you can turn a simple data object into a meaningful piece of the global semantic web.</p>
-
-      <h2 data-i18n="content.blog.what-is-json.h2_12">JSON Patch and Merge Patch</h2>
-      <p data-i18n-html="content.blog.what-is-json.p15">When you need to update a small part of a large JSON document, sending the entire document back to the server is inefficient. <strong>JSON Patch</strong> (RFC 6902) and <strong>JSON Merge Patch</strong> (RFC 7396) provide standardized ways to describe partial updates. JSON Patch uses a list of operations (add, remove, replace), while JSON Merge Patch uses a simplified "diff" approach. Both are essential for building efficient, high-performance APIs that minimize bandwidth usage.</p>
-
-      <h2 data-i18n="content.blog.what-is-json.h2_13">Security Considerations</h2>
-      <p data-i18n-html="content.blog.what-is-json.p16">JSON is generally safe, but it's not immune to security risks. One common vulnerability is <strong>JSON Injection</strong>, where an attacker provides malicious input that alters the structure of the JSON being processed. Always sanitize and validate input before including it in a JSON response. Additionally, be wary of <code>eval()</code> when parsing JSON in older JavaScript environments; always use <code>JSON.parse()</code>. Another risk is <strong>JSON Hijacking</strong>, an older vulnerability that targeted the way browsers handled top-level arrays. While modern browsers have mitigated this, it's still best practice to always return an object as your top-level JSON structure.</p>
-
-      <h2 data-i18n="content.blog.what-is-json.h2_14">Advanced JSON: JSON5 and HJSON</h2>
-      <p data-i18n-html="content.blog.what-is-json.p17">For configuration files where human readability is paramount, some developers turn to <strong>JSON5</strong> or <strong>HJSON</strong>. These formats allow comments, trailing commas, and unquoted keys, making them much friendlier for manual editing. However, they are not standard JSON and require specialized parsers. For interoperability between different systems and languages, it is always best to stick to standard JSON.</p>
-
-      <p data-i18n-html="content.blog.what-is-json.p18">By mastering these fundamentals, you can build more robust, interoperable systems that stand the test of time. Whether you're building a small side project or a massive enterprise API, JSON is a tool you'll use every day. Treat it with the respect it deserves, and it will serve you well. Remember that the best data format is the one that your team understands and that your tools support natively.</p>
-
-      <div class="mt-10 p-6 bg-surface-50 dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
-        <h3 class="text-lg font-semibold mb-4" data-i18n="content.blog.what-is-json.tools_heading">Related Developer Tools</h3>
-        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <li>
-            <a href="/json-formatter" class="flex items-center p-3 rounded-lg hover:bg-white dark:hover:bg-surface-800 transition-colors border border-transparent hover:border-surface-200 dark:hover:border-surface-700">
-              <span class="text-2xl mr-3">📋</span>
-              <div>
-                <div class="font-medium text-surface-900 dark:text-surface-50" data-i18n="tools.json-formatter.name">JSON Formatter</div>
-                <div class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.json-formatter.desc">Validate and beautify JSON</div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="/json-schema-studio" class="flex items-center p-3 rounded-lg hover:bg-white dark:hover:bg-surface-800 transition-colors border border-transparent hover:border-surface-200 dark:hover:border-surface-700">
-              <span class="text-2xl mr-3">📋</span>
-              <div>
-                <div class="font-medium text-surface-900 dark:text-surface-50" data-i18n="tools.json-schema-studio.name">JSON Schema Studio</div>
-                <div class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.json-schema-studio.desc">Generate schemas from JSON</div>
-              </div>
-            </a>
-          </li>
-        </ul>
-      </div>
     `,
   },
   {
     slug: "password-security-guide",
-    title: "Password Security in 2026: What Every Developer Should Know",
+    title: "Generate passwords that survive the actual policy",
     description:
-      "A deep dive into modern password security, entropy, NIST guidelines, and secure hashing algorithms like bcrypt and Argon2.",
+      "Use length, randomness, password-manager storage, and site-specific constraints without relying on composition myths.",
     category: "Security",
-    readingTime: "14 min read",
+    readingTime: "8 min read",
     datePublished: "2026-02-08",
     content: `
-      <p data-i18n-html="content.blog.password-security-guide.p1">In 2026, the landscape of password security has shifted dramatically. With the rise of quantum computing threats and increasingly sophisticated phishing attacks, developers must move beyond outdated practices and embrace modern standards for authentication. The days of simple complexity rules and forced rotations are over, replaced by a focus on entropy, hardware-backed security, and phishing-resistant protocols.</p>
+      <p>A useful password is unique to one account, generated unpredictably, accepted by that service, and stored where you can retrieve it. Symbols and mixed case do not rescue a short reused password.</p>
+      <h2>Use a generator, then verify the field accepts it</h2>
+      <p>Open the <a href="/password-generator">Password Generator</a>, choose a length your target accepts, generate with the desired character sets, and save the result in a password manager. The tool uses the browser's cryptographic random source. It cannot check whether a site truncates input, rejects a character, or silently imposes a shorter maximum.</p>
+      <p>For a concrete default, start with at least 15 random characters for a single-factor password, or follow the service's stricter rule. Current <a href="https://pages.nist.gov/800-63-4/sp800-63b.html" rel="noopener noreferrer">NIST SP 800-63B guidance</a> emphasizes length, blocklists, password managers, and rate limiting rather than mandatory mixtures of character classes.</p>
+      <h2>Passphrases and machine secrets are different jobs</h2>
+      <p>A multi-word passphrase can be easier to type, but words must be selected randomly rather than as a quotation. API keys and database credentials are not typed from memory, so use longer random output and store it in the platform's secret manager.</p>
+      <h2>Generation does not solve storage</h2>
+      <p>A browser generator creates a candidate; it does not rotate credentials, synchronize a vault, or protect clipboard history. Clear copied secrets and avoid shared machines. Service operators should store passwords with a dedicated password hashing scheme such as Argon2id, not SHA-256; see the <a href="https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html" rel="noopener noreferrer">OWASP Password Storage Cheat Sheet</a>.</p>
 
-      <h2 data-i18n="content.blog.password-security-guide.h2_1">Entropy: Why Length Matters More Than Complexity</h2>
-      <p data-i18n-html="content.blog.password-security-guide.p2">For years, we were told that a "strong" password must include uppercase letters, numbers, and special characters. However, modern research shows that <strong>entropy</strong>—the measure of randomness—is more effectively achieved through length. A 28-character passphrase like <code>correct-horse-battery-staple</code> is significantly harder to crack than a short, complex password like <code>P@ssw0rd!</code>. This is because the search space for a long passphrase is exponentially larger, making brute-force attacks computationally infeasible.</p>
-
-      <div class="bg-primary-50 dark:bg-primary-900/20 p-4 rounded-lg border-l-4 border-primary-500 my-6">
-        <p class="text-sm text-primary-800 dark:text-primary-200" data-i18n-html="content.blog.password-security-guide.callout1"><strong>Key Concept:</strong> Entropy is calculated as <code>log2(pool_size ^ length)</code>. Increasing the length has a much greater impact on the total entropy than increasing the pool size (complexity).</p>
-      </div>
-
-      <h2 data-i18n="content.blog.password-security-guide.h2_2">NIST Guidelines: The New Standard</h2>
-      <p data-i18n-html="content.blog.password-security-guide.p3">The National Institute of Standards and Technology (NIST) has updated its guidelines (SP 800-63B) to reflect these findings. Key recommendations for modern applications include:</p>
-      <ul>
-        <li data-i18n-html="content.blog.password-security-guide.li1"><strong>Eliminate forced rotations:</strong> Only require password changes when there is evidence of compromise. Forced rotations often lead to users choosing predictable patterns (e.g., <code>Password123</code> becoming <code>Password124</code>).</li>
-        <li data-i18n-html="content.blog.password-security-guide.li2"><strong>Allow long passwords:</strong> Support passwords up to 64 characters or more. This encourages the use of passphrases.</li>
-        <li data-i18n-html="content.blog.password-security-guide.li3"><strong>Check against breached lists:</strong> Use services like HaveIBeenPwned to prevent users from choosing passwords that have already appeared in data breaches.</li>
-        <li data-i18n-html="content.blog.password-security-guide.li4"><strong>Avoid arbitrary complexity rules:</strong> These rules often frustrate users and lead to weak, predictable passwords. Instead, focus on length and randomness.</li>
-      </ul>
-
-      <h2 data-i18n="content.blog.password-security-guide.h2_3">Secure Hashing: bcrypt vs. Argon2</h2>
-      <p data-i18n-html="content.blog.password-security-guide.p4">Never store passwords in plain text. Instead, use a slow, salted cryptographic hash function. While <code>bcrypt</code> has been the industry standard for years, <strong>Argon2</strong> (specifically Argon2id) is now the recommended choice for new applications. It won the Password Hashing Competition and provides superior resistance to GPU and ASIC-based brute-force attacks by allowing you to tune memory, time, and parallelism parameters.</p>
-
-      <pre tabindex="0" role="region" aria-label="Code sample"><code>// Example of Argon2id hashing in Node.js
-const argon2 = require('argon2');
-const hash = await argon2.hash('user-password', {
-  type: argon2.argon2id,
-  memoryCost: 2 ** 16, // 64MB
-  timeCost: 3,
-  parallelism: 1
-});</code></pre>
-
-      <h2 data-i18n="content.blog.password-security-guide.h2_4">Salting and Peppering: Defense in Depth</h2>
-      <p data-i18n-html="content.blog.password-security-guide.p5">A <strong>salt</strong> is a unique, random string added to each password before hashing. This ensures that two users with the same password will have different hashes, preventing attackers from using precomputed tables (rainbow tables) to crack hashes. A <strong>pepper</strong> is a secret key stored separately from the database (e.g., in an environment variable or a Hardware Security Module) that adds an extra layer of defense. If your database is compromised but your pepper remains secret, the hashes are still protected from offline brute-force attacks.</p>
-
-      <h2 data-i18n="content.blog.password-security-guide.h2_5">Multi-Factor Authentication (MFA): Beyond the Password</h2>
-      <p data-i18n-html="content.blog.password-security-guide.p6">In 2026, a password alone is no longer enough for sensitive accounts. Multi-Factor Authentication (MFA) adds a second layer of security that is much harder to bypass. The most common methods include:</p>
-      <ul>
-        <li data-i18n-html="content.blog.password-security-guide.li5"><strong>TOTP (Time-based One-Time Password):</strong> Apps like Google Authenticator or Authy generate a 6-digit code that changes every 30 seconds. This is a strong, offline-friendly method that is widely supported.</li>
-        <li data-i18n-html="content.blog.password-security-guide.li6"><strong>WebAuthn / FIDO2:</strong> This is the gold standard for MFA. It uses hardware security keys (like YubiKeys) or platform authenticators (like FaceID or TouchID) to provide cryptographically secure, phishing-resistant authentication. It eliminates the risk of "man-in-the-middle" attacks by binding the authentication to the specific domain.</li>
-        <li data-i18n-html="content.blog.password-security-guide.li7"><strong>SMS/Email:</strong> While better than nothing, these are the weakest forms of MFA due to the risk of SIM swapping and account takeover. They should only be used as a last resort.</li>
-      </ul>
-
-      <h2 data-i18n="content.blog.password-security-guide.h2_6">Password Recovery: The Weakest Link</h2>
-      <p data-i18n-html="content.blog.password-security-guide.p7">Many secure systems are compromised through their password recovery flow. Avoid sending temporary passwords via email, as email is often unencrypted and easily intercepted. Instead, send a one-time, time-limited link that allows the user to set a new password. Ensure that this link is invalidated immediately after use and that the user is notified of the change via their primary email address. For high-security accounts, consider requiring MFA even for the password reset process.</p>
-
-      <h2 data-i18n="content.blog.password-security-guide.h2_7">Rate Limiting and Account Lockout</h2>
-      <p data-i18n-html="content.blog.password-security-guide.p8">To prevent brute-force and credential stuffing attacks, implement strict rate limiting on your login and password reset endpoints. Instead of locking accounts (which can be used for Denial of Service attacks), consider increasing the delay between login attempts or requiring a CAPTCHA after a certain number of failed tries. This slows down attackers without preventing legitimate users from accessing their accounts.</p>
-
-      <h2 data-i18n="content.blog.password-security-guide.h2_8">Security Headers for Authentication</h2>
-      <p data-i18n-html="content.blog.password-security-guide.p9">Protect your login pages with modern security headers. Use <code>Content-Security-Policy</code> (CSP) to prevent XSS attacks from stealing credentials, and <code>Strict-Transport-Security</code> (HSTS) to ensure that all authentication traffic is encrypted. Additionally, use the <code>X-Frame-Options: DENY</code> header to prevent clickjacking attacks on your login forms. These headers provide a critical layer of defense at the browser level.</p>
-
-      <h2 data-i18n="content.blog.password-security-guide.h2_9">The Future: Passkeys and Passwordless</h2>
-      <p data-i18n-html="content.blog.password-security-guide.p10">While passwords are still prevalent, the industry is moving toward <strong>passkeys</strong>—a more secure, phishing-resistant alternative based on the FIDO2 standard. Passkeys use public-key cryptography and biometric authentication to eliminate the need for traditional passwords entirely. They are easier for users to manage and significantly harder for attackers to steal. As a developer, you should start planning for a passwordless future by integrating WebAuthn support into your applications.</p>
-
-      <h2 data-i18n="content.blog.password-security-guide.h2_10">Credential Stuffing and Breached Password Detection</h2>
-      <p data-i18n-html="content.blog.password-security-guide.p11">Credential stuffing is a type of cyberattack where stolen account credentials (typically lists of usernames or email addresses and their corresponding passwords) are used to gain unauthorized access to user accounts. To protect your users, you should implement breached password detection. When a user creates or changes their password, check it against a database of known leaked passwords. This ensures that your users aren't using credentials that are already in the hands of attackers.</p>
-
-      <h2 data-i18n="content.blog.password-security-guide.h2_11">Developer Tools for Security</h2>
-      <p data-i18n-html="content.blog.password-security-guide.p12">To help your users create and manage secure credentials, integrate tools like a <a href="/password-generator">Password Generator</a> and an <a href="/htpasswd-generator">Htpasswd Generator</a> into your development workflow. These tools ensure that randomness is generated securely using the Web Crypto API, providing a much higher level of security than simple math-based random functions. By providing these tools to your users, you encourage better security habits across your entire platform.</p>
-
-      <p data-i18n-html="content.blog.password-security-guide.p13">Security is not a one-time task but a continuous process. By staying informed about the latest standards and implementing robust authentication mechanisms, you can protect your users and your application from the ever-evolving threat landscape. Remember that the most secure system is one that assumes compromise is possible and builds multiple layers of defense to mitigate the impact.</p>
-
-      <div class="mt-10 p-6 bg-surface-50 dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
-        <h3 class="text-lg font-semibold mb-4" data-i18n="content.blog.password-security-guide.tools_heading">Related Security Tools</h3>
-        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <li>
-            <a href="/password-generator" class="flex items-center p-3 rounded-lg hover:bg-white dark:hover:bg-surface-800 transition-colors border border-transparent hover:border-surface-200 dark:hover:border-surface-700">
-              <span class="text-2xl mr-3">🔐</span>
-              <div>
-                <div class="font-medium text-surface-900 dark:text-surface-50" data-i18n="tools.password-generator.name">Password Generator</div>
-                <div class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.password-generator.desc">Create secure random passwords</div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="/htpasswd-generator" class="flex items-center p-3 rounded-lg hover:bg-white dark:hover:bg-surface-800 transition-colors border border-transparent hover:border-surface-200 dark:hover:border-surface-700">
-              <span class="text-2xl mr-3">🔒</span>
-              <div>
-                <div class="font-medium text-surface-900 dark:text-surface-50" data-i18n="tools.htpasswd-generator.name">Htpasswd Generator</div>
-                <div class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.htpasswd-generator.desc">Generate Apache auth entries</div>
-              </div>
-            </a>
-          </li>
-        </ul>
-      </div>
     `,
   },
   {
     slug: "understanding-hashes",
-    title: "Understanding Cryptographic Hashes: MD5, SHA-256, and Beyond",
+    title: "Hashes for checksums, signatures, and passwords",
     description:
-      "Learn about one-way functions, hash collisions, and why choosing the right algorithm is critical for data integrity and security.",
+      "Pick a hash workflow by purpose: file integrity, keyed authentication, signatures, or password storage.",
     category: "Security",
-    readingTime: "12 min read",
+    readingTime: "8 min read",
     datePublished: "2026-02-08",
     content: `
-      <p data-i18n-html="content.blog.understanding-hashes.p1">Cryptographic hash functions are the unsung heroes of digital security. They are used everywhere—from verifying file integrity to securing blockchain transactions and storing passwords. But what exactly is a hash, and why does the choice of algorithm matter so much? In this guide, we'll explore the fundamental properties of hashes, the history of popular algorithms, and the future of cryptographic integrity.</p>
+      <p>A hash maps bytes to a fixed-size digest. The same bytes produce the same digest, so hashes are useful for detecting accidental or unauthorized changes. They do not encrypt data and cannot prove who produced a message by themselves.</p>
+      <h2>Checksum a file with the publisher's value</h2>
+      <p>Compute SHA-256 over the downloaded bytes and compare every hexadecimal character with a digest obtained from a trusted publisher channel. A match shows the bytes match that digest; it does not help if an attacker replaced both the file and the checksum.</p>
+      <h2>Do not use plain hashes as authenticators</h2>
+      <p>For a shared-secret message check, use HMAC rather than concatenating a key and message. For public verification, use a digital signature. <a href="https://csrc.nist.gov/pubs/fips/180-4/upd1/final" rel="noopener noreferrer">FIPS 180-4</a> specifies the SHA-2 family, while <a href="https://www.rfc-editor.org/rfc/rfc2104" rel="noopener noreferrer">RFC 2104</a> defines HMAC.</p>
+      <h2>MD5 and SHA-1 have narrow legacy roles</h2>
+      <p>Practical collisions make MD5 unsuitable for signatures or trust decisions, and SHA-1 is also deprecated for collision-sensitive uses. A legacy MD5 checksum may still detect an accidental transfer error, but it should not be presented as security.</p>
+      <h2>Password hashing is deliberately expensive</h2>
+      <p>Fast general-purpose hashes let attackers try guesses quickly. Password databases need a salted, tunable password hashing function such as Argon2id, scrypt, or bcrypt under a documented migration policy. The <a href="/encoding-workbench">Encoding Workbench</a> can compute general hashes for inspection; it is not a password database implementation.</p>
 
-      <h2 data-i18n="content.blog.understanding-hashes.h2_1">What is a Hash Function?</h2>
-      <p data-i18n-html="content.blog.understanding-hashes.p2">A hash function is a mathematical algorithm that takes an input of any size and produces a fixed-length string of characters, typically a hexadecimal number. A good cryptographic hash function has several key properties that make it suitable for security tasks:</p>
-      <ul>
-        <li data-i18n-html="content.blog.understanding-hashes.li1"><strong>Deterministic:</strong> The same input always produces the same output. This is essential for verification.</li>
-        <li data-i18n-html="content.blog.understanding-hashes.li2"><strong>Fast:</strong> It is computationally efficient to calculate the hash, even for large inputs.</li>
-        <li data-i18n-html="content.blog.understanding-hashes.li3"><strong>One-way (Pre-image Resistance):</strong> It is practically impossible to reverse the process and find the original input from the hash.</li>
-        <li data-i18n-html="content.blog.understanding-hashes.li4"><strong>Avalanche effect:</strong> A small change in the input (even a single bit) produces a significantly different output.</li>
-        <li data-i18n-html="content.blog.understanding-hashes.li5"><strong>Collision-resistant:</strong> It is extremely difficult to find two different inputs that produce the same hash.</li>
-      </ul>
-
-      <h2 data-i18n="content.blog.understanding-hashes.h2_2">MD5: The Broken Legend</h2>
-      <p data-i18n-html="content.blog.understanding-hashes.p3"><strong>MD5 (Message Digest 5)</strong> was once the most popular hash algorithm in the world. However, it is now considered cryptographically broken. Researchers have demonstrated that it is possible to create two different files with the same MD5 hash (a collision) in a matter of seconds. <strong>Never use MD5 for security-sensitive tasks.</strong> It is still useful for non-security purposes, like checksums for large files where accidental corruption is the only concern, but for anything involving trust, it is a liability.</p>
-
-      <h2 data-i18n="content.blog.understanding-hashes.h2_3">SHA-256: The Industry Standard</h2>
-      <p data-i18n-html="content.blog.understanding-hashes.p4"><strong>SHA-256 (Secure Hash Algorithm 256-bit)</strong> is part of the SHA-2 family and is currently the workhorse of the internet. It is used in TLS/SSL certificates, Bitcoin, and many other security protocols. With a 256-bit output, the number of possible hashes is astronomical (2^256), making it virtually immune to brute-force attacks with current technology. It strikes an excellent balance between security and performance.</p>
-
-      <pre tabindex="0" role="region" aria-label="Code sample"><code>// Calculating SHA-256 in the browser using Web Crypto API
-async function getHash(message) {
-  const msgUint8 = new TextEncoder().encode(message);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-}</code></pre>
-
-      <h2 data-i18n="content.blog.understanding-hashes.h2_4">SHA-3: The Next Generation</h2>
-      <p data-i18n-html="content.blog.understanding-hashes.p5"><strong>SHA-3</strong> is the latest member of the Secure Hash Algorithm family. Unlike SHA-2, which is based on the Merkle-Damgård construction, SHA-3 uses a completely different internal structure called a "sponge construction" (Keccak). While SHA-2 remains secure, SHA-3 provides an alternative that would be resistant to attacks that might one day break SHA-2. It is a "defense-in-depth" algorithm that ensures we have a backup if our current standards fail.</p>
-
-      <h2 data-i18n="content.blog.understanding-hashes.h2_5">The Birthday Paradox and Collision Probability</h2>
-      <p data-i18n-html="content.blog.understanding-hashes.p6">Why do we need such long hashes? The answer lies in the <strong>Birthday Paradox</strong>. In a room of just 23 people, there is a 50% chance that two of them share the same birthday. In cryptography, this means that you don't need to check all 2^256 possible SHA-256 hashes to find a collision; you only need to check about 2^128. While 2^128 is still an impossibly large number for today's computers, it explains why shorter hashes like MD5 (2^64 for collisions) were broken so quickly. As computing power grows, we must increase hash lengths to stay ahead of the collision curve.</p>
-
-      <h2 data-i18n="content.blog.understanding-hashes.h2_6">Hash-based Data Structures: Bloom Filters and Merkle Trees</h2>
-      <p data-i18n-html="content.blog.understanding-hashes.p7">Hashes aren't just for security; they are also used to build efficient data structures. <strong>Bloom Filters</strong> use multiple hash functions to provide a memory-efficient way to check if an element is in a set (with a small chance of false positives). They are used in databases and network routers to avoid expensive lookups. <strong>Merkle Trees</strong> use a hierarchy of hashes to verify the integrity of large datasets. They are the foundation of Git repositories and blockchain ledgers, allowing for efficient verification of specific pieces of data without needing the entire dataset.</p>
-
-      <h2 data-i18n="content.blog.understanding-hashes.h2_7">HMAC: Authenticating Messages</h2>
-      <p data-i18n-html="content.blog.understanding-hashes.p8">An <strong>HMAC (Hash-based Message Authentication Code)</strong> combines a hash function with a secret key. This allows you to verify both the integrity and the authenticity of a message. If an attacker changes the message, the hash won't match. If they don't have the secret key, they can't generate a valid HMAC. This is a critical tool for securing API requests and ensuring that data hasn't been tampered with in transit.</p>
-
-      <h2 data-i18n="content.blog.understanding-hashes.h2_8">Password Hashing vs. Data Hashing</h2>
-      <p data-i18n-html="content.blog.understanding-hashes.p9">It is a common mistake to use fast data hashes like SHA-256 for storing passwords. Because SHA-256 is designed to be fast, an attacker can try billions of passwords per second using specialized hardware. For passwords, you must use "slow" hashes like <strong>bcrypt</strong> or <strong>Argon2</strong>, which include a "work factor" that makes each attempt computationally expensive. This protects your users even if your database is leaked, as it makes brute-force attacks prohibitively slow.</p>
-
-      <h2 data-i18n="content.blog.understanding-hashes.h2_9">Quantum Resistance and the Future</h2>
-      <p data-i18n-html="content.blog.understanding-hashes.p10">As quantum computers become more powerful, some cryptographic algorithms will become vulnerable. While symmetric encryption and hash functions are generally more resistant to quantum attacks than asymmetric algorithms (like RSA), we may eventually need to move to even longer hash lengths (like SHA-512) or new "post-quantum" algorithms to ensure long-term data integrity. Researchers are already working on hash functions that are specifically designed to be resistant to Grover's algorithm, which can speed up hash collisions on quantum hardware.</p>
-
-      <h2 data-i18n="content.blog.understanding-hashes.h2_10">Salting: Preventing Rainbow Table Attacks</h2>
-      <p data-i18n-html="content.blog.understanding-hashes.p11">Even with a strong hash function, you must use a <strong>salt</strong> when hashing passwords. A salt is a random string added to the password before hashing. This ensures that identical passwords result in different hashes, making it impossible for attackers to use precomputed "rainbow tables" to look up common passwords. Modern hashing libraries like bcrypt handle salting automatically, but it's important to understand why it's there.</p>
-
-      <h2 data-i18n="content.blog.understanding-hashes.h2_11">Practical Applications for Developers</h2>
-      <p data-i18n-html="content.blog.understanding-hashes.p12">Developers use hashes for a variety of tasks every day:</p>
-      <ul>
-        <li data-i18n-html="content.blog.understanding-hashes.li6"><strong>File Integrity:</strong> Verify that a downloaded file hasn't been tampered with or corrupted during transfer.</li>
-        <li data-i18n-html="content.blog.understanding-hashes.li7"><strong>Deduplication:</strong> Identify duplicate files in a storage system by comparing their hashes instead of their entire contents.</li>
-        <li data-i18n-html="content.blog.understanding-hashes.li8"><strong>Digital Signatures:</strong> Ensure that a message was sent by a specific person and hasn't been altered, by signing the hash of the message.</li>
-        <li data-i18n-html="content.blog.understanding-hashes.li9"><strong>Content Addressing:</strong> Systems like IPFS and Git use the hash of a file as its address, ensuring that the address always points to the exact same content.</li>
-      </ul>
-
-      <p data-i18n-html="content.blog.understanding-hashes.p13">To experiment with different algorithms and see how they behave, use the client-side <a href="/encoding-workbench">Encoding &amp; Decoding Workbench</a>. This allows you to compute hashes locally without sending your data to a server, ensuring your privacy while you learn. Understanding the nuances of hashing is a fundamental skill for any developer working with data or security.</p>
-
-      <p data-i18n-html="content.blog.understanding-hashes.p14">Choosing the right hash algorithm is a critical decision for any developer. By understanding the strengths and weaknesses of each, you can build more secure and reliable applications. Remember: use SHA-256 or SHA-3 for data integrity, and Argon2 or bcrypt for passwords. Stay informed, and keep your data safe.</p>
-
-      <div class="mt-10 p-6 bg-surface-50 dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
-        <h3 class="text-lg font-semibold mb-4" data-i18n="content.blog.understanding-hashes.tools_heading">Related Security Tools</h3>
-        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <li>
-            <a href="/encoding-workbench" class="flex items-center p-3 rounded-lg hover:bg-white dark:hover:bg-surface-800 transition-colors border border-transparent hover:border-surface-200 dark:hover:border-surface-700">
-              <span class="text-2xl mr-3">#️⃣</span>
-              <div>
-                <div class="font-medium text-surface-900 dark:text-surface-50" data-i18n="tools.encoding-workbench.name">Encoding &amp; Decoding Workbench</div>
-                <div class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.encoding-workbench.desc">Encode, decode, hash, and identify data transformations.</div>
-              </div>
-            </a>
-          </li>
-        </ul>
-      </div>
     `,
   },
   {
     slug: "jwt-explained",
-    title: "JWT Tokens Explained: Structure, Security, and Common Pitfalls",
+    title: "JWT claims, signatures, and verification boundaries",
     description:
-      "Master JSON Web Tokens — from their three-part structure to advanced security considerations and common implementation mistakes.",
+      "Decode a JWT safely, then verify algorithm, issuer, audience, time claims, and keys in the system that trusts it.",
     category: "Security",
-    readingTime: "13 min read",
+    readingTime: "8 min read",
     datePublished: "2026-02-08",
     content: `
-      <p data-i18n-html="content.blog.jwt-explained.p1">JSON Web Tokens (JWTs) have revolutionized the way we handle authentication in modern web applications. By providing a compact, self-contained way to transmit information between parties, they enable stateless authentication that scales effortlessly. But with great power comes great responsibility—and many ways to get it wrong. In this guide, we'll dive deep into the structure of JWTs, explore advanced security strategies, and identify the pitfalls that can leave your application vulnerable.</p>
+      <p>A JSON Web Token usually has three Base64URL segments: protected header, claims payload, and signature. Decoding the first two segments is not verification. Anyone holding a token can alter decoded text; only a successful signature check with an allowed algorithm and trusted key establishes integrity.</p>
+      <h2>Inspect before you verify</h2>
+      <p>Use <a href="/token-studio">Token Studio</a> to inspect <code>alg</code>, <code>kid</code>, <code>iss</code>, <code>aud</code>, <code>exp</code>, and <code>nbf</code>. Treat every displayed claim as untrusted until verification succeeds. The focused <a href="/blog/inspect-jwt-in-the-browser">browser inspection guide</a> explains what local decoding can and cannot prove.</p>
+      <h2>Verification is an application policy</h2>
+      <p>Pin the algorithms your application accepts; do not let the token choose an unexpected verification mode. Resolve <code>kid</code> only within the issuer's trusted JWKS, verify issuer and audience exactly, and apply a small documented clock-skew allowance to time claims. <a href="https://www.rfc-editor.org/rfc/rfc8725" rel="noopener noreferrer">RFC 8725</a> records current JWT security practices.</p>
+      <h2>JWT is not encrypted by default</h2>
+      <p>A signed JWT can be read by its holder. Do not put passwords, API keys, or unnecessary personal data in claims. Keep token lifetimes bounded and plan revocation or key rotation when immediate invalidation matters.</p>
+      <p>The tool can verify supported signatures when you provide suitable key material. It cannot establish that a key came from the correct issuer or that a token is authorized for your application; those are trust decisions outside the decoder.</p>
 
-      <h2 data-i18n="content.blog.jwt-explained.h2_1">The Three Parts of a JWT</h2>
-      <p data-i18n-html="content.blog.jwt-explained.p2">A JWT is a string consisting of three parts separated by dots (<code>.</code>):</p>
-      <ol>
-        <li data-i18n-html="content.blog.jwt-explained.li1"><strong>Header:</strong> Typically contains the type of token (JWT) and the signing algorithm being used (e.g., HS256 or RS256). It is Base64URL-encoded.</li>
-        <li data-i18n-html="content.blog.jwt-explained.li2"><strong>Payload:</strong> Contains the claims. Claims are statements about an entity (typically, the user) and additional data. This is also Base64URL-encoded.</li>
-        <li data-i18n-html="content.blog.jwt-explained.li3"><strong>Signature:</strong> Used to verify that the sender of the JWT is who it says it is and to ensure that the message wasn't changed along the way. It is created by signing the encoded header and payload with a secret key.</li>
-      </ol>
-
-      <pre tabindex="0" role="region" aria-label="Code sample"><code>// Example of a decoded JWT Payload
-{
-  "sub": "1234567890",
-  "name": "John Doe",
-  "iat": 1516239022,
-  "exp": 1516242622,
-  "admin": true
-}</code></pre>
-
-      <h2 data-i18n="content.blog.jwt-explained.h2_2">Registered, Public, and Private Claims</h2>
-      <p data-i18n-html="content.blog.jwt-explained.p3">Claims are the heart of the JWT. They are divided into three categories:</p>
-      <ul>
-        <li data-i18n-html="content.blog.jwt-explained.li4"><strong>Registered claims:</strong> A set of predefined claims which are not mandatory but recommended (e.g., <code>iss</code> for issuer, <code>exp</code> for expiration time, <code>sub</code> for subject, <code>aud</code> for audience).</li>
-        <li data-i18n-html="content.blog.jwt-explained.li5"><strong>Public claims:</strong> Can be defined at will by those using JWTs. To avoid collisions, they should be defined in the IANA JSON Web Token Registry or be defined as a URI that contains a collision-resistant namespace.</li>
-        <li data-i18n-html="content.blog.jwt-explained.li6"><strong>Private claims:</strong> Custom claims created to share information between parties that agree on using them. These are neither registered nor public.</li>
-      </ul>
-
-      <h2 data-i18n="content.blog.jwt-explained.h2_3">JWT vs. Session Cookies: The Great Debate</h2>
-      <p data-i18n-html="content.blog.jwt-explained.p4">One of the most common questions in web development is whether to use JWTs or traditional session cookies. <strong>Session cookies</strong> are stateful; the server stores a session ID in a database or cache and checks it on every request. <strong>JWTs</strong> are stateless; all the information is contained in the token itself. While JWTs scale better for microservices and mobile apps (no shared session store needed), they are harder to revoke. If a user logs out, you can't easily "delete" a JWT that is already in the wild unless you implement a revocation strategy.</p>
-
-      <h2 data-i18n="content.blog.jwt-explained.h2_4">Revocation Strategies: Handling the Stateless Nature</h2>
-      <p data-i18n-html="content.blog.jwt-explained.p5">To handle logout and account suspension with JWTs, you have several options, each with its own trade-offs:</p>
-      <ul>
-        <li data-i18n-html="content.blog.jwt-explained.li7"><strong>Short TTL (Time To Live):</strong> Keep access tokens very short (e.g., 5-15 minutes) and use refresh tokens to get new ones. This minimizes the window of opportunity for an attacker if a token is stolen.</li>
-        <li data-i18n-html="content.blog.jwt-explained.li8"><strong>Blacklisting:</strong> Store the IDs (<code>jti</code> claim) of revoked tokens in a fast cache like Redis. The server checks this list on every request. This adds a small amount of state but maintains the benefits of JWTs.</li>
-        <li data-i18n-html="content.blog.jwt-explained.li9"><strong>Whitelisting:</strong> Only allow tokens that are explicitly stored in your database. This effectively makes JWTs stateful but provides maximum control over active sessions.</li>
-        <li data-i18n-html="content.blog.jwt-explained.li10"><strong>Rotating Secrets:</strong> In extreme cases, you can rotate the signing secret, which immediately invalidates all tokens signed with the old secret.</li>
-      </ul>
-
-      <h2 data-i18n="content.blog.jwt-explained.h2_5">JOSE Header Deep Dive</h2>
-      <p data-i18n-html="content.blog.jwt-explained.p6">The header of a JWT is part of the <strong>JOSE (JSON Object Signing and Encryption)</strong> framework. Beyond <code>alg</code> and <code>typ</code>, it can include fields like <code>kid</code> (Key ID), which tells the recipient which public key to use for verification. This is essential when you are rotating keys. More advanced headers like <code>x5u</code> or <code>x5c</code> can even include links to X.509 certificates for trust verification. Understanding these headers is key to building enterprise-grade authentication systems.</p>
-
-      <h2 data-i18n="content.blog.jwt-explained.h2_6">JWT in Microservices: Identity Propagation</h2>
-      <p data-i18n-html="content.blog.jwt-explained.p7">In a microservices architecture, JWTs are often used to propagate identity between services. An API Gateway authenticates the user and generates a JWT, which is then passed to downstream services in the <code>Authorization</code> header. This allows each service to know who the user is and what they are allowed to do without needing to call a central authentication service for every request. This "identity propagation" is one of the primary reasons for JWT's popularity in cloud-native environments.</p>
-
-      <h2 data-i18n="content.blog.jwt-explained.h2_7">Security Pitfalls to Avoid</h2>
-      <p data-i18n-html="content.blog.jwt-explained.p8">Despite their popularity, JWTs are often implemented insecurely. Here are the most common mistakes:</p>
-      <ul>
-        <li data-i18n-html="content.blog.jwt-explained.li11"><strong>The "none" algorithm:</strong> Some libraries allow the <code>alg</code> header to be set to <code>none</code>, which bypasses signature verification. Always explicitly whitelist the algorithms you support (e.g., only allow RS256).</li>
-        <li data-i18n-html="content.blog.jwt-explained.li12"><strong>Weak secrets:</strong> If you use a symmetric algorithm like HS256, your secret must be long, random, and kept strictly confidential. A weak secret can be brute-forced in minutes using modern hardware.</li>
-        <li data-i18n-html="content.blog.jwt-explained.li13"><strong>Sensitive data in the payload:</strong> JWTs are encoded, not encrypted. Anyone with the token can read the payload. Never store passwords, API keys, or PII (Personally Identifiable Information) in a JWT.</li>
-        <li data-i18n-html="content.blog.jwt-explained.li14"><strong>Missing expiration:</strong> Always set a short <code>exp</code> claim. A token without an expiration date is a permanent key to your application if stolen.</li>
-      </ul>
-
-      <h2 data-i18n="content.blog.jwt-explained.h2_8">Best Practices for Implementation</h2>
-      <p data-i18n-html="content.blog.jwt-explained.p9">To use JWTs securely, follow these industry-standard best practices:</p>
-      <ul>
-        <li data-i18n-html="content.blog.jwt-explained.li15"><strong>Use asymmetric algorithms:</strong> RS256 or ES256 are generally safer than HS256 because the private key never leaves the authentication server. Downstream services only need the public key to verify the token.</li>
-        <li data-i18n-html="content.blog.jwt-explained.li16"><strong>Implement refresh tokens:</strong> Use short-lived access tokens and longer-lived refresh tokens stored in <code>HttpOnly</code> cookies to minimize the impact of a stolen token.</li>
-        <li data-i18n-html="content.blog.jwt-explained.li17"><strong>Validate everything:</strong> Check the signature, the expiration, the issuer (<code>iss</code>), and the audience (<code>aud</code>) on every request. Don't trust any part of the token until the signature is verified.</li>
-        <li data-i18n-html="content.blog.jwt-explained.li18"><strong>Use secure storage:</strong> Store JWTs in <code>HttpOnly</code>, <code>Secure</code>, <code>SameSite=Strict</code> cookies to prevent XSS and CSRF attacks from stealing or using them.</li>
-      </ul>
-
-      <h2 data-i18n="content.blog.jwt-explained.h2_9">Inspecting and Debugging JWTs</h2>
-      <p data-i18n-html="content.blog.jwt-explained.p10">When developing, you often need to see what's inside a token to debug claims or expiration issues. Use the client-side <a href="/token-studio">Token Cryptography Suite</a> to decode tokens safely. Unlike online decoders that might log your tokens, a client-side tool keeps your data in your browser. For more advanced scenarios involving public keys and key rotation, the same suite includes JWK key management for converting key formats between PEM and JWK.</p>
-
-      <h2 data-i18n="content.blog.jwt-explained.h2_10">The Future: JWE and OIDC</h2>
-      <p data-i18n-html="content.blog.jwt-explained.p11">While standard JWTs are signed (JWS), you can also encrypt them using <strong>JWE (JSON Web Encryption)</strong> if you need to store sensitive data in the payload. Furthermore, <strong>OpenID Connect (OIDC)</strong> builds on top of JWT to provide a standardized identity layer, including a <code>/userinfo</code> endpoint and discovery documents. As you build more complex systems, you'll likely find yourself moving from simple JWTs to full OIDC implementations.</p>
-
-      <p data-i18n-html="content.blog.jwt-explained.p12">JWTs are a powerful tool for modern developers, but they require a deep understanding of security principles to use correctly. By following these guidelines and using the right tools, you can build authentication systems that are both flexible and secure. Remember: statelessness is a feature, but security is a requirement.</p>
-
-      <div class="mt-10 p-6 bg-surface-50 dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
-        <h3 class="text-lg font-semibold mb-4" data-i18n="content.blog.jwt-explained.tools_heading">Related Security Tools</h3>
-        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <li>
-            <a href="/token-studio" class="flex items-center p-3 rounded-lg hover:bg-white dark:hover:bg-surface-800 transition-colors border border-transparent hover:border-surface-200 dark:hover:border-surface-700">
-              <span class="text-2xl mr-3">🔓</span>
-              <div>
-                <div class="font-medium text-surface-900 dark:text-surface-50" data-i18n="tools.token-studio.name">Token Cryptography Suite</div>
-                <div class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.token-studio.desc">Inspect, generate, and manage JWT tokens and cryptographic keys.</div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="/token-studio" class="flex items-center p-3 rounded-lg hover:bg-white dark:hover:bg-surface-800 transition-colors border border-transparent hover:border-surface-200 dark:hover:border-surface-700">
-              <span class="text-2xl mr-3">🧷</span>
-              <div>
-                <div class="font-medium text-surface-900 dark:text-surface-50" data-i18n="tools.token-studio.name">Token Cryptography Suite</div>
-                <div class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.token-studio.desc">Manage and convert JWK keys</div>
-              </div>
-            </a>
-          </li>
-        </ul>
-      </div>
     `,
   },
   {
     slug: "regex-guide",
-    title: "Regular Expressions Demystified: A Practical Guide",
+    title: "Debug a regular expression with counterexamples",
     description:
-      "Master the fundamentals of regex with real-world examples, character classes, quantifiers, and 10 common patterns every developer should know.",
+      "Build a pattern from anchors and groups, test non-matches, and recognize engine and performance limits.",
     category: "Development",
-    readingTime: "14 min read",
+    readingTime: "8 min read",
     datePublished: "2026-02-08",
     content: `
-      <p data-i18n-html="content.blog.regex-guide.p1">Regular expressions, or regex, are often viewed as a dark art. To the uninitiated, a pattern like <code>/^(?:[a-z0-9!&dollar;%&\'*+/=?^&#96;{|}~-]+(?:\.[a-z0-9!&dollar;%&\'*+/=?^&#96;{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])&dollar;/i</code> looks like a cat walked across a keyboard. But once you understand the logic, regex becomes one of the most powerful tools in your arsenal for text processing, validation, and data extraction.</p>
+      <p>A regular expression answers a narrow text-matching question. Start with examples that must match and examples that must not. A pattern that passes only the happy path is unfinished.</p>
+      <h2>Anchor whole-field validation</h2>
+      <p>To accept a six-digit ASCII code, test <code>^[0-9]{6}$</code>. Without the anchors, the same pattern also finds six digits inside a longer string. In JavaScript, <code>\\d</code> matches ASCII digits; other regex engines may use Unicode digit semantics. An explicit range makes an ASCII protocol requirement clear.</p>
+      <h2>Use groups to extract, not to guess meaning</h2>
+      <p>For <code>2026-09-12</code>, <code>^([0-9]{4})-([0-9]{2})-([0-9]{2})$</code> separates fields, but it still accepts month 99. Parse and validate calendar meaning after the structural match.</p>
+      <h2>Test the engine you deploy</h2>
+      <p>Syntax and features vary across JavaScript, PCRE, RE2, Python, and other engines. The <a href="/regex-visualizer">Regex Studio</a> uses the browser's JavaScript engine; its result is not proof that a server-side engine behaves identically. MDN documents JavaScript's <a href="https://developer.mozilla.org/docs/Web/JavaScript/Guide/Regular_expressions" rel="noopener noreferrer">regular-expression syntax</a>.</p>
+      <h2>Avoid ambiguous repeated alternatives</h2>
+      <p>Nested quantifiers and overlapping alternatives can trigger excessive backtracking in some engines. Test long near-misses, set input limits at system boundaries, and prefer a parser when the grammar has nested structure. A visual explanation helps review a pattern; it cannot guarantee safe runtime on every input.</p>
 
-      <h2 data-i18n="content.blog.regex-guide.h2_1">The Building Blocks of Regex</h2>
-      <p data-i18n-html="content.blog.regex-guide.p2">At its core, a regular expression is a sequence of characters that defines a search pattern. Here are the fundamental components that form the foundation of any regex:</p>
-      <ul>
-        <li data-i18n-html="content.blog.regex-guide.li1"><strong>Literals:</strong> The simplest regex is just the text you want to match (e.g., <code>/hello/</code> matches the string "hello").</li>
-        <li data-i18n-html="content.blog.regex-guide.li2"><strong>Metacharacters:</strong> Characters with special meanings, like <code>.</code> (any character except newline), <code>^</code> (start of line), and <code>&dollar;</code> (end of line).</li>
-        <li data-i18n-html="content.blog.regex-guide.li3"><strong>Character Classes:</strong> Sets of characters to match, like <code>[a-z]</code> (any lowercase letter), <code>\\d</code> (any digit), or <code>\\w</code> (any alphanumeric character plus underscore).</li>
-        <li data-i18n-html="content.blog.regex-guide.li4"><strong>Quantifiers:</strong> Specify how many times a character or group should repeat, like <code>*</code> (zero or more), <code>+</code> (one or more), and <code>?</code> (zero or one), and <code>{n,m}</code> (between n and m times).</li>
-        <li data-i18n-html="content.blog.regex-guide.li5"><strong>Groups:</strong> Parentheses <code>()</code> are used to group parts of a pattern together for quantifiers or to "capture" the matched text for later use.</li>
-        <li data-i18n-html="content.blog.regex-guide.li6"><strong>Anchors:</strong> <code>\\b</code> matches a word boundary, while <code>\\B</code> matches a non-boundary. These are essential for matching whole words.</li>
-      </ul>
-
-      <h2 data-i18n="content.blog.regex-guide.h2_2">10 Common Patterns Every Developer Needs</h2>
-      <p data-i18n-html="content.blog.regex-guide.p3">Mastering these patterns will solve 90% of your daily regex needs. Remember to always test these against your specific data:</p>
-      <ol>
-        <li data-i18n-html="content.blog.regex-guide.li7"><strong>Email:</strong> <code>/^[^\s@]+@[^\s@]+\.[^\s@]+&dollar;/</code> (A simple, practical version for basic validation).</li>
-        <li data-i18n-html="content.blog.regex-guide.li8"><strong>URL:</strong> <code>/^https?:\/\/[^\s/$.?#].[^\s]*&dollar;/i</code> (Matches most common web addresses).</li>
-        <li data-i18n-html="content.blog.regex-guide.li9"><strong>IPv4 Address:</strong> <code>/^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)&dollar;/</code>.</li>
-        <li data-i18n-html="content.blog.regex-guide.li10"><strong>Date (YYYY-MM-DD):</strong> <code>/^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])&dollar;/</code>.</li>
-        <li data-i18n-html="content.blog.regex-guide.li11"><strong>Phone Number:</strong> <code>/^\+?[\\d\\s-]{10,15}&dollar;/</code> (A flexible pattern for international numbers).</li>
-        <li data-i18n-html="content.blog.regex-guide.li12"><strong>Hex Color:</strong> <code>/^#?([a-f0-9]{3}|[a-f0-9]{6})&dollar;/i</code>.</li>
-        <li data-i18n-html="content.blog.regex-guide.li13"><strong>UUID:</strong> <code>/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}&dollar;/i</code>.</li>
-        <li data-i18n-html="content.blog.regex-guide.li14"><strong>HTML Tag:</strong> <code>/&lt;([a-z1-6]+)([^&gt;]+)*&gt;(.*?)&lt;\\/\\1&gt;/i</code> (Captures the tag name and its content).</li>
-        <li data-i18n-html="content.blog.regex-guide.li15"><strong>Password Strength:</strong> <code>/^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}&dollar;/</code> (At least one lowercase, one uppercase, one digit, and 8+ characters).</li>
-        <li data-i18n-html="content.blog.regex-guide.li16"><strong>Whitespace:</strong> <code>/\\s+/</code> (Matches one or more spaces, tabs, or newlines).</li>
-      </ol>
-
-      <h2 data-i18n="content.blog.regex-guide.h2_3">Greedy vs. Lazy Matching: Controlling the Reach</h2>
-      <p data-i18n-html="content.blog.regex-guide.p4">By default, quantifiers like <code>*</code> and <code>+</code> are <strong>greedy</strong>—they match as much text as possible. For example, <code>/&lt;.*&gt;/</code> applied to <code>&lt;div&gt;hello&lt;/div&gt;</code> will match the entire string from the first <code>&lt;</code> to the last <code>&gt;</code>. To make it <strong>lazy</strong> (or non-greedy) and match only the first tag, add a <code>?</code>: <code>/&lt;.*?&gt;/</code>. This is a critical distinction when parsing structured text like HTML or JSON.</p>
-
-      <h2 data-i18n="content.blog.regex-guide.h2_4">Lookaheads and Lookbehinds: Zero-Width Assertions</h2>
-      <p data-i18n-html="content.blog.regex-guide.p5">These advanced features allow you to match a pattern only if it is (or isn't) followed or preceded by another pattern, without including that other pattern in the match. They are called "zero-width" because they don't consume any characters in the string.</p>
-      <ul>
-        <li data-i18n-html="content.blog.regex-guide.li17"><strong>Positive Lookahead (<code>(?=...)</code>):</strong> Matches if the pattern is followed by the specified group. Example: <code>/\\d+(?= px)/</code> matches "10" in "10 px".</li>
-        <li data-i18n-html="content.blog.regex-guide.li18"><strong>Negative Lookahead (<code>(?!...)</code>):</strong> Matches if the pattern is NOT followed by the specified group.</li>
-        <li data-i18n-html="content.blog.regex-guide.li19"><strong>Positive Lookbehind (<code>(?&lt;=...)</code>):</strong> Matches if the pattern is preceded by the specified group.</li>
-        <li data-i18n-html="content.blog.regex-guide.li20"><strong>Negative Lookbehind (<code>(?&lt;!...)</code>):</strong> Matches if the pattern is NOT preceded by the specified group.</li>
-      </ul>
-
-      <h2 data-i18n="content.blog.regex-guide.h2_5">Performance and Catastrophic Backtracking</h2>
-      <p data-i18n-html="content.blog.regex-guide.p6">Poorly written regex can lead to <strong>catastrophic backtracking</strong>, where the engine takes an exponential amount of time to fail a match. This often happens with nested quantifiers like <code>/(a+)+b/</code> when applied to a long string of "a"s that doesn't end in "b". This can lead to Regular Expression Denial of Service (ReDoS) attacks. Always test your patterns with long, non-matching strings and avoid nesting quantifiers whenever possible.</p>
-
-      <h2 data-i18n="content.blog.regex-guide.h2_6">Flags: Modifying Regex Behavior</h2>
-      <p data-i18n-html="content.blog.regex-guide.p7">Regex behavior can be modified using flags added after the closing slash:</p>
-      <ul>
-        <li data-i18n-html="content.blog.regex-guide.li21"><code>g</code> (global): Don't stop after the first match; find all matches.</li>
-        <li data-i18n-html="content.blog.regex-guide.li22"><code>i</code> (case-insensitive): Ignore case when matching.</li>
-        <li data-i18n-html="content.blog.regex-guide.li23"><code>m</code> (multiline): <code>^</code> and <code>&dollar;</code> match the start and end of lines, not just the whole string.</li>
-        <li data-i18n-html="content.blog.regex-guide.li24"><code>s</code> (dotAll): <code>.</code> matches newlines as well.</li>
-        <li data-i18n-html="content.blog.regex-guide.li25"><code>u</code> (unicode): Enable full Unicode support.</li>
-      </ul>
-
-      <h2 data-i18n="content.blog.regex-guide.h2_7">Visualizing and Debugging Your Patterns</h2>
-      <p data-i18n-html="content.blog.regex-guide.p8">Regex can be incredibly hard to read and debug, especially as patterns grow in complexity. Use a <a href="/regex-visualizer">Regex Studio</a> to see a visual representation (railroad diagram) of your pattern. This makes it much easier to understand the logic flow, identify redundant groups, and explain your patterns to teammates. A good visualizer will also show you token-by-token explanations and live match highlighting, which is essential for rapid prototyping.</p>
-
-      <h2 data-i18n="content.blog.regex-guide.h2_8">Regex in Different Languages</h2>
-      <p data-i18n-html="content.blog.regex-guide.p9">While the core syntax of regex is standardized, different programming languages use different "engines" (e.g., PCRE, JavaScript, Python's <code>re</code>). Most modern engines are very similar, but there are subtle differences in support for features like lookbehinds or named capture groups. Always check the documentation for your specific language's regex implementation to avoid unexpected behavior.</p>
-
-      <h2 data-i18n="content.blog.regex-guide.h2_9">Practical Text Transformation</h2>
-      <p data-i18n-html="content.blog.regex-guide.p10">Regex isn't just for finding text; it's also for transforming it. Using "backreferences" (like <code>&dollar;1</code> or <code>\\1</code>), you can rearrange parts of a matched string. For example, you can convert a date from <code>MM/DD/YYYY</code> to <code>YYYY-MM-DD</code> using a single replace operation. This makes regex an invaluable tool for data cleaning and migration tasks.</p>
-
-      <p data-i18n-html="content.blog.regex-guide.p11">Regular expressions are a superpower. They allow you to perform complex text transformations and validations in a single line of code that would otherwise take dozens of lines of procedural logic. While the learning curve can be steep, the investment pays off every time you need to parse a log file, validate a form, or refactor a codebase. Take the time to learn them, and you'll wonder how you ever lived without them. Remember: with great power comes the responsibility to write readable, performant patterns.</p>
-
-      <div class="mt-10 p-6 bg-surface-50 dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
-        <h3 class="text-lg font-semibold mb-4" data-i18n="content.blog.regex-guide.tools_heading">Related Developer Tools</h3>
-        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <li>
-            <a href="/regex-visualizer" class="flex items-center p-3 rounded-lg hover:bg-white dark:hover:bg-surface-800 transition-colors border border-transparent hover:border-surface-200 dark:hover:border-surface-700">
-              <span class="text-2xl mr-3">🧩</span>
-              <div>
-                <div class="font-medium text-surface-900 dark:text-surface-50" data-i18n="tools.regex-visualizer.name">Regex Studio</div>
-                <div class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.regex-visualizer.desc">Visualize and test regex</div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="/encoding-workbench" class="flex items-center p-3 rounded-lg hover:bg-white dark:hover:bg-surface-800 transition-colors border border-transparent hover:border-surface-200 dark:hover:border-surface-700">
-              <span class="text-2xl mr-3">🔮</span>
-              <div>
-                <div class="font-medium text-surface-900 dark:text-surface-50" data-i18n="tools.encoding-workbench.name">Encoding &amp; Decoding Workbench</div>
-                <div class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.encoding-workbench.desc">Encode, decode, hash, and identify data transformations.</div>
-              </div>
-            </a>
-          </li>
-        </ul>
-      </div>
     `,
   },
   {
     slug: "curl-essentials",
-    title: "cURL for Developers: Essential Commands and Techniques",
+    title: "Reproduce an HTTP request with curl",
     description:
-      "Master the Swiss Army knife of APIs. Learn essential cURL flags, authentication patterns, and debugging techniques for modern development.",
+      "Build a minimal request, inspect headers and redirects, preserve errors, and avoid leaking credentials into shell history.",
     category: "Networking",
-    readingTime: "12 min read",
+    readingTime: "8 min read",
     datePublished: "2026-02-05",
     content: `
-      <p data-i18n-html="content.blog.curl-essentials.p1">In the world of backend development, API integration, and systems administration, few tools are as ubiquitous or as powerful as cURL. Short for "Client URL," cURL is a command-line tool and library for transferring data with URLs. Supporting dozens of protocols—including HTTP, HTTPS, FTP, and SMTP—it has become the de facto standard for testing endpoints, debugging network issues, and automating web interactions.</p>
+      <p><code>curl</code> is useful when you need to separate an HTTP problem from application code. Begin with the smallest request that reproduces the issue, then add one option at a time.</p>
+      <h2>Send JSON and fail visibly</h2>
+      <pre tabindex="0" role="region" aria-label="curl JSON request example"><code>curl --fail-with-body \\
+  --request POST \\
+  --header 'Content-Type: application/json' \\
+  --data '{"enabled":true}' \\
+  https://api.example.test/widgets</code></pre>
+      <p><code>--fail-with-body</code> makes HTTP 4xx/5xx responses fail the command while retaining the response body. Use <code>--include</code> for response headers and <code>--verbose</code> for connection and request diagnostics. The authoritative option behavior is in the <a href="https://curl.se/docs/manpage.html" rel="noopener noreferrer">curl man page</a>.</p>
+      <h2>Redirects can change the security context</h2>
+      <p><code>--location</code> follows redirects. Inspect the chain before forwarding credentials across hosts, and do not use <code>--location-trusted</code> casually. Avoid <code>--insecure</code>: it disables certificate verification and can hide the TLS failure you need to diagnose.</p>
+      <h2>Keep secrets out of generated commands</h2>
+      <p>The <a href="/curl-studio">Curl Studio</a> builds commands and parses existing ones in the browser. Prefer environment variables, a protected config file, or interactive input for real tokens instead of pasting them into a shareable command or shell history. The studio does not send the request, resolve DNS, or test the remote server.</p>
 
-      <h2 data-i18n="content.blog.curl-essentials.h2_1">The Philosophy of cURL</h2>
-      <p data-i18n-html="content.blog.curl-essentials.p2">At its core, cURL is designed to be scriptable and transparent. Unlike a browser, which hides the complexity of the HTTP request-response cycle behind a graphical interface, cURL exposes every header, every cookie, and every byte of the payload. This transparency is what makes it indispensable for developers. When an API call fails in your application code, reproducing it in cURL is often the first step toward a solution. It allows you to isolate the network request from your application logic, ensuring that the issue isn't a bug in your HTTP client library or a misconfiguration of your local environment.</p>
-
-      <h2 data-i18n="content.blog.curl-essentials.h2_2">Essential Flags for Daily Use</h2>
-      <p data-i18n-html="content.blog.curl-essentials.p3">While cURL has hundreds of options, a handful of flags cover 90% of developer use cases. Mastering these will significantly speed up your workflow.</p>
-      <ul>
-        <li data-i18n-html="content.blog.curl-essentials.li1"><strong>-X, --request</strong>: Specifies the HTTP method (GET, POST, PUT, DELETE, etc.). While cURL defaults to GET, you'll use this constantly for RESTful APIs.</li>
-        <li data-i18n-html="content.blog.curl-essentials.li2"><strong>-H, --header</strong>: Adds a custom header to the request. This is essential for setting <code>Content-Type</code> or passing <code>Authorization</code> tokens. You can use this flag multiple times in a single command to send multiple headers.</li>
-        <li data-i18n-html="content.blog.curl-essentials.li3"><strong>-d, --data</strong>: Sends data in a POST request. For JSON APIs, you'll often combine this with a JSON string. Using <code>-d</code> automatically sets the method to POST and the <code>Content-Type</code> to <code>application/x-www-form-urlencoded</code> unless overridden.</li>
-        <li data-i18n-html="content.blog.curl-essentials.li4"><strong>-v, --verbose</strong>: Perhaps the most important flag for debugging. It shows the entire request and response, including headers and TLS handshake details. Lines starting with <code>&gt;</code> are sent by cURL, while lines starting with <code>&lt;</code> are received from the server.</li>
-        <li data-i18n-html="content.blog.curl-essentials.li5"><strong>-L, --location</strong>: Tells cURL to follow redirects. By default, cURL will show the 301/302 response; <code>-L</code> ensures you reach the final destination, which is critical when testing shortened URLs or vanity domains.</li>
-        <li data-i18n-html="content.blog.curl-essentials.li6"><strong>-i, --include</strong>: Includes the HTTP response headers in the output, which is useful for checking <code>Set-Cookie</code>, <code>Cache-Control</code>, or custom rate-limiting headers.</li>
-        <li data-i18n-html="content.blog.curl-essentials.li7"><strong>-o, --output</strong>: Writes the response body to a file instead of stdout. This is useful for downloading binaries or large datasets.</li>
-        <li data-i18n-html="content.blog.curl-essentials.li8"><strong>-s, --silent</strong>: Mutes the progress meter and error messages. Often used in scripts where you only care about the response body.</li>
-      </ul>
-
-      <h2 data-i18n="content.blog.curl-essentials.h2_3">Working with JSON APIs</h2>
-      <p data-i18n-html="content.blog.curl-essentials.p4">Modern development is dominated by JSON. To send a JSON payload to an endpoint, you must explicitly set the <code>Content-Type</code> header, otherwise the server might reject the request or misinterpret the data.</p>
-      <pre tabindex="0" role="region" aria-label="Code sample"><code>curl -X POST https://api.example.com/v1/users \\
-  -H "Content-Type: application/json" \\
-  -d '{"name": "Jane Doe", "email": "jane@example.com"}'</code></pre>
-      <p data-i18n-html="content.blog.curl-essentials.p5">If you have a large JSON payload, you can store it in a file and tell cURL to read from it using the <code>@</code> symbol. This avoids issues with shell escaping and keeps your command history clean:</p>
-      <pre tabindex="0" role="region" aria-label="Code sample"><code>curl -X POST https://api.example.com/v1/bulk-upload \\
-  -H "Content-Type: application/json" \\
-  -d @data.json</code></pre>
-      <p data-i18n-html="content.blog.curl-essentials.p6">For multipart form data (like file uploads), use the <code>-F</code> flag. This automatically sets the <code>Content-Type</code> to <code>multipart/form-data</code> and handles the boundary generation for you:</p>
-      <pre tabindex="0" role="region" aria-label="Code sample"><code>curl -X POST https://api.example.com/v1/upload \\
-  -F "profile_pic=@photo.jpg" \\
-  -F "username=janesmith"</code></pre>
-
-      <h2 data-i18n="content.blog.curl-essentials.h2_4">Authentication Patterns</h2>
-      <p data-i18n-html="content.blog.curl-essentials.p7">Securing APIs is a top priority, and cURL supports all major authentication schemes. For Basic Authentication, use the <code>-u</code> flag, which Base64-encodes the credentials for you:</p>
-      <pre tabindex="0" role="region" aria-label="Code sample"><code>curl -u username:password https://api.example.com/protected</code></pre>
-      <p data-i18n-html="content.blog.curl-essentials.p8">For modern APIs using OAuth 2.0 or OIDC, you'll typically pass a Bearer token in the <code>Authorization</code> header. This is the most common pattern for cloud services and microservices:</p>
-      <pre tabindex="0" role="region" aria-label="Code sample"><code>curl -H "Authorization: Bearer YOUR_ACCESS_TOKEN" https://api.example.com/userinfo</code></pre>
-      <p data-i18n-html="content.blog.curl-essentials.p9">If you're working with AWS or other services that use custom signing algorithms (like SigV4), you might need to use a wrapper or a specialized tool, but the core principle of passing headers remains the same.</p>
-
-      <h2 data-i18n="content.blog.curl-essentials.h2_5">Cookies and Session Management</h2>
-      <p data-i18n-html="content.blog.curl-essentials.p10">While many APIs are stateless, web applications often rely on cookies for session management. cURL can handle cookies with ease. To save cookies from a response to a file (a "cookie jar"), use the <code>-c</code> flag:</p>
-      <pre tabindex="0" role="region" aria-label="Code sample"><code>curl -c cookies.txt https://example.com/login -d "user=admin&amp;pass=123"</code></pre>
-      <p data-i18n-html="content.blog.curl-essentials.p11">To send those cookies back in subsequent requests, use the <code>-b</code> flag:</p>
-      <pre tabindex="0" role="region" aria-label="Code sample"><code>curl -b cookies.txt https://example.com/dashboard</code></pre>
-      <p data-i18n-html="content.blog.curl-essentials.p12">This allows you to simulate a full browser session from the command line, which is invaluable for testing login flows and protected routes.</p>
-
-      <h2 data-i18n="content.blog.curl-essentials.h2_6">Proxy and Network Settings</h2>
-      <p data-i18n-html="content.blog.curl-essentials.p13">In corporate environments or when debugging traffic, you may need to route your requests through a proxy. cURL supports this via the <code>-x</code> or <code>--proxy</code> flag:</p>
-      <pre tabindex="0" role="region" aria-label="Code sample"><code>curl -x http://proxy.example.com:8080 https://api.external.com</code></pre>
-      <p data-i18n-html="content.blog.curl-essentials.p14">If your proxy requires authentication, you can include it in the URL: <code>http://user:pass@proxy.example.com:8080</code>. You can also tell cURL to ignore SSL certificate errors (useful for self-signed certs in dev) using the <code>-k</code> or <code>--insecure</code> flag, though this should never be used in production.</p>
-
-      <h2 data-i18n="content.blog.curl-essentials.h2_7">Advanced Debugging and Troubleshooting</h2>
-      <p data-i18n-html="content.blog.curl-essentials.p15">When an API is behaving unexpectedly, cURL's verbose mode is your best friend. However, sometimes you need even more detail. The <code>--trace</code> and <code>--trace-ascii</code> flags provide a full dump of all incoming and outgoing data, including the TLS handshake and raw byte transfers. This is invaluable for debugging binary protocols, character encoding issues, or complex TLS version mismatches.</p>
-      <p data-i18n-html="content.blog.curl-essentials.p16">Another common challenge is performance tuning. How long is the DNS lookup taking? How long until the first byte is received? You can use the <code>-w</code> (write-out) flag to extract specific metrics and format them into a readable report:</p>
-      <pre tabindex="0" role="region" aria-label="Code sample"><code>curl -o /dev/null -s -w "DNS: %{time_namelookup}s | Connect: %{time_connect}s | AppConnect: %{time_appconnect}s | Total: %{time_total}s\\n" https://google.com</code></pre>
-
-      <h2 data-i18n="content.blog.curl-essentials.h2_8">cURL for Automation and CI/CD</h2>
-      <p data-i18n-html="content.blog.curl-essentials.p17">Beyond manual testing, cURL is a cornerstone of modern CI/CD pipelines. Whether you're triggering a webhook, checking the health of a deployment, or uploading build artifacts, cURL's reliability and low overhead make it the perfect tool for the job. Its exit codes (0 for success, non-zero for various errors) make it easy to integrate into shell scripts and automation workflows.</p>
-      <p data-i18n-html="content.blog.curl-essentials.p18">In a GitHub Action or GitLab CI runner, you might use cURL to verify that a service has started correctly before running integration tests. This "wait-for-it" pattern ensures that your tests don't fail due to race conditions during deployment:</p>
-      <pre tabindex="0" role="region" aria-label="Code sample"><code># Wait for service to be ready
-until curl -s --head --request GET http://localhost:8080/health | grep "200 OK"; do
-  echo "Waiting for service..."
-  sleep 5
-done</code></pre>
-
-      <h2 data-i18n="content.blog.curl-essentials.h2_10">From cURL to Code</h2>
-      <p data-i18n-html="content.blog.curl-essentials.p20">Once you've perfected a cURL command, the next step is often implementing it in your application. Most modern languages have libraries that mimic cURL's behavior, such as <code>fetch</code> in JavaScript, <code>requests</code> in Python, or <code>Guzzle</code> in PHP. However, manually translating headers, body structures, and escaping rules can be error-prone.</p>
-      <p data-i18n-html="content.blog.curl-essentials.p21">This is where tools like <a href="/curl-studio">Curl Studio</a> come in. They allow you to paste a cURL command and visually inspect its components, or build a complex request from scratch without worrying about shell escaping rules. Additionally, if you're dealing with encoded data within your cURL commands, the <a href="/encoding-workbench">Encoding &amp; Decoding Workbench</a> can help you unwrap Base64 or URL-encoded strings to see exactly what's being sent. For those working with secure headers, the <a href="/csp-builder">CSP Header Builder</a> can help you construct the complex policies that cURL can then be used to verify.</p>
-
-      <h2 data-i18n="content.blog.curl-essentials.h2_11">Conclusion</h2>
-      <p data-i18n-html="content.blog.curl-essentials.p22">cURL is more than just a command; it's a fundamental skill for any developer. By understanding its core flags, mastering its authentication and session management capabilities, and leveraging its powerful debugging features, you gain a deeper understanding of the HTTP protocol and the web as a whole. Whether you're debugging a production outage, exploring a new API, or building complex automation, cURL provides the precision, transparency, and control you need to succeed.</p>
     `,
   },
   {
     slug: "x509-certificates-explained",
-    title: "X.509 Certificates: How TLS/SSL Actually Works",
+    title: "Read an X.509 certificate without overtrusting it",
     description:
-      "Demystify the Public Key Infrastructure (PKI). Learn about certificate chains, CA trust, SANs, and the CSR process.",
-    category: "Networking",
-    readingTime: "10 min read",
+      "Inspect names, validity, key usage, and chain clues while keeping hostname and trust-store verification separate.",
+    category: "Security",
+    readingTime: "8 min read",
     datePublished: "2026-02-06",
     content: `
-      <p data-i18n-html="content.blog.x509-certificates-explained.p1">Every time you see the padlock icon in your browser's address bar, you are witnessing the result of a complex cryptographic dance powered by X.509 certificates. While we often refer to it simply as "SSL" or "TLS," the underlying infrastructure—the Public Key Infrastructure (PKI)—is what makes secure communication on the internet possible. Understanding how these certificates work is crucial for developers, DevOps engineers, and security professionals alike.</p>
+      <p>An X.509 certificate binds a public key to names and attributes signed by an issuer. Reading its fields is inspection, not proof that a live server is trustworthy.</p>
+      <h2>Check the identity fields first</h2>
+      <p>For HTTPS, clients match the requested hostname against the Subject Alternative Name extension. The legacy Common Name is not a substitute when SAN is present. Then check <code>notBefore</code> and <code>notAfter</code>, key type and size, signature algorithm, and key-usage constraints.</p>
+      <h2>A chain needs more than the leaf</h2>
+      <p>The server normally sends the leaf and required intermediate certificates. The client builds a path to a root in its own trust store and applies name constraints, policy, and usage rules. A missing intermediate can fail on one client even if another retrieves or caches it.</p>
+      <p><a href="https://www.rfc-editor.org/rfc/rfc5280" rel="noopener noreferrer">RFC 5280</a> defines certificate and path-validation rules. Browser behavior also depends on platform trust stores and current CA policy.</p>
+      <h2>Use the decoder for fields, not network claims</h2>
+      <p>The <a href="/certificate-decoder">Certificate Decoder</a> parses PEM or DER input locally and shows certificate fields. It does not contact the hostname, fetch missing intermediates, check current revocation status, or certify that a chain is accepted by every client. Use a live TLS client for those checks and avoid pasting private keys; a certificate contains the public key only.</p>
 
-      <h2 data-i18n="content.blog.x509-certificates-explained.h2_1">What is an X.509 Certificate?</h2>
-      <p data-i18n-html="content.blog.x509-certificates-explained.p2">An X.509 certificate is a digital document that binds a public key to an identity (such as a domain name, an organization, or an individual). It is defined by the International Telecommunication Union (ITU) and is the standard format for public key certificates. The most common version in use today is v3, which introduced extensions that allow for greater flexibility, such as Subject Alternative Names (SANs). These certificates are the bedrock of trust on the internet, ensuring that when you connect to <code>example.com</code>, you are actually talking to the owner of that domain and not an impostor.</p>
-
-      <h2 data-i18n="content.blog.x509-certificates-explained.h2_2">The Anatomy of a Certificate</h2>
-      <p data-i18n-html="content.blog.x509-certificates-explained.p3">A standard X.509 certificate contains several critical fields that define its identity and validity:</p>
-      <ul>
-        <li data-i18n-html="content.blog.x509-certificates-explained.li1"><strong>Version</strong>: Identifies which version of the X.509 standard the certificate follows (usually v3).</li>
-        <li data-i18n-html="content.blog.x509-certificates-explained.li2"><strong>Serial Number</strong>: A unique identifier assigned by the Certificate Authority (CA) to distinguish the certificate from others it has issued.</li>
-        <li data-i18n-html="content.blog.x509-certificates-explained.li3"><strong>Subject</strong>: The entity the certificate belongs to (e.g., <code>CN=example.com, O=Example Corp, C=US</code>).</li>
-        <li data-i18n-html="content.blog.x509-certificates-explained.li4"><strong>Issuer</strong>: The entity that verified the information and signed the certificate (the Certificate Authority).</li>
-        <li data-i18n-html="content.blog.x509-certificates-explained.li5"><strong>Validity Period</strong>: The "Not Before" and "Not After" dates. Certificates are not valid outside this window. Maximum lifespans are shrinking: under CA/Browser Forum ballot SC-081 the old 398-day cap for public TLS certificates dropped to 200 days in March 2026, and falls to 100 days in 2027 and 47 days in 2029 — which is why automated renewal is now effectively mandatory.</li>
-        <li data-i18n-html="content.blog.x509-certificates-explained.li6"><strong>Public Key</strong>: The key used to encrypt data or verify signatures. The corresponding private key is kept secret by the subject.</li>
-        <li data-i18n-html="content.blog.x509-certificates-explained.li7"><strong>Signature Algorithm</strong>: The algorithm used by the CA to sign the certificate (e.g., <code>sha256WithRSAEncryption</code> or <code>ecdsa-with-SHA256</code>).</li>
-        <li data-i18n-html="content.blog.x509-certificates-explained.li8"><strong>Extensions</strong>: Additional metadata, such as SANs (for multiple domains), Key Usage (what the key can be used for), and Basic Constraints (whether the cert can act as a CA).</li>
-      </ul>
-
-      <h2 data-i18n="content.blog.x509-certificates-explained.h2_3">The Chain of Trust</h2>
-      <p data-i18n-html="content.blog.x509-certificates-explained.p4">How does your browser know to trust a certificate from a random website? It follows a "Chain of Trust." At the top of this chain are <strong>Root Certificate Authorities</strong>. These are highly secure organizations whose self-signed certificates are pre-installed in your operating system or browser's "Trust Store."</p>
-      <p data-i18n-html="content.blog.x509-certificates-explained.p5">Because Root CAs are so sensitive, they rarely sign end-entity certificates directly. Instead, they sign <strong>Intermediate Certificates</strong>, which in turn sign the <strong>Leaf Certificates</strong> (the ones you see on websites). When your browser connects to a site, it receives the leaf certificate and the intermediate certificates. It verifies each link in the chain until it reaches a Root CA it already trusts. If any link is broken, expired, or missing, you get a "Your connection is not private" error. This hierarchical structure allows for better security management, as an intermediate CA can be revoked without affecting the entire root.</p>
-
-      <h2 data-i18n="content.blog.x509-certificates-explained.h2_4">The TLS Handshake: Putting Certs to Work</h2>
-      <p data-i18n-html="content.blog.x509-certificates-explained.p6">The certificate is used during the initial phase of a connection, known as the TLS Handshake. In a simplified TLS 1.3 handshake:</p>
-      <ol>
-        <li data-i18n-html="content.blog.x509-certificates-explained.li9">The client sends a <code>ClientHello</code> with supported cipher suites.</li>
-        <li data-i18n-html="content.blog.x509-certificates-explained.li10">The server responds with a <code>ServerHello</code> and its <strong>Certificate</strong>.</li>
-        <li data-i18n-html="content.blog.x509-certificates-explained.li11">The client verifies the certificate against its trust store and checks the signature.</li>
-        <li data-i18n-html="content.blog.x509-certificates-explained.li12">Both parties use the public key (or a key exchange mechanism like Diffie-Hellman) to generate session keys for encrypted communication.</li>
-      </ol>
-      <p data-i18n-html="content.blog.x509-certificates-explained.p7">This process ensures both <strong>Identity</strong> (you know who you're talking to) and <strong>Confidentiality</strong> (no one else can read the messages).</p>
-
-      <h2 data-i18n="content.blog.x509-certificates-explained.h2_5">The CSR Process: From Key to Certificate</h2>
-      <p data-i18n-html="content.blog.x509-certificates-explained.p8">To obtain a CA-signed certificate, you must first generate a <strong>Certificate Signing Request (CSR)</strong>. This process typically involves:</p>
-      <ol>
-        <li data-i18n-html="content.blog.x509-certificates-explained.li13">Generating a private key (e.g., RSA 2048-bit or ECDSA P-256).</li>
-        <li data-i18n-html="content.blog.x509-certificates-explained.li14">Creating a CSR that includes your public key and identity information (Common Name, Organization, etc.).</li>
-        <li data-i18n-html="content.blog.x509-certificates-explained.li15">Submitting the CSR to a CA (like Let's Encrypt, DigiCert, or Sectigo).</li>
-        <li data-i18n-html="content.blog.x509-certificates-explained.li16">The CA verifying your identity (e.g., via DNS or HTTP challenge).</li>
-        <li data-i18n-html="content.blog.x509-certificates-explained.li17">The CA issuing the signed certificate.</li>
-      </ol>
-      <p data-i18n-html="content.blog.x509-certificates-explained.p9">It is vital to remember that the private key never leaves your server. The CA only needs your public key (contained in the CSR) to issue the certificate. If your private key is ever compromised, the security of your encrypted traffic is lost.</p>
-
-      <h2 data-i18n="content.blog.x509-certificates-explained.h2_6">Certificate Revocation: OCSP and CRL</h2>
-      <p data-i18n-html="content.blog.x509-certificates-explained.p10">What happens if a certificate is compromised before it expires? The CA must revoke it. There are two primary mechanisms for checking revocation status:</p>
-      <ul>
-        <li data-i18n-html="content.blog.x509-certificates-explained.li18"><strong>Certificate Revocation List (CRL)</strong>: A list of serial numbers of revoked certificates published by the CA. Browsers download this list periodically.</li>
-        <li data-i18n-html="content.blog.x509-certificates-explained.li19"><strong>Online Certificate Status Protocol (OCSP)</strong>: A real-time query where the browser asks the CA if a specific certificate is still valid. <strong>OCSP Stapling</strong> is a performance optimization where the server fetches the OCSP response and "staples" it to the certificate during the handshake.</li>
-      </ul>
-
-      <h2 data-i18n="content.blog.x509-certificates-explained.h2_7">Subject Alternative Names (SANs) and Wildcards</h2>
-      <p data-i18n-html="content.blog.x509-certificates-explained.p11">In the early days of the web, a certificate was usually tied to a single Common Name (CN). Today, we use <strong>Subject Alternative Names (SANs)</strong> to secure multiple domains with a single certificate. For example, a single cert could be valid for <code>example.com</code>, <code>www.example.com</code>, and <code>api.example.com</code>. <strong>Wildcard certificates</strong> (e.g., <code>*.example.com</code>) take this further by securing any sub-domain at a specific level. This significantly simplifies certificate management for complex infrastructures.</p>
-
-      <h2 data-i18n="content.blog.x509-certificates-explained.h2_9">Common Pitfalls and Troubleshooting</h2>
-      <p data-i18n-html="content.blog.x509-certificates-explained.p13">Certificate issues are a frequent source of downtime. Common problems include:</p>
-      <ul>
-        <li data-i18n-html="content.blog.x509-certificates-explained.li23"><strong>Expiration</strong>: Forgetting to renew a certificate is the #1 cause of TLS errors. Modern tools like Certbot have made automation easier, but monitoring is still essential.</li>
-        <li data-i18n-html="content.blog.x509-certificates-explained.li24"><strong>Incomplete Chains</strong>: If a server fails to send the intermediate certificates, some browsers might be able to "fill in the gaps" (via AIA fetching), but others (especially mobile browsers and CLI tools like cURL) will fail.</li>
-        <li data-i18n-html="content.blog.x509-certificates-explained.li25"><strong>Name Mismatch</strong>: Using a certificate for <code>example.com</code> on <code>sub.example.com</code> without a proper SAN or wildcard.</li>
-        <li data-i18n-html="content.blog.x509-certificates-explained.li26"><strong>Untrusted Root</strong>: Using a self-signed certificate in production without distributing the root to all clients.</li>
-      </ul>
-
-      <h2 data-i18n="content.blog.x509-certificates-explained.h2_10">Tools for the Modern Web</h2>
-      <p data-i18n-html="content.blog.x509-certificates-explained.p14">Manually parsing PEM-encoded certificates (those blocks of text starting with <code>-----BEGIN CERTIFICATE-----</code>) is nearly impossible for humans. Developers often rely on OpenSSL commands like <code>openssl x509 -in cert.pem -text -noout</code>, but these can be cryptic and hard to remember. The <a href="/certificate-decoder">X.509 Certificate Inspector</a> provides a much friendlier way to decode certificates and CSRs, showing you exactly what's inside without the command-line gymnastics. If you're at the beginning of the process and need to set up secure access, the <a href="/ssh-key-generator">SSH Key Generator</a> can help you create the necessary key pairs for your infrastructure. For those debugging API calls that fail due to certificate issues, the <a href="/curl-studio">Curl Studio</a> can help you test different flags like <code>--insecure</code> or <code>--cacert</code>.</p>
-
-      <h2 data-i18n="content.blog.x509-certificates-explained.h2_11">Conclusion</h2>
-      <p data-i18n-html="content.blog.x509-certificates-explained.p15">X.509 certificates are the foundation of trust on the internet. By understanding the anatomy of a certificate, the mechanics of the chain of trust, and the importance of the CSR process, you can build more secure applications and troubleshoot connectivity issues with confidence. In an era where "encryption by default" is the standard, mastering these concepts is no longer optional. Whether you're a frontend developer wondering why an API call is failing or a DevOps engineer managing thousands of certificates, a solid grasp of PKI is an essential part of your toolkit.</p>
     `,
   },
   {
     slug: "saml-oauth-oidc-compared",
-    title: "SAML vs OAuth vs OIDC: Choosing the Right Auth Protocol",
+    title: "Choose SAML, OAuth 2.0, or OpenID Connect by flow",
     description:
-      "Navigate the alphabet soup of authentication. Compare SAML, OAuth 2.0, and OpenID Connect to find the best fit for your application.",
+      "Separate browser SSO, delegated API authorization, and identity claims before selecting a protocol.",
     category: "Security",
-    readingTime: "11 min read",
+    readingTime: "9 min read",
     datePublished: "2026-02-07",
     content: `
-      <p data-i18n-html="content.blog.saml-oauth-oidc-compared.p1">Authentication and authorization are the twin pillars of application security, but the terminology surrounding them can be overwhelming. SAML, OAuth 2.0, and OpenID Connect (OIDC) are the three most common protocols used today, yet they serve different purposes and operate in distinct ways. Choosing the right one for your project requires understanding their strengths, weaknesses, and typical use cases.</p>
+      <p>SAML, OAuth 2.0, and OpenID Connect solve overlapping-looking but different problems. Start with the actors and the artifact your application must validate.</p>
+      <h2>SAML: signed assertions for browser SSO</h2>
+      <p>A SAML identity provider sends an XML assertion to a service provider, commonly through the browser. Validate the XML signature, issuer, audience, destination, recipient, timestamps, and replay protections. The <a href="/saml-decoder">SAML Decoder</a> can decode a request or response for inspection; decoding does not validate the signature or trust relationship. Specifications are published by <a href="https://www.oasis-open.org/standard/saml/" rel="noopener noreferrer">OASIS</a>.</p>
+      <h2>OAuth 2.0: delegated authorization</h2>
+      <p>OAuth gives a client limited access to a resource server. An access token is not automatically proof of the user's identity. For browser-based clients, authorization code with PKCE is the usual modern flow; exact choices depend on the authorization server and threat model. See <a href="https://www.rfc-editor.org/rfc/rfc6749" rel="noopener noreferrer">RFC 6749</a> and its current security guidance.</p>
+      <h2>OpenID Connect: identity on OAuth</h2>
+      <p>OIDC adds an ID token and user-information conventions. The client validates issuer, audience, signature, nonce where applicable, and time claims. Access tokens go to APIs; ID tokens describe the authentication event to the client.</p>
+      <h2>Do not convert artifacts by shape alone</h2>
+      <p>Base64-decoded XML and JWT claims are untrusted until protocol-specific validation succeeds. Choose based on existing identity infrastructure, client type, logout/session needs, metadata rotation, and the libraries your team can operate safely.</p>
 
-      <h2 data-i18n="content.blog.saml-oauth-oidc-compared.h2_1">SAML: The Enterprise Standard</h2>
-      <p data-i18n-html="content.blog.saml-oauth-oidc-compared.p2"><strong>Security Assertion Markup Language (SAML)</strong> is an XML-based framework for exchanging authentication and authorization data between parties. It was first standardized in 2002 and remains the dominant protocol for Enterprise Single Sign-On (SSO).</p>
-      <p data-i18n-html="content.blog.saml-oauth-oidc-compared.p3">In a SAML flow, there are three main actors:</p>
-      <ul>
-        <li data-i18n-html="content.blog.saml-oauth-oidc-compared.li1"><strong>The Principal</strong>: The user trying to authenticate.</li>
-        <li data-i18n-html="content.blog.saml-oauth-oidc-compared.li2"><strong>The Identity Provider (IdP)</strong>: The system that holds the user's identity (e.g., Okta, Microsoft Entra ID (formerly Azure AD), Ping Identity).</li>
-        <li data-i18n-html="content.blog.saml-oauth-oidc-compared.li3"><strong>The Service Provider (SP)</strong>: The application the user wants to access (e.g., Salesforce, Slack, or your custom app).</li>
-      </ul>
-      <p data-i18n-html="content.blog.saml-oauth-oidc-compared.p4">SAML is "heavy" because it uses XML and often involves complex SOAP requests. However, it is extremely robust and supports advanced features like "Single Logout" and attribute mapping that are critical for large organizations. If you are building a B2B application that needs to integrate with a customer's corporate directory, SAML is almost certainly what you'll use.</p>
-
-      <h2 data-i18n="content.blog.saml-oauth-oidc-compared.h2_2">SAML Flows: SP-Initiated vs. IdP-Initiated</h2>
-      <p data-i18n-html="content.blog.saml-oauth-oidc-compared.p5">There are two primary ways a SAML login can start. In an <strong>SP-Initiated</strong> flow, the user tries to access the application directly, and the application redirects them to the IdP for login. In an <strong>IdP-Initiated</strong> flow, the user logs into their corporate portal (like the Okta dashboard) and clicks on the application icon, which then sends them to the application with a pre-signed assertion. SP-Initiated is generally considered more secure as it prevents certain types of session fixation attacks.</p>
-
-      <h2 data-i18n="content.blog.saml-oauth-oidc-compared.h2_3">OAuth 2.0: The Authorization Framework</h2>
-      <p data-i18n-html="content.blog.saml-oauth-oidc-compared.p6">It is a common mistake to think of <strong>OAuth 2.0</strong> as an authentication protocol. It is not. OAuth is an <strong>authorization framework</strong> designed to allow a third-party application to gain limited access to an HTTP service, either on behalf of a resource owner or by allowing the third-party application to obtain access on its own behalf.</p>
-      <p data-i18n-html="content.blog.saml-oauth-oidc-compared.p7">Think of OAuth like a valet key for your car. You give the valet a specific key that allows them to park the car but doesn't give them access to the trunk or the glove box. In the digital world, OAuth allows you to give an app access to your Google Calendar without giving it your Google password. OAuth uses <strong>Access Tokens</strong> to grant this access. These tokens are usually opaque strings or JSON Web Tokens (JWTs) that the resource server validates before providing data.</p>
-
-      <h2 data-i18n="content.blog.saml-oauth-oidc-compared.h2_4">OAuth 2.0 Grant Types and PKCE</h2>
-      <p data-i18n-html="content.blog.saml-oauth-oidc-compared.p8">OAuth 2.0 defines several "grants" or flows for different scenarios:</p>
-      <ul>
-        <li data-i18n-html="content.blog.saml-oauth-oidc-compared.li4"><strong>Authorization Code Grant</strong>: The most secure flow, used for web apps with a backend.</li>
-        <li data-i18n-html="content.blog.saml-oauth-oidc-compared.li5"><strong>Client Credentials Grant</strong>: Used for machine-to-machine communication.</li>
-        <li data-i18n-html="content.blog.saml-oauth-oidc-compared.li6"><strong>Refresh Token Grant</strong>: Used to obtain a new access token when the current one expires.</li>
-      </ul>
-      <p data-i18n-html="content.blog.saml-oauth-oidc-compared.p9">For mobile and single-page applications (SPAs), the <strong>Proof Key for Code Exchange (PKCE)</strong> extension is now mandatory. PKCE prevents authorization code injection attacks by requiring the client to prove it is the same entity that requested the code.</p>
-
-      <h2 data-i18n="content.blog.saml-oauth-oidc-compared.h2_5">OpenID Connect (OIDC): Identity on Top of OAuth</h2>
-      <p data-i18n-html="content.blog.saml-oauth-oidc-compared.p10">Because OAuth 2.0 was so successful at authorization, developers started trying to use it for authentication (the "Login with Google" pattern). However, OAuth lacked a standard way to provide user information. <strong>OpenID Connect (OIDC)</strong> was created to solve this by adding an identity layer on top of OAuth 2.0.</p>
-      <p data-i18n-html="content.blog.saml-oauth-oidc-compared.p11">OIDC introduces a new type of token: the <strong>ID Token</strong>. While the Access Token is for the API, the ID Token is for the application. It is a JWT that contains claims about the authenticated user (like their name, email, and subject ID). OIDC also defines a <code>/userinfo</code> endpoint where the app can fetch additional profile details and a discovery mechanism (<code>.well-known/openid-configuration</code>) that makes integration seamless.</p>
-
-      <h2 data-i18n="content.blog.saml-oauth-oidc-compared.h2_6">Key Differences at a Glance</h2>
-      <table class="min-w-full divide-y divide-surface-200 dark:divide-surface-800 my-6">
-        <thead>
-          <tr>
-            <th class="px-4 py-2 text-left text-xs font-medium text-surface-500 uppercase tracking-wider" data-i18n-html="content.blog.saml-oauth-oidc-compared.th1">Feature</th>
-            <th class="px-4 py-2 text-left text-xs font-medium text-surface-500 uppercase tracking-wider" data-i18n-html="content.blog.saml-oauth-oidc-compared.th2">SAML 2.0</th>
-            <th class="px-4 py-2 text-left text-xs font-medium text-surface-500 uppercase tracking-wider" data-i18n-html="content.blog.saml-oauth-oidc-compared.th3">OAuth 2.0</th>
-            <th class="px-4 py-2 text-left text-xs font-medium text-surface-500 uppercase tracking-wider" data-i18n-html="content.blog.saml-oauth-oidc-compared.th4">OIDC</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-surface-200 dark:divide-surface-800">
-          <tr>
-            <td class="px-4 py-2 text-sm" data-i18n-html="content.blog.saml-oauth-oidc-compared.td1">Primary Purpose</td>
-            <td class="px-4 py-2 text-sm" data-i18n-html="content.blog.saml-oauth-oidc-compared.td2">Authentication (SSO)</td>
-            <td class="px-4 py-2 text-sm" data-i18n-html="content.blog.saml-oauth-oidc-compared.td3">Authorization (API Access)</td>
-            <td class="px-4 py-2 text-sm" data-i18n-html="content.blog.saml-oauth-oidc-compared.td4">Authentication + Identity</td>
-          </tr>
-          <tr>
-            <td class="px-4 py-2 text-sm" data-i18n-html="content.blog.saml-oauth-oidc-compared.td5">Data Format</td>
-            <td class="px-4 py-2 text-sm" data-i18n-html="content.blog.saml-oauth-oidc-compared.td6">XML</td>
-            <td class="px-4 py-2 text-sm" data-i18n-html="content.blog.saml-oauth-oidc-compared.td7">JSON / Opaque</td>
-            <td class="px-4 py-2 text-sm" data-i18n-html="content.blog.saml-oauth-oidc-compared.td8">JSON (JWT)</td>
-          </tr>
-          <tr>
-            <td class="px-4 py-2 text-sm" data-i18n-html="content.blog.saml-oauth-oidc-compared.td9">Transport</td>
-            <td class="px-4 py-2 text-sm" data-i18n-html="content.blog.saml-oauth-oidc-compared.td10">HTTP POST / Redirect</td>
-            <td class="px-4 py-2 text-sm" data-i18n-html="content.blog.saml-oauth-oidc-compared.td11">HTTP Headers</td>
-            <td class="px-4 py-2 text-sm" data-i18n-html="content.blog.saml-oauth-oidc-compared.td12">HTTP Headers / Redirect</td>
-          </tr>
-          <tr>
-            <td class="px-4 py-2 text-sm" data-i18n-html="content.blog.saml-oauth-oidc-compared.td13">Complexity</td>
-            <td class="px-4 py-2 text-sm" data-i18n-html="content.blog.saml-oauth-oidc-compared.td14">High</td>
-            <td class="px-4 py-2 text-sm" data-i18n-html="content.blog.saml-oauth-oidc-compared.td15">Medium</td>
-            <td class="px-4 py-2 text-sm" data-i18n-html="content.blog.saml-oauth-oidc-compared.td16">Medium</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h2 data-i18n="content.blog.saml-oauth-oidc-compared.h2_7">Choosing the Right Protocol</h2>
-      <p data-i18n-html="content.blog.saml-oauth-oidc-compared.p12">The choice usually depends on your environment and your users:</p>
-      <ul>
-        <li data-i18n-html="content.blog.saml-oauth-oidc-compared.li7"><strong>Use SAML</strong> if you are building an enterprise application that needs to integrate with legacy identity providers or if your customers require strict corporate SSO compliance. It is the gold standard for B2B SaaS.</li>
-        <li data-i18n-html="content.blog.saml-oauth-oidc-compared.li8"><strong>Use OAuth 2.0</strong> if you need to build an API that other applications will consume, or if you need to grant one service access to another service's data (e.g., a reporting tool accessing a CRM).</li>
-        <li data-i18n-html="content.blog.saml-oauth-oidc-compared.li9"><strong>Use OIDC</strong> for modern web and mobile applications where you want a "Login with..." experience or need a lightweight, JSON-based identity solution. It is the modern successor to SAML for most new projects.</li>
-      </ul>
-
-      <h2 data-i18n="content.blog.saml-oauth-oidc-compared.h2_8">The Role of JWT in Modern Auth</h2>
-      <p data-i18n-html="content.blog.saml-oauth-oidc-compared.p13">It is impossible to discuss OAuth and OIDC without mentioning JSON Web Tokens (JWTs). While the protocols define how tokens are exchanged, JWT defines the format of the tokens themselves. In OIDC, the ID Token is always a JWT. In OAuth, the Access Token can be a JWT or an opaque string, but the industry has largely converged on JWT for its self-contained nature.</p>
-      <p data-i18n-html="content.blog.saml-oauth-oidc-compared.p14">A JWT allows the resource server to verify the token's validity without making a round-trip to the authorization server. This is achieved through digital signatures (using RS256 or ES256). However, this convenience comes with a trade-off: revoking a JWT before it expires is difficult. This is why short-lived access tokens and longer-lived refresh tokens are a standard security pattern.</p>
-
-      <h2 data-i18n="content.blog.saml-oauth-oidc-compared.h2_9">Security Risks: XML Wrapping and Token Theft</h2>
-      <p data-i18n-html="content.blog.saml-oauth-oidc-compared.p15">Each protocol has its own set of security challenges. SAML is vulnerable to <strong>XML Signature Wrapping (XSW)</strong> attacks, where an attacker modifies the XML structure to bypass signature verification. OAuth and OIDC are susceptible to <strong>Token Theft</strong> via XSS or open redirects. Implementing a strict <a href="/csp-builder">Content Security Policy (CSP)</a> is essential for protecting these flows. Additionally, always use <code>HttpOnly</code> and <code>Secure</code> cookies when storing session-related data.</p>
-
-      <h2 data-i18n="content.blog.saml-oauth-oidc-compared.h2_10">Debugging and Security Tools</h2>
-      <p data-i18n-html="content.blog.saml-oauth-oidc-compared.p16">Regardless of the protocol you choose, debugging authentication flows is notoriously difficult. SAML assertions are often Base64-encoded XML blobs, while OIDC uses JWTs. To see what's actually happening during a login, you need tools that can decode these formats safely.</p>
-      <p data-i18n-html="content.blog.saml-oauth-oidc-compared.p17">The <a href="/saml-decoder">SAML Inspector</a> is invaluable for peering into SAML requests and responses to find missing attributes or signature issues. For OIDC and OAuth, the <a href="/token-studio">Token Cryptography Suite</a> allows you to decode ID and Access tokens to verify their claims and expiration, and its JWK tools help you format and validate the public keys used for token verification. For those automating these checks in CI/CD, <a href="/curl-studio">Curl Studio</a> can help you build the necessary requests to test your endpoints.</p>
-
-      <h2 data-i18n="content.blog.saml-oauth-oidc-compared.h2_11">Conclusion</h2>
-      <p data-i18n-html="content.blog.saml-oauth-oidc-compared.p18">SAML, OAuth, and OIDC are not competitors; they are specialized tools for different jobs. By understanding that SAML is for enterprise SSO, OAuth is for authorization, and OIDC is for modern identity, you can architect more secure and interoperable systems. As the web continues to move toward a decentralized identity model, mastering these protocols is essential for any developer. Don't let the "alphabet soup" intimidate you—once you understand the roles and the tokens, the logic becomes clear.</p>
     `,
   },
   {
     slug: "cron-expressions-guide",
-    title: "Mastering Cron Expressions: Schedule Anything Like a Pro",
+    title: "Verify a cron schedule before deployment",
     description:
-      "Stop guessing and start scheduling. A comprehensive guide to cron syntax, special characters, and timezone best practices.",
+      "Account for dialect, timezone, day-field rules, daylight-saving transitions, and missed-run behavior.",
     category: "Development",
-    readingTime: "9 min read",
+    readingTime: "7 min read",
     datePublished: "2026-02-08",
     content: `
-      <p data-i18n-html="content.blog.cron-expressions-guide.p1">Automation is the secret sauce of efficient systems, and at the heart of most automation lies the humble cron expression. Whether you're scheduling database backups, sending weekly newsletters, or cleaning up temporary files, cron provides a powerful, standardized way to define time-based execution. However, for many developers, the syntax of a cron expression remains a cryptic string of numbers and asterisks. Let's demystify it and turn you into a scheduling pro.</p>
+      <p>A cron expression is only part of a schedule. The same text can mean different things across Unix cron, Quartz, cloud schedulers, and CI systems because field counts and day rules vary.</p>
+      <h2>Identify the dialect</h2>
+      <p>Classic Unix cron uses five fields: minute, hour, day of month, month, and day of week. Some systems add seconds or a year. For example, <code>0 9 * * 1-5</code> commonly means 09:00 on weekdays, but only in a five-field dialect with that day numbering.</p>
+      <h2>Timezone is part of the requirement</h2>
+      <p>"Every day at 09:00" is incomplete without a timezone. Daylight-saving changes can skip or repeat local wall-clock times. If consistent elapsed intervals matter, use an interval scheduler; if local business time matters, document how duplicate or missing runs are handled.</p>
+      <h2>Preview, then test the scheduler itself</h2>
+      <p>The <a href="/cron-builder">Cron Expression Builder</a> previews upcoming times for its supported syntax. Compare several results around month ends, leap days, and timezone transitions. The preview cannot prove how your deployment platform handles downtime, overlap, retries, or misfires.</p>
+      <h2>Make jobs safe to repeat</h2>
+      <p>Schedulers can launch late, concurrently, or more than once. Use idempotency keys or locking where duplicate work is harmful, record the intended run time, and monitor completion separately from trigger creation. POSIX documents the portable <a href="https://pubs.opengroup.org/onlinepubs/9799919799/utilities/crontab.html" rel="noopener noreferrer">crontab interface</a>; platform extensions require platform documentation.</p>
 
-      <h2 data-i18n="content.blog.cron-expressions-guide.h2_1">The Anatomy of a Cron Expression</h2>
-      <p data-i18n-html="content.blog.cron-expressions-guide.p2">A standard cron expression consists of five fields separated by spaces. Some systems (like Quartz or certain cloud providers) add a sixth field for seconds or years, but the classic format is:</p>
-      <pre tabindex="0" role="region" aria-label="Code sample"><code>* * * * *
-| | | | | |
-| | | | | +----- Day of Week (0 - 6) (Sunday to Saturday)
-| | | | +------- Month (1 - 12)
-| | | +--------- Day of Month (1 - 31)
-| | +----------- Hour (0 - 23)
-| +------------- Minute (0 - 59)</code></pre>
-      <p data-i18n-html="content.blog.cron-expressions-guide.p3">Each field can contain a single value, a list of values, a range, or a wildcard. Understanding how these fields interact is the first step toward building complex schedules.</p>
-
-      <h2 data-i18n="content.blog.cron-expressions-guide.h2_2">Special Characters: The Power of Cron</h2>
-      <p data-i18n-html="content.blog.cron-expressions-guide.p4">The true flexibility of cron comes from its special characters:</p>
-      <ul>
-        <li data-i18n-html="content.blog.cron-expressions-guide.li1"><strong>* (Asterisk)</strong>: Matches every value in the field. <code>*</code> in the minute field means "every minute."</li>
-        <li data-i18n-html="content.blog.cron-expressions-guide.li2"><strong>, (Comma)</strong>: Defines a list of values. <code>1,15,30</code> in the minute field means "at 1, 15, and 30 minutes past the hour."</li>
-        <li data-i18n-html="content.blog.cron-expressions-guide.li3"><strong>- (Hyphen)</strong>: Defines a range. <code>9-17</code> in the hour field means "every hour from 9 AM to 5 PM."</li>
-        <li data-i18n-html="content.blog.cron-expressions-guide.li4"><strong>/ (Slash)</strong>: Defines increments. <code>*/15</code> in the minute field means "every 15 minutes."</li>
-        <li data-i18n-html="content.blog.cron-expressions-guide.li5"><strong>L (Last)</strong>: Used in the day-of-month or day-of-week fields to mean "the last day." <code>L</code> in day-of-month means the last day of the month (28th, 30th, or 31st).</li>
-        <li data-i18n-html="content.blog.cron-expressions-guide.li6"><strong>W (Weekday)</strong>: Used in the day-of-month field to find the nearest weekday (Monday-Friday) to a given date.</li>
-        <li data-i18n-html="content.blog.cron-expressions-guide.li7"><strong># (Hash)</strong>: Used in the day-of-week field to specify the "nth" day of the month. <code>2#1</code> means the first Monday of the month.</li>
-      </ul>
-
-      <h2 data-i18n="content.blog.cron-expressions-guide.h2_3">Non-Standard Cron: The @ Shortcuts</h2>
-      <p data-i18n-html="content.blog.cron-expressions-guide.p5">Many modern cron implementations (like Vixie Cron) support human-readable shortcuts that replace the five-field syntax. These are often easier to read and less prone to error:</p>
-      <ul>
-        <li data-i18n-html="content.blog.cron-expressions-guide.li8"><code>@yearly</code> or <code>@annually</code>: Run once a year (<code>0 0 1 1 *</code>)</li>
-        <li data-i18n-html="content.blog.cron-expressions-guide.li9"><code>@monthly</code>: Run once a month (<code>0 0 1 * *</code>)</li>
-        <li data-i18n-html="content.blog.cron-expressions-guide.li10"><code>@weekly</code>: Run once a week (<code>0 0 * * 0</code>)</li>
-        <li data-i18n-html="content.blog.cron-expressions-guide.li11"><code>@daily</code> or <code>@midnight</code>: Run once a day (<code>0 0 * * *</code>)</li>
-        <li data-i18n-html="content.blog.cron-expressions-guide.li12"><code>@hourly</code>: Run once an hour (<code>0 * * * *</code>)</li>
-        <li data-i18n-html="content.blog.cron-expressions-guide.li13"><code>@reboot</code>: Run once at startup</li>
-      </ul>
-
-      <h2 data-i18n="content.blog.cron-expressions-guide.h2_4">Common Real-World Examples</h2>
-      <p data-i18n-html="content.blog.cron-expressions-guide.p6">Let's look at some schedules you'll likely encounter in production:</p>
-      <ul>
-        <li data-i18n-html="content.blog.cron-expressions-guide.li14"><strong>Every minute</strong>: <code>* * * * *</code></li>
-        <li data-i18n-html="content.blog.cron-expressions-guide.li15"><strong>Every hour at the top of the hour</strong>: <code>0 * * * *</code></li>
-        <li data-i18n-html="content.blog.cron-expressions-guide.li16"><strong>Every day at midnight</strong>: <code>0 0 * * *</code></li>
-        <li data-i18n-html="content.blog.cron-expressions-guide.li17"><strong>Every Monday at 3:30 AM</strong>: <code>30 3 * * 1</code></li>
-        <li data-i18n-html="content.blog.cron-expressions-guide.li18"><strong>Every 15 minutes during business hours (9-5)</strong>: <code>*/15 9-17 * * 1-5</code></li>
-        <li data-i18n-html="content.blog.cron-expressions-guide.li19"><strong>The first day of every quarter at midnight</strong>: <code>0 0 1 1,4,7,10 *</code></li>
-      </ul>
-
-      <h2 data-i18n="content.blog.cron-expressions-guide.h2_5">The "Day of Month" vs. "Day of Week" Conflict</h2>
-      <p data-i18n-html="content.blog.cron-expressions-guide.p7">One of the most confusing aspects of cron is how it handles the Day of Month and Day of Week fields. If both are specified (i.e., they are not <code>*</code>), the job will run when <strong>either</strong> condition is met. For example, <code>0 0 1 * 1</code> will run on the 1st of the month AND every Monday. This "OR" logic is unique to these two fields; all other fields use "AND" logic. To avoid confusion, many developers use <code>?</code> in one of these fields if the system supports it, or simply stick to one or the other.</p>
-
-      <h2 data-i18n="content.blog.cron-expressions-guide.h2_6">The Timezone Trap</h2>
-      <p data-i18n-html="content.blog.cron-expressions-guide.p8">One of the most common sources of "cron failure" isn't the expression itself, but the timezone of the server running it. Most servers run on UTC (Coordinated Universal Time). If you schedule a job for <code>0 0 * * *</code> (midnight) and your users are in New York (EST), the job will actually run at 7 PM or 8 PM local time, depending on Daylight Saving Time.</p>
-      <p data-i18n-html="content.blog.cron-expressions-guide.p9">Always verify the system time of your environment before setting critical schedules. In distributed systems or cloud environments (like AWS Lambda or GitHub Actions), UTC is the standard, and you should calculate your offsets accordingly. Some modern schedulers allow you to specify a timezone within the expression or the configuration, which is a much safer approach.</p>
-
-      <h2 data-i18n="content.blog.cron-expressions-guide.h2_7">Monitoring and Reliability</h2>
-      <p data-i18n-html="content.blog.cron-expressions-guide.p10">Cron is a "fire and forget" system. By default, it doesn't tell you if a job failed, if it started late, or if it's still running from the last cycle. To build professional-grade automation, you should:</p>
-      <ol>
-        <li data-i18n-html="content.blog.cron-expressions-guide.li20"><strong>Log Output</strong>: Redirect stdout and stderr to a log file or a centralized logging service: <code>* * * * * /path/to/script.sh &gt;&gt; /var/log/cron.log 2&gt;&amp;1</code>.</li>
-        <li data-i18n-html="content.blog.cron-expressions-guide.li21"><strong>Use Health Checks</strong>: Use services like Healthchecks.io or Dead Man's Snitch that expect a "ping" from your cron job. If the ping doesn't arrive, you get an alert.</li>
-        <li data-i18n-html="content.blog.cron-expressions-guide.li22"><strong>Prevent Overlap</strong>: If a job takes longer than its interval, you might end up with multiple instances running. Use tools like <code>flock</code> or <code>setlock</code> to ensure only one instance runs at a time.</li>
-      </ol>
-
-      <h2 data-i18n="content.blog.cron-expressions-guide.h2_8">Cron in Cloud-Native Environments</h2>
-      <p data-i18n-html="content.blog.cron-expressions-guide.p11">As we move from monolithic servers to containers and serverless functions, the way we run cron jobs has evolved. In Kubernetes, for example, you use a <code>CronJob</code> resource. While the schedule syntax remains the same, the execution environment is ephemeral. Each time the job runs, a new Pod is created, the task is executed, and the Pod is destroyed.</p>
-      <p data-i18n-html="content.blog.cron-expressions-guide.p12">This shift requires a different mindset. You can no longer rely on local files persisting between runs. Instead, your cron jobs must be stateless, pulling their configuration from environment variables or secrets and pushing their results to a database or object storage. Furthermore, in a distributed system, you must be even more careful about "at least once" vs. "exactly once" execution guarantees.</p>
-
-      <h2 data-i18n="content.blog.cron-expressions-guide.h2_10">Debugging Cron Jobs</h2>
-      <p data-i18n-html="content.blog.cron-expressions-guide.p14">When a cron job doesn't run, the first place to look is the system logs. On most systems, you can find cron-related messages in <code>/var/log/syslog</code> or <code>/var/log/cron</code>. Use <code>grep</code> to filter for your specific job. Another common issue is the <strong>Environment Path</strong>. Cron runs with a very minimal environment, so it might not find your binaries. Always use absolute paths (e.g., <code>/usr/local/bin/python3</code> instead of just <code>python3</code>) in your crontab.</p>
-
-      <h2 data-i18n="content.blog.cron-expressions-guide.h2_11">Visualizing Your Schedule</h2>
-      <p data-i18n-html="content.blog.cron-expressions-guide.p15">Even for experienced developers, complex cron expressions can be hard to read at a glance. Is <code>0 0 1 * 0</code> the first day of the month OR every Sunday? (It's both!).</p>
-      <p data-i18n-html="content.blog.cron-expressions-guide.p16">Using a tool like the <a href="/cron-builder">Cron Builder</a> allows you to build these expressions using a visual interface and, more importantly, see a human-readable description and a list of the next several run times. This "preview" step is essential for catching logic errors before they hit production. Additionally, if you're converting between different time formats or checking when a job last ran, the <a href="/timestamp-converter">Timestamp Converter</a> is a handy companion. For those working with logs, the <a href="/log-viewer">Log Viewer</a> can help you analyze the output of your automated tasks.</p>
-
-      <h2 data-i18n="content.blog.cron-expressions-guide.h2_12">Conclusion</h2>
-      <p data-i18n-html="content.blog.cron-expressions-guide.p17">Cron is a timeless tool that remains as relevant today as it was in the 1970s. By mastering its syntax, being aware of timezone and monitoring best practices, and leveraging modern alternatives when appropriate, you can build robust, automated systems that work while you sleep. Don't let the asterisks intimidate you—with the right approach and tools, you can schedule anything like a pro.</p>
     `,
   },
   {
     slug: "csp-implementation-guide",
-    title: "Content Security Policy (CSP): A Practical Implementation Guide",
+    title: "Deploy CSP from report-only to enforcement",
     description:
-      "Stop XSS in its tracks. Learn how to implement a robust Content Security Policy using nonces, hashes, and report-only mode.",
+      "Inventory resource types, choose nonce or hash-based script policy, review reports, and enforce without claiming CSP stops every XSS.",
     category: "Security",
-    readingTime: "10 min read",
+    readingTime: "9 min read",
     datePublished: "2026-02-08",
     content: `
-      <p data-i18n-html="content.blog.csp-implementation-guide.p1">In the modern web, Cross-Site Scripting (XSS) remains one of the most prevalent and dangerous vulnerabilities. While input sanitization and output encoding are essential first lines of defense, they are not foolproof. <strong>Content Security Policy (CSP)</strong> provides a powerful second layer of security that can stop XSS in its tracks, even if an attacker manages to inject a malicious script into your page. By defining a clear policy of what is allowed to run, you significantly reduce the attack surface of your application.</p>
+      <p>Content Security Policy tells a browser which resource loads and execution paths are allowed. It can reduce the impact of injection bugs, but it does not replace output encoding, safe DOM APIs, dependency review, or server-side authorization.</p>
+      <h2>Inventory before enforcing</h2>
+      <p>List scripts, styles, images, fonts, connections, frames, workers, and forms. Begin with <code>Content-Security-Policy-Report-Only</code>, exercise real workflows, and review reports. Reports can contain page URLs and other context, so send them only to an endpoint with an appropriate retention policy.</p>
+      <h2>Prefer nonces or hashes for scripts</h2>
+      <p>A per-response unpredictable nonce allows specific inline scripts without enabling all inline execution. Static script blocks can use hashes. Avoid broad sources and <code>'unsafe-inline'</code> when they would defeat the protection you are trying to add. Nonces must be generated for each response and inserted into both the header and intended tags.</p>
+      <h2>Set directives for the actual resource types</h2>
+      <p><code>default-src</code> is a fallback, not a complete policy. Review <code>script-src</code>, <code>style-src</code>, <code>img-src</code>, <code>font-src</code>, <code>connect-src</code>, <code>frame-src</code>, <code>frame-ancestors</code>, <code>worker-src</code>, and <code>form-action</code> as applicable. MDN maintains a practical <a href="https://developer.mozilla.org/docs/Web/HTTP/CSP" rel="noopener noreferrer">CSP reference</a>.</p>
+      <h2>Use the builder as a draft, then test responses</h2>
+      <p>The <a href="/csp-builder">CSP Header Builder</a> helps assemble directives. It cannot inventory runtime dependencies or prove a policy is secure. Test the actual response header, navigation, authentication, uploads, error pages, and third-party integrations before moving from report-only to enforcement. Keep the old reporting path long enough to detect regressions after deployment.</p>
 
-      <h2 data-i18n="content.blog.csp-implementation-guide.h2_1">What is CSP?</h2>
-      <p data-i18n-html="content.blog.csp-implementation-guide.p2">CSP is an HTTP response header that tells the browser which sources of content (scripts, styles, images, etc.) are trusted. If a script tries to load from an untrusted domain, or if an inline script is detected that doesn't meet the policy's requirements, the browser will block it and (optionally) report the violation to you. It is a declarative security model that shifts the burden of enforcement from the application logic to the browser itself.</p>
-
-      <h2 data-i18n="content.blog.csp-implementation-guide.h2_2">Core Directives</h2>
-      <p data-i18n-html="content.blog.csp-implementation-guide.p3">A CSP is made up of directives, each controlling a specific type of resource. Mastering these is key to a fine-grained policy:</p>
-      <ul>
-        <li data-i18n-html="content.blog.csp-implementation-guide.li1"><code>default-src</code>: The fallback for other fetch directives. If a specific directive like <code>script-src</code> is missing, the browser uses <code>default-src</code>.</li>
-        <li data-i18n-html="content.blog.csp-implementation-guide.li2"><code>script-src</code>: Controls where scripts can be loaded from and whether inline scripts are allowed. This is the most critical directive for preventing XSS.</li>
-        <li data-i18n-html="content.blog.csp-implementation-guide.li3"><code>style-src</code>: Controls where CSS can be loaded from.</li>
-        <li data-i18n-html="content.blog.csp-implementation-guide.li4"><code>img-src</code>: Controls image sources.</li>
-        <li data-i18n-html="content.blog.csp-implementation-guide.li5"><code>connect-src</code>: Limits the domains you can connect to via <code>fetch</code>, <code>XMLHttpRequest</code>, or WebSockets.</li>
-        <li data-i18n-html="content.blog.csp-implementation-guide.li6"><code>frame-ancestors</code>: Prevents your site from being embedded in iframes on other sites, effectively mitigating Clickjacking.</li>
-        <li data-i18n-html="content.blog.csp-implementation-guide.li7"><code>base-uri</code>: Restricts the URLs that can be used in a document's <code>&lt;base&gt;</code> element.</li>
-        <li data-i18n-html="content.blog.csp-implementation-guide.li8"><code>form-action</code>: Restricts the URLs to which a form can be submitted.</li>
-      </ul>
-
-      <h2 data-i18n="content.blog.csp-implementation-guide.h2_3">The Problem with 'unsafe-inline'</h2>
-      <p data-i18n-html="content.blog.csp-implementation-guide.p4">Many developers start with a policy like <code>script-src 'self' 'unsafe-inline'</code>. While this is easy to implement because it doesn't require changing existing code, <code>'unsafe-inline'</code> effectively disables the primary protection against XSS. If an attacker can inject a <code>&lt;script&gt;</code> tag via a reflected or stored XSS vulnerability, the browser will execute it because you've told it that inline scripts are okay. To be truly secure, you must move away from <code>'unsafe-inline'</code>.</p>
-
-      <h2 data-i18n="content.blog.csp-implementation-guide.h2_4">Nonces and Hashes: The Secure Way to Inline</h2>
-      <p data-i18n-html="content.blog.csp-implementation-guide.p5">If you must use inline scripts or styles (for example, to pass server-side data to your frontend), CSP provides two secure alternatives:</p>
-      <ol>
-        <li data-i18n-html="content.blog.csp-implementation-guide.li9"><strong>Nonces</strong>: A "number used once." Your server generates a random, cryptographically strong string for every request and includes it in the header: <code>script-src 'nonce-EDNnf03nceIOfn39fn3e'</code>. You then add the same nonce to your script tags: <code>&lt;script nonce="EDNnf03nceIOfn39fn3e"&gt;...&lt;/script&gt;</code>. Since an attacker can't predict the nonce, their injected scripts will be blocked.</li>
-        <li data-i18n-html="content.blog.csp-implementation-guide.li10"><strong>Hashes</strong>: You provide a SHA-256 hash of the script's content in the header: <code>script-src 'sha256-xyz...'</code>. The browser will only execute inline scripts that match that exact hash. This is great for static scripts that don't change between requests.</li>
-      </ol>
-
-      <h2 data-i18n="content.blog.csp-implementation-guide.h2_5">Implementing CSP Without Breaking Your Site</h2>
-      <p data-i18n-html="content.blog.csp-implementation-guide.p6">Deploying a strict CSP on an existing site can be terrifying. One wrong directive can break your analytics, your fonts, or your entire UI. To mitigate this, use the <code>Content-Security-Policy-Report-Only</code> header. In "Report-Only" mode, the browser will not block anything. Instead, it will send a JSON report to a URL you specify (via the <code>report-uri</code> or the newer <code>report-to</code> directive) whenever a violation occurs. This allows you to monitor your site for a few weeks, identify all legitimate sources, and refine your policy before enforcing it.</p>
-
-      <h2 data-i18n="content.blog.csp-implementation-guide.h2_6">CSP Level 3 and 'strict-dynamic'</h2>
-      <p data-i18n-html="content.blog.csp-implementation-guide.p7">As the web evolves, so does CSP. CSP Level 3 introduced several powerful features, including the <code>'strict-dynamic'</code> keyword. This allows a script that has been trusted (via a nonce or hash) to load additional scripts without needing to explicitly whitelist every single dependency. This is a game-changer for modern web applications that rely on complex, nested third-party libraries like Google Maps or social media widgets, as it simplifies the policy while maintaining a high level of security.</p>
-
-      <h2 data-i18n="content.blog.csp-implementation-guide.h2_7">Trusted Types: Stopping DOM XSS</h2>
-      <p data-i18n-html="content.blog.csp-implementation-guide.p8">Another cutting-edge defense is <strong>Trusted Types</strong>. While standard CSP blocks where scripts can come from, Trusted Types blocks how scripts are created within your JavaScript code. It prevents the use of dangerous "sink" functions like <code>innerHTML</code>, <code>outerHTML</code>, or <code>eval()</code> unless the data being passed to them has been processed by a trusted policy. By combining CSP with Trusted Types, you can create an almost impenetrable defense against both traditional and DOM-based XSS.</p>
-
-      <h2 data-i18n="content.blog.csp-implementation-guide.h2_8">Frame Ancestors vs. X-Frame-Options</h2>
-      <p data-i18n-html="content.blog.csp-implementation-guide.p9">For years, <code>X-Frame-Options</code> was the standard way to prevent Clickjacking. However, it is limited (e.g., it can't allow multiple specific domains). The CSP <code>frame-ancestors</code> directive is its modern replacement. It allows you to specify exactly which domains are allowed to embed your site in an iframe. If both are present, <code>frame-ancestors</code> takes precedence in modern browsers.</p>
-
-      <h2 data-i18n="content.blog.csp-implementation-guide.h2_9">Upgrade Insecure Requests</h2>
-      <p data-i18n-html="content.blog.csp-implementation-guide.p10">The <code>upgrade-insecure-requests</code> directive is a simple but powerful tool for migrating a site to HTTPS. It tells the browser to treat all of the site's insecure URLs (those starting with HTTP) as though they have been replaced with secure URLs (those starting with HTTPS). This helps prevent "Mixed Content" warnings and ensures that all traffic is encrypted without having to manually update every link in your database.</p>
-
-      <h2 data-i18n="content.blog.csp-implementation-guide.h2_11">Common Pitfalls</h2>
-      <ul>
-        <li data-i18n-html="content.blog.csp-implementation-guide.li11"><strong>Overly broad sources</strong>: Using <code>script-src *</code> or <code>https:</code> is almost as bad as no CSP at all.</li>
-        <li data-i18n-html="content.blog.csp-implementation-guide.li12"><strong>Forgetting <code>connect-src</code></strong>: If you use an API on a different domain, you must explicitly allow it, or your <code>fetch()</code> calls will fail.</li>
-        <li data-i18n-html="content.blog.csp-implementation-guide.li13"><strong>Missing <code>'self'</code></strong>: If you don't include <code>'self'</code>, you might block scripts or images hosted on your own domain.</li>
-        <li data-i18n-html="content.blog.csp-implementation-guide.li14"><strong>CSS <code>url()</code> functions</strong>: These are governed by <code>img-src</code> or <code>font-src</code>, not just <code>style-src</code>.</li>
-      </ul>
-
-      <h2 data-i18n="content.blog.csp-implementation-guide.h2_12">The Importance of a "Default-Deny" Stance</h2>
-      <p data-i18n-html="content.blog.csp-implementation-guide.p12">The most secure way to build a CSP is to start with a <code>default-src 'none'</code> directive. This sets a "default-deny" policy for every type of resource. You then explicitly add back only what you need. For example, if your site only needs scripts from your own domain and images from a specific CDN, your policy would look like: <code>default-src 'none'; script-src 'self'; img-src https://cdn.example.com; style-src 'self';</code>.</p>
-      <p data-i18n-html="content.blog.csp-implementation-guide.p13">This approach is more work upfront, but it ensures that you have a complete inventory of your site's dependencies. It also protects you against future resource types that might be added to the browser; if a new type of fetch is introduced, it will be blocked by default until you decide to allow it. In security, knowing exactly what is allowed is always safer than trying to list everything that is forbidden.</p>
-
-      <h2 data-i18n="content.blog.csp-implementation-guide.h2_13">Tools for Success</h2>
-      <p data-i18n-html="content.blog.csp-implementation-guide.p14">Writing a CSP header by hand is error-prone. A single missing semicolon or a misspelled directive can render the entire policy invalid. The <a href="/csp-builder">CSP Header Builder</a> provides an interactive interface to construct your policy, with explanations for each directive and real-time validation. If you're using complex patterns to match domains or paths within your CSP, the <a href="/regex-visualizer">Regex Studio</a> can help you verify your logic. For those looking for a real-world example of a hardened CSP, the very site you are on uses a strict, nonce-based policy to protect your data. You can also use the <a href="/curl-studio">Curl Studio</a> to inspect the headers of any site and see their CSP in action.</p>
-
-      <h2 data-i18n="content.blog.csp-implementation-guide.h2_14">Conclusion</h2>
-      <p data-i18n-html="content.blog.csp-implementation-guide.p15">CSP is one of the most effective security headers available today. While it requires careful planning and testing to implement correctly, the protection it offers against XSS and other injection attacks is well worth the effort. By moving away from <code>'unsafe-inline'</code> and embracing nonces, hashes, and report-only mode, you can significantly harden your application's security posture. Start small, use reporting, and gradually move toward a strict "default-deny" policy to keep your users safe.</p>
     `,
   },
 ];

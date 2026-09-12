@@ -25,6 +25,31 @@ export const LEGAL_AD_PATHS = Object.freeze([
   "/changelog",
 ]);
 
+/**
+ * The complete route allow-list for loading adsbygoogle.js. Manual unit
+ * placement is narrower and remains governed by pageAllowsAds().
+ */
+export const AD_SCRIPT_PATHS = Object.freeze([
+  "/",
+  "/json-formatter",
+  ...LEGAL_AD_PATHS,
+  "/blog",
+  "/faq",
+]);
+
+export const AD_SCRIPT_PREFIXES = Object.freeze(["/blog/"]);
+
+export function getAdPolicySnapshot() {
+  return Object.freeze({
+    manualUnitPaths: Object.freeze(["/", "/json-formatter", ...LEGAL_AD_PATHS]),
+    scriptPaths: AD_SCRIPT_PATHS,
+    scriptPrefixes: AD_SCRIPT_PREFIXES,
+    manualUnitsRequestNonPersonalizedAds: true,
+    autoAdsStatus: "account-controlled-unverified",
+    cmpStatus: "not-verified",
+  });
+}
+
 const SLOT_ID_RE = /^\d{10,}$/;
 const PUBLISHER_CLIENT_RE = /^ca-pub-\d+$/;
 
@@ -56,10 +81,8 @@ export function pageAllowsAds(pathname = "/") {
 export function pageAllowsAdScript(pathname = "/") {
   const path = normalizePath(pathname);
   if (DENY_AD_PATHS.some((denied) => path === denied)) return false;
-  if (pageAllowsAds(path)) return true;
-  if (path === "/blog" || path.startsWith("/blog/")) return true;
-  if (path === "/faq") return true;
-  return false;
+  if (AD_SCRIPT_PATHS.includes(path)) return true;
+  return AD_SCRIPT_PREFIXES.some((prefix) => path.startsWith(prefix));
 }
 
 export function slotKeyForPath(pathname = "/") {

@@ -2,14 +2,31 @@ import { describe, expect, it } from "vitest";
 import { t, SUPPORTED_LANGUAGES } from "../utils/i18n.js";
 import { getLegalSections } from "./legal-content.js";
 import { getFaqEntries } from "./faq-content.js";
+import { getLocalizedBlogArticle } from "./blog-content-locales.js";
+import {
+  REVIEWED_CONTENT_LOCALES,
+  REVIEWED_LEGAL_CONTENT,
+} from "./generated-content-locales.js";
 import {
   BLOG_ARTICLES,
   handleBlogRoutes,
   renderBlogPostPage,
   RETIRED_BLOG_REDIRECTS,
 } from "./blog.js";
-import { ALLOW_SLOT_KEYS, DENY_AD_PATHS, LEGAL_AD_PATHS } from "../utils/ads.js";
-import { TOOLS } from "../utils/tool-registry.js";
+import {
+  AD_SCRIPT_PATHS,
+  AD_SCRIPT_PREFIXES,
+  ALLOW_SLOT_KEYS,
+  DENY_AD_PATHS,
+  LEGAL_AD_PATHS,
+  getAdPolicySnapshot,
+  pageAllowsAdScript,
+} from "../utils/ads.js";
+import {
+  PRODUCTION_TOOL_COUNT,
+  TOOLS,
+  getToolsForEnvironment,
+} from "../utils/tool-registry.js";
 import { handlersById } from "../routes/_handlers.js";
 
 const LANGS = Object.keys(SUPPORTED_LANGUAGES);
@@ -298,6 +315,174 @@ describe("retired blog twins", () => {
           BLOG_ARTICLES.some((a) => `/blog/${a.slug}` === target),
           target,
         ).toBe(true);
+      }
+    }
+  });
+});
+
+describe("content route contracts", () => {
+  it("keeps all eleven article routes renderable", async () => {
+    expect(BLOG_ARTICLES).toHaveLength(11);
+    for (const article of BLOG_ARTICLES) {
+      expect(renderBlogPostPage(article.slug, "en")?.status, article.slug).toBe(200);
+    }
+  });
+
+  it("keeps the regex digit example machine-accurate", () => {
+    const article = BLOG_ARTICLES.find(({ slug }) => slug === "regex-guide");
+    const codeTokens = [...article.content.matchAll(/<code>([^<]+)<\/code>/g)].map(
+      (match) => match[1],
+    );
+    const digitToken = codeTokens.find((token) => token === "\\d");
+    expect(digitToken).toBe("\\d");
+    const digitPattern = new RegExp(`^${digitToken}$`);
+    expect(digitPattern.test("5")).toBe(true);
+    expect(digitPattern.test("٥")).toBe(false);
+  });
+
+  it("keeps internal article and FAQ links on registered routes", () => {
+    const validPaths = new Set([
+      "/",
+      "/about",
+      "/blog",
+      "/careers",
+      "/contact",
+      "/faq",
+      "/privacy",
+      "/security",
+      "/terms",
+      ...TOOLS.map((tool) => tool.path),
+      ...BLOG_ARTICLES.map((article) => `/blog/${article.slug}`),
+    ]);
+    const bodies = LANGS.flatMap((lang) => [
+      ...BLOG_ARTICLES.map(
+        (article) => getLocalizedBlogArticle(article, lang).content,
+      ),
+      ...getFaqEntries(lang).map((entry) => entry.answer),
+    ]);
+    const hrefs = bodies.flatMap((body) =>
+      [...body.matchAll(/href="([^"]+)"/g)].map((match) => match[1]),
+    );
+    for (const href of hrefs.filter((href) => href.startsWith("/"))) {
+      expect(validPaths.has(href), href).toBe(true);
+    }
+    for (const href of hrefs.filter((href) => !href.startsWith("/"))) {
+      expect(() => new URL(href), href).not.toThrow();
+    }
+  });
+
+  it("selects complete generated translations without changing machine keys", () => {
+    const localizedLanguages = [
+      "ko",
+      "ja",
+      "es",
+      "zh-CN",
+      "zh-TW",
+      "fr",
+      "de",
+      "pt",
+      "vi",
+    ];
+    const revisedArticles = BLOG_ARTICLES.filter(
+      (article) => article.slug !== "inspect-jwt-in-the-browser",
+    );
+    const englishFaq = getFaqEntries("en");
+    const hrefs = (html) =>
+      [...html.matchAll(/href="([^"]+)"/g)].map((match) => match[1]);
+    const codeContents = (html) =>
+      [...html.matchAll(/<code[^>]*>([\s\S]*?)<\/code>/g)].map(
+        (match) => match[1],
+      );
+    const openingTags = (html) =>
+      [...html.matchAll(/<([a-z0-9-]+)(?:\s[^>]*)?>/gi)].map(
+        (match) => match[0],
+      );
+
+    expect(Object.keys(REVIEWED_CONTENT_LOCALES)).toEqual(localizedLanguages);
+    for (const lang of localizedLanguages) {
+      const generatedLocale = REVIEWED_CONTENT_LOCALES[lang];
+      const localizedFaq = getFaqEntries(lang);
+      expect(localizedFaq, `${lang} generated FAQ selection`).toBe(
+        generatedLocale.faq,
+      );
+      expect(localizedFaq.map((entry) => entry.id), `${lang} FAQ ids`).toEqual(
+        englishFaq.map((entry) => entry.id),
+      );
+      expect(
+        localizedFaq.map((entry) => entry.category),
+        `${lang} FAQ category keys`,
+      ).toEqual(englishFaq.map((entry) => entry.category));
+      localizedFaq.forEach((entry, index) => {
+        expect(hrefs(entry.answer), `${lang}:${entry.id} FAQ links`).toEqual(
+          hrefs(englishFaq[index].answer),
+        );
+        expect(
+          openingTags(entry.answer),
+          `${lang}:${entry.id} FAQ HTML attributes`,
+        ).toEqual(openingTags(englishFaq[index].answer));
+      });
+      for (const article of revisedArticles) {
+        const generated = generatedLocale.articles.find(
+          (entry) => entry.slug === article.slug,
+        );
+        const localized = getLocalizedBlogArticle(article, lang);
+        expect(localized.slug, `${lang}:${article.slug} slug`).toBe(article.slug);
+        expect(localized.title, `${lang}:${article.slug} generated title`).toBe(
+          generated.title,
+        );
+        expect(localized.content, `${lang}:${article.slug} generated content`).toBe(
+          generated.content,
+        );
+        expect(hrefs(localized.content), `${lang}:${article.slug} links`).toEqual(
+          hrefs(article.content),
+        );
+        expect(
+          codeContents(localized.content),
+          `${lang}:${article.slug} code samples`,
+        ).toEqual(codeContents(article.content));
+        expect(
+          openingTags(localized.content),
+          `${lang}:${article.slug} HTML attributes`,
+        ).toEqual(openingTags(article.content));
+      }
+    }
+  });
+});
+
+describe("registry-backed public count", () => {
+  it("derives the production count from the visible registry", () => {
+    expect(PRODUCTION_TOOL_COUNT).toBe(getToolsForEnvironment(false).length);
+    expect(PRODUCTION_TOOL_COUNT).toBe(45);
+  });
+});
+
+describe("machine-bound advertising disclosure", () => {
+  it("uses one exact/prefix allow-list for script-bearing routes", () => {
+    const snapshot = getAdPolicySnapshot();
+    expect(snapshot.scriptPaths).toEqual([...AD_SCRIPT_PATHS]);
+    expect(snapshot.scriptPrefixes).toEqual([...AD_SCRIPT_PREFIXES]);
+    for (const path of AD_SCRIPT_PATHS) expect(pageAllowsAdScript(path)).toBe(true);
+    expect(pageAllowsAdScript("/blog/what-is-json")).toBe(true);
+    expect(pageAllowsAdScript("/password-generator")).toBe(false);
+  });
+
+  it("binds Terms and Privacy sections to the ad policy snapshot", () => {
+    for (const lang of LANGS) {
+      for (const pageId of ["terms", "privacy"]) {
+        const bindings = getLegalSections(pageId, lang).filter(
+          (section) => section.adPolicy,
+        );
+        expect(bindings).toHaveLength(1);
+        expect(bindings[0].adPolicy).toEqual(getAdPolicySnapshot());
+        expect(bindings[0].adPolicyLabels).toBe(
+          REVIEWED_LEGAL_CONTENT[lang].adPolicy,
+        );
+      }
+      for (const pageId of ["contact", "security"]) {
+        const sections = getLegalSections(pageId, lang);
+        expect(sections.at(-1).paragraphs).toEqual([
+          REVIEWED_LEGAL_CONTENT[lang].responseMessage,
+        ]);
       }
     }
   });

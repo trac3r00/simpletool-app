@@ -1,4 +1,5 @@
 import { DEFAULT_LANGUAGE, normalizeLanguage } from "../utils/i18n.js";
+import { REVIEWED_CONTENT_LOCALES } from "./generated-content-locales.js";
 
 const BLOG_LOCALE_OVERRIDES = {
   ko: {
@@ -2760,11 +2761,12 @@ const BLOG_LONG_LOCALE_OVERRIDES = {
 
 export function getLocalizedBlogArticle(baseArticle, lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  if (currentLang === DEFAULT_LANGUAGE) {
-    return baseArticle;
-  }
+  if (currentLang === DEFAULT_LANGUAGE) return baseArticle;
 
-  const override = {
+  const reviewedArticle = REVIEWED_CONTENT_LOCALES[currentLang]?.articles.find(
+    (article) => article.slug === baseArticle.slug,
+  );
+  const override = reviewedArticle || {
     ...BLOG_LOCALE_OVERRIDES[currentLang]?.[baseArticle.slug],
     ...BLOG_LONG_LOCALE_OVERRIDES[currentLang]?.[baseArticle.slug],
   };

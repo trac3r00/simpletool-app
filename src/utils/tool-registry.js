@@ -738,6 +738,8 @@ export function getToolsForEnvironment(isDev = false) {
   return TOOLS.filter((tool) => !tool.hiddenInProduction);
 }
 
+export const PRODUCTION_TOOL_COUNT = getToolsForEnvironment(false).length;
+
 export const HIDDEN_IN_PRODUCTION_TOOL_IDS = new Set(
   TOOLS.filter((tool) => tool.hiddenInProduction).map((tool) => tool.id),
 );

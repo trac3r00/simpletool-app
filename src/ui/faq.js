@@ -65,7 +65,7 @@ export function renderFaqPage(lang = DEFAULT_LANGUAGE) {
       const items = faqEntries.filter((entry) => entry.category === category);
       return `
       <section class="mb-8">
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-surface-50 mb-4">${category}</h2>
+        <h2 class="text-lg font-semibold text-surface-900 dark:text-surface-50 mb-4">${items[0].categoryLabel || category}</h2>
         ${createFaqAccordion(items, { i18n: false })}
       </section>`;
     })

@@ -1,216 +1,105 @@
 import { DEFAULT_LANGUAGE, normalizeLanguage } from "../utils/i18n.js";
+import { REVIEWED_CONTENT_LOCALES } from "./generated-content-locales.js";
 
 const FAQ_CONTENT = {
   en: [
     {
-      id: "q1",
-      category: "General",
-      question: "What is SimpleTool and who is it for?",
+      id: "json-error",
+      category: "Troubleshooting",
+      question: "Why does valid-looking JSON fail to format?",
       answer:
-        "SimpleTool is a privacy-first set of browser-based utilities for developers, operators, and power users. Tasks like formatting JSON, decoding tokens, or generating credentials run locally in the browser instead of on our servers.",
+        `The <a href="/json-formatter">JSON Formatter</a> accepts strict JSON: double-quoted keys and strings, no comments, no trailing commas, and no NaN or Infinity. Start at the reported line and column. Formatting checks syntax; use <a href="/json-schema-studio">JSON Schema Studio</a> when fields and types also need a contract.`,
     },
     {
-      id: "q2",
-      category: "General",
-      question: "Is SimpleTool really free?",
+      id: "jwt-verification",
+      category: "Troubleshooting",
+      question: "The JWT payload decoded. Does that mean the token is valid?",
       answer:
-        "Yes. The public site is free to use, with advertising helping cover hosting and maintenance. There are no paid tiers required to access the core tools.",
+        `No. Decoding only reveals untrusted claims. In <a href="/token-studio">Token Studio</a>, verify the signature with a trusted key and then check issuer, audience, expiration, not-before, and the allowed algorithm in your application. The <a href="/blog/inspect-jwt-in-the-browser">browser JWT guide</a> explains this boundary.`,
     },
     {
-      id: "q3",
-      category: "General",
-      question: "Do I need to create an account?",
+      id: "regex-no-match",
+      category: "Troubleshooting",
+      question: "Why does my regular expression match only part of the input?",
       answer:
-        "No. You can open a tool and use it immediately without creating an account or logging in.",
+        `Search patterns can match a substring. Add start and end anchors when the entire field must match, and test both examples and counterexamples in <a href="/regex-visualizer">Regex Studio</a>. Its behavior follows the browser JavaScript engine, so confirm syntax again if production uses PCRE, RE2, or another engine.`,
     },
     {
-      id: "q4",
-      category: "General",
-      question: "Is my data safe? How does client-side processing work?",
+      id: "curl-not-running",
+      category: "Troubleshooting",
+      question: "Why does Curl Studio not show the server response?",
       answer:
-        "For most tools, processing happens locally in your browser using JavaScript and browser APIs. That means the input usually stays on your device unless you explicitly copy, export, or send it elsewhere.",
+        `<a href="/curl-studio">Curl Studio</a> builds and parses commands; it does not execute network requests. Run the command in an environment that can reach the host. Add --include or --verbose for diagnostics and --fail-with-body when an HTTP error should fail a script without discarding its body.`,
     },
     {
-      id: "q5",
-      category: "General",
-      question: "Which browsers are supported?",
+      id: "cron-timezone",
+      category: "Troubleshooting",
+      question: "Why does my cron job run at the wrong time?",
       answer:
-        "SimpleTool supports modern versions of Chrome, Edge, Firefox, and Safari, plus up-to-date mobile browsers. Older browsers without ES modules or Web Crypto support may not work correctly.",
+        `First confirm the scheduler's field count, timezone, and day-of-week rules. Preview several dates in the <a href="/cron-builder">Cron Expression Builder</a>, including a daylight-saving transition. The tool cannot determine how your platform handles overlap, downtime, retries, or missed runs.`,
     },
     {
-      id: "q6",
-      category: "General",
-      question: "Can I use SimpleTool offline?",
+      id: "password-rejected",
+      category: "Troubleshooting",
+      question: "Why did a site reject a generated password?",
       answer:
-        "Many tools continue working after the page loads because the logic runs client-side. For a dependable offline workflow, self-hosting the project is the safest option.",
+        `The target may impose a maximum length or reject particular characters. Adjust those controls in the <a href="/password-generator">Password Generator</a> and generate again rather than editing a random result into a pattern. The tool cannot inspect a site's undocumented truncation or normalization behavior.`,
     },
     {
-      id: "q7",
-      category: "Security & Cryptography",
-      question: "What makes a password truly secure?",
+      id: "certificate-chain",
+      category: "Troubleshooting",
+      question: "Why can a certificate parse correctly but still fail in a browser?",
       answer:
-        "A secure password is long, random, and unique per service. Length and unpredictability matter more than clever substitutions or memorable patterns.",
+        `Parsing is not path validation. The <a href="/certificate-decoder">Certificate Decoder</a> shows names, dates, issuer, key usage, and extensions, but it does not contact the host, fetch intermediates, consult a platform trust store, or check current revocation status.`,
     },
     {
-      id: "q8",
-      category: "Security & Cryptography",
-      question: "What's the difference between MD5, SHA-256, and SHA-512?",
+      id: "csp-blocked",
+      category: "Troubleshooting",
+      question: "How do I identify what a CSP blocked?",
       answer:
-        "MD5 is obsolete for security. SHA-256 and SHA-512 are modern SHA-2 hashes; SHA-512 has a larger output, while SHA-256 is the common default for integrity and signing workflows.",
+        `Read the browser console or report-only event, identify the resource type, and update the narrow directive that governs it. Use the <a href="/csp-builder">CSP Header Builder</a> to draft the header, then test the actual response and every affected workflow before enforcing it.`,
     },
     {
-      id: "q9",
-      category: "Security & Cryptography",
-      question: "Why is MD5 considered broken?",
+      id: "cidr-range",
+      category: "Troubleshooting",
+      question: "Why is a CIDR result different from my usable host range?",
       answer:
-        "MD5 is vulnerable to practical collision attacks, so two different inputs can be crafted to produce the same hash. That makes it unsuitable for trust, signatures, or password storage.",
+        `Network range, broadcast rules, and assignable host conventions are different concepts, especially for /31, /32, and IPv6. Enter the address and prefix in the <a href="/cidr-calculator">CIDR Calculator</a>, then apply the conventions of the network platform you are configuring.`,
     },
     {
-      id: "q10",
-      category: "Security & Cryptography",
-      question: "What is HMAC and when should I use it?",
+      id: "base64-not-encryption",
+      category: "Limits",
+      question: "Does Base64 protect a secret?",
       answer:
-        "HMAC combines a hash function with a shared secret key. Use it when you need both integrity and authenticity, such as signed API requests or webhook verification.",
+        `No. Base64 is reversible encoding, not encryption. Use the <a href="/encoding-workbench">Encoding Workbench</a> to inspect or convert transport encodings, but use an authenticated encryption scheme and managed keys when confidentiality is required.`,
     },
     {
-      id: "q11",
-      category: "Security & Cryptography",
-      question: "How does bcrypt compare to Argon2 for password hashing?",
+      id: "local-processing",
+      category: "Privacy and operation",
+      question: "What does client-side processing cover?",
       answer:
-        "Both are purpose-built password hashing algorithms, but Argon2 is the more modern choice because it is memory-hard and easier to tune against GPU attacks. bcrypt remains common for compatibility.",
+        `Supported tool computations are designed to run in the browser instead of posting the payload to an application endpoint. The page and assets still arrive over the network; extensions, clipboard use, exported files, and allow-listed advertising are separate considerations. See <a href="/privacy">Privacy</a> for the current disclosure.`,
     },
     {
-      id: "q12",
-      category: "Security & Cryptography",
-      question: "What is a JWT and when should I use one?",
+      id: "advertising",
+      category: "Privacy and operation",
+      question: "Where can advertising scripts load?",
       answer:
-        "A JWT is a compact token format for carrying claims between systems. It is useful for stateless authentication and service-to-service identity, but only when signatures, expiration, and validation are handled correctly.",
+        `The exact repository allow-list is published in <a href="/terms">Terms</a> and <a href="/privacy">Privacy</a>. Manual units request non-personalized ads. Password, SSH key, token, certificate, WireGuard, secret-scanner, and encoding pages remain outside the script allow-list.`,
     },
     {
-      id: "q13",
-      category: "Security & Cryptography",
-      question: "How do I verify a file's integrity using hash checksums?",
+      id: "browser-support",
+      category: "Privacy and operation",
+      question: "Why is a tool unavailable in an older browser?",
       answer:
-        "Compute the file hash locally and compare it with the official value from the publisher. If the hashes match exactly, the file is very likely unchanged.",
+        `Some tools require ES modules, Web Crypto, File, Canvas, or Streams APIs. Update the browser and retry without script-blocking extensions. If the problem persists, include the browser version, operating system, tool URL, input shape without secrets, and console error in a report through <a href="/contact">Contact</a>.`,
     },
     {
-      id: "q14",
-      category: "Security & Cryptography",
-      question: "What is Content Security Policy (CSP) and why does it matter?",
+      id: "offline-use",
+      category: "Privacy and operation",
+      question: "Will tools keep working offline?",
       answer:
-        "CSP is a browser-enforced security policy that restricts where scripts, styles, images, and other resources can come from. It is one of the strongest defenses against XSS and injected content.",
-    },
-    {
-      id: "q15",
-      category: "Data Formats",
-      question: "What's the difference between JSON and YAML?",
-      answer:
-        "JSON is stricter, more predictable, and usually better for APIs and machine exchange. YAML is easier for humans to edit, but indentation and advanced syntax can introduce hidden mistakes.",
-    },
-    {
-      id: "q16",
-      category: "Data Formats",
-      question: "How do I validate JSON?",
-      answer:
-        "First check that the syntax is valid, then validate the structure against a schema if the data must follow a contract. Syntax validation alone does not guarantee the right fields or types.",
-    },
-    {
-      id: "q17",
-      category: "Data Formats",
-      question: "What is Base64 encoding and when is it used?",
-      answer:
-        "Base64 is a text-safe encoding for binary data. It is commonly used in tokens, email payloads, data URLs, and transport formats that require plain text.",
-    },
-    {
-      id: "q18",
-      category: "Data Formats",
-      question: "What are regular expressions and why are they useful?",
-      answer:
-        "Regular expressions are compact patterns for matching and transforming text. They are useful for validation, extraction, search, and cleanup, but they should be written carefully to avoid complexity and performance problems.",
-    },
-    {
-      id: "q19",
-      category: "Data Formats",
-      question: "How do I convert between different timestamp formats?",
-      answer:
-        "Normalize the source into a clear reference such as Unix seconds, Unix milliseconds, or ISO 8601, then render it in the target format and timezone. Most timestamp bugs come from timezone and unit mismatches.",
-    },
-    {
-      id: "q20",
-      category: "Data Formats",
-      question: "What is a UUID and when should I use one?",
-      answer:
-        "A UUID is a globally unique identifier that can be generated without a central database. It is useful for distributed systems, test data, and identifiers that should not be easy to enumerate.",
-    },
-    {
-      id: "q21",
-      category: "Data Formats",
-      question: "What is JSON Schema and why should I use it?",
-      answer:
-        "JSON Schema defines the allowed structure, types, and rules for JSON documents. It helps keep APIs, events, and configuration files consistent and testable.",
-    },
-    {
-      id: "q22",
-      category: "Data Formats",
-      question: "How do I compare two text files for differences?",
-      answer:
-        "Use a diff tool that highlights added, removed, and changed sections side by side. A visual diff is faster and safer than manually scanning large files.",
-    },
-    {
-      id: "q23",
-      category: "Networking & Web",
-      question: "How do CIDR subnets and IP ranges work?",
-      answer:
-        "CIDR uses a prefix length to split an IP address into network and host bits. From that prefix you can calculate the subnet mask, usable range, broadcast address, and route scope.",
-    },
-    {
-      id: "q24",
-      category: "Networking & Web",
-      question: "What information does a User-Agent string contain?",
-      answer:
-        "A User-Agent string usually exposes the browser family, version, rendering engine, operating system, and sometimes device hints. It is useful for debugging, but it can be incomplete or intentionally misleading.",
-    },
-    {
-      id: "q25",
-      category: "Networking & Web",
-      question: "How do I use cURL to debug APIs?",
-      answer:
-        "Start with the method, URL, headers, and body, then add verbose output to inspect the request and response. cURL is ideal for isolating network behavior from application code.",
-    },
-    {
-      id: "q26",
-      category: "Networking & Web",
-      question: "What is SAML and how does SSO work?",
-      answer:
-        "SAML is an XML-based protocol used heavily in enterprise SSO. An identity provider authenticates the user and sends a signed assertion to the service provider so the user can access the app without a separate password.",
-    },
-    {
-      id: "q27",
-      category: "Networking & Web",
-      question: "What are SPF, DKIM, and DMARC in email security?",
-      answer:
-        "SPF authorizes sending servers, DKIM signs the message, and DMARC tells receivers how to enforce failures. Together they reduce spoofing and improve trust in incoming mail.",
-    },
-    {
-      id: "q28",
-      category: "Developer Productivity",
-      question: "How do I estimate API token costs for LLMs?",
-      answer:
-        "Estimate the prompt tokens, output tokens, and the pricing model for your provider, then calculate cost per request and at expected volume. The most important variables are model choice, context length, and response size.",
-    },
-    {
-      id: "q29",
-      category: "Developer Productivity",
-      question: "What is a cron expression and how do I write one?",
-      answer:
-        "A cron expression is a compact schedule definition for recurring jobs. Build it field by field, verify the timezone, and preview the next run times before putting it into production.",
-    },
-    {
-      id: "q30",
-      category: "Developer Productivity",
-      question: "How do I create effective prompt templates for AI?",
-      answer:
-        "Use a stable structure with clear instructions, placeholders for dynamic data, and explicit output requirements. Good prompt templates are reusable, testable, and narrow enough to reduce ambiguity.",
+        `Some computations continue after required assets have loaded, but the public site is not presented as a guaranteed offline application. For a controlled offline deployment, review and self-host the public project linked from the <a href="/about">About</a> page.`,
     },
   ],
   ko: [
@@ -2146,6 +2035,9 @@ const FAQ_CONTENT = {
 export function getFaqEntries(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
   return (
-    FAQ_CONTENT[currentLang] || FAQ_CONTENT[DEFAULT_LANGUAGE] || FAQ_CONTENT.en
+    REVIEWED_CONTENT_LOCALES[currentLang]?.faq ||
+    FAQ_CONTENT[currentLang] ||
+    FAQ_CONTENT[DEFAULT_LANGUAGE] ||
+    FAQ_CONTENT.en
   );
 }
