@@ -32,11 +32,11 @@ const NON_TEXT_INPUT = /^(checkbox|radio|range|color|file|hidden|submit|button|i
 
 /**
  * Per-tool affordances that are deliberately NOT one of the shared components,
- * because they are a distinct visual pattern rather than a button:
- * a tinted chip, a selectable record/picker card, a segmented unit toggle.
+ * because they are a distinct visual pattern, such as a segmented unit toggle.
+ * CIDR chips and DNS record cards use the shared button base and are not exempt.
  * Listed explicitly so the exception is a decision, not an oversight.
  */
-const ALLOWED_BESPOKE = /\b(cidr-chip|record-card|unit-toggle|pipe-picker|rw-[a-z-]+|opt-select|copy-result-btn|remove-peer-btn)\b/;
+const ALLOWED_BESPOKE = /\b(unit-toggle|rw-[a-z-]+|opt-select|copy-result-btn|remove-peer-btn)\b/;
 
 function sourceFiles() {
   const out = [];

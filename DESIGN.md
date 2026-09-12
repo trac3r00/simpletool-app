@@ -137,7 +137,11 @@ vocabulary:
 - **Base unit / density:** 4px, comfortable. Use Tailwind's default spacing scale
   (`p-4`, `gap-4`, `space-y-16`, …).
 - **Grid:** Responsive card grid on the home page; content max width `max-w-7xl`
-  (1280px).
+  (1280px). The catalog follows StyleGallery's `ram-grid` contract: document
+  scroll owns vertical movement, card source order remains focus order, and the
+  eight flagship links become a single horizontal reel below 640px rather than
+  wrapping into extra hero rows. On a 390x844 search result, the first matching
+  card must fit fully in the initial viewport.
 - **Border radius (`--radius-*` reference; realized via Tailwind `rounded-*`):**
   `sm` 4px · `md` 8px · `lg` 12px · `xl` 16px · `full` 9999px.
   - Buttons: `rounded-md` (8px) — every `.btn` variant.
@@ -155,6 +159,12 @@ vocabulary:
   `animate-spin`).
 - **Durations in use:** ~200ms for color/theme transitions, ~300ms for
   fades/accordions/spinners.
+- **Shortcut help:** follows the beui popover/dialog accessibility mechanism,
+  adapted without a new runtime dependency: a named trigger exposes expanded
+  state, opening moves focus into the dialog, Escape closes it, and focus returns
+  to the trigger. The trigger floats on larger screens but returns to document
+  flow below 640px so it cannot obscure tool content. Reduced motion removes its
+  entrance transform.
 
 ## Component Patterns
 
@@ -305,6 +315,11 @@ Enforced by `npm run test:ui-audit`, which reports `handrolled-button` /
 - `.spinner` (+ `-sm` / `-lg`), `.empty-state` (+ `-icon` / `-title` / `-desc`).
 - `[data-tooltip]` — pure-CSS tooltip with `-pos="bottom"` / `"right"` variants.
 - `.info-hint` — small Material Symbols help icon that triggers a tooltip.
+- Keyboard-accessibility constraints: every potentially overflowing output or
+  table wrapper is focusable and named; visual roles never contain descendant
+  controls; repeated FAQ groups rely on their section headings instead of
+  duplicate region landmarks; repeated article code regions receive unique
+  ordinal labels.
 - `.cheatsheet` — collapsible reference panel used inside tools.
 - `.glass` — translucent, blurred nav/header bar.
 - `.mobile-tab-bar` / `.mobile-tab-btn` / `.mobile-tab-active` — two-pane mobile

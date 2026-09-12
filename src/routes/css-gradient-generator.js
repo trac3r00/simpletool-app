@@ -151,7 +151,7 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
               </button>
             </div>
 
-            <pre id="css-output" class="bg-surface-50 dark:bg-surface-950 p-4 rounded-lg overflow-x-auto text-sm font-mono text-surface-900 dark:text-surface-100 border border-surface-200 dark:border-surface-800"></pre>
+            <pre id="css-output" tabindex="0" aria-label="Generated CSS code" class="bg-surface-50 dark:bg-surface-950 p-4 rounded-lg overflow-x-auto text-sm font-mono text-surface-900 dark:text-surface-100 border border-surface-200 dark:border-surface-800"></pre>
           </div>
 
           <!-- Info Cards -->
@@ -278,7 +278,7 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
             <div class="flex items-center gap-3">
               <input type="color" value="\${stop.color}" aria-label="Color stop \${index + 1}" class="color-picker w-12 h-12 rounded border-2 border-surface-300 dark:border-surface-700 cursor-pointer" data-index="\${index}" />
               <div class="flex-1">
-                <label class="text-xs text-surface-600 dark:text-surface-400" data-i18n="tools.css-gradient-generator.ui.label0">Position: \${stop.position}%</label>
+                <label class="text-xs text-surface-600 dark:text-surface-400"><span data-i18n="tools.css-gradient.ui.label6">Position</span>: \${stop.position}%</label>
                 <input type="range" min="0" max="100" value="\${stop.position}" aria-label="Color stop \${index + 1} position" class="position-slider w-full h-2 bg-surface-200 rounded-lg appearance-none cursor-pointer dark:bg-surface-700" data-index="\${index}" />
               </div>
             </div>

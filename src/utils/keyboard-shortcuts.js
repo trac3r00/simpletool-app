@@ -22,8 +22,9 @@ export function getKeyboardShortcutsScript() {
     help: { key: '/', mod: true, action: 'help', label: 'Show shortcuts' }
   };
 
-  // Track if help modal is open
+  // Track the modal and restore focus to the control that opened it.
   let helpModalOpen = false;
+  let helpReturnFocus = null;
 
   // Global keyboard event handler
   document.addEventListener('keydown', (e) => {
@@ -183,10 +184,16 @@ export function getKeyboardShortcutsScript() {
   }
 
   function showHelpModal() {
+    if (helpModalOpen) return;
     helpModalOpen = true;
+    helpReturnFocus = document.activeElement;
+    indicator.setAttribute('aria-expanded', 'true');
 
     const modal = document.createElement('div');
     modal.id = 'keyboard-shortcuts-modal';
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-labelledby', 'keyboard-shortcuts-title');
     modal.className = 'fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm';
 
     const content = document.createElement('div');
@@ -197,12 +204,14 @@ export function getKeyboardShortcutsScript() {
     header.className = 'flex items-center justify-between mb-6';
 
     const title = document.createElement('h3');
+    title.id = 'keyboard-shortcuts-title';
     title.className = 'text-xl font-bold text-surface-900 dark:text-surface-50';
-    title.textContent = '⌨️ Keyboard Shortcuts';
+    title.textContent = 'Keyboard shortcuts';
 
     const closeBtn = document.createElement('button');
     closeBtn.id = 'close-shortcuts-modal';
-    closeBtn.className = 'text-surface-400 hover:text-surface-700 dark:hover:text-surface-200 p-2 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors';
+    closeBtn.className = 'btn-ghost btn-icon-sm';
+    closeBtn.setAttribute('aria-label', 'Close keyboard shortcuts');
     closeBtn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>';
 
     header.appendChild(title);
@@ -234,26 +243,46 @@ export function getKeyboardShortcutsScript() {
     content.appendChild(tip);
     modal.appendChild(content);
     document.body.appendChild(modal);
+    closeBtn.focus();
 
-    // Close handlers
+    // Close handlers and keep keyboard focus within the modal.
     closeBtn.addEventListener('click', closeHelpModal);
     modal.addEventListener('click', (e) => {
       if (e.target === modal) closeHelpModal();
     });
-    document.addEventListener('keydown', function escHandler(e) {
+    modal.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
+        e.preventDefault();
         closeHelpModal();
-        document.removeEventListener('keydown', escHandler);
+        return;
+      }
+      if (e.key !== 'Tab') return;
+
+      const focusable = modal.querySelectorAll(
+        'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      );
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
       }
     });
   }
 
   function closeHelpModal() {
     const modal = document.getElementById('keyboard-shortcuts-modal');
-    if (modal) {
-      modal.remove();
-      helpModalOpen = false;
+    if (!modal) return;
+    modal.remove();
+    helpModalOpen = false;
+    indicator.setAttribute('aria-expanded', 'false');
+    if (helpReturnFocus && typeof helpReturnFocus.focus === 'function') {
+      helpReturnFocus.focus();
     }
+    helpReturnFocus = null;
   }
 
   function showShortcutFeedback(message) {
@@ -274,11 +303,18 @@ export function getKeyboardShortcutsScript() {
 
   // Add visual indicator for shortcut availability
   const indicator = document.createElement('button');
-  indicator.className = 'btn-fab fixed bottom-4 left-4 z-40';
+  indicator.id = 'shortcut-help-trigger';
+  indicator.className = 'shortcut-help-trigger btn-fab fixed bottom-4 left-4 z-40';
+  indicator.setAttribute('aria-label', 'Show keyboard shortcuts');
+  indicator.setAttribute('aria-haspopup', 'dialog');
+  indicator.setAttribute('aria-controls', 'keyboard-shortcuts-modal');
+  indicator.setAttribute('aria-expanded', 'false');
   indicator.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>';
   indicator.title = 'Press ' + modKeyName + '+/ for keyboard shortcuts';
-  indicator.addEventListener('click', showHelpModal);
-  document.body.appendChild(indicator);
+  indicator.addEventListener('click', toggleHelpModal);
+  const footer = document.querySelector('footer');
+  if (footer) footer.before(indicator);
+  else document.body.appendChild(indicator);
 
   // Add CSS animations
   const style = document.createElement('style');
@@ -288,6 +324,15 @@ export function getKeyboardShortcutsScript() {
       to { opacity: 1; transform: translateY(0); }
     }
     .animate-fade-in-up { animation: fade-in-up 0.3s ease-out; }
+    @media (max-width: 640px) {
+      .shortcut-help-trigger {
+        position: static !important;
+        margin: 1rem auto;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .animate-fade-in-up { animation: none; }
+    }
   \`;
   document.head.appendChild(style);
 

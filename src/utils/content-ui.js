@@ -44,7 +44,7 @@ export function createFaqAccordion(items, options = {}) {
     .join("");
 
   return `
-    <div class="space-y-3" role="region" aria-label="Frequently asked questions">
+    <div class="space-y-3">
       ${faqItems}
     </div>
   `;

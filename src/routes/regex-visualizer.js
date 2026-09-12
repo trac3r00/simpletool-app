@@ -113,7 +113,7 @@ export async function handleRegexVisualizerRoutes(request) {
               <button class="lang-btn px-3 py-1 text-xs font-medium rounded-md bg-surface-100 text-surface-600 dark:bg-surface-800 dark:text-surface-400 hover:bg-surface-200 dark:hover:bg-surface-700 whitespace-nowrap" data-lang="java"><span data-i18n="tools.regex-visualizer.ui.button2">Java</span></button>
             </div>
             <div class="relative group">
-              <pre class="bg-surface-900 text-surface-50 p-3 rounded-lg text-xs font-mono overflow-x-auto"><code id="code-output">const regex = /([A-Z])\w+/g;
+              <pre id="code-output-region" tabindex="0" aria-label="Generated code snippet" class="bg-surface-900 text-surface-50 p-3 rounded-lg text-xs font-mono overflow-x-auto"><code id="code-output">const regex = /([A-Z])\w+/g;
 const str = '';
 let m;
 
@@ -170,7 +170,7 @@ while ((m = regex.exec(str)) !== null) {
             </div>
 
             <!-- Groups Table -->
-            <div class="overflow-x-auto">
+            <div id="match-groups-scroll" tabindex="0" aria-label="Regex match groups" class="overflow-x-auto">
               <table class="min-w-full divide-y divide-surface-200 dark:divide-surface-700">
                 <thead class="bg-surface-50 dark:bg-surface-800">
                   <tr>

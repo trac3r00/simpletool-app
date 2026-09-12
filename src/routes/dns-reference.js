@@ -610,7 +610,7 @@ function recordTypeCards() {
   return records
     .map(
       (r) => `
-    <button class="record-card bg-surface-50 dark:bg-surface-950 hover:bg-primary-50 dark:hover:bg-primary-900/20 border border-surface-200 dark:border-surface-800 hover:border-primary-300 dark:hover:border-primary-700 rounded-lg p-4 text-center transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-500"
+    <button class="btn record-card flex-col bg-surface-50 dark:bg-surface-950 hover:bg-primary-50 dark:hover:bg-primary-900/20 border border-surface-200 dark:border-surface-800 hover:border-primary-300 dark:hover:border-primary-700 rounded-lg p-4 text-center transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-500"
       data-type="${r.type}" data-category="${r.category}" data-i18n-title="tools.dns-reference.ui.title.${r.type}" title="Click to view ${r.type} details">
       <div class="text-2xl mb-1">${r.icon}</div>
       <div class="font-bold text-surface-900 dark:text-white">${r.type}</div>

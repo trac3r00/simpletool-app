@@ -140,7 +140,7 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
              </div>
             <div class="overflow-x-auto">
               <table class="min-w-full text-sm">
-                <thead class="text-xs uppercase tracking-widest text-surface-500">
+                <thead class="text-xs uppercase tracking-widest text-surface-600 dark:text-surface-300">
                   <tr>
                     <th class="py-2 text-left" data-i18n="tools.htpasswd-generator.ui.th6">Username</th>
                     <th class="py-2 text-left" data-i18n="tools.htpasswd-generator.ui.th7">Algorithm</th>
@@ -148,7 +148,7 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
                   </tr>
                 </thead>
                 <tbody id="history-body" class="divide-y divide-surface-100 dark:divide-surface-800 text-surface-700 dark:text-surface-200">
-                  <tr><td class="py-3 text-surface-500" colspan="3" data-i18n="tools.htpasswd-generator.ui.desc27">Nothing generated yet.</td></tr>
+                  <tr><td class="py-3 text-surface-600 dark:text-surface-400" colspan="3" data-i18n="tools.htpasswd-generator.ui.desc27">Nothing generated yet.</td></tr>
                 </tbody>
               </table>
             </div>
@@ -277,7 +277,7 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
 
       function renderHistory() {
         if (!historyItems.length) {
-          historyBody.innerHTML = '<tr><td class="py-3 text-surface-500" colspan="3">' + escapeHtml(translate('tools.htpasswd-generator.ui.desc27', 'Nothing generated yet.')) + '</td></tr>';
+          historyBody.innerHTML = '<tr><td class="py-3 text-surface-600 dark:text-surface-400" colspan="3">' + escapeHtml(translate('tools.htpasswd-generator.ui.desc27', 'Nothing generated yet.')) + '</td></tr>';
           return;
         }
 

@@ -91,7 +91,7 @@ function renderRouletteWheelPage(lang = "en") {
       .rw-segment-item.dragging { opacity: 0.5; cursor: grabbing; }
       .rw-segment-item.drag-over { border-top: 2px solid #6366f1; }
       .dark .rw-segment-item { background: #2d3748; }
-      .rw-segment-color { width: 1.25rem; height: 1.25rem; border-radius: 50%; flex-shrink: 0; border: 2px solid white; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1); cursor: pointer; }
+      .rw-segment-color { width: 1.5rem; height: 1.5rem; border-radius: 50%; flex-shrink: 0; border: 2px solid white; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1); cursor: pointer; }
       .dark .rw-segment-color { border-color: #1e293b; }
       .rw-segment-input { flex: 1; min-width: 0; padding: 0.375rem 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem; font-size: 0.875rem; background: white; color: #111827; }
       .dark .rw-segment-input { background: #1e293b; border-color: #4b5563; color: #f9fafb; }
@@ -171,8 +171,8 @@ function renderRouletteWheelPage(lang = "en") {
         ${toolHeader}
         <div class="rw-container">
           <div class="rw-wheel-wrapper">
-            <div class="rw-wheel-stage" id="wheel-stage" role="img" aria-label="Roulette wheel">
-              <canvas id="wheel-canvas" class="rw-canvas"></canvas>
+            <div class="rw-wheel-stage" id="wheel-stage">
+              <canvas id="wheel-canvas" class="rw-canvas" role="img" aria-label="Roulette wheel visualization">Roulette wheel visualization</canvas>
               <canvas id="confetti-canvas" class="rw-confetti-canvas"></canvas>
               <div class="rw-pointer">
                 <svg viewBox="0 0 48 56" fill="none" aria-hidden="true">
@@ -570,7 +570,7 @@ function renderRouletteWheelPage(lang = "en") {
           } else { barChart.innerHTML = ''; }
           // History
           var historyList = document.getElementById('history-list');
-          if (state.stats.history.length === 0) historyList.innerHTML = '<div class="text-sm text-surface-500 p-2">' + _t('tools.roulette-wheel.js.noSpinsYet', 'No spins yet') + '</div>';
+          if (state.stats.history.length === 0) historyList.innerHTML = '<div class="text-sm text-surface-600 dark:text-surface-400 p-2">' + _t('tools.roulette-wheel.js.noSpinsYet', 'No spins yet') + '</div>';
           else historyList.innerHTML = state.stats.history.slice(0, 10).map(function(h) { return '<div class="rw-history-item"><div class="rw-history-color" style="background:' + h.color + '"></div><div class="rw-history-name">' + escapeHtml(h.label || 'Unknown') + '</div><div class="rw-history-time">' + h.time + '</div></div>'; }).join('');
         }
 
