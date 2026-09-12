@@ -645,6 +645,13 @@ if (!pattern) {
         }
       }
 
+      function formatExplanation(template, values = {}) {
+        return Object.entries(values).reduce(
+          (text, [name, value]) => text.replaceAll('{' + name + '}', () => String(value)),
+          template,
+        );
+      }
+
       function updateExplanation(pattern) {
         explanationList.innerHTML = '';
         if (!pattern) return;
@@ -653,32 +660,45 @@ if (!pattern) {
         const explanations = [];
         
         // Simple token analysis
-        if (pattern.startsWith('^')) explanations.push('Asserts position at start of the string');
-        if (pattern.endsWith('$')) explanations.push('Asserts position at end of the string');
+        if (pattern.startsWith('^')) explanations.push(_t('tools.regex-visualizer.js.explain.assertStart', 'Asserts position at start of the string'));
+        if (pattern.endsWith('$')) explanations.push(_t('tools.regex-visualizer.js.explain.assertEnd', 'Asserts position at end of the string'));
         
         // Character classes
-        if (pattern.includes('\\\\d')) explanations.push('Matches any digit (0-9)');
-        if (pattern.includes('\\\\w')) explanations.push('Matches any word character (alphanumeric + underscore)');
-        if (pattern.includes('\\\\s')) explanations.push('Matches any whitespace character');
-        if (pattern.includes('.')) explanations.push('Matches any character (except newline)');
+        if (pattern.includes('\\\\d')) explanations.push(_t('tools.regex-visualizer.js.explain.digit', 'Matches any digit (0-9)'));
+        if (pattern.includes('\\\\w')) explanations.push(_t('tools.regex-visualizer.js.explain.wordCharacter', 'Matches any word character (alphanumeric + underscore)'));
+        if (pattern.includes('\\\\s')) explanations.push(_t('tools.regex-visualizer.js.explain.whitespace', 'Matches any whitespace character'));
+        if (pattern.includes('.')) explanations.push(_t('tools.regex-visualizer.js.explain.anyCharacter', 'Matches any character (except newline)'));
         
         // Quantifiers
-        if (pattern.includes('*')) explanations.push('Matches the previous token zero or more times');
-        if (pattern.includes('+')) explanations.push('Matches the previous token one or more times');
-        if (pattern.includes('?')) explanations.push('Matches the previous token zero or one time');
+        if (pattern.includes('*')) explanations.push(_t('tools.regex-visualizer.js.explain.zeroOrMore', 'Matches the previous token zero or more times'));
+        if (pattern.includes('+')) explanations.push(_t('tools.regex-visualizer.js.explain.oneOrMore', 'Matches the previous token one or more times'));
+        if (pattern.includes('?')) explanations.push(_t('tools.regex-visualizer.js.explain.zeroOrOne', 'Matches the previous token zero or one time'));
         
         // Groups
         const groupCount = (pattern.match(/\\((?!\\?)/g) || []).length;
-        if (groupCount > 0) explanations.push(\`Contains \${groupCount} capturing group\${groupCount > 1 ? 's' : ''}\`);
+        if (groupCount === 1) {
+          explanations.push(formatExplanation(
+            _t('tools.regex-visualizer.js.explain.capturingGroupOne', 'Contains {count} capturing group'),
+            { count: groupCount },
+          ));
+        } else if (groupCount > 1) {
+          explanations.push(formatExplanation(
+            _t('tools.regex-visualizer.js.explain.capturingGroupOther', 'Contains {count} capturing groups'),
+            { count: groupCount },
+          ));
+        }
 
         // Custom classes
         const classes = pattern.match(/\\[.*?\\]/g);
         if (classes) {
-          classes.forEach(c => explanations.push(\`Matches any character in the set \${escapeHtml(c)}\`));
+          classes.forEach(c => explanations.push(formatExplanation(
+            _t('tools.regex-visualizer.js.explain.characterSet', 'Matches any character in the set {set}'),
+            { set: c },
+          )));
         }
 
         if (explanations.length === 0) {
-          explanations.push('Matches the literal characters exactly');
+          explanations.push(_t('tools.regex-visualizer.js.explain.literal', 'Matches the literal characters exactly'));
         }
 
         explanations.forEach(text => {
@@ -820,6 +840,7 @@ while (matcher.find()) {
       });
 
       copyCodeBtn?.addEventListener('click', copyCode);
+      window.addEventListener('popstate', () => updateExplanation(regexInput.value));
 
       // Initial render
       waitForRailroad(updateAll);

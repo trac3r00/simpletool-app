@@ -305,7 +305,7 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
         }
       </style>
 
-      ${createCheatsheet("markdown-preview", "Markdown Quick Reference", [
+      ${createCheatsheet("markdown-editor", "Markdown Quick Reference", [
         {
           heading: "Formatting",
           content: `

@@ -87,7 +87,7 @@ export function createBlogArticleCard(article, options = {}) {
 
 /**
  * Related tools section — grid of tool cards linking back to tools.
- * @param {Array<{icon: string, name: string, description: string, path: string}>} tools
+ * @param {Array<{id: string, icon: string, name: string, description: string, path: string}>} tools
  * @returns {string} HTML
  */
 export function createRelatedToolsSection(tools, lang = DEFAULT_LANGUAGE) {
@@ -100,8 +100,8 @@ export function createRelatedToolsSection(tools, lang = DEFAULT_LANGUAGE) {
     <a href="${tool.path}" class="card p-4 hover:border-primary-400 dark:hover:border-primary-600 transition-colors duration-200 group flex items-start gap-3">
       <span class="text-2xl flex-shrink-0" aria-hidden="true">${tool.icon}</span>
       <div class="min-w-0">
-        <h3 class="text-sm font-semibold text-surface-900 dark:text-surface-50 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">${tool.name}</h3>
-        <p class="text-xs text-surface-500 dark:text-surface-400 mt-0.5 line-clamp-2">${tool.description}</p>
+        <h3 class="text-sm font-semibold text-surface-900 dark:text-surface-50 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors" data-i18n="tools.${tool.id}.name">${t(`tools.${tool.id}.name`, lang)}</h3>
+        <p class="text-xs text-surface-500 dark:text-surface-400 mt-0.5 line-clamp-2" data-i18n="tools.${tool.id}.desc">${t(`tools.${tool.id}.desc`, lang)}</p>
       </div>
     </a>
   `,

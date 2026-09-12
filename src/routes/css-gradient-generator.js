@@ -58,17 +58,17 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
             <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50 mb-4" data-i18n="tools.css-gradient.ui.heading18">🔧 Gradient Type</h2>
 
             <div class="grid grid-cols-2 gap-3">
-               <button id="type-linear" class="gradient-type-btn" data-tooltip="Gradient along a straight line" data-i18n-tooltip="tools.css-gradient-generator.ui.tip0" py-3 px-4 rounded-lg font-semibold transition bg-primary-700 text-white">
+               <button id="type-linear" class="gradient-type-btn" data-tooltip="Gradient along a straight line" data-i18n-tooltip="tools.css-gradient.ui.tip0" py-3 px-4 rounded-lg font-semibold transition bg-primary-700 text-white">
                  <span data-i18n="tools.css-gradient.ui.button0">Linear</span>
                </button>
-              <button id="type-radial" class="gradient-type-btn" data-tooltip="Gradient radiating from a center point" data-i18n-tooltip="tools.css-gradient-generator.ui.tip1" py-3 px-4 rounded-lg font-semibold transition bg-surface-200 dark:bg-surface-800 text-surface-900 dark:text-surface-200">
+              <button id="type-radial" class="gradient-type-btn" data-tooltip="Gradient radiating from a center point" data-i18n-tooltip="tools.css-gradient.ui.tip1" py-3 px-4 rounded-lg font-semibold transition bg-surface-200 dark:bg-surface-800 text-surface-900 dark:text-surface-200">
                 <span data-i18n="tools.css-gradient.ui.button1">Radial</span>
               </button>
             </div>
 
             <!-- Linear Options -->
             <div id="linear-options" class="mt-4">
-              <label for="angle-slider" class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2" data-tooltip="Direction angle for linear gradient (0-360°)" data-i18n-tooltip="tools.css-gradient-generator.ui.tip2">
+              <label for="angle-slider" class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2" data-tooltip="Direction angle for linear gradient (0-360°)" data-i18n-tooltip="tools.css-gradient.ui.tip2">
                 Direction: <span id="angle-value">90</span>°
               </label>
               <input type="range" id="angle-slider" min="0" max="360" value="90"
@@ -109,7 +109,7 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
           <div class="tool-group p-6">
             <div class="flex justify-between items-center mb-4">
               <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50" data-i18n="tools.css-gradient.ui.heading19">🎨 Color Stops</h2>
-                <button id="add-color-stop" data-tooltip="Add another color to the gradient" data-i18n-tooltip="tools.css-gradient-generator.ui.tip3" class="btn-primary">
+                <button id="add-color-stop" data-tooltip="Add another color to the gradient" data-i18n-tooltip="tools.css-gradient.ui.tip3" class="btn-primary">
                 <span data-i18n="tools.css-gradient.ui.button2">+ Add Color</span>
               </button>
             </div>

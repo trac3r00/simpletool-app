@@ -2,6 +2,16 @@
 import { describe, expect, it } from "vitest";
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import en from "./en.js";
+import ko from "./ko.js";
+import ja from "./ja.js";
+import es from "./es.js";
+import zhCN from "./zh-CN.js";
+import zhTW from "./zh-TW.js";
+import fr from "./fr.js";
+import de from "./de.js";
+import pt from "./pt.js";
+import vi from "./vi.js";
 
 /**
  * Catalog values must be real user-facing text.
@@ -22,6 +32,19 @@ import { join } from "node:path";
  */
 
 const DIR = "src/i18n";
+const CATALOGS = {
+  "en.js": en,
+  "ko.js": ko,
+  "ja.js": ja,
+  "es.js": es,
+  "zh-CN.js": zhCN,
+  "zh-TW.js": zhTW,
+  "fr.js": fr,
+  "de.js": de,
+  "pt.js": pt,
+  "vi.js": vi,
+};
+
 const LOCALES = readdirSync(DIR).filter(
   (f) => f.endsWith(".js") && !f.endsWith(".test.js"),
 );
@@ -50,9 +73,10 @@ function walk(node, path, visit) {
   }
 }
 
-async function loadCatalog(file) {
-  const mod = await import(`./${file}`);
-  return Object.values(mod)[0];
+function loadCatalog(file) {
+  const catalog = CATALOGS[file];
+  if (!catalog) throw new Error(`catalog module not imported: ${file}`);
+  return catalog;
 }
 
 describe("catalog value sanity", () => {

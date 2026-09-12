@@ -1,19 +1,11 @@
 // @vitest-environment node
 import { describe, expect, it } from "vitest";
-import { handleRepoOpsRoutes } from "../routes/repo-ops.js";
-import { handleNetworkReferenceRoutes } from "../routes/network-reference.js";
-
-/**
- * Guard against the class of bug where markup references a `data-i18n*` key
- * that no locale catalog defines. The client's `_patchDOM` skips a key it
- * cannot resolve, so the server-rendered English survives — the page never
- * breaks, it just silently stops translating. That failure mode is invisible
- * to every other test in the suite, which is why it needs its own.
- *
- * Composite routes are the highest-risk surface: they embed several tools'
- * markup, so a catalog that was complete for a standalone route can be
- * incomplete once its markup is rendered under a different tool id.
- */
+import { handlersById } from "../routes/_handlers.js";
+import { SUPPORTED_LANGUAGES } from "../utils/i18n.js";
+import {
+  TOOLS,
+  setRuntimeEnvironment,
+} from "../utils/tool-registry.js";
 
 const I18N_ATTRS = [
   "data-i18n",
@@ -24,104 +16,83 @@ const I18N_ATTRS = [
   "data-i18n-html",
 ];
 
-const LANGS = [
-  "en",
-  "ko",
-  "ja",
-  "es",
-  "zh-CN",
-  "zh-TW",
-  "fr",
-  "de",
-  "pt",
-  "vi",
-];
-
-const ROUTES = [
-  ["/repo-ops", handleRepoOpsRoutes],
-  ["/network-reference", handleNetworkReferenceRoutes],
-];
-
-/**
- * Empty by design. `dns-reference` (ui.category.*, ui.title.*),
- * `port-reference` (cheatsheet.c0-c2, ui.tip0) and `protocol-headers`
- * (cheatsheet.c0-c3) were backfilled by scripts/i18n-network-reference.mjs —
- * 38 keys that had never been defined in any locale, including `en`.
- *
- * Kept as an empty set rather than deleted: the per-locale tests below name any
- * key a route references that no catalog defines, and the "still actually
- * missing" test below fails if anything listed here now resolves. Add an entry
- * only to consciously accept a gap.
- */
-const KNOWN_UNTRANSLATED = new Set([]);
-
-function extractCatalog(html, lang) {
+function extractCatalogs(html) {
   const match = html.match(/var _T = ([\s\S]*?);\n\s*var _supported/);
   if (!match) throw new Error("no _T catalog found in rendered HTML");
-  return JSON.parse(match[1])[lang];
+  return JSON.parse(match[1]);
 }
 
-function referencedKeys(html) {
+function renderedAttributeKeys(html) {
+  // Do not mistake attribute-shaped strings in JSON or executable scripts for
+  // DOM attributes. Generated runtime markup is covered separately by the
+  // static _t call scan below where its key is knowable.
+  const markup = html
+    .replace(/<script\b[\s\S]*?<\/script>/gi, "")
+    .replace(/<style\b[\s\S]*?<\/style>/gi, "");
   const keys = new Set();
   for (const attr of I18N_ATTRS) {
-    for (const match of html.matchAll(new RegExp(`${attr}="([^"]+)"`, "g"))) {
+    for (const match of markup.matchAll(
+      new RegExp(`${attr}="([^"]+)"`, "g"),
+    )) {
       keys.add(match[1]);
     }
   }
   return keys;
 }
 
-function resolveKey(catalog, path) {
-  let node = catalog;
-  for (const segment of path.split(".")) {
-    if (node?.[segment] === undefined) return undefined;
-    node = node[segment];
+function staticTranslationCallKeys(html) {
+  const keys = new Set();
+  const pattern = /(?:window\.)?_t\(\s*(['"])([^'"\n]+)\1/g;
+  for (const match of html.matchAll(pattern)) {
+    const following = html
+      .slice(match.index + match[0].length)
+      .match(/^\s*(.)/)?.[1];
+    // A literal prefix concatenated with a runtime suffix cannot be resolved
+    // statically; concrete rendered data attributes cover those call sites.
+    if (following !== "+") keys.add(match[2]);
   }
-  return node;
+  return keys;
 }
 
-async function render(handler, path, lang) {
-  const url = new URL(`https://simpletool.app${path}?lang=${lang}`);
-  const response = await handler(new Request(url, { method: "GET" }), url);
-  expect(response.status).toBe(200);
+function resolveKey(catalog, path) {
+  return path.split(".").reduce((node, segment) => node?.[segment], catalog);
+}
+
+async function render(tool, locale) {
+  const url = new URL(
+    `https://simpletool.app${tool.path}?lang=${encodeURIComponent(locale)}`,
+  );
+  const response = await handlersById[tool.id](new Request(url), url);
+  expect(response.status, tool.id).toBe(200);
   return response.text();
 }
 
-describe("rendered data-i18n keys resolve in every locale", () => {
-  for (const [path, handler] of ROUTES) {
-    for (const lang of LANGS) {
-      it(`${path} (${lang}) references no undefined translation key`, async () => {
-        const html = await render(handler, path, lang);
-        const catalog = extractCatalog(html, lang);
-        const keys = [...referencedKeys(html)];
+describe("rendered translation keys", () => {
+  // Direct handler calls bypass worker.js, which normally publishes the
+  // environment before rendering. Development mode keeps all three hidden
+  // game catalogs available while this test exercises all 48 handlers.
+  setRuntimeEnvironment(true);
 
-        expect(keys.length).toBeGreaterThan(20);
+  for (const tool of TOOLS) {
+    it(`${tool.path} resolves rendered attributes and static _t calls in every locale`, async () => {
+      for (const locale of Object.keys(SUPPORTED_LANGUAGES)) {
+        const html = await render(tool, locale);
+        const catalog = extractCatalogs(html)[locale];
+        const keys = new Set([
+          ...renderedAttributeKeys(html),
+          ...staticTranslationCallKeys(html),
+        ]);
 
-        const unresolved = keys
+        expect(
+          keys.size,
+          `${tool.id} ${locale} should expose translated UI`,
+        ).toBeGreaterThan(0);
+        expect(catalog, `${tool.id} ${locale} catalog`).toBeTruthy();
+        const unresolved = [...keys]
           .filter((key) => typeof resolveKey(catalog, key) !== "string")
-          .filter((key) => !KNOWN_UNTRANSLATED.has(key))
           .sort();
-
-        expect(unresolved).toEqual([]);
-      });
-    }
-  }
-
-  it("every known-untranslated key is still actually missing", async () => {
-    const stillMissing = new Set();
-    for (const [path, handler] of ROUTES) {
-      const html = await render(handler, path, "ko");
-      const catalog = extractCatalog(html, "ko");
-      for (const key of referencedKeys(html)) {
-        if (typeof resolveKey(catalog, key) !== "string") stillMissing.add(key);
+        expect(unresolved, `${tool.id} ${locale} unresolved keys`).toEqual([]);
       }
-    }
-    const fixed = [...KNOWN_UNTRANSLATED]
-      .filter((key) => !stillMissing.has(key))
-      .sort();
-    expect(
-      fixed,
-      "these keys now resolve — delete them from KNOWN_UNTRANSLATED",
-    ).toEqual([]);
-  });
+    });
+  }
 });

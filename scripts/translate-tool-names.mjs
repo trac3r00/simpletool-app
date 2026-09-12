@@ -10,10 +10,6 @@ const translations = {
       name: "JSON 정리기",
       desc: "JSON 데이터를 검증하고, 보기 좋게 정리하거나 압축합니다.",
     },
-    "jwt-decoder": {
-      name: "JWT 검사기",
-      desc: "JSON 웹 토큰을 검사하고 디코딩합니다.",
-    },
     "uuid-generator": {
       name: "UUID 생성기",
       desc: "표준 UUID(v1, v4)를 생성합니다.",
@@ -21,10 +17,6 @@ const translations = {
     "password-generator": {
       name: "비밀번호 생성기",
       desc: "안전하고 무작위 비밀번호를 만듭니다.",
-    },
-    "hash-calculator": {
-      name: "해시 계산기",
-      desc: "SHA256, MD5 등 해시를 계산합니다.",
     },
     "cidr-calculator": {
       name: "IP 서브넷 설계기",
@@ -206,14 +198,6 @@ const translations = {
       name: "OAuth 디버거",
       desc: "OAuth 2.0/PKCE 인증 흐름을 디버깅합니다.",
     },
-    "universal-decoder": {
-      name: "범용 디코더",
-      desc: "다양한 인코딩을 자동 감지하고 디코딩합니다.",
-    },
-    "jwk-jwks-studio": {
-      name: "JWK/JWKS 스튜디오",
-      desc: "JSON 웹 키를 생성하고 관리합니다.",
-    },
     "network-reference": {
       name: "네트워크 참조",
       desc: "DNS 레코드, 일반 포트, HTTP 상태 코드, 프로토콜 헤더를 하나의 탭형 도구에서 제공하는 네 가지 참조입니다.",
@@ -241,10 +225,6 @@ const translations = {
       name: "JSON整形ツール",
       desc: "JSONデータの検証・整形・圧縮をまとめて行えます。",
     },
-    "jwt-decoder": {
-      name: "JWTインスペクター",
-      desc: "JSON Web Tokenを検査・デコードします。",
-    },
     "uuid-generator": {
       name: "UUID生成ツール",
       desc: "標準UUID（v1、v4）を生成します。",
@@ -252,10 +232,6 @@ const translations = {
     "password-generator": {
       name: "パスワード生成ツール",
       desc: "安全なランダムパスワードを作成します。",
-    },
-    "hash-calculator": {
-      name: "ハッシュ計算ツール",
-      desc: "SHA256、MD5などのハッシュを計算します。",
     },
     "cidr-calculator": {
       name: "IPサブネット設計ツール",
@@ -437,14 +413,6 @@ const translations = {
       name: "OAuthデバッガー",
       desc: "OAuth 2.0/PKCE認証フローをデバッグします。",
     },
-    "universal-decoder": {
-      name: "汎用デコーダー",
-      desc: "様々なエンコーディングを自動検出・デコードします。",
-    },
-    "jwk-jwks-studio": {
-      name: "JWK/JWKSスタジオ",
-      desc: "JSON Web Keyを生成・管理します。",
-    },
     "network-reference": {
       name: "ネットワークリファレンス",
       desc: "DNSレコード、一般的なポート、HTTPステータスコード、プロトコルヘッダーの4つを1つのタブ形式ツールで参照できます。",
@@ -472,10 +440,6 @@ const translations = {
       name: "Formateador JSON",
       desc: "Valida, formatea y minifica datos JSON.",
     },
-    "jwt-decoder": {
-      name: "Inspector JWT",
-      desc: "Inspecciona y decodifica JSON Web Tokens.",
-    },
     "uuid-generator": {
       name: "Generador de UUID",
       desc: "Genera UUIDs estándar (v1, v4).",
@@ -483,10 +447,6 @@ const translations = {
     "password-generator": {
       name: "Generador de Contraseñas",
       desc: "Crea contraseñas seguras y aleatorias.",
-    },
-    "hash-calculator": {
-      name: "Calculadora de Hash",
-      desc: "Calcula hashes SHA256, MD5 y otros.",
     },
     "cidr-calculator": {
       name: "Planificador de Subredes IP",
@@ -668,14 +628,6 @@ const translations = {
       name: "Depurador OAuth",
       desc: "Depura flujos de autenticación OAuth 2.0/PKCE.",
     },
-    "universal-decoder": {
-      name: "Decodificador Universal",
-      desc: "Detecta y decodifica automáticamente diversas codificaciones.",
-    },
-    "jwk-jwks-studio": {
-      name: "Estudio JWK/JWKS",
-      desc: "Genera y gestiona JSON Web Keys.",
-    },
     "network-reference": {
       name: "Referencia de Red",
       desc: "Registros DNS, puertos comunes, códigos de estado HTTP y cabeceras de protocolo: cuatro referencias en una sola herramienta con pestañas.",
@@ -703,16 +655,11 @@ const translations = {
       name: "JSON 格式化工具",
       desc: "验证、格式化和压缩 JSON 数据。",
     },
-    "jwt-decoder": { name: "JWT 检查器", desc: "检查和解码 JSON Web Token。" },
     "uuid-generator": {
       name: "UUID 生成器",
       desc: "生成标准 UUID（v1、v4）。",
     },
     "password-generator": { name: "密码生成器", desc: "创建安全的随机密码。" },
-    "hash-calculator": {
-      name: "哈希计算器",
-      desc: "计算 SHA256、MD5 等哈希值。",
-    },
     "cidr-calculator": {
       name: "IP 子网规划器",
       desc: "计算 IPv4/IPv6 子网和地址范围。",
@@ -854,14 +801,6 @@ const translations = {
       name: "OAuth 调试器",
       desc: "调试 OAuth 2.0/PKCE 认证流程。",
     },
-    "universal-decoder": {
-      name: "通用解码器",
-      desc: "自动检测并解码各种编码。",
-    },
-    "jwk-jwks-studio": {
-      name: "JWK/JWKS 工作室",
-      desc: "生成和管理 JSON Web Key。",
-    },
     "network-reference": {
       name: "网络参考",
       desc: "在一个选项卡式工具中查看 DNS 记录、常用端口、HTTP 状态码和协议头四类参考。",
@@ -889,16 +828,11 @@ const translations = {
       name: "JSON 格式化工具",
       desc: "驗證、格式化和壓縮 JSON 資料。",
     },
-    "jwt-decoder": { name: "JWT 檢查器", desc: "檢查和解碼 JSON Web Token。" },
     "uuid-generator": {
       name: "UUID 產生器",
       desc: "產生標準 UUID（v1、v4）。",
     },
     "password-generator": { name: "密碼產生器", desc: "建立安全的隨機密碼。" },
-    "hash-calculator": {
-      name: "雜湊計算器",
-      desc: "計算 SHA256、MD5 等雜湊值。",
-    },
     "cidr-calculator": {
       name: "IP 子網路規劃器",
       desc: "計算 IPv4/IPv6 子網路和位址範圍。",
@@ -1046,14 +980,6 @@ const translations = {
       name: "OAuth 偵錯器",
       desc: "偵錯 OAuth 2.0/PKCE 驗證流程。",
     },
-    "universal-decoder": {
-      name: "通用解碼器",
-      desc: "自動偵測並解碼各種編碼。",
-    },
-    "jwk-jwks-studio": {
-      name: "JWK/JWKS 工作室",
-      desc: "產生和管理 JSON Web Key。",
-    },
     "network-reference": {
       name: "網路參考",
       desc: "在一個分頁式工具中查看 DNS 記錄、常用連接埠、HTTP 狀態碼和通訊協定標頭四類參考。",
@@ -1081,10 +1007,6 @@ const translations = {
       name: "Formateur JSON",
       desc: "Validez, formatez et minifiez des données JSON.",
     },
-    "jwt-decoder": {
-      name: "Inspecteur JWT",
-      desc: "Inspectez et décodez les JSON Web Tokens.",
-    },
     "uuid-generator": {
       name: "Générateur UUID",
       desc: "Générez des UUID standards (v1, v4).",
@@ -1092,10 +1014,6 @@ const translations = {
     "password-generator": {
       name: "Générateur de Mots de Passe",
       desc: "Créez des mots de passe sécurisés et aléatoires.",
-    },
-    "hash-calculator": {
-      name: "Calculateur de Hash",
-      desc: "Calculez des empreintes SHA256, MD5 et autres.",
     },
     "cidr-calculator": {
       name: "Planificateur de Sous-réseaux IP",
@@ -1277,14 +1195,6 @@ const translations = {
       name: "Débogueur OAuth",
       desc: "Déboguez les flux d'authentification OAuth 2.0/PKCE.",
     },
-    "universal-decoder": {
-      name: "Décodeur Universel",
-      desc: "Détecte et décode automatiquement divers encodages.",
-    },
-    "jwk-jwks-studio": {
-      name: "Studio JWK/JWKS",
-      desc: "Générez et gérez des JSON Web Keys.",
-    },
     "network-reference": {
       name: "Référence Réseau",
       desc: "Enregistrements DNS, ports courants, codes d’état HTTP et en-têtes de protocole : quatre références dans un seul outil à onglets.",
@@ -1312,10 +1222,6 @@ const translations = {
       name: "JSON-Formatierer",
       desc: "JSON-Daten validieren, formatieren und komprimieren.",
     },
-    "jwt-decoder": {
-      name: "JWT-Inspektor",
-      desc: "JSON Web Tokens inspizieren und decodieren.",
-    },
     "uuid-generator": {
       name: "UUID-Generator",
       desc: "Standard-UUIDs (v1, v4) generieren.",
@@ -1323,10 +1229,6 @@ const translations = {
     "password-generator": {
       name: "Passwort-Generator",
       desc: "Sichere Zufallspasswörter erstellen.",
-    },
-    "hash-calculator": {
-      name: "Hash-Rechner",
-      desc: "SHA256-, MD5- und andere Hashes berechnen.",
     },
     "cidr-calculator": {
       name: "IP-Subnetzplaner",
@@ -1508,14 +1410,6 @@ const translations = {
       name: "OAuth-Debugger",
       desc: "OAuth 2.0/PKCE-Authentifizierungsflüsse debuggen.",
     },
-    "universal-decoder": {
-      name: "Universal-Decodierer",
-      desc: "Verschiedene Codierungen automatisch erkennen und decodieren.",
-    },
-    "jwk-jwks-studio": {
-      name: "JWK/JWKS-Studio",
-      desc: "JSON Web Keys generieren und verwalten.",
-    },
     "network-reference": {
       name: "Netzwerkreferenz",
       desc: "DNS-Einträge, gängige Ports, HTTP-Statuscodes und Protokollheader – vier Referenzen in einem Tool mit Registerkarten.",
@@ -1543,10 +1437,6 @@ const translations = {
       name: "Formatador JSON",
       desc: "Valide, formate e minifique dados JSON.",
     },
-    "jwt-decoder": {
-      name: "Inspetor JWT",
-      desc: "Inspecione e decodifique JSON Web Tokens.",
-    },
     "uuid-generator": {
       name: "Gerador de UUID",
       desc: "Gere UUIDs padrão (v1, v4).",
@@ -1554,10 +1444,6 @@ const translations = {
     "password-generator": {
       name: "Gerador de Senhas",
       desc: "Crie senhas seguras e aleatórias.",
-    },
-    "hash-calculator": {
-      name: "Calculadora de Hash",
-      desc: "Calcule hashes SHA256, MD5 e outros.",
     },
     "cidr-calculator": {
       name: "Planejador de Sub-redes IP",
@@ -1739,14 +1625,6 @@ const translations = {
       name: "Depurador OAuth",
       desc: "Depure fluxos de autenticação OAuth 2.0/PKCE.",
     },
-    "universal-decoder": {
-      name: "Decodificador Universal",
-      desc: "Detecte e decodifique automaticamente várias codificações.",
-    },
-    "jwk-jwks-studio": {
-      name: "Estúdio JWK/JWKS",
-      desc: "Gere e gerencie JSON Web Keys.",
-    },
     "network-reference": {
       name: "Referência de Rede",
       desc: "Registros DNS, portas comuns, códigos de status HTTP e cabeçalhos de protocolo — quatro referências em uma única ferramenta com abas.",
@@ -1774,10 +1652,6 @@ const translations = {
       name: "Định Dạng JSON",
       desc: "Xác thực, định dạng và nén dữ liệu JSON.",
     },
-    "jwt-decoder": {
-      name: "Trình Kiểm Tra JWT",
-      desc: "Kiểm tra và giải mã JSON Web Token.",
-    },
     "uuid-generator": {
       name: "Trình Tạo UUID",
       desc: "Tạo UUID tiêu chuẩn (v1, v4).",
@@ -1785,10 +1659,6 @@ const translations = {
     "password-generator": {
       name: "Trình Tạo Mật Khẩu",
       desc: "Tạo mật khẩu ngẫu nhiên và an toàn.",
-    },
-    "hash-calculator": {
-      name: "Máy Tính Hash",
-      desc: "Tính toán hash SHA256, MD5 và các loại khác.",
     },
     "cidr-calculator": {
       name: "Công Cụ Lập Kế Hoạch Mạng Con IP",
@@ -1963,14 +1833,6 @@ const translations = {
     "oauth-debugger": {
       name: "Trình Gỡ Lỗi OAuth",
       desc: "Gỡ lỗi luồng xác thực OAuth 2.0/PKCE.",
-    },
-    "universal-decoder": {
-      name: "Giải Mã Đa Năng",
-      desc: "Tự động phát hiện và giải mã các loại mã hóa.",
-    },
-    "jwk-jwks-studio": {
-      name: "Xưởng JWK/JWKS",
-      desc: "Tạo và quản lý JSON Web Key.",
     },
     "network-reference": {
       name: "Tra Cứu Mạng",
