@@ -6,7 +6,6 @@
 import { respondHTML, respondJSON } from "../utils/respond.js";
 import { createPageTemplate, createToolHeader } from "../utils/common-ui.js";
 import {
-  createEducationalSection,
   createRelatedToolsSection,
 } from "../utils/content-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
@@ -207,33 +206,7 @@ function renderQRCodePage(lang = DEFAULT_LANGUAGE) {
           </div>
         </div>
 
-        ${createEducationalSection(
-          [
-            {
-              title: "What are QR Codes?",
-              content:
-                "Quick Response (QR) codes are two-dimensional barcodes that can store various types of data, most commonly URLs. They can be scanned by smartphones and specialized readers to quickly access information or trigger actions.",
-            },
-            {
-              title: "How to Use This Tool",
-              content:
-                "Enter the text or URL you want to encode. Adjust the size and error correction level if needed. The QR code updates in real-time and can be downloaded as an image for print or digital use.",
-            },
-            {
-              title: "Common Use Cases",
-              content:
-                "Sharing website links, providing Wi-Fi credentials, digital business cards (vCards), event ticketing, and mobile payments or authentication flows.",
-            },
-            {
-              title: "Pro Tips",
-              content:
-                "Higher error correction levels (H or Q) allow the QR code to remain scannable even if partially damaged or obscured, which is ideal for physical signage or branding.",
-            },
-          ],
-          "qr-code",
-          currentLang,
-        )}
-      </div>
+        </div>
     </main>
     ${createRelatedToolsSection(relatedToolsData)}
   `;

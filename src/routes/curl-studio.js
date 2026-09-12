@@ -7,7 +7,6 @@ import {
 import { TOOLS } from "../utils/tool-registry.js";
 import {
   createRelatedToolsSection,
-  createVisibleArticle,
 } from "../utils/content-ui.js";
 import {
   DEFAULT_LANGUAGE,
@@ -54,15 +53,6 @@ function renderCurlStudioPage(lang = DEFAULT_LANGUAGE) {
     <main class="tool-page-shell">
       <div class="tool-page-panel">
         ${header}
-
-        ${createVisibleArticle({
-          title: "This curl parser never fires the request",
-          paragraphs: [
-            `Paste a command and this page tokenizes it the way a shell does: flags keep their arguments, <code>-X POST</code> does not steal the URL, and a JSON body inside single quotes keeps its double quotes. The previous regex parser on this page failed both of those cases.`,
-            `Nothing here is sent to an origin. There is no "Run" button. Authorization headers, cookies, and <code>-d</code> bodies stay in the tab. Use it to inspect a copied command before you paste it into a ticket or a shared doc.`,
-            `The generator is the inverse: method, URL, headers, and body in; a copyable curl command out. It does not add <code>-k</code> for you. Skipping TLS is a choice you make on purpose.`,
-          ],
-        })}
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <!-- Input Section -->

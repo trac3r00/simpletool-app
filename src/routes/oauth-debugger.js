@@ -6,7 +6,6 @@
 import { respondHTML, respondJSON } from "../utils/respond.js";
 import { createPageTemplate, createToolHeader } from "../utils/common-ui.js";
 import {
-  createEducationalSection,
   createRelatedToolsSection,
 } from "../utils/content-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
@@ -235,51 +234,7 @@ function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
       </div>
 
       <div class="mt-8">
-        ${createEducationalSection(
-          [
-            {
-              title: "What is PKCE and Why Does It Matter?",
-              content: `
-              <p>Proof Key for Code Exchange (PKCE, RFC 7636) was originally designed for mobile and native apps that cannot securely store a client secret. It works by having the client generate a random <code>code_verifier</code>, derive a <code>code_challenge</code> from it (SHA-256 + base64url), and send the challenge with the authorization request. When exchanging the authorization code for tokens, the client sends the original <code>code_verifier</code>. The authorization server verifies it matches the earlier challenge — proving the token request came from the same client that started the flow.</p>
-              <p>Even for confidential clients (server-side apps with a client secret), PKCE is now recommended by OAuth 2.1 as a defense against authorization code interception attacks.</p>
-            `,
-            },
-            {
-              title: "Why Is the Implicit Flow Deprecated?",
-              content: `
-              <p>The implicit flow (<code>response_type=token</code>) was designed as a shortcut for single-page apps, returning the access token directly in the URL fragment. This creates serious problems: tokens in URLs appear in browser history, server logs, and referrer headers, and the flow is vulnerable to token injection attacks. OAuth 2.0 Security Best Current Practice (RFC 9700) and OAuth 2.1 explicitly remove the implicit flow in favor of Authorization Code + PKCE, which SPAs can use safely without a client secret.</p>
-            `,
-            },
-            {
-              title: "Key OAuth 2.1 Changes",
-              content: `
-              <ul>
-                <li><strong>PKCE required</strong> for all Authorization Code flows, including confidential clients.</li>
-                <li><strong>Implicit flow removed</strong> — use Authorization Code + PKCE instead.</li>
-                <li><strong>Resource Owner Password Credentials (ROPC) removed</strong> — the <code>password</code> grant type is deprecated.</li>
-                <li><strong>Refresh token rotation required</strong> for public clients — a new refresh token must be issued with each use.</li>
-                <li><strong>Redirect URI exact matching required</strong> — no pattern matching or wildcards.</li>
-              </ul>
-            `,
-            },
-            {
-              title: "Authorization Code Flow Step by Step",
-              content: `
-              <ol>
-                <li><strong>Generate PKCE pair:</strong> Create a random <code>code_verifier</code> and compute <code>code_challenge = BASE64URL(SHA256(code_verifier))</code>.</li>
-                <li><strong>Redirect to authorization endpoint:</strong> Include <code>response_type=code</code>, <code>client_id</code>, <code>redirect_uri</code>, <code>scope</code>, <code>state</code>, <code>code_challenge</code>, and <code>code_challenge_method=S256</code>.</li>
-                <li><strong>User authenticates</strong> at the authorization server and grants consent.</li>
-                <li><strong>Receive authorization code</strong> at your <code>redirect_uri</code> alongside the echoed <code>state</code> — verify <code>state</code> matches what you sent.</li>
-                <li><strong>Exchange code for tokens:</strong> POST to the token endpoint with <code>grant_type=authorization_code</code>, <code>code</code>, <code>redirect_uri</code>, <code>client_id</code>, and <code>code_verifier</code>.</li>
-                <li><strong>Receive access token</strong> (and optionally <code>id_token</code> and <code>refresh_token</code>) and use them to call APIs.</li>
-              </ol>
-            `,
-            },
-          ],
-          "oauth-debugger",
-          currentLang,
-        )}
-      </div>
+        </div>
 
       ${createRelatedToolsSection(relatedToolsData)}
     </main>

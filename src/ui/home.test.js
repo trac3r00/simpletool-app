@@ -32,9 +32,14 @@ describe("renderHomePage", () => {
     expect(countOccurrences(html, "data-i18n-bootstrap")).toBe(1);
     expect(countOccurrences(html, "data-bundled-stylesheet")).toBe(1);
     expect(countOccurrences(html, "serviceWorker.register")).toBe(1);
-    expect(html).toContain('data-i18n="home.editorialTitle"');
-    expect(html).toContain('data-i18n="home.flagshipJson"');
-    expect(html).toContain("JSON.parse");
+    // The below-catalog editorial block ("What runs in the tab", the eight
+    // flagship blurbs, and "How to use it") was removed as visual noise: the
+    // catalog is the page. Keep it out so it cannot creep back in.
+    expect(html).not.toContain('id="home-below-catalog"');
+    expect(html).not.toContain('id="home-editorial"');
+    expect(html).not.toContain("home.editorialTitle");
+    expect(html).not.toContain("home.flagshipsTitle");
+    expect(html).not.toContain("home.howToTitle");
     expect(html).toContain("Developer tools that stay in the browser");
     expect(html).toContain('data-i18n="home.trustClient"');
     expect(html).toContain('href="/json-formatter"');
@@ -43,7 +48,7 @@ describe("renderHomePage", () => {
     expect(html).not.toContain('rel="prefetch" as="font"');
     expect(html).not.toContain("🔄 Formatters");
     expect(html.indexOf('id="tools-categories-container"')).toBeLessThan(
-      html.indexOf('data-i18n="home.editorialTitle"'),
+      html.indexOf("</main>"),
     );
     expect(html.indexOf('id="tool-search"')).toBeLessThan(
       html.indexOf('id="tools-categories-container"'),
@@ -62,7 +67,7 @@ describe("renderHomePage", () => {
     expect(header).not.toContain("person_off");
     expect(header).toContain("nav.searchTools");
     expect(html).not.toContain('id="nav-search-btn"');
-    expect(html).toContain('id="home-below-catalog"');
+    expect(html).not.toContain('id="home-below-catalog"');
 
     const jsonCard = html.slice(
       html.indexOf('data-tool-id="json-formatter"'),

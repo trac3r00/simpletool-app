@@ -17,6 +17,7 @@ import {
   slotKeyForPath,
 } from "./ads.js";
 import { handlersById } from "../routes/_handlers.js";
+import { TOOLS } from "./tool-registry.js";
 
 afterEach(() => {
   setAdConfig({ client: null, slots: {}, path: "/" });
@@ -198,7 +199,7 @@ describe("ad rendering", () => {
     expect(getAdSenseScript("/json-formatter")).toContain("adsbygoogle.js");
   });
 
-  it("JSON Formatter page requests the json slot after the educational block", async () => {
+  it("JSON Formatter page keeps its ad slot below the tool, with no prose block above it", async () => {
     setAdConfig({
       client: "ca-pub-5134881365131182",
       slots: { json: "2222222222" },
@@ -208,32 +209,23 @@ describe("ad rendering", () => {
     const url = new URL("https://simpletool.app/json-formatter");
     const html = await (await handler(new Request(url), url)).text();
     const placement = html.indexOf('data-ad-placement="json"');
-    const education = html.indexOf(
-      'data-i18n="tools.json-formatter.edu.heading1"',
-    );
     expect(placement).toBeGreaterThan(-1);
     expect(html).not.toContain('data-ad-placement="tool"');
-    expect(education).toBeGreaterThan(-1);
-    expect(placement).toBeGreaterThan(education);
-    expect(html).toContain("Why this JSON formatter does not upload your document");
-    expect(html.indexOf("Why this JSON formatter does not upload your document")).toBeLessThan(
-      html.indexOf('id="format-btn"'),
-    );
+    // The page is the tool: no marketing/educational prose may precede the controls.
+    expect(html).not.toContain('data-section="educational"');
+    expect(html).not.toContain("tools.json-formatter.edu.");
+    expect(placement).toBeGreaterThan(html.indexOf('id="format-btn"'));
   });
 
-  it("puts unique visible articles on curl, cron, regex, and CIDR", async () => {
-    const cases = [
-      ["curl-studio", "This curl parser never fires the request", 'id="curl-input"'],
-      ["cron-builder", "Five-field crontab, explained in this tab", 'id="builder-tabs"'],
-      ["regex-visualizer", "Railroad diagrams for the pattern you actually typed", 'id="regex-input"'],
-      ["cidr-calculator", "Subnet math in the browser, not against a live network", 'id="cidr-input"'],
-    ];
-    for (const [id, heading, before] of cases) {
-      const handler = handlersById[id];
-      const url = new URL(`https://simpletool.app/${id}`);
+  it("ships no educational or article prose block on all 48 registered tool pages", async () => {
+    expect(TOOLS).toHaveLength(48);
+    for (const tool of TOOLS) {
+      const handler = handlersById[tool.id];
+      expect(handler, tool.id).toBeTypeOf("function");
+      const url = new URL(`https://simpletool.app${tool.path}`);
       const html = await (await handler(new Request(url), url)).text();
-      expect(html, id).toContain(`<h2>${heading}</h2>`);
-      expect(html.indexOf(`<h2>${heading}</h2>`), id).toBeLessThan(html.indexOf(before));
+      expect(html, tool.id).not.toContain('data-section="educational"');
+      expect(html, tool.id).not.toContain(`tools.${tool.id}.edu.`);
     }
   });
 

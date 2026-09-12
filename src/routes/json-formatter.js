@@ -16,9 +16,7 @@ import {
   getRichEditorScript,
 } from "../utils/rich-editor.js";
 import {
-  createEducationalSection,
   createRelatedToolsSection,
-  createVisibleArticle,
 } from "../utils/content-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
 import {
@@ -81,15 +79,6 @@ function renderJSONFormatterPage(lang = "en") {
       <div class="tool-page-panel">
 
         ${toolHeader}
-
-        ${createVisibleArticle({
-          title: "Why this JSON formatter does not upload your document",
-          paragraphs: [
-            `This page calls the browser's <code>JSON.parse</code> and <code>JSON.stringify</code>. There is no "save" action, no paste history, and no shareable link with a sequential id. That is the product: a formatter you can use on an API envelope that still contains session cookies or internal hostnames.`,
-            `In November 2025, security researchers showed that long-running online formatters which <em>do</em> store pastes had leaked years of JSON through predictable "recent" URLs. The documents included cloud access keys, JWTs, and internal configs. If a site can show you last week's paste, it had to receive it. This tool never gets that chance because the Worker only serves the HTML and static assets.`,
-            `Valid JSON is RFC 8259: double-quoted keys and strings, no trailing commas, no comments, no single quotes. The validator reports the first parse error with a line number. Pretty-print is lossless whitespace; minify is the inverse. Neither step sends a byte of the document off this origin.`,
-          ],
-        })}
 
         <!-- Controls -->
         <div class="flex flex-wrap gap-3 mb-6 bg-surface-50 dark:bg-surface-950/50 p-2 rounded-lg border border-surface-100 dark:border-surface-800">
@@ -157,33 +146,7 @@ function renderJSONFormatterPage(lang = "en") {
       </div>
     </main>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-      ${createEducationalSection(
-        [
-          {
-            title: "What is JSON?",
-            content:
-              "<p>JSON (JavaScript Object Notation) is a lightweight data-interchange format that is easy for humans to read and write and easy for machines to parse and generate. It is based on a subset of the JavaScript Programming Language Standard. JSON is a text format that is completely language independent but uses conventions that are familiar to programmers of the C-family of languages, including C, C++, C#, Java, JavaScript, Perl, Python, and many others.</p><p>These properties make JSON an ideal data-interchange language for web applications, APIs, and configuration files. It represents data as name/value pairs and ordered lists of values. It has become the de facto standard for data exchange on the web, largely replacing XML due to its smaller footprint and better performance.</p>",
-          },
-          {
-            title: "How to Use This Tool",
-            content:
-              '<ol><li>Paste your raw or messy JSON data into the "Input JSON" editor on the left.</li><li>Click the "Format" button to beautify the code with proper indentation and syntax highlighting.</li><li>Alternatively, use the "Minify" button to remove all whitespace for production use.</li><li>Check the "Status" indicator to ensure your JSON is valid; if there\'s an error, the tool will highlight the exact line.</li><li>Click "Copy" to save the formatted result to your clipboard or "Clear" to start over.</li></ol>',
-          },
-          {
-            title: "Common Use Cases",
-            content:
-              "<ul><li><strong>API Debugging:</strong> Quickly format unreadable JSON responses from REST APIs to inspect data structures.</li><li><strong>Config Validation:</strong> Ensure your <code>package.json</code>, <code>tsconfig.json</code>, or other configuration files are syntactically correct.</li><li><strong>Data Preparation:</strong> Minify JSON data before embedding it in code or sending it over a network to save bandwidth.</li><li><strong>Learning & Documentation:</strong> Use the beautified output to create clear examples for technical documentation or tutorials.</li></ul>",
-          },
-          {
-            title: "Pro Tips",
-            content:
-              '<ul><li>Use the "Validate" button if you only want to check for syntax errors without changing the formatting of your input.</li><li>Pay attention to the "Max Depth" statistic to identify overly complex or deeply nested structures that might cause performance issues.</li><li>Always use double quotes for keys and string values, as single quotes are invalid in standard JSON.</li></ul>',
-          },
-        ],
-        "json-formatter",
-        lang,
-      )}
-    ${createRelatedToolsSection(relatedToolsData)}
+      ${createRelatedToolsSection(relatedToolsData)}
     </div>
     ${getAdSlotHTML("json", {
       path: "/json-formatter",

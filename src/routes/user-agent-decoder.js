@@ -7,7 +7,6 @@
 import { respondHTML, respondJSON } from "../utils/respond.js";
 import { createPageTemplate, createToolHeader } from "../utils/common-ui.js";
 import {
-  createEducationalSection,
   createRelatedToolsSection,
 } from "../utils/content-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
@@ -139,33 +138,7 @@ function renderUserAgentDecoderPage(lang = DEFAULT_LANGUAGE) {
           </div>
         </div>
 
-        ${createEducationalSection(
-          [
-            {
-              title: "What is a User-Agent?",
-              content:
-                "A User-Agent is a string sent by your browser to every website you visit. It identifies the browser version, operating system, and device type, allowing servers to optimize content for your specific environment.",
-            },
-            {
-              title: "How to Use This Tool",
-              content:
-                'Paste a User-Agent string into the input box or click "Use This" to analyze your current browser\'s string. The tool will break down the browser engine, OS version, and device characteristics.',
-            },
-            {
-              title: "Common Use Cases",
-              content:
-                "Debugging website compatibility issues, analyzing web server logs to identify bot traffic, verifying browser spoofing, and understanding device distribution in your audience.",
-            },
-            {
-              title: "Pro Tips",
-              content:
-                'Many modern browsers "freeze" or simplify their User-Agent strings to prevent fingerprinting. Always look for the "Version" or "Chrome" tokens for the most accurate version info.',
-            },
-          ],
-          "user-agent-decoder",
-          currentLang,
-        )}
-    ${createRelatedToolsSection(relatedToolsData)}
+        ${createRelatedToolsSection(relatedToolsData)}
       </div>
     </main>
 

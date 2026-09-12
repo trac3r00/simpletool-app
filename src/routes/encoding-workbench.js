@@ -11,7 +11,6 @@ import {
   createEmptyState,
 } from "../utils/common-ui.js";
 import {
-  createEducationalSection,
   createRelatedToolsSection,
 } from "../utils/content-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
@@ -306,32 +305,6 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
     </main>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-      ${createEducationalSection(
-        [
-          {
-            title: "What is Encoding vs Hashing?",
-            content:
-              "<p><strong>Encoding</strong> transforms data into a different representation that can be reversed (decoded). Common formats include Base64 — used to transmit binary data over text channels — URL encoding, HTML entity encoding, and hexadecimal. Encoding is not encryption; it offers no confidentiality.</p><p><strong>Hashing</strong> is a one-way mathematical transformation. A cryptographic hash function takes any input and produces a fixed-length fingerprint. You cannot reverse a hash to retrieve the original input. Hashes are used to verify file integrity, store passwords securely, and generate digital signatures.</p>",
-          },
-          {
-            title: "How to Use This Tool",
-            content:
-              "<ol><li><strong>Encode / Decode tab:</strong> Paste text and choose an operation (Base64, URL, HTML, Hex), or click Auto-Detect Layers to automatically unwrap multiple nested encodings.</li><li><strong>Hash tab:</strong> Enter text or select a file, choose algorithms, and click Hash All. Enable HMAC mode to compute keyed hashes with a shared secret.</li><li><strong>Identify tab:</strong> Paste an unknown hash or encoded string and click Identify to see likely algorithms with confidence ratings.</li></ol>",
-          },
-          {
-            title: "Layered Encoding Explained",
-            content:
-              "<p>Real-world data is often encoded multiple times. For example, a payload could be URL-encoded, then Base64-encoded, then placed inside a hex string. The Auto-Detect Layers feature inspects the input pattern, attempts each decoding in sequence, and visualises every step as a card so you can see exactly how the data was wrapped.</p>",
-          },
-          {
-            title: "Hash Algorithm Guide",
-            content:
-              "<ul><li><strong>MD5</strong> — 128-bit output. Cryptographically broken; use only for legacy compatibility or non-security checksums.</li><li><strong>SHA-1</strong> — 160-bit output. Deprecated for security use. Still found in older Git commits and certificates.</li><li><strong>SHA-256</strong> — 256-bit output. General-purpose, widely used in TLS, code signing, and data integrity checks.</li><li><strong>SHA-512</strong> — 512-bit output. Higher security margin; preferred for password-adjacent workflows.</li><li><strong>bcrypt</strong> — Adaptive password-hashing function with a configurable cost factor. Use for storing passwords; not for data integrity.</li></ul>",
-          },
-        ],
-        "encoding-workbench",
-        currentLang,
-      )}
       ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;

@@ -11,9 +11,7 @@ import {
   infoHint,
 } from "../utils/common-ui.js";
 import {
-  createEducationalSection,
   createRelatedToolsSection,
-  createVisibleArticle,
 } from "../utils/content-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
 import {
@@ -74,15 +72,6 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
       <div class="tool-page-panel">
 
       ${toolHeader}
-
-      ${createVisibleArticle({
-        title: "Subnet math in the browser, not against a live network",
-        paragraphs: [
-          `Enter an IPv4 or IPv6 prefix and this planner derives network, broadcast (IPv4), host range, and reverse-DNS labels with integer arithmetic in the page. It does not ping hosts, query WHOIS, or walk a routing table.`,
-          `IPv4 still reserves network and broadcast addresses in a subnet, so a <code>/24</code> has 254 usable hosts. IPv6 assignments are usually <code>/64</code> on a LAN; compressing zeros is display only and does not change the prefix.`,
-          `Use it to size a VPC, check that two CIDRs overlap, or mint a PTR name before you write the zone file. The result is a calculation, not a guarantee that the addresses are free on the wire.`,
-        ],
-      })}
 
       <section class="grid gap-6 lg:grid-cols-[3fr,2fr]">
         <!-- Input Panel -->
@@ -359,33 +348,6 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
           </div>
         </div>
       </section>
-
-      ${createEducationalSection(
-        [
-          {
-            title: "What is CIDR?",
-            content:
-              "Classless Inter-Domain Routing (CIDR) is a method for allocating IP addresses and IP routing. It replaced the older system based on classes (A, B, and C) to provide more flexibility and efficiency in address distribution.",
-          },
-          {
-            title: "How to Use This Tool",
-            content:
-              'Enter an IP address with a prefix (e.g., 192.168.1.0/24) or use the slider to adjust the prefix length. Click "Run analysis" to see network details, usable host ranges, and binary representations.',
-          },
-          {
-            title: "Common Use Cases",
-            content:
-              "Planning network subnets for cloud infrastructure (VPCs), troubleshooting routing issues, calculating host capacity for a given prefix, and converting between CIDR and subnet masks.",
-          },
-          {
-            title: "Pro Tips",
-            content:
-              "Remember that in IPv4, the first and last addresses in a subnet are typically reserved for the network ID and broadcast address. In IPv6, subnets are almost always /64 for standard local networks.",
-          },
-        ],
-        "cidr-calculator",
-        currentLang,
-      )}
 
       ${createCheatsheet("cidr-calculator", "Subnet Quick Reference", [
         {
