@@ -33,26 +33,6 @@ export async function handlePasswordGeneratorRoutes(request, url) {
       }
     }
 
-    // API endpoints are disabled - all features are client-side only
-    if (
-      pathname.startsWith("/api/password") ||
-      pathname.startsWith("/api/username") ||
-      pathname.startsWith("/api/passphrase") ||
-      pathname.startsWith("/api/email") ||
-      pathname.startsWith("/api/cyberchef") ||
-      pathname.startsWith("/api/qr")
-    ) {
-      return respondJSON(
-        {
-          error: "API access disabled",
-          message:
-            "This tool operates entirely client-side for privacy. All generation happens in your browser.",
-          available: false,
-        },
-        { status: 403 },
-      );
-    }
-
     return respondJSON({ error: "Not found" }, { status: 404 });
   } catch (error) {
     console.error("Password Generator Route Error:", error);

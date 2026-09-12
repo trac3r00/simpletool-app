@@ -1,4 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
+import { RETIRED_BLOG_REDIRECTS } from "./ui/blog.js";
+import { LEGACY_REDIRECTS } from "./utils/redirects.js";
 
 vi.mock("@sentry/cloudflare", () => ({
   captureException: vi.fn(),
@@ -20,6 +22,132 @@ const ctx = { waitUntil() {}, passThroughOnException() {} };
 function fetchWorker(urlString, init = {}, env = makeEnv()) {
   return worker.fetch(new Request(urlString, init), env, ctx);
 }
+
+describe("canonical route hygiene", () => {
+  const htmlAliases = [
+    ["/index.html", "/"],
+    ["/about.html", "/about"],
+    ["/careers.html", "/careers"],
+    ["/contact.html", "/contact"],
+    ["/privacy.html", "/privacy"],
+    ["/security.html", "/security"],
+    ["/terms.html", "/terms"],
+  ];
+
+  for (const [alias, canonical] of htmlAliases) {
+    it(`permanently redirects ${alias} to its canonical URL in one hop`, async () => {
+      const res = await fetchWorker(
+        `https://simpletool.app${alias}?lang=ko&ref=audit`,
+      );
+
+      expect(res.status).toBe(301);
+      expect(res.headers.get("Location")).toBe(
+        `https://simpletool.app${canonical}?lang=ko&ref=audit`,
+      );
+      expect(await res.text()).toBe("");
+
+      const canonicalRes = await fetchWorker(res.headers.get("Location"));
+      expect(canonicalRes.status).toBe(200);
+      expect(canonicalRes.headers.get("Location")).toBeNull();
+    });
+  }
+
+  it("redirects registered /tools paths while preserving query parameters", async () => {
+    const res = await fetchWorker(
+      "https://simpletool.app/tools/json-formatter?lang=ja&ref=legacy",
+    );
+
+    expect(res.status).toBe(301);
+    expect(res.headers.get("Location")).toBe(
+      "https://simpletool.app/json-formatter?lang=ja&ref=legacy",
+    );
+  });
+
+  it("resolves known legacy IDs under /tools without a redirect chain", async () => {
+    const res = await fetchWorker(
+      "https://simpletool.app/tools/dns-reference?lang=ko&ref=legacy",
+    );
+
+    expect(res.status).toBe(301);
+    expect(res.headers.get("Location")).toBe(
+      "https://simpletool.app/network-reference?tab=dns&lang=ko&ref=legacy",
+    );
+    const target = await fetchWorker(res.headers.get("Location"));
+    expect(target.status).toBe(200);
+    expect(target.headers.get("Location")).toBeNull();
+  });
+
+  it("returns the normal 404 for unknown and nested /tools suffixes", async () => {
+    for (const pathname of [
+      "/tools/not-a-real-tool",
+      "/tools/json-formatter/extra",
+    ]) {
+      const res = await fetchWorker(`https://simpletool.app${pathname}`);
+      expect(res.status).toBe(404);
+      expect(res.headers.get("Location")).toBeNull();
+    }
+  });
+
+  it("only permits dev-tool compatibility redirects in development", async () => {
+    const production = await fetchWorker(
+      "https://simpletool.app/tools/ladder-game?lang=en",
+    );
+    const development = await fetchWorker(
+      "https://simpletool.app/tools/ladder-game?lang=en",
+      {},
+      makeEnv({ ENVIRONMENT: "development" }),
+    );
+
+    expect(production.status).toBe(404);
+    expect(production.headers.get("Location")).toBeNull();
+    expect(development.status).toBe(301);
+    expect(development.headers.get("Location")).toBe(
+      "https://simpletool.app/ladder-game?lang=en",
+    );
+  });
+
+  it("keeps all 27 map-driven legacy redirects query-preserving", async () => {
+    expect(Object.keys(LEGACY_REDIRECTS)).toHaveLength(27);
+
+    for (const [source, target] of Object.entries(LEGACY_REDIRECTS)) {
+      const res = await fetchWorker(
+        `https://simpletool.app${source}?lang=ko&ref=legacy`,
+      );
+      const expected = new URL(target, "https://simpletool.app");
+      expected.searchParams.append("lang", "ko");
+      expected.searchParams.append("ref", "legacy");
+
+      expect(res.status, source).toBe(301);
+      expect(res.headers.get("Location"), source).toBe(expected.href);
+    }
+  });
+
+  it("keeps all five retired blog redirects", async () => {
+    expect(Object.keys(RETIRED_BLOG_REDIRECTS)).toHaveLength(5);
+
+    for (const [slug, target] of Object.entries(RETIRED_BLOG_REDIRECTS)) {
+      const res = await fetchWorker(`https://simpletool.app/blog/${slug}`);
+      expect(res.status, slug).toBe(301);
+      expect(res.headers.get("Location"), slug).toBe(
+        `https://simpletool.app${target}`,
+      );
+    }
+  });
+
+  it("publishes canonical pages, never HTML aliases, in the sitemap", async () => {
+    const sitemap = await (
+      await fetchWorker("https://simpletool.app/sitemap.xml")
+    ).text();
+
+    for (const [, canonical] of htmlAliases) {
+      const canonicalURL = `https://simpletool.app${canonical}`;
+      expect(sitemap).toContain(`<loc>${canonicalURL}</loc>`);
+    }
+    for (const [alias] of htmlAliases) {
+      expect(sitemap).not.toContain(`https://simpletool.app${alias}`);
+    }
+  });
+});
 
 describe("HEAD mirrors GET (audit M1)", () => {
   const paths = ["/", "/terms", "/json-formatter", "/blog", "/faq", "/health"];
