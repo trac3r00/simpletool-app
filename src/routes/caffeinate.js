@@ -102,13 +102,14 @@ function renderCaffeinatePage(lang = DEFAULT_LANGUAGE) {
       'use strict';
 
       var HEARTBEAT_INTERVAL = 30000;
-      var MAX_REACTIVATION_ATTEMPTS = 3;
-      var REACTIVATION_DELAY = 2000;
-      var SLEEP_THRESHOLD = 120000;
+      var RECOVERY_DELAY = 500;
 
       var state = {
         wakeLock: null,
-        fallbackVideo: null,
+        wakeLockReleaseHandler: null,
+        requestPromise: null,
+        requestGeneration: 0,
+        recoveryTimer: null,
         active: false,
         intentActive: false,
         mode: 'none',
@@ -116,10 +117,9 @@ function renderCaffeinatePage(lang = DEFAULT_LANGUAGE) {
         uptimeTimer: null,
         lastActivity: 0,
         startedAt: 0,
-        reactivationAttempts: 0,
         heartbeatCount: 0,
         reactivationCount: 0,
-        supportsWakeLock: 'wakeLock' in navigator
+        supportsWakeLock: Boolean(navigator.wakeLock && navigator.wakeLock.request)
       };
 
       var statusPanel = document.getElementById('status-panel');
@@ -132,9 +132,10 @@ function renderCaffeinatePage(lang = DEFAULT_LANGUAGE) {
       function updateUI(icon, message, isActive, panelState) {
         statusIcon.textContent = icon;
         statusText.textContent = message;
-        var btnText = isActive ? (window._t ? window._t('tools.caffeinate.ui.button1') : 'Deactivate Wake Lock') : (window._t ? window._t('tools.caffeinate.ui.button0') : 'Activate Wake Lock');
+        var buttonActive = state.intentActive;
+        var btnText = buttonActive ? (window._t ? window._t('tools.caffeinate.ui.button1') : 'Deactivate Wake Lock') : (window._t ? window._t('tools.caffeinate.ui.button0') : 'Activate Wake Lock');
         toggleBtn.textContent = btnText;
-        toggleBtn.setAttribute('data-i18n', isActive ? 'tools.caffeinate.ui.button1' : 'tools.caffeinate.ui.button0');
+        toggleBtn.setAttribute('data-i18n', buttonActive ? 'tools.caffeinate.ui.button1' : 'tools.caffeinate.ui.button0');
 
          statusPanel.classList.remove('border-primary-400', 'dark:border-primary-600', 'border-warning-400', 'dark:border-warning-600', 'border-error-400', 'dark:border-error-600');
          if (panelState === 'active') {
@@ -198,23 +199,11 @@ function renderCaffeinatePage(lang = DEFAULT_LANGUAGE) {
       function startHeartbeat() {
         if (state.heartbeatTimer) clearInterval(state.heartbeatTimer);
         state.heartbeatTimer = setInterval(function() {
-          if (!state.intentActive || !state.active) return;
+          if (!state.intentActive || !state.wakeLock) return;
           state.heartbeatCount++;
           updateStats();
-
-          var elapsed = Date.now() - state.lastActivity;
-          if (elapsed > SLEEP_THRESHOLD) {
-            attemptReactivation('System may have slept');
-            return;
-          }
           state.lastActivity = Date.now();
-
-          if (state.mode === 'native' && !state.wakeLock) {
-            attemptReactivation('Native wake lock lost');
-          } else if (state.mode === 'fallback' && state.fallbackVideo &&
-                     (state.fallbackVideo.paused || state.fallbackVideo.ended)) {
-            attemptReactivation('Fallback video stopped');
-          }
+          if (state.wakeLock.released) handleRelease(state.wakeLock);
         }, HEARTBEAT_INTERVAL);
       }
 
@@ -225,146 +214,127 @@ function renderCaffeinatePage(lang = DEFAULT_LANGUAGE) {
         }
       }
 
-      async function attemptReactivation(reason) {
-        if (state.reactivationAttempts >= MAX_REACTIVATION_ATTEMPTS) {
-          var msg = (window._t ? window._t('tools.caffeinate.js.status2') : 'Wake lock failed: {{reason}}. Please reactivate manually.').replace('{{reason}}', reason);
-          updateUI('❌', msg, false, 'error');
-          showMode('none');
-          return false;
-        }
-        state.reactivationAttempts++;
-        state.reactivationCount++;
-        updateStats();
+      function syncButton() {
+        var key = state.intentActive ? 'tools.caffeinate.ui.button1' : 'tools.caffeinate.ui.button0';
+        toggleBtn.textContent = window._t ? window._t(key) : (state.intentActive ? 'Deactivate Wake Lock' : 'Activate Wake Lock');
+        toggleBtn.setAttribute('data-i18n', key);
+      }
 
-        var msg = (window._t ? window._t('tools.caffeinate.js.status3') : 'Reactivating ({{attempt}}/{{max}})...').replace('{{attempt}}', state.reactivationAttempts).replace('{{max}}', MAX_REACTIVATION_ATTEMPTS);
-        updateUI('🔄', msg, false, 'warn');
-
-        await new Promise(function(r) { setTimeout(r, REACTIVATION_DELAY); });
-        if (document.visibilityState === 'visible') {
-          var ok = await activateWakeLock();
-          if (ok) { state.reactivationAttempts = 0; return true; }
+      function cancelRecovery() {
+        if (state.recoveryTimer) {
+          clearTimeout(state.recoveryTimer);
+          state.recoveryTimer = null;
         }
-        return false;
+      }
+
+      function scheduleRecovery() {
+        if (!state.intentActive || document.visibilityState !== 'visible' ||
+            state.wakeLock || state.requestPromise || state.recoveryTimer) return;
+        updateUI('🔄', window._t ? window._t('tools.caffeinate.js.status7') : 'Reactivating...', false, 'warn');
+        state.recoveryTimer = setTimeout(function() {
+          state.recoveryTimer = null;
+          if (!state.intentActive || document.visibilityState !== 'visible' || state.wakeLock) return;
+          state.reactivationCount++;
+          updateStats();
+          activateWakeLock();
+        }, RECOVERY_DELAY);
       }
 
       async function activateNative() {
-        try {
-          if (!navigator.wakeLock || document.visibilityState !== 'visible') return false;
-          var lock = await navigator.wakeLock.request('screen');
-          state.wakeLock = lock;
-          state.mode = 'native';
-          state.active = true;
-          state.lastActivity = Date.now();
+        if (!state.supportsWakeLock || !state.intentActive || document.visibilityState !== 'visible') return false;
+        if (state.wakeLock && !state.wakeLock.released) return true;
+        if (state.requestPromise) return state.requestPromise;
 
-          lock.addEventListener('release', handleRelease);
-          updateUI('☕', window._t ? window._t('tools.caffeinate.js.status0') : 'Native wake lock active. Your screen will stay awake.', true, 'active');
-          showMode('native');
-          startHeartbeat();
-          startUptimeTimer();
-          return true;
-        } catch (e) {
-          state.wakeLock = null;
-          return false;
-        }
-      }
+        var generation = state.requestGeneration;
+        var pending = (async function() {
+          try {
+            var lock = await navigator.wakeLock.request('screen');
+            if (generation !== state.requestGeneration || !state.intentActive ||
+                document.visibilityState !== 'visible') {
+              if (!lock.released) await lock.release();
+              return false;
+            }
+            if (lock.released) throw new Error('Browser returned a released wake lock');
 
-      async function activateFallback() {
-        try {
-          var video = document.createElement('video');
-          video.setAttribute('playsinline', '');
-          video.muted = true;
-          video.loop = true;
-          video.style.cssText = 'position:absolute;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none';
-          video.setAttribute('aria-hidden', 'true');
-
-          var canvas = document.createElement('canvas');
-          canvas.width = 1; canvas.height = 1;
-          var ctx = canvas.getContext('2d');
-          ctx.fillRect(0, 0, 1, 1);
-          video.src = canvas.toDataURL('image/png');
-
-          document.body.appendChild(video);
-          await video.play();
-
-          state.fallbackVideo = video;
-          state.mode = 'fallback';
-          state.active = true;
-          state.lastActivity = Date.now();
-          updateUI('☕', window._t ? window._t('tools.caffeinate.js.status1') : 'Fallback wake lock active. Keep this tab in the foreground.', true, 'active');
-          showMode('fallback');
-          startHeartbeat();
-          startUptimeTimer();
-          return true;
-        } catch (e) {
-          cleanupFallback();
-          return false;
-        }
-      }
-
-      function cleanupFallback() {
-        if (state.fallbackVideo) {
-          try { state.fallbackVideo.pause(); state.fallbackVideo.remove(); } catch (e) {}
-          state.fallbackVideo = null;
-        }
+            var releaseHandler = function() { handleRelease(lock); };
+            state.wakeLock = lock;
+            state.wakeLockReleaseHandler = releaseHandler;
+            state.mode = 'native';
+            state.active = true;
+            state.lastActivity = Date.now();
+            lock.addEventListener('release', releaseHandler);
+            updateUI('☕', window._t ? window._t('tools.caffeinate.js.status0') : 'Native wake lock active. Your screen will stay awake.', true, 'active');
+            showMode('native');
+            updateStats();
+            startHeartbeat();
+            startUptimeTimer();
+            return true;
+          } catch (error) {
+            if (generation === state.requestGeneration && state.intentActive) {
+              var reason = error && (error.message || error.name) ? (error.message || error.name) : 'Request rejected';
+              var message = (window._t ? window._t('tools.caffeinate.js.status2') : 'Wake lock failed: {{reason}}. Please reactivate manually.').replace('{{reason}}', reason);
+              state.active = false;
+              state.mode = 'none';
+              updateUI('❌', message, false, 'error');
+              showMode('none');
+            }
+            return false;
+          } finally {
+            if (state.requestPromise === pending) state.requestPromise = null;
+          }
+        })();
+        state.requestPromise = pending;
+        return pending;
       }
 
       async function activateWakeLock() {
-        if (state.supportsWakeLock) {
-          var ok = await activateNative();
-          if (ok) return true;
+        if (!state.supportsWakeLock) {
+          updateUI('❌', window._t ? window._t('tools.caffeinate.js.status9') : 'Wake lock unavailable on this device. Check system power settings.', false, 'error');
+          return false;
         }
-        var fb = await activateFallback();
-        if (fb) return true;
-
-        updateUI('❌', window._t ? window._t('tools.caffeinate.js.status9') : 'Wake lock unavailable on this device. Check system power settings.', false, 'error');
-        return false;
+        return activateNative();
       }
 
-      async function deactivateWakeLock(msg, manual) {
-        if (manual) {
-          state.intentActive = false;
-          state.reactivationAttempts = 0;
-        }
+      async function deactivateWakeLock(message, preserveIntent) {
+        if (!preserveIntent) state.intentActive = false;
+        state.requestGeneration++;
+        state.requestPromise = null;
+        cancelRecovery();
         stopHeartbeat();
         stopUptimeTimer();
 
-        if (state.wakeLock) {
-          try {
-            state.wakeLock.removeEventListener('release', handleRelease);
-            await state.wakeLock.release();
-          } catch (e) {}
-          state.wakeLock = null;
-        }
-        cleanupFallback();
-
+        var lock = state.wakeLock;
+        var releaseHandler = state.wakeLockReleaseHandler;
+        state.wakeLock = null;
+        state.wakeLockReleaseHandler = null;
         state.mode = 'none';
         state.active = false;
-        updateUI('💤', msg || (window._t ? window._t('tools.caffeinate.js.status4') : 'Wake lock deactivated.'), false, '');
+        if (lock) {
+          lock.removeEventListener('release', releaseHandler);
+          try { if (!lock.released) await lock.release(); } catch (e) {}
+        }
+
+        updateUI(preserveIntent ? '⏸️' : '💤', message || (window._t ? window._t('tools.caffeinate.js.status4') : 'Wake lock deactivated.'), false, preserveIntent ? 'warn' : '');
         showMode('none');
         updateStats();
       }
 
-      function handleRelease() {
+      function handleRelease(lock) {
+        if (lock !== state.wakeLock) return;
+        lock.removeEventListener('release', state.wakeLockReleaseHandler);
         state.wakeLock = null;
+        state.wakeLockReleaseHandler = null;
         state.active = false;
         state.mode = 'none';
+        stopHeartbeat();
+        stopUptimeTimer();
+        showMode('none');
+        updateStats();
 
         if (!state.intentActive) {
           updateUI('💤', window._t ? window._t('tools.caffeinate.js.status5') : 'Wake lock released.', false, '');
-          showMode('none');
-          stopHeartbeat();
-          stopUptimeTimer();
-          return;
-        }
-
-        if (document.visibilityState === 'visible' && document.hasFocus()) {
-          updateUI('🔄', window._t ? window._t('tools.caffeinate.js.status7') : 'Reactivating...', false, 'warn');
-          setTimeout(async function() {
-            if (state.intentActive) {
-              var ok = await activateWakeLock();
-              if (!ok) attemptReactivation('Browser released wake lock');
-            }
-          }, 1000);
+        } else if (document.visibilityState === 'visible') {
+          scheduleRecovery();
         } else {
           updateUI('⏸️', window._t ? window._t('tools.caffeinate.js.status6') : 'Tab hidden. Wake lock paused — will restore when tab is active.', false, 'warn');
         }
@@ -374,7 +344,7 @@ function renderCaffeinatePage(lang = DEFAULT_LANGUAGE) {
         toggleBtn.disabled = true;
         try {
           if (state.intentActive) {
-            await deactivateWakeLock('Wake lock deactivated.', true);
+            await deactivateWakeLock('Wake lock deactivated.', false);
             statsPanel.classList.add('hidden');
             return;
           }
@@ -383,8 +353,8 @@ function renderCaffeinatePage(lang = DEFAULT_LANGUAGE) {
           state.reactivationCount = 0;
           statsPanel.classList.remove('hidden');
           updateStats();
-          var ok = await activateWakeLock();
-          if (!ok) state.intentActive = false;
+          syncButton();
+          await activateWakeLock();
         } finally {
           toggleBtn.disabled = false;
         }
@@ -392,39 +362,26 @@ function renderCaffeinatePage(lang = DEFAULT_LANGUAGE) {
 
       document.addEventListener('visibilitychange', function() {
         if (!state.intentActive) return;
-        if (document.visibilityState === 'visible' && document.hasFocus()) {
-          if (!state.active) {
-            state.reactivationAttempts = 0;
-            updateUI('🔄', window._t ? window._t('tools.caffeinate.js.status7') : 'Reactivating...', false, 'warn');
-            setTimeout(async function() {
-              if (state.intentActive && document.visibilityState === 'visible') {
-                await activateWakeLock();
-              }
-            }, 500);
-          }
-        } else if (state.active) {
-          updateUI('⏸️', window._t ? window._t('tools.caffeinate.js.status8') : 'Tab hidden. Wake lock effectiveness reduced.', true, 'warn');
+        if (document.visibilityState === 'visible') {
+          scheduleRecovery();
+        } else {
+          cancelRecovery();
+          updateUI('⏸️', window._t ? window._t('tools.caffeinate.js.status6') : 'Tab hidden. Wake lock paused — will restore when tab is active.', false, 'warn');
         }
       });
 
       window.addEventListener('focus', function() {
-        if (state.intentActive && document.visibilityState === 'visible' && !state.active) {
-          setTimeout(function() {
-            if (state.intentActive && document.hasFocus()) activateWakeLock();
-          }, 100);
-        }
         state.lastActivity = Date.now();
+        if (state.intentActive && document.visibilityState === 'visible') scheduleRecovery();
+      });
+
+      window.addEventListener('pageshow', function() {
+        if (state.intentActive && document.visibilityState === 'visible') scheduleRecovery();
       });
 
       window.addEventListener('pagehide', function() {
-        state.intentActive = false;
-        stopHeartbeat();
-        stopUptimeTimer();
-        if (state.wakeLock) {
-          state.wakeLock.removeEventListener('release', handleRelease);
-          state.wakeLock.release().catch(function(){});
-        }
-        cleanupFallback();
+        var message = window._t ? window._t('tools.caffeinate.js.status6') : 'Tab hidden. Wake lock paused — will restore when tab is active.';
+        return deactivateWakeLock(message, true);
       });
     })();
     </script>
