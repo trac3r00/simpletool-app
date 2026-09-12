@@ -17,7 +17,7 @@
  *
  *   node scripts/browser-smoke.mjs                # all tools, load + interact
  *   node scripts/browser-smoke.mjs --no-interact  # load only (faster)
- *   node scripts/browser-smoke.mjs --only json-formatter,pipe
+ *   node scripts/browser-smoke.mjs --only json-formatter,qr-code
  *   node scripts/browser-smoke.mjs --port 8790
  *
  * Exits non-zero if any tool reports an error or a probe anomaly.

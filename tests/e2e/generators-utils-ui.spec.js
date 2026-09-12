@@ -143,22 +143,21 @@ test.describe("Generator and utility tools UI interactions", () => {
     await expect(page.locator("#status-text")).not.toHaveText("");
   });
 
-  test("token-counter updates token estimates and costs", async ({ page }) => {
-    await openTool(page, "/token-counter");
+  test("token-counter was retired: /token-counter 301s to the prompt builder", async ({
+    page,
+    request,
+  }) => {
+    const redirect = await request.get("/token-counter", { maxRedirects: 0 });
+    expect(redirect.status()).toBe(301);
+    expect(new URL(redirect.headers().location).pathname).toBe(
+      "/prompt-template-builder",
+    );
 
-    await page
-      .locator("#text")
-      .fill(
-        "This is a token counting test for generator utility suite. ".repeat(
-          200,
-        ),
-      );
-    await page.locator("#out-tokens").fill("50000");
-    await page.locator("#gpt-in-rate").fill("100");
-    await page.locator("#gpt-out-rate").fill("100");
-
-    await expect(page.locator("#gpt-total")).not.toHaveText("0");
-    await expect(page.locator("#gpt-cost")).not.toHaveText("$0.00");
+    const response = await page.goto("/prompt-template-builder", {
+      waitUntil: "domcontentloaded",
+    });
+    expect(response.status()).toBe(200);
+    await expect(page).toHaveURL(/\/prompt-template-builder$/);
   });
 
   test("prompt-template-builder builds template sections with variables", async ({

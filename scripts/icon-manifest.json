@@ -13,7 +13,6 @@
     "coffee",
     "compress",
     "content_copy",
-    "conversion_path",
     "crop_square",
     "data_object",
     "database",
@@ -44,7 +43,6 @@
     "match_case",
     "monitor_weight",
     "network_check",
-    "numbers",
     "palette",
     "password",
     "person",
@@ -71,5 +69,5 @@
     "water_drop",
     "webhook"
   ],
-  "bytes": 112076
+  "bytes": 110128
 }

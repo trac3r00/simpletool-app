@@ -20,7 +20,7 @@
  *
  * Run:
  *   node scripts/deep-ui-audit.mjs                 # all tools
- *   node scripts/deep-ui-audit.mjs --only pipe,qr-code
+ *   node scripts/deep-ui-audit.mjs --only uuid-generator,qr-code
  *   node scripts/deep-ui-audit.mjs --mobile        # 390px viewport pass
  *   node scripts/deep-ui-audit.mjs --json out.json # machine-readable report
  *

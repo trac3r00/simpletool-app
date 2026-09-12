@@ -100,9 +100,6 @@ const BASELINE_VIOLATIONS = {
   ],
   "/password-generator": [
   ],
-  "/pipe": [
-    { id: "aria-allowed-role", impact: "minor", optional: true },
-  ],
   "/privacy": [
   ],
   "/prompt-template-builder": [
@@ -137,9 +134,6 @@ const BASELINE_VIOLATIONS = {
   "/text-diff": [
   ],
   "/timestamp-converter": [
-  ],
-  "/token-counter": [
-    { id: "select-name", impact: "critical", optional: true },
   ],
   "/token-studio": [
   ],

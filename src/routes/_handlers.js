@@ -33,7 +33,6 @@ import { handleMermaidStudioRoutes as mermaid_studio } from './mermaid-studio.js
 import { handleJsonSchemaStudioRoutes as json_schema_studio } from './json-schema-studio.js';
 import { handleCaffeinateRoutes as caffeinate } from './caffeinate.js';
 import { handleEmailAnalyzerRoutes as email_analyzer } from './email-analyzer.js';
-import { handleTokenCounterRoutes as token_counter } from './token-counter.js';
 import { handlePromptTemplateBuilderRoutes as prompt_template_builder } from './prompt-template-builder.js';
 import { handleRepoOpsRoutes as repo_ops } from './repo-ops.js';
 import { handleSQLFormatterRoutes as sql_formatter } from './sql-formatter.js';
@@ -52,7 +51,6 @@ import { handleTokenStudioRoutes as token_studio } from './token-studio.js';
 import { handleEncodingWorkbenchRoutes as encoding_workbench } from './encoding-workbench.js';
 import { handleOAuthDebuggerRoutes as oauth_debugger } from './oauth-debugger.js';
 import { handleWebhookDebuggerRoutes as webhook_debugger } from './webhook-debugger.js';
-import { handlePipeRoutes as pipe } from './pipe.js';
 
 export const handlersById = {
   'password-generator': password_generator,
@@ -85,7 +83,6 @@ export const handlersById = {
   'json-schema-studio': json_schema_studio,
   'caffeinate': caffeinate,
   'email-analyzer': email_analyzer,
-  'token-counter': token_counter,
   'prompt-template-builder': prompt_template_builder,
   'repo-ops': repo_ops,
   'sql-formatter': sql_formatter,
@@ -104,5 +101,4 @@ export const handlersById = {
   'encoding-workbench': encoding_workbench,
   'oauth-debugger': oauth_debugger,
   'webhook-debugger': webhook_debugger,
-  'pipe': pipe,
 };

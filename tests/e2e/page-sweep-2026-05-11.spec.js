@@ -71,14 +71,22 @@ test.describe("Page sweep 2026-05-11 regressions", () => {
     );
   });
 
-  test("/pipe: renders valid page with proper title", async ({ page }) => {
-    const response = await page.goto("/pipe");
+  test("/pipe was retired: it 301s to the JSON formatter", async ({
+    page,
+    request,
+  }) => {
+    const redirect = await request.get("/pipe", { maxRedirects: 0 });
+    expect(redirect.status()).toBe(301);
+    expect(new URL(redirect.headers().location).pathname).toBe(
+      "/json-formatter",
+    );
+
+    const response = await page.goto("/json-formatter", {
+      waitUntil: "domcontentloaded",
+    });
     expect(response.status()).toBe(200);
-    const title = await page.title();
-    expect(title).not.toContain("undefined");
-    expect(title.length).toBeGreaterThan(5);
-    const h1 = await page.locator("h1").first().textContent();
-    expect(h1).toBeTruthy();
+    await expect(page).toHaveURL(/\/json-formatter$/);
+    await expect(page.locator("h1").first()).toContainText("JSON");
   });
 
   test("htpasswd-generator: Generate entry produces bcrypt output", async ({

@@ -5,7 +5,6 @@ import { handleCaseConverterRoutes } from "./case-converter.js";
 import { handleEnvVarManagerRoutes } from "./env-var-manager.js";
 import { handleTextDiffRoutes } from "./text-diff.js";
 import { handleTimestampConverterRoutes } from "./timestamp-converter.js";
-import { handleTokenCounterRoutes } from "./token-counter.js";
 import { handleUnitConverterRoutes } from "./unit-converter.js";
 import { handleUUIDGeneratorRoutes } from "./uuid-generator.js";
 import { handleWireguardConfigRoutes } from "./wireguard-config.js";
@@ -37,7 +36,6 @@ import { handleMarkdownEditorRoutes } from "./markdown-editor.js";
 import { handleCronBuilderRoutes } from "./cron-builder.js";
 import { handleRegexVisualizerRoutes } from "./regex-visualizer.js";
 import { handleMermaidStudioRoutes } from "./mermaid-studio.js";
-import { handlePipeRoutes } from "./pipe.js";
 import { handleCurlStudioRoutes } from "./curl-studio.js";
 import { handleLogMaskerRoutes } from "./log-masker.js";
 import { handleJsonSchemaStudioRoutes } from "./json-schema-studio.js";
@@ -59,7 +57,6 @@ const MIGRATED_ROUTES = [
   ["env-var-manager", handleEnvVarManagerRoutes],
   ["text-diff", handleTextDiffRoutes],
   ["timestamp-converter", handleTimestampConverterRoutes],
-  ["token-counter", handleTokenCounterRoutes],
   ["wireguard-config", handleWireguardConfigRoutes],
   ["email-analyzer", handleEmailAnalyzerRoutes],
   ["color-converter", handleColorConverterRoutes],
@@ -89,7 +86,6 @@ const MIGRATED_ROUTES = [
   ["cron-builder", handleCronBuilderRoutes],
   ["regex-visualizer", handleRegexVisualizerRoutes],
   ["mermaid-studio", handleMermaidStudioRoutes],
-  ["pipe", handlePipeRoutes],
   ["curl-studio", handleCurlStudioRoutes],
   ["log-masker", handleLogMaskerRoutes],
   ["json-schema-studio", handleJsonSchemaStudioRoutes],

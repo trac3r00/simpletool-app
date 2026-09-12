@@ -184,7 +184,7 @@ export const TOOLS = [
     category: "utils",
     keywords: "schedule, time, expression, crontab",
     tip: "Build cron expressions with dropdowns — see plain English descriptions and the next 5 run times",
-    relatedTools: ["timestamp-converter", "curl-studio", "token-counter"],
+    relatedTools: ["timestamp-converter", "curl-studio", "prompt-template-builder"],
   },
   {
     id: "ssh-key-generator",
@@ -553,7 +553,7 @@ export const TOOLS = [
     path: "/caffeinate",
     category: "utils",
     keywords: "wake lock, screen, awake, sleep, caffeinate",
-    relatedTools: ["timestamp-converter", "cron-builder", "token-counter"],
+    relatedTools: ["timestamp-converter", "cron-builder", "prompt-template-builder"],
   },
   {
     id: "email-analyzer",
@@ -572,22 +572,6 @@ export const TOOLS = [
     ],
   },
   {
-    id: "token-counter",
-    name: "Token Counter & Cost Estimator",
-    icon: "🧮",
-    description:
-      "Heuristic token estimates for GPT, Claude, Llama, and Gemini families. Enter your own $/1M rates.",
-    path: "/token-counter",
-    category: "utils",
-    keywords: "llm, tokens, pricing, estimate, cost",
-    relatedTools: [
-      "prompt-template-builder",
-      "json-formatter",
-      "code-minifier",
-      "text-diff",
-    ],
-  },
-  {
     id: "prompt-template-builder",
     name: "Prompt Template Builder",
     icon: "🧩",
@@ -597,10 +581,10 @@ export const TOOLS = [
     category: "utils",
     keywords: "prompt, template, gpt, claude, llama, system, user",
     relatedTools: [
-      "token-counter",
-      "markdown-editor",
       "json-formatter",
-      "mock-data-generator",
+      "code-minifier",
+      "text-diff",
+      "markdown-editor",
     ],
   },
   {
@@ -698,22 +682,6 @@ export const TOOLS = [
       "env-var-manager",
       "password-generator",
       "email-analyzer",
-    ],
-  },
-  {
-    id: "pipe",
-    name: "Pipe Mode",
-    icon: "⛓",
-    description: "Chain tools together. Your data is processed in your browser, not sent to our servers.",
-    path: "/pipe",
-    category: "utils",
-    keywords: "chain, pipeline, tools, beta",
-    badge: "BETA",
-    relatedTools: [
-      "case-converter",
-      "json-formatter",
-      "encoding-workbench",
-      "text-diff",
     ],
   },
   {

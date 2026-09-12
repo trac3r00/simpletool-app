@@ -312,6 +312,8 @@ describe("catalog freeze guard", () => {
     // 52 → 50: repo-ops merge — public-repos-yml-builder,
     // public-repos-not-automation, and review-description-generator collapsed
     // into tabbed /repo-ops; old paths 301.
-    expect(TOOLS.map((tool) => tool.id)).toHaveLength(50);
+    // 50 → 48: token-counter and pipe retired by request on 2026-09-10;
+    // both former paths retain permanent redirects (see src/utils/redirects.js).
+    expect(TOOLS.map((tool) => tool.id)).toHaveLength(48);
   });
 });

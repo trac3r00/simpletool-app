@@ -7,7 +7,7 @@
  * output is a JSON metrics file plus PNGs that a review artifact can embed.
  *
  *   node scripts/design-capture.mjs                    # all tools
- *   node scripts/design-capture.mjs --only pipe,qr-code
+ *   node scripts/design-capture.mjs --only uuid-generator,qr-code
  *   node scripts/design-capture.mjs --out .design-capture
  *
  * Requires a server already running (PW_BASE, default http://127.0.0.1:8805)

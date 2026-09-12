@@ -9,13 +9,13 @@
 ## Product Context
 
 - **What this is:** Browser-based developer and everyday utilities served from a
-  single Cloudflare Worker. **47 tools in production** (50 registered; 3 are
+  single Cloudflare Worker. **45 tools in production** (48 registered; 3 are
   dev-only games — `ladder-game`, `roulette-wheel`, `marble-roulette` — hidden in
   production via `hiddenInProduction` in `src/utils/tool-registry.js`). `changelog`
   was retired as a catalog tool 2026-08-22 (the `/changelog` page stays live).
 - **Who it's for:** Developers and general users on the open web.
 - **Space/industry:** Online tool sites (CyberChef, 10015.io, IT-Tools, DevUtils).
-- **Project type:** Web app (tool collection + Pipe Mode workspace).
+- **Project type:** Web app (browser-based tool collection).
 - **Differentiator:** Tool input and output are processed in the browser. The
   Worker renders and routes pages; page and asset requests still pass through
   Cloudflare, and — when configured in production — non-personalized AdSense and
@@ -90,7 +90,7 @@ The Modern Utility palette (2026-08-22) is **6 named hues**: `primary` (violet),
   blue/indigo to be distinct without reading as slop.
 - **`info-*`** — **cyan accent**, `info-600` `#0891b2`. Formerly a byte-for-byte
   duplicate of the old blue primary; now a genuinely distinct accent used for the
-  brand gradient, informational states, and (progressively) the Pipe-Mode signal.
+  brand gradient and informational states.
   Still ~28 live usages across 15+ route files (`cidr-calculator`,
   `encoding-workbench`, `oauth-debugger`, `cron-builder`, …).
 - **`surface-*`** — **slate** neutral scale, 50 (`#f8fafc`) → 950 (`#0f0f12`).
@@ -99,11 +99,8 @@ The Modern Utility palette (2026-08-22) is **6 named hues**: `primary` (violet),
   reads near-black rather than slate-blue.
 - **`success-*` / `warning-*` / `error-*`** — semantic. Standard Tailwind
   green/amber/red scales.
-- **Pipe Mode accent (cyan):** Pipe Mode uses the identity's **`info` cyan** as
-  its territory signal (`.btn-info`, `info-*` tints on the final-output box,
-  recipe "Try it →", shared-pipeline banner). The legacy stock-teal accent was
-  swapped out when `pipe.js` was re-skinned on 2026-08-26; `teal-*` classes no
-  longer appear outside content-categorical maps.
+- **Informational accent (cyan):** Use the identity's **`info` cyan** for
+  informational states and `.btn-info` actions, not the neutral `accent` token.
 - **Brand gradient:** violet→cyan, via the `.text-gradient-brand` /
   `.bg-brand-gradient` / `.bg-brand-gradient-soft` utilities in
   `styles/input.css`. This is the signature accent — use sparingly (hero, section
@@ -157,8 +154,7 @@ vocabulary:
   (`transition-colors duration-200`, `animate-fade-in`, `animate-fade-in-up`,
   `animate-spin`).
 - **Durations in use:** ~200ms for color/theme transitions, ~300ms for
-  fades/accordions/spinners. Pipe Mode step changes get the longer end for
-  visual continuity.
+  fades/accordions/spinners.
 
 ## Component Patterns
 
@@ -168,7 +164,7 @@ Component classes live in `styles/input.css` (`@layer components` + plain rules)
 
 - Base: `.btn` (`rounded-md`, `text-sm`, `font-medium`, focus ring).
 - Variants: `.btn-primary`, `.btn-secondary`, `.btn-ghost`, `.btn-danger`,
-  `.btn-info` (Pipe Mode cyan; `info-700` fill in light because white on
+  `.btn-info` (informational cyan; `info-700` fill in light because white on
   `info-600` is 3.7:1, light-cyan fill with dark text in dark). Sizes:
   `.btn-sm`, `.btn-xs`.
 
@@ -324,7 +320,7 @@ The design must never imply absolute privacy. Current honest stance (enforced by
 - Non-personalized AdSense only; Auto ads off; `ads.txt` and the account meta ship with a publisher ID, ad units only after real slot IDs.
 - **Allow-list** (ads may appear): `home`, `json`, `legal`.
 - **Deny-list** (never load ad scripts): password, SSH keys, Token Studio,
-  WireGuard, certificates, secret scanner, encoding tools, and Pipe Mode.
+  WireGuard, certificates, secret scanner, and encoding tools.
 - Copy may not claim "no tracking" / "never track" / "0 bytes stored."
 - See `docs/adsense-integration.md` for the authoritative ad rules.
 

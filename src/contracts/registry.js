@@ -1,7 +1,7 @@
 /**
- * Contract Registry — central registry for tool pipe contracts.
+ * Contract Registry — central registry for tool transformation contracts.
  *
- * A contract defines how a tool transforms data in Pipe Mode:
+ * A contract defines how a tool transforms data:
  *   { id, name, inputTypes, outputTypes, options, transform }
  *
  * Types: 'text', 'json', 'csv', 'number', 'url'

@@ -146,10 +146,6 @@ const translations = {
       name: "이메일 분석기",
       desc: "이메일 헤더를 분석하고 검사합니다.",
     },
-    "token-counter": {
-      name: "토큰 카운터",
-      desc: "AI 모델 토큰 수를 계산합니다.",
-    },
     "prompt-template-builder": {
       name: "프롬프트 템플릿 빌더",
       desc: "AI 프롬프트 템플릿을 작성합니다.",
@@ -380,10 +376,6 @@ const translations = {
     "email-analyzer": {
       name: "メール分析ツール",
       desc: "メールヘッダーを分析・検査します。",
-    },
-    "token-counter": {
-      name: "トークンカウンター",
-      desc: "AIモデルのトークン数を計算します。",
     },
     "prompt-template-builder": {
       name: "プロンプトテンプレートビルダー",
@@ -616,10 +608,6 @@ const translations = {
       name: "Analizador de Correo",
       desc: "Analiza e inspecciona cabeceras de correo.",
     },
-    "token-counter": {
-      name: "Contador de Tokens",
-      desc: "Calcula el número de tokens de modelos IA.",
-    },
     "prompt-template-builder": {
       name: "Constructor de Plantillas",
       desc: "Crea plantillas de prompts para IA.",
@@ -824,7 +812,6 @@ const translations = {
     },
     caffeniate: { name: "屏幕保持", desc: "防止屏幕关闭。" },
     "email-analyzer": { name: "邮件分析器", desc: "分析和检查邮件头信息。" },
-    "token-counter": { name: "令牌计数器", desc: "计算 AI 模型的令牌数量。" },
     "prompt-template-builder": {
       name: "提示模板构建器",
       desc: "创建 AI 提示模板。",
@@ -1014,7 +1001,6 @@ const translations = {
       name: "電子郵件分析器",
       desc: "分析和檢查電子郵件標頭。",
     },
-    "token-counter": { name: "權杖計數器", desc: "計算 AI 模型的權杖數量。" },
     "prompt-template-builder": {
       name: "提示範本建構器",
       desc: "建立 AI 提示範本。",
@@ -1230,10 +1216,6 @@ const translations = {
     "email-analyzer": {
       name: "Analyseur d'E-mails",
       desc: "Analysez et inspectez les en-têtes d'e-mails.",
-    },
-    "token-counter": {
-      name: "Compteur de Tokens",
-      desc: "Calculez le nombre de tokens des modèles IA.",
     },
     "prompt-template-builder": {
       name: "Constructeur de Modèles de Prompts",
@@ -1466,10 +1448,6 @@ const translations = {
       name: "E-Mail-Analysator",
       desc: "E-Mail-Header analysieren und inspizieren.",
     },
-    "token-counter": {
-      name: "Token-Zähler",
-      desc: "Token-Anzahl für KI-Modelle berechnen.",
-    },
     "prompt-template-builder": {
       name: "Prompt-Vorlagenersteller",
       desc: "KI-Prompt-Vorlagen erstellen.",
@@ -1701,10 +1679,6 @@ const translations = {
       name: "Analisador de E-mail",
       desc: "Analise e inspecione cabeçalhos de e-mail.",
     },
-    "token-counter": {
-      name: "Contador de Tokens",
-      desc: "Calcule o número de tokens de modelos de IA.",
-    },
     "prompt-template-builder": {
       name: "Construtor de Modelos de Prompt",
       desc: "Crie modelos de prompts para IA.",
@@ -1932,10 +1906,6 @@ const translations = {
     "email-analyzer": {
       name: "Phân Tích Email",
       desc: "Phân tích và kiểm tra tiêu đề email.",
-    },
-    "token-counter": {
-      name: "Đếm Token",
-      desc: "Tính số lượng token cho mô hình AI.",
     },
     "prompt-template-builder": {
       name: "Trình Tạo Mẫu Prompt",
