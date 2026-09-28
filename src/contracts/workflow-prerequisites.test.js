@@ -103,6 +103,41 @@ describe('workflow prerequisites', () => {
     expect(violations).toEqual([]);
   });
 
+  it('provides Chromium system libraries in user space after browser install and before E2E runs', () => {
+    const violations = [];
+    let checkedJobs = 0;
+
+    for (const workflowPath of workflowPaths) {
+      const workflow = load(fs.readFileSync(new URL(workflowPath, import.meta.url), 'utf8'));
+
+      for (const [jobName, job] of Object.entries(workflow.jobs)) {
+        const runnerLabels = Array.isArray(job['runs-on']) ? job['runs-on'] : [job['runs-on']];
+        if (!runnerLabels.includes('self-hosted') || !jobName.includes('e2e')) continue;
+        checkedJobs += 1;
+
+        const runs = job.steps.map((step) => (typeof step.run === 'string' ? step.run.trim() : ''));
+        const depsIndex = runs.indexOf('bash scripts/ci/playwright-user-deps.sh');
+        const lastInstallIndex = runs.findLastIndex((run) => run.includes('bunx playwright install'));
+        const e2eIndex = runs.indexOf('bun run test:e2e');
+
+        if (depsIndex === -1 || depsIndex < lastInstallIndex || depsIndex > e2eIndex) {
+          violations.push(`${workflowPath}:${jobName}`);
+        }
+      }
+    }
+
+    const script = fs.readFileSync(new URL('../../scripts/ci/playwright-user-deps.sh', import.meta.url), 'utf8')
+      .split('\n')
+      .filter((line) => !line.trimStart().startsWith('#'))
+      .join('\n');
+
+    expect(checkedJobs).toBe(2);
+    expect(violations).toEqual([]);
+    expect(script).not.toMatch(/\bsudo\b|apt-get install/);
+    expect(script).toContain('apt-get download');
+    expect(script).toContain('GITHUB_ENV');
+  });
+
   it('removes non-executable Bun leftovers without deleting a healthy Bun executable', () => {
     const [{ command }] = getSetupBunPrerequisites();
     const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'workflow-bun-cleanup-'));
