@@ -147,20 +147,26 @@ test.describe("Generator and utility tools UI interactions", () => {
     page,
     request,
   }) => {
-    const redirect = await request.get("/token-counter", { maxRedirects: 0 });
+    const redirect = await request.get("/token-counter?tab=foo", {
+      maxRedirects: 0,
+    });
     expect(redirect.status()).toBe(301);
-    expect(new URL(redirect.headers().location).pathname).toBe(
-      "/prompt-template-builder",
-    );
+    const location = new URL(redirect.headers().location);
+    expect(location.pathname).toBe("/prompt-template-builder");
+    expect(location.searchParams.get("tab")).toBe("foo");
 
-    const response = await page.goto("/token-counter", {
+    const response = await page.goto("/token-counter?tab=foo", {
       waitUntil: "domcontentloaded",
     });
     expect(response.status()).toBe(200);
-    expect(response.request().redirectedFrom()?.url()).toMatch(
-      /\/token-counter$/,
-    );
-    await expect(page).toHaveURL(/\/prompt-template-builder$/);
+    const redirectedFrom = response.request().redirectedFrom();
+    expect(redirectedFrom).not.toBeNull();
+    const origin = new URL(redirectedFrom.url());
+    expect(origin.pathname).toBe("/token-counter");
+    expect(origin.searchParams.get("tab")).toBe("foo");
+    const landed = new URL(page.url());
+    expect(landed.pathname).toBe("/prompt-template-builder");
+    expect(landed.searchParams.get("tab")).toBe("foo");
     await expect(page.locator("#load-sample")).toBeVisible();
     await expect(page.locator("#system")).toBeVisible();
     await expect(page.locator("#user")).toBeVisible();

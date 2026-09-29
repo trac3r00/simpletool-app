@@ -75,18 +75,24 @@ test.describe("Page sweep 2026-05-11 regressions", () => {
     page,
     request,
   }) => {
-    const redirect = await request.get("/pipe", { maxRedirects: 0 });
+    const redirect = await request.get("/pipe?src=e2e", { maxRedirects: 0 });
     expect(redirect.status()).toBe(301);
-    expect(new URL(redirect.headers().location).pathname).toBe(
-      "/json-formatter",
-    );
+    const location = new URL(redirect.headers().location);
+    expect(location.pathname).toBe("/json-formatter");
+    expect(location.searchParams.get("src")).toBe("e2e");
 
-    const response = await page.goto("/pipe", {
+    const response = await page.goto("/pipe?src=e2e", {
       waitUntil: "domcontentloaded",
     });
     expect(response.status()).toBe(200);
-    expect(response.request().redirectedFrom()?.url()).toMatch(/\/pipe$/);
-    await expect(page).toHaveURL(/\/json-formatter$/);
+    const redirectedFrom = response.request().redirectedFrom();
+    expect(redirectedFrom).not.toBeNull();
+    const origin = new URL(redirectedFrom.url());
+    expect(origin.pathname).toBe("/pipe");
+    expect(origin.searchParams.get("src")).toBe("e2e");
+    const landed = new URL(page.url());
+    expect(landed.pathname).toBe("/json-formatter");
+    expect(landed.searchParams.get("src")).toBe("e2e");
     await expect(page.locator("h1").first()).toContainText("JSON");
     await expect(page.locator("#json-empty-state")).toBeVisible();
   });
