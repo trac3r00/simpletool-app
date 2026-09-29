@@ -507,6 +507,15 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
           });
         }
 
+        // Mermaid 12 moved these defaults (ELK layout, neo look, 120px node
+        // min width / wrap width); pin the 11.x values so diagrams keep their shape.
+        const MERMAID_LAYOUT = {
+          layout: 'dagre',
+          look: 'classic',
+          flowchart: { minNodeWidth: 0, wrappingWidth: 200 },
+          state: { minNodeWidth: 0, wrappingWidth: 200 }
+        };
+
         async function renderMermaid() {
           if (!window.mermaid) return;
           try {
@@ -514,12 +523,13 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
               window.mermaid.initialize({
                 startOnLoad: false,
                 securityLevel: 'strict',
+                ...MERMAID_LAYOUT,
                 theme: getMermaidTheme()
               });
               mermaidInitialized = true;
             }
             // Re-apply theme each run (handles light/dark toggles)
-            window.mermaid.initialize({ startOnLoad: false, securityLevel: 'strict', theme: getMermaidTheme() });
+            window.mermaid.initialize({ startOnLoad: false, securityLevel: 'strict', ...MERMAID_LAYOUT, theme: getMermaidTheme() });
             await window.mermaid.run({ querySelector: '#preview-output .mermaid' });
           } catch (e) {
             console.error('Mermaid render failed:', e);

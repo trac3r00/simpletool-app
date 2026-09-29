@@ -218,6 +218,12 @@ export async function handleMermaidStudioRoutes(request, url) {
           startOnLoad: false,
           theme: dark ? 'dark' : 'default',
           securityLevel: 'strict',
+          // Mermaid 12 moved these defaults (ELK layout, neo look, 120px node
+          // min width / wrap width); pin the 11.x values so diagrams keep their shape.
+          layout: 'dagre',
+          look: 'classic',
+          flowchart: { minNodeWidth: 0, wrappingWidth: 200 },
+          state: { minNodeWidth: 0, wrappingWidth: 200 },
           themeVariables: mermaidThemeVariables(dark),
         });
       }
