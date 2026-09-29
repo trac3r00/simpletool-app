@@ -1,6 +1,11 @@
 import { describe, it, expect } from "vitest";
 import { testContract } from "./test-helper.js";
 import jsonFormat from "./json-format.js";
+import {
+  LOSSLESS_INPUT,
+  LOSSLESS_PRETTY,
+  LOSSLESS_SPACED,
+} from "../utils/lossless-json.fixtures.js";
 
 testContract(jsonFormat);
 
@@ -19,36 +24,14 @@ describe("json-format transform", () => {
   });
 
   it("preserves every numeric and string lexeme while formatting", () => {
-    const input =
-      '{"max":9007199254740993,"min":-9007199254740993,"huge":1e400,"fixed":1.2300,"negativeZero":-0,"nested":[[9007199254740993],{"text":"quote: \\" slash: \\\\"}]}';
-
-    expect(jsonFormat.transform(input, { mode: "format", indent: 2 })).toBe(
-      [
-        "{",
-        '  "max": 9007199254740993,',
-        '  "min": -9007199254740993,',
-        '  "huge": 1e400,',
-        '  "fixed": 1.2300,',
-        '  "negativeZero": -0,',
-        '  "nested": [',
-        "    [",
-        "      9007199254740993",
-        "    ],",
-        "    {",
-        '      "text": "quote: \\" slash: \\\\"',
-        "    }",
-        "  ]",
-        "}",
-      ].join("\n"),
-    );
+    expect(
+      jsonFormat.transform(LOSSLESS_INPUT, { mode: "format", indent: 2 }),
+    ).toBe(LOSSLESS_PRETTY);
   });
 
   it("preserves every numeric and string lexeme while minifying", () => {
-    const input =
-      ' { "max" : 9007199254740993, "min" : -9007199254740993, "huge" : 1e400, "fixed" : 1.2300, "negativeZero" : -0, "nested" : [ [ 9007199254740993 ], { "text" : "quote: \\" slash: \\\\" } ] } ';
-
-    expect(jsonFormat.transform(input, { mode: "minify" })).toBe(
-      '{"max":9007199254740993,"min":-9007199254740993,"huge":1e400,"fixed":1.2300,"negativeZero":-0,"nested":[[9007199254740993],{"text":"quote: \\" slash: \\\\"}]}',
+    expect(jsonFormat.transform(LOSSLESS_SPACED, { mode: "minify" })).toBe(
+      LOSSLESS_INPUT,
     );
   });
 
