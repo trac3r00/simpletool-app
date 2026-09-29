@@ -158,7 +158,7 @@
   "tools.text-diff.ui.tip1": "Comparer les deux textes et mettre en évidence les différences",
   "tools.text-diff.ui.tip2": "Collez le texte modifié ici",
   "tools.timestamp-converter.ui.label0": "Heure locale",
-  "tools.timestamp-converter.ui.tip0": "Secondes depuis le 1 janvier 1970 à 00:00:00 UTC",
+  "tools.timestamp-converter.ui.tip0": "Secondes depuis le 1er janvier 1970 à 00:00:00 UTC",
   "tools.timestamp-converter.ui.tip1": "Horodatage Unix standard (10 chiffres)",
   "tools.timestamp-converter.ui.tip2": "Format JavaScript Date.now() (13 chiffres)",
   "tools.token-studio.js.text17": "Erreur d’exportation : ",

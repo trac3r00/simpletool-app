@@ -47,9 +47,34 @@ function staticTranslationCallKeys(html) {
     const following = html
       .slice(match.index + match[0].length)
       .match(/^\s*(.)/)?.[1];
-    // A literal prefix concatenated with a runtime suffix cannot be resolved
-    // statically; concrete rendered data attributes cover those call sites.
+    // Prefix + runtime suffix calls are resolved through their helper's
+    // literal call sites in prefixedHelperCallKeys below.
     if (following !== "+") keys.add(match[2]);
+  }
+  return keys;
+}
+
+// Routes wrap window._t in a local helper that prepends the tool prefix, e.g.
+// `const t = (k, fb) => window._t('tools.x.js.' + k, fb)`, then call
+// `t('text0', ...)`. Resolve each literal helper call inside the same script.
+function prefixedHelperCallKeys(html) {
+  const keys = new Set();
+  for (const [script] of html.matchAll(/<script\b[^>]*>[\s\S]*?<\/script>/gi)) {
+    const prefixCall = /_t\(\s*(['"])([^'"\n]+\.)\1\s*\+/g;
+    for (const match of script.matchAll(prefixCall)) {
+      const before = script.slice(Math.max(0, match.index - 300), match.index);
+      const helpers = [
+        ...before.matchAll(/(?:function\s+([A-Za-z_$][\w$]*)\s*\(|(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=\s*\()/g),
+      ];
+      const helper = helpers.at(-1);
+      const name = helper?.[1] || helper?.[2];
+      if (!name) throw new Error(`no helper wraps prefix ${match[2]}`);
+      const call = new RegExp(
+        `(?<![\\w$.])${name.replace(/\$/g, "\\$")}\\(\\s*(['"])([^'"\\n]+)\\1`,
+        "g",
+      );
+      for (const literal of script.matchAll(call)) keys.add(match[2] + literal[2]);
+    }
   }
   return keys;
 }
@@ -81,6 +106,7 @@ describe("rendered translation keys", () => {
         const keys = new Set([
           ...renderedAttributeKeys(html),
           ...staticTranslationCallKeys(html),
+          ...prefixedHelperCallKeys(html),
         ]);
 
         expect(
@@ -92,6 +118,16 @@ describe("rendered translation keys", () => {
           .filter((key) => typeof resolveKey(catalog, key) !== "string")
           .sort();
         expect(unresolved, `${tool.id} ${locale} unresolved keys`).toEqual([]);
+
+        // Server-rendered related cards must already be in the route language.
+        const related = html.match(
+          /<section[^>]*aria-label="Related tools"[^>]*>\s*<h2[^>]*>([^<]*)<\/h2>/,
+        );
+        if (related) {
+          expect(related[1], `${tool.id} ${locale} related tools heading`).toBe(
+            resolveKey(catalog, "content.relatedTools"),
+          );
+        }
       }
     });
   }

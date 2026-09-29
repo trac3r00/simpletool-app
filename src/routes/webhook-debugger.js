@@ -167,7 +167,7 @@ function renderWebhookDebuggerPage(lang = DEFAULT_LANGUAGE) {
         <p class="text-sm text-surface-600 dark:text-surface-400" data-i18n="tools.webhook-debugger.ui.desc1">Paste a delivery above, or load a sample. Headers, body, and signature checks are computed in this browser tab.</p>
       </div>
 
-      ${relatedToolsData.length > 0 ? createRelatedToolsSection(relatedToolsData) : ""}
+      ${relatedToolsData.length > 0 ? createRelatedToolsSection(relatedToolsData, currentLang) : ""}
       </div>
     </main>
 

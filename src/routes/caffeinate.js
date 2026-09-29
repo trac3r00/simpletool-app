@@ -94,7 +94,7 @@ function renderCaffeinatePage(lang = DEFAULT_LANGUAGE) {
           </div>
         </div>
       </div>
-    ${createRelatedToolsSection(relatedToolsData)}
+    ${createRelatedToolsSection(relatedToolsData, currentLang)}
     </main>
 
     <script>

@@ -308,7 +308,7 @@ export async function handleCronBuilderRoutes(request) {
           </table>`,
         },
       ])}
-    ${createRelatedToolsSection(relatedToolsData)}
+    ${createRelatedToolsSection(relatedToolsData, currentLang)}
       </div>
     </main>
 
@@ -338,7 +338,7 @@ export async function handleCronBuilderRoutes(request) {
         function t(key, fallback, values) {
           let text = window._t ? window._t('tools.cron-builder.js.' + key, fallback) : fallback;
           Object.entries(values || {}).forEach(([name, value]) => {
-            text = text.replaceAll('{{' + name + '}}', value);
+            text = text.replaceAll('{{' + name + '}}', () => String(value));
           });
           return text;
         }

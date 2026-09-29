@@ -1,5 +1,6 @@
 // @vitest-environment node
 import { readFile } from "node:fs/promises";
+import { parse } from "acorn";
 import { describe, expect, it } from "vitest";
 import { handleCronBuilderRoutes } from "./cron-builder.js";
 import en from "../i18n/en.js";
@@ -74,30 +75,99 @@ async function loadPayload() {
   return Object.fromEntries(entries);
 }
 
-async function renderEnglish() {
-  const url = new URL("https://simpletool.app/cron-builder?lang=en");
+async function render(locale) {
+  const url = new URL(`https://simpletool.app/cron-builder?lang=${locale}`);
   const response = await handleCronBuilderRoutes(new Request(url), url);
-  expect(response.status).toBe(200);
+  expect(response.status, locale).toBe(200);
   return response.text();
+}
+
+// Parse every inline executable script so assertions follow the program
+// structure rather than the route file's whitespace or comments.
+function inlineScripts(html) {
+  return [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)]
+    .filter(([, attrs]) => !/\bsrc=|type="application\/(?:ld\+)?json"/i.test(attrs))
+    .map(([, , body]) => ({ body, ast: parse(body, { ecmaVersion: "latest" }) }));
+}
+
+function findNode(node, predicate) {
+  if (!node || typeof node.type !== "string") return null;
+  if (predicate(node)) return node;
+  for (const value of Object.values(node)) {
+    for (const child of Array.isArray(value) ? value : [value]) {
+      const found = child && typeof child.type === "string" && findNode(child, predicate);
+      if (found) return found;
+    }
+  }
+  return null;
+}
+
+function declaration(scripts, name) {
+  for (const { body, ast } of scripts) {
+    const node = findNode(
+      ast,
+      (n) =>
+        (n.type === "VariableDeclarator" && n.id.name === name) ||
+        (n.type === "FunctionDeclaration" && n.id?.name === name),
+    );
+    if (node) return { node, source: body.slice(node.start, node.end), body };
+  }
+  throw new Error(`${name} is not declared in any inline script`);
+}
+
+function runtimeTranslator(scripts, catalog) {
+  // Rebuild the page's own cron `t` helper against a window._t that resolves
+  // from the payload the server shipped for this locale.
+  const helper = declaration(scripts, "t").source;
+  const window = {
+    _t: (key, fallback) => {
+      const value = resolveKey(catalog, key);
+      return typeof value === "string" ? value : fallback;
+    },
+  };
+  return new Function("window", `${helper}; return t;`)(window);
 }
 
 describe("cron builder runtime localization contract", () => {
   it("preserves recipe expressions and scheduling code while localizing labels", async () => {
-    const html = await renderEnglish();
-    const recipeCrons = [...html.matchAll(/nameKey: 'recipe\d+', name: '[^']+', cron: '([^']+)'/g)]
-      .map((match) => match[1]);
+    const scripts = inlineScripts(await render("en"));
+    const recipes = declaration(scripts, "RECIPES").node.init.elements.map((recipe) =>
+      Object.fromEntries(recipe.properties.map((prop) => [prop.key.name, prop.value.value])),
+    );
 
-    expect(recipeCrons).toEqual(EXPECTED_CRONS);
-    const controllerStart = html.indexOf("/**\n       * Cron Logic & UI Controller");
-    const scriptTagStart = html.lastIndexOf("<script", controllerStart);
-    const scriptStart = html.indexOf(">", scriptTagStart) + 1;
-    const scriptEnd = html.indexOf("</script>", controllerStart);
-    expect(controllerStart).toBeGreaterThan(-1);
-    expect(scriptTagStart).toBeGreaterThan(-1);
-    expect(() => new Function(html.slice(scriptStart, scriptEnd))).not.toThrow();
-    expect(html).toContain("calculateNextRuns(input.value, 5)");
-    expect(html).toContain("date.toLocaleString(getActiveLocale()");
-    expect(html).not.toContain("date.toLocaleString('en-US'");
+    expect(recipes.map((recipe) => recipe.cron)).toEqual(EXPECTED_CRONS);
+    expect(recipes.map((recipe) => recipe.nameKey)).toEqual(
+      EXPECTED_CRONS.map((_, index) => `recipe${index}`),
+    );
+    const controller = declaration(scripts, "getActiveLocale").body;
+    expect(controller).toMatch(/calculateNextRuns\(\s*input\.value\s*,\s*5\s*\)/);
+    expect(controller).toMatch(/\.toLocaleString\(\s*getActiveLocale\(\)/);
+    expect(controller).not.toMatch(/\.toLocaleString\(\s*['"]en-US['"]/);
+  });
+
+  it("ships and resolves the localized payload in a non-English render", async () => {
+    const html = await render("ko");
+    const scripts = inlineScripts(html);
+    const shipped = new Function(`return ${declaration(scripts, "_T").source.replace(/^_T\s*=/, "")};`)();
+
+    expect(html).toMatch(/<html[^>]*\blang="ko"/);
+    for (const key of PAYLOAD_KEYS) {
+      expect(resolveKey(shipped.ko, key), `ko payload ${key}`).toBe(resolveKey(ko, key));
+    }
+    const t = runtimeTranslator(scripts, shipped.ko);
+    expect(t("recipe0", "Every minute")).toBe(ko.tools["cron-builder"].js.recipe0);
+    expect(t("relativeMinutes", "in {{minutes}} min", { minutes: 3 })).toBe(
+      ko.tools["cron-builder"].js.relativeMinutes.replaceAll("{{minutes}}", "3"),
+    );
+  });
+
+  it("inserts substituted field text literally", async () => {
+    const t = runtimeTranslator(inlineScripts(await render("en")), en);
+    for (const value of ["$&", "$'", "$`", "$$", "$1"]) {
+      expect(t("onWeekdays", "", { days: value }), value).toBe(
+        en.tools["cron-builder"].js.onWeekdays.split("{{days}}").join(value),
+      );
+    }
   });
 
   it("keeps identical payload key sets, placeholders, and code literals in all locales", async () => {

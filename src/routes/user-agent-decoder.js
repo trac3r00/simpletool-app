@@ -138,7 +138,7 @@ function renderUserAgentDecoderPage(lang = DEFAULT_LANGUAGE) {
           </div>
         </div>
 
-        ${createRelatedToolsSection(relatedToolsData)}
+        ${createRelatedToolsSection(relatedToolsData, currentLang)}
       </div>
     </main>
 

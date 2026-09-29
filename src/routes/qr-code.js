@@ -208,7 +208,7 @@ function renderQRCodePage(lang = DEFAULT_LANGUAGE) {
 
         </div>
     </main>
-    ${createRelatedToolsSection(relatedToolsData)}
+    ${createRelatedToolsSection(relatedToolsData, currentLang)}
   `;
 
   const script = `

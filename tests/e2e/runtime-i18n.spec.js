@@ -13,12 +13,13 @@ async function switchLocale(page, locale) {
   expect(await page.locator("html").getAttribute("lang")).toBe(locale);
 }
 
-async function changePattern(page, pattern, expected) {
-  await page.evaluate(({ expected }) => {
+async function changePattern(page, locale, pattern, expected) {
+  await page.evaluate(({ locale, pattern, expected }) => {
     window.__explanationReady = new Promise((resolve, reject) => {
       const list = document.getElementById("explanation-list");
+      const read = () => Array.from(list.children, (node) => node.textContent);
       const observer = new MutationObserver(() => {
-        const actual = Array.from(list.children, (node) => node.textContent);
+        const actual = read();
         if (JSON.stringify(actual) === JSON.stringify(expected)) {
           clearTimeout(timeout);
           observer.disconnect();
@@ -27,11 +28,14 @@ async function changePattern(page, pattern, expected) {
       });
       const timeout = setTimeout(() => {
         observer.disconnect();
-        reject(new Error("Localized explanation mutation did not arrive"));
+        reject(new Error(
+          `[${locale}] explanation for ${JSON.stringify(pattern)} never matched.\n` +
+            `expected: ${JSON.stringify(expected)}\nobserved: ${JSON.stringify(read())}`,
+        ));
       }, 10000);
       observer.observe(list, { childList: true, subtree: true, characterData: true });
     });
-  }, { expected });
+  }, { locale, pattern, expected });
   await page.locator("#regex-input").fill(pattern);
   await page.evaluate(() => window.__explanationReady);
   expect(await page.locator("#explanation-list > li").allTextContents()).toEqual(expected);
@@ -63,12 +67,12 @@ test("generated Regex explanations use all locale catalogs and preserve interpol
       phrase("capturingGroupOne").replace("{count}", "1"),
       phrase("characterSet").replace("{set}", "[A-Z]"),
     ]);
-    await changePattern(page, "^\\d\\w\\s.*a+b?([<>])(x)$", [
+    await changePattern(page, locale, "^\\d\\w\\s.*a+b?([<>])(x)$", [
       ...["assertStart", "assertEnd", "digit", "wordCharacter", "whitespace", "anyCharacter", "zeroOrMore", "oneOrMore", "zeroOrOne"].map(phrase),
       phrase("capturingGroupOther").replace("{count}", "2"),
       phrase("characterSet").replace("{set}", "[<>]"),
     ]);
-    await changePattern(page, "plain", [phrase("literal")]);
+    await changePattern(page, locale, "plain", [phrase("literal")]);
   }
 });
 

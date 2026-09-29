@@ -1326,7 +1326,7 @@ export default {
         badge18: "Côté client uniquement",
         badge19: "Confidentialité avant tout",
         "label0": "Heure locale",
-        "tip0": "Secondes depuis le 1 janvier 1970 à 00:00:00 UTC",
+        "tip0": "Secondes depuis le 1er janvier 1970 à 00:00:00 UTC",
         "tip1": "Horodatage Unix standard (10 chiffres)",
         "tip2": "Format JavaScript Date.now() (13 chiffres)",
       },

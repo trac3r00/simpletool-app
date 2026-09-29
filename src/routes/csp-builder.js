@@ -163,7 +163,7 @@ function renderCSPBuilderPage(lang = DEFAULT_LANGUAGE) {
           ],
         )}
       </div>
-    ${createRelatedToolsSection(relatedToolsData)}
+    ${createRelatedToolsSection(relatedToolsData, currentLang)}
     </main>
   `;
 

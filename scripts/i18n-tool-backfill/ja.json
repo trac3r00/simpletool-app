@@ -28,7 +28,7 @@
   "tools.cidr-calculator.ui.tip0": "プレフィックス長付きのIPアドレスを入力（例: 192.168.1.0/24）",
   "tools.cidr-calculator.ui.tip1": "サブネットのプレフィックス長を調整（小さいほどホスト数が増加）",
   "tools.cidr-calculator.ui.tip2": "CIDR表記からサブネットの詳細を計算",
-  "tools.code-minifier.js.bytes": "bytes",
+  "tools.code-minifier.js.bytes": "バイト",
   "tools.code-minifier.js.error": "エラー",
   "tools.code-minifier.js.lines": "行",
   "tools.code-minifier.js.output": "出力",

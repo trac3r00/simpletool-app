@@ -39,6 +39,31 @@ const EMBEDDED_TOOL_IDS = [
   "review-description-generator",
 ];
 
+function leafEntries(value, prefix = "", result = []) {
+  for (const [key, child] of Object.entries(value ?? {})) {
+    const path = prefix ? `${prefix}.${key}` : key;
+    if (child && typeof child === "object" && !Array.isArray(child)) {
+      leafEntries(child, path, result);
+    } else {
+      result.push([path, child]);
+    }
+  }
+  return result;
+}
+
+// Sentence fragments around inline <code> whose word order leaves nothing
+// before the code element in that locale.
+const INTENTIONALLY_EMPTY = new Set([
+  "ko:tools.sql-formatter.ui.desc3",
+  "ja:tools.sql-formatter.ui.desc3",
+]);
+
+// Interpolation tokens the runtime substitutes: {{name}}, {name}, ${name}.
+// Compared as a sorted multiset so locales may reorder them for grammar.
+function placeholders(value) {
+  return (String(value).match(/\$\{[^}]+\}|\{\{[^{}]+\}\}|\{[A-Za-z_]\w*\}/g) || []).sort();
+}
+
 function leafPaths(value, prefix = "", result = []) {
   for (const [key, child] of Object.entries(value ?? {})) {
     const path = prefix ? `${prefix}.${key}` : key;
@@ -66,6 +91,30 @@ describe("complete locale catalog parity", () => {
       expect(leafPaths(catalog).sort(), `${locale} leaf keys`).toEqual(
         englishLeaves,
       );
+    }
+  });
+
+  // Wording identical to English is allowed (shared technical terms), so
+  // this checks values structurally rather than demanding a different string.
+  it("keeps every localized value non-empty with English placeholder parity", () => {
+    const english = new Map(leafEntries(en));
+    for (const [locale, catalog] of Object.entries(CATALOGS)) {
+      const empty = [];
+      const drift = [];
+      for (const [path, value] of leafEntries(catalog)) {
+        const source = english.get(path);
+        if (typeof source !== "string") continue;
+        if (
+          typeof value !== "string" ||
+          (source.trim() && !value.trim() && !INTENTIONALLY_EMPTY.has(`${locale}:${path}`))
+        ) {
+          empty.push(path);
+        } else if (placeholders(value).join("|") !== placeholders(source).join("|")) {
+          drift.push(`${path}: ${placeholders(value)} vs en ${placeholders(source)}`);
+        }
+      }
+      expect(empty, `${locale} empty or non-string values`).toEqual([]);
+      expect(drift, `${locale} placeholder drift`).toEqual([]);
     }
   });
 

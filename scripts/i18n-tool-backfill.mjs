@@ -15,7 +15,8 @@ function literalMarkup(value) {
   return {
     tags: value.match(/<[^>]+>/g) || [],
     code: [...value.matchAll(/<(code|pre)\b[^>]*>([\s\S]*?)<\/\1>/g)].map(match => match[2]),
-    tokens: value.match(/\$\{[^}]+\}|\{\{[^}]+\}\}|\{[a-zA-Z_]\w*\}/g) || [],
+    // Locales may reorder placeholders; compare them as a multiset.
+    tokens: (value.match(/\$\{[^}]+\}|\{\{[^}]+\}\}|\{[a-zA-Z_]\w*\}/g) || []).sort(),
     leading: value.match(/^\s*/)[0],
     trailing: value.match(/\s*$/)[0],
   };

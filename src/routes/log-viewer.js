@@ -123,7 +123,7 @@ export async function handleLogViewerRoutes(request, url) {
           </div>
         </div>
       </div>
-    ${createRelatedToolsSection(relatedToolsData)}
+    ${createRelatedToolsSection(relatedToolsData, currentLang)}
       </div>
     </main>
 

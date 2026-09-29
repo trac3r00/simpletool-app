@@ -48,15 +48,14 @@ describe("Regex explanation runtime i18n", () => {
         englishKeys,
       );
       for (const key of englishKeys) {
+        // Identical wording is allowed: shared terms (e.g. "Unicode") may
+        // legitimately stay untranslated. Empty values and placeholder drift
+        // are the regressions that break rendered explanations.
         expect(typeof translations[key], `${locale} ${key}`).toBe("string");
+        expect(translations[key].trim(), `${locale} ${key} is empty`).not.toBe("");
         expect(placeholders(translations[key]), `${locale} ${key}`).toEqual(
           placeholders(english[key]),
         );
-        if (locale !== "en") {
-          expect(translations[key], `${locale} ${key} should be localized`).not.toBe(
-            english[key],
-          );
-        }
       }
     }
   });

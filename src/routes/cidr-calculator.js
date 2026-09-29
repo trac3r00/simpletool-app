@@ -374,7 +374,7 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
       ])}
       </div>
     </main>
-    ${createRelatedToolsSection(relatedToolsData)}
+    ${createRelatedToolsSection(relatedToolsData, currentLang)}
 
     <script>
       (function() {
