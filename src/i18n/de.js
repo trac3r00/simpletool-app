@@ -3091,7 +3091,7 @@ export default {
         option1: "Zweiwöchentlich",
         option2: "Monatlich",
         placeholder1: "repositories: []",
-        placeholder2: "name: Audit öffentlicher Repositories",
+        placeholder2: "name: Public repos audit",
         text0: "Warte auf Eingabe",
       },
       js: {

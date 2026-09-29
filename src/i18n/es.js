@@ -3091,7 +3091,7 @@ export default {
         option1: "Quincenal",
         option2: "Mensual",
         placeholder1: "repositories: []",
-        placeholder2: "name: Auditoría de repos públicos",
+        placeholder2: "name: Public repos audit",
         text0: "Esperando entrada",
       },
       js: {
