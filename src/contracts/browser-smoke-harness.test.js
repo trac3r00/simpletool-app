@@ -17,6 +17,9 @@ const HARNESS = path.join(ROOT, "scripts/browser-smoke.mjs");
 const FAKE_OSASCRIPT = `
 const script = process.argv[process.argv.indexOf("-e") + 1] || "";
 const fail = (msg) => { process.stderr.write(msg + "\\n"); process.exit(1); };
+// Async IIFE, not top-level await: the file is extensionless, so Node loads it as
+// CommonJS and only Node >= 22.12 re-parses it as ESM on a top-level await.
+(async () => {
 if (/close tab/.test(script)) {
   if (process.env.FAKE_CLEANUP_FAIL) fail("execution error: Safari got an error (-1728)");
   process.exit(0);
@@ -35,6 +38,7 @@ await fetch(new URL("/__report", url), {
   method: "POST",
   body: JSON.stringify({ id, errors, probe }),
 });
+})().catch((e) => fail(String(e && e.stack || e)));
 `;
 
 const FAKE_OPEN = `
