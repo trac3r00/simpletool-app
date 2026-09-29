@@ -1,6 +1,12 @@
 /**
- * Content UI Components — reusable building blocks for blog, FAQ, and educational pages.
+ * Content UI Components — reusable building blocks for blog, FAQ, and reference pages.
  * Professional editorial aesthetic: clean typography, generous whitespace, subtle accent borders.
+ *
+ * Removed 2026-09-10: createEducationalSection() and createVisibleArticle(). They rendered the
+ * generic "About / How to Use / Common Use Cases / Pro Tips" block (33x/28x/27x duplicated
+ * headings across the catalog) plus always-open marketing paragraphs on 31 routes. Tool pages
+ * are now just the tool: header, controls, and only the reference content that IS the tool's
+ * value (cheatsheets).
  */
 
 import {
@@ -9,72 +15,6 @@ import {
   withLanguageQuery,
   t,
 } from "./i18n.js";
-
-/**
- * Educational section with collapsible panels.
- * @param {Array<{title: string, content: string}>} sections
- * @param {string} [toolId] - Optional tool ID for i18n namespacing
- * @returns {string} HTML
- */
-export function createEducationalSection(
-  sections,
-  toolId,
-  lang = DEFAULT_LANGUAGE,
-) {
-  if (!sections || sections.length === 0) return "";
-
-  const prefix = toolId ? `tools.${toolId}.edu` : "content.edu";
-  const currentLang = normalizeLanguage(lang);
-
-  const items = sections
-    .map((section, i) => {
-      const headingKey = `${prefix}.heading${i + 1}`;
-      const contentKey = `${prefix}.p${i + 1}`;
-      const headingText =
-        t(headingKey, currentLang) !== headingKey
-          ? t(headingKey, currentLang)
-          : section.title;
-      const contentText =
-        t(contentKey, currentLang) !== contentKey
-          ? t(contentKey, currentLang)
-          : section.content;
-      return `
-    <details class="group border-l-4 border-primary-500 dark:border-primary-400 bg-white dark:bg-surface-900 rounded-r-lg shadow-sm"${i === 0 ? " open" : ""}>
-      <summary class="flex items-center justify-between w-full px-5 py-4 cursor-pointer select-none text-left text-surface-900 dark:text-surface-50 font-semibold text-base hover:bg-surface-50 dark:hover:bg-surface-800/50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500" data-i18n="${headingKey}">
-        <span>${headingText}</span>
-        <svg class="w-5 h-5 text-surface-500 dark:text-surface-400 transition-transform duration-200 group-open:rotate-180 flex-shrink-0 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-        </svg>
-      </summary>
-      <div class="px-5 pb-5 pt-1 text-sm text-surface-700 dark:text-surface-300 leading-relaxed prose dark:prose-invert max-w-none" data-i18n-html="${contentKey}">
-        ${contentText}
-      </div>
-    </details>
-  `;
-    })
-    .join("");
-
-  return `
-    <div data-section="educational" class="space-y-3 mt-8" role="region" aria-label="Educational content">
-      ${items}
-    </div>
-  `;
-}
-
-/**
- * Always-open article for crawlers and AdSense reviewers. Use this for the
- * unique how-this-tool-works copy; keep FAQs in createEducationalSection.
- * @param {{ title: string, paragraphs: string[] }} options
- */
-export function createVisibleArticle({ title, paragraphs = [] } = {}) {
-  if (!title || paragraphs.length === 0) return "";
-  const body = paragraphs.map((p) => `<p>${p}</p>`).join("\n        ");
-  return `
-      <article class="prose dark:prose-invert max-w-none mb-10">
-        <h2>${title}</h2>
-        ${body}
-      </article>`;
-}
 
 /**
  * FAQ Accordion with accessible details/summary and anchor IDs.

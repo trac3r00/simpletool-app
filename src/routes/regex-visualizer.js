@@ -6,13 +6,10 @@ import {
   infoHint,
 } from "../utils/common-ui.js";
 import {
-  createEducationalSection,
   createRelatedToolsSection,
-  createVisibleArticle,
 } from "../utils/content-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
 import {
-  DEFAULT_LANGUAGE,
   getToolTranslation,
   normalizeLanguage,
   resolveRequestLanguage,
@@ -47,15 +44,6 @@ export async function handleRegexVisualizerRoutes(request) {
     <main class="tool-page-shell">
       <div class="tool-page-panel">
       ${header}
-
-      ${createVisibleArticle({
-        title: "Railroad diagrams for the pattern you actually typed",
-        paragraphs: [
-          `Regex Studio draws a railroad diagram from the expression in the box and highlights matches in the sample text as you type. The diagram is generated here; there is no "explain this regex" API and the corpus never leaves the page.`,
-          `Use it when you need to show a reviewer what <code>(?=…)</code> or a nested group is doing, or to confirm a pattern against logs you should not paste into a hosted tester. Code snippets for common languages are templates, not an execution environment.`,
-          `JavaScript regex semantics apply (no Python <code>re.VERBOSE</code>, no lookbehind in engines that lack it). If the pattern is invalid, the diagram stays empty and the error is shown next to the input instead of failing closed with a generic "no matches".`,
-        ],
-      })}
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
         <!-- Left Column: Input & Controls -->
@@ -256,33 +244,7 @@ while ((m = regex.exec(str)) !== null) {
       </div>
     </main>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-      ${createEducationalSection(
-        [
-          {
-            title: "What are Regular Expressions?",
-            content:
-              "<p>Regular expressions (regex) are powerful patterns used to match character combinations in strings. They are essential tools for text processing, validation, and data extraction across programming languages.</p><p>Regex patterns consist of literal characters and special metacharacters that define search rules. They are used in form validation, log parsing, search and replace operations, and data cleaning tasks.</p>",
-          },
-          {
-            title: "How to Use This Tool",
-            content:
-              "<p>Enter your regex pattern in the input field. The tool will automatically generate a railroad diagram visualizing the pattern structure. Add test text to see real-time match highlighting and explanations.</p><p>Use the cheatsheet for quick reference on common patterns and syntax. Generate code snippets for your preferred programming language.</p>",
-          },
-          {
-            title: "Common Use Cases",
-            content:
-              "<ul><li><strong>Email validation:</strong> Ensure user input matches proper email format before processing</li><li><strong>Log parsing:</strong> Extract timestamps, IP addresses, and error codes from server logs</li><li><strong>Data cleaning:</strong> Remove unwanted characters or format phone numbers consistently</li><li><strong>Search and replace:</strong> Bulk text transformations with pattern matching</li></ul>",
-          },
-          {
-            title: "Pro Tips",
-            content:
-              "<ul><li>Start simple and build complex patterns incrementally</li><li>Use non-capturing groups (?:) when you do not need to reference the match</li><li>Test edge cases like empty strings and special characters</li><li>Consider regex readability—complex patterns can be documented with comments</li></ul>",
-          },
-        ],
-        "regex-visualizer",
-        currentLang,
-      )}
-    ${createRelatedToolsSection(relatedToolsData)}
+      ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;
 

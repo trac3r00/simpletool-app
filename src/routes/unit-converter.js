@@ -7,7 +7,6 @@
 import { createPageTemplate, createToolHeader } from "../utils/common-ui.js";
 import { respondHTML } from "../utils/respond.js";
 import {
-  createEducationalSection,
   createRelatedToolsSection,
 } from "../utils/content-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
@@ -107,34 +106,8 @@ function renderUnitConverterPage(lang = DEFAULT_LANGUAGE) {
       </div>
     </main>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-      ${createEducationalSection(
-        [
-          {
-            title: "Measurement Systems Overview",
-            content:
-              "<p>Measurement systems are collections of units of measurement and rules relating them to each other. The two most common systems are the <strong>Metric System</strong> (International System of Units or SI) and the <strong>Imperial System</strong>. The Metric system is based on powers of ten, making it highly logical and easy to scale (e.g., meters, kilometers, millimeters).</p><p>The Imperial system, primarily used in the United States, uses units like inches, feet, and pounds, which have historical origins and less uniform conversion factors. Understanding the differences between these systems is essential for science, engineering, international trade, and even daily tasks like cooking or traveling.</p>",
-          },
-          {
-            title: "How to Use This Tool",
-            content:
-              '<ol><li>Select the measurement category (e.g., Length, Weight, Temperature) from the grid at the top.</li><li>Choose the unit you want to convert from in the "From" dropdown menu.</li><li>Enter the value you wish to convert in the input field below the "From" unit.</li><li>Select the target unit in the "To" dropdown menu.</li><li>The converted value will appear instantly in the "To" field, along with the mathematical formula used for the conversion.</li></ol>',
-          },
-          {
-            title: "Common Use Cases",
-            content:
-              "<ul><li><strong>Travel:</strong> Convert distances from kilometers to miles or temperatures from Celsius to Fahrenheit when visiting different countries.</li><li><strong>Cooking:</strong> Translate recipes between metric (grams/milliliters) and imperial (ounces/cups) measurements.</li><li><strong>Engineering & Science:</strong> Perform precise conversions between different units of pressure, energy, or speed for technical calculations.</li><li><strong>Digital Storage:</strong> Understand the difference between Megabytes, Gigabytes, and Terabytes when managing your files and hardware.</li></ul>",
-          },
-          {
-            title: "Pro Tips",
-            content:
-              '<ul><li>Use the "Swap" button to quickly reverse the conversion direction between your selected units.</li><li>Always double-check the specific unit type, especially for volume and weight, as names can be similar across different systems (e.g., US vs. UK gallons).</li><li>When performing multiple conversions in a sequence, keep as many decimal places as possible until the final result to avoid cumulative rounding errors.</li></ul>',
-          },
-        ],
-        "unit-converter",
-        currentLang,
-      )}
+      ${createRelatedToolsSection(relatedToolsData)}
     </div>
-    ${createRelatedToolsSection(relatedToolsData)}
   `;
 
   const scripts = `

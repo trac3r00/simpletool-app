@@ -6,7 +6,6 @@
 import { respondHTML, respondJSON } from "../utils/respond.js";
 import { createPageTemplate, createCheatsheet, createToolHeader } from "../utils/common-ui.js";
 import {
-  createEducationalSection,
   createRelatedToolsSection,
 } from "../utils/content-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
@@ -147,33 +146,7 @@ function renderDataConverterPage(lang = DEFAULT_LANGUAGE) {
       </div>
     </main>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-      ${createEducationalSection(
-        [
-          {
-            title: "YAML vs TOML vs JSON Compared",
-            content:
-              "<p><strong>JSON</strong> is the most widely used format for data exchange due to its simplicity and native support in JavaScript. <strong>YAML</strong> (YAML Ain't Markup Language) is a human-friendly data serialization standard that uses indentation to represent structure, making it popular for complex configuration files. <strong>TOML</strong> (Tom's Obvious, Minimal Language) is designed to be easy to read and write due to its obvious semantics and is often used for project configuration.</p><p>While JSON is strict and compact, YAML and TOML prioritize human readability and ease of manual editing. YAML is powerful but can be complex due to its many features, while TOML aims for a simpler, more predictable structure that maps well to hash tables. Choosing the right format depends on your specific needs for readability, performance, and tooling support.</p>",
-          },
-          {
-            title: "How to Use This Tool",
-            content:
-              '<ol><li>Paste your configuration data (JSON, YAML, or TOML) into the source text area on the left.</li><li>The tool will automatically detect the source format, or you can select it manually from the dropdown.</li><li>Click the "Validate only" button to check for syntax errors without performing a conversion.</li><li>Click one of the conversion buttons (→ JSON, → YAML, → TOML) to translate your data into that format.</li><li>View the results in the output panels on the right and click "Copy" to save them to your clipboard.</li></ol>',
-          },
-          {
-            title: "Common Use Cases",
-            content:
-              "<ul><li><strong>Infrastructure as Code:</strong> Convert between JSON and YAML when working with Kubernetes manifests, Docker Compose files, or AWS CloudFormation templates.</li><li><strong>Project Configuration:</strong> Migrate settings between <code>package.json</code> (JSON) and <code>pyproject.toml</code> (TOML) or <code>Cargo.toml</code> (TOML).</li><li><strong>API Prototyping:</strong> Quickly visualize how a complex data structure looks in different formats to decide which is best for your API.</li><li><strong>Legacy Migration:</strong> Translate old configuration files into modern formats while ensuring data integrity and syntax correctness.</li></ul>",
-          },
-          {
-            title: "Pro Tips",
-            content:
-              '<ul><li>Use YAML for CI/CD pipelines where readability of complex, nested structures is essential for maintainability.</li><li>Prefer TOML for application-level configuration files to provide a clean and obvious interface for end-users who might need to edit them manually.</li><li>When converting from YAML to JSON, be aware of YAML\'s "Norway problem" (where <code>NO</code> can be interpreted as <code>false</code>) and ensure your data types are preserved correctly.</li></ul>',
-          },
-        ],
-        "yaml-toml-converter",
-        currentLang,
-      )}
-    ${createRelatedToolsSection(relatedToolsData)}
+      ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;
 

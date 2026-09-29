@@ -4,7 +4,6 @@ import {
   infoHint,
 } from "../utils/common-ui.js";
 import {
-  createEducationalSection,
   createRelatedToolsSection,
 } from "../utils/content-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
@@ -203,27 +202,6 @@ export function renderProtocolHeadersSection(lang = DEFAULT_LANGUAGE) {
       ])}
     </div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-      ${createEducationalSection(
-        [
-          {
-            title: "What are Protocol Headers?",
-            content:
-              "<p>Protocol headers are structured data that precede the payload in network packets. They contain control information such as source and destination addresses, protocol types, sequence numbers, and checksums. Understanding header structure is essential for network debugging, packet analysis, and protocol implementation.</p><p>Each protocol layer (Ethernet, IP, TCP/UDP) adds its own header, creating a layered encapsulation that enables data to travel across networks.</p>",
-          },
-          {
-            title: "How to Use This Tool",
-            content:
-              "<p>Select a protocol from the tabs to view its header structure. Each colored block represents a field with its size indicated. Click on any field to see detailed information including:</p><ul><li>Field name and description</li><li>Bit/byte offset</li><li>Common values and their meanings</li><li>RFC reference</li></ul><p>Use the hex dump parser to analyze real packet captures by pasting hex output from tools like tcpdump or Wireshark.</p>",
-          },
-          {
-            title: "Common Use Cases",
-            content:
-              "<ul><li><strong>Packet Analysis:</strong> Understand the structure of captured network traffic</li><li><strong>Protocol Learning:</strong> Visual aid for studying network protocols</li><li><strong>Debugging:</strong> Identify malformed headers or incorrect field values</li><li><strong>Development:</strong> Reference when implementing network protocols</li></ul>",
-          },
-        ],
-        "protocol-headers",
-        currentLang,
-      )}
       ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;

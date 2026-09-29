@@ -6,7 +6,6 @@
 import { respondHTML, respondJSON } from "../utils/respond.js";
 import { createPageTemplate, infoHint, createToolHeader } from "../utils/common-ui.js";
 import {
-  createEducationalSection,
   createRelatedToolsSection,
 } from "../utils/content-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
@@ -159,53 +158,7 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
       </div>
     </main>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-      ${createEducationalSection(
-        [
-          {
-            title: "What is htpasswd?",
-            content: `
-            <p>The <code>htpasswd</code> file is a flat-file database used to store usernames and hashed passwords for basic authentication on Apache and Nginx web servers. It is a simple but effective way to protect specific directories or administrative panels on a website without needing a full database-backed authentication system.</p>
-            <p>Each line in an <code>htpasswd</code> file represents a single user and follows the format <code>username:hashed_password</code>.</p>
-          `,
-          },
-          {
-            title: "How to Use This Tool",
-            content: `
-            <ol>
-              <li><strong>Enter Username:</strong> Type the username you want to use for authentication.</li>
-              <li><strong>Provide Password:</strong> Enter a password or click "Generate strong" to create a secure one.</li>
-              <li><strong>Select Algorithm:</strong> Choose "Bcrypt (-B)" for modern security or "Apache MD5 (-m)" for legacy compatibility.</li>
-              <li><strong>Generate:</strong> Click "Generate entry" to create the hashed string.</li>
-              <li><strong>Copy or Download:</strong> Copy the resulting line to your clipboard or download it as a file to upload to your server.</li>
-            </ol>
-          `,
-          },
-          {
-            title: "Common Use Cases",
-            content: `
-            <ul>
-              <li><strong>Admin Panels:</strong> Protecting sensitive areas like <code>/admin</code> or <code>/wp-admin</code> with an extra layer of server-level security.</li>
-              <li><strong>Staging Sites:</strong> Restricting access to development or staging environments so they aren't indexed by search engines or viewed by the public.</li>
-              <li><strong>Private Repositories:</strong> Securing local Git or SVN repositories served over HTTP.</li>
-              <li><strong>API Gateways:</strong> Implementing simple authentication for internal microservices or legacy APIs.</li>
-            </ul>
-          `,
-          },
-          {
-            title: "Pro Tips",
-            content: `
-            <ul>
-              <li><strong>Always Use Bcrypt:</strong> Bcrypt is intentionally slow and uses a "cost" factor to resist brute-force attacks. It is significantly more secure than the legacy MD5 or SHA1 options.</li>
-              <li><strong>Secure the File:</strong> Name your file <code>.htpasswd</code> (with a leading dot) and store it <strong>outside</strong> your web root directory to prevent it from being downloaded.</li>
-              <li><strong>HTTPS is Mandatory:</strong> Basic authentication sends credentials in a format that is easily reversible. Never use it over unencrypted HTTP; always ensure your site is served over HTTPS.</li>
-            </ul>
-          `,
-          },
-        ],
-        "htpasswd-generator",
-        currentLang,
-      )}
-    ${createRelatedToolsSection(relatedToolsData)}
+      ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;
 

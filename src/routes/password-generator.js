@@ -6,7 +6,6 @@
 import { respondHTML, respondJSON } from "../utils/respond.js";
 import { createPageTemplate, createToolHeader } from "../utils/common-ui.js";
 import {
-  createEducationalSection,
   createRelatedToolsSection,
 } from "../utils/content-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
@@ -355,53 +354,7 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
 
       </div>
 
-      ${createEducationalSection(
-        [
-          {
-            title: "What Makes a Password Secure?",
-            content: `
-            <p>A secure password is your first line of defense against unauthorized access. In the modern era of high-speed computing, "secure" is defined by <strong>entropy</strong>—the measure of randomness and unpredictability in a string. A strong password should be long (at least 16 characters), unique to every account, and composed of a diverse set of character types including uppercase, lowercase, numbers, and symbols.</p>
-            <p>Avoid using personal information like birthdays, pet names, or common dictionary words. Even complex-looking substitutions like "P@ssw0rd123" are easily cracked by modern brute-force tools that use massive dictionaries of common patterns.</p>
-          `,
-          },
-          {
-            title: "How to Use This Tool",
-            content: `
-            <ol>
-              <li><strong>Select your mode:</strong> Choose between Password, Username, Passphrase, or Email Alias depending on your needs.</li>
-              <li><strong>Adjust length:</strong> Use the slider to set the desired length. For passwords, 16+ characters is recommended for high security.</li>
-              <li><strong>Configure options:</strong> Toggle character sets (symbols, numbers, etc.) or styles (readable vs. secure).</li>
-              <li><strong>Generate:</strong> Click the "Generate" button to create your unique credential.</li>
-              <li><strong>Copy:</strong> Use the copy icon to safely move the result to your clipboard or password manager.</li>
-            </ol>
-          `,
-          },
-          {
-            title: "Common Use Cases",
-            content: `
-            <ul>
-              <li><strong>Account Security:</strong> Generating unique, high-entropy passwords for every online service you use.</li>
-              <li><strong>System Administration:</strong> Creating secure temporary passwords for new users or service accounts.</li>
-              <li><strong>Privacy Protection:</strong> Using "Plus Aliases" (e.g., user+service@domain.com) to track which services sell your data or to filter spam.</li>
-              <li><strong>Memorable Security:</strong> Using the Passphrase generator for master passwords that need to be typed manually but remain resistant to cracking.</li>
-            </ul>
-          `,
-          },
-          {
-            title: "Pro Tips",
-            content: `
-            <ul>
-              <li><strong>Use a Password Manager:</strong> Never try to memorize complex passwords. Use this tool to generate them, and store them in a reputable password manager like Bitwarden, 1Password, or KeePassXC.</li>
-              <li><strong>Entropy over Complexity:</strong> Length is often more important than character variety. A 20-character lowercase password is often harder to crack than an 8-character "complex" one.</li>
-              <li><strong>Rotate on Breach:</strong> If a service you use is compromised, use this generator to create a completely new, unrelated password immediately.</li>
-            </ul>
-          `,
-          },
-        ],
-        "password-generator",
-        currentLang,
-      )}
-    </main>
+      </main>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
     ${createRelatedToolsSection(relatedToolsData)}
     </div>

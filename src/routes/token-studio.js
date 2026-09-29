@@ -6,7 +6,6 @@
 import { respondHTML, respondJSON } from "../utils/respond.js";
 import { createPageTemplate, createToolHeader } from "../utils/common-ui.js";
 import {
-  createEducationalSection,
   createRelatedToolsSection,
 } from "../utils/content-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
@@ -438,32 +437,6 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
     </main>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-      ${createEducationalSection(
-        [
-          {
-            title: "What is a JWT?",
-            content:
-              "<p>A JSON Web Token (JWT) is a compact, URL-safe means of representing claims to be transferred between two parties. A JWT consists of three Base64URL-encoded parts separated by dots: the <strong>Header</strong> (algorithm &amp; type), the <strong>Payload</strong> (claims), and the <strong>Signature</strong>. The signature ensures the token has not been tampered with. JWTs are commonly used for authentication and information exchange in web APIs.</p><p>Standard claims include <code>sub</code> (subject), <code>iss</code> (issuer), <code>aud</code> (audience), <code>exp</code> (expiration), <code>nbf</code> (not before), <code>iat</code> (issued at), and <code>jti</code> (JWT ID).</p>",
-          },
-          {
-            title: "JWT Algorithms",
-            content:
-              "<ul><li><strong>HS256/384/512</strong> — HMAC with SHA-2. Uses a shared secret. Simple, but both parties must hold the same secret key.</li><li><strong>RS256/384/512</strong> — RSA PKCS#1 v1.5 signature. Asymmetric: sign with private key, verify with public key. Ideal for microservice architectures.</li><li><strong>ES256/384/512</strong> — ECDSA with NIST curves (P-256, P-384, P-521). Smaller signatures than RSA with equivalent security.</li><li><strong>PS256/384/512</strong> — RSA-PSS. A probabilistic variant of RSA signing, preferred over RS* in modern systems.</li></ul>",
-          },
-          {
-            title: "JWK and JWKS",
-            content:
-              "<p>A JSON Web Key (JWK) is a JSON structure representing a cryptographic key. A JWK Set (JWKS) is a JSON structure containing an array of JWKs under the <code>keys</code> property. Services publish their JWKS at a well-known URL (e.g., <code>/.well-known/jwks.json</code>), allowing clients to fetch public keys for JWT verification without out-of-band key exchange. Keys in a JWKS are identified by their <code>kid</code> (Key ID), which JWT headers reference.</p>",
-          },
-          {
-            title: "Security Best Practices",
-            content:
-              "<ul><li>Always validate <code>exp</code>, <code>nbf</code>, <code>iss</code>, and <code>aud</code> claims server-side.</li><li>Never use the <code>alg: none</code> algorithm in production — it removes all signature protection.</li><li>Prefer asymmetric algorithms (RS*, ES*, PS*) over HMAC when multiple services need to verify tokens.</li><li>Rotate keys regularly and use <code>kid</code> to identify which key was used to sign each token.</li><li>Store private keys securely — never commit them to version control.</li><li>Use short expiration times and refresh tokens rather than long-lived JWTs.</li></ul>",
-          },
-        ],
-        "token-studio",
-        currentLang,
-      )}
       ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;

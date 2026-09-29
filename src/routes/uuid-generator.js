@@ -6,7 +6,6 @@
 import { respondHTML, respondJSON } from "../utils/respond.js";
 import { createPageTemplate, createToolHeader } from "../utils/common-ui.js";
 import {
-  createEducationalSection,
   createRelatedToolsSection,
 } from "../utils/content-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
@@ -144,33 +143,7 @@ function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
           </div>
         </div>
 
-        ${createEducationalSection(
-          [
-            {
-              title: "What is a UUID?",
-              content:
-                "A Universally Unique Identifier (UUID) is a 128-bit number used to uniquely identify information in computer systems. They are designed to be generated independently without a central authority while maintaining a negligible probability of collision.",
-            },
-            {
-              title: "How to Use This Tool",
-              content:
-                'Select the UUID version (v1 for time-based, v4 for random) and the number of IDs you need. Click "Generate" to create a list of unique identifiers ready for use in your database or application.',
-            },
-            {
-              title: "Common Use Cases",
-              content:
-                "Primary keys in distributed databases, session identifiers, transaction tracking, and naming temporary files or resources where uniqueness is critical across multiple systems.",
-            },
-            {
-              title: "Pro Tips",
-              content:
-                "UUID v4 is the most common choice for general-purpose unique IDs because it relies on high-quality randomness. Use v1 if you need to sort IDs by creation time.",
-            },
-          ],
-          "uuid-generator",
-          currentLang,
-        )}
-      </div>
+        </div>
     </main>
     ${createRelatedToolsSection(relatedToolsData)}
   `;
