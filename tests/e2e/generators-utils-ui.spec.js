@@ -103,19 +103,24 @@ test.describe("Generator and utility tools UI interactions", () => {
     await expect(page.locator("#log-content .log-row").first()).toBeVisible();
   });
 
-  // QUARANTINED: pre-existing failure surfaced when CI first ran (PR #11).
-  // `#mermaid-render svg` never appears (toHaveCount(1) fails after 3 retries).
-  // Likely cause: mermaid library async render race OR a regression in
-  // src/routes/mermaid-studio.js (currently has uncommitted local edits).
-  // Re-enable once root cause is fixed.
-  test.skip("mermaid-studio renders diagram from editor input", async ({
+  // Re-enabled 2026-09-10: the quarantine note guessed at a mermaid render
+  // race, but the diagram does render — verified in a real browser against
+  // npx wrangler dev (see .omo/evidence/ulw/2026-09-10-site-audit).
+  test("mermaid-studio renders diagram from editor input", async ({
     page,
   }) => {
     await openTool(page, "/mermaid-studio");
 
-    await page
-      .locator("#re-mermaid-input")
-      .fill("graph TD\nA[Start] --> B[Done]");
+    const rendered = page.locator("#mermaid-render svg").filter({
+      hasText: "CommitSevenStart",
+    });
+    await Promise.all([
+      rendered.waitFor({ state: "visible", timeout: 15000 }),
+      page.locator("#re-mermaid-input").fill(
+        "graph TD\nA[CommitSevenStart] --> B[CommitSevenDone]",
+      ),
+    ]);
+    await expect(rendered).toContainText("CommitSevenDone");
     await expect(page.locator("#mermaid-render svg")).toHaveCount(1);
     await expect(page.locator("#mermaid-render .mermaid-error")).toHaveCount(0);
   });
@@ -293,23 +298,25 @@ test.describe("Generator and utility tools UI interactions", () => {
     );
   });
 
-  // QUARANTINED: pre-existing failure surfaced when CI first ran (PR #11).
-  // `#svg-output` never receives `<svg`-prefixed value (toHaveValue fails after 3 retries).
-  // Likely cause: regression in src/routes/svg-optimizer.js (currently has
-  // uncommitted local edits) OR the optimizer never populates #svg-output on preview.
-  // Re-enable once root cause is fixed.
-  test.skip("svg-optimizer previews and optimizes SVG markup", async ({
-    page,
-  }) => {
+  // Re-enabled 2026-09-10: the preview DOES populate #svg-output with optimized
+  // markup and enables #copy-btn — verified in a real browser (see
+  // .omo/evidence/ulw/2026-09-10-site-audit). The quarantine dated from PR #11.
+  test("svg-optimizer previews and optimizes SVG markup", async ({ page }) => {
     await openTool(page, "/svg-optimizer");
 
+    const viewBox = "0 0 37 29";
     const svg =
-      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" fill="#ff0000"/><circle cx="12" cy="12" r="6" fill="#00ff00"/></svg>';
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}"><rect width="24" height="24" fill="#ff0000"/><circle cx="12" cy="12" r="6" fill="#00ff00"/></svg>`;
     await page.locator("#svg-input").fill(svg);
-    await page.locator("#preview-btn").click();
+    await Promise.all([
+      page.locator(`#preview svg[viewBox="${viewBox}"]`).waitFor({ state: "visible", timeout: 15000 }),
+      page.locator("#preview-btn").click(),
+    ]);
 
-    await expect(page.locator("#preview")).not.toContainText("No preview yet.");
-    await expect(page.locator("#svg-output")).toHaveValue(/<svg/);
+    expect(await page.locator("#svg-output").evaluate((output) =>
+      new DOMParser().parseFromString(output.value, "image/svg+xml")
+        .documentElement.getAttribute("viewBox"),
+    )).toBe(viewBox);
     await expect(page.locator("#copy-btn")).toBeEnabled();
   });
 });
