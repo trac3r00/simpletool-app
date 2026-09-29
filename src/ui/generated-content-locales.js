@@ -1575,7 +1575,8 @@ export const REVIEWED_LEGAL_CONTENT = Object.freeze({
       "scriptScope": "The AdSense client script may also load on these content paths:",
       "accountStatus": "Auto ads are controlled in the AdSense account and cannot be verified from this repository. CMP publication and regional consent behavior are also not verified here and must be checked before release."
     },
-    "responseMessage": "Messages are reviewed as capacity allows; no response time is guaranteed."
+    "responseMessage": "Messages are reviewed as capacity allows; no response time is guaranteed.",
+    "securityResponse": "Reports are reviewed as capacity allows. Include the affected URL, reproducible steps, impact, and a safe proof of concept; no acknowledgement or remediation deadline is promised."
   },
   "ko": {
     "adPolicy": {
@@ -1584,7 +1585,8 @@ export const REVIEWED_LEGAL_CONTENT = Object.freeze({
       "scriptScope": "애드센스 클라이언트 스크립트는 다음 콘텐츠 경로에서도 로드될 수 있습니다:",
       "accountStatus": "자동 광고는 애드센스 계정에서 제어되며 이 저장소에서는 검증할 수 없습니다. CMP 게시 및 지역별 동의 동작 역시 이곳에서 검증되지 않으므로 배포 전에 확인해야 합니다."
     },
-    "responseMessage": "메시지는 처리 역량이 허용하는 대로 검토되며, 답변 소요 시간은 보장되지 않습니다."
+    "responseMessage": "메시지는 처리 역량이 허용하는 대로 검토되며, 답변 소요 시간은 보장되지 않습니다.",
+    "securityResponse": "제보는 처리 역량이 허용하는 대로 검토합니다. 영향을 받는 URL, 재현 단계, 영향, 안전한 개념 증명(PoC)을 포함해 주세요. 접수 확인이나 수정 기한은 약속하지 않습니다."
   },
   "ja": {
     "adPolicy": {
@@ -1593,7 +1595,8 @@ export const REVIEWED_LEGAL_CONTENT = Object.freeze({
       "scriptScope": "AdSense クライアントスクリプトは、以下のコンテンツパスでも読み込まれる場合があります：",
       "accountStatus": "自動広告は AdSense アカウント側で管理されており、本リポジトリから検証することはできません。CMP の公開状況および地域ごとの同意に関する挙動についても、ここでは検証されないため、リリース前に確認する必要があります。"
     },
-    "responseMessage": "メッセージは対応可能な範囲で順次確認されますが、返信時間は保証されません。"
+    "responseMessage": "メッセージは対応可能な範囲で順次確認されますが、返信時間は保証されません。",
+    "securityResponse": "報告は対応可能な範囲で確認します。影響を受ける URL、再現手順、影響範囲、安全な概念実証（PoC）を含めてください。受領確認や修正の期限はお約束していません。"
   },
   "es": {
     "adPolicy": {
@@ -1602,7 +1605,8 @@ export const REVIEWED_LEGAL_CONTENT = Object.freeze({
       "scriptScope": "El script de cliente de AdSense también puede cargarse en estas rutas de contenido:",
       "accountStatus": "Los anuncios automáticos se controlan en la cuenta de AdSense y no se pueden verificar desde este repositorio. La publicación de CMP y el comportamiento de consentimiento regional tampoco se verifican aquí y deben comprobarse antes del lanzamiento."
     },
-    "responseMessage": "Los mensajes se revisan según la capacidad disponible; no se garantiza un tiempo de respuesta."
+    "responseMessage": "Los mensajes se revisan según la capacidad disponible; no se garantiza un tiempo de respuesta.",
+    "securityResponse": "Revisamos los reportes según nuestra capacidad. Incluye la URL afectada, los pasos para reproducirlo, el impacto y una prueba de concepto segura; no prometemos ningún plazo de acuse de recibo ni de corrección."
   },
   "zh-CN": {
     "adPolicy": {
@@ -1611,7 +1615,8 @@ export const REVIEWED_LEGAL_CONTENT = Object.freeze({
       "scriptScope": "AdSense 客户端脚本也可能会在以下内容路径中加载：",
       "accountStatus": "自动广告由 AdSense 账户控制，无法在此仓库中进行验证。CMP 的发布和区域同意行为也未在此处验证，必须在发布前进行检查。"
     },
-    "responseMessage": "消息将在处理能力允许的情况下进行审核；不保证回复时间."
+    "responseMessage": "消息将在处理能力允许的情况下进行审核；不保证回复时间.",
+    "securityResponse": "我们会在能力允许的范围内审阅报告。请附上受影响的 URL、复现步骤、影响范围以及安全的概念验证（PoC）；我们不承诺确认回复或修复的期限。"
   },
   "zh-TW": {
     "adPolicy": {
@@ -1620,7 +1625,8 @@ export const REVIEWED_LEGAL_CONTENT = Object.freeze({
       "scriptScope": "AdSense 用戶端指令碼也可能會在以下內容路徑中載入：",
       "accountStatus": "自動廣告由 AdSense 帳戶控制，無法在此儲存庫中進行驗證。CMP 的發佈和區域同意行為也未在此處驗證，必須在發佈前進行檢查。"
     },
-    "responseMessage": "訊息將在處理能力允許的情況下進行審核；不保證回覆時間。"
+    "responseMessage": "訊息將在處理能力允許的情況下進行審核；不保證回覆時間。",
+    "securityResponse": "我們會在能力允許的範圍內審閱回報。請附上受影響的 URL、重現步驟、影響範圍以及安全的概念驗證（PoC）；我們不承諾確認回覆或修復的期限。"
   },
   "fr": {
     "adPolicy": {
@@ -1629,7 +1635,8 @@ export const REVIEWED_LEGAL_CONTENT = Object.freeze({
       "scriptScope": "Le script client AdSense peut également se charger sur ces chemins de contenu :",
       "accountStatus": "Les annonces automatiques sont contrôlées dans le compte AdSense et ne peuvent pas être vérifiées depuis ce dépôt. La publication de la CMP et le comportement de consentement régional ne sont pas non plus vérifiés ici et doivent être contrôlés avant le déploiement."
     },
-    "responseMessage": "Les messages sont examinés dans la mesure des capacités disponibles ; aucun délai de réponse n'est garanti."
+    "responseMessage": "Les messages sont examinés dans la mesure des capacités disponibles ; aucun délai de réponse n'est garanti.",
+    "securityResponse": "Les signalements sont examinés selon nos disponibilités. Indiquez l'URL concernée, les étapes de reproduction, l'impact et une preuve de concept sans danger ; aucun délai d'accusé de réception ni de correction n'est garanti."
   },
   "de": {
     "adPolicy": {
@@ -1638,7 +1645,8 @@ export const REVIEWED_LEGAL_CONTENT = Object.freeze({
       "scriptScope": "Das AdSense-Client-Skript wird möglicherweise auch auf diesen Inhaltspfaden geladen:",
       "accountStatus": "Automatische Anzeigen werden im AdSense-Konto gesteuert und können von diesem Repository aus nicht überprüft werden. Die CMP-Veröffentlichung und das regionale Einwilligungsverhalten werden hier ebenfalls nicht überprüft und müssen vor dem Release kontrolliert werden."
     },
-    "responseMessage": "Nachrichten werden nach Maßgabe der Kapazitäten geprüft; es wird keine Antwortzeit garantiert."
+    "responseMessage": "Nachrichten werden nach Maßgabe der Kapazitäten geprüft; es wird keine Antwortzeit garantiert.",
+    "securityResponse": "Meldungen werden nach Maßgabe der Kapazitäten geprüft. Bitte die betroffene URL, reproduzierbare Schritte, die Auswirkungen und einen ungefährlichen Proof of Concept angeben; eine Eingangsbestätigung oder Frist für die Behebung wird nicht zugesagt."
   },
   "pt": {
     "adPolicy": {
@@ -1647,7 +1655,8 @@ export const REVIEWED_LEGAL_CONTENT = Object.freeze({
       "scriptScope": "O script de cliente do AdSense também pode ser carregado nestes caminhos de conteúdo:",
       "accountStatus": "Os anúncios automáticos são controlados na conta do AdSense e não podem ser verificados a partir deste repositório. A publicação de CMP e o comportamento de consentimento regional também não são verificados aqui e devem ser checados antes do lançamento."
     },
-    "responseMessage": "As mensagens são revisadas conforme a capacidade permitir; não há garantia de tempo de resposta."
+    "responseMessage": "As mensagens são revisadas conforme a capacidade permitir; não há garantia de tempo de resposta.",
+    "securityResponse": "Os relatos são analisados conforme a nossa capacidade. Inclua a URL afetada, os passos para reproduzir, o impacto e uma prova de conceito segura; não prometemos prazo de confirmação nem de correção."
   },
   "vi": {
     "adPolicy": {
@@ -1656,6 +1665,7 @@ export const REVIEWED_LEGAL_CONTENT = Object.freeze({
       "scriptScope": "Mã kịch bản máy khách AdSense cũng có thể tải trên các đường dẫn nội dung này:",
       "accountStatus": "Quảng cáo tự động được kiểm soát trong tài khoản AdSense và không thể xác minh từ kho lưu trữ này. Hoạt động xuất bản CMP và hành vi đồng ý theo khu vực cũng không được xác minh tại đây và phải được kiểm tra trước khi phát hành."
     },
-    "responseMessage": "Các tin nhắn được xem xét khi khả năng cho phép; không có thời gian phản hồi nào được đảm bảo."
+    "responseMessage": "Các tin nhắn được xem xét khi khả năng cho phép; không có thời gian phản hồi nào được đảm bảo.",
+    "securityResponse": "Báo cáo được xem xét khi chúng tôi có khả năng. Vui lòng kèm URL bị ảnh hưởng, các bước tái hiện, mức độ ảnh hưởng và bản chứng minh khái niệm (PoC) an toàn; chúng tôi không cam kết thời hạn xác nhận hay khắc phục."
   }
 });

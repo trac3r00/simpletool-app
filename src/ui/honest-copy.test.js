@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { execFileSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 import { t, SUPPORTED_LANGUAGES } from "../utils/i18n.js";
 import { getLegalSections } from "./legal-content.js";
 import { getFaqEntries } from "./faq-content.js";
@@ -28,6 +30,9 @@ import {
   getToolsForEnvironment,
 } from "../utils/tool-registry.js";
 import { handlersById } from "../routes/_handlers.js";
+import { renderPrivacyPage, renderTermsPage } from "./legal-pages.js";
+import { renderFaqPage } from "./faq.js";
+import { withLanguageQuery } from "../utils/i18n.js";
 
 const LANGS = Object.keys(SUPPORTED_LANGUAGES);
 
@@ -456,6 +461,18 @@ describe("registry-backed public count", () => {
   });
 });
 
+describe("reviewed content locale generator", () => {
+  it("keeps generated-content-locales.js in sync with its JSON source", () => {
+    const script = fileURLToPath(
+      new URL("../../scripts/i18n-content-locales.mjs", import.meta.url),
+    );
+    // Throws (non-zero exit) when the generated module is stale.
+    expect(() =>
+      execFileSync(process.execPath, [script, "--check"], { stdio: "pipe" }),
+    ).not.toThrow();
+  });
+});
+
 describe("machine-bound advertising disclosure", () => {
   it("uses one exact/prefix allow-list for script-bearing routes", () => {
     const snapshot = getAdPolicySnapshot();
@@ -478,13 +495,44 @@ describe("machine-bound advertising disclosure", () => {
           REVIEWED_LEGAL_CONTENT[lang].adPolicy,
         );
       }
-      for (const pageId of ["contact", "security"]) {
-        const sections = getLegalSections(pageId, lang);
-        expect(sections.at(-1).paragraphs).toEqual([
-          REVIEWED_LEGAL_CONTENT[lang].responseMessage,
-        ]);
+      expect(getLegalSections("contact", lang).at(-1).paragraphs).toEqual([
+        REVIEWED_LEGAL_CONTENT[lang].responseMessage,
+      ]);
+      expect(getLegalSections("security", lang).at(-1).paragraphs).toEqual([
+        REVIEWED_LEGAL_CONTENT[lang].securityResponse,
+      ]);
+    }
+  });
+
+  it("renders the machine-readable ad scope exactly as the policy snapshot", async () => {
+    const snapshot = getAdPolicySnapshot();
+    for (const lang of LANGS) {
+      for (const render of [renderTermsPage, renderPrivacyPage]) {
+        const html = await render(lang).text();
+        const scopes = html.match(/<div[^>]*data-ad-policy-scope="v1"[^>]*>/g) || [];
+        expect(scopes).toHaveLength(1);
+        expect(scopes[0]).toContain(`data-auto-ads-status="${snapshot.autoAdsStatus}"`);
+        expect(scopes[0]).toContain(`data-cmp-status="${snapshot.cmpStatus}"`);
+        const paths = [...html.matchAll(/data-ad-policy-path="([^"]+)"/g)].map((m) => m[1]);
+        expect(paths).toEqual([...snapshot.manualUnitPaths, ...snapshot.scriptPaths]);
+        const prefixes = [...html.matchAll(/data-ad-policy-prefix="([^"]+)"/g)].map((m) => m[1]);
+        expect(prefixes).toEqual([...snapshot.scriptPrefixes]);
       }
     }
+  });
+
+  it("keeps the selected language on internal FAQ answer links", async () => {
+    for (const lang of LANGS.filter((code) => code !== "en")) {
+      const html = await renderFaqPage(lang).text();
+      const hrefs = [...html.matchAll(/data-faq-item[\s\S]*?<\/details>/g)]
+        .flatMap((m) => [...m[0].matchAll(/href="(\/[^"]*)"/g)].map((h) => h[1]));
+      expect(hrefs.length).toBeGreaterThan(0);
+      for (const href of hrefs) expect(href).toBe(withLanguageQuery(href.split("?")[0], lang));
+    }
+  });
+
+  it("does not list the homepage as manual-unit inventory", () => {
+    expect(getAdPolicySnapshot().manualUnitPaths).not.toContain("/");
   });
 });
 

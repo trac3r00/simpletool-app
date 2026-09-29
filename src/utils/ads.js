@@ -41,7 +41,7 @@ export const AD_SCRIPT_PREFIXES = Object.freeze(["/blog/"]);
 
 export function getAdPolicySnapshot() {
   return Object.freeze({
-    manualUnitPaths: Object.freeze(["/", "/json-formatter", ...LEGAL_AD_PATHS]),
+    manualUnitPaths: Object.freeze(["/json-formatter", ...LEGAL_AD_PATHS]),
     scriptPaths: AD_SCRIPT_PATHS,
     scriptPrefixes: AD_SCRIPT_PREFIXES,
     manualUnitsRequestNonPersonalizedAds: true,
@@ -68,7 +68,6 @@ export function normalizePath(pathname = "/") {
 export function pageAllowsAds(pathname = "/") {
   const path = normalizePath(pathname);
   if (DENY_AD_PATHS.some((denied) => path === denied)) return false;
-  if (path === "/") return true;
   if (path === "/json-formatter") return true;
   return LEGAL_AD_PATHS.includes(path);
 }
@@ -88,7 +87,6 @@ export function pageAllowsAdScript(pathname = "/") {
 export function slotKeyForPath(pathname = "/") {
   const path = normalizePath(pathname);
   if (!pageAllowsAds(path)) return null;
-  if (path === "/") return "home";
   if (path === "/json-formatter") return "json";
   if (LEGAL_AD_PATHS.includes(path)) return "legal";
   return null;

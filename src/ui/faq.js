@@ -6,6 +6,7 @@ import {
   normalizeLanguage,
   resolveRequestLanguage,
   t,
+  withLanguageQuery,
 } from "../utils/i18n.js";
 import { getFaqEntries } from "./faq-content.js";
 
@@ -37,7 +38,13 @@ function renderFaqShell({
 
 export function renderFaqPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const faqEntries = getFaqEntries(currentLang);
+  const faqEntries = getFaqEntries(currentLang).map((entry) => ({
+    ...entry,
+    answer: String(entry.answer).replace(
+      /href="(\/[^"]*)"/g,
+      (_, href) => `href="${withLanguageQuery(href, currentLang)}"`,
+    ),
+  }));
   const breadcrumbs = createBreadcrumbs(
     [
       { label: t("nav.home", currentLang), url: "/" },

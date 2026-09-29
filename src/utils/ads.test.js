@@ -24,8 +24,9 @@ afterEach(() => {
 });
 
 describe("pageAllowsAds", () => {
-  it("allows homepage, json formatter, and content-bearing legal pages", () => {
-    expect(pageAllowsAds("/")).toBe(true);
+  it("allows json formatter and content-bearing legal pages, not the homepage", () => {
+    expect(pageAllowsAds("/")).toBe(false);
+    expect(slotKeyForPath("/")).toBeNull();
     expect(pageAllowsAds("/json-formatter")).toBe(true);
     expect(pageAllowsAds("/about")).toBe(true);
     expect(pageAllowsAds("/privacy")).toBe(true);
@@ -177,18 +178,21 @@ describe("ad rendering", () => {
     });
     expect(isAdsEnabled()).toBe(true);
     expect(getAdsTxtBody()).toBe(`${ADS_TXT_LINE}\n`);
+    // The homepage placement was removed; the reserved key renders nothing there.
+    expect(getAdSlotHTML("home")).toBe("");
 
-    const home = getAdSlotHTML("home");
-    expect(home).toContain("Advertisement");
-    expect(home).toContain("min-height:280px");
-    expect(home).toContain('data-npa-on="1"');
-    expect(home).toContain('data-ad-slot="1111111111"');
-    expect(home).toContain("adsbygoogle || []).push({})");
-    expect(home).not.toContain("display:none");
+    setAdConfig({ path: "/about" });
+    const legal = getAdSlotHTML("legal");
+    expect(legal).toContain("Advertisement");
+    expect(legal).toContain("min-height:280px");
+    expect(legal).toContain('data-npa-on="1"');
+    expect(legal).toContain('data-ad-slot="3333333333"');
+    expect(legal).toContain("adsbygoogle || []).push({})");
+    expect(legal).not.toContain("display:none");
 
     setAdConfig({ path: "/password-generator" });
     expect(getAdSenseScript("/password-generator")).toBe("");
-    expect(getAdSlotHTML("home")).toBe("");
+    expect(getAdSlotHTML("legal")).toBe("");
 
     setAdConfig({ path: "/json-formatter" });
     const json = getAdSlotHTML("json");

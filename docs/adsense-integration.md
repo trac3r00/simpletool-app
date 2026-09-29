@@ -31,15 +31,16 @@ slot IDs. Secret tools never load the script.
 - `ADSENSE_SLOTS` JSON keys:
   - `home` — reserved, **currently placed nowhere**: the homepage's below-catalog
     block (editorial copy + flagship links) was removed on 2026-09-10 and took the
-    only `home` unit with it. The key stays valid for a future placement; until a
-    route calls `getAdSlotHTML("home")`, setting it renders nothing.
+    only `home` unit with it. The key stays parseable for a future placement, but
+    `/` is not manual-unit inventory (`pageAllowsAds("/")` is false), so setting it
+    renders nothing until both the allow-list and a call site are restored.
   - `json` — JSON Formatter, below the tool controls
   - `legal` — About, Privacy, Terms, and changelog only
 - `ADSENSE_SLOT` can fill those three keys if a unit is reused.
 - `tool`, `sidebar`, and `bottom` are ignored.
 - Contact, Security, and Careers stay off the unit allow list (too thin for ads).
 - Blog and FAQ load the client script for site-connect but are not unit inventory. Privacy disclosures include these script-load routes even though they have no manual unit.
-- Dev / local environments disable ads, ads.txt, and the account meta. To test the current worker without deployment, invoke the worker with a production URL as `.omo/evidence/lean-final/adsense/current-worker-http-harness.mjs` does; changing local environment variables while requesting localhost cannot enable ads.
+- Dev / local environments disable ads, ads.txt, and the account meta. To test the production configuration, request a deployed production URL; changing local environment variables while requesting localhost cannot enable ads.
 
 Example:
 

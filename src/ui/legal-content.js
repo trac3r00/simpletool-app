@@ -3881,17 +3881,11 @@ export function getLegalSections(pageId, lang = DEFAULT_LANGUAGE) {
 
   return sections.map((section, index) => {
     const next = { ...section };
-    if (
-      (pageId === "contact" || pageId === "security") &&
-      index === sections.length - 1
-    ) {
+    if (pageId === "contact" && index === sections.length - 1) {
       next.paragraphs = [localizedLegal.responseMessage];
     }
-    if (pageId === "about" && next.html) {
-      next.html = next.html.replace(
-        /(<div class="text-3xl font-bold[^>]*)(>)(?:45|47)(<\/div>)/,
-        `$1 data-public-tool-count$2${PRODUCTION_TOOL_COUNT}$3`,
-      );
+    if (pageId === "security" && index === sections.length - 1) {
+      next.paragraphs = [localizedLegal.securityResponse];
     }
     if (index === policyIndex) {
       next.adPolicy = getAdPolicySnapshot();

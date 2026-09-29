@@ -9,7 +9,6 @@ import {
   normalizeLanguage,
   resolveRequestLanguage,
 } from "../utils/i18n.js";
-import { PRODUCTION_TOOL_COUNT } from "../utils/tool-registry.js";
 import { APP_VERSION } from "../utils/version.js";
 
 const RELEASES = [
@@ -32,7 +31,7 @@ const RELEASES = [
       },
       {
         type: "fix",
-        text: `About derives its ${PRODUCTION_TOOL_COUNT} public-tool count from the production-visible registry`,
+        text: "About derives its public-tool count from the production-visible registry",
       },
       {
         type: "fix",

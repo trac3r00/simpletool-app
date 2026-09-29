@@ -23,6 +23,7 @@ function validateLegalText(locale, legal) {
   if (
     !legal ||
     typeof legal.responseMessage !== "string" ||
+    typeof legal.securityResponse !== "string" ||
     legalTextKeys.some((key) => typeof legal.adPolicy?.[key] !== "string")
   ) {
     throw new Error(`${locale} has incomplete legal disclosure text`);
