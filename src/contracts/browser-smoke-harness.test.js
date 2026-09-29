@@ -18,7 +18,8 @@ const FAKE_OSASCRIPT = `
 const script = process.argv[process.argv.indexOf("-e") + 1] || "";
 const fail = (msg) => { process.stderr.write(msg + "\\n"); process.exit(1); };
 // Async IIFE, not top-level await: the file is extensionless, so Node loads it as
-// CommonJS and only Node >= 22.12 re-parses it as ESM on a top-level await.
+// CommonJS. Top-level await would depend on Node's ESM syntax detection
+// re-parsing it as a module; the IIFE runs as plain CommonJS without it.
 (async () => {
 if (/close tab/.test(script)) {
   if (process.env.FAKE_CLEANUP_FAIL) fail("execution error: Safari got an error (-1728)");
