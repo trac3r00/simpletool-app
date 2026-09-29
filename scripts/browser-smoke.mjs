@@ -233,10 +233,15 @@ const server = http.createServer(async (req, res) => {
 });
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-const osa = (script) =>
-  new Promise((resolve) =>
-    execFile("osascript", ["-e", script], () => resolve()),
+const run = (file, args) =>
+  new Promise((resolve, reject) =>
+    execFile(file, args, (error, _stdout, stderr) => {
+      if (error)
+        reject(new Error(`${file} failed: ${stderr.trim() || error.message}`));
+      else resolve();
+    }),
   );
+const osa = (script) => run("osascript", ["-e", script]);
 
 let opened = false;
 
@@ -268,8 +273,9 @@ console.log(
   `browser-smoke: ${targets.length} tools on ${base} (interact=${INTERACT})`,
 );
 
-// Safari may not be running at all; a cold launch takes longer than a
-// navigation, and the self-test would otherwise fail for lack of time.
+// AppleScript does not reliably launch a cold Safari process. Launch it via
+// LaunchServices first, and surface either launch or navigation failures.
+await run("open", ["-a", "Safari"]);
 await osa('tell application "Safari" to activate');
 await sleep(2000);
 
@@ -317,17 +323,23 @@ for (const [i, tool] of targets.entries()) {
 }
 
 server.close();
-await osa(
-  `tell application "Safari"
-     repeat with w in windows
-       set i to (count of tabs of w)
-       repeat while i > 0
-         if URL of tab i of w contains "localhost:${PORT}" then close tab i of w
-         set i to i - 1
+// Closing our tabs is housekeeping, not a launch or navigation step: warn on
+// failure instead of letting it throw past the verdict below.
+try {
+  await osa(
+    `tell application "Safari"
+       repeat with w in windows
+         set i to (count of tabs of w)
+         repeat while i > 0
+           if URL of tab i of w contains "localhost:${PORT}" then close tab i of w
+           set i to i - 1
+         end repeat
        end repeat
-     end repeat
-   end tell`,
-);
+     end tell`,
+  );
+} catch (e) {
+  console.warn(`warning: could not close smoke tabs: ${e.message}`);
+}
 
 // 3. Verdict.
 const failures = [];
