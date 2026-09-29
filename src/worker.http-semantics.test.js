@@ -88,6 +88,33 @@ describe("canonical route hygiene", () => {
     }
   });
 
+  it("serves the site 404 for the retired password-generator /api endpoints", async () => {
+    for (const prefix of [
+      "password",
+      "username",
+      "passphrase",
+      "email",
+      "cyberchef",
+      "qr",
+    ]) {
+      for (const pathname of [`/api/${prefix}`, `/api/${prefix}/generate`]) {
+        for (const method of ["GET", "POST"]) {
+          const label = `${method} ${pathname}`;
+          const res = await fetchWorker(
+            `https://simpletool.app${pathname}?length=16`,
+            { method },
+          );
+
+          expect(res.status, label).toBe(404);
+          expect(res.headers.get("Location"), label).toBeNull();
+          expect(res.headers.get("Content-Type"), label).toMatch(
+            /^text\/html/,
+          );
+        }
+      }
+    }
+  });
+
   it("only permits dev-tool compatibility redirects in development", async () => {
     const production = await fetchWorker(
       "https://simpletool.app/tools/ladder-game?lang=en",
