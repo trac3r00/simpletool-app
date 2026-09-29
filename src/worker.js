@@ -53,6 +53,16 @@ import {
 } from "./utils/ads.js";
 import { resolveRequestLanguage } from "./utils/i18n.js";
 
+const HTML_ALIAS_REDIRECTS = {
+  "/index.html": "/",
+  "/about.html": "/about",
+  "/careers.html": "/careers",
+  "/contact.html": "/contact",
+  "/privacy.html": "/privacy",
+  "/security.html": "/security",
+  "/terms.html": "/terms",
+};
+
 // Rate limiting state (memory fallback)
 const rateLimiter = new Map();
 let workerStartedAt = 0;
@@ -555,8 +565,15 @@ async function handleRequest(request, env, ctx) {
       });
     }
 
+    const canonicalPath = HTML_ALIAS_REDIRECTS[path];
+    if (canonicalPath) {
+      const redirectUrl = new URL(request.url);
+      redirectUrl.pathname = canonicalPath;
+      return Response.redirect(redirectUrl.href, 301);
+    }
+
     // Home page
-    if (path === "/" || path === "/index.html") {
+    if (path === "/") {
       return renderHomePage({
         isDev,
         lang: resolveRequestLanguage(request, url),
@@ -577,9 +594,20 @@ async function handleRequest(request, env, ctx) {
     }
 
     if (path.startsWith("/tools/")) {
-      const redirectUrl = new URL(request.url);
-      redirectUrl.pathname = path.slice("/tools".length).replace(/^\/+/, "/");
-      return Response.redirect(redirectUrl.href, 301);
+      const compatibilityPath = path.slice("/tools".length);
+      const registeredTool = runtimeTools.find(
+        (tool) => tool.path === compatibilityPath,
+      );
+      if (registeredTool) {
+        const redirectUrl = new URL(request.url);
+        redirectUrl.pathname = registeredTool.path;
+        return Response.redirect(redirectUrl.href, 301);
+      }
+
+      const legacyUrl = new URL(request.url);
+      legacyUrl.pathname = compatibilityPath;
+      const compatibilityRedirect = tryLegacyRedirect(legacyUrl);
+      if (compatibilityRedirect) return compatibilityRedirect;
     }
 
     // Markdown Editor
@@ -598,27 +626,27 @@ async function handleRequest(request, env, ctx) {
     }
 
     // Legal & Static pages
-    if (path === "/terms" || path === "/terms.html") {
+    if (path === "/terms") {
       return renderTermsPage(resolveRequestLanguage(request, url));
     }
 
-    if (path === "/privacy" || path === "/privacy.html") {
+    if (path === "/privacy") {
       return renderPrivacyPage(resolveRequestLanguage(request, url));
     }
 
-    if (path === "/about" || path === "/about.html") {
+    if (path === "/about") {
       return renderAboutPage(resolveRequestLanguage(request, url));
     }
 
-    if (path === "/contact" || path === "/contact.html") {
+    if (path === "/contact") {
       return renderContactPage(resolveRequestLanguage(request, url));
     }
 
-    if (path === "/security" || path === "/security.html") {
+    if (path === "/security") {
       return renderSecurityPage(resolveRequestLanguage(request, url));
     }
 
-    if (path === "/careers" || path === "/careers.html") {
+    if (path === "/careers") {
       return renderCareersPage(resolveRequestLanguage(request, url));
     }
 
