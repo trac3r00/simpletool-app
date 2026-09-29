@@ -1,3 +1,5 @@
+import { formatJsonLosslessly } from "../utils/lossless-json.js";
+
 const jsonFormat = {
   id: "json-format",
   name: "JSON Format/Minify",
@@ -12,11 +14,7 @@ const jsonFormat = {
     const text = String(input).trim();
 
     try {
-      const parsed = JSON.parse(text);
-      if (mode === "minify") {
-        return JSON.stringify(parsed);
-      }
-      return JSON.stringify(parsed, null, indent);
+      return formatJsonLosslessly(text, mode === "minify" ? 0 : indent);
     } catch (err) {
       return `[Error: ${err.message}]`;
     }

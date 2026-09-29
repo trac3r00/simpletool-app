@@ -1,6 +1,11 @@
 import { describe, it, expect } from "vitest";
 import { testContract } from "./test-helper.js";
 import jsonFormat from "./json-format.js";
+import {
+  LOSSLESS_INPUT,
+  LOSSLESS_PRETTY,
+  LOSSLESS_SPACED,
+} from "../utils/lossless-json.fixtures.js";
 
 testContract(jsonFormat);
 
@@ -16,6 +21,18 @@ describe("json-format transform", () => {
     const input = '{\n  "a": 1,\n  "b": 2\n}';
     const result = jsonFormat.transform(input, { mode: "minify" });
     expect(result).toBe('{"a":1,"b":2}');
+  });
+
+  it("preserves every numeric and string lexeme while formatting", () => {
+    expect(
+      jsonFormat.transform(LOSSLESS_INPUT, { mode: "format", indent: 2 }),
+    ).toBe(LOSSLESS_PRETTY);
+  });
+
+  it("preserves every numeric and string lexeme while minifying", () => {
+    expect(jsonFormat.transform(LOSSLESS_SPACED, { mode: "minify" })).toBe(
+      LOSSLESS_INPUT,
+    );
   });
 
   it("defaults to format", () => {
