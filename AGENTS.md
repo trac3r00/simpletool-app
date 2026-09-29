@@ -2,7 +2,7 @@
 
 ## Overview
 
-47 browser-based web tools served from a single Cloudflare Worker (50 registered, including 3 dev-only games hidden in production). All tool processing is client-side. Server renders HTML via template literals in route files. Supports 10 languages (en/ko/ja/es/zh-CN/zh-TW/fr/de/pt/vi) via a client-side i18n system.
+45 browser-based web tools served from a single Cloudflare Worker (48 registered, including 3 dev-only games hidden in production). All tool processing is client-side. Server renders HTML via template literals in route files. Supports 10 languages (en/ko/ja/es/zh-CN/zh-TW/fr/de/pt/vi) via a client-side i18n system.
 
 **Stack:** Cloudflare Workers (V8 isolates), Vanilla JS, Tailwind CSS 3, Vitest, Playwright.
 
@@ -30,16 +30,16 @@ npx playwright test tests/e2e/page-sweep-2026-05-11.spec.js -g "home"  # grep by
 npx playwright test --headed                           # watch in browser
 
 # Real-browser smoke WITHOUT Playwright (macOS + Safari)
-npm run test:browser                                   # all 50 tools: load + interact
+npm run test:browser                                   # all 48 tools: load + interact
 node scripts/browser-smoke.mjs --no-interact           # load only (faster)
-node scripts/browser-smoke.mjs --only pipe,json-formatter
+node scripts/browser-smoke.mjs --only uuid-generator,json-formatter
 
 # DEEP per-tool UI + design audit (macOS + Safari) — much slower, much stricter
-npm run test:ui-audit                                  # all 50 tools (~45 min)
-node scripts/deep-ui-audit.mjs --only pipe,qr-code     # a few tools
+npm run test:ui-audit                                  # all 48 tools (~45 min)
+node scripts/deep-ui-audit.mjs --only uuid-generator,qr-code     # a few tools
 node scripts/deep-ui-audit.mjs --mobile                # 390px viewport pass
 node scripts/deep-ui-audit.mjs --json report.json      # machine-readable
-AUDIT_VERBOSE=1 node scripts/deep-ui-audit.mjs --only pipe   # per-phase trace
+AUDIT_VERBOSE=1 node scripts/deep-ui-audit.mjs --only uuid-generator   # per-phase trace
 ```
 
 **Icon font.** `build:fonts` ships a *subset* of Material Symbols Rounded — the
@@ -289,5 +289,5 @@ All UI must support dark mode via `dark:` Tailwind variants. Use `surface-*` and
 - **3 routes have custom headers** (not using `createToolHeader`): `saml-decoder.js`, `htpasswd-generator.js`, `yaml-toml-converter.js`.
   They still hand-write their `<h1>`, but it now carries `.tool-header-title` so the shell's
   H1 rule applies — a hand-built header must use that class rather than its own size/weight
-  utilities. The same applies to the other hand-written H1s (`repo-ops.js`, `network-reference.js`,
-  `pipe.js`), which are composite/bespoke layouts rather than single-tool headers.
+  utilities. The same applies to the other hand-written H1s (`repo-ops.js` and
+  `network-reference.js`), which are composite/bespoke layouts rather than single-tool headers.

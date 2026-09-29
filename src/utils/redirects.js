@@ -35,6 +35,9 @@ export const LEGACY_REDIRECTS = {
   "/wireguard": "/wireguard-config",
   "/mock-data": "/mock-data-generator",
   "/yaml-converter": "/yaml-toml-converter",
+  // Retired by request on 2026-09-10; preserve both former URLs.
+  "/token-counter": "/prompt-template-builder",
+  "/pipe": "/json-formatter",
 };
 
 /**

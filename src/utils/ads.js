@@ -16,7 +16,6 @@ export const DENY_AD_PATHS = Object.freeze([
   "/certificate-decoder",
   "/secret-scanner",
   "/encoding-workbench",
-  "/pipe",
 ]);
 
 export const LEGAL_AD_PATHS = Object.freeze([

@@ -71,14 +71,30 @@ test.describe("Page sweep 2026-05-11 regressions", () => {
     );
   });
 
-  test("/pipe: renders valid page with proper title", async ({ page }) => {
-    const response = await page.goto("/pipe");
+  test("/pipe was retired: it 301s to the JSON formatter", async ({
+    page,
+    request,
+  }) => {
+    const redirect = await request.get("/pipe?src=e2e", { maxRedirects: 0 });
+    expect(redirect.status()).toBe(301);
+    const location = new URL(redirect.headers().location);
+    expect(location.pathname).toBe("/json-formatter");
+    expect(location.searchParams.get("src")).toBe("e2e");
+
+    const response = await page.goto("/pipe?src=e2e", {
+      waitUntil: "domcontentloaded",
+    });
     expect(response.status()).toBe(200);
-    const title = await page.title();
-    expect(title).not.toContain("undefined");
-    expect(title.length).toBeGreaterThan(5);
-    const h1 = await page.locator("h1").first().textContent();
-    expect(h1).toBeTruthy();
+    const redirectedFrom = response.request().redirectedFrom();
+    expect(redirectedFrom).not.toBeNull();
+    const origin = new URL(redirectedFrom.url());
+    expect(origin.pathname).toBe("/pipe");
+    expect(origin.searchParams.get("src")).toBe("e2e");
+    const landed = new URL(page.url());
+    expect(landed.pathname).toBe("/json-formatter");
+    expect(landed.searchParams.get("src")).toBe("e2e");
+    await expect(page.locator("h1").first()).toContainText("JSON");
+    await expect(page.locator("#json-empty-state")).toBeVisible();
   });
 
   test("htpasswd-generator: Generate entry produces bcrypt output", async ({

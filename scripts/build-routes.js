@@ -149,11 +149,6 @@ const TOOL_HANDLERS = [
     exp: "handleEmailAnalyzerRoutes",
   },
   {
-    id: "token-counter",
-    file: "token-counter.js",
-    exp: "handleTokenCounterRoutes",
-  },
-  {
     id: "prompt-template-builder",
     file: "prompt-template-builder.js",
     exp: "handlePromptTemplateBuilderRoutes",
@@ -235,7 +230,6 @@ const TOOL_HANDLERS = [
     file: "webhook-debugger.js",
     exp: "handleWebhookDebuggerRoutes",
   },
-  { id: "pipe", file: "pipe.js", exp: "handlePipeRoutes" },
   // Note: /changelog is served directly in worker.js (handleChangelogRoutes),
   // not via handlersById — it is a page, not a catalog tool. Retired from the
   // TOOLS registry 2026-08-22; no handlersById entry needed.

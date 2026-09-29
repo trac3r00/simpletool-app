@@ -32,7 +32,8 @@ describe("repo-ops route", () => {
   });
 
   it("replaces the three catalog entries and redirects each former path", () => {
-    expect(TOOLS).toHaveLength(50);
+    // 48 after token-counter + pipe were retired on 2026-09-10.
+    expect(TOOLS).toHaveLength(48);
     expect(TOOLS.find((tool) => tool.id === "repo-ops")).toBeTruthy();
     const redirects = {
       "/public-repos-yml-builder": "inventory",

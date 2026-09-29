@@ -143,22 +143,33 @@ test.describe("Generator and utility tools UI interactions", () => {
     await expect(page.locator("#status-text")).not.toHaveText("");
   });
 
-  test("token-counter updates token estimates and costs", async ({ page }) => {
-    await openTool(page, "/token-counter");
+  test("token-counter was retired: /token-counter 301s to the prompt builder", async ({
+    page,
+    request,
+  }) => {
+    const redirect = await request.get("/token-counter?tab=foo", {
+      maxRedirects: 0,
+    });
+    expect(redirect.status()).toBe(301);
+    const location = new URL(redirect.headers().location);
+    expect(location.pathname).toBe("/prompt-template-builder");
+    expect(location.searchParams.get("tab")).toBe("foo");
 
-    await page
-      .locator("#text")
-      .fill(
-        "This is a token counting test for generator utility suite. ".repeat(
-          200,
-        ),
-      );
-    await page.locator("#out-tokens").fill("50000");
-    await page.locator("#gpt-in-rate").fill("100");
-    await page.locator("#gpt-out-rate").fill("100");
-
-    await expect(page.locator("#gpt-total")).not.toHaveText("0");
-    await expect(page.locator("#gpt-cost")).not.toHaveText("$0.00");
+    const response = await page.goto("/token-counter?tab=foo", {
+      waitUntil: "domcontentloaded",
+    });
+    expect(response.status()).toBe(200);
+    const redirectedFrom = response.request().redirectedFrom();
+    expect(redirectedFrom).not.toBeNull();
+    const origin = new URL(redirectedFrom.url());
+    expect(origin.pathname).toBe("/token-counter");
+    expect(origin.searchParams.get("tab")).toBe("foo");
+    const landed = new URL(page.url());
+    expect(landed.pathname).toBe("/prompt-template-builder");
+    expect(landed.searchParams.get("tab")).toBe("foo");
+    await expect(page.locator("#load-sample")).toBeVisible();
+    await expect(page.locator("#system")).toBeVisible();
+    await expect(page.locator("#user")).toBeVisible();
   });
 
   test("prompt-template-builder builds template sections with variables", async ({

@@ -7,6 +7,7 @@ import {
   getAdsTxtBody,
   hasPublisherClient,
   isAdsEnabled,
+  DENY_AD_PATHS,
   LEGAL_AD_PATHS,
   pageAllowsAds,
   pageAllowsAdScript,
@@ -52,7 +53,15 @@ describe("pageAllowsAds", () => {
     expect(pageAllowsAds("/certificate-decoder")).toBe(false);
     expect(pageAllowsAds("/secret-scanner")).toBe(false);
     expect(pageAllowsAds("/encoding-workbench")).toBe(false);
+  });
+
+  it("keeps the removed /pipe path outside both the explicit deny list and ad inventory", () => {
+    // /pipe was removed from the catalog 2026-09-10 and now redirects. It no
+    // longer needs a deny-list entry, while the positive allow list still
+    // prevents either a unit or client script on the obsolete path itself.
+    expect(DENY_AD_PATHS).not.toContain("/pipe");
     expect(pageAllowsAds("/pipe")).toBe(false);
+    expect(pageAllowsAdScript("/pipe")).toBe(false);
   });
 
   it("does not treat other tools as inventory", () => {

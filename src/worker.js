@@ -6,7 +6,6 @@
 import { renderHomePage } from "./ui/home.js";
 import * as Sentry from "@sentry/cloudflare";
 import { handlersById } from "./routes/_handlers.js";
-import { handlePipeRoutes } from "./routes/pipe.js";
 import { handleMarkdownEditorRoutes } from "./routes/markdown-editor.js";
 import {
   getToolsForEnvironment,
@@ -581,12 +580,6 @@ async function handleRequest(request, env, ctx) {
       const redirectUrl = new URL(request.url);
       redirectUrl.pathname = path.slice("/tools".length).replace(/^\/+/, "/");
       return Response.redirect(redirectUrl.href, 301);
-    }
-
-    // Pipe Mode
-    if (path === "/pipe" || path === "/pipe/") {
-      const pipeResponse = await handlePipeRoutes(request, url);
-      if (pipeResponse) return pipeResponse;
     }
 
     // Markdown Editor
