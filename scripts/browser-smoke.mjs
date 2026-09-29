@@ -323,17 +323,23 @@ for (const [i, tool] of targets.entries()) {
 }
 
 server.close();
-await osa(
-  `tell application "Safari"
-     repeat with w in windows
-       set i to (count of tabs of w)
-       repeat while i > 0
-         if URL of tab i of w contains "localhost:${PORT}" then close tab i of w
-         set i to i - 1
+// Closing our tabs is housekeeping, not a launch or navigation step: warn on
+// failure instead of letting it throw past the verdict below.
+try {
+  await osa(
+    `tell application "Safari"
+       repeat with w in windows
+         set i to (count of tabs of w)
+         repeat while i > 0
+           if URL of tab i of w contains "localhost:${PORT}" then close tab i of w
+           set i to i - 1
+         end repeat
        end repeat
-     end repeat
-   end tell`,
-);
+     end tell`,
+  );
+} catch (e) {
+  console.warn(`warning: could not close smoke tabs: ${e.message}`);
+}
 
 // 3. Verdict.
 const failures = [];
