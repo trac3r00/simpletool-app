@@ -4,10 +4,30 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { expect, test } from "@playwright/test";
 
+// This interop check requires the OpenSSH client. CI runs on ubuntu-latest,
+// which ships it; a missing binary is an environment error, never a skip.
+function assertSshKeygenAvailable() {
+  const probe = spawnSync("ssh-keygen", ["-?"], { stdio: "ignore" });
+  if (probe.error?.code === "ENOENT") {
+    throw new Error(
+      "ssh-keygen not found on PATH. This E2E test needs the OpenSSH client: " +
+        "install it (Debian/Ubuntu: `sudo apt-get install openssh-client`, " +
+        "Fedora: `sudo dnf install openssh-clients`; macOS ships it) and re-run.",
+    );
+  }
+  if (probe.error) throw probe.error;
+}
+
 test("Ed25519 private output is loadable and matches its displayed public key", async ({
   page,
 }) => {
+  assertSshKeygenAvailable();
+
   await page.goto("/ssh-key-generator", { waitUntil: "domcontentloaded" });
+
+  const ed25519 = page.locator('input[name="keyType"][value="ed25519"]');
+  await ed25519.check();
+  await expect(ed25519).toBeChecked();
 
   const generated = await page.evaluate(() =>
     new Promise((resolve, reject) => {
@@ -38,6 +58,12 @@ test("Ed25519 private output is loadable and matches its displayed public key", 
     }),
   );
 
+  const [publicAlgorithm, publicBlob] = generated.publicKey.trim().split(/\s+/);
+  expect(publicAlgorithm).toBe("ssh-ed25519");
+  expect(Buffer.from(publicBlob, "base64").subarray(4, 15).toString()).toBe(
+    "ssh-ed25519",
+  );
+
   const directory = await mkdtemp(join(tmpdir(), "simpletool-ssh-interop-"));
   const keyPath = join(directory, "id_ed25519");
   try {
@@ -51,9 +77,10 @@ test("Ed25519 private output is loadable and matches its displayed public key", 
 
     expect(derived.stderr).toBe("");
     expect(derived.status).toBe(0);
-    expect(derived.stdout.trim().split(/\s+/).slice(0, 2)).toEqual(
-      generated.publicKey.trim().split(/\s+/).slice(0, 2),
-    );
+    expect(derived.stdout.trim().split(/\s+/).slice(0, 2)).toEqual([
+      publicAlgorithm,
+      publicBlob,
+    ]);
   } finally {
     await rm(directory, { recursive: true, force: true });
   }
