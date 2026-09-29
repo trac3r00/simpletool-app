@@ -85,12 +85,10 @@ test.describe("Page sweep 2026-05-11 regressions", () => {
       waitUntil: "domcontentloaded",
     });
     expect(response.status()).toBe(200);
-    expect(
-      new URL(response.request().redirectedFrom().url()).pathname,
-    ).toBe("/pipe");
+    expect(response.request().redirectedFrom()?.url()).toMatch(/\/pipe$/);
     await expect(page).toHaveURL(/\/json-formatter$/);
     await expect(page.locator("h1").first()).toContainText("JSON");
-    await expect(page.locator("#format-btn")).toBeVisible();
+    await expect(page.locator("#json-empty-state")).toBeVisible();
   });
 
   test("htpasswd-generator: Generate entry produces bcrypt output", async ({

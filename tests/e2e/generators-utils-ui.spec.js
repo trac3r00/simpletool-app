@@ -157,9 +157,9 @@ test.describe("Generator and utility tools UI interactions", () => {
       waitUntil: "domcontentloaded",
     });
     expect(response.status()).toBe(200);
-    expect(
-      new URL(response.request().redirectedFrom().url()).pathname,
-    ).toBe("/token-counter");
+    expect(response.request().redirectedFrom()?.url()).toMatch(
+      /\/token-counter$/,
+    );
     await expect(page).toHaveURL(/\/prompt-template-builder$/);
     await expect(page.locator("#load-sample")).toBeVisible();
     await expect(page.locator("#system")).toBeVisible();
