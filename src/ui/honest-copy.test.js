@@ -526,8 +526,11 @@ describe("machine-bound advertising disclosure", () => {
       const html = await renderFaqPage(lang).text();
       const hrefs = [...html.matchAll(/data-faq-item[\s\S]*?<\/details>/g)]
         .flatMap((m) => [...m[0].matchAll(/href="(\/[^"]*)"/g)].map((h) => h[1]));
-      expect(hrefs.length).toBeGreaterThan(0);
-      for (const href of hrefs) expect(href).toBe(withLanguageQuery(href.split("?")[0], lang));
+      const sourceHrefs = getFaqEntries(lang).flatMap((entry) =>
+        [...String(entry.answer).matchAll(/href="(\/[^"]*)"/g)].map((h) => h[1]),
+      );
+      expect(sourceHrefs.length).toBeGreaterThan(0);
+      expect(hrefs).toEqual(sourceHrefs.map((href) => withLanguageQuery(href, lang)));
     }
   });
 
