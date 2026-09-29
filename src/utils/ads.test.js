@@ -223,7 +223,15 @@ describe("ad rendering", () => {
       const handler = handlersById[tool.id];
       expect(handler, tool.id).toBeTypeOf("function");
       const url = new URL(`https://simpletool.app${tool.path}`);
-      const html = await (await handler(new Request(url), url)).text();
+      const res = await handler(new Request(url), url);
+      // Positive checks first: an error, redirect, or empty page must not pass
+      // the negative assertions below by accident.
+      expect(res?.status, tool.id).toBe(200);
+      expect(res.headers.get("content-type"), tool.id).toContain("text/html");
+      const html = await res.text();
+      expect(html, tool.id).toContain('id="main-content"');
+      expect(html, tool.id).toMatch(/<main[\s>]/);
+      expect(html.match(/<h1[\s>]/g) ?? [], tool.id).toHaveLength(1);
       expect(html, tool.id).not.toContain('data-section="educational"');
       expect(html, tool.id).not.toContain(`tools.${tool.id}.edu.`);
     }
