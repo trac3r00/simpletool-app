@@ -354,7 +354,7 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
   const scripts = `
     <script src="/vendor/marked.min.js" integrity="sha384-ZD0fTOwPMHi7zM6WTVIWJR21I07lq0ccnqz3J6WMvQKG9thh4y7TA1QE6PJu0Af8" crossorigin="anonymous"></script>
     <script src="/vendor/purify.min.js" integrity="sha384-pcBjnGbkyKeOXaoFkmJiuR9E08/6gkmus6/Strimnxtl3uk0Hx23v345pWyC/MMr" crossorigin="anonymous"></script>
-    <script src="/vendor/mermaid.min.js" integrity="sha384-yQ4mmBBT+vhTAwjFH0toJXNYJ6O4usWnt6EPIdWwrRvx2V/n5lXuDZQwQFeSFydF" crossorigin="anonymous"></script>
+    <script src="/vendor/mermaid.min.js" integrity="sha384-xzghz1GQ5u9HCpVskeDPqMsdogD1yvuMQbEK53+wi+G70+6J1AG0L2cfi9PHjDWI" crossorigin="anonymous"></script>
 
     <script>
       document.addEventListener('DOMContentLoaded', () => {
@@ -507,6 +507,15 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
           });
         }
 
+        // Mermaid 12 moved these defaults (ELK layout, neo look, 120px node
+        // min width / wrap width); pin the 11.x values so diagrams keep their shape.
+        const MERMAID_LAYOUT = {
+          layout: 'dagre',
+          look: 'classic',
+          flowchart: { minNodeWidth: 0, wrappingWidth: 200 },
+          state: { minNodeWidth: 0, wrappingWidth: 200 }
+        };
+
         async function renderMermaid() {
           if (!window.mermaid) return;
           try {
@@ -514,12 +523,13 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
               window.mermaid.initialize({
                 startOnLoad: false,
                 securityLevel: 'strict',
+                ...MERMAID_LAYOUT,
                 theme: getMermaidTheme()
               });
               mermaidInitialized = true;
             }
             // Re-apply theme each run (handles light/dark toggles)
-            window.mermaid.initialize({ startOnLoad: false, securityLevel: 'strict', theme: getMermaidTheme() });
+            window.mermaid.initialize({ startOnLoad: false, securityLevel: 'strict', ...MERMAID_LAYOUT, theme: getMermaidTheme() });
             await window.mermaid.run({ querySelector: '#preview-output .mermaid' });
           } catch (e) {
             console.error('Mermaid render failed:', e);

@@ -183,7 +183,7 @@ export async function handleMermaidStudioRoutes(request, url) {
         showTab(savedTab, false);
       })();
     </script>
-    <script src="/vendor/mermaid.min.js" integrity="sha384-yQ4mmBBT+vhTAwjFH0toJXNYJ6O4usWnt6EPIdWwrRvx2V/n5lXuDZQwQFeSFydF" crossorigin="anonymous"></script>
+    <script src="/vendor/mermaid.min.js" integrity="sha384-xzghz1GQ5u9HCpVskeDPqMsdogD1yvuMQbEK53+wi+G70+6J1AG0L2cfi9PHjDWI" crossorigin="anonymous"></script>
     <script>
       const mermaid = window.mermaid;
 
@@ -218,6 +218,12 @@ export async function handleMermaidStudioRoutes(request, url) {
           startOnLoad: false,
           theme: dark ? 'dark' : 'default',
           securityLevel: 'strict',
+          // Mermaid 12 moved these defaults (ELK layout, neo look, 120px node
+          // min width / wrap width); pin the 11.x values so diagrams keep their shape.
+          layout: 'dagre',
+          look: 'classic',
+          flowchart: { minNodeWidth: 0, wrappingWidth: 200 },
+          state: { minNodeWidth: 0, wrappingWidth: 200 },
           themeVariables: mermaidThemeVariables(dark),
         });
       }
