@@ -180,11 +180,12 @@ describe("Rate limit constants", () => {
 });
 
 describe("crawler rate-limit exemptions", () => {
-  it("exempts ads.txt, robots, sitemap, and health", () => {
+  it("exempts only ads.txt and robots", () => {
     expect(isRateLimitExemptPath("/ads.txt")).toBe(true);
-    expect(isRateLimitExemptPath("/robots.txt")).toBe(true);
-    expect(isRateLimitExemptPath("/sitemap.xml")).toBe(true);
-    expect(isRateLimitExemptPath("/health/")).toBe(true);
+    expect(isRateLimitExemptPath("/robots.txt/")).toBe(true);
+    expect(isRateLimitExemptPath("/sitemap.xml")).toBe(false);
+    expect(isRateLimitExemptPath("/health")).toBe(false);
+    expect(isRateLimitExemptPath("/api/health")).toBe(false);
     expect(isRateLimitExemptPath("/")).toBe(false);
     expect(isRateLimitExemptPath("/json-formatter")).toBe(false);
   });

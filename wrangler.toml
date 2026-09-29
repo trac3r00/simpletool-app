@@ -27,8 +27,8 @@ SENTRY_DSN = ""
 CF_ANALYTICS_TOKEN = ""
 
 # Custom domain: simpletool.app (Cloudflare Dashboard → Workers → Triggers).
-# www currently resolves on Cloudflare IPs but is not a Worker custom domain,
-# so HTTPS www returns 522 and the in-Worker 301 never runs. Add
+# When last checked, www was proxied (orange cloud) but not a Worker custom
+# domain, so HTTPS www returned 522 and the in-Worker 301 never ran. Add
 # www.simpletool.app as a custom domain on this Worker, then it 301s to apex.
 # AdSense crawls apex and www separately — submit https://simpletool.app.
 

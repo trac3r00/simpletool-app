@@ -19,13 +19,9 @@ export const KNOWN_SHARED_IP_ASNS = new Set([
   209242, // Cloudflare WARP consumer
 ]);
 
-export const RATE_LIMIT_EXEMPT_PATHS = Object.freeze([
-  "/ads.txt",
-  "/robots.txt",
-  "/sitemap.xml",
-  "/health",
-  "/api/health",
-]);
+// Only the tiny, cached crawler files AdSense must always reach. Sitemap and
+// health are uncached and rebuilt per request, so they stay behind the cap.
+export const RATE_LIMIT_EXEMPT_PATHS = Object.freeze(["/ads.txt", "/robots.txt"]);
 
 export function isLikelySharedIP(request) {
   if (!request || !request.cf) return false;

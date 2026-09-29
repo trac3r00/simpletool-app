@@ -293,6 +293,22 @@ describe("AdSense site-connect without slots", () => {
     expect(robotsBody).toContain("User-agent: Google-Display-Ads-Bot");
     expect(robotsBody).toContain("Allow: /");
   });
+
+  it("still rate-limits sitemap and health after the cap", async () => {
+    const headers = { "CF-Connecting-IP": "203.0.113.89" };
+    let lastHome;
+    for (let i = 0; i < 121; i += 1) {
+      lastHome = await fetchWorker("https://simpletool.app/", { headers });
+    }
+    expect(lastHome.status).toBe(429);
+
+    for (const path of ["/sitemap.xml", "/health", "/api/health"]) {
+      const res = await fetchWorker(`https://simpletool.app${path}`, {
+        headers,
+      });
+      expect(res.status, path).toBe(429);
+    }
+  });
 });
 
 describe("sitemap lastmod reflects content, not the request", () => {
