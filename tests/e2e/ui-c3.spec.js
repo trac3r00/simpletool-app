@@ -167,7 +167,8 @@ test.describe("C3 accessibility and mobile usefulness", () => {
     await expect(close).toBeFocused();
     await expect(page.locator("#global-search-input")).toBeHidden();
     // Only the page's own shortcuts are suppressed: other mod combinations keep
-    // their native default, and an IME-composing Escape does not close the dialog.
+    // their native default; IME-composing keys keep their default but reach no
+    // page handler (no close, no search, no page action).
     expect(await page.evaluate(() => {
       const fire = (init) => {
         const event = new KeyboardEvent("keydown", { bubbles: true, cancelable: true, ...init });
@@ -177,9 +178,12 @@ test.describe("C3 accessibility and mobile usefulness", () => {
       return {
         modA: fire({ key: "a", ctrlKey: true, metaKey: true }),
         composingEscape: fire({ key: "Escape", isComposing: true }),
+        composingModK: fire({ key: "k", ctrlKey: true, metaKey: true, isComposing: true }),
       };
-    })).toEqual({ modA: false, composingEscape: false });
+    })).toEqual({ modA: false, composingEscape: false, composingModK: false });
     await expect(dialog).toBeVisible();
+    await expect(close).toBeFocused();
+    await expect(page.locator("#global-search-input")).toBeHidden();
     await page.keyboard.press("Escape");
     await expect(dialog).toBeHidden();
     await expect(trigger).toBeFocused();

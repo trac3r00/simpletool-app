@@ -256,7 +256,11 @@ export function getKeyboardShortcutsScript() {
     // passes through to toggle the dialog closed; IME composition and any
     // other key combination keep their native behavior.
     helpKeyGuard = (e) => {
-      if (e.isComposing) return;
+      if (e.isComposing) {
+        // Leave the IME its default, but keep page handlers from acting on it.
+        e.stopPropagation();
+        return;
+      }
       if (e.key === 'Escape') {
         e.preventDefault();
         e.stopPropagation();
