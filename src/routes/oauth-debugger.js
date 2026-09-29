@@ -233,9 +233,6 @@ function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
         </div>
       </div>
 
-      <div class="mt-8">
-        </div>
-
       ${createRelatedToolsSection(relatedToolsData, currentLang)}
     </main>
   `;
