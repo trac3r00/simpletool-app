@@ -108,7 +108,7 @@ function renderJsonSchemaStudioPage(lang = DEFAULT_LANGUAGE) {
           </table>`,
         },
       ])}
-    ${createRelatedToolsSection(relatedToolsData)}
+    ${createRelatedToolsSection(relatedToolsData, currentLang)}
       </div>
     </main>
   `;

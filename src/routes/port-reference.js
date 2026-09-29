@@ -194,7 +194,7 @@ export function renderPortReferenceSection(lang = DEFAULT_LANGUAGE) {
         },
       ])}
 
-      ${createRelatedToolsSection(relatedToolsData)}
+      ${createRelatedToolsSection(relatedToolsData, currentLang)}
     </div>
 
     <script>

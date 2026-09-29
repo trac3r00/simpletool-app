@@ -224,7 +224,7 @@ export function renderDnsReferenceSection(lang = DEFAULT_LANGUAGE) {
           ],
         )}
       </div>
-      ${createRelatedToolsSection(relatedToolsData)}
+      ${createRelatedToolsSection(relatedToolsData, currentLang)}
     </div>
   `;
 

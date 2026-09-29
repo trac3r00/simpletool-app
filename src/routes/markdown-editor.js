@@ -305,7 +305,7 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
         }
       </style>
 
-      ${createCheatsheet("markdown-preview", "Markdown Quick Reference", [
+      ${createCheatsheet("markdown-editor", "Markdown Quick Reference", [
         {
           heading: "Formatting",
           content: `
@@ -346,7 +346,7 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
             "<p>Use triple backticks for code blocks with optional language. Tables use pipes: <code>| Col1 | Col2 |</code> with <code>|---|---|</code> separator.</p>",
         },
       ])}
-    ${createRelatedToolsSection(relatedToolsData)}
+    ${createRelatedToolsSection(relatedToolsData, currentLang)}
       </div>
     </main>
   `;

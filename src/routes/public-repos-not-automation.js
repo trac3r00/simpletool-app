@@ -391,7 +391,7 @@ export function renderPublicReposNotAutomationSection(lang = DEFAULT_LANGUAGE) {
           </section>
         </div>
       </div>
-      ${createRelatedToolsSection(relatedToolsData)}
+      ${createRelatedToolsSection(relatedToolsData, currentLang)}
     </main>
   `;
 

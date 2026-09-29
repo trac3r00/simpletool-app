@@ -356,7 +356,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
           },
         ])}
 
-        ${createRelatedToolsSection(relatedToolsData)}
+        ${createRelatedToolsSection(relatedToolsData, currentLang)}
       </div>
     </main>
   `;

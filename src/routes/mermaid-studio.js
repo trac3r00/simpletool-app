@@ -115,7 +115,7 @@ export async function handleMermaidStudioRoutes(request, url) {
           </table>`,
         },
       ])}
-    ${createRelatedToolsSection(relatedToolsData)}
+    ${createRelatedToolsSection(relatedToolsData, currentLang)}
       </div>
     </main>
   `;

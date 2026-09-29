@@ -236,7 +236,7 @@ chmod 600 ~/.ssh/authorized_keys</pre>
           </table>`,
         },
       ])}
-    ${createRelatedToolsSection(relatedToolsData)}
+    ${createRelatedToolsSection(relatedToolsData, currentLang)}
     </main>
   `;
 

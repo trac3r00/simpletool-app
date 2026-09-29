@@ -52,19 +52,19 @@ export async function handleCronBuilderRoutes(request) {
         <div class="tool-group tool-group--flush flex-1 flex flex-col min-h-0 overflow-hidden">
           <div class="border-b border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-950/50">
             <nav class="flex -mb-px" aria-label="Tabs" id="builder-tabs">
-              <button class="tab-trigger tab-btn active" data-target="minute" data-tooltip="0-59, which minutes to run">
+              <button class="tab-trigger tab-btn active" data-target="minute" data-tooltip="0-59, which minutes to run" data-i18n-tooltip="tools.cron-builder.ui.tip0">
                 <span data-i18n="tools.cron-builder.ui.button0">Minute</span>
               </button>
-              <button class="tab-trigger tab-btn" data-target="hour" data-tooltip="0-23, which hours to run">
+              <button class="tab-trigger tab-btn" data-target="hour" data-tooltip="0-23, which hours to run" data-i18n-tooltip="tools.cron-builder.ui.tip1">
                 <span data-i18n="tools.cron-builder.ui.button1">Hour</span>
               </button>
-              <button class="tab-trigger tab-btn" data-target="dom" data-tooltip="1-31, which days of the month">
+              <button class="tab-trigger tab-btn" data-target="dom" data-tooltip="1-31, which days of the month" data-i18n-tooltip="tools.cron-builder.ui.tip2">
                 <span data-i18n="tools.cron-builder.ui.button2">Day</span>
               </button>
-              <button class="tab-trigger tab-btn" data-target="month" data-tooltip="1-12, which months">
+              <button class="tab-trigger tab-btn" data-target="month" data-tooltip="1-12, which months" data-i18n-tooltip="tools.cron-builder.ui.tip3">
                 <span data-i18n="tools.cron-builder.ui.button3">Month</span>
               </button>
-              <button class="tab-trigger tab-btn" data-target="dow" data-tooltip="0-6 (Sun-Sat), which days of week">
+              <button class="tab-trigger tab-btn" data-target="dow" data-tooltip="0-6 (Sun-Sat), which days of week" data-i18n-tooltip="tools.cron-builder.ui.tip4">
                 <span data-i18n="tools.cron-builder.ui.button4">Week</span>
               </button>
             </nav>
@@ -258,13 +258,13 @@ export async function handleCronBuilderRoutes(request) {
            <div class="bg-info-50 dark:bg-info-900/20 rounded-xl p-6 border border-info-100 dark:border-info-800">
              <h3 class="font-semibold text-info-800 dark:text-info-300 mb-2 flex items-center gap-2">
                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-               Quick Tips
+               <span data-i18n="tools.cron-builder.ui.quickTips">Quick Tips</span>
              </h3>
              <ul class="text-sm text-info-700 dark:text-info-400 space-y-1 list-disc list-inside">
-              <li>Use <code>*</code> for "every"</li>
-              <li>Use <code>*/n</code> for intervals (e.g. */5)</li>
-              <li>Use <code>,</code> for lists (e.g. 1,3,5)</li>
-              <li>Use <code>-</code> for ranges (e.g. 1-5)</li>
+              <li data-i18n-html="tools.cron-builder.ui.quickEvery">Use <code>*</code> for "every"</li>
+              <li data-i18n-html="tools.cron-builder.ui.quickIntervals">Use <code>*/n</code> for intervals (e.g. <code>*/5</code>)</li>
+              <li data-i18n-html="tools.cron-builder.ui.quickLists">Use <code>,</code> for lists (e.g. <code>1,3,5</code>)</li>
+              <li data-i18n-html="tools.cron-builder.ui.quickRanges">Use <code>-</code> for ranges (e.g. <code>1-5</code>)</li>
             </ul>
           </div>
 
@@ -308,7 +308,7 @@ export async function handleCronBuilderRoutes(request) {
           </table>`,
         },
       ])}
-    ${createRelatedToolsSection(relatedToolsData)}
+    ${createRelatedToolsSection(relatedToolsData, currentLang)}
       </div>
     </main>
 
@@ -324,15 +324,29 @@ export async function handleCronBuilderRoutes(request) {
         const DAY_MAP = {SUN:0,MON:1,TUE:2,WED:3,THU:4,FRI:5,SAT:6};
         
         const RECIPES = [
-          { name: 'Every minute', cron: '* * * * *' },
-          { name: 'Every 5 minutes', cron: '*/5 * * * *' },
-          { name: 'Every hour', cron: '0 * * * *' },
-          { name: 'Every day at midnight', cron: '0 0 * * *' },
-          { name: 'Every day at 8am', cron: '0 8 * * *' },
-          { name: 'Every Monday at 9am', cron: '0 9 * * 1' },
-          { name: 'Every 1st of month', cron: '0 0 1 * *' },
-          { name: 'Weekdays at 9am', cron: '0 9 * * 1-5' },
+          { nameKey: 'recipe0', name: 'Every minute', cron: '* * * * *' },
+          { nameKey: 'recipe1', name: 'Every 5 minutes', cron: '*/5 * * * *' },
+          { nameKey: 'recipe2', name: 'Every hour', cron: '0 * * * *' },
+          { nameKey: 'recipe3', name: 'Every day at midnight', cron: '0 0 * * *' },
+          { nameKey: 'recipe4', name: 'Every day at 8am', cron: '0 8 * * *' },
+          { nameKey: 'recipe5', name: 'Every Monday at 9am', cron: '0 9 * * 1' },
+          { nameKey: 'recipe6', name: 'Every 1st of month', cron: '0 0 1 * *' },
+          { nameKey: 'recipe7', name: 'Weekdays at 9am', cron: '0 9 * * 1-5' },
         ];
+        const SUPPORTED_LOCALES = ['en', 'ko', 'ja', 'es', 'zh-CN', 'zh-TW', 'fr', 'de', 'pt', 'vi'];
+
+        function t(key, fallback, values) {
+          let text = window._t ? window._t('tools.cron-builder.js.' + key, fallback) : fallback;
+          Object.entries(values || {}).forEach(([name, value]) => {
+            text = text.replaceAll('{{' + name + '}}', () => String(value));
+          });
+          return text;
+        }
+
+        function getActiveLocale() {
+          const locale = window._i18nGetLang ? window._i18nGetLang() : document.documentElement.lang;
+          return SUPPORTED_LOCALES.includes(locale) ? locale : 'en';
+        }
 
         // --- State ---
         let state = {
@@ -376,6 +390,16 @@ export async function handleCronBuilderRoutes(request) {
 
           // Initial Parse
           handleInput();
+
+          const rerenderLocalizedOutput = () => {
+            renderRecipes();
+            updateHumanReadable();
+            updateNextExecutions();
+          };
+          new MutationObserver(rerenderLocalizedOutput).observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['lang'],
+          });
         }
 
         // --- Core Logic: Parsing & Stringifying ---
@@ -625,8 +649,8 @@ const GRID_LABELS = {
         function renderRecipes() {
           recipesList.innerHTML = RECIPES.map(r => \`
             <button class="recipe-btn w-full text-left px-4 py-3 rounded-lg hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors flex justify-between items-center group" data-cron="\${r.cron}">
-              <span class="text-sm font-medium text-surface-700 dark:text-surface-300 group-hover:text-primary-600 dark:group-hover:text-primary-400">\${r.name}</span>
               <code class="text-xs bg-surface-100 dark:bg-surface-950 px-2 py-1 rounded text-surface-500 dark:text-surface-400 font-mono">\${r.cron}</code>
+              <span class="text-sm font-medium text-surface-700 dark:text-surface-300 group-hover:text-primary-600 dark:group-hover:text-primary-400">\${t(r.nameKey, r.name)}</span>
             </button>
           \`).join('');
           
@@ -671,33 +695,36 @@ const GRID_LABELS = {
          }
 
         function describeCron(s) {
-          if (s.minute === '*' && s.hour === '*' && s.dom === '*' && s.month === '*' && s.dow === '*') return 'Every minute';
-          
+          if (s.minute === '*' && s.hour === '*' && s.dom === '*' && s.month === '*' && s.dow === '*') {
+            return t('everyMinute', 'Every minute');
+          }
+
           let desc = '';
-          
+
           // Time
-          if (s.minute === '0' && s.hour === '0') desc += 'At midnight';
-          else if (s.minute === '0' && s.hour !== '*') desc += \`At \${s.hour}:00\`;
-          else if (s.minute !== '*' && s.hour !== '*') desc += \`At \${s.hour}:\${s.minute.padStart(2,'0')}\`;
-          else if (s.minute !== '*' && s.hour === '*') desc += \`At minute \${s.minute} of every hour\`;
-          else desc += 'Every minute';
+          if (s.minute === '0' && s.hour === '0') desc += t('atMidnight', 'At midnight');
+          else if (s.minute === '0' && s.hour !== '*') desc += t('atHour', 'At {{hour}}:00', { hour: s.hour });
+          else if (s.minute !== '*' && s.hour !== '*') desc += t('atTime', 'At {{hour}}:{{minute}}', { hour: s.hour, minute: s.minute.padStart(2,'0') });
+          else if (s.minute !== '*' && s.hour === '*') desc += t('atMinuteEveryHour', 'At minute {{minute}} of every hour', { minute: s.minute });
+          else desc += t('everyMinute', 'Every minute');
 
           // Day
-          if (s.dom !== '*' && s.dom !== '?') desc += \` on day \${s.dom} of the month\`;
-          
+          if (s.dom !== '*' && s.dom !== '?') desc += t('onDayOfMonth', ' on day {{day}} of the month', { day: s.dom });
+
           // Weekday
           if (s.dow !== '*' && s.dow !== '?') {
+             const weekdayFormatter = new Intl.DateTimeFormat(getActiveLocale(), { weekday: 'short', timeZone: 'UTC' });
              const days = s.dow.split(',').map(d => {
-               if(d.includes('-')) return d; // keep ranges simple for now
-               return DAYS[parseInt(d)];
+               if (!/^[0-7]$/.test(d)) return d; // Preserve range, step, and named Cron tokens.
+               return weekdayFormatter.format(new Date(Date.UTC(2024, 0, 7 + parseInt(d))));
              }).join(', ');
-             desc += \` on \${days}\`;
+             desc += t('onWeekdays', ' on {{days}}', { days });
           }
-          
-          // Month
-          if (s.month !== '*') desc += \` in \${s.month}\`;
 
-          return desc.charAt(0).toUpperCase() + desc.slice(1);
+          // Month
+          if (s.month !== '*') desc += t('inMonth', ' in {{month}}', { month: s.month });
+
+          return desc;
         }
 
          function updateNextExecutions() {
@@ -719,7 +746,7 @@ const GRID_LABELS = {
          }
 
         function formatDate(date) {
-          return date.toLocaleString('en-US', { 
+          return date.toLocaleString(getActiveLocale(), {
             weekday: 'short', 
             month: 'short', 
             day: 'numeric', 
@@ -736,9 +763,9 @@ const GRID_LABELS = {
           const hours = Math.floor(mins / 60);
           const days = Math.floor(hours / 24);
           
-          if (days > 0) return \`in \${days}d \${hours % 24}h\`;
-          if (hours > 0) return \`in \${hours}h \${mins % 60}m\`;
-          return \`in \${mins}m\`;
+          if (days > 0) return t('relativeDays', 'in {{days}}d {{hours}}h', { days, hours: hours % 24 });
+          if (hours > 0) return t('relativeHours', 'in {{hours}}h {{minutes}}m', { hours, minutes: mins % 60 });
+          return t('relativeMinutes', 'in {{minutes}}m', { minutes: mins });
         }
 
         // --- Scheduler Logic (Simplified) ---
@@ -818,8 +845,8 @@ const GRID_LABELS = {
           return results;
         }
 
-        // Start
-        init();
+        // The shared translator is defined after the page content.
+        document.addEventListener('DOMContentLoaded', init, { once: true });
       })();
     </script>
   `;

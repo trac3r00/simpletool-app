@@ -827,7 +827,7 @@ export function renderHTTPStatusReferenceSection(lang = DEFAULT_LANGUAGE) {
         },
       ])}
 
-      ${relatedToolsData.length > 0 ? createRelatedToolsSection(relatedToolsData, "Related Network Tools") : ""}
+      ${relatedToolsData.length > 0 ? createRelatedToolsSection(relatedToolsData, currentLang) : ""}
     </div>
   `;
 

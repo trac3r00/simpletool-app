@@ -407,7 +407,7 @@ export function renderPublicReposYmlBuilderSection(lang = DEFAULT_LANGUAGE) {
           </section>
         </div>
       </div>
-      ${createRelatedToolsSection(relatedToolsData)}
+      ${createRelatedToolsSection(relatedToolsData, currentLang)}
     </main>
   `;
 

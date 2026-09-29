@@ -602,7 +602,7 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
     </script>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-      ${createRelatedToolsSection(relatedToolsData)}
+      ${createRelatedToolsSection(relatedToolsData, currentLang)}
     </div>
   `;
 

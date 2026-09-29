@@ -233,7 +233,7 @@ function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
         </div>
       </div>
 
-      ${createRelatedToolsSection(relatedToolsData)}
+      ${createRelatedToolsSection(relatedToolsData, currentLang)}
     </main>
   `;
 
