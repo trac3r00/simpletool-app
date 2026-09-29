@@ -152,6 +152,15 @@
     min-height: 1.5rem;
   }
 
+  /* WebKit ignores min-height and vertical padding on native selects. An
+     explicit field height preserves the native arrow while keeping the
+     control above the 24px target-size floor. Scoped to design-system fields
+     and wrapped in :where() so a route's own height utility (compact selects)
+     still wins; custom-styled selects size themselves. */
+  :where(select.input, select.input-mono) {
+    height: 2.5rem;
+  }
+
   /* Links inside running prose need a non-color cue (axe link-in-text-block).
      Scoped to text containers so nav, cards, and button-shaped anchors keep
      their existing treatment. */
@@ -423,6 +432,7 @@
   .tab-trigger {
     @apply inline-flex items-center justify-center gap-1.5 whitespace-nowrap
            rounded-md px-3 py-1.5 text-sm font-medium
+           text-muted-foreground
            transition-colors duration-150
            hover:text-foreground
            focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring

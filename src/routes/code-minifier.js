@@ -162,7 +162,7 @@ function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
         transition: all 0.2s;
         cursor: pointer;
         background: #f4f4f5;
-        color: #71717a;
+        color: #52525b;
       }
 
       .dark .language-tab {

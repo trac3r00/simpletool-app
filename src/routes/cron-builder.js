@@ -236,7 +236,7 @@ export async function handleCronBuilderRoutes(request) {
           <div class="tool-group p-6">
             <div class="flex items-center justify-between mb-4">
               <h2 class="text-lg font-semibold text-surface-900 dark:text-surface-50" data-i18n="tools.cron-builder.ui.heading7">Next Runs</h2>
-              <span class="text-xs px-2 py-1 rounded bg-surface-100 dark:bg-surface-800 text-surface-500 dark:text-surface-400" data-i18n="tools.cron-builder.ui.desc20">Local Time</span>
+              <span class="text-xs px-2 py-1 rounded bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-400" data-i18n="tools.cron-builder.ui.desc20">Local Time</span>
             </div>
             <div class="relative">
               <div class="absolute left-2 top-2 bottom-2 w-0.5 bg-surface-200 dark:bg-surface-700"></div>
@@ -649,8 +649,8 @@ const GRID_LABELS = {
         function renderRecipes() {
           recipesList.innerHTML = RECIPES.map(r => \`
             <button class="recipe-btn w-full text-left px-4 py-3 rounded-lg hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors flex justify-between items-center group" data-cron="\${r.cron}">
-              <code class="text-xs bg-surface-100 dark:bg-surface-950 px-2 py-1 rounded text-surface-500 dark:text-surface-400 font-mono">\${r.cron}</code>
               <span class="text-sm font-medium text-surface-700 dark:text-surface-300 group-hover:text-primary-600 dark:group-hover:text-primary-400">\${t(r.nameKey, r.name)}</span>
+              <code class="text-xs bg-surface-100 dark:bg-surface-950 px-2 py-1 rounded text-surface-600 dark:text-surface-400 font-mono">\${r.cron}</code>
             </button>
           \`).join('');
           
@@ -736,7 +736,7 @@ const GRID_LABELS = {
                li.className = 'flex items-center gap-3 text-sm';
                li.innerHTML = \`
                  <span class="font-mono text-surface-500 dark:text-surface-400">\${formatDate(date)}</span>
-                 <span class="text-xs text-surface-400 dark:text-surface-400">(\${timeFromNow(date)})</span>
+                 <span class="text-xs text-surface-600 dark:text-surface-400">(\${timeFromNow(date)})</span>
                \`;
                nextExecutionsList.appendChild(li);
              });

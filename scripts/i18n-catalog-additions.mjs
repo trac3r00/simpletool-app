@@ -110,6 +110,18 @@ const additions = {
   },
 };
 
+const cssGradientAria0 = {
+  ko: "생성된 CSS 코드",
+  ja: "生成されたCSSコード",
+  es: "Código CSS generado",
+  "zh-CN": "生成的 CSS 代码",
+  "zh-TW": "產生的 CSS 程式碼",
+  fr: "Code CSS généré",
+  de: "Generierter CSS-Code",
+  pt: "Código CSS gerado",
+  vi: "Mã CSS đã tạo",
+};
+
 const english = (await import("../src/i18n/en.js")).default;
 const requiredEnglish = {
   ...Object.fromEntries(
@@ -120,6 +132,7 @@ const requiredEnglish = {
   ),
   "tools.uuid-generator.ui.optionV7":
     english.tools?.["uuid-generator"]?.ui?.optionV7,
+  "tools.css-gradient.ui.aria0": english.tools?.["css-gradient"]?.ui?.aria0,
 };
 for (const [key, value] of Object.entries(requiredEnglish)) {
   if (typeof value !== "string" || !value.trim()) {
@@ -147,6 +160,18 @@ for (const [locale, values] of Object.entries(additions)) {
     if (!match) throw new Error(`${locale}: UUID option5 anchor missing`);
     const index = match.index + match[0].length;
     source = `${source.slice(0, index)}\n        optionV7: ${JSON.stringify(values.optionV7)},${source.slice(index)}`;
+    changed++;
+  }
+
+  const cssGradientStart = source.indexOf('    "css-gradient": {');
+  if (cssGradientStart < 0) throw new Error(`${locale}: css-gradient anchor missing`);
+  const cssGradientBlock = source.slice(cssGradientStart);
+  const cssGradientEnd = cssGradientBlock.search(/^    \},?$/m);
+  if (!/^        aria0:/m.test(cssGradientBlock.slice(0, cssGradientEnd))) {
+    const match = cssGradientBlock.match(/^        badge26:.*$/m);
+    if (!match) throw new Error(`${locale}: css-gradient badge26 anchor missing`);
+    const index = cssGradientStart + match.index + match[0].length;
+    source = `${source.slice(0, index)}\n        aria0: ${JSON.stringify(cssGradientAria0[locale])},${source.slice(index)}`;
     changed++;
   }
 

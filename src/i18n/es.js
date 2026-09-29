@@ -1754,6 +1754,7 @@ export default {
         heading24: "🎯 Casos de uso",
         badge25: "Solo cliente",
         badge26: "Privacidad primero",
+        aria0: "Código CSS generado",
         "tip0": "Degradado a lo largo de una línea recta",
         "tip1": "Degradado que irradia desde un punto central",
         "tip2": "Ángulo de dirección del degradado lineal (0-360°)",

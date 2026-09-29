@@ -110,7 +110,7 @@ function renderLadderGamePage(lang = "en") {
         line-height: 1;
       }
       .avatar-btn:hover { transform: scale(1.15); }
-      .avatar-btn.selected { border-color: var(--color-primary-500, #6366f1); }
+      .avatar-btn.selected { border-color: hsl(var(--primary)); }
 
       /* Drag-and-drop styles */
       .draggable-row {
@@ -158,7 +158,7 @@ function renderLadderGamePage(lang = "en") {
         font-size: 0.7rem;
         min-width: 80px;
       }
-      .bracket-match .winner { color: #6366f1; font-weight: 600; }
+      .bracket-match .winner { color: hsl(var(--primary)); font-weight: 600; }
 
       /* Speed race finish animation */
       @keyframes finishPop {
@@ -186,12 +186,12 @@ function renderLadderGamePage(lang = "en") {
         color: inherit;
       }
       .mode-tab.active {
-        background: #6366f1;
-        color: #fff;
-        border-color: #6366f1;
+        background: hsl(var(--primary));
+        color: hsl(var(--primary-foreground));
+        border-color: hsl(var(--primary));
       }
       .mode-tab:hover:not(.active) {
-        background: rgba(99,102,241,0.12);
+        background: hsl(var(--primary) / 0.12);
       }
 
       /* Team color swatches */
@@ -336,7 +336,7 @@ function renderLadderGamePage(lang = "en") {
               <div>
                 <div class="flex items-center justify-between mb-2">
                   <h3 class="label" data-i18n="tools.ladder-game.ui.label3">${tr("tools.ladder-game.ui.label3", "Results (Bottom)")}</h3>
-                  <button id="btn-undo-rung" type="button" class="text-xs text-surface-500 hover:text-surface-600 dark:text-surface-400 dark:hover:text-surface-300 disabled:opacity-40 disabled:cursor-not-allowed" disabled data-i18n="tools.ladder-game.ui.undoBtn">${tr("tools.ladder-game.ui.undoBtn", "Undo Last Randomize")}</button>
+                  <button id="btn-undo-rung" type="button" class="btn btn-ghost btn-xs text-surface-500 hover:text-surface-600 dark:text-surface-400 dark:hover:text-surface-300 disabled:opacity-40 disabled:cursor-not-allowed" disabled data-i18n="tools.ladder-game.ui.undoBtn">${tr("tools.ladder-game.ui.undoBtn", "Undo Last Randomize")}</button>
                 </div>
                 <div id="results-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
                   <!-- Dynamically populated -->

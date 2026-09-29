@@ -1754,6 +1754,7 @@ export default {
         heading24: "🎯 Anwendungsfälle",
         badge25: "Nur clientseitig",
         badge26: "Datenschutz zuerst",
+        aria0: "Generierter CSS-Code",
         "tip0": "Farbverlauf entlang einer geraden Linie",
         "tip1": "Farbverlauf ausgehend von einem Mittelpunkt",
         "tip2": "Richtungswinkel für linearen Farbverlauf (0-360°)",

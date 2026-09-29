@@ -52,17 +52,17 @@ export function renderHomePage({
   <!-- Hero band keeps a bespoke surface pair on purpose: no semantic token is
        white+surface-950. bg-card would lift the dark band off the page and
        bg-background would flatten the light one into it. -->
-  <header class="border-b border-surface-200 bg-white dark:bg-surface-950 pt-12 pb-10 dark:border-surface-800 hexagon-pattern sm:pt-16 sm:pb-12">
+  <header class="border-b border-surface-200 bg-white dark:bg-surface-950 pt-8 pb-6 dark:border-surface-800 hexagon-pattern sm:pt-16 sm:pb-12">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <h1 class="text-balance text-4xl font-bold tracking-tight text-surface-900 dark:text-surface-50 sm:text-5xl" data-i18n="home.heroTitle">
+      <h1 class="text-balance text-3xl font-bold tracking-tight text-surface-900 dark:text-surface-50 sm:text-5xl" data-i18n="home.heroTitle">
         ${t("home.heroTitle", currentLang)}
       </h1>
-      <p class="mt-4 max-w-2xl text-lg leading-relaxed text-surface-600 dark:text-surface-400">
+      <p class="mt-3 max-w-2xl text-base leading-relaxed text-surface-600 dark:text-surface-400 sm:mt-4 sm:text-lg">
         <span data-i18n="home.heroLine1">${t("home.heroLine1", currentLang)}</span>
-        <span class="mt-2 block text-sm text-surface-500 dark:text-surface-400" data-i18n="home.heroLine2">${t("home.heroLine2", currentLang)}</span>
+        <span class="mt-2 hidden text-sm text-surface-500 dark:text-surface-400 sm:block" data-i18n="home.heroLine2">${t("home.heroLine2", currentLang)}</span>
       </p>
 
-      <div class="relative mt-8 max-w-xl group">
+      <div class="relative mt-6 max-w-xl group sm:mt-8">
         <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
           <span class="material-symbols-rounded text-[20px] text-surface-400 group-focus-within:text-primary-500" aria-hidden="true">search</span>
         </div>
@@ -77,19 +77,19 @@ export function renderHomePage({
         </div>
       </div>
 
-      <ul class="mt-6 flex flex-wrap gap-y-1 text-sm text-surface-500 dark:text-surface-400">
+      <ul class="mt-6 hidden flex-wrap gap-y-1 text-sm text-surface-500 dark:text-surface-400 sm:flex">
         <li class="whitespace-nowrap"><span data-i18n="home.trustClient">${t("home.trustClient", currentLang)}</span><span class="mx-2 text-muted-foreground" aria-hidden="true">·</span></li>
         <li class="whitespace-nowrap"><span data-i18n="home.trustAccount">${t("home.trustAccount", currentLang)}</span><span class="mx-2 text-muted-foreground" aria-hidden="true">·</span></li>
         <li class="whitespace-nowrap"><span data-i18n="home.trustCount">${t("home.trustCount", currentLang)}</span><span class="mx-2 text-muted-foreground" aria-hidden="true">·</span></li>
         <li class="whitespace-nowrap" data-i18n="home.trustLangs">${t("home.trustLangs", currentLang)}</li>
       </ul>
 
-      <nav class="mt-6" aria-label="${t("home.flagshipsNav", currentLang)}" data-i18n-aria="home.flagshipsNav">
-        <ul class="flex flex-wrap gap-2">
+      <nav class="mt-4 sm:mt-6" aria-label="${t("home.flagshipsNav", currentLang)}" data-i18n-aria="home.flagshipsNav">
+        <ul id="flagship-links" class="flex gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible sm:pb-0">
           ${flagships
             .map(
               (tool) =>
-                `<li><a class="inline-flex items-center rounded-md border border-border bg-card px-2.5 py-1 text-sm text-foreground hover:border-primary/50 hover:text-primary" href="${withLanguageQuery(tool.path, currentLang)}">${tool.name}</a></li>`,
+                `<li class="shrink-0"><a class="inline-flex items-center rounded-md border border-border bg-card px-2.5 py-1 text-sm text-foreground hover:border-primary/50 hover:text-primary" href="${withLanguageQuery(tool.path, currentLang)}">${tool.name}</a></li>`,
             )
             .join("")}
         </ul>
@@ -98,7 +98,7 @@ export function renderHomePage({
   </header>
 
   <!-- Tools Grid -->
-  <main class="mx-auto flex max-w-7xl flex-grow flex-col px-4 py-12 sm:px-6 lg:px-8">
+  <main class="mx-auto flex max-w-7xl flex-grow flex-col px-4 py-6 sm:px-6 sm:py-12 lg:px-8">
     <!-- Favorites Section (populated client-side from localStorage) -->
     <div id="favorites-section" class="hidden space-y-6">
       <div class="flex items-center gap-3">
@@ -114,7 +114,7 @@ export function renderHomePage({
       <div class="flex items-center gap-3">
         <span class="material-symbols-rounded text-primary-600 dark:text-primary-400" aria-hidden="true">history</span>
         <h2 class="text-sm font-semibold text-surface-900 dark:text-surface-100 uppercase tracking-wide" data-i18n="home.recentlyUsed">${t("home.recentlyUsed", currentLang)}</h2>
-        <span id="recent-count" class="text-xs font-medium text-surface-500 bg-surface-100 dark:bg-surface-800 dark:text-surface-400 px-2 py-0.5 rounded-full">0</span>
+        <span id="recent-count" class="text-xs font-medium text-surface-600 bg-surface-100 dark:bg-surface-800 dark:text-surface-300 px-2 py-0.5 rounded-full">0</span>
       </div>
       <div id="recent-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
     </div>

@@ -1754,6 +1754,7 @@ export default {
         heading24: "🎯 Casos de uso",
         badge25: "Somente no cliente",
         badge26: "Privacidade em primeiro lugar",
+        aria0: "Código CSS gerado",
         "tip0": "Gradiente ao longo de uma linha reta",
         "tip1": "Gradiente irradiando de um ponto central",
         "tip2": "Ângulo de direção do gradiente linear (0-360°)",

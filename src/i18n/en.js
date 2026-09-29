@@ -1754,6 +1754,7 @@ export default {
         heading24: "🎯 Use Cases",
         badge25: "Client-Side Only",
         badge26: "Privacy First",
+        aria0: "Generated CSS code",
         "tip0": "Gradient along a straight line",
         "tip1": "Gradient radiating from a center point",
         "tip2": "Direction angle for linear gradient (0-360°)",
