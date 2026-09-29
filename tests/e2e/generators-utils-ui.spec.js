@@ -153,11 +153,17 @@ test.describe("Generator and utility tools UI interactions", () => {
       "/prompt-template-builder",
     );
 
-    const response = await page.goto("/prompt-template-builder", {
+    const response = await page.goto("/token-counter", {
       waitUntil: "domcontentloaded",
     });
     expect(response.status()).toBe(200);
+    expect(
+      new URL(response.request().redirectedFrom().url()).pathname,
+    ).toBe("/token-counter");
     await expect(page).toHaveURL(/\/prompt-template-builder$/);
+    await expect(page.locator("#load-sample")).toBeVisible();
+    await expect(page.locator("#system")).toBeVisible();
+    await expect(page.locator("#user")).toBeVisible();
   });
 
   test("prompt-template-builder builds template sections with variables", async ({
