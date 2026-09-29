@@ -251,17 +251,24 @@ export function getKeyboardShortcutsScript() {
     modal.addEventListener('click', (e) => {
       if (e.target === modal) closeHelpModal();
     });
-    // Capture on document so the modal owns Escape and suppresses the other
-    // global shortcuts (the nav search also binds mod+K) while it is open;
-    // only mod+/ passes through, to toggle the dialog closed.
+    // Capture on document so the modal owns Escape and suppresses the page's
+    // own shortcuts (the nav search also binds mod+K) while it is open. mod+/
+    // passes through to toggle the dialog closed; IME composition and any
+    // other key combination keep their native behavior.
     helpKeyGuard = (e) => {
+      if (e.isComposing) return;
       if (e.key === 'Escape') {
         e.preventDefault();
         e.stopPropagation();
         closeHelpModal();
         return;
       }
-      if ((e.metaKey || e.ctrlKey) && e.key !== '/') {
+      const pageShortcut = (e.metaKey || e.ctrlKey) && Object.values(shortcuts).some((config) =>
+        config.action !== 'help' &&
+        config.key.toLowerCase() === e.key.toLowerCase() &&
+        Boolean(config.shift) === e.shiftKey
+      );
+      if (pageShortcut) {
         e.preventDefault();
         e.stopPropagation();
         return;
@@ -291,9 +298,9 @@ export function getKeyboardShortcutsScript() {
   }
 
   function closeHelpModal() {
+    if (!helpModalOpen) return;
     const modal = document.getElementById('keyboard-shortcuts-modal');
-    if (!modal) return;
-    modal.remove();
+    if (modal) modal.remove();
     document.removeEventListener('keydown', helpKeyGuard, true);
     helpKeyGuard = null;
     helpModalOpen = false;
