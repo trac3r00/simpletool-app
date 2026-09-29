@@ -103,6 +103,7 @@ function renderCaffeinatePage(lang = DEFAULT_LANGUAGE) {
 
       var HEARTBEAT_INTERVAL = 30000;
       var RECOVERY_DELAY = 500;
+      var MAX_RECOVERY_ATTEMPTS = 3;
 
       var state = {
         wakeLock: null,
@@ -110,6 +111,8 @@ function renderCaffeinatePage(lang = DEFAULT_LANGUAGE) {
         requestPromise: null,
         requestGeneration: 0,
         recoveryTimer: null,
+        recoveryAttempts: 0,
+        lastErrorMessage: '',
         active: false,
         intentActive: false,
         mode: 'none',
@@ -225,19 +228,41 @@ function renderCaffeinatePage(lang = DEFAULT_LANGUAGE) {
           clearTimeout(state.recoveryTimer);
           state.recoveryTimer = null;
         }
+        state.recoveryAttempts = 0;
       }
 
       function scheduleRecovery() {
         if (!state.intentActive || document.visibilityState !== 'visible' ||
             state.wakeLock || state.requestPromise || state.recoveryTimer) return;
+        var generation = state.requestGeneration;
+        var delay = RECOVERY_DELAY * Math.pow(2, state.recoveryAttempts);
         updateUI('🔄', window._t ? window._t('tools.caffeinate.js.status7') : 'Reactivating...', false, 'warn');
-        state.recoveryTimer = setTimeout(function() {
+        state.recoveryTimer = setTimeout(async function() {
           state.recoveryTimer = null;
-          if (!state.intentActive || document.visibilityState !== 'visible' || state.wakeLock) return;
+          if (generation !== state.requestGeneration || !state.intentActive ||
+              document.visibilityState !== 'visible' || state.wakeLock) return;
+          state.recoveryAttempts++;
           state.reactivationCount++;
           updateStats();
-          activateWakeLock();
-        }, RECOVERY_DELAY);
+          var acquired = await activateWakeLock();
+          if (acquired || generation !== state.requestGeneration || !state.intentActive ||
+              document.visibilityState !== 'visible' || state.wakeLock) return;
+          if (state.recoveryAttempts < MAX_RECOVERY_ATTEMPTS) {
+            scheduleRecovery();
+          } else {
+            requireManualRetry();
+          }
+        }, delay);
+      }
+
+      function requireManualRetry() {
+        cancelRecovery();
+        state.intentActive = false;
+        var message = state.lastErrorMessage ||
+          (window._t ? window._t('tools.caffeinate.js.status2') : 'Wake lock failed: {{reason}}. Please reactivate manually.').replace('{{reason}}', 'Request rejected');
+        updateUI('❌', message, false, 'error');
+        showMode('none');
+        updateStats();
       }
 
       async function activateNative() {
@@ -259,6 +284,7 @@ function renderCaffeinatePage(lang = DEFAULT_LANGUAGE) {
             var releaseHandler = function() { handleRelease(lock); };
             state.wakeLock = lock;
             state.wakeLockReleaseHandler = releaseHandler;
+            state.recoveryAttempts = 0;
             state.mode = 'native';
             state.active = true;
             state.lastActivity = Date.now();
@@ -273,6 +299,7 @@ function renderCaffeinatePage(lang = DEFAULT_LANGUAGE) {
             if (generation === state.requestGeneration && state.intentActive) {
               var reason = error && (error.message || error.name) ? (error.message || error.name) : 'Request rejected';
               var message = (window._t ? window._t('tools.caffeinate.js.status2') : 'Wake lock failed: {{reason}}. Please reactivate manually.').replace('{{reason}}', reason);
+              state.lastErrorMessage = message;
               state.active = false;
               state.mode = 'none';
               updateUI('❌', message, false, 'error');

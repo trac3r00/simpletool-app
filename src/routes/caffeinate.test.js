@@ -295,4 +295,130 @@ describe("caffeinate wake lock lifecycle", () => {
     expect(page.byId("status-panel").classList.contains("border-error-400")).toBe(true);
     expect(page.document.createElement).not.toHaveBeenCalled();
   });
+
+  it("retries a rejected browser-release recovery with backoff until it succeeds", async () => {
+    const first = sentinel();
+    const recovered = sentinel();
+    const request = vi
+      .fn()
+      .mockResolvedValueOnce(first)
+      .mockRejectedValueOnce(new Error("NotAllowedError"))
+      .mockResolvedValueOnce(recovered);
+    const page = bootstrap(script, request);
+
+    await page.byId("toggle-btn").emit("click");
+    await first.browserRelease();
+    await vi.advanceTimersByTimeAsync(500);
+    expect(request).toHaveBeenCalledTimes(2);
+    expect(page.byId("toggle-btn").attributes["data-i18n"]).toBe(
+      "tools.caffeinate.ui.button1",
+    );
+
+    await vi.advanceTimersByTimeAsync(999);
+    expect(request).toHaveBeenCalledTimes(2);
+    await vi.advanceTimersByTimeAsync(1);
+    await recovered.accepted;
+
+    expect(request).toHaveBeenCalledTimes(3);
+    expect(page.byId("stat-mode").textContent).toBe("native");
+    expect(page.byId("stat-reactivations").textContent).toBe(2);
+    expect(page.byId("status-panel").classList.contains("border-primary-400")).toBe(true);
+  });
+
+  it("stops retrying after the limit and hands control back for a manual retry", async () => {
+    const first = sentinel();
+    const manual = sentinel();
+    const request = vi
+      .fn()
+      .mockResolvedValueOnce(first)
+      .mockRejectedValueOnce(new Error("denied 1"))
+      .mockRejectedValueOnce(new Error("denied 2"))
+      .mockRejectedValueOnce(new Error("denied 3"))
+      .mockResolvedValueOnce(manual);
+    const page = bootstrap(script, request);
+
+    await page.byId("toggle-btn").emit("click");
+    await first.browserRelease();
+    await vi.advanceTimersByTimeAsync(500 + 1000 + 2000);
+    expect(request).toHaveBeenCalledTimes(4);
+
+    expect(page.byId("status-text").textContent).toContain("denied 3");
+    expect(page.byId("status-panel").classList.contains("border-error-400")).toBe(true);
+    expect(page.byId("toggle-btn").attributes["data-i18n"]).toBe(
+      "tools.caffeinate.ui.button0",
+    );
+
+    await page.window.emit("focus");
+    await page.document.emit("visibilitychange");
+    await page.window.emit("pageshow");
+    await vi.advanceTimersByTimeAsync(60000);
+    expect(request).toHaveBeenCalledTimes(4);
+
+    await page.byId("toggle-btn").emit("click");
+    await manual.accepted;
+    expect(request).toHaveBeenCalledTimes(5);
+    expect(page.byId("stat-mode").textContent).toBe("native");
+  });
+
+  it.each(["hidden", "pagehide", "manual stop"])(
+    "cancels a scheduled recovery retry on %s",
+    async (stop) => {
+      const first = sentinel();
+      const request = vi
+        .fn()
+        .mockResolvedValueOnce(first)
+        .mockRejectedValue(new Error("denied"));
+      const page = bootstrap(script, request);
+
+      await page.byId("toggle-btn").emit("click");
+      await first.browserRelease();
+      await vi.advanceTimersByTimeAsync(500);
+      expect(request).toHaveBeenCalledTimes(2);
+
+      if (stop === "hidden") {
+        page.document.visibilityState = "hidden";
+        await page.document.emit("visibilitychange");
+      } else if (stop === "pagehide") {
+        await page.window.emit("pagehide");
+      } else {
+        await page.byId("toggle-btn").emit("click");
+      }
+      await vi.advanceTimersByTimeAsync(60000);
+
+      expect(request).toHaveBeenCalledTimes(2);
+      expect(page.byId("toggle-btn").attributes["data-i18n"]).toBe(
+        stop === "manual stop"
+          ? "tools.caffeinate.ui.button0"
+          : "tools.caffeinate.ui.button1",
+      );
+    },
+  );
+
+  it("does not let a stale rejected recovery overwrite a newer activation", async () => {
+    const first = sentinel();
+    const obsolete = deferred();
+    const current = sentinel();
+    const request = vi
+      .fn()
+      .mockResolvedValueOnce(first)
+      .mockReturnValueOnce(obsolete.promise)
+      .mockResolvedValueOnce(current);
+    const page = bootstrap(script, request);
+
+    await page.byId("toggle-btn").emit("click");
+    await first.browserRelease();
+    await vi.advanceTimersByTimeAsync(500);
+    expect(request).toHaveBeenCalledTimes(2);
+
+    await page.byId("toggle-btn").emit("click");
+    await page.byId("toggle-btn").emit("click");
+    await current.accepted;
+    obsolete.reject(new Error("stale denial"));
+    await vi.advanceTimersByTimeAsync(60000);
+
+    expect(request).toHaveBeenCalledTimes(3);
+    expect(page.byId("status-text").textContent).not.toContain("stale denial");
+    expect(page.byId("stat-mode").textContent).toBe("native");
+    expect(page.byId("status-panel").classList.contains("border-primary-400")).toBe(true);
+  });
 });
