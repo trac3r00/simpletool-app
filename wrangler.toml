@@ -15,10 +15,10 @@ ENVIRONMENT = "production"
 SITE_URL = "https://simpletool.app"
 # Publisher ID ships ads.txt, google-adsense-account meta, and the official
 # adsbygoogle.js head snippet on script-allow pages (site connect).
-# Ad units stay off until real slot IDs exist. Create three Display units
-# (NPA, no Auto ads) and paste the IDs:
-#   home  = homepage below the tool grid
-#   json  = JSON Formatter below the educational section
+# Ad units stay off until real slot IDs exist. Create manual Display units
+# (NPA, no Auto ads) only for placements that exist:
+#   home  = reserved key; no current call site or placement
+#   json  = JSON Formatter below the tool controls
 #   legal = about / privacy / terms / changelog
 ADSENSE_CLIENT = "ca-pub-5134881365131182"
 # ADSENSE_SLOTS = "{\"home\":\"1111111111\",\"json\":\"2222222222\",\"legal\":\"3333333333\"}"

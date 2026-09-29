@@ -86,6 +86,28 @@ function wrapLegalPage({
   });
 }
 
+function renderAdPolicyScope(policy, labels) {
+  if (!policy) return "";
+  const manualPaths = policy.manualUnitPaths
+    .map((path) => `<li><code data-ad-policy-path="${path}">${path}</code></li>`)
+    .join("");
+  const scriptPaths = policy.scriptPaths
+    .map((path) => `<li><code data-ad-policy-path="${path}">${path}</code></li>`)
+    .join("");
+  const prefixes = policy.scriptPrefixes
+    .map((prefix) => `<li><code data-ad-policy-prefix="${prefix}">${prefix}*</code></li>`)
+    .join("");
+
+  return `<div class="not-prose mt-4 rounded-lg border border-border bg-muted/40 p-4" data-ad-policy-scope="v1" data-auto-ads-status="${policy.autoAdsStatus}" data-cmp-status="${policy.cmpStatus}">
+    <p class="text-sm font-semibold text-foreground">${labels.title}</p>
+    <p class="mt-2 text-sm text-muted-foreground">${labels.manualUnits}</p>
+    <ul class="mt-2 list-disc pl-5 text-sm text-muted-foreground">${manualPaths}</ul>
+    <p class="mt-3 text-sm text-muted-foreground">${labels.scriptScope}</p>
+    <ul class="mt-2 list-disc pl-5 text-sm text-muted-foreground">${scriptPaths}${prefixes}</ul>
+    <p class="mt-3 text-sm text-muted-foreground">${labels.accountStatus}</p>
+  </div>`;
+}
+
 function renderSectionBlocks(sections) {
   return sections
     .map((section) => {
@@ -105,7 +127,11 @@ function renderSectionBlocks(sections) {
           ? `<ul>${section.list.map((item) => `<li>${item}</li>`).join("")}</ul>`
           : "";
       const html = section.html ? `<div>${section.html}</div>` : "";
-      return `<section class="mb-8">${heading}${paragraphs}${list}${html}</section>`;
+      const adPolicy = renderAdPolicyScope(
+        section.adPolicy,
+        section.adPolicyLabels,
+      );
+      return `<section class="mb-8">${heading}${paragraphs}${list}${html}${adPolicy}</section>`;
     })
     .join("");
 }

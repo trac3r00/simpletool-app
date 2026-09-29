@@ -31,7 +31,7 @@ const RELEASES = [
       },
       {
         type: "fix",
-        text: "About lists 47 production tools; homepage and JSON Formatter ship original visible copy for the thin-content review",
+        text: "About derives its public-tool count from the production-visible registry",
       },
       {
         type: "fix",
@@ -50,7 +50,7 @@ const RELEASES = [
       },
       {
         type: "fix",
-        text: "Catalog frozen until the eight flagships beat the bookmarks people already use",
+        text: "Catalog freeze adopted while the eight flagship workflows are improved",
       },
     ],
   },

@@ -1,4 +1,7 @@
+import { getAdPolicySnapshot } from "../utils/ads.js";
+import { PRODUCTION_TOOL_COUNT } from "../utils/tool-registry.js";
 import { DEFAULT_LANGUAGE, normalizeLanguage } from "../utils/i18n.js";
+import { REVIEWED_LEGAL_CONTENT } from "./generated-content-locales.js";
 
 const LEGAL_CONTENT = {
   terms: {
@@ -35,7 +38,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Advertising",
           paragraphs: [
-            "The service is free to use and may show non-personalized Google ads on a small allow list of pages: the homepage below the tool grid, JSON Formatter below the editor, and the About, Privacy, Terms, and changelog pages. Password, SSH, Token Studio, WireGuard, certificates, secret scanner, encoding, and pipe pages never load advertising scripts.",
+            "The service is free to use and may show non-personalized Google ads on a small allow list of pages: JSON Formatter below the editor, and the About, Privacy, Terms, and changelog pages. Password, SSH, Token Studio, WireGuard, certificates, secret scanner, and encoding pages never load advertising scripts.",
           ],
         },
         {
@@ -119,7 +122,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. 광고",
           paragraphs: [
-            "서비스는 무료이며, 홈 그리드 아래·JSON Formatter 에디터 아래·About / Privacy / Terms / changelog 페이지에만 비개인화 Google 광고를 둘 수 있습니다. 비밀번호, SSH, Token Studio, WireGuard, 인증서, 시크릿 스캐너, 인코딩, pipe 페이지는 광고 스크립트를 로드하지 않습니다.",
+            "서비스는 무료이며, JSON Formatter 에디터 아래·About / Privacy / Terms / changelog 페이지에만 비개인화 Google 광고를 둘 수 있습니다. 비밀번호, SSH, Token Studio, WireGuard, 인증서, 시크릿 스캐너, 인코딩 페이지는 광고 스크립트를 로드하지 않습니다.",
           ],
         },
         {
@@ -202,7 +205,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. 広告",
           paragraphs: [
-            "本サービスは無料です。非パーソナライズの Google 広告を、ホームページのツールグリッド下、JSON Formatter のエディタ下、About / Privacy / Terms / changelog ページに掲載する場合があります。パスワード、SSH、Token Studio、WireGuard、証明書、シークレットスキャナー、エンコーディング、pipe のページでは広告スクリプトを読み込みません。",
+            "本サービスは無料です。非パーソナライズの Google 広告を、JSON Formatter のエディタ下、About / Privacy / Terms / changelog ページに掲載する場合があります。パスワード、SSH、Token Studio、WireGuard、証明書、シークレットスキャナー、エンコーディングのページでは広告スクリプトを読み込みません。",
           ],
         },
         {
@@ -284,7 +287,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Publicidad",
           paragraphs: [
-            "El servicio es gratuito y puede mostrar anuncios no personalizados de Google en una lista reducida de páginas: la página de inicio debajo de la cuadrícula de herramientas, JSON Formatter debajo del editor, y las páginas About, Privacy, Terms y changelog. Las páginas de contraseñas, SSH, Token Studio, WireGuard, certificados, secret scanner, encoding y pipe nunca cargan scripts publicitarios.",
+            "El servicio es gratuito y puede mostrar anuncios no personalizados de Google en una lista reducida de páginas: JSON Formatter debajo del editor, y las páginas About, Privacy, Terms y changelog. Las páginas de contraseñas, SSH, Token Studio, WireGuard, certificados, secret scanner y encoding nunca cargan scripts publicitarios.",
           ],
         },
         {
@@ -369,7 +372,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. 广告",
           paragraphs: [
-            "本服务免费，并可能在少量允许的页面展示非个性化 Google 广告：首页工具网格下方、JSON Formatter 编辑器下方，以及 About、Privacy、Terms 和 changelog 页面。密码、SSH、Token Studio、WireGuard、证书、密钥扫描、编码和 pipe 页面不会加载广告脚本。",
+            "本服务免费，并可能在少量允许的页面展示非个性化 Google 广告：JSON Formatter 编辑器下方，以及 About、Privacy、Terms 和 changelog 页面。密码、SSH、Token Studio、WireGuard、证书、密钥扫描、编码页面不会加载广告脚本。",
           ],
         },
         {
@@ -449,7 +452,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. 廣告",
           paragraphs: [
-            "本服務免費，並可能在少量允許的頁面展示非個人化 Google 廣告：首頁工具網格下方、JSON Formatter 編輯器下方，以及 About、Privacy、Terms 與 changelog 頁面。密碼、SSH、Token Studio、WireGuard、憑證、祕密掃描、編碼與 pipe 頁面不會載入廣告指令碼。",
+            "本服務免費，並可能在少量允許的頁面展示非個人化 Google 廣告：JSON Formatter 編輯器下方，以及 About、Privacy、Terms 與 changelog 頁面。密碼、SSH、Token Studio、WireGuard、憑證、祕密掃描、編碼頁面不會載入廣告指令碼。",
           ],
         },
         {
@@ -530,7 +533,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Publicité",
           paragraphs: [
-            "Le service est gratuit et peut afficher des publicités Google non personnalisées sur une liste limitée de pages : la page d'accueil sous la grille d'outils, JSON Formatter sous l'éditeur, ainsi que les pages About, Privacy, Terms et changelog. Les pages mot de passe, SSH, Token Studio, WireGuard, certificats, secret scanner, encodage et pipe ne chargent jamais de scripts publicitaires.",
+            "Le service est gratuit et peut afficher des publicités Google non personnalisées sur une liste limitée de pages : JSON Formatter sous l'éditeur, ainsi que les pages About, Privacy, Terms et changelog. Les pages mot de passe, SSH, Token Studio, WireGuard, certificats, secret scanner et encodage ne chargent jamais de scripts publicitaires.",
           ],
         },
         {
@@ -616,7 +619,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Werbung",
           paragraphs: [
-            "Der Dienst ist kostenlos und kann nicht personalisierte Google-Anzeigen auf einer kleinen Freigabeliste zeigen: auf der Startseite unter dem Tool-Raster, in JSON Formatter unter dem Editor sowie auf den Seiten About, Privacy, Terms und Changelog. Passwort-, SSH-, Token-Studio-, WireGuard-, Zertifikats-, Secret-Scanner-, Encoding- und Pipe-Seiten laden keine Werbeskripte.",
+            "Der Dienst ist kostenlos und kann nicht personalisierte Google-Anzeigen auf einer kleinen Freigabeliste zeigen: in JSON Formatter unter dem Editor sowie auf den Seiten About, Privacy, Terms und Changelog. Passwort-, SSH-, Token-Studio-, WireGuard-, Zertifikats-, Secret-Scanner- und Encoding-Seiten laden keine Werbeskripte.",
           ],
         },
         {
@@ -702,7 +705,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Publicidade",
           paragraphs: [
-            "O serviço é gratuito e pode exibir anúncios não personalizados do Google numa lista reduzida de páginas: a página inicial abaixo da grelha de ferramentas, o JSON Formatter abaixo do editor, e as páginas About, Privacy, Terms e changelog. As páginas de palavra-passe, SSH, Token Studio, WireGuard, certificados, secret scanner, encoding e pipe nunca carregam scripts de publicidade.",
+            "O serviço é gratuito e pode exibir anúncios não personalizados do Google numa lista reduzida de páginas: o JSON Formatter abaixo do editor, e as páginas About, Privacy, Terms e changelog. As páginas de palavra-passe, SSH, Token Studio, WireGuard, certificados, secret scanner e encoding nunca carregam scripts de publicidade.",
           ],
         },
         {
@@ -788,7 +791,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Quảng cáo",
           paragraphs: [
-            "Dịch vụ miễn phí và có thể hiển thị quảng cáo Google không cá nhân hóa trên một danh sách trang cho phép: trang chủ dưới lưới công cụ, JSON Formatter dưới trình soạn thảo, và các trang About, Privacy, Terms, changelog. Các trang mật khẩu, SSH, Token Studio, WireGuard, chứng chỉ, quét bí mật, encoding và pipe không bao giờ tải script quảng cáo.",
+            "Dịch vụ miễn phí và có thể hiển thị quảng cáo Google không cá nhân hóa trên một danh sách trang cho phép: JSON Formatter dưới trình soạn thảo, và các trang About, Privacy, Terms, changelog. Các trang mật khẩu, SSH, Token Studio, WireGuard, chứng chỉ, quét bí mật và encoding không bao giờ tải script quảng cáo.",
           ],
         },
         {
@@ -846,8 +849,8 @@ const LEGAL_CONTENT = {
         {
           heading: "Our Mission",
           paragraphs: [
-            "SimpleTool App exists to make essential digital tools available without compromising privacy or security.",
-            "We favor a client-side model so common tasks like password generation, log inspection, and code cleanup can happen without sending sensitive data to a backend.",
+            "SimpleTool App provides browser-based utilities for formatting, inspecting, generating, and converting data.",
+            "Tool computations are designed to run in the browser where practical. Page requests, assets, and advertising on allow-listed pages still involve network services.",
           ],
           list: [
             "Free to use with no account required",
@@ -861,8 +864,8 @@ const LEGAL_CONTENT = {
           html: `
             <div class="not-prose grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">47</div>
-                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Professional Tools</div>
+                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1" data-public-tool-count>${PRODUCTION_TOOL_COUNT}</div>
+                <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Public Tools</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
                 <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">10</div>
@@ -878,22 +881,22 @@ const LEGAL_CONTENT = {
         {
           heading: "Technical Philosophy",
           paragraphs: [
-            "Our technical philosophy is rooted in a zero-trust model: if the browser can do the work locally, the server should never need to see your data.",
-            "We use modern web standards such as Cloudflare Workers, the Web Crypto API, and lightweight client-side execution to keep the product fast and transparent.",
-            "Security is treated as an architectural property, not a marketing claim.",
+            "When a browser API can perform a task, the tool keeps that computation in the page instead of adding an application upload endpoint.",
+            "Cloudflare still serves pages and assets, while Web Crypto and other browser APIs perform supported tool operations locally.",
+            "Each tool documents limits that still require external validation or a server-side system.",
           ],
         },
         {
           heading: "Why Client-Side Matters",
           paragraphs: [
-            "Sending sensitive data to a remote server introduces an unnecessary trust boundary.",
-            "Processing locally reduces exposure to server-side compromise, interception, and retention risk.",
+            "Keeping a computation in the browser avoids creating an application endpoint for the tool payload.",
+            "This does not make the page air-gapped: the initial page, assets, browser extensions, clipboard, and allow-listed advertising remain separate trust considerations.",
           ],
           list: [
-            "Instant performance with no round-trip latency",
-            "Better offline behavior once assets are loaded",
-            "No server-side copy of your inputs",
-            "Lower operational overhead and a smaller attack surface",
+            "No account required for public tools",
+            "Many computations continue after assets load",
+            "Tool payloads are not intentionally submitted to an application backend",
+            "External verification is still required when the task depends on a live service",
           ],
         },
         {
@@ -948,27 +951,19 @@ const LEGAL_CONTENT = {
         {
           heading: "Contact & Support",
           paragraphs: [
-            "We value feedback from individual developers, students, and teams using the public site.",
+            "Use the existing public contacts for reproducible bug reports, security concerns, or non-product questions. Replies are not guaranteed on a fixed schedule.",
           ],
           html: `
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
-                <h3 class="font-bold mb-1">General Support</h3>
-                <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Questions, suggestions, or bug reports.</p>
+                <h3 class="font-bold mb-1">General Contact</h3>
+                <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Questions, suggestions, bug reports, press, or media.</p>
                 <a href="mailto:hello@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">hello@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Response time: 2-3 business days</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
-                <h3 class="font-bold mb-1">Security Team</h3>
-                <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Vulnerability reports and security concerns.</p>
+                <h3 class="font-bold mb-1">Security Reports</h3>
+                <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Include affected URLs, steps, impact, and a safe proof of concept.</p>
                 <a href="mailto:security@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">security@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Response time: Prioritized, within 3 business days</p>
-              </div>
-              <div class="card p-4 border border-surface-200 dark:border-surface-800">
-                <h3 class="font-bold mb-1">Business Inquiries</h3>
-                <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Press, media, or other non-product questions.</p>
-                <a href="mailto:business@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">business@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Response time: 2-3 business days</p>
               </div>
             </div>
           `,
@@ -995,7 +990,7 @@ const LEGAL_CONTENT = {
           html: `
             <div class="not-prose grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">47</div>
+                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1" data-public-tool-count>${PRODUCTION_TOOL_COUNT}</div>
                 <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">전문 도구</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
@@ -1090,19 +1085,16 @@ const LEGAL_CONTENT = {
                 <h3 class="font-bold mb-1">일반 지원</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">질문, 제안, 버그 리포트.</p>
                 <a href="mailto:hello@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">hello@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">응답 시간: 영업일 2-3일</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">보안 팀</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">취약점 제보 및 보안 문의.</p>
                 <a href="mailto:security@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">security@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">응답 시간: 우선 처리, 영업일 3일 이내</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">비즈니스 문의</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">보도, 미디어, 그 외 제품 외 문의.</p>
-                <a href="mailto:business@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">business@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">응답 시간: 영업일 2-3일</p>
+                <a href="mailto:hello@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">hello@simpletool.app</a>
               </div>
             </div>
           `,
@@ -1129,7 +1121,7 @@ const LEGAL_CONTENT = {
           html: `
             <div class="not-prose grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">47</div>
+                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1" data-public-tool-count>${PRODUCTION_TOOL_COUNT}</div>
                 <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Professional Tools</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
@@ -1224,19 +1216,16 @@ const LEGAL_CONTENT = {
                 <h3 class="font-bold mb-1">General Support</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Questions, suggestions, or bug reports.</p>
                 <a href="mailto:hello@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">hello@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Response time: 2-3 business days</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Security Team</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Vulnerability reports and security concerns.</p>
                 <a href="mailto:security@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">security@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Response time: Prioritized, within 3 business days</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Business Inquiries</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Press, media, or other non-product questions.</p>
-                <a href="mailto:business@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">business@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Response time: 2-3 business days</p>
+                <a href="mailto:hello@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">hello@simpletool.app</a>
               </div>
             </div>
           `,
@@ -1263,7 +1252,7 @@ const LEGAL_CONTENT = {
           html: `
             <div class="not-prose grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">47</div>
+                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1" data-public-tool-count>${PRODUCTION_TOOL_COUNT}</div>
                 <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Professional Tools</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
@@ -1292,7 +1281,7 @@ const LEGAL_CONTENT = {
             "El procesamiento local reduce la exposición a compromisos del servidor, intercepciones y retención indebida.",
           ],
           list: [
-            "Velocidad instantánea sin latencia de ida y vuelta",
+            "Procesamiento en el navegador sin una carga adicional a la aplicación",
             "Mejor comportamiento offline una vez cargados los activos",
             "Sin copia en servidor de tus entradas",
             "Menor superficie de ataque y menos carga operativa",
@@ -1350,7 +1339,7 @@ const LEGAL_CONTENT = {
         {
           heading: "Contacto y soporte",
           paragraphs: [
-            "Valoramos los comentarios de desarrolladores individuales, estudiantes y equipos enterprise.",
+            "Valoramos los comentarios de desarrolladores individuales, estudiantes y equipos.",
           ],
           html: `
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
@@ -1358,19 +1347,16 @@ const LEGAL_CONTENT = {
                 <h3 class="font-bold mb-1">General Support</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Questions, suggestions, or bug reports.</p>
                 <a href="mailto:hello@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">hello@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Response time: 2-3 business days</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Security Team</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Vulnerability reports and security concerns.</p>
                 <a href="mailto:security@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">security@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Response time: Prioritized, within 3 business days</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Business Inquiries</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Press, media, or other non-product questions.</p>
-                <a href="mailto:business@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">business@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Response time: 2-3 business days</p>
+                <a href="mailto:hello@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">hello@simpletool.app</a>
               </div>
             </div>
           `,
@@ -1397,7 +1383,7 @@ const LEGAL_CONTENT = {
           html: `
             <div class="not-prose grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">47</div>
+                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1" data-public-tool-count>${PRODUCTION_TOOL_COUNT}</div>
                 <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">专业工具</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
@@ -1490,19 +1476,16 @@ const LEGAL_CONTENT = {
                 <h3 class="font-bold mb-1">通用支持</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">问题、建议或错误报告。</p>
                 <a href="mailto:hello@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">hello@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">响应时间：2-3 个工作日</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">安全团队</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">漏洞报告及安全相关问题。</p>
                 <a href="mailto:security@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">security@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">响应时间：优先处理，3 个工作日内</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">商务合作</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">合作伙伴关系、企业授权或媒体事宜。</p>
-                <a href="mailto:business@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">business@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">响应时间：2-3 个工作日</p>
+                <a href="mailto:hello@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">hello@simpletool.app</a>
               </div>
             </div>
           `,
@@ -1529,7 +1512,7 @@ const LEGAL_CONTENT = {
           html: `
             <div class="not-prose grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">47</div>
+                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1" data-public-tool-count>${PRODUCTION_TOOL_COUNT}</div>
                 <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">專業工具</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
@@ -1622,19 +1605,16 @@ const LEGAL_CONTENT = {
                 <h3 class="font-bold mb-1">一般支援</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">問題、建議或錯誤回報。</p>
                 <a href="mailto:hello@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">hello@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">回應時間：2-3 個工作日</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">安全團隊</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">漏洞回報及安全相關問題。</p>
                 <a href="mailto:security@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">security@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">回應時間：優先處理，3 個工作日內</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">商務合作</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">合作夥伴關係、企業授權或媒體事宜。</p>
-                <a href="mailto:business@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">business@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">回應時間：2-3 個工作日</p>
+                <a href="mailto:hello@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">hello@simpletool.app</a>
               </div>
             </div>
           `,
@@ -1661,7 +1641,7 @@ const LEGAL_CONTENT = {
           html: `
             <div class="not-prose grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">47</div>
+                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1" data-public-tool-count>${PRODUCTION_TOOL_COUNT}</div>
                 <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Outils professionnels</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
@@ -1690,7 +1670,7 @@ const LEGAL_CONTENT = {
             "Le traitement local réduit l'exposition aux compromissions côté serveur, aux interceptions et aux risques de rétention.",
           ],
           list: [
-            "Performances instantanées sans latence aller-retour",
+            "Traitement dans le navigateur sans transfert supplémentaire vers l'application",
             "Meilleur fonctionnement hors ligne une fois les ressources chargées",
             "Aucune copie serveur de vos saisies",
             "Moins de charge opérationnelle et surface d'attaque réduite",
@@ -1748,7 +1728,7 @@ const LEGAL_CONTENT = {
         {
           heading: "Contact et support",
           paragraphs: [
-            "Nous valorisons les retours des développeurs individuels, des étudiants et des équipes enterprise.",
+            "Nous valorisons les retours des développeurs individuels, des étudiants et des équipes.",
           ],
           html: `
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
@@ -1756,19 +1736,16 @@ const LEGAL_CONTENT = {
                 <h3 class="font-bold mb-1">Support général</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Questions, suggestions ou rapports de bugs.</p>
                 <a href="mailto:hello@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">hello@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Délai de réponse : 2-3 jours ouvrés</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Équipe sécurité</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Rapports de vulnérabilité et questions de sécurité.</p>
                 <a href="mailto:security@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">security@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Délai de réponse : Prioritaire, sous 3 jours ouvrés</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Demandes commerciales</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Presse, médias ou autres questions hors produit.</p>
-                <a href="mailto:business@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">business@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Délai de réponse : 2-3 jours ouvrés</p>
+                <a href="mailto:hello@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">hello@simpletool.app</a>
               </div>
             </div>
           `,
@@ -1795,7 +1772,7 @@ const LEGAL_CONTENT = {
           html: `
             <div class="not-prose grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">47</div>
+                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1" data-public-tool-count>${PRODUCTION_TOOL_COUNT}</div>
                 <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Professionelle Tools</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
@@ -1812,7 +1789,7 @@ const LEGAL_CONTENT = {
         {
           heading: "Technische Philosophie",
           paragraphs: [
-            "Unsere technische Philosophie basiert auf einem Zero-Trust-Modell: Wenn der Browser die Arbeit lokal erledigen kann, muss der Server Ihre Daten nie sehen.",
+            "Wenn eine Browser-API eine Aufgabe ausführen kann, vermeidet das Tool einen zusätzlichen Upload-Endpunkt. Seiten, Assets und zugelassene Werbung bleiben Netzwerkvorgänge.",
             "Wir nutzen moderne Web-Standards wie Cloudflare Workers, die Web Crypto API und leichtgewichtige clientseitige Ausführung, um das Produkt schnell und transparent zu halten.",
             "Sicherheit wird als architektonische Eigenschaft behandelt, nicht als Marketing-Aussage.",
           ],
@@ -1876,13 +1853,13 @@ const LEGAL_CONTENT = {
             "Compliance-freundliches Design",
             "Privacy-by-Design-Architektur",
             "Reduzierte Datenhaltungslast",
-            "Ausgerichtet auf Zero-Trust-Betriebsmodelle",
+            "Browserbasierte Verarbeitung mit dokumentierten Grenzen",
           ],
         },
         {
           heading: "Kontakt & Support",
           paragraphs: [
-            "Wir schätzen Feedback von einzelnen Entwicklern, Studierenden und Enterprise-Teams.",
+            "Wir schätzen Feedback von einzelnen Entwicklern, Studierenden und Teams.",
           ],
           html: `
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
@@ -1890,19 +1867,16 @@ const LEGAL_CONTENT = {
                 <h3 class="font-bold mb-1">Allgemeiner Support</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Fragen, Vorschläge oder Fehlerberichte.</p>
                 <a href="mailto:hello@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">hello@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Reaktionszeit: 2-3 Werktage</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Sicherheitsteam</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Meldung von Sicherheitslücken und Sicherheitsbedenken.</p>
                 <a href="mailto:security@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">security@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Reaktionszeit: Priorität, innerhalb von 3 Werktagen</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Geschäftliche Anfragen</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Presse, Medien oder andere produktfremde Fragen.</p>
-                <a href="mailto:business@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">business@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Reaktionszeit: 2-3 Werktage</p>
+                <a href="mailto:hello@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">hello@simpletool.app</a>
               </div>
             </div>
           `,
@@ -1929,7 +1903,7 @@ const LEGAL_CONTENT = {
           html: `
             <div class="not-prose grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">47</div>
+                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1" data-public-tool-count>${PRODUCTION_TOOL_COUNT}</div>
                 <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Ferramentas profissionais</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
@@ -1958,7 +1932,7 @@ const LEGAL_CONTENT = {
             "O processamento local reduz a exposição a comprometimentos no servidor, interceptações e riscos de retenção de dados.",
           ],
           list: [
-            "Desempenho instantâneo sem latência de ida e volta",
+            "Processamento no navegador sem envio adicional para a aplicação",
             "Melhor comportamento offline após o carregamento dos recursos",
             "Nenhuma cópia das suas entradas no servidor",
             "Menor sobrecarga operacional e superfície de ataque reduzida",
@@ -2016,7 +1990,7 @@ const LEGAL_CONTENT = {
         {
           heading: "Contato e suporte",
           paragraphs: [
-            "Valorizamos o feedback de desenvolvedores individuais, estudantes e equipes enterprise.",
+            "Valorizamos o feedback de desenvolvedores individuais, estudantes e equipes.",
           ],
           html: `
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
@@ -2024,19 +1998,16 @@ const LEGAL_CONTENT = {
                 <h3 class="font-bold mb-1">Suporte geral</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Perguntas, sugestões ou relatórios de bugs.</p>
                 <a href="mailto:hello@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">hello@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Tempo de resposta: 2-3 dias úteis</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Equipe de segurança</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Relatórios de vulnerabilidade e questões de segurança.</p>
                 <a href="mailto:security@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">security@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Tempo de resposta: Prioritário, em até 3 dias úteis</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Consultas comerciais</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Imprensa, mídia ou outras perguntas que não sejam de produto.</p>
-                <a href="mailto:business@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">business@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Tempo de resposta: 2-3 dias úteis</p>
+                <a href="mailto:hello@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">hello@simpletool.app</a>
               </div>
             </div>
           `,
@@ -2063,7 +2034,7 @@ const LEGAL_CONTENT = {
           html: `
             <div class="not-prose grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
-                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1">47</div>
+                <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-1" data-public-tool-count>${PRODUCTION_TOOL_COUNT}</div>
                 <div class="text-sm font-medium text-surface-600 dark:text-surface-400 uppercase tracking-wider">Công cụ chuyên nghiệp</div>
               </div>
               <div class="card p-6 text-center border border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-900/50">
@@ -2158,19 +2129,16 @@ const LEGAL_CONTENT = {
                 <h3 class="font-bold mb-1">Hỗ trợ chung</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Câu hỏi, góp ý hoặc báo cáo lỗi.</p>
                 <a href="mailto:hello@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">hello@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Thời gian phản hồi: 2-3 ngày làm việc</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Nhóm bảo mật</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Báo cáo lỗ hổng và các vấn đề bảo mật.</p>
                 <a href="mailto:security@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">security@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Thời gian phản hồi: Ưu tiên, trong vòng 3 ngày làm việc</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Liên hệ khác</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Báo chí, truyền thông hoặc câu hỏi không liên quan đến sản phẩm.</p>
-                <a href="mailto:business@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">business@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Thời gian phản hồi: 2-3 ngày làm việc</p>
+                <a href="mailto:hello@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">hello@simpletool.app</a>
               </div>
             </div>
           `,
@@ -2217,7 +2185,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Cookies and Advertising",
           paragraphs: [
-            "We do not use first-party tracking cookies for core tool functionality. On allow-listed pages (the homepage, JSON Formatter, About, Privacy, Terms, and changelog) we may load Google AdSense in non-personalized mode. Google and its partners may set cookies and similar identifiers — including cookies associated with doubleclick.net and Google domains — to serve ads, cap frequency, measure aggregated performance, and detect fraud or abuse. These ads are not personalized from your browsing history on other sites. We do not use Google Tag Manager or Google Analytics. Password, SSH, Token Studio, WireGuard, certificates, secret scanner, encoding, and pipe pages never load advertising scripts.",
+            "We do not use first-party tracking cookies for core tool functionality. On allow-listed pages (the homepage, JSON Formatter, About, Privacy, Terms, changelog, blog, and FAQ) we may load Google AdSense in non-personalized mode. Google and its partners may set cookies and similar identifiers — including cookies associated with doubleclick.net and Google domains — to serve ads, cap frequency, measure aggregated performance, and detect fraud or abuse. These ads are not personalized from your browsing history on other sites. We do not use Google Tag Manager or Google Analytics. Password, SSH, Token Studio, WireGuard, certificates, secret scanner, and encoding pages never load advertising scripts.",
             "You can review or opt out of personalized advertising at https://adssettings.google.com and industry opt-outs at https://www.aboutads.info. Google explains how it uses data at https://policies.google.com/technologies/ads and https://policies.google.com/privacy.",
           ],
         },
@@ -2306,7 +2274,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. 쿠키와 광고",
           paragraphs: [
-            "핵심 도구 기능을 위해 1st-party 추적 쿠키를 사용하지 않습니다. 허용된 페이지(홈, JSON Formatter, About, Privacy, Terms, changelog)에서만 비개인화 Google AdSense를 로드할 수 있습니다. Google과 파트너는 doubleclick.net 및 Google 도메인과 연결된 쿠키·식별자를 사용해 광고 게재, 노출 빈도 제한, 집계 보고, 사기 방지에 쓸 수 있습니다. 이 광고는 다른 사이트 방문 이력을 바탕으로 개인화되지 않습니다. GTM과 GA는 쓰지 않으며, 비밀번호·SSH·Token Studio·WireGuard·인증서·시크릿 스캐너·인코딩·pipe 페이지는 광고 스크립트를 로드하지 않습니다.",
+            "핵심 도구 기능을 위해 1st-party 추적 쿠키를 사용하지 않습니다. 허용된 페이지(홈, JSON Formatter, About, Privacy, Terms, changelog, 블로그, FAQ)에서만 비개인화 Google AdSense를 로드할 수 있습니다. Google과 파트너는 doubleclick.net 및 Google 도메인과 연결된 쿠키·식별자를 사용해 광고 게재, 노출 빈도 제한, 집계 보고, 사기 방지에 쓸 수 있습니다. 이 광고는 다른 사이트 방문 이력을 바탕으로 개인화되지 않습니다. GTM과 GA는 쓰지 않으며, 비밀번호·SSH·Token Studio·WireGuard·인증서·시크릿 스캐너·인코딩 페이지는 광고 스크립트를 로드하지 않습니다.",
             "맞춤 광고 설정은 https://adssettings.google.com 에서, 업계 옵트아웃은 https://www.aboutads.info 에서 확인할 수 있습니다. Google의 데이터 이용은 https://policies.google.com/technologies/ads 및 https://policies.google.com/privacy 를 참고하세요.",
           ],
         },
@@ -2390,7 +2358,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Cookie と広告",
           paragraphs: [
-            "中核ツール機能のためにファーストパーティの追跡 Cookie は使いません。許可ページ（ホーム、JSON Formatter、About、Privacy、Terms、changelog）でのみ非パーソナライズの Google AdSense を読み込む場合があります。Google とそのパートナーは、doubleclick.net や Google ドメインの Cookie・識別子を、広告配信、表示回数の制限、集計レポート、不正防止のために使用することがあります。これらの広告は他サイトの閲覧履歴に基づいてパーソナライズされません。GTM と GA は使用せず、パスワード、SSH、Token Studio、WireGuard、証明書、シークレットスキャナー、エンコーディング、pipe のページでは広告スクリプトを読み込みません。",
+            "中核ツール機能のためにファーストパーティの追跡 Cookie は使いません。許可ページ（ホーム、JSON Formatter、About、Privacy、Terms、changelog、ブログ、FAQ）でのみ非パーソナライズの Google AdSense を読み込む場合があります。Google とそのパートナーは、doubleclick.net や Google ドメインの Cookie・識別子を、広告配信、表示回数の制限、集計レポート、不正防止のために使用することがあります。これらの広告は他サイトの閲覧履歴に基づいてパーソナライズされません。GTM と GA は使用せず、パスワード、SSH、Token Studio、WireGuard、証明書、シークレットスキャナー、エンコーディングのページでは広告スクリプトを読み込みません。",
             "パーソナライズド広告の確認・オプトアウトは https://adssettings.google.com 、業界オプトアウトは https://www.aboutads.info です。Google のデータ利用は https://policies.google.com/technologies/ads と https://policies.google.com/privacy を参照してください。",
           ],
         },
@@ -2477,7 +2445,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Cookies y publicidad",
           paragraphs: [
-            "No usamos cookies propias de seguimiento para la funcionalidad principal. En páginas de la lista permitida (inicio, JSON Formatter, About, Privacy, Terms y changelog) podemos cargar Google AdSense en modo no personalizado. Google y sus socios pueden establecer cookies e identificadores —incluidas cookies de doubleclick.net y dominios de Google— para mostrar anuncios, limitar frecuencia, medir el rendimiento agregado y detectar fraude. Estos anuncios no se personalizan con tu historial de navegación en otros sitios. No usamos Google Tag Manager ni Google Analytics. Las páginas de contraseñas, SSH, Token Studio, WireGuard, certificados, secret scanner, encoding y pipe nunca cargan scripts publicitarios.",
+            "No usamos cookies propias de seguimiento para la funcionalidad principal. En páginas de la lista permitida (inicio, JSON Formatter, About, Privacy, Terms, changelog, blog y FAQ) podemos cargar Google AdSense en modo no personalizado. Google y sus socios pueden establecer cookies e identificadores —incluidas cookies de doubleclick.net y dominios de Google— para mostrar anuncios, limitar frecuencia, medir el rendimiento agregado y detectar fraude. Estos anuncios no se personalizan con tu historial de navegación en otros sitios. No usamos Google Tag Manager ni Google Analytics. Las páginas de contraseñas, SSH, Token Studio, WireGuard, certificados, secret scanner y encoding nunca cargan scripts publicitarios.",
             "Puedes revisar u optar por no recibir publicidad personalizada en https://adssettings.google.com y en https://www.aboutads.info. Google explica cómo usa los datos en https://policies.google.com/technologies/ads y https://policies.google.com/privacy.",
           ],
         },
@@ -2566,7 +2534,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Cookie 与广告",
           paragraphs: [
-            "我们不依赖第一方追踪 Cookie 实现核心工具功能。仅在允许列表页面（首页、JSON Formatter、About、Privacy、Terms 和 changelog）可能加载非个性化 Google AdSense。Google 及其合作伙伴可能设置 cookie 和类似标识符（包括 doubleclick.net 与 Google 域下的 cookie），用于投放广告、限制展示频次、汇总效果衡量以及欺诈防护。这些广告不会根据你在其他网站的浏览记录进行个性化。我们不使用 Google Tag Manager 或 Google Analytics。密码、SSH、Token Studio、WireGuard、证书、密钥扫描、编码和 pipe 页面不会加载广告脚本。",
+            "我们不依赖第一方追踪 Cookie 实现核心工具功能。仅在允许列表页面（首页、JSON Formatter、About、Privacy、Terms、changelog、博客和 FAQ）可能加载非个性化 Google AdSense。Google 及其合作伙伴可能设置 cookie 和类似标识符（包括 doubleclick.net 与 Google 域下的 cookie），用于投放广告、限制展示频次、汇总效果衡量以及欺诈防护。这些广告不会根据你在其他网站的浏览记录进行个性化。我们不使用 Google Tag Manager 或 Google Analytics。密码、SSH、Token Studio、WireGuard、证书、密钥扫描、编码页面不会加载广告脚本。",
             "你可以在 https://adssettings.google.com 查看或退出个性化广告，并在 https://www.aboutads.info 使用行业退出选项。Google 如何使用数据见 https://policies.google.com/technologies/ads 和 https://policies.google.com/privacy。",
           ],
         },
@@ -2650,7 +2618,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Cookie 與廣告",
           paragraphs: [
-            "我們不依賴第一方追蹤 Cookie 實現核心工具功能。僅在允許清單頁面（首頁、JSON Formatter、About、Privacy、Terms 與 changelog）可能載入非個人化 Google AdSense。Google 及其合作夥伴可能設定 cookie 與類似識別碼（包括 doubleclick.net 與 Google 網域下的 cookie），用於投放廣告、限制曝光頻率、彙總成效衡量以及詐欺防護。這些廣告不會依你在其他網站的瀏覽紀錄個人化。我們不使用 Google Tag Manager 或 Google Analytics。密碼、SSH、Token Studio、WireGuard、憑證、祕密掃描、編碼與 pipe 頁面不會載入廣告指令碼。",
+            "我們不依賴第一方追蹤 Cookie 實現核心工具功能。僅在允許清單頁面（首頁、JSON Formatter、About、Privacy、Terms、changelog、部落格與 FAQ）可能載入非個人化 Google AdSense。Google 及其合作夥伴可能設定 cookie 與類似識別碼（包括 doubleclick.net 與 Google 網域下的 cookie），用於投放廣告、限制曝光頻率、彙總成效衡量以及詐欺防護。這些廣告不會依你在其他網站的瀏覽紀錄個人化。我們不使用 Google Tag Manager 或 Google Analytics。密碼、SSH、Token Studio、WireGuard、憑證、祕密掃描、編碼頁面不會載入廣告指令碼。",
             "你可以在 https://adssettings.google.com 查看或退出個人化廣告，並在 https://www.aboutads.info 使用產業退出選項。Google 如何使用資料見 https://policies.google.com/technologies/ads 與 https://policies.google.com/privacy。",
           ],
         },
@@ -2735,7 +2703,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Cookies et publicité",
           paragraphs: [
-            "Nous n'utilisons pas de cookies de suivi propriétaires pour les fonctionnalités principales. Sur les pages autorisées (accueil, JSON Formatter, About, Privacy, Terms et changelog), nous pouvons charger Google AdSense en mode non personnalisé. Google et ses partenaires peuvent déposer des cookies et identifiants similaires — y compris des cookies associés à doubleclick.net et aux domaines Google — pour diffuser des annonces, limiter la fréquence, mesurer les performances agrégées et détecter la fraude. Ces annonces ne sont pas personnalisées à partir de votre historique de navigation sur d'autres sites. Nous n'utilisons pas Google Tag Manager ni Google Analytics. Les pages mot de passe, SSH, Token Studio, WireGuard, certificats, secret scanner, encodage et pipe ne chargent jamais de scripts publicitaires.",
+            "Nous n'utilisons pas de cookies de suivi propriétaires pour les fonctionnalités principales. Sur les pages autorisées (accueil, JSON Formatter, About, Privacy, Terms, changelog, blog et FAQ), nous pouvons charger Google AdSense en mode non personnalisé. Google et ses partenaires peuvent déposer des cookies et identifiants similaires — y compris des cookies associés à doubleclick.net et aux domaines Google — pour diffuser des annonces, limiter la fréquence, mesurer les performances agrégées et détecter la fraude. Ces annonces ne sont pas personnalisées à partir de votre historique de navigation sur d'autres sites. Nous n'utilisons pas Google Tag Manager ni Google Analytics. Les pages mot de passe, SSH, Token Studio, WireGuard, certificats, secret scanner et encodage ne chargent jamais de scripts publicitaires.",
             "Vous pouvez consulter ou refuser la publicité personnalisée sur https://adssettings.google.com et via https://www.aboutads.info. Google explique l'usage des données sur https://policies.google.com/technologies/ads et https://policies.google.com/privacy.",
           ],
         },
@@ -2824,7 +2792,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Cookies und Werbung",
           paragraphs: [
-            "Wir verwenden keine Erstanbieter-Tracking-Cookies für die Kernfunktionalität. Auf freigegebenen Seiten (Startseite, JSON Formatter, About, Privacy, Terms und Changelog) können wir Google AdSense im nicht personalisierten Modus laden. Google und Partner können Cookies und ähnliche Kennungen setzen — einschließlich Cookies von doubleclick.net und Google-Domains — um Anzeigen auszuliefern, die Häufigkeit zu begrenzen, aggregierte Leistung zu messen und Betrug zu erkennen. Diese Anzeigen werden nicht anhand Ihres Surfverlaufs auf anderen Websites personalisiert. Wir nutzen weder Google Tag Manager noch Google Analytics. Passwort-, SSH-, Token-Studio-, WireGuard-, Zertifikats-, Secret-Scanner-, Encoding- und Pipe-Seiten laden keine Werbeskripte.",
+            "Wir verwenden keine Erstanbieter-Tracking-Cookies für die Kernfunktionalität. Auf freigegebenen Seiten (Startseite, JSON Formatter, About, Privacy, Terms, Changelog, Blog und FAQ) können wir Google AdSense im nicht personalisierten Modus laden. Google und Partner können Cookies und ähnliche Kennungen setzen — einschließlich Cookies von doubleclick.net und Google-Domains — um Anzeigen auszuliefern, die Häufigkeit zu begrenzen, aggregierte Leistung zu messen und Betrug zu erkennen. Diese Anzeigen werden nicht anhand Ihres Surfverlaufs auf anderen Websites personalisiert. Wir nutzen weder Google Tag Manager noch Google Analytics. Passwort-, SSH-, Token-Studio-, WireGuard-, Zertifikats-, Secret-Scanner- und Encoding-Seiten laden keine Werbeskripte.",
             "Personalisierte Werbung können Sie unter https://adssettings.google.com prüfen oder deaktivieren; branchenweite Opt-outs gibt es unter https://www.aboutads.info. Google beschreibt die Datennutzung unter https://policies.google.com/technologies/ads und https://policies.google.com/privacy.",
           ],
         },
@@ -2913,7 +2881,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Cookies e publicidade",
           paragraphs: [
-            "Não usamos cookies de rastreamento próprios para a funcionalidade principal das ferramentas. Nas páginas da lista permitida (página inicial, JSON Formatter, About, Privacy, Terms e changelog) podemos carregar o Google AdSense em modo não personalizado. A Google e os seus parceiros podem definir cookies e identificadores semelhantes — incluindo cookies associados a doubleclick.net e a domínios Google — para veicular anúncios, limitar a frequência, medir o desempenho agregado e detetar fraude. Estes anúncios não são personalizados a partir do seu histórico de navegação noutros sites. Não usamos Google Tag Manager nem Google Analytics. As páginas de palavra-passe, SSH, Token Studio, WireGuard, certificados, secret scanner, encoding e pipe nunca carregam scripts de publicidade.",
+            "Não usamos cookies de rastreamento próprios para a funcionalidade principal das ferramentas. Nas páginas da lista permitida (página inicial, JSON Formatter, About, Privacy, Terms, changelog, blog e FAQ) podemos carregar o Google AdSense em modo não personalizado. A Google e os seus parceiros podem definir cookies e identificadores semelhantes — incluindo cookies associados a doubleclick.net e a domínios Google — para veicular anúncios, limitar a frequência, medir o desempenho agregado e detetar fraude. Estes anúncios não são personalizados a partir do seu histórico de navegação noutros sites. Não usamos Google Tag Manager nem Google Analytics. As páginas de palavra-passe, SSH, Token Studio, WireGuard, certificados, secret scanner e encoding nunca carregam scripts de publicidade.",
             "Pode rever ou recusar publicidade personalizada em https://adssettings.google.com e em https://www.aboutads.info. A Google explica o uso de dados em https://policies.google.com/technologies/ads e https://policies.google.com/privacy.",
           ],
         },
@@ -3002,7 +2970,7 @@ const LEGAL_CONTENT = {
         {
           heading: "4. Cookie và quảng cáo",
           paragraphs: [
-            "Chúng tôi không dùng cookie theo dõi nội bộ cho chức năng công cụ cốt lõi. Trên các trang được phép (trang chủ, JSON Formatter, About, Privacy, Terms và changelog) chúng tôi có thể tải Google AdSense ở chế độ không cá nhân hóa. Google và các đối tác có thể đặt cookie và định danh tương tự — gồm cookie gắn với doubleclick.net và các tên miền Google — để phục vụ quảng cáo, giới hạn tần suất, đo lường tổng hợp và chống gian lận. Các quảng cáo này không được cá nhân hóa theo lịch sử duyệt web của bạn trên các trang khác. Chúng tôi không dùng Google Tag Manager hay Google Analytics. Các trang mật khẩu, SSH, Token Studio, WireGuard, chứng chỉ, quét bí mật, encoding và pipe không bao giờ tải script quảng cáo.",
+            "Chúng tôi không dùng cookie theo dõi nội bộ cho chức năng công cụ cốt lõi. Trên các trang được phép (trang chủ, JSON Formatter, About, Privacy, Terms, changelog, blog và FAQ) chúng tôi có thể tải Google AdSense ở chế độ không cá nhân hóa. Google và các đối tác có thể đặt cookie và định danh tương tự — gồm cookie gắn với doubleclick.net và các tên miền Google — để phục vụ quảng cáo, giới hạn tần suất, đo lường tổng hợp và chống gian lận. Các quảng cáo này không được cá nhân hóa theo lịch sử duyệt web của bạn trên các trang khác. Chúng tôi không dùng Google Tag Manager hay Google Analytics. Các trang mật khẩu, SSH, Token Studio, WireGuard, chứng chỉ, quét bí mật và encoding không bao giờ tải script quảng cáo.",
             "Bạn có thể xem hoặc tắt quảng cáo cá nhân hóa tại https://adssettings.google.com và https://www.aboutads.info. Google mô tả cách dùng dữ liệu tại https://policies.google.com/technologies/ads và https://policies.google.com/privacy.",
           ],
         },
@@ -3074,7 +3042,7 @@ const LEGAL_CONTENT = {
         {
           heading: "Response Expectations",
           paragraphs: [
-            "We aim to acknowledge valid reports within 3 business days and provide status updates as fixes are made.",
+            "Reports are reviewed as capacity allows. Include the affected URL, reproducible steps, impact, and a safe proof of concept; no acknowledgement or remediation deadline is promised.",
           ],
         },
       ],
@@ -3098,7 +3066,7 @@ const LEGAL_CONTENT = {
         {
           heading: "응답 기준",
           paragraphs: [
-            "유효한 제보는 영업일 기준 3일 이내에 접수 확인을 드리고, 수정 진행 상황을 계속 공유합니다.",
+            "Messages are reviewed as capacity allows; no response time is guaranteed.",
           ],
         },
       ],
@@ -3170,7 +3138,7 @@ const LEGAL_CONTENT = {
         {
           heading: "响应预期",
           paragraphs: [
-            "我们争取在 3 个工作日内确认有效报告，并在修复过程中持续提供状态更新。",
+            "Messages are reviewed as capacity allows; no response time is guaranteed.",
           ],
         },
       ],
@@ -3194,7 +3162,7 @@ const LEGAL_CONTENT = {
         {
           heading: "回應預期",
           paragraphs: [
-            "我們爭取在 3 個工作日內確認有效回報，並在修復過程中持續提供狀態更新。",
+            "Messages are reviewed as capacity allows; no response time is guaranteed.",
           ],
         },
       ],
@@ -3218,7 +3186,7 @@ const LEGAL_CONTENT = {
         {
           heading: "Délais de réponse attendus",
           paragraphs: [
-            "Nous visons à accuser réception des rapports valides sous 3 jours ouvrés et à fournir des mises à jour de statut au fil des correctifs.",
+            "Messages are reviewed as capacity allows; no response time is guaranteed.",
           ],
         },
       ],
@@ -3242,7 +3210,7 @@ const LEGAL_CONTENT = {
         {
           heading: "Reaktionserwartungen",
           paragraphs: [
-            "Wir bemühen uns, gültige Meldungen innerhalb von 3 Werktagen zu bestätigen und während der Behebung Statusupdates bereitzustellen.",
+            "Messages are reviewed as capacity allows; no response time is guaranteed.",
           ],
         },
       ],
@@ -3266,7 +3234,7 @@ const LEGAL_CONTENT = {
         {
           heading: "Expectativas de resposta",
           paragraphs: [
-            "Buscamos confirmar relatórios válidos em até 3 dias úteis e fornecer atualizações de status conforme as correções são implementadas.",
+            "Messages are reviewed as capacity allows; no response time is guaranteed.",
           ],
         },
       ],
@@ -3290,7 +3258,7 @@ const LEGAL_CONTENT = {
         {
           heading: "Kỳ vọng phản hồi",
           paragraphs: [
-            "Chúng tôi hướng đến việc xác nhận các báo cáo hợp lệ trong vòng 3 ngày làm việc và cung cấp cập nhật trạng thái trong quá trình sửa lỗi.",
+            "Messages are reviewed as capacity allows; no response time is guaranteed.",
           ],
         },
       ],
@@ -3302,8 +3270,8 @@ const LEGAL_CONTENT = {
         {
           heading: "Open Roles",
           paragraphs: [
-            "We don't have any open positions at the moment. If you would like to be considered for future opportunities, send a short note with your background and interests.",
-            "Email: business@simpletool.app",
+            "There are no open roles. We do not accept or retain unsolicited applications or résumés.",
+            "For existing project information, visit https://github.com/trac3r00/simpletool or use the public contact page at /contact.",
           ],
         },
       ],
@@ -3313,8 +3281,8 @@ const LEGAL_CONTENT = {
         {
           heading: "채용 중인 역할",
           paragraphs: [
-            "현재는 공개 채용 중인 포지션이 없습니다. 이후 기회가 생길 때 검토받고 싶다면 경력과 관심 분야를 짧게 보내 주세요.",
-            "이메일: business@simpletool.app",
+            "현재 공개 채용 중인 역할은 없습니다. 요청하지 않은 지원서나 이력서는 접수하거나 보관하지 않습니다.",
+            "프로젝트 정보: https://github.com/trac3r00/simpletool · 문의: /contact",
           ],
         },
       ],
@@ -3324,8 +3292,8 @@ const LEGAL_CONTENT = {
         {
           heading: "募集中の職種",
           paragraphs: [
-            "現在公開中の募集ポジションはありません。将来の機会に備えて検討をご希望の場合は、ご経歴と関心分野を簡単にお送りください。",
-            "メール: business@simpletool.app",
+            "現在公開中の募集職種はありません。依頼していない応募書類や履歴書は受け付けず、保管もしません。",
+            "プロジェクト情報: https://github.com/trac3r00/simpletool ・お問い合わせ: /contact",
           ],
         },
       ],
@@ -3335,8 +3303,8 @@ const LEGAL_CONTENT = {
         {
           heading: "Vacantes abiertas",
           paragraphs: [
-            "En este momento no tenemos puestos abiertos. Si quieres que te tengamos en cuenta para futuras oportunidades, envíanos una nota breve con tu experiencia e intereses.",
-            "Correo: business@simpletool.app",
+            "No hay vacantes abiertas. No aceptamos ni conservamos solicitudes o currículos no solicitados.",
+            "Información del proyecto: https://github.com/trac3r00/simpletool · Contacto: /contact",
           ],
         },
       ],
@@ -3346,8 +3314,8 @@ const LEGAL_CONTENT = {
         {
           heading: "职位招募",
           paragraphs: [
-            "目前我们没有公开招募的职位。如果您希望在未来的机会中被考虑，请发送一封简短的邮件，介绍您的背景和兴趣。",
-            "邮箱：business@simpletool.app",
+            "目前没有公开职位。我们不接收或保留未经邀请的申请或简历。",
+            "项目信息：https://github.com/trac3r00/simpletool；联系：/contact",
           ],
         },
       ],
@@ -3357,8 +3325,8 @@ const LEGAL_CONTENT = {
         {
           heading: "職位招募",
           paragraphs: [
-            "目前我們沒有公開招募的職位。如果您希望在未來的機會中被考慮，請發送一封簡短的郵件，介紹您的背景和興趣。",
-            "電子郵件：business@simpletool.app",
+            "目前沒有公開職位。我們不接收或保留未經邀請的申請或履歷。",
+            "專案資訊：https://github.com/trac3r00/simpletool；聯絡：/contact",
           ],
         },
       ],
@@ -3368,8 +3336,8 @@ const LEGAL_CONTENT = {
         {
           heading: "Postes ouverts",
           paragraphs: [
-            "Nous n'avons actuellement aucun poste ouvert. Si vous souhaitez être pris en considération pour de futures opportunités, envoyez-nous une courte note avec votre parcours et vos centres d'intérêt.",
-            "E-mail : business@simpletool.app",
+            "Aucun poste n'est ouvert. Nous n'acceptons ni ne conservons les candidatures ou CV non sollicités.",
+            "Projet : https://github.com/trac3r00/simpletool · Contact : /contact",
           ],
         },
       ],
@@ -3379,8 +3347,8 @@ const LEGAL_CONTENT = {
         {
           heading: "Offene Stellen",
           paragraphs: [
-            "Wir haben derzeit keine offenen Stellen. Wenn Sie für zukünftige Möglichkeiten in Betracht gezogen werden möchten, senden Sie uns eine kurze Nachricht mit Ihrem Hintergrund und Ihren Interessen.",
-            "E-Mail: business@simpletool.app",
+            "Es gibt keine offenen Stellen. Unaufgeforderte Bewerbungen oder Lebensläufe werden weder angenommen noch gespeichert.",
+            "Projekt: https://github.com/trac3r00/simpletool · Kontakt: /contact",
           ],
         },
       ],
@@ -3390,8 +3358,8 @@ const LEGAL_CONTENT = {
         {
           heading: "Vagas abertas",
           paragraphs: [
-            "No momento não temos posições abertas. Se quiser ser considerado para oportunidades futuras, envie uma breve nota com seu histórico e interesses.",
-            "E-mail: business@simpletool.app",
+            "Não há vagas abertas. Não aceitamos nem armazenamos candidaturas ou currículos não solicitados.",
+            "Projeto: https://github.com/trac3r00/simpletool · Contato: /contact",
           ],
         },
       ],
@@ -3401,8 +3369,8 @@ const LEGAL_CONTENT = {
         {
           heading: "Vị trí tuyển dụng",
           paragraphs: [
-            "Hiện tại chúng tôi không có vị trí tuyển dụng nào. Nếu bạn muốn được xem xét cho các cơ hội trong tương lai, hãy gửi một ghi chú ngắn giới thiệu về kinh nghiệm và sở thích của bạn.",
-            "Email: business@simpletool.app",
+            "Không có vị trí tuyển dụng nào đang mở. Chúng tôi không tiếp nhận hoặc lưu hồ sơ ứng tuyển không được yêu cầu.",
+            "Dự án: https://github.com/trac3r00/simpletool · Liên hệ: /contact",
           ],
         },
       ],
@@ -3453,7 +3421,7 @@ const LEGAL_CONTENT = {
         {
           heading: "Response Time",
           paragraphs: [
-            "We typically respond within 2-3 business days. Security issues are prioritized and addressed as quickly as possible.",
+            "Messages are reviewed as capacity allows. No acknowledgement or resolution time is guaranteed.",
           ],
         },
       ],
@@ -3502,7 +3470,7 @@ const LEGAL_CONTENT = {
         {
           heading: "응답 시간",
           paragraphs: [
-            "일반 문의는 보통 영업일 기준 2~3일 안에 답변드리며, 보안 이슈는 우선 처리합니다.",
+            "Messages are reviewed as capacity allows; no response time is guaranteed.",
           ],
         },
       ],
@@ -3649,7 +3617,7 @@ const LEGAL_CONTENT = {
         {
           heading: "响应时间",
           paragraphs: [
-            "我们通常在 2-3 个工作日内回复。安全问题会优先处理，尽快解决。",
+            "Messages are reviewed as capacity allows; no response time is guaranteed.",
           ],
         },
       ],
@@ -3698,7 +3666,7 @@ const LEGAL_CONTENT = {
         {
           heading: "回應時間",
           paragraphs: [
-            "我們通常在 2-3 個工作日內回覆。安全問題會優先處理，盡快解決。",
+            "Messages are reviewed as capacity allows; no response time is guaranteed.",
           ],
         },
       ],
@@ -3747,7 +3715,7 @@ const LEGAL_CONTENT = {
         {
           heading: "Délai de réponse",
           paragraphs: [
-            "Nous répondons généralement dans les 2-3 jours ouvrés. Les problèmes de sécurité sont traités en priorité aussi rapidement que possible.",
+            "Messages are reviewed as capacity allows; no response time is guaranteed.",
           ],
         },
       ],
@@ -3796,7 +3764,7 @@ const LEGAL_CONTENT = {
         {
           heading: "Reaktionszeit",
           paragraphs: [
-            "Wir antworten in der Regel innerhalb von 2-3 Werktagen. Sicherheitsprobleme werden priorisiert und so schnell wie möglich behandelt.",
+            "Messages are reviewed as capacity allows; no response time is guaranteed.",
           ],
         },
       ],
@@ -3845,7 +3813,7 @@ const LEGAL_CONTENT = {
         {
           heading: "Tempo de resposta",
           paragraphs: [
-            "Normalmente respondemos em 2-3 dias úteis. Problemas de segurança são priorizados e tratados o mais rápido possível.",
+            "Messages are reviewed as capacity allows; no response time is guaranteed.",
           ],
         },
       ],
@@ -3894,7 +3862,7 @@ const LEGAL_CONTENT = {
         {
           heading: "Thời gian phản hồi",
           paragraphs: [
-            "Chúng tôi thường phản hồi trong vòng 2-3 ngày làm việc. Các vấn đề bảo mật được ưu tiên và xử lý nhanh nhất có thể.",
+            "Messages are reviewed as capacity allows; no response time is guaranteed.",
           ],
         },
       ],
@@ -3906,5 +3874,23 @@ export function getLegalSections(pageId, lang = DEFAULT_LANGUAGE) {
   const normalized = normalizeLanguage(lang);
   const page = LEGAL_CONTENT[pageId];
   if (!page) return [];
-  return page[normalized]?.sections || page[DEFAULT_LANGUAGE]?.sections || [];
+  const sections = page[normalized]?.sections || page[DEFAULT_LANGUAGE]?.sections || [];
+  const policyIndex = pageId === "terms" ? 3 : pageId === "privacy" ? 4 : -1;
+  const localizedLegal =
+    REVIEWED_LEGAL_CONTENT[normalized] || REVIEWED_LEGAL_CONTENT[DEFAULT_LANGUAGE];
+
+  return sections.map((section, index) => {
+    const next = { ...section };
+    if (pageId === "contact" && index === sections.length - 1) {
+      next.paragraphs = [localizedLegal.responseMessage];
+    }
+    if (pageId === "security" && index === sections.length - 1) {
+      next.paragraphs = [localizedLegal.securityResponse];
+    }
+    if (index === policyIndex) {
+      next.adPolicy = getAdPolicySnapshot();
+      next.adPolicyLabels = localizedLegal.adPolicy;
+    }
+    return next;
+  });
 }

@@ -317,8 +317,8 @@ Enforced by `npm run test:ui-audit`, which reports `handrolled-button` /
 The design must never imply absolute privacy. Current honest stance (enforced by
 `src/ui/honest-copy.test.js`):
 
-- Non-personalized AdSense only; Auto ads off; `ads.txt` and the account meta ship with a publisher ID, ad units only after real slot IDs.
-- **Allow-list** (ads may appear): `home`, `json`, `legal`.
+- Non-personalized AdSense flags only; Auto ads must be disabled in the account (not provable from source). `ads.txt` and the account meta ship with a publisher ID; manual units require real slot IDs.
+- **Manual units:** JSON Formatter and allow-listed legal/changelog pages. The `home` slot key is reserved but unplaced; script-only pages are documented in the integration guide.
 - **Deny-list** (never load ad scripts): password, SSH keys, Token Studio,
   WireGuard, certificates, secret scanner, and encoding tools.
 - Copy may not claim "no tracking" / "never track" / "0 bytes stored."
