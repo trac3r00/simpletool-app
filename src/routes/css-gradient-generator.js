@@ -151,7 +151,7 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
               </button>
             </div>
 
-            <pre id="css-output" tabindex="0" aria-label="Generated CSS code" class="bg-surface-50 dark:bg-surface-950 p-4 rounded-lg overflow-x-auto text-sm font-mono text-surface-900 dark:text-surface-100 border border-surface-200 dark:border-surface-800"></pre>
+            <pre id="css-output" tabindex="0" aria-label="Generated CSS code" data-i18n-aria="tools.css-gradient.ui.aria0" class="bg-surface-50 dark:bg-surface-950 p-4 rounded-lg overflow-x-auto text-sm font-mono text-surface-900 dark:text-surface-100 border border-surface-200 dark:border-surface-800"></pre>
           </div>
 
           <!-- Info Cards -->

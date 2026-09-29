@@ -56,6 +56,11 @@ test.describe("C3 accessibility and mobile usefulness", () => {
       regions.map((region) => region.getAttribute("aria-label")),
     );
     expect(new Set(labels).size).toBe(labels.length);
+    expect(labels).toEqual(["curl JSON request example"]);
+
+    await page.goto("/blog/curl-essentials?lang=ko", { waitUntil: "domcontentloaded" });
+    await expect(page.locator('pre[role="region"]')).toHaveAttribute("aria-label", "curl JSON request example");
+    await expect(page.locator('pre[role="region"]')).toHaveAttribute("tabindex", "0");
   });
 
   test("real recent JSON history and the first matching card fit at 390x844", async ({ browser }) => {
@@ -154,6 +159,17 @@ test.describe("C3 accessibility and mobile usefulness", () => {
     await expect(dialog).toBeHidden();
     await expect(trigger).toBeFocused();
 
+    // Global shortcuts (mod+K also opens the nav search) must not pull focus
+    // out of the open dialog, and Escape must still close the dialog itself.
+    await page.keyboard.press("Enter");
+    await expect(dialog).toBeVisible();
+    await page.keyboard.press("ControlOrMeta+k");
+    await expect(close).toBeFocused();
+    await expect(page.locator("#global-search-input")).toBeHidden();
+    await page.keyboard.press("Escape");
+    await expect(dialog).toBeHidden();
+    await expect(trigger).toBeFocused();
+
     await page.keyboard.press("Enter");
     await expect(dialog).toBeVisible();
     await close.click();
@@ -191,6 +207,35 @@ test.describe("C3 accessibility and mobile usefulness", () => {
     await page.keyboard.press("Escape");
     await expect(dialog).toBeHidden();
     await expect(trigger).toBeFocused();
+    await context.close();
+  });
+
+  test("native select sizing keeps field height without resizing custom selects", async ({ page }) => {
+    const heights = async (path, selectors) => {
+      await page.goto(path, { waitUntil: "domcontentloaded" });
+      return page.evaluate((ids) => ids.map((id) => getComputedStyle(document.querySelector(id)).height), selectors);
+    };
+    expect(await heights("/bandwidth-calculator", ["#transfer-size-unit"])).toEqual(["40px"]);
+    expect(await heights("/cidr-calculator", ["#subnet-prefix"])).toEqual(["30px"]);
+    expect(await heights("/roulette-wheel", ["#sound-theme-select", "#preset-select"])).toEqual(["38px", "38px"]);
+  });
+
+  test("localized CSS output name and DNS categories fit on mobile", async ({ browser }) => {
+    const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    const page = await context.newPage();
+    await page.goto("/css-gradient?lang=ko", { waitUntil: "domcontentloaded" });
+    await expect(page.locator("#css-output")).toHaveAttribute("aria-label", "생성된 CSS 코드");
+
+    for (const lang of ["ja", "es", "de", "pt"]) {
+      await page.goto(`/dns-reference?lang=${lang}`, { waitUntil: "domcontentloaded" });
+      await expect(page.locator('.record-card[data-type="DKIM"] [data-i18n]')).not.toHaveText("Email Security");
+      const overflowing = await page.locator(".record-card").evaluateAll((cards) =>
+        cards
+          .filter((card) => card.scrollWidth > card.clientWidth || card.lastElementChild.scrollWidth > card.lastElementChild.clientWidth)
+          .map((card) => card.dataset.type),
+      );
+      expect(overflowing, lang).toEqual([]);
+    }
     await context.close();
   });
 });

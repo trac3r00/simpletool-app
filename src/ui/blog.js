@@ -350,14 +350,6 @@ export function renderBlogListingPage(lang = DEFAULT_LANGUAGE) {
   });
 }
 
-function labelCodeSampleRegions(content) {
-  let sampleNumber = 0;
-  return String(content || "").replace(
-    /aria-label="Code sample"/g,
-    () => `aria-label="Code sample ${++sampleNumber}"`,
-  );
-}
-
 export function renderBlogPostPage(slug, lang = DEFAULT_LANGUAGE) {
   const article = BLOG_ARTICLES.find((a) => a.slug === slug);
   if (!article) return null;
@@ -414,7 +406,7 @@ export function renderBlogPostPage(slug, lang = DEFAULT_LANGUAGE) {
         </header>
 
         <div class="prose dark:prose-invert max-w-none prose-pre:bg-surface-900 dark:prose-pre:bg-surface-950 prose-pre:text-surface-100 prose-pre:border prose-pre:border-surface-200 dark:prose-pre:border-surface-800 prose-a:text-primary-700 dark:prose-a:text-primary-300 prose-a:underline prose-a:underline-offset-2">
-          ${labelCodeSampleRegions(localizedArticle.content)}
+          ${localizedArticle.content || ""}
         </div>
       </article>
     </main>

@@ -237,7 +237,7 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
             </div>
             <div class="flex items-center gap-2">
                <label for="subnet-prefix" class="text-sm text-surface-500 dark:text-surface-400"><span data-i18n="tools.cidr-calculator.ui.label7">Target prefix</span> ${infoHint("Pick a deeper prefix to split the analyzed block into smaller subnets.")}</label>
-              <select id="subnet-prefix" class="input py-1 px-3 w-auto" aria-label="Target prefix for subnet splitting"></select>
+              <select id="subnet-prefix" class="input h-[1.875rem] py-1 px-3 w-auto" aria-label="Target prefix for subnet splitting"></select>
             </div>
           </div>
            <div id="subnet-warning" class="hidden text-sm text-warning-700 dark:text-warning-300 bg-warning-50 dark:bg-warning-900/20 border border-warning-200 dark:border-warning-800 rounded-lg px-4 py-3">This block cannot be subdivided further.</div>

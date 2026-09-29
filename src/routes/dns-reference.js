@@ -614,7 +614,7 @@ function recordTypeCards() {
       data-type="${r.type}" data-category="${r.category}" data-i18n-title="tools.dns-reference.ui.title.${r.type}" title="Click to view ${r.type} details">
       <div class="text-2xl mb-1">${r.icon}</div>
       <div class="font-bold text-surface-900 dark:text-white">${r.type}</div>
-      <div class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.dns-reference.ui.category.${r.type}">${r.category}</div>
+      <div class="text-xs text-surface-500 dark:text-surface-400 whitespace-normal break-words" data-i18n="tools.dns-reference.ui.category.${r.type}">${r.category}</div>
     </button>
   `,
     )

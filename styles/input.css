@@ -154,8 +154,10 @@
 
   /* WebKit ignores min-height and vertical padding on native selects. An
      explicit field height preserves the native arrow while keeping the
-     control above the 24px target-size floor. */
-  select {
+     control above the 24px target-size floor. Scoped to design-system fields
+     and wrapped in :where() so a route's own height utility (compact selects)
+     still wins; custom-styled selects size themselves. */
+  :where(select.input, select.input-mono) {
     height: 2.5rem;
   }
 

@@ -131,6 +131,8 @@ function renderRouletteWheelPage(lang = "en") {
       .rw-preset-row { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; }
       .rw-preset-select { flex: 1; padding: 0.5rem 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem; font-size: 0.875rem; background: white; color: #111827; }
       .dark .rw-preset-select { background: #1e293b; border-color: #4b5563; color: #f9fafb; }
+      /* WebKit ignores vertical padding on native selects; pin the height the padding gives elsewhere. */
+      select.rw-mode-input, .rw-preset-select { height: 2.375rem; }
       .rw-mode-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
       .rw-mode-input { width: 80px; padding: 0.5rem 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem; font-size: 0.875rem; background: white; color: #111827; text-align: center; }
       .dark .rw-mode-input { background: #1e293b; border-color: #4b5563; color: #f9fafb; }

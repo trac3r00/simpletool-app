@@ -25,6 +25,7 @@ export function getKeyboardShortcutsScript() {
   // Track the modal and restore focus to the control that opened it.
   let helpModalOpen = false;
   let helpReturnFocus = null;
+  let helpKeyGuard = null;
 
   // Global keyboard event handler
   document.addEventListener('keydown', (e) => {
@@ -250,12 +251,28 @@ export function getKeyboardShortcutsScript() {
     modal.addEventListener('click', (e) => {
       if (e.target === modal) closeHelpModal();
     });
-    modal.addEventListener('keydown', (e) => {
+    // Capture on document so the modal owns Escape and suppresses the other
+    // global shortcuts (the nav search also binds mod+K) while it is open;
+    // only mod+/ passes through, to toggle the dialog closed.
+    helpKeyGuard = (e) => {
       if (e.key === 'Escape') {
         e.preventDefault();
+        e.stopPropagation();
         closeHelpModal();
         return;
       }
+      if ((e.metaKey || e.ctrlKey) && e.key !== '/') {
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
+      if (e.key === 'Tab' && !modal.contains(document.activeElement)) {
+        e.preventDefault();
+        closeBtn.focus();
+      }
+    };
+    document.addEventListener('keydown', helpKeyGuard, true);
+    modal.addEventListener('keydown', (e) => {
       if (e.key !== 'Tab') return;
 
       const focusable = modal.querySelectorAll(
@@ -277,6 +294,8 @@ export function getKeyboardShortcutsScript() {
     const modal = document.getElementById('keyboard-shortcuts-modal');
     if (!modal) return;
     modal.remove();
+    document.removeEventListener('keydown', helpKeyGuard, true);
+    helpKeyGuard = null;
     helpModalOpen = false;
     indicator.setAttribute('aria-expanded', 'false');
     if (helpReturnFocus && typeof helpReturnFocus.focus === 'function') {

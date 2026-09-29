@@ -1754,6 +1754,7 @@ export default {
         heading24: "🎯 Trường hợp sử dụng",
         badge25: "Chỉ phía trình duyệt",
         badge26: "Ưu tiên quyền riêng tư",
+        aria0: "Mã CSS đã tạo",
         "tip0": "Chuyển màu theo đường thẳng",
         "tip1": "Chuyển màu tỏa ra từ tâm",
         "tip2": "Góc hướng cho chuyển màu tuyến tính (0-360°)",
