@@ -397,7 +397,7 @@ describe("composite route tab URL contract", () => {
       expect(html).toContain('data-i18n="content.relatedTools"');
       for (const relatedId of currentTool.relatedTools) {
         const relatedTool = TOOLS.find((tool) => tool.id === relatedId);
-        expect(html).toContain(`href="${relatedTool.path}"`);
+        expect(html).toContain(`href="${relatedTool.path}?lang=ja"`);
       }
 
       for (const id of route.ids) {

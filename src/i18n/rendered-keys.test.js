@@ -119,14 +119,23 @@ describe("rendered translation keys", () => {
           .sort();
         expect(unresolved, `${tool.id} ${locale} unresolved keys`).toEqual([]);
 
-        // Server-rendered related cards must already be in the route language.
-        const related = html.match(
-          /<section[^>]*aria-label="Related tools"[^>]*>\s*<h2[^>]*>([^<]*)<\/h2>/,
-        );
-        if (related) {
-          expect(related[1], `${tool.id} ${locale} related tools heading`).toBe(
+        // Server-rendered related cards must already be in the route language
+        // and link onward in it. Every section found must parse; none is skipped.
+        const sections = html.split('aria-label="Related tools"').slice(1);
+        for (const section of sections) {
+          const heading = section.match(/^[^>]*>\s*<h2[^>]*>([^<]*)<\/h2>/);
+          expect(heading?.[1], `${tool.id} ${locale} related tools heading`).toBe(
             resolveKey(catalog, "content.relatedTools"),
           );
+          const hrefs = [...section.split("</section>")[0].matchAll(/<a href="([^"]+)"/g)]
+            .map((match) => match[1]);
+          expect(hrefs.length, `${tool.id} ${locale} related tool links`).toBeGreaterThan(0);
+          for (const href of hrefs) {
+            const lang = new URL(href, "https://simpletool.app").searchParams.get("lang");
+            expect(lang, `${tool.id} ${locale} related link ${href}`).toBe(
+              locale === "en" ? null : locale,
+            );
+          }
         }
       }
     });

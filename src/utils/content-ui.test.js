@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createRelatedToolsSection } from "./content-ui.js";
-import { SUPPORTED_LANGUAGES, t } from "./i18n.js";
+import { SUPPORTED_LANGUAGES, t, withLanguageQuery } from "./i18n.js";
 import { TOOLS } from "./tool-registry.js";
 
 describe("related-tool card localization", () => {
@@ -8,7 +8,7 @@ describe("related-tool card localization", () => {
     it(`renders valid card keys and catalog values for ${lang}`, () => {
       for (const tool of TOOLS) {
         const html = createRelatedToolsSection([tool], lang);
-        expect(html).toContain(`href="${tool.path}"`);
+        expect(html).toContain(`href="${withLanguageQuery(tool.path, lang)}"`);
         for (const [field, tag] of [["name", "h3"], ["desc", "p"]]) {
           const key = `tools.${tool.id}.${field}`;
           expect(html).toContain(`data-i18n="${key}"`);
