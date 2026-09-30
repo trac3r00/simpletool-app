@@ -47,6 +47,9 @@ function getTrackedSourceFiles() {
 }
 
 describe("tracked source files", () => {
+  // Reads every tracked file (~50MB incl. screenshots), so its runtime scales
+  // with the repo and the runner, not with the code under test. The 5s
+  // default fails on the shared self-hosted pve-ci runner (8.8s observed).
   it(`contain no ${M_T}/${M_F}/${M_H} markers or test.${M_F.toLowerCase()} calls`, () => {
     const files = getTrackedSourceFiles();
     expect(files.length).toBeGreaterThan(0);
@@ -69,5 +72,5 @@ describe("tracked source files", () => {
     }
 
     expect(violations).toEqual([]);
-  });
+  }, 30_000);
 });
