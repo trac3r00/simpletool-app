@@ -87,6 +87,8 @@ describe("marker scan", () => {
     expect(findMarkerViolations("shot.png", png)).toEqual([]);
   });
 
+  // scripts/i18n-backfill.mjs is real source with NUL separators at byte
+  // ~10k; sniffing the whole file would silently drop it from the scan.
   it("treats a NUL byte past the sniff window as text", () => {
     const late = Buffer.concat([Buffer.from(marked), Buffer.alloc(8000, 0x20), Buffer.from([0])]);
     expect(findMarkerViolations("big.txt", late)).toHaveLength(1);
