@@ -2,95 +2,357 @@
  * Changelog / Release Notes Page
  */
 
-import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate } from '../utils/common-ui.js';
-import { DEFAULT_LANGUAGE, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML } from "../utils/respond.js";
+import { createPageTemplate, getAdSlotHTML } from "../utils/common-ui.js";
+import {
+  DEFAULT_LANGUAGE,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
+import { APP_VERSION } from "../utils/version.js";
 
 const RELEASES = [
   {
-    version: '2.4.1',
-    date: '2026-05-11',
-    title: 'Post-QA & Page-sweep Fixes',
+    version: APP_VERSION,
+    date: "2026-09-08",
+    title: "WireGuard keys, Ed25519, and AdSense site-connect",
     changes: [
-      { type: 'fix', text: 'JSON Formatter: fix max-depth and key counters; extract shared json-stats util' },
-      { type: 'fix', text: 'JSON Formatter: clear stale output and stats on parse/minify error' },
-      { type: 'fix', text: 'SRI: regenerate all vendor script integrity hashes; add scripts/update-sri.mjs tooling' },
-      { type: 'fix', text: 'Clipboard: global safety script catches NotAllowedError/SecurityError with toast' },
-      { type: 'fix', text: 'Routes: add 301 redirects for /jwt-inspector, /layered-decoder, /css-gradient-generator' },
-      { type: 'fix', text: 'CSS: fix .empty-state.hidden specificity so Tailwind hidden actually hides' },
-      { type: 'fix', text: 'pipe: resolve undefined title and render proper page' },
-      { type: 'fix', text: 'htpasswd-generator: Generate entry now produces output' },
-      { type: 'fix', text: 'ssh-key-generator: emit OpenSSH wire format (RFC 4253) for public keys' },
-      { type: 'fix', text: 'home: live search filter actually filters tool cards' },
-      { type: 'fix', text: '404: add inline search and popular-tools recovery' },
-      { type: 'fix', text: 'caffeinate: correct spelling, add 301 from /caffeniate' },
-      { type: 'fix', text: 'dns-reference: command-builder dropdown includes DKIM/SPF/DMARC' },
-      { type: 'fix', text: 'a11y: cron-builder minute grid uses proper grid/gridcell roles' },
-      { type: 'fix', text: 'a11y: qr aria-label, saml empty-pane, regex empty-counter' },
-      { type: 'fix', text: 'cron-builder: escape template literals in ARIA grid render' },
-      { type: 'refactor', text: 'Trust pills: shared createTrustPill component; demote redundant feature-pills across 12 routes' },
-      { type: 'refactor', text: 'markdown-preview → markdown-editor with 301 redirect' },
-      { type: 'refactor', text: 'uuid-generator: remove redundant GUID dropdown option (duplicate of v4)' },
-      { type: 'refactor', text: 'code-minifier: remove JSON tab, cross-link to JSON Formatter' },
-    ]
+      {
+        type: "fix",
+        text: "WireGuard Generate Key Pair now exports X25519 via JWK when raw private export is blocked, and refuses to invent an uncorrelated public key",
+      },
+      {
+        type: "feat",
+        text: "SSH Key Generator defaults to Ed25519; UUID generator adds RFC 9562 v7",
+      },
+      {
+        type: "feat",
+        text: "Official adsbygoogle.js snippet ships in <head> on script-allow pages (home, JSON, legal, blog, FAQ) so Google can verify ownership before slot IDs exist; units still wait for real slots",
+      },
+      {
+        type: "fix",
+        text: "About lists 47 production tools; homepage and JSON Formatter ship original visible copy for the thin-content review",
+      },
+      {
+        type: "fix",
+        text: "Legal URLs accept a trailing slash; sitemap home loc matches the canonical slash; footer and /health share one version string",
+      },
+    ],
   },
   {
-    version: '2.4.0',
-    date: '2026-03-23',
-    title: 'Production Readiness & Full i18n',
+    version: "2.4.4",
+    date: "2026-08-19",
+    title: "Honest copy and catalog freeze",
     changes: [
-      { type: 'feat', text: 'Full i18n support for all 10 languages across 49 tools' },
-      { type: 'feat', text: 'Added unit-converter with 10 categories and real conversion formulas' },
-      { type: 'feat', text: 'Added code-minifier with JS/CSS/HTML/JSON minify and beautify' },
-      { type: 'feat', text: 'Added SAML decoder with Base64 decode, XML parse, and inflate support' },
-      { type: 'feat', text: 'Restored QR code generator (16 missing DOM elements)' },
-      { type: 'feat', text: 'Added og:image for social sharing, skip-link for accessibility' },
-      { type: 'feat', text: 'Added FAQ, legal, blog content for 6 new languages' },
-      { type: 'feat', text: 'Added 74 tooltip i18n attributes and 5 placeholder translations' },
-      { type: 'feat', text: 'Created changelog page with version display in footer' },
-      { type: 'fix', text: 'Fixed service worker cache corruption (stale CSP nonces)' },
-      { type: 'fix', text: 'Fixed Token Studio XSS vulnerability (escapeHtml on JWK fields)' },
-      { type: 'fix', text: 'Fixed console errors on 6 pages (null guards, _t fallback, regex escaping)' },
-      { type: 'fix', text: 'Replaced dead libsodium CDN with Web Crypto API for WireGuard' },
-      { type: 'fix', text: 'Fixed language persistence on back button navigation' },
-      { type: 'fix', text: 'Fixed duplicate category icons on home page' },
-      { type: 'fix', text: 'Fixed heading hierarchy (H2→H3) for accessibility' },
-      { type: 'fix', text: 'Fixed roulette wheel 3D transform breaking E2E tests' },
-      { type: 'fix', text: 'Fixed unescaped quotes in German/Portuguese/Vietnamese translations' },
-      { type: 'perf', text: 'Sub-4ms TTFB, pages under 165KB, minimal resource count' },
-    ]
+      {
+        type: "fix",
+        text: "Homepage and About copy match the ads-vs-privacy stance: tool data is processed in the browser, but ads and analytics can make third-party requests in production",
+      },
+      {
+        type: "fix",
+        text: "Catalog frozen until the eight flagships beat the bookmarks people already use",
+      },
+    ],
   },
   {
-    version: '2.3.0',
-    date: '2026-03-22',
-    title: 'Mobile Overflow & New Tool Translations',
+    version: "2.4.5",
+    date: "2026-08-30",
+    title: "AdSense site-connect without Auto ads",
     changes: [
-      { type: 'feat', text: 'Added i18n translations for new tools' },
-      { type: 'fix', text: 'Fixed mobile overflow issues across tool pages' },
-      { type: 'fix', text: 'Improved responsive layout for narrow viewports' },
-    ]
-  }
+      {
+        type: "feat",
+        text: "ads.txt and the google-adsense-account meta ship with a publisher ID; ad units still wait for real slot IDs",
+      },
+      {
+        type: "fix",
+        text: "JSON Formatter uses the json slot below its educational section instead of the retired tool key",
+      },
+      {
+        type: "fix",
+        text: "Terms and Privacy in every language disclose non-personalized Google ads, cookies, and opt-out links",
+      },
+      {
+        type: "fix",
+        text: "Ads stay off Contact, Security, and Careers; legal inventory is About, Privacy, Terms, and changelog",
+      },
+    ],
+  },
+  {
+    version: "2.4.3",
+    date: "2026-08-17",
+    title: "Non-personalized ads on an allow list",
+    changes: [
+      {
+        type: "feat",
+        text: "Manual AdSense units on homepage, JSON Formatter, and legal/changelog pages only",
+      },
+      {
+        type: "feat",
+        text: "Ads stay non-personalized; Auto ads stay off; ads.txt appears only after real slot IDs exist",
+      },
+      {
+        type: "feat",
+        text: "Password, SSH, Token Studio, WireGuard, certificates, secret scanner, encoding, and pipe never load ad scripts",
+      },
+    ],
+  },
+  {
+    version: "2.4.2",
+    date: "2026-08-17",
+    title: "Honesty Pass & Broken Tools",
+    changes: [
+      {
+        type: "fix",
+        text: "Hero and About no longer claim zero tracking or zero stored bytes while ads were configured",
+      },
+      {
+        type: "fix",
+        text: "Removed ads.txt and unused Google Ads / GTM / GA CSP entries until real ad slots exist",
+      },
+      {
+        type: "fix",
+        text: "User-Agent Parser now has a paste field, parse output, and a working Use This button",
+      },
+      {
+        type: "fix",
+        text: "dot.case no longer drops the last character",
+      },
+      {
+        type: "fix",
+        text: "SQL indent option labeled 4 spaces is no longer overwritten by BigQuery",
+      },
+      {
+        type: "fix",
+        text: "Home search badges now follow the filtered card counts",
+      },
+      {
+        type: "fix",
+        text: "Language switch now updates the homepage H1 without a reload",
+      },
+      {
+        type: "fix",
+        text: "SVG preview stays visible after removing width and height",
+      },
+    ],
+  },
+  {
+    version: "2.4.1",
+    date: "2026-05-11",
+    title: "Post-QA & Page-sweep Fixes",
+    changes: [
+      {
+        type: "fix",
+        text: "JSON Formatter: fix max-depth and key counters; extract shared json-stats util",
+      },
+      {
+        type: "fix",
+        text: "JSON Formatter: clear stale output and stats on parse/minify error",
+      },
+      {
+        type: "fix",
+        text: "SRI: regenerate all vendor script integrity hashes; add scripts/update-sri.mjs tooling",
+      },
+      {
+        type: "fix",
+        text: "Clipboard: global safety script catches NotAllowedError/SecurityError with toast",
+      },
+      {
+        type: "fix",
+        text: "Routes: add 301 redirects for /jwt-inspector, /layered-decoder, /css-gradient-generator",
+      },
+      {
+        type: "fix",
+        text: "Empty-state placeholders now hide correctly when a result is present",
+      },
+      {
+        type: "fix",
+        text: "pipe: resolve undefined title and render proper page",
+      },
+      {
+        type: "fix",
+        text: "htpasswd-generator: Generate entry now produces output",
+      },
+      {
+        type: "fix",
+        text: "ssh-key-generator: emit OpenSSH wire format (RFC 4253) for public keys",
+      },
+      {
+        type: "fix",
+        text: "home: live search filter actually filters tool cards",
+      },
+      {
+        type: "fix",
+        text: "404: add inline search and popular-tools recovery",
+      },
+      {
+        type: "fix",
+        text: "caffeinate: correct spelling, add 301 from /caffeniate",
+      },
+      {
+        type: "fix",
+        text: "dns-reference: command-builder dropdown includes DKIM/SPF/DMARC",
+      },
+      {
+        type: "fix",
+        text: "a11y: cron-builder minute grid uses proper grid/gridcell roles",
+      },
+      {
+        type: "fix",
+        text: "a11y: qr aria-label, saml empty-pane, regex empty-counter",
+      },
+      {
+        type: "fix",
+        text: "cron-builder: escape template literals in ARIA grid render",
+      },
+      {
+        type: "refactor",
+        text: "Trust pills: shared createTrustPill component; demote redundant feature-pills across 12 routes",
+      },
+      {
+        type: "refactor",
+        text: "markdown-preview → markdown-editor with 301 redirect",
+      },
+      {
+        type: "refactor",
+        text: "uuid-generator: remove redundant GUID dropdown option (duplicate of v4)",
+      },
+      {
+        type: "refactor",
+        text: "code-minifier: remove JSON tab, cross-link to JSON Formatter",
+      },
+    ],
+  },
+  {
+    version: "2.4.0",
+    date: "2026-03-23",
+    title: "Production Readiness & Full i18n",
+    changes: [
+      {
+        type: "feat",
+        text: "Full i18n support for all 10 languages across 49 tools",
+      },
+      {
+        type: "feat",
+        text: "Added unit-converter with 10 categories and real conversion formulas",
+      },
+      {
+        type: "feat",
+        text: "Added code-minifier with JS/CSS/HTML/JSON minify and beautify",
+      },
+      {
+        type: "feat",
+        text: "Added SAML decoder with Base64 decode, XML parse, and inflate support",
+      },
+      {
+        type: "feat",
+        text: "Restored QR code generator (16 missing DOM elements)",
+      },
+      {
+        type: "feat",
+        text: "Added og:image for social sharing, skip-link for accessibility",
+      },
+      {
+        type: "feat",
+        text: "Added FAQ, legal, blog content for 6 new languages",
+      },
+      {
+        type: "feat",
+        text: "Added 74 tooltip i18n attributes and 5 placeholder translations",
+      },
+      {
+        type: "feat",
+        text: "Created changelog page with version display in footer",
+      },
+      {
+        type: "fix",
+        text: "Fixed service worker cache corruption (stale CSP nonces)",
+      },
+      {
+        type: "fix",
+        text: "Fixed Token Studio XSS vulnerability (escapeHtml on JWK fields)",
+      },
+      {
+        type: "fix",
+        text: "Fixed console errors on 6 pages (null guards, _t fallback, regex escaping)",
+      },
+      {
+        type: "fix",
+        text: "Replaced dead libsodium CDN with Web Crypto API for WireGuard",
+      },
+      {
+        type: "fix",
+        text: "Fixed language persistence on back button navigation",
+      },
+      { type: "fix", text: "Fixed duplicate category icons on home page" },
+      {
+        type: "fix",
+        text: "Fixed heading hierarchy (H2→H3) for accessibility",
+      },
+      {
+        type: "fix",
+        text: "Fixed roulette wheel 3D transform breaking E2E tests",
+      },
+      {
+        type: "fix",
+        text: "Fixed unescaped quotes in German/Portuguese/Vietnamese translations",
+      },
+      {
+        type: "perf",
+        text: "Sub-4ms TTFB, pages under 165KB, minimal resource count",
+      },
+    ],
+  },
+  {
+    version: "2.3.0",
+    date: "2026-03-22",
+    title: "Mobile Overflow & New Tool Translations",
+    changes: [
+      { type: "feat", text: "Added i18n translations for new tools" },
+      { type: "fix", text: "Fixed mobile overflow issues across tool pages" },
+      { type: "fix", text: "Improved responsive layout for narrow viewports" },
+    ],
+  },
 ];
 
 function renderChangelogPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
 
   const typeLabels = {
-    feat: { label: 'New', color: 'bg-success-100 text-success-700 dark:bg-success-900/30 dark:text-success-300' },
-    fix: { label: 'Fix', color: 'bg-error-100 text-error-700 dark:bg-error-900/30 dark:text-error-300' },
-    perf: { label: 'Perf', color: 'bg-info-100 text-info-700 dark:bg-info-900/30 dark:text-info-300' },
-    chore: { label: 'Chore', color: 'bg-surface-100 text-surface-700 dark:bg-surface-800 dark:text-surface-300' },
+    feat: {
+      label: "New",
+      color:
+        "bg-success-100 text-success-700 dark:bg-success-900/30 dark:text-success-300",
+    },
+    fix: {
+      label: "Fix",
+      color:
+        "bg-error-100 text-error-700 dark:bg-error-900/30 dark:text-error-300",
+    },
+    perf: {
+      label: "Perf",
+      color: "bg-info-100 text-info-700 dark:bg-info-900/30 dark:text-info-300",
+    },
+    chore: {
+      label: "Chore",
+      color:
+        "bg-surface-100 text-surface-700 dark:bg-surface-800 dark:text-surface-300",
+    },
   };
 
-  const releasesHTML = RELEASES.map(release => {
-    const dateFormatted = new Date(release.date).toLocaleDateString(currentLang, { year: 'numeric', month: 'long', day: 'numeric' });
-    const changesHTML = release.changes.map(c => {
-      const t = typeLabels[c.type] || typeLabels.chore;
-      return `<li class="flex items-start gap-3 py-2">
+  const releasesHTML = RELEASES.map((release) => {
+    const dateFormatted = new Date(release.date).toLocaleDateString(
+      currentLang,
+      { year: "numeric", month: "long", day: "numeric" },
+    );
+    const changesHTML = release.changes
+      .map((c) => {
+        const t = typeLabels[c.type] || typeLabels.chore;
+        return `<li class="flex items-start gap-3 py-2">
         <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold ${t.color} flex-shrink-0 mt-0.5">${t.label}</span>
         <span class="text-surface-700 dark:text-surface-300 text-sm">${c.text}</span>
       </li>`;
-    }).join('');
+      })
+      .join("");
 
     return `
       <section class="mb-10">
@@ -104,31 +366,34 @@ function renderChangelogPage(lang = DEFAULT_LANGUAGE) {
         </ul>
       </section>
     `;
-  }).join('');
+  }).join("");
 
   const content = `
-    <main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <main class="content-page-shell">
       <div class="mb-8">
-        <h1 class="text-3xl font-extrabold text-surface-900 dark:text-surface-50 mb-2">Changelog</h1>
+        <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-surface-900 dark:text-surface-50 mb-2">Changelog</h1>
         <p class="text-surface-600 dark:text-surface-400">Release history and recent changes to SimpleTool.</p>
       </div>
       ${releasesHTML}
+      ${getAdSlotHTML("legal", { path: "/changelog", wrapperClassName: "mt-10" })}
     </main>
   `;
 
   return createPageTemplate({
-    title: 'Changelog',
-    description: 'Release history and recent changes to SimpleTool.',
+    title: "Changelog",
+    description: "Release history and recent changes to SimpleTool.",
     content,
-    path: '/changelog',
-    lang: currentLang
+    path: "/changelog",
+    lang: currentLang,
   });
 }
 
 export async function handleChangelogRoutes(request, url) {
-  if (url.pathname === '/changelog' || url.pathname === '/changelog/') {
-    if (request.method === 'GET') {
-      return respondHTML(renderChangelogPage(resolveRequestLanguage(request, url)));
+  if (url.pathname === "/changelog" || url.pathname === "/changelog/") {
+    if (request.method === "GET") {
+      return respondHTML(
+        renderChangelogPage(resolveRequestLanguage(request, url)),
+      );
     }
   }
   return null;

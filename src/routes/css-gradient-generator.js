@@ -5,39 +5,57 @@
  * All processing happens client-side
  */
 
-import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
-import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { respondHTML } from '../utils/respond.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { createPageTemplate, createToolHeader } from "../utils/common-ui.js";
+import {
+  createEducationalSection,
+  createRelatedToolsSection,
+} from "../utils/content-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import { respondHTML } from "../utils/respond.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 /**
  * Render the CSS Gradient Generator page
  */
 function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('css-gradient', currentLang);
+  const translation = getToolTranslation("css-gradient", currentLang);
   const toolHeader = createToolHeader(
-    { emoji: '🌈' },
-    translation?.name || 'Gradient Generator',
-    translation?.desc || 'Create beautiful CSS gradients with an interactive editor. Perfect for web designers and developers.',
-    [{ text: translation?.ui?.badge32 || 'Client-Side Only', tooltip: 'Runs entirely in your browser using Web APIs — your data never leaves your device.' }],
-    { toolId: 'css-gradient' }
+    { emoji: "🌈" },
+    translation?.name || "Gradient Generator",
+    translation?.desc ||
+      "Create beautiful CSS gradients with an interactive editor. Perfect for web designers and developers.",
+    [
+      {
+        text: translation?.ui?.badge32 || "Client-Side Only",
+        tooltip:
+          "Runs entirely in your browser using Web APIs — your data is processed locally and not sent to our servers.",
+      },
+    ],
+    { toolId: "css-gradient" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'css-gradient');
-  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+  const currentTool = TOOLS.find((t) => t.id === "css-gradient");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
   const pageContent = `
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
         ${toolHeader}
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Left Column: Controls -->
         <div class="space-y-6">
           <!-- Gradient Type -->
-          <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm p-6">
+          <div class="tool-group p-6">
             <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50 mb-4" data-i18n="tools.css-gradient.ui.heading18">🔧 Gradient Type</h2>
 
             <div class="grid grid-cols-2 gap-3">
@@ -68,13 +86,13 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
             <!-- Radial Options -->
             <div id="radial-options" class="mt-4 hidden">
               <label for="radial-shape" class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2"><span data-i18n="tools.css-gradient.ui.label5">Shape</span></label>
-              <select id="radial-shape" class="w-full px-4 py-2 border border-surface-300 dark:border-surface-700 rounded-lg bg-white dark:bg-surface-950 text-surface-900 dark:text-surface-100">
+              <select id="radial-shape" class="input">
                 <option value="circle" data-i18n="tools.css-gradient.ui.option7">Circle</option>
                 <option value="ellipse" data-i18n="tools.css-gradient.ui.option8">Ellipse</option>
               </select>
 
               <label for="radial-position" class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mt-3 mb-2"><span data-i18n="tools.css-gradient.ui.label6">Position</span></label>
-              <select id="radial-position" class="w-full px-4 py-2 border border-surface-300 dark:border-surface-700 rounded-lg bg-white dark:bg-surface-950 text-surface-900 dark:text-surface-100">
+              <select id="radial-position" class="input">
                 <option value="center" data-i18n="tools.css-gradient.ui.option9">Center</option>
                 <option value="top" data-i18n="tools.css-gradient.ui.option10">Top</option>
                 <option value="bottom" data-i18n="tools.css-gradient.ui.option11">Bottom</option>
@@ -89,10 +107,10 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
           </div>
 
           <!-- Color Stops -->
-          <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm p-6">
+          <div class="tool-group p-6">
             <div class="flex justify-between items-center mb-4">
               <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50" data-i18n="tools.css-gradient.ui.heading19">🎨 Color Stops</h2>
-                <button id="add-color-stop" data-tooltip="Add another color to the gradient" data-i18n-tooltip="tools.css-gradient-generator.ui.tip3" class="px-4 py-2 bg-success-600 text-white rounded-lg hover:bg-success-700 transition text-sm font-semibold">
+                <button id="add-color-stop" data-tooltip="Add another color to the gradient" data-i18n-tooltip="tools.css-gradient-generator.ui.tip3" class="btn-primary">
                 <span data-i18n="tools.css-gradient.ui.button2">+ Add Color</span>
               </button>
             </div>
@@ -103,7 +121,7 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
           </div>
 
           <!-- Preset Gradients -->
-          <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm p-6">
+          <div class="tool-group p-6">
             <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50 mb-4" data-i18n="tools.css-gradient.ui.heading20">✨ Preset Gradients</h2>
 
             <div class="grid grid-cols-2 gap-3">
@@ -120,16 +138,16 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
         <!-- Right Column: Preview & Code -->
         <div class="space-y-6">
           <!-- Live Preview -->
-          <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm p-6">
+          <div class="tool-group p-6">
             <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50 mb-4" data-i18n="tools.css-gradient.ui.heading21">👁️ Live Preview</h2>
             <div id="gradient-preview" class="gradient-preview border-2 border-surface-200 dark:border-surface-700"></div>
           </div>
 
           <!-- CSS Code -->
-          <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm p-6">
+          <div class="tool-group p-6">
             <div class="flex justify-between items-center mb-4">
               <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50" data-i18n="tools.css-gradient.ui.heading22">📋 CSS Code</h2>
-               <button id="copy-css-btn" class="px-4 py-2 bg-primary-700 text-white rounded-lg hover:bg-primary-800 transition text-sm font-semibold">
+               <button id="copy-css-btn" class="btn-primary">
                 <span data-i18n="tools.css-gradient.ui.button3">📋 Copy CSS</span>
               </button>
             </div>
@@ -165,24 +183,32 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
     </main>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-      ${createEducationalSection([
-        {
-          title: 'What are CSS Gradients?',
-          content: '<p>CSS gradients are a powerful feature that allows you to display smooth transitions between two or more specified colors. Unlike traditional background images, gradients are generated by the browser, which means they are infinitely scalable, consume less bandwidth, and can be easily manipulated with code. They are commonly used for backgrounds, buttons, and decorative elements to add depth and visual interest to web designs.</p>'
-        },
-        {
-          title: 'Linear vs Radial Gradients',
-          content: '<p>There are two main types of CSS gradients:</p><ul><li><strong>Linear Gradients</strong>: Colors transition along a straight line. You can control the direction using angles (e.g., 45deg) or keywords (e.g., to right).</li><li><strong>Radial Gradients</strong>: Colors radiate outward from a central point (the "origin"). You can specify the shape (circle or ellipse) and the position of the center.</li></ul>'
-        },
-        {
-          title: 'Browser Support and Performance',
-          content: '<p>Modern CSS gradients are widely supported across all major browsers, including Chrome, Firefox, Safari, and Edge. Because they are rendered mathematically by the browser\'s engine, they are extremely performant compared to high-resolution images. However, for very complex gradients with dozens of color stops, it\'s always good practice to test performance on lower-end devices. For older browsers (like IE9 and below), it\'s recommended to provide a solid color fallback.</p>'
-        },
-        {
-          title: 'Pro Tips for Better Gradients',
-          content: '<ul><li><strong>Avoid "Gray Dead Zones"</strong>: When transitioning between two distant colors, the midpoint can sometimes look muddy or gray. Adding a vibrant intermediate color stop can keep the gradient looking fresh.</li><li><strong>Use Subtle Transitions</strong>: Often, the best gradients are the ones you barely notice. Using colors that are close to each other on the color wheel creates a sophisticated, professional look.</li><li><strong>Layering</strong>: You can stack multiple gradients on top of each other using the <code>background-image</code> property, allowing for incredibly complex and artistic effects.</li><li><strong>Accessibility</strong>: Ensure that any text placed over a gradient has sufficient contrast. Use tools to check WCAG compliance for all color combinations.</li></ul>'
-        }
-      ], 'css-gradient-generator', currentLang)}
+      ${createEducationalSection(
+        [
+          {
+            title: "What are CSS Gradients?",
+            content:
+              "<p>CSS gradients are a powerful feature that allows you to display smooth transitions between two or more specified colors. Unlike traditional background images, gradients are generated by the browser, which means they are infinitely scalable, consume less bandwidth, and can be easily manipulated with code. They are commonly used for backgrounds, buttons, and decorative elements to add depth and visual interest to web designs.</p>",
+          },
+          {
+            title: "Linear vs Radial Gradients",
+            content:
+              '<p>There are two main types of CSS gradients:</p><ul><li><strong>Linear Gradients</strong>: Colors transition along a straight line. You can control the direction using angles (e.g., 45deg) or keywords (e.g., to right).</li><li><strong>Radial Gradients</strong>: Colors radiate outward from a central point (the "origin"). You can specify the shape (circle or ellipse) and the position of the center.</li></ul>',
+          },
+          {
+            title: "Browser Support and Performance",
+            content:
+              "<p>Modern CSS gradients are widely supported across all major browsers, including Chrome, Firefox, Safari, and Edge. Because they are rendered mathematically by the browser's engine, they are extremely performant compared to high-resolution images. However, for very complex gradients with dozens of color stops, it's always good practice to test performance on lower-end devices. For older browsers (like IE9 and below), it's recommended to provide a solid color fallback.</p>",
+          },
+          {
+            title: "Pro Tips for Better Gradients",
+            content:
+              '<ul><li><strong>Avoid "Gray Dead Zones"</strong>: When transitioning between two distant colors, the midpoint can sometimes look muddy or gray. Adding a vibrant intermediate color stop can keep the gradient looking fresh.</li><li><strong>Use Subtle Transitions</strong>: Often, the best gradients are the ones you barely notice. Using colors that are close to each other on the color wheel creates a sophisticated, professional look.</li><li><strong>Layering</strong>: You can stack multiple gradients on top of each other using the <code>background-image</code> property, allowing for incredibly complex and artistic effects.</li><li><strong>Accessibility</strong>: Ensure that any text placed over a gradient has sufficient contrast. Use tools to check WCAG compliance for all color combinations.</li></ul>',
+          },
+        ],
+        "css-gradient-generator",
+        currentLang,
+      )}
     </div>
     ${createRelatedToolsSection(relatedToolsData)}
 
@@ -351,7 +377,7 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
             }, 2000);
           } catch (err) {
             const btn = document.getElementById('copy-css-btn');
-            btn.textContent = _t('tools.css-gradient.js.text0', 'Copy failed');
+            btn.textContent = 'Copy failed';
             btn.classList.remove('bg-primary-700', 'hover:bg-primary-800');
             btn.classList.add('bg-error-600', 'hover:bg-error-700');
             setTimeout(() => {
@@ -450,11 +476,13 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
   `;
 
   return createPageTemplate({
-    title: translation?.name || 'Gradient Generator',
-    description: translation?.desc || 'Create beautiful CSS gradients with interactive editor. Linear and radial gradients with live preview and code export.',
-    path: '/css-gradient',
+    title: translation?.name || "Gradient Generator",
+    description:
+      translation?.desc ||
+      "Create beautiful CSS gradients with interactive editor. Linear and radial gradients with live preview and code export.",
+    path: "/css-gradient",
     content: customStyles + pageContent,
-    lang: currentLang
+    lang: currentLang,
   });
 }
 
@@ -465,13 +493,22 @@ export async function handleCSSGradientRoutes(request, url) {
   const pathname = url.pathname;
 
   try {
-    if (pathname === '/css-gradient' || pathname === '/css-gradient/' || pathname === '/css-gradient-generator' || pathname === '/css-gradient-generator/') {
-      return respondHTML(renderCSSGradientPage(resolveRequestLanguage(request, url)));
+    if (
+      pathname === "/css-gradient" ||
+      pathname === "/css-gradient/" ||
+      pathname === "/css-gradient-generator" ||
+      pathname === "/css-gradient-generator/"
+    ) {
+      return respondHTML(
+        renderCSSGradientPage(resolveRequestLanguage(request, url)),
+      );
     }
-    return new Response('Not Found', { status: 404 });
+    return new Response("Not Found", { status: 404 });
   } catch (error) {
-    console.error('CSS Gradient Generator Error:', error);
+    console.error("CSS Gradient Generator Error:", error);
     // Return a basic error response if rendering fails
-    return new Response('Internal Server Error: ' + error.message, { status: 500 });
+    return new Response("Internal Server Error: " + error.message, {
+      status: 500,
+    });
   }
 }

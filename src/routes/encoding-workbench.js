@@ -4,63 +4,91 @@
  * All processing happens client-side for privacy
  */
 
-import { respondHTML, respondJSON } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createEmptyState } from '../utils/common-ui.js';
-import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML, respondJSON } from "../utils/respond.js";
+import {
+  createPageTemplate,
+  createToolHeader,
+  createEmptyState,
+} from "../utils/common-ui.js";
+import {
+  createEducationalSection,
+  createRelatedToolsSection,
+} from "../utils/content-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleEncodingWorkbenchRoutes(request, url) {
   const { pathname } = url;
   const method = request.method;
 
   try {
-    if (pathname === '/encoding-workbench' || pathname === '/encoding-workbench/') {
-      if (method === 'GET') {
-        return renderEncodingWorkbenchPage(resolveRequestLanguage(request, url));
+    if (
+      pathname === "/encoding-workbench" ||
+      pathname === "/encoding-workbench/"
+    ) {
+      if (method === "GET") {
+        return renderEncodingWorkbenchPage(
+          resolveRequestLanguage(request, url),
+        );
       }
     }
 
-    return respondJSON({ error: 'Not found' }, { status: 404 });
+    return respondJSON({ error: "Not found" }, { status: 404 });
   } catch (error) {
-    console.error('Encoding Workbench Route Error:', error);
+    console.error("Encoding Workbench Route Error:", error);
     return respondJSON(
-      { error: 'Internal server error', message: error.message },
-      { status: 500 }
+      { error: "Internal server error", message: error.message },
+      { status: 500 },
     );
   }
 }
 
 function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('encoding-workbench', currentLang);
+  const translation = getToolTranslation("encoding-workbench", currentLang);
   const toolHeader = createToolHeader(
-    { emoji: '🔓' },
-    translation?.name || 'Encoding & Decoding Workbench',
-    translation?.desc || 'Encode, decode, hash, and identify data transformations',
-    [{ text: translation?.ui?.badge0 || 'Privacy First', color: 'green', tooltip: 'All processing happens in your browser — no data is sent to any server.' }],
-    { toolId: 'encoding-workbench' }
+    { emoji: "🔓" },
+    translation?.name || "Encoding & Decoding Workbench",
+    translation?.desc ||
+      "Encode, decode, hash, and identify data transformations",
+    [
+      {
+        text: translation?.ui?.badge0 || "Privacy First",
+        color: "green",
+        tooltip:
+          "All processing happens in your browser — your data is not sent to our servers.",
+      },
+    ],
+    { toolId: "encoding-workbench" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'encoding-workbench');
-  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+  const currentTool = TOOLS.find((t) => t.id === "encoding-workbench");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
 
         ${toolHeader}
 
         <!-- Tab Navigation -->
         <div class="mb-8">
-          <div class="flex bg-surface-100 dark:bg-surface-800 p-1 rounded-xl border border-surface-200 dark:border-surface-700 w-fit" role="tablist">
-            <button id="tab-encode" class="tab-btn active px-5 py-2 rounded-lg font-medium text-sm transition-all duration-200 bg-white dark:bg-surface-900 text-primary-600 dark:text-primary-400 shadow-sm" role="tab" aria-controls="panel-encode" aria-selected="true" data-tooltip="Encode and decode text between formats" data-i18n-tooltip="tools.encoding-workbench.ui.tip0">
+          <div class="tabs-list flex bg-surface-100 dark:bg-surface-800 p-1 rounded-xl border border-surface-200 dark:border-surface-700 w-fit" role="tablist">
+            <button id="tab-encode" class="tab-trigger tab-btn active" role="tab" aria-controls="panel-encode" aria-selected="true" data-tooltip="Encode and decode text between formats" data-i18n-tooltip="tools.encoding-workbench.ui.tip0">
               <span data-i18n="tools.encoding-workbench.ui.tab0">🔄 Encode / Decode</span>
             </button>
-            <button id="tab-hash" class="tab-btn px-5 py-2 rounded-lg font-medium text-sm transition-all duration-200 text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-200" role="tab" aria-controls="panel-hash" aria-selected="false" data-tooltip="Generate cryptographic hashes" data-i18n-tooltip="tools.encoding-workbench.ui.tip1">
+            <button id="tab-hash" class="tab-trigger tab-btn" role="tab" aria-controls="panel-hash" aria-selected="false" data-tooltip="Generate cryptographic hashes" data-i18n-tooltip="tools.encoding-workbench.ui.tip1">
               <span data-i18n="tools.encoding-workbench.ui.tab1"># Hash</span>
             </button>
-            <button id="tab-identify" class="tab-btn px-5 py-2 rounded-lg font-medium text-sm transition-all duration-200 text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-200" role="tab" aria-controls="panel-identify" aria-selected="false" data-tooltip="Identify unknown hashes or encoded strings" data-i18n-tooltip="tools.encoding-workbench.ui.tip2">
+            <button id="tab-identify" class="tab-trigger tab-btn" role="tab" aria-controls="panel-identify" aria-selected="false" data-tooltip="Identify unknown hashes or encoded strings" data-i18n-tooltip="tools.encoding-workbench.ui.tip2">
               <span data-i18n="tools.encoding-workbench.ui.tab2">🔍 Identify</span>
             </button>
           </div>
@@ -71,7 +99,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
 
           <!-- Input -->
           <div class="mb-4">
-            <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
+            <label for="enc-input" class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
               <span data-i18n="tools.encoding-workbench.ui.label0">Input</span>
             </label>
             <textarea
@@ -79,7 +107,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
               rows="5"
               placeholder="Paste text or encoded data here…"
               data-i18n-placeholder="tools.encoding-workbench.ui.placeholder0"
-              class="w-full p-3 font-mono text-sm bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg text-surface-900 dark:text-surface-100 placeholder-surface-400 dark:placeholder-surface-600 resize-none focus:outline-none focus:ring-2 focus:ring-primary-500"
+              class="input-mono w-full resize-none"
             ></textarea>
           </div>
 
@@ -115,14 +143,14 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
               <button id="enc-copy-btn" class="btn btn-ghost btn-xs text-surface-600 dark:text-surface-400 hover:bg-surface-100 dark:hover:bg-surface-800" data-i18n="tools.encoding-workbench.ui.copy">Copy</button>
             </div>
             <div id="enc-empty" class="">
-              ${createEmptyState({ icon: '🔄', title: 'No output yet', description: 'Choose an operation above or click Auto-Detect Layers.', id: 'enc-empty-state', i18nTitle: 'tools.encoding-workbench.ui.desc0', i18nDesc: 'tools.encoding-workbench.ui.desc1' })}
+              ${createEmptyState({ icon: "🔄", title: "No output yet", description: "Choose an operation above or click Auto-Detect Layers.", id: "enc-empty-state", i18nTitle: "tools.encoding-workbench.ui.desc0", i18nDesc: "tools.encoding-workbench.ui.desc1" })}
             </div>
             <textarea
               id="enc-output"
               rows="5"
               readonly
               placeholder=""
-              class="hidden w-full p-3 font-mono text-sm bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg text-surface-900 dark:text-surface-100 resize-none focus:outline-none focus:ring-2 focus:ring-primary-500"
+              class="input-mono hidden w-full resize-none"
             ></textarea>
             <div id="enc-error" class="hidden mt-2 px-3 py-2 rounded-lg bg-error-50 dark:bg-error-900/20 text-error-700 dark:text-error-300 border border-error-200 dark:border-error-800 text-sm"></div>
           </div>
@@ -155,7 +183,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
                   rows="6"
                   placeholder="Enter text to hash…"
                   data-i18n-placeholder="tools.encoding-workbench.ui.hashPlaceholder"
-                  class="w-full p-3 font-mono text-sm bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg text-surface-900 dark:text-surface-100 placeholder-surface-400 dark:placeholder-surface-600 resize-none focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  class="input-mono w-full resize-none"
                 ></textarea>
               </div>
 
@@ -196,7 +224,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
               <!-- HMAC toggle -->
               <div>
                 <label class="flex items-center gap-2 cursor-pointer mb-2">
-                  <input type="checkbox" id="hmac-toggle" class="w-4 h-4 rounded border-surface-300 dark:border-surface-700 text-primary-600 focus:ring-2 focus:ring-primary-500">
+                  <input type="checkbox" id="hmac-toggle" class="w-4 h-4 rounded border-surface-300 dark:border-surface-700 text-primary-600 dark:text-primary-400 focus:ring-2 focus:ring-primary-500">
                   <span class="text-sm font-semibold text-surface-700 dark:text-surface-300" data-i18n="tools.encoding-workbench.ui.hmacLabel">HMAC Mode</span>
                 </label>
                 <div id="hmac-key-section" class="hidden">
@@ -205,7 +233,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
                     id="hmac-key"
                     placeholder="Enter HMAC secret key…"
                     data-i18n-placeholder="tools.encoding-workbench.ui.hmacPlaceholder"
-                    class="w-full p-3 font-mono text-sm bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg text-surface-900 dark:text-surface-100 placeholder-surface-400 dark:placeholder-surface-600 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    class="input-mono w-full"
                   >
                 </div>
               </div>
@@ -213,12 +241,12 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
               <!-- bcrypt section -->
               <div>
                 <label class="flex items-center gap-2 cursor-pointer mb-2">
-                  <input type="checkbox" id="bcrypt-toggle" class="w-4 h-4 rounded border-surface-300 dark:border-surface-700 text-primary-600 focus:ring-2 focus:ring-primary-500">
+                  <input type="checkbox" id="bcrypt-toggle" class="w-4 h-4 rounded border-surface-300 dark:border-surface-700 text-primary-600 dark:text-primary-400 focus:ring-2 focus:ring-primary-500">
                   <span class="text-sm font-semibold text-surface-700 dark:text-surface-300" data-i18n="tools.encoding-workbench.ui.bcryptLabel">bcrypt Mode</span>
                 </label>
                 <div id="bcrypt-section" class="hidden flex items-center gap-3">
                   <label class="text-sm text-surface-600 dark:text-surface-400" data-i18n="tools.encoding-workbench.ui.bcryptRoundsLabel">Cost rounds:</label>
-                  <select id="bcrypt-rounds" class="bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg px-3 py-1.5 text-sm text-surface-900 dark:text-surface-100 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                  <select id="bcrypt-rounds" class="input">
                     <option value="4" data-i18n="tools.encoding-workbench.ui.option29">4 (fastest)</option>
                     <option value="6">6</option>
                     <option value="8">8</option>
@@ -238,10 +266,10 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
             <div>
               <div class="bg-surface-50 dark:bg-surface-950 rounded-xl border border-surface-200 dark:border-surface-800 p-5 min-h-[300px]">
                 <div class="flex items-center justify-between mb-4">
-                  <h3 class="text-sm font-semibold text-surface-700 dark:text-surface-300" data-i18n="tools.encoding-workbench.ui.hashResultsLabel">Hash Results</h3>
+                  <h2 class="text-sm font-semibold text-surface-700 dark:text-surface-300" data-i18n="tools.encoding-workbench.ui.hashResultsLabel">Hash Results</h2>
                 </div>
                 <div id="hash-results">
-                  ${createEmptyState({ icon: '#️⃣', title: 'No hashes yet', description: 'Enter text or select a file and click Hash All.', id: 'hash-empty-state', i18nTitle: 'tools.encoding-workbench.ui.desc2', i18nDesc: 'tools.encoding-workbench.ui.desc3' })}
+                  ${createEmptyState({ icon: "#️⃣", title: "No hashes yet", description: "Enter text or select a file and click Hash All.", id: "hash-empty-state", i18nTitle: "tools.encoding-workbench.ui.desc2", i18nDesc: "tools.encoding-workbench.ui.desc3" })}
                 </div>
               </div>
             </div>
@@ -260,7 +288,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
               rows="4"
               placeholder="Paste a hash or encoded string…"
               data-i18n-placeholder="tools.encoding-workbench.ui.identifyPlaceholder"
-              class="w-full p-3 font-mono text-sm bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg text-surface-900 dark:text-surface-100 placeholder-surface-400 dark:placeholder-surface-600 resize-none focus:outline-none focus:ring-2 focus:ring-primary-500"
+              class="input-mono w-full resize-none"
             ></textarea>
           </div>
 
@@ -270,7 +298,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
           </div>
 
           <div id="identify-results">
-            ${createEmptyState({ icon: '🔍', title: 'Nothing identified yet', description: 'Paste a hash or encoded string above and click Identify.', id: 'identify-empty-state', i18nTitle: 'tools.encoding-workbench.ui.desc4', i18nDesc: 'tools.encoding-workbench.ui.desc5' })}
+            ${createEmptyState({ icon: "🔍", title: "Nothing identified yet", description: "Paste a hash or encoded string above and click Identify.", id: "identify-empty-state", i18nTitle: "tools.encoding-workbench.ui.desc4", i18nDesc: "tools.encoding-workbench.ui.desc5" })}
           </div>
         </div>
 
@@ -278,24 +306,32 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
     </main>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-      ${createEducationalSection([
-        {
-          title: 'What is Encoding vs Hashing?',
-          content: '<p><strong>Encoding</strong> transforms data into a different representation that can be reversed (decoded). Common formats include Base64 — used to transmit binary data over text channels — URL encoding, HTML entity encoding, and hexadecimal. Encoding is not encryption; it offers no confidentiality.</p><p><strong>Hashing</strong> is a one-way mathematical transformation. A cryptographic hash function takes any input and produces a fixed-length fingerprint. You cannot reverse a hash to retrieve the original input. Hashes are used to verify file integrity, store passwords securely, and generate digital signatures.</p>'
-        },
-        {
-          title: 'How to Use This Tool',
-          content: '<ol><li><strong>Encode / Decode tab:</strong> Paste text and choose an operation (Base64, URL, HTML, Hex), or click Auto-Detect Layers to automatically unwrap multiple nested encodings.</li><li><strong>Hash tab:</strong> Enter text or select a file, choose algorithms, and click Hash All. Enable HMAC mode to compute keyed hashes with a shared secret.</li><li><strong>Identify tab:</strong> Paste an unknown hash or encoded string and click Identify to see likely algorithms with confidence ratings.</li></ol>'
-        },
-        {
-          title: 'Layered Encoding Explained',
-          content: '<p>Real-world data is often encoded multiple times. For example, a payload could be URL-encoded, then Base64-encoded, then placed inside a hex string. The Auto-Detect Layers feature inspects the input pattern, attempts each decoding in sequence, and visualises every step as a card so you can see exactly how the data was wrapped.</p>'
-        },
-        {
-          title: 'Hash Algorithm Guide',
-          content: '<ul><li><strong>MD5</strong> — 128-bit output. Cryptographically broken; use only for legacy compatibility or non-security checksums.</li><li><strong>SHA-1</strong> — 160-bit output. Deprecated for security use. Still found in older Git commits and certificates.</li><li><strong>SHA-256</strong> — 256-bit output. General-purpose, widely used in TLS, code signing, and data integrity checks.</li><li><strong>SHA-512</strong> — 512-bit output. Higher security margin; preferred for password-adjacent workflows.</li><li><strong>bcrypt</strong> — Adaptive password-hashing function with a configurable cost factor. Use for storing passwords; not for data integrity.</li></ul>'
-        }
-      ], 'encoding-workbench', currentLang)}
+      ${createEducationalSection(
+        [
+          {
+            title: "What is Encoding vs Hashing?",
+            content:
+              "<p><strong>Encoding</strong> transforms data into a different representation that can be reversed (decoded). Common formats include Base64 — used to transmit binary data over text channels — URL encoding, HTML entity encoding, and hexadecimal. Encoding is not encryption; it offers no confidentiality.</p><p><strong>Hashing</strong> is a one-way mathematical transformation. A cryptographic hash function takes any input and produces a fixed-length fingerprint. You cannot reverse a hash to retrieve the original input. Hashes are used to verify file integrity, store passwords securely, and generate digital signatures.</p>",
+          },
+          {
+            title: "How to Use This Tool",
+            content:
+              "<ol><li><strong>Encode / Decode tab:</strong> Paste text and choose an operation (Base64, URL, HTML, Hex), or click Auto-Detect Layers to automatically unwrap multiple nested encodings.</li><li><strong>Hash tab:</strong> Enter text or select a file, choose algorithms, and click Hash All. Enable HMAC mode to compute keyed hashes with a shared secret.</li><li><strong>Identify tab:</strong> Paste an unknown hash or encoded string and click Identify to see likely algorithms with confidence ratings.</li></ol>",
+          },
+          {
+            title: "Layered Encoding Explained",
+            content:
+              "<p>Real-world data is often encoded multiple times. For example, a payload could be URL-encoded, then Base64-encoded, then placed inside a hex string. The Auto-Detect Layers feature inspects the input pattern, attempts each decoding in sequence, and visualises every step as a card so you can see exactly how the data was wrapped.</p>",
+          },
+          {
+            title: "Hash Algorithm Guide",
+            content:
+              "<ul><li><strong>MD5</strong> — 128-bit output. Cryptographically broken; use only for legacy compatibility or non-security checksums.</li><li><strong>SHA-1</strong> — 160-bit output. Deprecated for security use. Still found in older Git commits and certificates.</li><li><strong>SHA-256</strong> — 256-bit output. General-purpose, widely used in TLS, code signing, and data integrity checks.</li><li><strong>SHA-512</strong> — 512-bit output. Higher security margin; preferred for password-adjacent workflows.</li><li><strong>bcrypt</strong> — Adaptive password-hashing function with a configurable cost factor. Use for storing passwords; not for data integrity.</li></ul>",
+          },
+        ],
+        "encoding-workbench",
+        currentLang,
+      )}
       ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;
@@ -822,7 +858,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
         document.getElementById('hash-file-info').classList.add('hidden');
         dropZone.classList.remove('hidden');
         document.getElementById('hash-file-input').value = '';
-        document.getElementById('hash-results').innerHTML = \`${createEmptyState({ icon: '#️⃣', title: 'No hashes yet', description: 'Enter text or select a file and click Hash All.', id: 'hash-empty-state', i18nTitle: 'tools.encoding-workbench.ui.desc2', i18nDesc: 'tools.encoding-workbench.ui.desc3' })}\`;
+        document.getElementById('hash-results').innerHTML = \`${createEmptyState({ icon: "#️⃣", title: "No hashes yet", description: "Enter text or select a file and click Hash All.", id: "hash-empty-state", i18nTitle: "tools.encoding-workbench.ui.desc2", i18nDesc: "tools.encoding-workbench.ui.desc3" })}\`;
       });
 
       // ─── Identify panel wiring ───────────────────────────────────────────────
@@ -920,7 +956,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
 
       document.getElementById('identify-clear-btn').addEventListener('click', function() {
         document.getElementById('identify-input').value = '';
-        document.getElementById('identify-results').innerHTML = \`${createEmptyState({ icon: '🔍', title: 'Nothing identified yet', description: 'Paste a hash or encoded string above and click Identify.', id: 'identify-empty-state', i18nTitle: 'tools.encoding-workbench.ui.desc4', i18nDesc: 'tools.encoding-workbench.ui.desc5' })}\`;
+        document.getElementById('identify-results').innerHTML = \`${createEmptyState({ icon: "🔍", title: "Nothing identified yet", description: "Paste a hash or encoded string above and click Identify.", id: "identify-empty-state", i18nTitle: "tools.encoding-workbench.ui.desc4", i18nDesc: "tools.encoding-workbench.ui.desc5" })}\`;
       });
 
       document.getElementById('identify-results').addEventListener('click', function(e) {
@@ -947,12 +983,16 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
     </script>
   `;
 
-  return respondHTML(createPageTemplate({
-    title: translation?.name || 'Encoding & Decoding Workbench',
-    description: translation?.desc || 'Encode, decode, hash, and identify data transformations',
-    path: '/encoding-workbench',
-    content,
-    scripts: script,
-    lang: currentLang
-  }));
+  return respondHTML(
+    createPageTemplate({
+      title: translation?.name || "Encoding & Decoding Workbench",
+      description:
+        translation?.desc ||
+        "Encode, decode, hash, and identify data transformations",
+      path: "/encoding-workbench",
+      content,
+      scripts: script,
+      lang: currentLang,
+    }),
+  );
 }

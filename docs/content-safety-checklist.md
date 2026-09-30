@@ -17,20 +17,24 @@ For each tool page, confirm:
 Extra review required for these tool categories:
 
 ### Security and crypto tools
+
 - [ ] Ad placement does not appear inside the primary input/output area
 - [ ] Ad label ("Sponsored") is clearly distinct from tool results
 - [ ] No ad is adjacent to a "Generate" or "Decode" button in a way that could be clicked by mistake
 - [ ] Tool description does not frame the utility as an offensive attack tool
 
 ### Token and certificate inspection tools
+
 - [ ] Ad placement is outside the decoded output panel
 - [ ] No ad appears between the input and the decoded result
 
 ### Secret scanning and log masking tools
+
 - [ ] No ad appears inside a result panel that displays sensitive-looking data patterns
 - [ ] Ad label is present and visible near any sponsored content
 
 ### Game pages (marble roulette, ladder game, roulette wheel)
+
 - [ ] Ad placement reviewed separately — motion-heavy layouts require individual assessment
 - [ ] No ad appears inside the active play area
 - [ ] Ad containers do not overlap game result displays
@@ -40,7 +44,7 @@ Extra review required for these tool categories:
 
 - [ ] Privacy policy mentions third-party advertising (Google AdSense) and cookie/identifier usage
 - [ ] Terms of service includes an advertising section
-- [ ] Legal page ad slot (`legal`) is outside the primary policy text body
+- [ ] Legal page ad slot (`legal`) is outside the primary policy text body and only on About, Privacy, Terms, and changelog
 - [ ] No ad is placed in a way that interrupts a user reading required legal disclosures
 
 ## Educational content panels

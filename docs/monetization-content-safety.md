@@ -1,5 +1,9 @@
 # Monetization Content Safety
 
+> Ad allow/deny lists and slot policy are defined in
+> [`adsense-integration.md`](./adsense-integration.md) (mirroring
+> `src/utils/ads.js`). This document covers content-safety policy only.
+
 This document is the operator checklist for keeping monetization changes compatible with the product's privacy-first positioning.
 
 ## Core rules

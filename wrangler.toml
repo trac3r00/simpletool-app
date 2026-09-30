@@ -13,20 +13,22 @@ binding = "CF_VERSION_METADATA"
 [vars]
 ENVIRONMENT = "production"
 SITE_URL = "https://simpletool.app"
-# AdSense: publisher client ID (format: ca-pub-<digits>). Must be set for ads to load.
+# Publisher ID ships ads.txt, google-adsense-account meta, and the official
+# adsbygoogle.js head snippet on script-allow pages (site connect).
+# Ad units stay off until real slot IDs exist. Create three Display units
+# (NPA, no Auto ads) and paste the IDs:
+#   home  = homepage below the tool grid
+#   json  = JSON Formatter below the educational section
+#   legal = about / privacy / terms / changelog
 ADSENSE_CLIENT = "ca-pub-5134881365131182"
-# AdSense: optional single fallback slot ID used when ADSENSE_SLOTS does not cover a key.
-# ADSENSE_SLOT = ""
-# AdSense: JSON object mapping slot keys to slot IDs. Empty object disables all ads.
-# Slot keys: home, tool, legal, sidebar, bottom
-# Example: ADSENSE_SLOTS = "{\"home\":\"1234567890\",\"tool\":\"2345678901\",\"legal\":\"3456789012\",\"sidebar\":\"4567890123\",\"bottom\":\"5678901234\"}"
+# ADSENSE_SLOTS = "{\"home\":\"1111111111\",\"json\":\"2222222222\",\"legal\":\"3333333333\"}"
 ADSENSE_SLOTS = "{}"
 SENTRY_DSN = ""
 CF_ANALYTICS_TOKEN = ""
 
-# Note: Custom domain will be configured via Cloudflare Dashboard after deployment
-# Dashboard: Workers & Pages → simpletool-app → Settings → Triggers → Custom Domains
-# Add: simpletool.app
+# Custom domain: simpletool.app (Cloudflare Dashboard → Workers → Triggers).
+# Also add www.simpletool.app as a CNAME/ALIAS to the apex and 301 to https://simpletool.app
+# AdSense site-connect fails if the account URL is www and that hostname has no DNS.
 
 [durable_objects]
 bindings = [{ name = "RATE_LIMITER", class_name = "RateLimiter" }]
@@ -38,3 +40,40 @@ new_sqlite_classes = ["RateLimiter"]
 [observability.logs]
 enabled = true
 invocation_logs = true
+
+# ---------------------------------------------------------------------------
+# Isolated preview deployment for testing.
+#
+#   npx wrangler deploy --env preview
+#
+# Deploys to a SEPARATE worker (`simpletool-app-preview`) reachable at
+# https://simpletool-app-preview.<your-subdomain>.workers.dev — it does NOT
+# touch the production worker that simpletool.app is attached to via the
+# Dashboard, because that binding is per-worker and this is a different worker.
+#
+# ENVIRONMENT is deliberately not "production", which makes /robots.txt serve
+# `Disallow: /` so the preview cannot be indexed alongside the real site.
+# Ads stay off (empty ADSENSE_SLOTS).
+# ---------------------------------------------------------------------------
+[env.preview]
+name = "simpletool-app-preview"
+
+# `version_metadata` is NOT inherited by named environments, so it must be
+# repeated here or the CF_VERSION_METADATA binding is missing at runtime.
+[env.preview.version_metadata]
+binding = "CF_VERSION_METADATA"
+
+[env.preview.vars]
+ENVIRONMENT = "preview"
+SITE_URL = ""
+ADSENSE_CLIENT = ""
+ADSENSE_SLOTS = "{}"
+SENTRY_DSN = ""
+CF_ANALYTICS_TOKEN = ""
+
+[env.preview.durable_objects]
+bindings = [{ name = "RATE_LIMITER", class_name = "RateLimiter" }]
+
+[[env.preview.migrations]]
+tag = "v1"
+new_sqlite_classes = ["RateLimiter"]

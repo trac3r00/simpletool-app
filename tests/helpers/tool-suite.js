@@ -140,7 +140,7 @@ export const TOOL_ACTIONS = {
       await page.locator('#status-search').fill('404');
     },
     async waitFor(page) {
-      await expect(page.locator('#results-body')).toContainText('Not Found');
+      await expect(page.locator('#hs-results-body')).toContainText('Not Found');
     }
   },
 

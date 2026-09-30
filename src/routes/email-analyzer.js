@@ -5,45 +5,77 @@
  * - Runs entirely in the browser (no network calls)
  */
 
-import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
-import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML } from "../utils/respond.js";
+import {
+  createPageTemplate,
+  createToolHeader,
+  createCheatsheet,
+  infoHint,
+} from "../utils/common-ui.js";
+import {
+  createEducationalSection,
+  createRelatedToolsSection,
+} from "../utils/content-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleEmailAnalyzerRoutes(request, url) {
   const { pathname } = url;
-  if (pathname === '/email-analyzer' || pathname === '/email-analyzer/') {
-    if (request.method === 'GET') return respondHTML(renderEmailAnalyzerPage(resolveRequestLanguage(request, url)));
-    return new Response('Method not allowed', { status: 405 });
+  if (pathname === "/email-analyzer" || pathname === "/email-analyzer/") {
+    if (request.method === "GET")
+      return respondHTML(
+        renderEmailAnalyzerPage(resolveRequestLanguage(request, url)),
+      );
+    return new Response("Method not allowed", { status: 405 });
   }
   return null;
 }
 
 function renderEmailAnalyzerPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('email-analyzer', currentLang);
-  const title = translation?.name || 'Email Security Analyzer';
-  const description = translation?.desc || 'Understand SPF, DKIM, DMARC, routing hops, and embedded URLs from a raw email — all locally.';
+  const translation = getToolTranslation("email-analyzer", currentLang);
+  const title = translation?.name || "Email Security Analyzer";
+  const description =
+    translation?.desc ||
+    "Understand SPF, DKIM, DMARC, routing hops, and embedded URLs from a raw email — all locally.";
 
   const header = createToolHeader(
-    { emoji: '📧' },
+    { emoji: "📧" },
     title,
     description,
     [
-      { text: translation?.ui?.badge0 || '<span data-i18n="tools.email-analyzer.ui.badge0">Client-Side Only</span>', tooltip: 'Parsing and analysis happen entirely in your browser. Nothing is uploaded.' },
-      { text: translation?.ui?.badge1 || '<span data-i18n="tools.email-analyzer.ui.badge1">SOC-Friendly</span>', tooltip: 'Highlights authentication results, identity mismatches, and suspicious URLs.' }
+      {
+        text:
+          translation?.ui?.badge0 ||
+          '<span data-i18n="tools.email-analyzer.ui.badge0">Client-Side Only</span>',
+        tooltip:
+          "Parsing and analysis happen in your browser; the message you paste is not sent to our servers.",
+      },
+      {
+        text:
+          translation?.ui?.badge1 ||
+          '<span data-i18n="tools.email-analyzer.ui.badge1">SOC-Friendly</span>',
+        tooltip:
+          "Highlights authentication results, identity mismatches, and suspicious URLs.",
+      },
     ],
-    { toolId: 'email-analyzer' }
+    { toolId: "email-analyzer" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'email-analyzer');
-  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
-
+  const currentTool = TOOLS.find((t) => t.id === "email-analyzer");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
         ${header}
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -62,17 +94,17 @@ function renderEmailAnalyzerPage(lang = DEFAULT_LANGUAGE) {
 
             <label class="label flex items-center gap-2">
               <span data-i18n="tools.email-analyzer.ui.label0">Raw Email (Headers + Body)</span>
-              ${infoHint('Paste a raw email source (RFC 5322). Many clients have “View original / Show raw source”.', 'Help', { i18nKey: 'tools.email-analyzer.ui.desc0' })}
+              ${infoHint("Paste a raw email source (RFC 5322). Many clients have “View original / Show raw source”.", "Help", { i18nKey: "tools.email-analyzer.ui.desc0" })}
             </label>
-            <textarea id="email-input" rows="18" class="input-mono resize-y" placeholder="Paste the full email source here..." data-i18n-placeholder="tools.email-analyzer.ui.placeholder0"></textarea>
+            <textarea id="email-input" rows="18" aria-label="Raw email source" class="input-mono resize-y" placeholder="Paste the full email source here..." data-i18n-placeholder="tools.email-analyzer.ui.placeholder0"></textarea>
 
             <div class="flex flex-wrap items-center gap-4 text-sm text-surface-600 dark:text-surface-400">
               <label class="inline-flex items-center gap-2 cursor-pointer">
-                <input id="include-body-urls" type="checkbox" class="w-4 h-4 rounded border-surface-300 text-primary-600 focus:ring-primary-500" checked>
+                <input id="include-body-urls" type="checkbox" class="w-4 h-4 rounded border-surface-300 text-primary-600 dark:text-primary-400 focus:ring-primary-500" checked>
                 <span data-i18n="tools.email-analyzer.ui.label1">Extract URLs from body</span>
               </label>
               <label class="inline-flex items-center gap-2 cursor-pointer">
-                <input id="mask-pii" type="checkbox" class="w-4 h-4 rounded border-surface-300 text-primary-600 focus:ring-primary-500">
+                <input id="mask-pii" type="checkbox" class="w-4 h-4 rounded border-surface-300 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
                 <span data-i18n="tools.email-analyzer.ui.label2">Mask emails/IPs in report</span>
               </label>
             </div>
@@ -100,7 +132,7 @@ function renderEmailAnalyzerPage(lang = DEFAULT_LANGUAGE) {
             </div>
 
             <div class="grid grid-cols-1 gap-4">
-              <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+              <div class="tool-group p-5">
                 <div class="flex items-center justify-between gap-3 mb-3">
                   <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400" data-i18n="tools.email-analyzer.ui.heading0">Identity</h2>
                   <button id="copy-summary-btn" class="btn btn-secondary text-xs py-1 px-2" disabled>
@@ -135,7 +167,7 @@ function renderEmailAnalyzerPage(lang = DEFAULT_LANGUAGE) {
                 </dl>
               </div>
 
-              <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+              <div class="tool-group p-5">
                 <div class="flex items-center justify-between gap-3 mb-3">
                   <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400" data-i18n="tools.email-analyzer.ui.heading1">Findings</h2>
                   <span id="finding-count" class="text-xs text-surface-500 dark:text-surface-400">0</span>
@@ -145,7 +177,7 @@ function renderEmailAnalyzerPage(lang = DEFAULT_LANGUAGE) {
                 </div>
               </div>
 
-              <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+              <div class="tool-group p-5">
                 <div class="flex items-center justify-between gap-3 mb-3">
                   <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400" data-i18n="tools.email-analyzer.ui.heading2">URLs</h2>
                   <span id="url-count" class="text-xs text-surface-500 dark:text-surface-400">0</span>
@@ -155,7 +187,7 @@ function renderEmailAnalyzerPage(lang = DEFAULT_LANGUAGE) {
                 </div>
               </div>
 
-              <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+              <div class="tool-group p-5">
                 <div class="flex items-center justify-between gap-3 mb-3">
                   <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400" data-i18n="tools.email-analyzer.ui.heading3">Routing Hops</h2>
                   <span id="hop-count" class="text-xs text-surface-500 dark:text-surface-400">0</span>
@@ -168,21 +200,26 @@ function renderEmailAnalyzerPage(lang = DEFAULT_LANGUAGE) {
           </div>
         </div>
 
-        ${createCheatsheet('email-analyzer', '<span data-i18n="tools.email-analyzer.ui.heading4">Email Auth Quick Reference</span>', [
-          {
-            heading: '<span data-i18n="tools.email-analyzer.ui.heading5">What these checks mean</span>',
-            content: `
+        ${createCheatsheet(
+          "email-analyzer",
+          '<span data-i18n="tools.email-analyzer.ui.heading4">Email Auth Quick Reference</span>',
+          [
+            {
+              heading:
+                '<span data-i18n="tools.email-analyzer.ui.heading5">What these checks mean</span>',
+              content: `
               <ul class="list-disc ml-6 space-y-1">
                 <li><strong>SPF</strong>: <span data-i18n="tools.email-analyzer.ui.desc1">Did the sending IP align with the envelope sender domain</span> (<code>MAIL FROM</code>)<span data-i18n="tools.email-analyzer.ui.desc2">?</span></li>
                 <li><strong>DKIM</strong>: <span data-i18n="tools.email-analyzer.ui.desc3">Is the message content signed, and does the signature validate for the signing domain?</span></li>
                 <li><strong>DMARC</strong>: <span data-i18n="tools.email-analyzer.ui.desc4">Does</span> <strong>From:</strong><span data-i18n="tools.email-analyzer.ui.desc5"> align with SPF and/or DKIM, and what’s the policy outcome?</span></li>
               </ul>
               <p class="mt-2 text-xs text-surface-500 dark:text-surface-400"><span data-i18n="tools.email-analyzer.ui.desc6">This tool reads the results already present in the email headers (e.g.,</span> <code>Authentication-Results</code>). <span data-i18n="tools.email-analyzer.ui.desc7">It does not perform live DNS lookups or cryptographic verification.</span></p>
-            `
-          },
-          {
-            heading: '<span data-i18n="tools.email-analyzer.ui.heading6">Common header fields</span>',
-            content: `
+            `,
+            },
+            {
+              heading:
+                '<span data-i18n="tools.email-analyzer.ui.heading6">Common header fields</span>',
+              content: `
               <table>
                 <tr><th><span data-i18n="tools.email-analyzer.ui.th0">Header</span></th><th><span data-i18n="tools.email-analyzer.ui.th1">Why it matters</span></th></tr>
                 <tr><td><code>From</code></td><td><span data-i18n="tools.email-analyzer.ui.desc8">Displayed sender identity (user-facing)</span></td></tr>
@@ -191,30 +228,39 @@ function renderEmailAnalyzerPage(lang = DEFAULT_LANGUAGE) {
                 <tr><td><code>Received</code></td><td><span data-i18n="tools.email-analyzer.ui.desc11">Mail hops + IP clues (spoofing / relays)</span></td></tr>
                 <tr><td><code>Authentication-Results</code></td><td><span data-i18n="tools.email-analyzer.ui.desc12">SPF/DKIM/DMARC outcomes from the receiver</span></td></tr>
               </table>
-            `
-          }
-        ])}
+            `,
+            },
+          ],
+        )}
       </div>
     </main>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-      ${createEducationalSection([
-        {
-          title: 'Email Authentication Explained',
-          content: '<p>Email authentication is a collection of techniques used to provide verifiable information about the origin of an email message. By validating the sender\'s identity, these protocols help mail servers distinguish between legitimate messages and spoofed or fraudulent ones (like phishing). The three pillars of modern email authentication are SPF, DKIM, and DMARC.</p><p>When an email is received, the receiving server performs these checks and records the results in the email\'s headers, which this tool parses for you.</p>'
-        },
-        {
-          title: 'SPF/DKIM/DMARC',
-          content: '<ul><li><strong>SPF (Sender Policy Framework):</strong> A DNS-based mechanism that lists the IP addresses and domains authorized to send email on behalf of your domain.</li><li><strong>DKIM (DomainKeys Identified Mail):</strong> Adds a digital signature to the email, allowing the receiver to verify that the message was indeed sent by the domain owner and hasn\'t been tampered with in transit.</li><li><strong>DMARC (Domain-based Message Authentication, Reporting, and Conformance):</strong> Ties SPF and DKIM together. It tells the receiver what to do if the authentication fails (e.g., "none," "quarantine," or "reject") and provides a way for receivers to report back to the sender.</li></ul>'
-        },
-        {
-          title: 'Phishing Detection',
-          content: '<p>Phishing emails often use "spoofing" to appear as if they come from a trusted source. Our analyzer looks for common red flags, such as a mismatch between the "From" address (what the user sees) and the "Return-Path" (where the mail actually came from). We also extract and analyze URLs in the email body to identify suspicious links, such as those using Punycode (lookalike domains) or IP addresses instead of hostnames.</p><p>By reviewing the "Findings" section, you can quickly identify these signals and determine if an email is safe to interact with.</p>'
-        },
-        {
-          title: 'Pro Tips',
-          content: '<ul><li>Always check the <strong>"Authentication-Results"</strong> header first; it provides the definitive outcome of the security checks performed by your mail provider.</li><li>Use the <strong>"Mask PII"</strong> option when sharing reports with others to protect sensitive email addresses and IP information.</li><li>Pay close attention to the <strong>"Reply-To"</strong> header; if it differs from the "From" address, it may be a sign of a Business Email Compromise (BEC) attack.</li><li>Review the <strong>"Routing Hops"</strong> to see the path the email took; an unusually long or complex path through unknown servers can be a sign of relay abuse.</li></ul>'
-        }
-      ], 'email-analyzer', currentLang)}
+      ${createEducationalSection(
+        [
+          {
+            title: "Email Authentication Explained",
+            content:
+              "<p>Email authentication is a collection of techniques used to provide verifiable information about the origin of an email message. By validating the sender's identity, these protocols help mail servers distinguish between legitimate messages and spoofed or fraudulent ones (like phishing). The three pillars of modern email authentication are SPF, DKIM, and DMARC.</p><p>When an email is received, the receiving server performs these checks and records the results in the email's headers, which this tool parses for you.</p>",
+          },
+          {
+            title: "SPF/DKIM/DMARC",
+            content:
+              '<ul><li><strong>SPF (Sender Policy Framework):</strong> A DNS-based mechanism that lists the IP addresses and domains authorized to send email on behalf of your domain.</li><li><strong>DKIM (DomainKeys Identified Mail):</strong> Adds a digital signature to the email, allowing the receiver to verify that the message was indeed sent by the domain owner and hasn\'t been tampered with in transit.</li><li><strong>DMARC (Domain-based Message Authentication, Reporting, and Conformance):</strong> Ties SPF and DKIM together. It tells the receiver what to do if the authentication fails (e.g., "none," "quarantine," or "reject") and provides a way for receivers to report back to the sender.</li></ul>',
+          },
+          {
+            title: "Phishing Detection",
+            content:
+              '<p>Phishing emails often use "spoofing" to appear as if they come from a trusted source. Our analyzer looks for common red flags, such as a mismatch between the "From" address (what the user sees) and the "Return-Path" (where the mail actually came from). We also extract and analyze URLs in the email body to identify suspicious links, such as those using Punycode (lookalike domains) or IP addresses instead of hostnames.</p><p>By reviewing the "Findings" section, you can quickly identify these signals and determine if an email is safe to interact with.</p>',
+          },
+          {
+            title: "Pro Tips",
+            content:
+              '<ul><li>Always check the <strong>"Authentication-Results"</strong> header first; it provides the definitive outcome of the security checks performed by your mail provider.</li><li>Use the <strong>"Mask PII"</strong> option when sharing reports with others to protect sensitive email addresses and IP information.</li><li>Pay close attention to the <strong>"Reply-To"</strong> header; if it differs from the "From" address, it may be a sign of a Business Email Compromise (BEC) attack.</li><li>Review the <strong>"Routing Hops"</strong> to see the path the email took; an unusually long or complex path through unknown servers can be a sign of relay abuse.</li></ul>',
+          },
+        ],
+        "email-analyzer",
+        currentLang,
+      )}
     ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;
@@ -861,11 +907,11 @@ function renderEmailAnalyzerPage(lang = DEFAULT_LANGUAGE) {
         els.idDate.textContent = '—';
         els.idReturnPath.textContent = '—';
         els.idReplyTo.textContent = '—';
-        els.findings.innerHTML = '<p class="text-surface-500 dark:text-surface-400" data-i18n="tools.email-analyzer.ui.desc14">' + t('text50', 'Run analysis to see signals and mismatches.') + '</p>';
+        els.findings.innerHTML = '<p class="text-surface-500 dark:text-surface-400">' + t('text50', 'Run analysis to see signals and mismatches.') + '</p>';
         els.findingCount.textContent = '0';
-        els.urls.innerHTML = '<p class="text-surface-500 dark:text-surface-400" data-i18n="tools.email-analyzer.ui.desc15">' + t('text51', 'No URLs extracted yet.') + '</p>';
+        els.urls.innerHTML = '<p class="text-surface-500 dark:text-surface-400">' + t('text51', 'No URLs extracted yet.') + '</p>';
         els.urlCount.textContent = '0';
-        els.hops.innerHTML = '<p class="text-surface-500 dark:text-surface-400" data-i18n="tools.email-analyzer.ui.desc16">' + t('text52', 'No routing data yet.') + '</p>';
+        els.hops.innerHTML = '<p class="text-surface-500 dark:text-surface-400">' + t('text52', 'No routing data yet.') + '</p>';
         els.hopCount.textContent = '0';
         els.copySummaryBtn.disabled = true;
         lastSummary = null;
@@ -878,8 +924,8 @@ function renderEmailAnalyzerPage(lang = DEFAULT_LANGUAGE) {
     title,
     description,
     lang: currentLang,
-    path: '/email-analyzer',
+    path: "/email-analyzer",
     content,
-    scripts
+    scripts,
   });
 }

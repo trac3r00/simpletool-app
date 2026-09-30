@@ -3,49 +3,68 @@
  * Generate various types of UUIDs/GUIDs
  */
 
-import { respondHTML, respondJSON } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
-import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML, respondJSON } from "../utils/respond.js";
+import { createPageTemplate, createToolHeader } from "../utils/common-ui.js";
+import {
+  createEducationalSection,
+  createRelatedToolsSection,
+} from "../utils/content-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleUUIDGeneratorRoutes(request, url) {
   const { pathname } = url;
   const method = request.method;
 
   try {
-    if (pathname === '/uuid-generator' || pathname === '/uuid-generator/') {
-      if (method === 'GET') {
+    if (pathname === "/uuid-generator" || pathname === "/uuid-generator/") {
+      if (method === "GET") {
         return renderUUIDGeneratorPage(resolveRequestLanguage(request, url));
       }
     }
 
-    return respondJSON({ error: 'Not found' }, { status: 404 });
+    return respondJSON({ error: "Not found" }, { status: 404 });
   } catch (error) {
-    console.error('UUID Generator Route Error:', error);
+    console.error("UUID Generator Route Error:", error);
     return respondJSON(
-      { error: 'Internal server error', message: error.message },
-      { status: 500 }
+      { error: "Internal server error", message: error.message },
+      { status: 500 },
     );
   }
 }
 
 function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('uuid-generator', currentLang);
+  const translation = getToolTranslation("uuid-generator", currentLang);
   const toolHeader = createToolHeader(
-    { emoji: '🔑' },
-    translation?.name || 'UUID Generator',
-    translation?.desc || 'Generate unique identifiers instantly (UUID v4, v1, NIL, GUID)',
-    [{ text: translation?.ui?.badge16 || 'Bulk Generation', color: 'purple', tooltip: 'Generate multiple UUIDs or GUIDs at once without any network requests.' }],
-    { toolId: 'uuid-generator' }
+    { emoji: "🔑" },
+    translation?.name || "UUID Generator",
+    translation?.desc ||
+      "Generate unique identifiers instantly (UUID v4, v7, v1, NIL, GUID)",
+    [
+      {
+        text: translation?.ui?.badge16 || "Bulk Generation",
+        color: "purple",
+        tooltip:
+          "Generate multiple UUIDs or GUIDs at once without any network requests.",
+      },
+    ],
+    { toolId: "uuid-generator" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'uuid-generator');
-  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+  const currentTool = TOOLS.find((t) => t.id === "uuid-generator");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
 
         ${toolHeader}
 
@@ -56,8 +75,9 @@ function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
             <!-- UUID Type Selection -->
             <div>
               <label for="uuid-version" class="label"><span data-i18n="tools.uuid-generator.ui.label1">UUID Version</span></label>
-              <select id="uuid-version" class="input" data-tooltip="v4 is random and most common. v1 is time-based." data-i18n-tooltip="tools.uuid-generator.ui.tip0">
+              <select id="uuid-version" class="input" data-tooltip="v4 is random. v7 is time-sortable. v1 is legacy time-based." data-i18n-tooltip="tools.uuid-generator.ui.tip0">
                 <option value="v4" selected data-i18n="tools.uuid-generator.ui.option5">UUID v4 (Random)</option>
+                <option value="v7" data-i18n="tools.uuid-generator.ui.optionV7">UUID v7 (Unix time, RFC 9562)</option>
                 <option value="v1" data-i18n="tools.uuid-generator.ui.option6">UUID v1 (Timestamp)</option>
                 <option value="nil" data-i18n="tools.uuid-generator.ui.option7">NIL UUID (All zeros)</option>
               </select>
@@ -79,19 +99,19 @@ function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
               <label class="label"><span data-i18n="tools.uuid-generator.ui.label2">Format</span></label>
               <div class="space-y-3">
                 <label class="flex items-center space-x-3 p-3 bg-surface-50 dark:bg-surface-800 rounded-lg cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors border border-surface-200 dark:border-surface-700">
-                  <input type="radio" name="format" value="hyphenated" checked class="w-4 h-4 text-primary-600 focus:ring-primary-500">
+                  <input type="radio" name="format" value="hyphenated" checked class="w-4 h-4 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
                   <span class="text-sm font-medium text-surface-900 dark:text-surface-100" data-i18n="tools.uuid-generator.ui.desc11">Hyphenated</span>
                 </label>
                 <label class="flex items-center space-x-3 p-3 bg-surface-50 dark:bg-surface-800 rounded-lg cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors border border-surface-200 dark:border-surface-700">
-                  <input type="radio" name="format" value="plain" class="w-4 h-4 text-primary-600 focus:ring-primary-500">
+                  <input type="radio" name="format" value="plain" class="w-4 h-4 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
                   <span class="text-sm font-medium text-surface-900 dark:text-surface-100" data-i18n="tools.uuid-generator.ui.desc12">Plain (no hyphens)</span>
                 </label>
                 <label class="flex items-center space-x-3 p-3 bg-surface-50 dark:bg-surface-800 rounded-lg cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors border border-surface-200 dark:border-surface-700">
-                  <input type="radio" name="format" value="uppercase" class="w-4 h-4 text-primary-600 focus:ring-primary-500">
+                  <input type="radio" name="format" value="uppercase" class="w-4 h-4 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
                   <span class="text-sm font-medium text-surface-900 dark:text-surface-100" data-i18n="tools.uuid-generator.ui.desc13">Uppercase</span>
                 </label>
                 <label class="flex items-center space-x-3 p-3 bg-surface-50 dark:bg-surface-800 rounded-lg cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors border border-surface-200 dark:border-surface-700">
-                  <input type="radio" name="format" value="braces" class="w-4 h-4 text-primary-600 focus:ring-primary-500">
+                  <input type="radio" name="format" value="braces" class="w-4 h-4 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
                   <span class="text-sm font-medium text-surface-900 dark:text-surface-100" data-i18n="tools.uuid-generator.ui.desc14">With braces {}</span>
                 </label>
               </div>
@@ -107,13 +127,13 @@ function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
 
           <!-- Results Column -->
           <div class="lg:col-span-2">
-            <div id="placeholder" class="flex flex-col items-center justify-center py-16 text-surface-400 dark:text-surface-500">
+            <div id="placeholder" class="flex flex-col items-center justify-center py-16 text-surface-500 dark:text-surface-400">
               <svg class="w-16 h-16 mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
               <p class="text-sm" data-i18n="tools.uuid-generator.ui.text0">Click Generate to create UUIDs</p>
             </div>
             <div id="result" class="hidden">
               <div class="flex items-center justify-between mb-4">
-                <h3 class="text-sm font-semibold text-surface-700 dark:text-surface-300" data-i18n="tools.uuid-generator.ui.heading0">Generated UUIDs</h3>
+                <h2 class="text-sm font-semibold text-surface-700 dark:text-surface-300" data-i18n="tools.uuid-generator.ui.heading0">Generated UUIDs</h2>
                 <button id="copy-btn" class="btn btn-ghost text-xs">
                   <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                   <span data-i18n="tools.uuid-generator.ui.button1">Copy All</span>
@@ -124,24 +144,32 @@ function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
           </div>
         </div>
 
-        ${createEducationalSection([
-          {
-            title: 'What is a UUID?',
-            content: 'A Universally Unique Identifier (UUID) is a 128-bit number used to uniquely identify information in computer systems. They are designed to be generated independently without a central authority while maintaining a negligible probability of collision.'
-          },
-          {
-            title: 'How to Use This Tool',
-            content: 'Select the UUID version (v1 for time-based, v4 for random) and the number of IDs you need. Click "Generate" to create a list of unique identifiers ready for use in your database or application.'
-          },
-          {
-            title: 'Common Use Cases',
-            content: 'Primary keys in distributed databases, session identifiers, transaction tracking, and naming temporary files or resources where uniqueness is critical across multiple systems.'
-          },
-          {
-            title: 'Pro Tips',
-            content: 'UUID v4 is the most common choice for general-purpose unique IDs because it relies on high-quality randomness. Use v1 if you need to sort IDs by creation time.'
-          }
-        ], 'uuid-generator', currentLang)}
+        ${createEducationalSection(
+          [
+            {
+              title: "What is a UUID?",
+              content:
+                "A Universally Unique Identifier (UUID) is a 128-bit number used to uniquely identify information in computer systems. They are designed to be generated independently without a central authority while maintaining a negligible probability of collision.",
+            },
+            {
+              title: "How to Use This Tool",
+              content:
+                'Select the UUID version (v1 for time-based, v4 for random) and the number of IDs you need. Click "Generate" to create a list of unique identifiers ready for use in your database or application.',
+            },
+            {
+              title: "Common Use Cases",
+              content:
+                "Primary keys in distributed databases, session identifiers, transaction tracking, and naming temporary files or resources where uniqueness is critical across multiple systems.",
+            },
+            {
+              title: "Pro Tips",
+              content:
+                "UUID v4 is the most common choice for general-purpose unique IDs because it relies on high-quality randomness. Use v1 if you need to sort IDs by creation time.",
+            },
+          ],
+          "uuid-generator",
+          currentLang,
+        )}
       </div>
     </main>
     ${createRelatedToolsSection(relatedToolsData)}
@@ -159,7 +187,8 @@ function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
 
       const descriptions = {
         v4: 'Cryptographically strong random UUID',
-        v1: 'Timestamp-based UUID with system info',
+        v7: 'Unix-time sortable UUID (RFC 9562)',
+        v1: 'Timestamp-based UUID with a random node (not a MAC address)',
         nil: 'All-zero UUID used as null value'
       };
 
@@ -193,29 +222,55 @@ function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
 
       // UUID v1 Generator (timestamp-based with cryptographically secure random components)
       function generateUUIDv1() {
-        const now = Date.now();
-        const timestamp = now * 10000 + 122192928000000000; // UUID epoch
+        // 60-bit count of 100ns intervals since the UUID epoch (1582-10-15).
+        // Must be BigInt: the value exceeds Number.MAX_SAFE_INTEGER, and JS
+        // bitwise operators coerce to signed 32-bit, which produced a negative
+        // time_low and a stray leading '-' in the rendered UUID.
+        const timestamp = BigInt(Date.now()) * 10000n + 122192928000000000n;
 
-        const timeLow = (timestamp & 0xFFFFFFFF).toString(16).padStart(8, '0');
-        const timeMid = ((timestamp >> 32) & 0xFFFF).toString(16).padStart(4, '0');
-        const timeHi = (((timestamp >> 48) & 0x0FFF) | 0x1000).toString(16).padStart(4, '0');
+        const timeLow = (timestamp & 0xFFFFFFFFn).toString(16).padStart(8, '0');
+        const timeMid = ((timestamp >> 32n) & 0xFFFFn).toString(16).padStart(4, '0');
+        const timeHi = (((timestamp >> 48n) & 0x0FFFn) | 0x1000n).toString(16).padStart(4, '0');
 
         // Use crypto.getRandomValues for clock sequence and node
         const randomBytes = new Uint8Array(8);
         crypto.getRandomValues(randomBytes);
+        randomBytes[2] |= 0x01;
 
         // Clock sequence: 14 bits with variant bits set
         const clockSeqLow = randomBytes[0];
         const clockSeqHi = (randomBytes[1] & 0x3f) | 0x80; // Variant 10
         const clockSeq = ((clockSeqHi << 8) | clockSeqLow).toString(16).padStart(4, '0');
 
-        // Node: 48 bits (6 bytes)
+        // Node: 48 bits (6 bytes). RFC 4122 requires the multicast bit when the node is random.
         const node = Array.from(randomBytes.slice(2, 8), b => b.toString(16).padStart(2, '0')).join('');
 
         return \`\${timeLow}-\${timeMid}-\${timeHi}-\${clockSeq}-\${node}\`;
       }
 
       // NIL UUID
+      function generateUUIDv7() {
+        const bytes = new Uint8Array(16);
+        crypto.getRandomValues(bytes);
+        const ts = BigInt(Date.now());
+        bytes[0] = Number((ts >> 40n) & 0xffn);
+        bytes[1] = Number((ts >> 32n) & 0xffn);
+        bytes[2] = Number((ts >> 24n) & 0xffn);
+        bytes[3] = Number((ts >> 16n) & 0xffn);
+        bytes[4] = Number((ts >> 8n) & 0xffn);
+        bytes[5] = Number(ts & 0xffn);
+        bytes[6] = (bytes[6] & 0x0f) | 0x70;
+        bytes[8] = (bytes[8] & 0x3f) | 0x80;
+        const hex = Array.from(bytes, b => b.toString(16).padStart(2, '0'));
+        return [
+          hex.slice(0, 4).join(''),
+          hex.slice(4, 6).join(''),
+          hex.slice(6, 8).join(''),
+          hex.slice(8, 10).join(''),
+          hex.slice(10, 16).join('')
+        ].join('-');
+      }
+
       function generateNIL() {
         return '00000000-0000-0000-0000-000000000000';
       }
@@ -246,6 +301,8 @@ function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
 
           if (version === 'v4') {
             uuid = generateUUIDv4();
+          } else if (version === 'v7') {
+            uuid = generateUUIDv7();
           } else if (version === 'v1') {
             uuid = generateUUIDv1();
           } else if (version === 'nil') {
@@ -300,12 +357,14 @@ function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
     </script>
   `;
 
-  return respondHTML(createPageTemplate({
-    title: translation?.name || 'UUID Generator',
-    description: translation?.desc || 'Generate standard UUIDs (v1, v4).',
-    path: '/uuid-generator',
-    content,
-    scripts: script,
-    lang: currentLang
-  }));
+  return respondHTML(
+    createPageTemplate({
+      title: translation?.name || "UUID Generator",
+      description: translation?.desc || "Generate standard UUIDs (v1, v4).",
+      path: "/uuid-generator",
+      content,
+      scripts: script,
+      lang: currentLang,
+    }),
+  );
 }

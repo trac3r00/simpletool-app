@@ -1,28 +1,21 @@
-import { respondHTML, respondJSON } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { createRelatedToolsSection } from '../utils/content-ui.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML } from "../utils/respond.js";
+import { createPageTemplate, createToolHeader } from "../utils/common-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import { createRelatedToolsSection } from "../utils/content-ui.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleWebhookDebuggerRoutes(request, url) {
   const path = url.pathname;
 
-  // Main page
-  if (path === '/webhook-debugger' || path === '/webhook-debugger/') {
-    if (request.method !== 'GET') return null;
+  if (path === "/webhook-debugger" || path === "/webhook-debugger/") {
+    if (request.method !== "GET") return null;
     const lang = resolveRequestLanguage(request, url);
     return respondHTML(renderWebhookDebuggerPage(lang));
-  }
-
-  // Listener iframe page (loaded by the main page's hidden iframe)
-  if (path === '/webhook-debugger/listen') {
-    if (request.method !== 'GET') return null;
-    return renderListenPage(url);
-  }
-
-  // Capture endpoint — accepts any HTTP method from webhook providers
-  if (path === '/webhook-debugger/capture') {
-    return handleCaptureRequest(request, url);
   }
 
   return null;
@@ -30,131 +23,138 @@ export async function handleWebhookDebuggerRoutes(request, url) {
 
 function renderWebhookDebuggerPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('webhook-debugger', currentLang);
-  const title = translation?.name || 'Webhook Debugger';
-  const description = translation?.desc || 'Capture, inspect, and replay webhook payloads locally in your browser.';
+  const translation = getToolTranslation("webhook-debugger", currentLang);
+  const title = translation?.name || "Webhook Payload Inspector";
+  const description =
+    translation?.desc ||
+    "Paste a captured webhook request to inspect its headers, body, and HMAC signature.";
 
   const header = createToolHeader(
-    { emoji: '🪝' },
+    { emoji: "🪝" },
     title,
     description,
-    [{ text: translation?.ui?.badge14 || 'Privacy-First', tooltip: 'All processing happens in your browser — no data is sent to any server.' }],
-    { toolId: 'webhook-debugger' }
+    [
+      {
+        text:
+          translation?.ui?.badge0 ||
+          '<span data-i18n="tools.webhook-debugger.ui.badge0">Client-Side Only</span>',
+        tooltip:
+          "Parsing and signature verification happen in your browser; the request you paste is not sent to our servers.",
+      },
+    ],
+    { toolId: "webhook-debugger" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'webhook-debugger');
-  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+  const currentTool = TOOLS.find((t) => t.id === "webhook-debugger");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      ${header}
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
+        ${header}
 
-      <!-- Webhook URL display + start/stop -->
-      <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 p-5 mb-6">
-        <div class="flex flex-wrap items-center justify-between gap-4">
-          <div class="flex-1 min-w-0">
-            <label class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1"><span data-i18n="tools.webhook-debugger.ui.label0">Local Endpoint</span></label>
-            <div class="flex items-center gap-2">
-              <code id="webhook-url" class="flex-1 font-mono text-sm bg-surface-100 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg px-3 py-2 text-surface-800 dark:text-surface-200 truncate select-all"></code>
-              <button id="copy-url-btn" data-tooltip="Copy endpoint URL" data-i18n-tooltip="tools.webhook-debugger.ui.tip0" class="btn btn-ghost btn-sm shrink-0"><span data-i18n="tools.webhook-debugger.ui.button0">Copy</span></button>
-            </div>
-          </div>
-          <div class="flex items-center gap-3">
-            <div id="status-indicator" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-400 text-sm font-medium">
-              <span id="status-dot" class="w-2.5 h-2.5 rounded-full bg-surface-400"></span>
-              <span id="status-label" data-i18n="tools.webhook-debugger.ui.desc0">Stopped</span>
-            </div>
-            <button id="toggle-listen-btn" data-tooltip="Start/stop webhook listener" data-i18n-tooltip="tools.webhook-debugger.ui.tip1" class="btn btn-primary"><span data-i18n="tools.webhook-debugger.ui.button1">Start Listening</span></button>
-          </div>
+      <!-- Paste panel -->
+      <div class="tool-group p-5 mb-6">
+        <h2 class="text-sm font-semibold text-surface-800 dark:text-surface-200 mb-1" data-i18n="tools.webhook-debugger.ui.heading0">Paste a webhook request</h2>
+        <p class="text-sm text-surface-600 dark:text-surface-400 mb-3" data-i18n="tools.webhook-debugger.ui.desc0">Copy a delivery out of your provider's log, a tunnel inspector (ngrok, cloudflared), or your own server log. This inspector does not receive live deliveries — it reads what you paste.</p>
+
+        <label for="raw-request" class="label block mb-1" data-i18n="tools.webhook-debugger.ui.label0">Raw HTTP request or JSON body</label>
+        <textarea id="raw-request" rows="12" spellcheck="false"
+          class="input input-mono w-full"
+          placeholder="POST /hooks/github HTTP/1.1&#10;Host: example.com&#10;Content-Type: application/json&#10;X-Hub-Signature-256: sha256=...&#10;&#10;{&quot;action&quot;:&quot;opened&quot;}"
+          data-i18n-placeholder="tools.webhook-debugger.ui.placeholder0"></textarea>
+
+        <div class="flex flex-wrap items-center gap-2 mt-3">
+          <button id="inspect-btn" class="btn btn-primary" data-i18n="tools.webhook-debugger.ui.button0">Inspect</button>
+          <button id="sample-github-btn" class="btn btn-ghost btn-sm" data-tooltip="Load a GitHub push delivery, signed with a demo secret so Verify succeeds" data-i18n-tooltip="tools.webhook-debugger.ui.tip0"><span data-i18n="tools.webhook-debugger.ui.button1">GitHub sample</span></button>
+          <button id="sample-stripe-btn" class="btn btn-ghost btn-sm" data-tooltip="Load a Stripe event delivery, signed with a demo secret so Verify succeeds" data-i18n-tooltip="tools.webhook-debugger.ui.tip1"><span data-i18n="tools.webhook-debugger.ui.button2">Stripe sample</span></button>
+          <button id="reset-btn" class="btn btn-ghost btn-sm ml-auto" data-i18n="tools.webhook-debugger.ui.button3">Clear</button>
         </div>
+
+        <p id="parse-error" class="hidden mt-3 text-sm text-error-600 dark:text-error-400" role="alert"></p>
       </div>
 
-      <!-- Request log list -->
-      <div id="webhook-log" class="space-y-3 mb-6"></div>
+      <!-- Parsed request -->
+      <div id="request-detail" class="tool-group tool-group--flush hidden overflow-hidden mb-6">
+        <div class="flex flex-wrap items-center gap-3 px-5 py-3 border-b border-surface-200 dark:border-surface-700">
+          <span id="detail-method" class="shrink-0 inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300"></span>
+          <span id="detail-path" class="font-mono text-sm text-surface-800 dark:text-surface-200 truncate"></span>
+          <span id="detail-meta" class="ml-auto text-xs font-mono text-surface-500 dark:text-surface-400"></span>
+        </div>
 
-      <!-- Selected request detail -->
-      <div id="request-detail" class="hidden bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 overflow-hidden mb-6">
-        <!-- Request summary bar -->
-        <button id="detail-close-btn" class="w-full flex items-center justify-between px-5 py-3 bg-surface-50 dark:bg-surface-800 hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors text-left">
-          <div class="flex items-center gap-3 min-w-0">
-            <span id="detail-seq" class="shrink-0 text-xs font-mono font-bold text-surface-500 dark:text-surface-400"></span>
-            <span id="detail-method" class="shrink-0 inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300"></span>
-            <span id="detail-path" class="font-mono text-sm text-surface-800 dark:text-surface-200 truncate"></span>
-          </div>
-          <div class="flex items-center gap-3 shrink-0">
-            <span id="detail-time" class="text-xs font-mono text-surface-500"></span>
-            <svg class="w-4 h-4 text-surface-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-          </div>
-        </button>
-
-        <!-- Expanded detail panels -->
-        <div id="detail-panels" class="border-t border-surface-200 dark:border-surface-700">
+        <div id="detail-panels">
           <!-- Headers panel -->
           <div class="border-b border-surface-200 dark:border-surface-700">
-            <button id="headers-toggle" class="w-full flex items-center gap-2 px-5 py-3 hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors text-left">
-              <span class="text-xs font-bold uppercase text-surface-500 dark:text-surface-400 w-20">Headers</span>
-              <span id="headers-count" class="text-xs font-mono text-surface-500 dark:text-surface-400"></span>
-              <svg id="headers-chevron" class="w-4 h-4 text-surface-400 ml-auto transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            <button id="headers-toggle" class="btn-ghost w-full justify-between" aria-expanded="true" aria-controls="headers-panel">
+              <span class="text-xs font-bold uppercase text-surface-600 dark:text-surface-300 w-20 text-left" data-i18n="tools.webhook-debugger.ui.label1">Headers</span>
+              <span id="headers-count" class="text-xs font-mono text-surface-600 dark:text-surface-300"></span>
+              <svg id="headers-chevron" class="w-4 h-4 text-surface-400 ml-auto transition-transform rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
             </button>
-            <div id="headers-panel" class="hidden px-5 pb-4">
+            <div id="headers-panel" class="px-5 pb-4">
               <pre id="headers-content" class="font-mono text-xs text-surface-700 dark:text-surface-300 whitespace-pre-wrap break-all max-h-48 overflow-y-auto"></pre>
             </div>
           </div>
 
           <!-- Body panel -->
           <div class="border-b border-surface-200 dark:border-surface-700">
-            <button id="body-toggle" class="w-full flex items-center gap-2 px-5 py-3 hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors text-left">
-              <span class="text-xs font-bold uppercase text-surface-500 dark:text-surface-400 w-20">Body</span>
-              <span id="body-type" class="text-xs font-mono text-surface-500 dark:text-surface-400"></span>
-              <svg id="body-chevron" class="w-4 h-4 text-surface-400 ml-auto transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            <button id="body-toggle" class="btn-ghost w-full justify-between" aria-expanded="true" aria-controls="body-panel">
+              <span class="text-xs font-bold uppercase text-surface-600 dark:text-surface-300 w-20 text-left" data-i18n="tools.webhook-debugger.ui.label2">Body</span>
+              <span id="body-type" class="text-xs font-mono text-surface-600 dark:text-surface-300"></span>
+              <svg id="body-chevron" class="w-4 h-4 text-surface-400 ml-auto transition-transform rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
             </button>
-            <div id="body-panel" class="hidden px-5 pb-4">
+            <div id="body-panel" class="px-5 pb-4">
               <div class="flex items-center justify-between mb-2">
                 <div class="flex gap-2">
-                  <button id="body-pretty-btn" class="btn btn-ghost btn-xs" data-i18n="tools.webhook-debugger.ui.button2">Pretty</button>
-                  <button id="body-raw-btn" class="btn btn-ghost btn-xs" data-i18n="tools.webhook-debugger.ui.button3">Raw</button>
+                  <button id="body-pretty-btn" class="btn btn-ghost btn-xs" data-i18n="tools.webhook-debugger.ui.button4">Pretty</button>
+                  <button id="body-raw-btn" class="btn btn-ghost btn-xs" data-i18n="tools.webhook-debugger.ui.button5">Raw</button>
                 </div>
-                <button id="copy-body-btn" class="btn btn-ghost btn-xs" data-tooltip="Copy body" data-i18n-tooltip="tools.webhook-debugger.ui.tip2"><span data-i18n="tools.webhook-debugger.ui.button4">Copy Body</span></button>
+                <button id="copy-body-btn" class="btn btn-ghost btn-xs" data-tooltip="Copy body" data-i18n-tooltip="tools.webhook-debugger.ui.tip2"><span data-i18n="tools.webhook-debugger.ui.button6">Copy Body</span></button>
               </div>
               <pre id="body-content" class="font-mono text-xs text-surface-700 dark:text-surface-300 whitespace-pre-wrap break-all max-h-80 overflow-y-auto"></pre>
             </div>
           </div>
 
-          <!-- Signature verification panel -->
+          <!-- Signature panel -->
           <div>
-            <button id="sig-toggle" class="w-full flex items-center gap-2 px-5 py-3 hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors text-left">
-              <span class="text-xs font-bold uppercase text-surface-500 dark:text-surface-400 w-20">Signature</span>
+            <button id="sig-toggle" class="btn-ghost w-full justify-between" aria-expanded="false" aria-controls="sig-panel">
+              <span class="text-xs font-bold uppercase text-surface-600 dark:text-surface-300 w-20 text-left" data-i18n="tools.webhook-debugger.ui.label3">Signature</span>
               <span id="sig-status" class="text-xs font-medium"></span>
-              <svg id="sig-chevron" class="w-4 h-4 text-surface-400 ml-auto transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+              <svg id="sig-chevron" class="w-4 h-4 text-surface-400 ml-auto transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
             </button>
             <div id="sig-panel" class="hidden px-5 pb-4">
-              <div class="flex flex-wrap gap-2 items-center mb-3">
-                <select id="sig-algorithm" class="bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg text-xs px-2 py-1.5 focus:ring-primary-500">
-                  <option value="sha256">HMAC-SHA256</option>
-                  <option value="sha1">HMAC-SHA1</option>
-                  <option value="sha512">HMAC-SHA512</option>
-                </select>
-                <input type="text" id="sig-secret" placeholder="Enter secret..." data-i18n-placeholder="tools.webhook-debugger.ui.placeholder9"
-                  class="flex-1 min-w-0 px-2 py-1.5 bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg text-xs focus:ring-primary-500">
-                <button id="verify-sig-btn" class="btn btn-secondary btn-xs" data-i18n="tools.webhook-debugger.ui.button5">Verify</button>
+              <p id="sig-base-note" class="text-xs text-surface-600 dark:text-surface-400 mb-3"></p>
+              <div class="grid gap-2 sm:grid-cols-2 mb-3">
+                <div>
+                  <label for="sig-algorithm" class="label block mb-1" data-i18n="tools.webhook-debugger.ui.label4">HMAC algorithm</label>
+                  <select id="sig-algorithm" class="input w-full">
+                    <option value="auto" data-i18n="tools.webhook-debugger.ui.option0">Auto-detect</option>
+                    <option value="sha256">HMAC-SHA256</option>
+                    <option value="sha1">HMAC-SHA1</option>
+                    <option value="sha512">HMAC-SHA512</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="sig-secret" class="label block mb-1" data-i18n="tools.webhook-debugger.ui.label5">Signing secret</label>
+                  <input type="password" id="sig-secret" autocomplete="off" placeholder="whsec_..." data-i18n-placeholder="tools.webhook-debugger.ui.placeholder1" class="input input-mono w-full">
+                </div>
               </div>
-              <div id="sig-result" class="hidden font-mono text-xs p-3 rounded-lg"></div>
+              <button id="verify-sig-btn" class="btn btn-secondary btn-sm" data-i18n="tools.webhook-debugger.ui.button7">Verify signature</button>
+              <div id="sig-result" class="hidden mt-3 font-mono text-xs p-3 rounded-lg" role="status"></div>
             </div>
           </div>
 
           <!-- Actions row -->
-          <div class="flex items-center gap-3 px-5 py-3 bg-surface-50 dark:bg-surface-800 border-t border-surface-200 dark:border-surface-700">
-            <button id="copy-curl-btn" class="btn btn-secondary btn-sm" data-tooltip="Copy as cURL command (curl-studio format)" data-i18n-tooltip="tools.webhook-debugger.ui.tip3">
-              <svg class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-              <span data-i18n="tools.webhook-debugger.ui.button6">Copy as cURL</span>
+          <div class="flex flex-wrap items-center gap-3 px-5 py-3 border-t border-surface-200 dark:border-surface-700">
+            <button id="copy-curl-btn" class="btn btn-secondary btn-sm" data-tooltip="Copy this request as a cURL command" data-i18n-tooltip="tools.webhook-debugger.ui.tip3">
+              <svg class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              <span data-i18n="tools.webhook-debugger.ui.button8">Copy as cURL</span>
             </button>
-            <button id="replay-btn" class="btn btn-ghost btn-sm" data-tooltip="Replay this request (opens curl-studio)" data-i18n-tooltip="tools.webhook-debugger.ui.tip4">
-              <svg class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m0 0a8.001 8.001 0 0115.356 2M4.582 21H6a2 2 0 002-2v-5.582m-9.934 0h9.934a8.008 8.008 0 01-15.356-2m15.356 2H4.582"/></svg>
-              <span data-i18n="tools.webhook-debugger.ui.button7">Replay</span>
-            </button>
-            <button id="clear-btn" class="btn btn-ghost btn-sm text-error-600 dark:text-error-400" data-tooltip="Clear this request" data-i18n-tooltip="tools.webhook-debugger.ui.tip5">
-              <svg class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-              <span data-i18n="tools.webhook-debugger.ui.button8">Clear</span>
+            <button id="replay-btn" class="btn btn-ghost btn-sm" data-tooltip="Open this request in Curl Studio" data-i18n-tooltip="tools.webhook-debugger.ui.tip4">
+              <svg class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m0 0a8.001 8.001 0 0115.356 2M4.582 21H6a2 2 0 002-2v-5.582m-9.934 0h9.934a8.008 8.008 0 01-15.356-2m15.356 2H4.582"/></svg>
+              <span data-i18n="tools.webhook-debugger.ui.button9">Send in Curl Studio</span>
             </button>
           </div>
         </div>
@@ -163,257 +163,161 @@ function renderWebhookDebuggerPage(lang = DEFAULT_LANGUAGE) {
       <!-- Empty state -->
       <div id="empty-state" class="text-center py-16">
         <div class="text-5xl mb-4" aria-hidden="true">🪝</div>
-        <p class="text-lg font-semibold text-surface-800 dark:text-surface-200 mb-2" data-i18n="tools.webhook-debugger.ui.heading10">Waiting for webhooks</p>
-        <p class="text-sm text-surface-500 dark:text-surface-400" data-i18n="tools.webhook-debugger.ui.desc1">Start listening and send a webhook to your local endpoint. Requests will appear here.</p>
+        <p class="text-lg font-semibold text-surface-800 dark:text-surface-200 mb-2" data-i18n="tools.webhook-debugger.ui.heading1">No request loaded</p>
+        <p class="text-sm text-surface-600 dark:text-surface-400" data-i18n="tools.webhook-debugger.ui.desc1">Paste a delivery above, or load a sample. Headers, body, and signature checks are computed in this browser tab.</p>
       </div>
 
-      ${relatedToolsData.length > 0 ? createRelatedToolsSection(relatedToolsData) : ''}
+      ${relatedToolsData.length > 0 ? createRelatedToolsSection(relatedToolsData) : ""}
+      </div>
     </main>
 
     <script>
       (function() {
       // --- State ---
-      var isListening = false;
-      var requests = [];  // [{id, timestamp, method, url, headers, body, contentType}]
-      var selectedId = null;
+      var parsed = null;
       var prettyMode = true;
 
       // --- Elements ---
-      var webhookUrl = document.getElementById('webhook-url');
-      var copyUrlBtn = document.getElementById('copy-url-btn');
-      var statusDot = document.getElementById('status-dot');
-      var statusLabel = document.getElementById('status-label');
-      var toggleListenBtn = document.getElementById('toggle-listen-btn');
-      var webhookLog = document.getElementById('webhook-log');
+      var rawInput = document.getElementById('raw-request');
+      var inspectBtn = document.getElementById('inspect-btn');
+      var resetBtn = document.getElementById('reset-btn');
+      var parseError = document.getElementById('parse-error');
       var requestDetail = document.getElementById('request-detail');
       var emptyState = document.getElementById('empty-state');
 
-      // Compute local endpoint (intercept fetch on this origin)
-      var localBase = window.location.origin;
-      var endpointPath = '/webhook-debugger/capture';
-      var fullEndpoint = localBase + endpointPath;
+      // The samples carry REAL signatures over their own bodies, so loading one
+      // and hitting Verify proves the check works rather than always reporting
+      // a mismatch. Both are signed with DEMO_SECRET, which the sample loader
+      // prefills into the secret field.
+      var DEMO_SECRET = 'whsec_simpletool_demo';
 
-      // Show the endpoint URL
-      if (webhookUrl) webhookUrl.textContent = fullEndpoint;
+      var GITHUB_SAMPLE = [
+        'POST /hooks/github HTTP/1.1',
+        'Host: hooks.example.com',
+        'User-Agent: GitHub-Hookshot/a1b2c3d',
+        'Content-Type: application/json',
+        'X-GitHub-Event: push',
+        'X-GitHub-Delivery: 0f7e5a10-4c2b-11ee-9c1a-2f4d6b8e0a11',
+        'X-Hub-Signature-256: sha256=ff0f80a51d5aa0cdfb8ab827b9c92e2d5e954588e401448ca87c4b3fe95a3483',
+        '',
+        '{"ref":"refs/heads/main","after":"9c3a1f2","repository":{"full_name":"acme/widgets"},"pusher":{"name":"octocat"}}'
+      ].join('\\n');
 
-      // --- Utility: format timestamp ---
-      function fmtTime(ts) {
-        var d = new Date(ts);
-        var h = String(d.getHours()).padStart(2, '0');
-        var m = String(d.getMinutes()).padStart(2, '0');
-        var s = String(d.getSeconds()).padStart(2, '0');
-        var ms = String(d.getMilliseconds()).padStart(3, '0');
-        return h + ':' + m + ':' + s + '.' + ms;
-      }
+      var STRIPE_SAMPLE = [
+        'POST /hooks/stripe HTTP/1.1',
+        'Host: hooks.example.com',
+        'User-Agent: Stripe/1.0 (+https://stripe.com/docs/webhooks)',
+        'Content-Type: application/json; charset=utf-8',
+        'Stripe-Signature: t=1710000000,v1=47bba5f67439c3f43aeebdeb892fe0aca0055c154dac85411b8d20e89241c7d0',
+        '',
+        '{"id":"evt_1P0abcDEFghi","type":"payment_intent.succeeded","data":{"object":{"id":"pi_3P0abc","amount":2400,"currency":"usd"}}}'
+      ].join('\\n');
 
-      // --- Utility: format headers as key: value list ---
-      function formatHeaders(headersObj) {
-        if (!headersObj) return '';
-        if (typeof headersObj === 'string') return headersObj;
-        var entries;
-        if (headersObj.entries) {
-          entries = Array.from(headersObj.entries());
-        } else if (Array.isArray(headersObj)) {
-          entries = headersObj;
-        } else {
-          entries = Object.entries(headersObj);
+      // Header names that carry a webhook signature, most specific first.
+      var SIG_HEADERS = [
+        'x-hub-signature-256',
+        'x-hub-signature',
+        'stripe-signature',
+        'x-slack-signature',
+        'x-shopify-hmac-sha256',
+        'x-signature-256',
+        'x-signature',
+        'x-webhook-signature',
+        'signature'
+      ];
+
+      // --- Parsing ---------------------------------------------------------
+
+      function parseRawRequest(text) {
+        var raw = String(text || '').replace(/\\r\\n/g, '\\n').trim();
+        if (!raw) throw new Error(_t('tools.webhook-debugger.js.text0', 'Paste a webhook request first.'));
+
+        // A bare payload: no request line, no headers.
+        if (raw.charAt(0) === '{' || raw.charAt(0) === '[') {
+          return { method: 'POST', path: '/', version: '', headers: [], body: raw };
         }
-        return entries.map(function(e) { return e[0] + ': ' + e[1]; }).join('\\n');
+
+        var split = raw.indexOf('\\n\\n');
+        var head = split === -1 ? raw : raw.slice(0, split);
+        var body = split === -1 ? '' : raw.slice(split + 2);
+
+        var lines = head.split('\\n');
+        var method = 'POST';
+        var path = '/';
+        var version = '';
+
+        var requestLine = lines[0].match(/^([A-Z]+)\\s+(\\S+)(?:\\s+(HTTP\\/[\\d.]+))?\\s*$/);
+        if (requestLine) {
+          method = requestLine[1];
+          path = requestLine[2];
+          version = requestLine[3] || '';
+          lines = lines.slice(1);
+        }
+
+        var headers = [];
+        var stray = -1;
+        for (var i = 0; i < lines.length; i++) {
+          var line = lines[i];
+          if (!line.trim()) continue;
+          // A folded continuation line belongs to the previous header.
+          if (/^\\s/.test(line) && headers.length) {
+            headers[headers.length - 1][1] += ' ' + line.trim();
+            continue;
+          }
+          var m = line.match(/^([^:\\s]+):\\s?([\\s\\S]*)$/);
+          if (!m) { stray = i; break; }
+          headers.push([m[1], m[2].trim()]);
+        }
+
+        // No blank line, but the head ran into non-header text: the rest is body.
+        if (stray !== -1 && !body) body = lines.slice(stray).join('\\n');
+
+        if (!requestLine && !headers.length) {
+          throw new Error(_t('tools.webhook-debugger.js.text1', 'Could not read this as an HTTP request. Expected a request line or "Header: value" lines, a blank line, then the body.'));
+        }
+
+        return { method: method, path: path, version: version, headers: headers, body: body.trim() };
       }
 
-      // --- Utility: pretty-print body content ---
+      function headerMap(headers) {
+        var map = {};
+        headers.forEach(function(h) { map[h[0].toLowerCase()] = h[1]; });
+        return map;
+      }
+
+      function contentTypeOf(req) {
+        return headerMap(req.headers)['content-type'] || '';
+      }
+
+      // --- Formatting helpers ----------------------------------------------
+
       function prettyBody(body, contentType) {
         if (!body) return '';
-        if (contentType && contentType.includes('json')) {
-          try { return JSON.stringify(JSON.parse(body), null, 2); } catch(e) {}
+        if (!contentType || contentType.indexOf('json') !== -1 || body.charAt(0) === '{' || body.charAt(0) === '[') {
+          try { return JSON.stringify(JSON.parse(body), null, 2); } catch (e) {}
+        }
+        if (contentType.indexOf('x-www-form-urlencoded') !== -1) {
+          try {
+            var out = [];
+            new URLSearchParams(body).forEach(function(v, k) { out.push(k + ' = ' + v); });
+            if (out.length) return out.join('\\n');
+          } catch (e) {}
         }
         return body;
       }
 
-      // --- Utility: copy text to clipboard ---
       function copyToClipboard(text, btn) {
+        var label = btn ? btn.querySelector('span') : null;
         navigator.clipboard.writeText(text).then(function() {
-          var orig = btn ? btn.textContent : '';
-          if (btn) {
-            btn.textContent = 'Copied!';
-            setTimeout(function() { btn.textContent = orig; }, 1500);
-          }
+          if (!label) return;
+          var orig = label.textContent;
+          label.textContent = _t('tools.webhook-debugger.js.text2', 'Copied');
+          setTimeout(function() { label.textContent = orig; }, 1500);
         }).catch(function() {});
       }
 
-      // --- Fetch interception ---
-      // We use a hidden form + iframe approach for GET capture, and
-      // override fetch for same-origin capture programmatically.
-      // Since this tool inspects client-side webhooks, the most reliable
-      // client-side capture is to provide a URL that, when fetched by an
-      // external system, returns a tracking pixel or script that reports
-      // back via a callback. For local replay/inspection, we use the
-      // sessionStorage queue approach.
-
-      // Actually, the right client-side approach for this tool is:
-      // Provide a unique per-session URL the user can set in their webhook
-      // provider. When that URL is hit (cross-origin), we cannot read the
-      // response from the external caller in a client-side only app.
-      // 
-      // Instead, for client-side inspection:
-      // 1. User copies the displayed endpoint into their webhook provider
-      // 2. User manually triggers a test webhook
-      // 3. This page polls for captured requests via a hidden iframe/script
-      //    that loads /webhook-debugger/capture?session=XXX which sets a cookie
-      //    we can then read (since same-origin)
-      // OR:
-      // The simplest real approach: provide a text area where users PASTE their
-      // raw HTTP request (headers + body) and we parse/display it — no server needed.
-      // 
-      // For the proposal's "client-side only" value prop, let's do the paste approach
-      // with optional session-based capture via an iframe beacon.
-      // The iframe route keeps it serverless and private.
-
-      // Use sessionStorage to coordinate between iframe and parent
-      var SESSION_KEY = 'whd_capture_' + (window.location.port || '80');
-      var iframeEl = null;
-
-      // Generate a session ID for cross-document messaging
-      var sessionId = (function() {
-        var stored = sessionStorage.getItem('whd_session_id');
-        if (!stored) {
-          stored = Math.random().toString(36).substr(2, 9);
-          sessionStorage.setItem('whd_session_id', stored);
-        }
-        return stored;
-      })();
-
-      // Create hidden iframe for cross-tab capture (same origin)
-      function createIframe() {
-        if (iframeEl) return;
-        iframeEl = document.createElement('iframe');
-        iframeEl.src = localBase + '/webhook-debugger/listen?session=' + sessionId + '&origin=' + encodeURIComponent(window.location.origin);
-        iframeEl.style.display = 'none';
-        iframeEl.id = 'whd-iframe';
-        document.body.appendChild(iframeEl);
-      }
-
-      function removeIframe() {
-        if (iframeEl) {
-          iframeEl.remove();
-          iframeEl = null;
-        }
-      }
-
-      // --- Same-origin fetch interceptor ---
-      // Intercepts fetch() calls to /webhook-debugger/capture from the same
-      // browser (e.g. user testing via curl-studio or JS console). The real
-      // request still goes through so the caller gets a response, but we also
-      // extract the request data and register it in the UI immediately.
-      var _origFetch = window.fetch;
-      window.fetch = function(input, init) {
-        var reqUrl = typeof input === 'string' ? input : (input && input.url ? input.url : '');
-        if (reqUrl.indexOf(endpointPath) !== -1 && isListening) {
-          var method = (init && init.method) || (input && input.method) || 'GET';
-          var hdrs = {};
-          if (init && init.headers) {
-            if (init.headers instanceof Headers) {
-              init.headers.forEach(function(v, k) { hdrs[k] = v; });
-            } else if (typeof init.headers === 'object') {
-              hdrs = Object.assign({}, init.headers);
-            }
-          }
-          var bodyText = (init && init.body) ? (typeof init.body === 'string' ? init.body : JSON.stringify(init.body)) : '';
-          registerRequest({
-            method: method.toUpperCase(),
-            url: reqUrl,
-            headers: hdrs,
-            body: bodyText
-          });
-        }
-        return _origFetch.apply(this, arguments);
-      };
-
-      // Set captured request in sessionStorage (for cross-tab/iframe communication)
-      function setCapture(req) {
-        var captures = [];
-        try {
-          captures = JSON.parse(sessionStorage.getItem(SESSION_KEY) || '[]');
-        } catch(e) {}
-        captures.push(req);
-        sessionStorage.setItem(SESSION_KEY, JSON.stringify(captures));
-        // Also store current so iframe can read
-        sessionStorage.setItem('whd_current', JSON.stringify(req));
-      }
-
-      function getCaptures() {
-        try { return JSON.parse(sessionStorage.getItem(SESSION_KEY) || '[]'); } catch(e) { return []; }
-      }
-
-      function clearCaptures() {
-        sessionStorage.removeItem(SESSION_KEY);
-        sessionStorage.removeItem('whd_current');
-        requests = [];
-        renderLog();
-        hideDetail();
-      }
-
-      // Poll for new captures from other tabs/iframes
-      var lastCaptureTime = 0;
-      function pollCaptures() {
-        var caps = getCaptures();
-        var changed = false;
-        caps.forEach(function(cap) {
-          if (cap.ts > lastCaptureTime) {
-            requests.push(cap);
-            lastCaptureTime = cap.ts;
-            changed = true;
-          }
-        });
-        if (changed) renderLog();
-      }
-
-      setInterval(pollCaptures, 1500);
-
-      // --- Render the request log ---
-      function renderLog() {
-        if (!webhookLog) return;
-        if (requests.length === 0) {
-          webhookLog.innerHTML = '';
-          return;
-        }
-        webhookLog.innerHTML = requests.slice().reverse().map(function(req) {
-          var shortPath = req.url ? req.url.replace(localBase, '') : req.path || '/';
-          var shortHeaders = req.headersObj || {};
-          var contentLen = req.body ? req.body.length : 0;
-          var methodColor = methodColorClass(req.method);
-          return '<div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 p-4 cursor-pointer hover:border-primary-300 dark:hover:border-primary-700 transition-colors webhook-log-item" data-id="' + req.id + '" role="button" tabindex="0" aria-label="View request ' + req.id + '">' +
-            '<div class="flex items-center gap-3 mb-2">' +
-              '<span class="text-xs font-mono font-bold text-surface-500 dark:text-surface-400 shrink-0">#' + req.seq + '</span>' +
-              '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold ' + methodColor + '">' + (req.method || 'GET') + '</span>' +
-              '<span class="font-mono text-sm text-surface-800 dark:text-surface-200 truncate">' + shortPath + '</span>' +
-              '<span class="ml-auto text-xs font-mono text-surface-400 shrink-0">' + fmtTime(req.ts) + '</span>' +
-            '</div>' +
-            '<div class="flex items-center gap-4 text-xs text-surface-500 dark:text-surface-400">' +
-              '<span>' + Object.keys(shortHeaders).length + ' headers</span>' +
-              '<span>' + contentLen + ' bytes</span>' +
-              '<span class="truncate max-w-[200px]">' + (req.contentType || '').split(';')[0].trim() + '</span>' +
-            '</div>' +
-          '</div>';
-        }).join('');
-
-        // Click handlers
-        webhookLog.querySelectorAll('.webhook-log-item').forEach(function(el) {
-          el.addEventListener('click', function() {
-            var id = el.getAttribute('data-id');
-            showDetail(id);
-          });
-          el.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              showDetail(el.getAttribute('data-id'));
-            }
-          });
-        });
-      }
-
       function methodColorClass(method) {
-        var m = (method || 'GET').toUpperCase();
+        var m = (method || 'POST').toUpperCase();
         if (m === 'POST') return 'bg-success-100 text-success-800 dark:bg-success-900/30 dark:text-success-300';
         if (m === 'PUT') return 'bg-warning-100 text-warning-800 dark:bg-warning-900/30 dark:text-warning-300';
         if (m === 'DELETE') return 'bg-error-100 text-error-800 dark:bg-error-900/30 dark:text-error-300';
@@ -421,56 +325,116 @@ function renderWebhookDebuggerPage(lang = DEFAULT_LANGUAGE) {
         return 'bg-surface-200 text-surface-700 dark:bg-surface-700 dark:text-surface-300';
       }
 
-      // --- Render request detail ---
-      function showDetail(id) {
-        var req = requests.find(function(r) { return r.id === id; });
-        if (!req) return;
-        selectedId = id;
-        if (emptyState) emptyState.classList.add('hidden');
+      function showError(message) {
+        parseError.textContent = message;
+        parseError.classList.remove('hidden');
+      }
 
-        document.getElementById('detail-seq').textContent = '#' + req.seq;
-        document.getElementById('detail-method').textContent = req.method || 'GET';
-        document.getElementById('detail-method').className = 'shrink-0 inline-flex items-center px-2 py-0.5 rounded text-xs font-bold ' + methodColorClass(req.method);
-        var shortPath = (req.url || req.path || '/').replace(localBase, '');
-        document.getElementById('detail-path').textContent = shortPath;
-        document.getElementById('detail-time').textContent = fmtTime(req.ts);
+      function clearError() {
+        parseError.textContent = '';
+        parseError.classList.add('hidden');
+      }
 
-        // Headers
-        var hCount = req.headersObj ? Object.keys(req.headersObj).length : 0;
-        document.getElementById('headers-count').textContent = hCount + ' header' + (hCount !== 1 ? 's' : '');
-        document.getElementById('headers-content').textContent = formatHeaders(req.headersObj);
+      // --- Render ----------------------------------------------------------
 
-        // Body
-        var ct = req.contentType || '';
-        document.getElementById('body-type').textContent = ct.split(';')[0].trim() || 'unknown';
-        var rawBody = req.body || '';
-        document.getElementById('body-content').textContent = prettyMode ? prettyBody(rawBody, ct) : rawBody;
-
-        // Signature — default to SHA-256, clear result
-        var sigResult = document.getElementById('sig-result');
-        sigResult.className = 'hidden font-mono text-xs p-3 rounded-lg';
-        sigResult.textContent = '';
-        document.getElementById('sig-status').textContent = '';
-
+      function render() {
+        if (!parsed) {
+          requestDetail.classList.add('hidden');
+          emptyState.classList.remove('hidden');
+          return;
+        }
+        emptyState.classList.add('hidden');
         requestDetail.classList.remove('hidden');
-        // Collapse all panels by default
-        ['headers-panel', 'body-panel', 'sig-panel'].forEach(function(id) {
-          var el = document.getElementById(id);
-          if (el) el.classList.add('hidden');
-        });
-        ['headers-chevron', 'body-chevron', 'sig-chevron'].forEach(function(id) {
-          var el = document.getElementById(id);
-          if (el) el.classList.remove('rotate-180');
-        });
+
+        var methodEl = document.getElementById('detail-method');
+        methodEl.textContent = parsed.method;
+        methodEl.className = 'shrink-0 inline-flex items-center px-2 py-0.5 rounded text-xs font-bold ' + methodColorClass(parsed.method);
+        document.getElementById('detail-path').textContent = parsed.path;
+
+        var ct = contentTypeOf(parsed);
+        var bytes = parsed.body ? parsed.body.length : 0;
+        document.getElementById('detail-meta').textContent =
+          parsed.headers.length + ' headers - ' + bytes + ' bytes';
+
+        document.getElementById('headers-count').textContent =
+          parsed.headers.length + ' header' + (parsed.headers.length === 1 ? '' : 's');
+        document.getElementById('headers-content').textContent =
+          parsed.headers.map(function(h) { return h[0] + ': ' + h[1]; }).join('\\n');
+
+        document.getElementById('body-type').textContent = ct.split(';')[0].trim() || 'unknown';
+        document.getElementById('body-content').textContent =
+          prettyMode ? prettyBody(parsed.body, ct) : parsed.body;
+
+        var sig = findSignature(parsed);
+        var sigStatus = document.getElementById('sig-status');
+        sigStatus.className = 'text-xs font-medium text-surface-600 dark:text-surface-300';
+        sigStatus.textContent = sig
+          ? _t('tools.webhook-debugger.js.text3', 'Not verified')
+          : _t('tools.webhook-debugger.js.text4', 'No signature header');
+
+        var base = signingBase(parsed);
+        document.getElementById('sig-base-note').textContent = sig
+          ? _t('tools.webhook-debugger.js.text5', 'Signature header:') + ' ' + sig.header + ' - ' + base.note
+          : _t('tools.webhook-debugger.js.text6', 'No known signature header found. Enter a secret to compute the HMAC of') + ' ' + base.note;
+
+        var sigResult = document.getElementById('sig-result');
+        sigResult.className = 'hidden mt-3 font-mono text-xs p-3 rounded-lg';
+        sigResult.textContent = '';
       }
 
-      function hideDetail() {
-        selectedId = null;
-        requestDetail.classList.add('hidden');
-        if (requests.length === 0 && emptyState) emptyState.classList.remove('hidden');
+      // --- Signature -------------------------------------------------------
+
+      function findSignature(req) {
+        var map = headerMap(req.headers);
+        for (var i = 0; i < SIG_HEADERS.length; i++) {
+          var name = SIG_HEADERS[i];
+          if (map[name] === undefined) continue;
+          return { header: name, value: map[name] };
+        }
+        return null;
       }
 
-      // --- Signature verification using Web Crypto API ---
+      /**
+       * Providers sign different strings, not always the raw body: Stripe signs
+       * "timestamp.body" and Slack signs "v0:timestamp:body". Comparing against
+       * the body alone reports a valid delivery as a mismatch.
+       */
+      function signingBase(req) {
+        var map = headerMap(req.headers);
+        var body = req.body || '';
+        var stripe = map['stripe-signature'];
+        if (stripe) {
+          var t = /(?:^|,)\\s*t=([^,]+)/.exec(stripe);
+          if (t) return { base: t[1] + '.' + body, note: 'Stripe scheme: timestamp + "." + body' };
+        }
+        var slackTs = map['x-slack-request-timestamp'];
+        if (map['x-slack-signature'] && slackTs) {
+          return { base: 'v0:' + slackTs + ':' + body, note: 'Slack scheme: v0:timestamp:body' };
+        }
+        return { base: body, note: _t('tools.webhook-debugger.js.text7', 'the raw request body') };
+      }
+
+      /** Strips the scheme prefix providers put in front of the digest. */
+      function normalizeSignature(sig) {
+        var value = sig.value.trim();
+        if (sig.header === 'stripe-signature') {
+          var v1 = /(?:^|,)\\s*v1=([^,]+)/.exec(value);
+          if (v1) return v1[1].trim();
+        }
+        var prefixed = /^(?:sha1|sha256|sha512|v0|v1)=(.+)$/i.exec(value);
+        return prefixed ? prefixed[1].trim() : value;
+      }
+
+      function algorithmFor(sig, selected) {
+        if (selected !== 'auto') return selected;
+        if (!sig) return 'sha256';
+        if (sig.header === 'x-hub-signature') return 'sha1';
+        if (sig.header === 'x-hub-signature-256') return 'sha256';
+        if (/^sha1=/i.test(sig.value)) return 'sha1';
+        if (/^sha512=/i.test(sig.value)) return 'sha512';
+        return 'sha256';
+      }
+
       async function computeHmac(secret, algorithm, message) {
         var algoMap = { sha256: 'SHA-256', sha1: 'SHA-1', sha512: 'SHA-512' };
         var key = await crypto.subtle.importKey(
@@ -478,339 +442,193 @@ function renderWebhookDebuggerPage(lang = DEFAULT_LANGUAGE) {
           new TextEncoder().encode(secret),
           { name: 'HMAC', hash: algoMap[algorithm] || 'SHA-256' },
           false,
-          ['verify', 'sign']
+          ['sign']
         );
         var signature = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(message));
-        // Convert to hex
-        var arr = new Uint8Array(signature);
+        var bytes = new Uint8Array(signature);
         var hex = '';
-        arr.forEach(function(b) { hex += ('0' + b.toString(16)).slice(-2); });
-        return hex;
+        var binary = '';
+        bytes.forEach(function(b) {
+          hex += ('0' + b.toString(16)).slice(-2);
+          binary += String.fromCharCode(b);
+        });
+        return { hex: hex, base64: btoa(binary) };
       }
 
-      // --- Toggle listening ---
-      toggleListenBtn.addEventListener('click', function() {
-        isListening = !isListening;
-        updateListenUI();
-        if (isListening) {
-          createIframe();
-          sessionStorage.setItem('whd_listening', 'true');
-        } else {
-          removeIframe();
-          sessionStorage.removeItem('whd_listening');
+      // --- Wiring ----------------------------------------------------------
+
+      function inspect() {
+        clearError();
+        try {
+          parsed = parseRawRequest(rawInput.value);
+        } catch (e) {
+          parsed = null;
+          showError(e.message);
+        }
+        render();
+      }
+
+      inspectBtn.addEventListener('click', inspect);
+
+      rawInput.addEventListener('keydown', function(e) {
+        if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+          e.preventDefault();
+          inspect();
         }
       });
 
-      function updateListenUI() {
-        if (isListening) {
-          statusDot.className = 'w-2.5 h-2.5 rounded-full bg-success-500 animate-pulse';
-          statusLabel.textContent = _t('tools.webhook-debugger.ui.desc2', 'Listening...');
-          toggleListenBtn.innerHTML = '<span data-i18n="tools.webhook-debugger.ui.button9">Stop</span>';
-          toggleListenBtn.classList.remove('btn-primary');
-          toggleListenBtn.classList.add('btn-secondary');
-        } else {
-          statusDot.className = 'w-2.5 h-2.5 rounded-full bg-surface-400';
-          statusLabel.textContent = _t('tools.webhook-debugger.ui.desc0', 'Stopped');
-          toggleListenBtn.innerHTML = '<span data-i18n="tools.webhook-debugger.ui.button1">Start Listening</span>';
-          toggleListenBtn.classList.remove('btn-secondary');
-          toggleListenBtn.classList.add('btn-primary');
-        }
+      function loadSample(sample) {
+        rawInput.value = sample;
+        document.getElementById('sig-secret').value = DEMO_SECRET;
+        inspect();
       }
 
-      // --- Copy URL ---
-      copyUrlBtn.addEventListener('click', function() {
-        copyToClipboard(fullEndpoint, copyUrlBtn);
+      document.getElementById('sample-github-btn').addEventListener('click', function() {
+        loadSample(GITHUB_SAMPLE);
       });
 
-      // --- Panel toggles ---
-      function setupToggle(headerId, panelId, chevronId) {
-        var btn = document.getElementById(headerId);
+      document.getElementById('sample-stripe-btn').addEventListener('click', function() {
+        loadSample(STRIPE_SAMPLE);
+      });
+
+      resetBtn.addEventListener('click', function() {
+        rawInput.value = '';
+        parsed = null;
+        clearError();
+        document.getElementById('sig-secret').value = '';
+        render();
+        rawInput.focus();
+      });
+
+      function setupToggle(buttonId, panelId, chevronId) {
+        var btn = document.getElementById(buttonId);
         var panel = document.getElementById(panelId);
         var chevron = document.getElementById(chevronId);
         if (!btn || !panel) return;
         btn.addEventListener('click', function() {
-          var isHidden = panel.classList.contains('hidden');
-          panel.classList.toggle('hidden', !isHidden);
-          chevron.classList.toggle('rotate-180', isHidden);
+          var willShow = panel.classList.contains('hidden');
+          panel.classList.toggle('hidden', !willShow);
+          chevron.classList.toggle('rotate-180', willShow);
+          btn.setAttribute('aria-expanded', willShow ? 'true' : 'false');
         });
       }
       setupToggle('headers-toggle', 'headers-panel', 'headers-chevron');
       setupToggle('body-toggle', 'body-panel', 'body-chevron');
       setupToggle('sig-toggle', 'sig-panel', 'sig-chevron');
 
-      // --- Body pretty/raw toggle ---
       document.getElementById('body-pretty-btn').addEventListener('click', function() {
         prettyMode = true;
-        if (selectedId) showDetail(selectedId);
+        render();
       });
       document.getElementById('body-raw-btn').addEventListener('click', function() {
         prettyMode = false;
-        if (selectedId) showDetail(selectedId);
+        render();
       });
 
-      // --- Copy body ---
       document.getElementById('copy-body-btn').addEventListener('click', function() {
-        var req = requests.find(function(r) { return r.id === selectedId; });
-        if (req) copyToClipboard(req.body || '', this);
+        if (parsed) copyToClipboard(parsed.body || '', this);
       });
 
-      // --- Copy as cURL ---
-      document.getElementById('copy-curl-btn').addEventListener('click', function() {
-        var req = requests.find(function(r) { return r.id === selectedId; });
-        if (!req) return;
-        var headers = req.headersObj || {};
-        var cmd = 'curl -X ' + (req.method || 'GET') + ' \\\n  "' + (req.url || localBase + '/') + '"';
-        Object.entries(headers).forEach(function(e) {
-          if (['host', 'connection', 'content-length'].indexOf(e[0].toLowerCase()) === -1) {
-            cmd += ' \\\n  -H "' + e[0] + ': ' + e[1] + '"';
-          }
+      document.getElementById('verify-sig-btn').addEventListener('click', async function() {
+        if (!parsed) return;
+        var secret = document.getElementById('sig-secret').value;
+        var sigResult = document.getElementById('sig-result');
+        var sigStatus = document.getElementById('sig-status');
+
+        if (!secret) {
+          sigResult.className = 'mt-3 font-mono text-xs p-3 rounded-lg bg-surface-100 dark:bg-surface-800 text-surface-700 dark:text-surface-300';
+          sigResult.textContent = _t('tools.webhook-debugger.js.text8', 'Enter the signing secret to verify.');
+          return;
+        }
+
+        var sig = findSignature(parsed);
+        var base = signingBase(parsed);
+        var algorithm = algorithmFor(sig, document.getElementById('sig-algorithm').value);
+        var digest = await computeHmac(secret, algorithm, base.base);
+
+        if (!sig) {
+          sigResult.className = 'mt-3 font-mono text-xs p-3 rounded-lg bg-surface-100 dark:bg-surface-800 text-surface-700 dark:text-surface-300';
+          sigResult.textContent = _t('tools.webhook-debugger.js.text9', 'No signature header to compare against.') +
+            '\\nHMAC-' + algorithm.toUpperCase() + ' (hex): ' + digest.hex +
+            '\\nHMAC-' + algorithm.toUpperCase() + ' (base64): ' + digest.base64;
+          sigStatus.textContent = _t('tools.webhook-debugger.js.text4', 'No signature header');
+          sigStatus.className = 'text-xs font-medium text-surface-600 dark:text-surface-300';
+          return;
+        }
+
+        var provided = normalizeSignature(sig);
+        var match = provided.toLowerCase() === digest.hex.toLowerCase() || provided === digest.base64;
+
+        sigResult.className = 'mt-3 font-mono text-xs p-3 rounded-lg ' + (match
+          ? 'bg-success-100 dark:bg-success-900/30 text-success-800 dark:text-success-300'
+          : 'bg-error-100 dark:bg-error-900/30 text-error-800 dark:text-error-300');
+        sigResult.textContent = (match
+            ? _t('tools.webhook-debugger.js.text10', 'Signature valid')
+            : _t('tools.webhook-debugger.js.text11', 'Signature mismatch')) +
+          '\\n' + _t('tools.webhook-debugger.js.text12', 'Signed over:') + ' ' + base.note +
+          '\\n' + _t('tools.webhook-debugger.js.text13', 'Computed:') + ' ' + digest.hex +
+          '\\n' + _t('tools.webhook-debugger.js.text14', 'Provided:') + ' ' + provided;
+
+        sigStatus.textContent = match
+          ? _t('tools.webhook-debugger.js.text15', 'Valid')
+          : _t('tools.webhook-debugger.js.text16', 'Mismatch');
+        sigStatus.className = 'text-xs font-medium ' + (match
+          ? 'text-success-600 dark:text-success-400'
+          : 'text-error-600 dark:text-error-400');
+      });
+
+      function requestUrl() {
+        var host = headerMap(parsed.headers)['host'] || '';
+        if (/^https?:\\/\\//i.test(parsed.path)) return parsed.path;
+        if (!host) return parsed.path;
+        return (/^localhost|^127\\./.test(host) ? 'http://' : 'https://') + host + parsed.path;
+      }
+
+      // Hop-by-hop and computed headers a replay must not carry over.
+      function replayHeaders() {
+        var skip = ['host', 'connection', 'content-length', 'transfer-encoding'];
+        var out = {};
+        parsed.headers.forEach(function(h) {
+          if (skip.indexOf(h[0].toLowerCase()) === -1) out[h[0]] = h[1];
         });
-        if (req.body && req.method !== 'GET') {
-          cmd += ' \\\n  -d ' + JSON.stringify(req.body);
+        return out;
+      }
+
+      document.getElementById('copy-curl-btn').addEventListener('click', function() {
+        if (!parsed) return;
+        var cmd = 'curl -X ' + parsed.method + ' \\\\\\n  "' + requestUrl() + '"';
+        var headers = replayHeaders();
+        Object.keys(headers).forEach(function(k) {
+          cmd += ' \\\\\\n  -H "' + k + ': ' + headers[k] + '"';
+        });
+        if (parsed.body && parsed.method !== 'GET') {
+          cmd += ' \\\\\\n  -d ' + JSON.stringify(parsed.body);
         }
         copyToClipboard(cmd, this);
       });
 
-      // --- Replay: open curl-studio with pre-filled data ---
       document.getElementById('replay-btn').addEventListener('click', function() {
-        var req = requests.find(function(r) { return r.id === selectedId; });
-        if (!req) return;
+        if (!parsed) return;
         var params = new URLSearchParams();
-        params.set('method', req.method || 'GET');
-        params.set('url', req.url || localBase + '/');
-        var headers = req.headersObj || {};
-        var filtered = {};
-        Object.entries(headers).forEach(function(e) {
-          if (['host', 'connection', 'content-length'].indexOf(e[0].toLowerCase()) === -1) {
-            filtered[e[0]] = e[1];
-          }
-        });
-        if (Object.keys(filtered).length > 0) params.set('headers', JSON.stringify(filtered));
-        if (req.body) params.set('body', typeof req.body === 'string' ? req.body : JSON.stringify(req.body));
+        params.set('method', parsed.method);
+        params.set('url', requestUrl());
+        var headers = replayHeaders();
+        if (Object.keys(headers).length > 0) params.set('headers', JSON.stringify(headers));
+        if (parsed.body) params.set('body', parsed.body);
         var win = window.open('/curl-studio?' + params.toString(), '_blank');
         if (win) win.focus();
       });
 
-      // --- Clear single request ---
-      document.getElementById('clear-btn').addEventListener('click', function() {
-        if (!selectedId) return;
-        requests = requests.filter(function(r) { return r.id !== selectedId; });
-        hideDetail();
-        renderLog();
-        // Persist
-        sessionStorage.setItem(SESSION_KEY, JSON.stringify(requests));
-      });
-
-      // --- Detail close ---
-      document.getElementById('detail-close-btn').addEventListener('click', function() {
-        hideDetail();
-      });
-
-      // --- Signature verification ---
-      document.getElementById('verify-sig-btn').addEventListener('click', async function() {
-        var secret = document.getElementById('sig-secret').value;
-        var algorithm = document.getElementById('sig-algorithm').value;
-        var req = requests.find(function(r) { return r.id === selectedId; });
-        if (!req || !secret) return;
-
-        var sigResult = document.getElementById('sig-result');
-        sigResult.classList.remove('hidden');
-
-        // Find the signature header
-        var headers = req.headersObj || {};
-        var sigHeaderNames = ['x-hub-signature-256', 'x-hub-signature', 'x-signature', 'authorization'];
-        var foundKey = null, foundSig = null;
-        Object.keys(headers).forEach(function(k) {
-          if (sigHeaderNames.indexOf(k.toLowerCase()) !== -1) {
-            foundKey = k;
-            foundSig = headers[k];
-          }
-        });
-
-        var reqBody = req.body || '';
-        var computed = await computeHmac(secret, algorithm, reqBody);
-
-        if (foundSig) {
-          // Compare (handle sha256= prefix)
-          var provided = foundSig.includes('=') ? foundSig.split('=')[1] : foundSig;
-          var match = provided.toLowerCase() === computed.toLowerCase();
-          sigResult.className = 'font-mono text-xs p-3 rounded-lg ' + (match
-            ? 'bg-success-100 dark:bg-success-900/30 text-success-800 dark:text-success-300'
-            : 'bg-error-100 dark:bg-error-900/30 text-error-800 dark:text-error-300');
-          sigResult.textContent = (match ? '✓ Signature valid' : '✗ Signature mismatch') + '\\nComputed: ' + computed.slice(0, 32) + '...\\nProvided: ' + provided.slice(0, 32) + '...';
-          document.getElementById('sig-status').textContent = match
-            ? _t('tools.webhook-debugger.ui.desc3', 'Valid')
-            : _t('tools.webhook-debugger.ui.desc4', 'Invalid');
-          document.getElementById('sig-status').className = 'text-xs font-medium ' + (match ? 'text-success-600 dark:text-success-400' : 'text-error-600 dark:text-error-400');
-        } else {
-          sigResult.className = 'font-mono text-xs p-3 rounded-lg bg-surface-100 dark:bg-surface-800 text-surface-700 dark:text-surface-300';
-          sigResult.textContent = 'No signature header found.\\nComputed HMAC (' + algorithm.toUpperCase() + '): ' + computed;
-          document.getElementById('sig-status').textContent = _t('tools.webhook-debugger.ui.desc5', 'No signature');
-          document.getElementById('sig-status').className = 'text-xs font-medium text-surface-500 dark:text-surface-400';
-        }
-      });
-
-      // --- Listen page (handled by the route for /webhook-debugger/listen) ---
-      // If this page was opened as the listener iframe, it will call registerHook
-      window.addEventListener('message', function(e) {
-        // Accept messages from same origin only
-        if (e.origin !== window.location.origin) return;
-        if (e.data && e.data.type === 'whd_register') {
-          registerRequest(e.data.payload);
-        }
-      });
-
-      // Expose registration for the listen iframe
-      window.whdRegister = function(payload) {
-        registerRequest(payload);
-      };
-
-      function registerRequest(data) {
-        var seq = requests.length + 1;
-        var ts = Date.now();
-        var req = {
-          id: 'req_' + ts + '_' + Math.random().toString(36).substr(2, 6),
-          seq: seq,
-          ts: ts,
-          method: data.method || 'GET',
-          url: data.url || data.path || '/',
-          headersObj: data.headers || {},
-          body: data.body || '',
-          contentType: (function() {
-            var h = data.headers || {};
-            var ct = h['content-type'] || h['Content-Type'] || '';
-            return ct;
-          })()
-        };
-        requests.push(req);
-        // Persist
-        setCapture(req);
-        renderLog();
-      }
-
-      // Expose global hook registration for listen endpoint
-      window.registerWebhookRequest = registerRequest;
-
-      // --- Initialization ---
-      function init() {
-        // Restore any persisted requests
-        var stored = getCaptures();
-        if (stored.length > 0) {
-          requests = stored;
-          lastCaptureTime = stored.length > 0 ? stored[stored.length - 1].ts : 0;
-          renderLog();
-        }
-
-        // If we're on the listen page (query param), auto-start
-        var urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has('listen')) {
-          isListening = true;
-          updateListenUI();
-        }
-
-        if (requests.length === 0) {
-          if (emptyState) emptyState.classList.remove('hidden');
-        } else {
-          if (emptyState) emptyState.classList.add('hidden');
-          renderLog();
-        }
-      }
-
-      init();
+      render();
     })();
     </script>
   `;
 
-  return createPageTemplate({ title, description, content, path: '/webhook-debugger' });
-}
-
-/**
- * Minimal HTML page loaded inside the hidden iframe.
- * It acts as a same-origin bridge: receives postMessage from external scripts
- * or from the parent page, and relays capture data back to the parent.
- */
-function renderListenPage(url) {
-  const session = url.searchParams.get('session') || '';
-  const origin = url.searchParams.get('origin') || '';
-
-  const html = `<!DOCTYPE html>
-<html><head><title>Webhook Listener</title></head>
-<body>
-<script>
-(function() {
-  var session = ${JSON.stringify(session)};
-  var parentOrigin = ${JSON.stringify(origin)} || window.location.origin;
-
-  // Listen for captures forwarded via postMessage (from /capture or other tabs)
-  window.addEventListener('message', function(e) {
-    if (e.origin !== window.location.origin && e.origin !== parentOrigin) return;
-    if (e.data && e.data.type === 'whd_capture') {
-      // Relay to parent
-      if (window.parent && window.parent !== window) {
-        window.parent.postMessage({ type: 'whd_register', payload: e.data.payload }, parentOrigin);
-      }
-    }
+  return createPageTemplate({
+    title,
+    description,
+    content,
+    path: "/webhook-debugger",
+    lang: currentLang,
   });
-
-  // Also store our session so the parent can identify us
-  try { sessionStorage.setItem('whd_listen_session', session); } catch(e) {}
-})();
-</script>
-</body></html>`;
-
-  return new Response(html, {
-    status: 200,
-    headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' }
-  });
-}
-
-/**
- * Capture endpoint — accepts any HTTP method.
- * Returns the request echo as JSON so webhook providers get a 200 OK.
- * Includes CORS headers for cross-origin webhook delivery.
- */
-async function handleCaptureRequest(request, url) {
-  // Handle CORS preflight
-  if (request.method === 'OPTIONS') {
-    return new Response(null, {
-      status: 204,
-      headers: corsHeaders()
-    });
-  }
-
-  // Read request data
-  let body = '';
-  try {
-    body = await request.text();
-  } catch (e) {
-    // body may be empty for GET/HEAD
-  }
-
-  const headersObj = {};
-  for (const [key, value] of request.headers.entries()) {
-    headersObj[key] = value;
-  }
-
-  const captured = {
-    method: request.method,
-    path: url.pathname + url.search,
-    headers: headersObj,
-    body: body,
-    contentType: request.headers.get('content-type') || '',
-    timestamp: Date.now()
-  };
-
-  return respondJSON(
-    { ok: true, captured },
-    { headers: corsHeaders() }
-  );
-}
-
-function corsHeaders() {
-  return {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD',
-    'Access-Control-Allow-Headers': '*',
-    'Access-Control-Max-Age': '86400'
-  };
 }

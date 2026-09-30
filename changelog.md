@@ -2,6 +2,55 @@
 
 This changelog is a snapshot-style record of major changes in this workspace.
 
+## 2026-09-09 — Homepage as a product catalog
+
+- Homepage is catalog-first: search and the tool grid sit above the article.
+- Hero is a left-aligned product header (trust line, flagship chips) instead of a centered poster.
+- Home cards use Material Symbols tiles instead of emoji. Unique copy and the ads disclosure stay.
+
+## 2026-09-08 — v2.4.6 WireGuard keys, Ed25519, AdSense site-connect
+
+- **WireGuard**: Generate Key Pair exports X25519 via JWK when raw private export throws. It no longer invents an uncorrelated public key.
+- **SSH**: Ed25519 is the default; ECDSA and RSA remain.
+- **UUID**: v7 (RFC 9562); v1 sets the random-node multicast bit.
+- **AdSense**: official static `adsbygoogle.js` snippet in `<head>` on script-allow pages (home, JSON, legal, blog, FAQ) so Google can verify the site before slot IDs exist. Units still wait for real slots. Secret tools stay script-free. `www` 301s to the apex host.
+- **Copy**: About shows 47 production tools; homepage and JSON Formatter add original visible articles for the thin-content review.
+- **SEO**: legal trailing slashes resolve; sitemap home loc uses the canonical slash; SoftwareApplication JSON-LD is limited to registered tools.
+- **Version**: footer, `/health`, changelog, and package.json share `2.4.6`.
+
+## 2026-08-30 — AdSense site-connect
+
+- Serve `/ads.txt` and the `google-adsense-account` meta whenever a publisher ID is configured, without loading ad scripts.
+- JSON Formatter now requests the `json` slot after its educational section (the retired `tool` key never rendered).
+- Ads stay off Contact, Security, and Careers (too thin). About, Privacy, Terms, and changelog remain on the legal allow list.
+- Terms and Privacy in all ten languages disclose non-personalized AdSense, cookies, and opt-out links instead of claiming ads are off.
+
+## 2026-08-19 — v2.4.4 Honest copy & catalog freeze
+
+- Homepage and About copy reworded to match the honest ads-vs-privacy stance: tool data is processed in the browser, but ads and analytics can make third-party requests in production.
+- Aligned the ad allow-list (`home`, `json`, `legal`) and deny-list (password, SSH, Token Studio, WireGuard, certificates, secret scanner, encoding, pipe) across copy and code.
+- Locked the invariants in `src/ui/honest-copy.test.js`: 56-tool registry count, no absolute privacy claims, ads-mentioned, blog-twin `noindex`, ad allow/deny list.
+- Froze the new-tool catalog until the eight flagships beat the bookmarks people already use.
+
+## 2026-08-17 — v2.4.3 Non-personalized ads
+
+- Manual AdSense units on the homepage, JSON Formatter, and legal/changelog pages only.
+- Ads stay non-personalized. Auto ads stay off. `ads.txt` appears only after real slot IDs exist.
+- Password, SSH, Token Studio, WireGuard, certificates, secret scanner, encoding, and pipe never load ad scripts.
+
+## 2026-08-17 — v2.4.2 Honesty pass
+
+### Fixes
+
+- Hero and About no longer claim "no tracking" or "0 bytes stored" while ads were configured.
+- Removed `ads.txt` and unused Google Ads / GTM / GA CSP entries until real ad slots exist.
+- User-Agent Parser now has a paste field, parse output, and a working Use This button.
+- `dot.case` no longer drops the last character.
+- SQL indent option labeled "4 spaces" is no longer overwritten by BigQuery.
+- Home search badges now follow the filtered card counts.
+- Language switch now updates the homepage H1 without a reload.
+- SVG preview stays visible after removing width and height.
+
 ## 2026-05-07 — v2.4.1 Post-QA sweep
 
 ### Bug fixes
@@ -13,7 +62,7 @@ This changelog is a snapshot-style record of major changes in this workspace.
 - **Clipboard**: promote `getCopyToClipboardScript()` to `createPageTemplate()` (global), remove redundant per-route calls from 12 route files.
 - **SRI crossorigin**: add `crossorigin="anonymous"` to 6 vendor script tags that had `integrity` without it.
 - **Routes**: add 301 redirects for `/jwt-inspector`, `/layered-decoder`, and `/css-gradient-generator` aliases.
-- **CSS**: fix `.empty-state.hidden` specificity so Tailwind's `hidden` utility actually hides empty-state placeholders.
+- **CSS**: empty-state placeholders now hide correctly when a result is present.
 
 ### Tooling
 

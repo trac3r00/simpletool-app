@@ -5,45 +5,76 @@
  * - Previews SVG and allows simple color replacements
  */
 
-import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
-import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML } from "../utils/respond.js";
+import {
+  createPageTemplate,
+  createToolHeader,
+  createCheatsheet,
+  infoHint,
+} from "../utils/common-ui.js";
+import {
+  createEducationalSection,
+  createRelatedToolsSection,
+} from "../utils/content-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleSVGOptimizerRoutes(request, url) {
   const { pathname } = url;
-  if (pathname === '/svg-optimizer' || pathname === '/svg-optimizer/') {
-    if (request.method === 'GET') return respondHTML(renderSVGOptimizerPage(resolveRequestLanguage(request, url)));
-    return new Response('Method not allowed', { status: 405 });
+  if (pathname === "/svg-optimizer" || pathname === "/svg-optimizer/") {
+    if (request.method === "GET")
+      return respondHTML(
+        renderSVGOptimizerPage(resolveRequestLanguage(request, url)),
+      );
+    return new Response("Method not allowed", { status: 405 });
   }
   return null;
 }
 
 function renderSVGOptimizerPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('svg-optimizer', currentLang);
-  const title = translation?.name || 'SVG Optimizer & Editor';
-  const description = translation?.desc || 'Clean up and preview SVGs, then quickly adjust fill/stroke colors — all locally.';
+  const translation = getToolTranslation("svg-optimizer", currentLang);
+  const title = translation?.name || "SVG Optimizer & Editor";
+  const description =
+    translation?.desc ||
+    "Clean up and preview SVGs, then quickly adjust fill/stroke colors — all locally.";
 
   const header = createToolHeader(
-    { emoji: '✍️' },
+    { emoji: "✍️" },
     title,
     description,
     [
-      { text: translation?.ui?.badge0 || '<span data-i18n="tools.svg-optimizer.ui.badge0">Sanitized</span>', tooltip: 'Removes scripts/foreignObject/event handlers for safe preview.' },
-      { text: translation?.ui?.badge1 || '<span data-i18n="tools.svg-optimizer.ui.badge1">Icon Workflow</span>', tooltip: 'Extract colors and replace them with a few clicks.' }
+      {
+        text:
+          translation?.ui?.badge0 ||
+          '<span data-i18n="tools.svg-optimizer.ui.badge0">Sanitized</span>',
+        tooltip:
+          "Removes scripts/foreignObject/event handlers for safe preview.",
+      },
+      {
+        text:
+          translation?.ui?.badge1 ||
+          '<span data-i18n="tools.svg-optimizer.ui.badge1">Icon Workflow</span>',
+        tooltip: "Extract colors and replace them with a few clicks.",
+      },
     ],
-    { toolId: 'svg-optimizer' }
+    { toolId: "svg-optimizer" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'svg-optimizer');
-  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
-
+  const currentTool = TOOLS.find((t) => t.id === "svg-optimizer");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
         ${header}
 
         <div class="flex flex-wrap gap-3 mb-6 bg-surface-50 dark:bg-surface-950/50 p-2 rounded-lg border border-surface-100 dark:border-surface-800">
@@ -60,17 +91,17 @@ function renderSVGOptimizerPage(lang = DEFAULT_LANGUAGE) {
           <div class="space-y-3">
             <label class="label flex items-center gap-2">
               <span data-i18n="tools.svg-optimizer.ui.label0">SVG Input</span>
-              ${infoHint('Paste an SVG. This tool sanitizes it for safe preview using DOMPurify (client-side).', 'Help', { i18nKey: 'tools.svg-optimizer.ui.desc0' })}
+              ${infoHint("Paste an SVG. This tool sanitizes it for safe preview using DOMPurify (client-side).", "Help", { i18nKey: "tools.svg-optimizer.ui.desc0" })}
             </label>
-            <textarea id="svg-input" rows="18" class="input-mono resize-y" placeholder="&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 24 24&quot;&gt;...&lt;/svg&gt;" data-i18n-placeholder="tools.svg-optimizer.ui.placeholder0"></textarea>
+            <textarea id="svg-input" rows="18" aria-label="SVG input" class="input-mono resize-y" placeholder="&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 24 24&quot;&gt;...&lt;/svg&gt;" data-i18n-placeholder="tools.svg-optimizer.ui.placeholder0"></textarea>
 
             <div class="grid grid-cols-2 gap-3">
               <label class="inline-flex items-center gap-2 cursor-pointer text-sm text-surface-700 dark:text-surface-300">
-                <input id="strip-metadata" type="checkbox" class="w-4 h-4 rounded border-surface-300 text-primary-600 focus:ring-primary-500" checked>
+                <input id="strip-metadata" type="checkbox" class="w-4 h-4 rounded border-surface-300 text-primary-600 dark:text-primary-400 focus:ring-primary-500" checked>
                 <span data-i18n="tools.svg-optimizer.ui.label1">Remove &lt;title&gt;/&lt;desc&gt;/&lt;metadata&gt;</span>
               </label>
               <label class="inline-flex items-center gap-2 cursor-pointer text-sm text-surface-700 dark:text-surface-300">
-                <input id="strip-dimensions" type="checkbox" class="w-4 h-4 rounded border-surface-300 text-primary-600 focus:ring-primary-500">
+                <input id="strip-dimensions" type="checkbox" class="w-4 h-4 rounded border-surface-300 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
                 <span data-i18n="tools.svg-optimizer.ui.label2">Remove width/height</span>
               </label>
             </div>
@@ -94,7 +125,7 @@ function renderSVGOptimizerPage(lang = DEFAULT_LANGUAGE) {
               </div>
             </div>
 
-            <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+            <div class="tool-group p-5">
               <div class="flex items-center justify-between gap-3 mb-3">
                 <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400" data-i18n="tools.svg-optimizer.ui.heading0">Colors</h2>
                 <div class="flex items-center gap-2">
@@ -109,55 +140,68 @@ function renderSVGOptimizerPage(lang = DEFAULT_LANGUAGE) {
           </div>
 
           <div class="space-y-3">
-            <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+            <div class="tool-group p-5">
               <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400 mb-3" data-i18n="tools.svg-optimizer.ui.heading1">Preview</h2>
               <div id="preview" class="bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-800 rounded-xl p-4 min-h-[320px] flex items-center justify-center overflow-auto" aria-label="SVG preview" data-i18n-aria="tools.svg-optimizer.ui.aria0">
                 <div class="text-sm text-surface-500 dark:text-surface-400" data-i18n="tools.svg-optimizer.ui.desc2">No preview yet.</div>
               </div>
             </div>
 
-            <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+            <div class="tool-group p-5">
               <div class="flex items-center justify-between mb-3">
                 <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400" data-i18n="tools.svg-optimizer.ui.heading2">Output SVG</h2>
               </div>
-              <textarea id="svg-output" rows="12" class="input-mono resize-y bg-surface-50 dark:bg-surface-950" readonly placeholder="Optimized SVG will appear here..." data-i18n-placeholder="tools.svg-optimizer.ui.placeholder1"></textarea>
+              <textarea id="svg-output" rows="12" aria-label="Optimized SVG output" class="input-mono resize-y bg-surface-50 dark:bg-surface-950" readonly placeholder="Optimized SVG will appear here..." data-i18n-placeholder="tools.svg-optimizer.ui.placeholder1"></textarea>
             </div>
           </div>
         </div>
 
-        ${createCheatsheet('svg-optimizer', '<span data-i18n="tools.svg-optimizer.ui.heading3">SVG Safety Notes</span>', [
-          {
-            heading: '<span data-i18n="tools.svg-optimizer.ui.heading4">Sanitization</span>',
-            content: `
+        ${createCheatsheet(
+          "svg-optimizer",
+          '<span data-i18n="tools.svg-optimizer.ui.heading3">SVG Safety Notes</span>',
+          [
+            {
+              heading:
+                '<span data-i18n="tools.svg-optimizer.ui.heading4">Sanitization</span>',
+              content: `
               <p data-i18n="tools.svg-optimizer.ui.desc3">SVG can execute scripts or load external resources. This tool sanitizes the markup before preview and removes risky elements/attributes.</p>
               <ul class="list-disc ml-6 space-y-1">
                 <li><span data-i18n="tools.svg-optimizer.ui.desc4">Removes</span> <code>&lt;script&gt;</code>, <code>&lt;foreignObject&gt;</code>, <span data-i18n="tools.svg-optimizer.ui.desc5">and event handler attributes</span> (<code>on*</code>).</li>
                 <li><span data-i18n="tools.svg-optimizer.ui.desc6">Strips external</span> <code>href</code>/<code>xlink:href</code> <span data-i18n="tools.svg-optimizer.ui.desc7">unless it’s an internal</span> <code>#id</code> <span data-i18n="tools.svg-optimizer.ui.desc8">reference.</span></li>
               </ul>
-            `
-          }
-        ])}
+            `,
+            },
+          ],
+        )}
       </div>
     </main>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-      ${createEducationalSection([
-        {
-          title: 'What is SVG?',
-          content: '<p>SVG (Scalable Vector Graphics) is an XML-based vector image format for two-dimensional graphics with support for interactivity and animation. Unlike raster formats (like JPEG or PNG), SVGs are defined by mathematical paths, which means they can be scaled to any size without losing quality.</p><p>This makes them perfect for logos, icons, and illustrations on the web, where they remain crisp on everything from mobile screens to high-resolution desktop monitors. Because they are code-based, they can also be manipulated with CSS and JavaScript, providing a level of flexibility and performance that raster images cannot match.</p>'
-        },
-        {
-          title: 'How to Use This Tool',
-          content: '<ol><li>Paste your SVG code into the "SVG Input" text area on the left.</li><li>Click "Preview" to see the graphic and extract its color palette.</li><li>Use the "Optimize" or "Minify" buttons to clean up the markup and reduce file size.</li><li>Optionally, replace specific colors by entering new values in the "Colors" panel and clicking "Apply".</li><li>Click "Copy" or "Download" to save your sanitized and optimized SVG.</li></ol>'
-        },
-        {
-          title: 'Common Use Cases',
-          content: '<ul><li><strong>Icon Management:</strong> Clean up SVGs exported from design tools like Figma or Illustrator to remove unnecessary metadata and hidden layers.</li><li><strong>Theming:</strong> Quickly change the colors of an icon set to match your brand\'s palette without opening a heavy design application.</li><li><strong>Security:</strong> Sanitize SVGs from untrusted sources to remove potential scripts or external references before using them on your site.</li><li><strong>Performance:</strong> Minify SVG markup to reduce the size of inline graphics, improving page load times and DOM performance.</li></ul>'
-        },
-        {
-          title: 'Pro Tips',
-          content: '<ul><li>Use the "currentColor" button to convert all explicit fills and strokes to <code>currentColor</code>, making your SVG easily styleable via CSS.</li><li>Always optimize your SVGs before using them in production to ensure they are as small as possible for fast web performance.</li><li>When creating SVGs in design tools, use the "Outline Stroke" and "Simplify Path" features to reduce the complexity of the generated code before optimization.</li></ul>'
-        }
-      ], 'svg-optimizer', currentLang)}
+      ${createEducationalSection(
+        [
+          {
+            title: "What is SVG?",
+            content:
+              "<p>SVG (Scalable Vector Graphics) is an XML-based vector image format for two-dimensional graphics with support for interactivity and animation. Unlike raster formats (like JPEG or PNG), SVGs are defined by mathematical paths, which means they can be scaled to any size without losing quality.</p><p>This makes them perfect for logos, icons, and illustrations on the web, where they remain crisp on everything from mobile screens to high-resolution desktop monitors. Because they are code-based, they can also be manipulated with CSS and JavaScript, providing a level of flexibility and performance that raster images cannot match.</p>",
+          },
+          {
+            title: "How to Use This Tool",
+            content:
+              '<ol><li>Paste your SVG code into the "SVG Input" text area on the left.</li><li>Click "Preview" to see the graphic and extract its color palette.</li><li>Use the "Optimize" or "Minify" buttons to clean up the markup and reduce file size.</li><li>Optionally, replace specific colors by entering new values in the "Colors" panel and clicking "Apply".</li><li>Click "Copy" or "Download" to save your sanitized and optimized SVG.</li></ol>',
+          },
+          {
+            title: "Common Use Cases",
+            content:
+              "<ul><li><strong>Icon Management:</strong> Clean up SVGs exported from design tools like Figma or Illustrator to remove unnecessary metadata and hidden layers.</li><li><strong>Theming:</strong> Quickly change the colors of an icon set to match your brand's palette without opening a heavy design application.</li><li><strong>Security:</strong> Sanitize SVGs from untrusted sources to remove potential scripts or external references before using them on your site.</li><li><strong>Performance:</strong> Minify SVG markup to reduce the size of inline graphics, improving page load times and DOM performance.</li></ul>",
+          },
+          {
+            title: "Pro Tips",
+            content:
+              '<ul><li>Use the "currentColor" button to convert all explicit fills and strokes to <code>currentColor</code>, making your SVG easily styleable via CSS.</li><li>Always optimize your SVGs before using them in production to ensure they are as small as possible for fast web performance.</li><li>When creating SVGs in design tools, use the "Outline Stroke" and "Simplify Path" features to reduce the complexity of the generated code before optimization.</li></ul>',
+          },
+        ],
+        "svg-optimizer",
+        currentLang,
+      )}
     ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;
@@ -392,10 +436,22 @@ function renderSVGOptimizerPage(lang = DEFAULT_LANGUAGE) {
         els.preview.innerHTML = '';
         const wrap = document.createElement('div');
         wrap.className = 'max-w-full';
-        // Import node into HTML document for display.
         const node = document.importNode(svg, true);
+        if (!node.getAttribute('width') && !node.getAttribute('height')) {
+          const vb = (node.getAttribute('viewBox') || '').trim().split(/[\s,]+/).map(Number);
+          if (vb.length === 4 && vb[2] > 0 && vb[3] > 0) {
+            const maxH = 280;
+            const scale = Math.min(1, maxH / vb[3]);
+            node.setAttribute('width', String(Math.max(1, Math.round(vb[2] * scale))));
+            node.setAttribute('height', String(Math.max(1, Math.round(vb[3] * scale))));
+          } else {
+            node.setAttribute('width', '280');
+            node.setAttribute('height', '280');
+          }
+        }
         node.style.maxWidth = '100%';
         node.style.maxHeight = '280px';
+        node.style.height = 'auto';
         wrap.appendChild(node);
         els.preview.appendChild(wrap);
       }
@@ -413,7 +469,7 @@ function renderSVGOptimizerPage(lang = DEFAULT_LANGUAGE) {
         if (!res.ok) {
           setPreviewMessage(res.error);
           els.output.value = '';
-          els.colors.innerHTML = '<p class="text-surface-500 dark:text-surface-400" data-i18n="tools.svg-optimizer.ui.desc11">' + t('text5', 'Preview an SVG to extract colors.') + '</p>';
+          els.colors.innerHTML = '<p class="text-surface-500 dark:text-surface-400">' + t('text5', 'Preview an SVG to extract colors.') + '</p>';
           els.colorCount.textContent = '0';
           syncOutputButtons();
           updateStats();
@@ -492,7 +548,7 @@ function renderSVGOptimizerPage(lang = DEFAULT_LANGUAGE) {
         els.input.value = '';
         els.output.value = '';
         setPreviewMessage(t('text7', 'No preview yet.'));
-        els.colors.innerHTML = '<p class="text-surface-500 dark:text-surface-400" data-i18n="tools.svg-optimizer.ui.desc11">' + t('text5', 'Preview an SVG to extract colors.') + '</p>';
+        els.colors.innerHTML = '<p class="text-surface-500 dark:text-surface-400">' + t('text5', 'Preview an SVG to extract colors.') + '</p>';
         els.colorCount.textContent = '0';
         current = { input: '', sanitized: '', optimized: '', doc: null, editDoc: null, editSvg: null, mapping: null, lastMinify: false };
         els.applyColors.disabled = true;
@@ -514,18 +570,23 @@ function renderSVGOptimizerPage(lang = DEFAULT_LANGUAGE) {
         }
       });
 
-      els.downloadBtn.addEventListener('click', () => {
+      els.downloadBtn.addEventListener('click', (event) => {
+        event.preventDefault();
         const text = els.output.value;
         if (!text.trim()) return;
-        const blob = new Blob([text], { type: 'image/svg+xml' });
+        const blob = new Blob([text], { type: 'image/svg+xml;charset=utf-8' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'optimized.svg';
+        a.setAttribute('download', 'optimized.svg');
+        a.rel = 'noopener';
+        a.style.display = 'none';
         document.body.appendChild(a);
         a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        window.setTimeout(() => {
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        }, 0);
       });
 
       // Update byte stats live
@@ -542,9 +603,9 @@ function renderSVGOptimizerPage(lang = DEFAULT_LANGUAGE) {
   return createPageTemplate({
     title,
     description,
-    path: '/svg-optimizer',
+    path: "/svg-optimizer",
     content,
     scripts,
-    lang: currentLang
+    lang: currentLang,
   });
 }

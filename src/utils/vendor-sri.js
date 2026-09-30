@@ -7,8 +7,8 @@
  * Pure helper, Node-only (uses node:crypto + node:fs). Not bundled into the
  * worker output.
  */
-import { readFileSync } from 'node:fs';
-import { createHash } from 'node:crypto';
+import { readFileSync } from "node:fs";
+import { createHash } from "node:crypto";
 
 /**
  * Compute the SHA-384 base64 digest expected by the SRI integrity= attribute.
@@ -17,6 +17,6 @@ import { createHash } from 'node:crypto';
  */
 export function computeSriSha384(filePath) {
   const bytes = readFileSync(filePath);
-  const digest = createHash('sha384').update(bytes).digest('base64');
+  const digest = createHash("sha384").update(bytes).digest("base64");
   return `sha384-${digest}`;
 }

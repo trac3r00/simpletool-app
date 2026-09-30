@@ -32,7 +32,7 @@ Closes #
 <!-- What could break, and how to undo this change. -->
 
 - Risk:
-- Rollback: revert this commit / 
+- Rollback: revert this commit /
 
 ## Merge & release policy
 

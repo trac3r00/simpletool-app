@@ -1,17 +1,17 @@
 /**
  * Pipe Mode — chain tools together, all client-side.
- * Your data never leaves your browser.
+ * Your data is processed in your browser, not sent to our servers.
  */
 
-import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate } from '../utils/common-ui.js';
-import { DEFAULT_LANGUAGE, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML } from "../utils/respond.js";
+import { createPageTemplate, createToolHeader } from "../utils/common-ui.js";
+import { DEFAULT_LANGUAGE, resolveRequestLanguage } from "../utils/i18n.js";
 
 export async function handlePipeRoutes(request, url) {
   const { pathname } = url;
 
-  if (pathname === '/pipe' || pathname === '/pipe/') {
-    if (request.method === 'GET') {
+  if (pathname === "/pipe" || pathname === "/pipe/") {
+    if (request.method === "GET") {
       return renderPipePage(resolveRequestLanguage(request, url));
     }
   }
@@ -21,29 +21,32 @@ export async function handlePipeRoutes(request, url) {
 
 function renderPipePage(lang = DEFAULT_LANGUAGE) {
   const content = `
-    <main class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      <div class="flex items-center justify-between mb-6">
-        <div>
-          <h1 class="text-2xl font-bold text-surface-900 dark:text-surface-50 flex items-center gap-3">
-            <span class="text-teal-600 dark:text-teal-400">⛓</span>
-            Pipe Mode
-            <span class="text-xs font-medium bg-teal-100 text-teal-700 dark:bg-teal-900/40 dark:text-teal-300 px-2 py-0.5 rounded-full">BETA</span>
-          </h1>
-          <p class="text-sm text-surface-500 dark:text-surface-400 mt-1">Chain tools together. Your data never leaves your browser.</p>
-        </div>
-        <div class="flex gap-2">
-          <button id="share-btn" class="btn btn-ghost text-xs" title="Share pipeline (no data included)">Share</button>
-          <button id="save-btn" class="btn btn-ghost text-xs" title="Save to browser">Save</button>
-          <button id="clear-btn" class="btn btn-ghost text-xs text-red-500" title="Clear pipeline">Clear</button>
-        </div>
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
+      ${createToolHeader(
+        { emoji: "⛓️" },
+        "Pipe Mode",
+        "Chain tools together. Your data is processed in your browser, not sent to our servers.",
+        [
+          {
+            text: "Beta",
+            tooltip:
+              "Pipe Mode is new — pipelines and recipes may still change.",
+          },
+        ],
+      )}
+      <div class="flex flex-wrap justify-end gap-2 -mt-6 mb-3">
+        <button id="share-btn" class="btn btn-ghost text-xs" title="Share pipeline (no data included)">Share</button>
+        <button id="save-btn" class="btn btn-ghost text-xs" title="Save to browser">Save</button>
+        <button id="clear-btn" class="btn btn-ghost text-xs text-error-600 dark:text-error-400" title="Clear pipeline">Clear</button>
       </div>
 
       <div class="flex gap-4" id="pipe-layout">
         <!-- Sidebar: Tool Palette (desktop) -->
         <aside id="tool-palette" class="w-56 shrink-0 hidden lg:block">
-          <div class="sticky top-20 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-lg p-3">
+          <div class="sticky top-20 tool-group p-3">
             <input type="text" id="palette-search" placeholder="Search tools..."
-              class="w-full px-2 py-1.5 text-xs border border-surface-200 dark:border-surface-700 rounded bg-white dark:bg-surface-800 text-surface-900 dark:text-surface-100 mb-3"
+              class="input text-xs mb-3"
               role="search" aria-label="Search tools">
             <div id="palette-list" class="space-y-0.5 text-sm max-h-[60vh] overflow-y-auto"></div>
           </div>
@@ -52,11 +55,11 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
         <!-- Main Workspace -->
         <div class="flex-1 min-w-0">
           <!-- Input -->
-          <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-lg p-4 mb-0">
-            <label class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wider mb-2 block">Input</label>
+          <div class="tool-group p-4 mb-0">
+            <label for="pipe-input" class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wider mb-2 block">Input</label>
             <textarea id="pipe-input" rows="3"
               placeholder="Paste your data here, or try a recipe below..."
-              class="w-full px-3 py-2 border border-surface-200 dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-800 text-surface-900 dark:text-surface-100 font-mono text-sm resize-y"
+              class="input"
             ></textarea>
           </div>
 
@@ -73,12 +76,12 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
           <!-- Final Output -->
           <div id="final-output-container" class="hidden mt-0">
             <div class="border-l-2 border-surface-300 dark:border-surface-600 h-5 ml-6"></div>
-            <div class="bg-teal-50 dark:bg-teal-900/20 border border-teal-300 dark:border-teal-700 rounded-lg p-4">
-              <div class="text-xs font-semibold text-teal-700 dark:text-teal-300 uppercase tracking-wider mb-2">Final Output</div>
+            <div class="bg-info-50 dark:bg-info-900/20 border border-info-200 dark:border-info-800 rounded-lg p-4">
+              <div class="text-xs font-semibold text-info-700 dark:text-info-300 uppercase tracking-wider mb-2">Final Output</div>
               <pre id="final-output" class="font-mono text-sm text-surface-900 dark:text-surface-100 whitespace-pre-wrap break-all max-h-64 overflow-auto"></pre>
               <div class="flex gap-2 mt-3">
-                <button id="copy-output" class="btn btn-teal text-xs px-3 py-1">Copy</button>
-                <button id="download-output" class="btn btn-secondary text-xs px-3 py-1">Download</button>
+                <button id="copy-output" class="btn btn-info btn-xs">Copy</button>
+                <button id="download-output" class="btn btn-secondary btn-xs">Download</button>
               </div>
             </div>
           </div>
@@ -86,7 +89,17 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
           <!-- Recipe Gallery (empty state / inspiration) -->
           <div id="recipe-gallery" class="mt-8">
             <h2 class="text-xs font-semibold text-surface-500 dark:text-surface-400 uppercase tracking-wider mb-3">Try a recipe</h2>
-            <div class="flex gap-3 overflow-x-auto pb-2" id="recipe-list"></div>
+            <!-- Recipe cards stay a horizontal row rather than reflowing, so the
+               scroller is made explicit and keyboard-reachable (tabindex +
+               role + aria-label) instead of silently clipping the third card. -->
+            <div
+              class="flex gap-3 overflow-x-auto pb-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              id="recipe-list"
+              tabindex="0"
+              role="region"
+              aria-label="Recipe gallery, scroll horizontally to see more recipes"
+              data-i18n-aria="tools.pipe.ui.ariaRecipeList"
+            ></div>
           </div>
         </div>
       </div>
@@ -94,15 +107,16 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
       <!-- Mobile palette bottom sheet -->
       <div id="mobile-palette" class="fixed inset-0 z-50 hidden">
         <div class="absolute inset-0 bg-black/40" id="mobile-palette-backdrop"></div>
-        <div class="absolute bottom-0 left-0 right-0 bg-white dark:bg-surface-900 rounded-t-xl p-4 max-h-[70vh] overflow-y-auto">
+        <div class="absolute bottom-0 left-0 right-0 bg-popover text-popover-foreground rounded-t-xl p-4 max-h-[70vh] overflow-y-auto">
           <div class="flex justify-between items-center mb-3">
             <span class="font-semibold text-sm">Add a step</span>
-            <button id="close-mobile-palette" class="text-surface-400 hover:text-surface-600 text-lg">&times;</button>
+            <button id="close-mobile-palette" class="btn btn-ghost btn-icon-sm text-lg" aria-label="Close palette">&times;</button>
           </div>
           <input type="text" id="mobile-palette-search" placeholder="Search tools..."
-            class="w-full px-3 py-2 text-sm border border-surface-200 dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-800 mb-3">
+            class="input w-full mb-3">
           <div id="mobile-palette-list" class="space-y-1"></div>
         </div>
+      </div>
       </div>
     </main>
   `;
@@ -183,9 +197,9 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
       };
 
       const RECIPES = [
-        { name: 'Decode JWT payload', steps: [{ id: 'base64', options: { mode: 'decode' } }, { id: 'json-format', options: { mode: 'format' } }] },
-        { name: 'Sort & dedupe lines', steps: [{ id: 'line-sort', options: { mode: 'sort-dedupe' } }] },
-        { name: 'Encode for URL', steps: [{ id: 'base64', options: { mode: 'encode' } }, { id: 'url-encode', options: { mode: 'encode' } }] },
+        { name: 'Decode JWT payload', sample: 'eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9', steps: [{ id: 'base64', options: { mode: 'decode' } }, { id: 'json-format', options: { mode: 'format' } }] },
+        { name: 'Sort & dedupe lines', sample: 'banana\\ncherry\\napple\\nbanana\\napple', steps: [{ id: 'line-sort', options: { mode: 'sort-dedupe' } }] },
+        { name: 'Encode for URL', sample: 'hello world & friends=true', steps: [{ id: 'base64', options: { mode: 'encode' } }, { id: 'url-encode', options: { mode: 'encode' } }] },
       ];
 
       // ── State ──────────────────────────────────────────────
@@ -213,19 +227,19 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
           });
           if (matching.length === 0) continue;
           const catEl = document.createElement('div');
-          catEl.className = 'text-[11px] font-semibold text-surface-400 dark:text-surface-500 uppercase tracking-wider mt-3 mb-1 first:mt-0';
+          catEl.className = 'text-[11px] font-semibold text-surface-500 dark:text-surface-400 uppercase tracking-wider mt-3 mb-1 first:mt-0';
           catEl.textContent = cat;
           container.appendChild(catEl);
           for (const id of matching) {
             const btn = document.createElement('button');
-            btn.className = 'block w-full text-left px-2 py-1.5 rounded text-sm text-surface-700 dark:text-surface-300 hover:bg-teal-50 hover:text-teal-700 dark:hover:bg-teal-900/30 dark:hover:text-teal-300 transition-colors';
+            btn.className = 'menu-item';
             btn.textContent = CONTRACTS[id].name;
             btn.onclick = () => { addStep(id); closeMobilePalette(); };
             container.appendChild(btn);
           }
         }
         if (container.children.length === 0) {
-          container.innerHTML = '<div class="text-xs text-surface-400 py-2">No tools match</div>';
+          container.innerHTML = '<div class="text-xs text-surface-500 dark:text-surface-400 py-2">No tools match</div>';
         }
       }
 
@@ -272,33 +286,33 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
 
           // Step card
           const card = document.createElement('div');
-          card.className = 'pipe-step border border-surface-200 dark:border-surface-800 rounded-lg overflow-hidden';
+          card.className = 'pipe-step border border-border rounded-lg overflow-hidden';
           card.dataset.index = i;
 
           // Header
           const header = document.createElement('div');
-          header.className = 'flex items-center justify-between px-3 py-2 bg-surface-50 dark:bg-surface-800 border-b border-surface-200 dark:border-surface-700';
+          header.className = 'flex items-center justify-between px-3 py-2 bg-muted/60 border-b border-border';
           header.innerHTML = \`
             <div class="flex items-center gap-2 text-sm">
               <span class="cursor-grab text-surface-400 select-none" title="Drag to reorder">⋮⋮</span>
               <span class="font-medium text-surface-800 dark:text-surface-200">\${contract.name}</span>
-              <a href="\${contract.id === 'line-sort' ? '#' : '/'+contract.id}" class="text-[11px] text-teal-600 dark:text-teal-400 hover:underline">\${contract.id === 'line-sort' ? '' : 'Open full tool'}</a>
+              <a href="\${contract.id === 'line-sort' ? '#' : '/'+contract.id}" class="text-[11px] text-info-600 dark:text-info-400 hover:underline">\${contract.id === 'line-sort' ? '' : 'Open full tool'}</a>
             </div>
             <div class="flex items-center gap-1">
-              <button class="move-up text-surface-400 hover:text-surface-600 dark:hover:text-surface-300 text-xs px-1" title="Move up (Alt+Up)" \${i===0?'disabled':''}>&uarr;</button>
-              <button class="move-down text-surface-400 hover:text-surface-600 dark:hover:text-surface-300 text-xs px-1" title="Move down (Alt+Down)" \${i===pipeSteps.length-1?'disabled':''}>&darr;</button>
-              <button class="remove-step text-red-400 hover:text-red-600 text-xs px-1" aria-label="Remove \${contract.name} step">&times;</button>
+              <button class="move-up btn btn-ghost btn-icon-sm text-xs" title="Move up (Alt+Up)" \${i===0?'disabled':''}>&uarr;</button>
+              <button class="move-down btn btn-ghost btn-icon-sm text-xs" title="Move down (Alt+Down)" \${i===pipeSteps.length-1?'disabled':''}>&darr;</button>
+              <button class="remove-step btn btn-ghost btn-icon-sm text-error-600 dark:text-error-400" aria-label="Remove \${contract.name} step">&times;</button>
             </div>
           \`;
 
           // Options (if any)
           let optionsHtml = '';
           if (contract.options && contract.options.length > 0) {
-            optionsHtml = '<div class="px-3 py-2 border-b border-surface-100 dark:border-surface-700 flex gap-3 flex-wrap">';
+            optionsHtml = '<div class="px-3 py-2 border-b border-border flex gap-3 flex-wrap">';
             for (const opt of contract.options) {
               if (opt.type === 'select' && opt.values) {
-                optionsHtml += \`<label class="text-xs text-surface-500"><span class="mr-1">\${opt.id}:</span>
-                  <select class="opt-select text-xs border border-surface-200 dark:border-surface-700 rounded px-1 py-0.5 bg-white dark:bg-surface-800 text-surface-800 dark:text-surface-200" data-opt="\${opt.id}">
+                optionsHtml += \`<label class="text-xs text-surface-500 dark:text-surface-400"><span class="mr-1">\${opt.id}:</span>
+                  <select class="input opt-select text-xs px-1 py-0.5 w-auto" data-opt="\${opt.id}">
                     \${opt.values.map(v => \`<option value="\${v}" \${step.options[opt.id]===v?'selected':''}>\${v}</option>\`).join('')}
                   </select></label>\`;
               }
@@ -344,20 +358,20 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
           const contract = CONTRACTS[step.contractId];
 
           if (failed) {
-            card.className = 'pipe-step border border-surface-200 dark:border-surface-800 rounded-lg overflow-hidden opacity-50';
+            card.className = 'pipe-step border border-border rounded-lg overflow-hidden opacity-50';
             outputEl.textContent = 'Skipped';
             return;
           }
 
           try {
             const result = contract.transform(current, step.options);
-            card.className = 'pipe-step border border-surface-200 dark:border-surface-800 rounded-lg overflow-hidden';
+            card.className = 'pipe-step border border-border rounded-lg overflow-hidden';
             outputEl.textContent = result || '(empty)';
             current = result;
           } catch (err) {
-            card.className = 'pipe-step border border-red-300 dark:border-red-800 rounded-lg overflow-hidden bg-red-50 dark:bg-red-900/20';
+            card.className = 'pipe-step border border-error-300 dark:border-error-800 rounded-lg overflow-hidden bg-error-50 dark:bg-error-900/20';
             outputEl.textContent = 'Error: ' + (err.message || err);
-            outputEl.className = outputEl.className.replace('text-surface-500', 'text-red-600').replace('text-surface-400', 'text-red-400');
+            outputEl.className = outputEl.className.replace('text-surface-500', 'text-error-600').replace('text-surface-400', 'text-error-400');
             failed = true;
           }
         });
@@ -384,14 +398,19 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
         recipeList.innerHTML = '';
         RECIPES.forEach(recipe => {
           const card = document.createElement('button');
-          card.className = 'shrink-0 bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-lg px-4 py-3 text-left hover:border-teal-400 transition-colors min-w-[200px]';
+          card.className = 'tool-card tool-card-link shrink-0 p-4 text-left min-w-[200px]';
           card.innerHTML = \`
             <div class="font-medium text-sm text-surface-800 dark:text-surface-200 mb-1">\${recipe.name}</div>
-            <div class="text-xs text-surface-400">\${recipe.steps.map(s => CONTRACTS[s.id]?.name || s.id).join(' → ')}</div>
-            <div class="text-xs text-teal-600 dark:text-teal-400 mt-2">Try it →</div>
+            <div class="text-xs text-surface-500 dark:text-surface-400">\${recipe.steps.map(s => CONTRACTS[s.id]?.name || s.id).join(' → ')}</div>
+            <div class="text-xs text-info-700 dark:text-info-300 mt-2">Try it →</div>
           \`;
           card.onclick = () => {
             pipeSteps = recipe.steps.map(s => ({ contractId: s.id, options: { ...s.options } }));
+            // Seed the sample input only when the user has not typed anything,
+            // so trying a recipe never clobbers real data.
+            if (!inputEl.value.trim() && recipe.sample) {
+              inputEl.value = recipe.sample;
+            }
             renderSteps();
             runPipe();
             document.getElementById('recipe-gallery').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -438,7 +457,7 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
         pipeSteps = [];
         inputEl.value = '';
         renderSteps();
-        finalContainer.classList.add('hidden');
+        runPipe();
       };
 
       document.getElementById('download-output').onclick = () => {
@@ -486,10 +505,11 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
               pipeSteps = data.map(s => ({ contractId: s.id, options: s.o || {} }));
               // Show shared pipeline banner
               const banner = document.createElement('div');
-              banner.className = 'bg-teal-50 dark:bg-teal-900/20 border border-teal-200 dark:border-teal-700 rounded-lg px-4 py-3 mb-4 text-sm text-teal-800 dark:text-teal-200';
+              banner.className = 'bg-info-50 dark:bg-info-900/20 border border-info-200 dark:border-info-800 rounded-lg px-4 py-3 mb-4 text-sm text-info-800 dark:text-info-200';
               banner.textContent = 'Someone shared this pipeline with you. Paste your data above to run it.';
               inputEl.parentElement.parentElement.insertBefore(banner, inputEl.parentElement);
               renderSteps();
+              runPipe();
               return;
             }
           } catch {}
@@ -501,6 +521,7 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
             if (Array.isArray(data) && data.length > 0) {
               pipeSteps = data;
               renderSteps();
+              runPipe();
             }
           } catch {}
         }
@@ -516,11 +537,12 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
 
   return respondHTML(
     createPageTemplate({
-      title: 'Pipe Mode — Chain Tools Together',
-      description: 'Chain multiple tools into a pipeline. Your data never leaves your browser.',
+      title: "Pipe Mode — Chain Tools Together",
+      description:
+        "Chain multiple tools into a pipeline. Your data is processed in your browser, not sent to our servers.",
       content: content + script,
-      path: '/pipe',
-      lang
-    })
+      path: "/pipe",
+      lang,
+    }),
   );
 }

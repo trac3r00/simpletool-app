@@ -10,7 +10,7 @@ Browser-based developer and everyday utilities served from a single Cloudflare W
 
 SimpleTool is a collection of web utilities for formatting data, inspecting security artifacts, working with network formats, generating values, and transforming text or media. The Cloudflare Worker renders and routes the pages; tool input and output are processed in the browser.
 
-The production catalog contains 53 tools. Three additional game tools are available when the Worker runs in a development environment.
+The production catalog contains 47 tools. Three additional game tools are registered (50 total) but hidden unless the Worker runs in a development environment.
 
 ## Features
 
@@ -80,18 +80,18 @@ Wrangler serves the application at `http://localhost:8787` by default.
 
 Useful commands:
 
-| Command | Purpose |
-| --- | --- |
-| `bun run build` | Generate routes, CSS, embedded styles, fonts, vendor bundles, game utilities, and the Open Graph image. |
-| `bun run dev` | Build the project and start `wrangler dev`. |
-| `bun run deploy` | Build and deploy with Wrangler. |
-| `bun run test` | Run the Vitest unit suite once. |
-| `bun run test:watch` | Run Vitest in watch mode. |
-| `bun run test:coverage` | Run Vitest with coverage enabled. |
-| `bun run test:e2e` | Run the Playwright suite; the test configuration starts a local Worker automatically. |
-| `bun run test:e2e:ui` | Open Playwright's interactive test UI. |
-| `bun run test:e2e:headed` | Run Playwright with a visible browser. |
-| `bun run test:a11y` | Audit the home page and registered tool routes with Playwright and axe-core. |
+| Command                   | Purpose                                                                                                 |
+| ------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `bun run build`           | Generate routes, CSS, embedded styles, fonts, vendor bundles, game utilities, and the Open Graph image. |
+| `bun run dev`             | Build the project and start `wrangler dev`.                                                             |
+| `bun run deploy`          | Build and deploy with Wrangler.                                                                         |
+| `bun run test`            | Run the Vitest unit suite once.                                                                         |
+| `bun run test:watch`      | Run Vitest in watch mode.                                                                               |
+| `bun run test:coverage`   | Run Vitest with coverage enabled.                                                                       |
+| `bun run test:e2e`        | Run the Playwright suite; the test configuration starts a local Worker automatically.                   |
+| `bun run test:e2e:ui`     | Open Playwright's interactive test UI.                                                                  |
+| `bun run test:e2e:headed` | Run Playwright with a visible browser.                                                                  |
+| `bun run test:a11y`       | Audit the home page and registered tool routes with Playwright and axe-core.                            |
 
 To deploy interactively, authenticate Wrangler first:
 
@@ -108,15 +108,15 @@ Cloudflare Worker settings are defined in `wrangler.toml`. The checked-in defaul
 
 ### Runtime variables
 
-| Variable | Purpose |
-| --- | --- |
-| `ENVIRONMENT` | Set to `development`, `dev`, or `local` to disable ads and production rate limiting and to include development-only tools. |
-| `SITE_URL` | Base URL used for canonical links; defaults to `https://simpletool.app`. |
-| `ADSENSE_CLIENT` | AdSense publisher client ID in `ca-pub-<digits>` format. |
-| `ADSENSE_SLOT` | Optional fallback slot ID for any missing supported placement. |
-| `ADSENSE_SLOTS` | JSON object containing `home`, `tool`, `legal`, `sidebar`, and/or `bottom` slot IDs. |
-| `SENTRY_DSN` | Enables Sentry error reporting when non-empty. |
-| `CF_ANALYTICS_TOKEN` | Enables the Cloudflare Web Analytics beacon when non-empty. |
+| Variable             | Purpose                                                                                                                    |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `ENVIRONMENT`        | Set to `development`, `dev`, or `local` to disable ads and production rate limiting and to include development-only tools. |
+| `SITE_URL`           | Base URL used for canonical links; defaults to `https://simpletool.app`.                                                   |
+| `ADSENSE_CLIENT`     | AdSense publisher client ID in `ca-pub-<digits>` format. Ads stay off until slot IDs exist.                                |
+| `ADSENSE_SLOT`       | Optional fallback slot ID for the allow-list keys (`home`, `json`, `legal`).                                               |
+| `ADSENSE_SLOTS`      | JSON object with `home`, `json`, and/or `legal` slot IDs. Empty `{}` keeps ad units off; ads.txt still ships if `ADSENSE_CLIENT` is set. |
+| `SENTRY_DSN`         | Enables Sentry error reporting when non-empty.                                                                             |
+| `CF_ANALYTICS_TOKEN` | Enables the Cloudflare Web Analytics beacon when non-empty.                                                                |
 
 For local overrides, place values in the ignored `.dev.vars` file. Do not commit credentials or private deployment values.
 
@@ -130,11 +130,11 @@ ADSENSE_SLOTS={}
 
 ### Bindings
 
-| Binding | Source | Purpose |
-| --- | --- | --- |
-| `ASSETS` | `[assets]` | Serves generated files from `dist/`. |
-| `CF_VERSION_METADATA` | `[version_metadata]` | Supplies the deployed version identifier to Sentry releases. |
-| `RATE_LIMITER` | `[durable_objects]` | Stores per-IP rate-limit state in the `RateLimiter` Durable Object. |
+| Binding               | Source               | Purpose                                                             |
+| --------------------- | -------------------- | ------------------------------------------------------------------- |
+| `ASSETS`              | `[assets]`           | Serves generated files from `dist/`.                                |
+| `CF_VERSION_METADATA` | `[version_metadata]` | Supplies the deployed version identifier to Sentry releases.        |
+| `RATE_LIMITER`        | `[durable_objects]`  | Stores per-IP rate-limit state in the `RateLimiter` Durable Object. |
 
 See [AdSense integration](docs/adsense-integration.md) for slot behavior and [the rollout checklist](docs/adsense-rollout-checklist.md) before enabling advertising.
 
@@ -142,13 +142,13 @@ See [AdSense integration](docs/adsense-integration.md) for slot behavior and [th
 
 `playwright.config.js` supports these test-runner variables:
 
-| Variable | Behavior |
-| --- | --- |
-| `PW_BASE_URL` | Overrides the URL used by browser tests. |
-| `PW_PORT` | Overrides the local Worker port; defaults to `8787`. |
-| `PW_NO_WEB_SERVER=1` | Prevents Playwright from starting its managed local Worker. |
-| `PW_SKIP_BUILD=1` | Skips the build in Playwright's managed server command. CI uses this when testing a prepared build artifact. |
-| `PW_USE_SYSTEM_CHROME=1` | Runs tests with the installed Chrome channel instead of bundled Chromium. |
+| Variable                 | Behavior                                                                                                     |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------ |
+| `PW_BASE_URL`            | Overrides the URL used by browser tests.                                                                     |
+| `PW_PORT`                | Overrides the local Worker port; defaults to `8787`.                                                         |
+| `PW_NO_WEB_SERVER=1`     | Prevents Playwright from starting its managed local Worker.                                                  |
+| `PW_SKIP_BUILD=1`        | Skips the build in Playwright's managed server command. CI uses this when testing a prepared build artifact. |
+| `PW_USE_SYSTEM_CHROME=1` | Runs tests with the installed Chrome channel instead of bundled Chromium.                                    |
 
 ## Development
 
@@ -193,7 +193,7 @@ src/
 scripts/                  Build, translation, simulation, and QA scripts
 styles/input.css          Tailwind source and shared design tokens
 tests/e2e/                Playwright browser and accessibility tests
-docs/                     Release, advertising, safety, architecture, and handoff documentation
+docs/                     Release, advertising, and content-safety documentation
 dist/                     Generated browser assets
 wrangler.toml             Cloudflare Worker configuration and bindings
 ```

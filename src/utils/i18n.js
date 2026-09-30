@@ -4,51 +4,56 @@
  * Uses localStorage for persistence
  */
 
-import { CONTENT_TRANSLATIONS } from './content-metadata.js';
-import en from '../i18n/en.js';
-import ko from '../i18n/ko.js';
-import ja from '../i18n/ja.js';
-import es from '../i18n/es.js';
-import zhCN from '../i18n/zh-CN.js';
-import zhTW from '../i18n/zh-TW.js';
-import fr from '../i18n/fr.js';
-import de from '../i18n/de.js';
-import pt from '../i18n/pt.js';
-import vi from '../i18n/vi.js';
+import { CONTENT_TRANSLATIONS } from "./content-metadata.js";
+import {
+  HIDDEN_IN_PRODUCTION_TOOL_IDS,
+  isDevRuntime,
+} from "./tool-registry.js";
+import en from "../i18n/en.js";
+import ko from "../i18n/ko.js";
+import ja from "../i18n/ja.js";
+import es from "../i18n/es.js";
+import zhCN from "../i18n/zh-CN.js";
+import zhTW from "../i18n/zh-TW.js";
+import fr from "../i18n/fr.js";
+import de from "../i18n/de.js";
+import pt from "../i18n/pt.js";
+import vi from "../i18n/vi.js";
 
 export const SUPPORTED_LANGUAGES = {
-  en: { name: 'English', flag: '🇺🇸' },
-  ko: { name: '한국어', flag: '🇰🇷' },
-  ja: { name: '日本語', flag: '🇯🇵' },
-  es: { name: 'Español', flag: '🇪🇸' },
-  'zh-CN': { name: '简体中文', flag: '🇨🇳' },
-  'zh-TW': { name: '繁體中文', flag: '🇹🇼' },
-  fr: { name: 'Français', flag: '🇫🇷' },
-  de: { name: 'Deutsch', flag: '🇩🇪' },
-  pt: { name: 'Português', flag: '🇧🇷' },
-  vi: { name: 'Tiếng Việt', flag: '🇻🇳' }
+  en: { name: "English", flag: "🇺🇸" },
+  ko: { name: "한국어", flag: "🇰🇷" },
+  ja: { name: "日本語", flag: "🇯🇵" },
+  es: { name: "Español", flag: "🇪🇸" },
+  "zh-CN": { name: "简体中文", flag: "🇨🇳" },
+  "zh-TW": { name: "繁體中文", flag: "🇹🇼" },
+  fr: { name: "Français", flag: "🇫🇷" },
+  de: { name: "Deutsch", flag: "🇩🇪" },
+  pt: { name: "Português", flag: "🇧🇷" },
+  vi: { name: "Tiếng Việt", flag: "🇻🇳" },
 };
 
-export const DEFAULT_LANGUAGE = 'en';
-export const LANGUAGE_QUERY_KEY = 'lang';
+export const DEFAULT_LANGUAGE = "en";
+export const LANGUAGE_QUERY_KEY = "lang";
 
 const TRANSLATIONS = {
   en,
   ko,
   ja,
   es,
-  'zh-CN': zhCN,
-  'zh-TW': zhTW,
+  "zh-CN": zhCN,
+  "zh-TW": zhTW,
   fr,
   de,
   pt,
-  vi
+  vi,
 };
 
 function getLanguageCatalog(lang) {
   const normalized = normalizeLanguage(lang);
   const base = TRANSLATIONS[normalized] || TRANSLATIONS[DEFAULT_LANGUAGE];
-  const content = CONTENT_TRANSLATIONS[normalized] || CONTENT_TRANSLATIONS[DEFAULT_LANGUAGE];
+  const content =
+    CONTENT_TRANSLATIONS[normalized] || CONTENT_TRANSLATIONS[DEFAULT_LANGUAGE];
   return content ? { ...base, content } : base;
 }
 
@@ -56,9 +61,9 @@ function getLanguageCatalog(lang) {
  * Get current language from localStorage or browser preference
  */
 export function getCurrentLanguage() {
-  if (typeof window === 'undefined') return DEFAULT_LANGUAGE;
+  if (typeof window === "undefined") return DEFAULT_LANGUAGE;
 
-  const stored = localStorage.getItem('language');
+  const stored = localStorage.getItem("language");
   if (stored && SUPPORTED_LANGUAGES[stored]) return stored;
 
   const browserLang = normalizeLanguage(navigator.language);
@@ -71,9 +76,9 @@ export function getCurrentLanguage() {
  * Translate a key path (e.g., 'nav.home')
  */
 export function t(path, lang = getCurrentLanguage()) {
-  const keys = path.split('.');
+  const keys = path.split(".");
   let result = getLanguageCatalog(lang);
-  
+
   for (const key of keys) {
     if (result[key] === undefined) {
       // Fallback to English if key missing in current language
@@ -86,18 +91,20 @@ export function t(path, lang = getCurrentLanguage()) {
     }
     result = result[key];
   }
-  
+
   return result;
 }
 
 export function normalizeLanguage(lang) {
-  const raw = String(lang || '').trim().toLowerCase();
+  const raw = String(lang || "")
+    .trim()
+    .toLowerCase();
   const parts = raw.split(/[-_]/);
   const base = parts[0];
-  if (base === 'zh') {
-    const sub = (parts[1] || '').toUpperCase();
-    if (sub === 'TW' || sub === 'HANT') return 'zh-TW';
-    return 'zh-CN';
+  if (base === "zh") {
+    const sub = (parts[1] || "").toUpperCase();
+    if (sub === "TW" || sub === "HANT") return "zh-TW";
+    return "zh-CN";
   }
   return SUPPORTED_LANGUAGES[base] ? base : DEFAULT_LANGUAGE;
 }
@@ -108,9 +115,9 @@ export function resolveRequestLanguage(request, url) {
     return normalizeLanguage(queryLang);
   }
 
-  const acceptLanguage = request?.headers?.get('Accept-Language') || '';
-  for (const part of acceptLanguage.split(',')) {
-    const code = normalizeLanguage(part.split(';')[0]);
+  const acceptLanguage = request?.headers?.get("Accept-Language") || "";
+  for (const part of acceptLanguage.split(",")) {
+    const code = normalizeLanguage(part.split(";")[0]);
     if (SUPPORTED_LANGUAGES[code]) {
       return code;
     }
@@ -120,24 +127,33 @@ export function resolveRequestLanguage(request, url) {
 }
 
 export function withLanguageQuery(path, lang = DEFAULT_LANGUAGE) {
-  if (!path || path.startsWith('http') || path.startsWith('mailto:') || path.startsWith('#')) {
+  if (
+    !path ||
+    path.startsWith("http") ||
+    path.startsWith("mailto:") ||
+    path.startsWith("#")
+  ) {
     return path;
   }
   const normalized = normalizeLanguage(lang);
   if (normalized === DEFAULT_LANGUAGE) {
     return path;
   }
-  const [pathname, hash = ''] = path.split('#');
-  const [base, search = ''] = pathname.split('?');
+  const [pathname, hash = ""] = path.split("#");
+  const [base, search = ""] = pathname.split("?");
   const params = new URLSearchParams(search);
   params.set(LANGUAGE_QUERY_KEY, normalized);
   const query = params.toString();
-  return `${base}${query ? `?${query}` : ''}${hash ? `#${hash}` : ''}`;
+  return `${base}${query ? `?${query}` : ""}${hash ? `#${hash}` : ""}`;
 }
 
 export function getToolTranslation(toolId, lang = DEFAULT_LANGUAGE) {
   const normalized = normalizeLanguage(lang);
-  return TRANSLATIONS[normalized]?.tools?.[toolId] || TRANSLATIONS[DEFAULT_LANGUAGE]?.tools?.[toolId] || null;
+  return (
+    TRANSLATIONS[normalized]?.tools?.[toolId] ||
+    TRANSLATIONS[DEFAULT_LANGUAGE]?.tools?.[toolId] ||
+    null
+  );
 }
 
 export function localizeTool(tool, lang = DEFAULT_LANGUAGE) {
@@ -147,7 +163,7 @@ export function localizeTool(tool, lang = DEFAULT_LANGUAGE) {
     ...tool,
     name: translation.name || tool.name,
     description: translation.desc || tool.description,
-    tip: translation.tip || tool.tip
+    tip: translation.tip || tool.tip,
   };
 }
 
@@ -163,6 +179,7 @@ export function getLanguageBootstrapScript(serverLang = DEFAULT_LANGUAGE) {
     <script data-i18n-bootstrap>
       (function() {
         var supported = ${JSON.stringify(Object.keys(SUPPORTED_LANGUAGES))};
+        var serverLang = ${JSON.stringify(normalizeLanguage(serverLang))};
         var params = new URLSearchParams(window.location.search);
         function normLang(s) {
           s = (s || '').trim().toLowerCase();
@@ -173,13 +190,26 @@ export function getLanguageBootstrapScript(serverLang = DEFAULT_LANGUAGE) {
           }
           return p[0];
         }
-        var lang = params.get('${LANGUAGE_QUERY_KEY}') || localStorage.getItem('language') || ${JSON.stringify(serverLang)};
-        lang = normLang(lang);
+        var explicit = params.get('${LANGUAGE_QUERY_KEY}');
+        var stored = null;
+        try { stored = localStorage.getItem('language'); } catch (e) {}
+        var lang = normLang(explicit || stored || serverLang);
         if (supported.indexOf(lang) === -1) {
           lang = normLang(navigator.language);
           if (supported.indexOf(lang) === -1) lang = ${JSON.stringify(DEFAULT_LANGUAGE)};
         }
         document.documentElement.lang = lang;
+        // A stored preference the server did not render leaves <title>, meta,
+        // and server-only prose in the other locale — a half-translated page no
+        // client-side patch can finish. Re-request it in the stored locale
+        // instead. The '?lang=' the redirect adds is what stops it repeating.
+        if (!explicit && stored && lang !== serverLang &&
+            window.location && typeof window.location.replace === 'function') {
+          params.set('${LANGUAGE_QUERY_KEY}', lang);
+          window.location.replace(
+            window.location.pathname + '?' + params.toString() + window.location.hash
+          );
+        }
       })();
     </script>
   `;
@@ -188,9 +218,20 @@ export function getLanguageBootstrapScript(serverLang = DEFAULT_LANGUAGE) {
 /**
  * Get the language management script for the client
  */
-export function getLanguageScript(toolId, serverLang = DEFAULT_LANGUAGE) {
+export function getLanguageScript(
+  toolId,
+  serverLang = DEFAULT_LANGUAGE,
+  i18nToolIds,
+) {
   const normalized = normalizeLanguage(serverLang);
-  const langsToSend = normalized === DEFAULT_LANGUAGE ? [DEFAULT_LANGUAGE] : [DEFAULT_LANGUAGE, normalized];
+  const langsToSend =
+    normalized === DEFAULT_LANGUAGE
+      ? [DEFAULT_LANGUAGE]
+      : [DEFAULT_LANGUAGE, normalized];
+  const fullToolIds = new Set([
+    toolId,
+    ...(Array.isArray(i18nToolIds) ? i18nToolIds : []),
+  ]);
   const slim = {};
   for (const lang of langsToSend) {
     const data = getLanguageCatalog(lang);
@@ -198,7 +239,12 @@ export function getLanguageScript(toolId, serverLang = DEFAULT_LANGUAGE) {
     if (data.tools) {
       const tools = {};
       for (const [id, info] of Object.entries(data.tools)) {
-        if (id === toolId) {
+        // Dev-only tools must not appear in production HTML at all — their
+        // routes 404 there, so shipping their names only advertises them.
+        if (!isDevRuntime() && HIDDEN_IN_PRODUCTION_TOOL_IDS.has(id)) {
+          continue;
+        }
+        if (fullToolIds.has(id)) {
           tools[id] = info;
         } else {
           const { ui, js, edu, cheatsheet, ...rest } = info;
@@ -215,6 +261,7 @@ export function getLanguageScript(toolId, serverLang = DEFAULT_LANGUAGE) {
         var _T = ${translationsJSON};
         var _supported = ${JSON.stringify(Object.keys(SUPPORTED_LANGUAGES))};
         var _langs = ${JSON.stringify(SUPPORTED_LANGUAGES)};
+        var _serverLang = ${JSON.stringify(normalized)};
 
         function _normLang(s) {
           s = (s || '').trim().toLowerCase();
@@ -299,11 +346,12 @@ export function getLanguageScript(toolId, serverLang = DEFAULT_LANGUAGE) {
           }
           var flagEl = document.querySelector('[aria-haspopup="true"] .text-lg');
           if (flagEl && _langs[lang]) flagEl.textContent = _langs[lang].flag;
-          document.querySelectorAll('.language-dropdown [role="menuitem"]').forEach(function(btn) {
-            btn.classList.remove('bg-surface-50', 'dark:bg-surface-800/50', 'font-semibold');
+          document.querySelectorAll('.language-dropdown [data-lang]').forEach(function(btn) {
+            var active = btn.getAttribute('data-lang') === lang;
+            btn.classList[active ? 'add' : 'remove']('bg-surface-50', 'dark:bg-surface-800/50', 'font-semibold');
+            if (active) btn.setAttribute('aria-current', 'true');
+            else btn.removeAttribute('aria-current');
           });
-          var activeBtn = document.querySelector('.language-dropdown [role="menuitem"]:nth-child(' + (_supported.indexOf(lang) + 1) + ')');
-          if (activeBtn) activeBtn.classList.add('bg-surface-50', 'dark:bg-surface-800/50', 'font-semibold');
           var langButton = document.querySelector('[aria-haspopup="true"]');
           if (langButton) {
             var changeLanguageLabel = _resolve(lang, 'nav.changeLanguage');
@@ -351,18 +399,25 @@ export function getLanguageScript(toolId, serverLang = DEFAULT_LANGUAGE) {
         };
 
         window.setLanguage = function(lang) {
-          localStorage.setItem('language', lang);
+          if (_supported.indexOf(lang) === -1) return;
+          try { localStorage.setItem('language', lang); } catch (e) {}
           var next = new URL(window.location.href);
-          if (lang === ${JSON.stringify(DEFAULT_LANGUAGE)}) {
-            next.searchParams.delete('${LANGUAGE_QUERY_KEY}');
-          } else {
-            next.searchParams.set('${LANGUAGE_QUERY_KEY}', lang);
-          }
-          if (!_T[lang]) {
-            window.location.href = next.toString();
+          // Always explicit, English included: without the param the server
+          // re-resolves from Accept-Language and can hand back a locale other
+          // than the one just chosen.
+          next.searchParams.set('${LANGUAGE_QUERY_KEY}', lang);
+          // One transaction. Only the server can restate <title>, the meta
+          // description, and the prose that carries no data-i18n key (blog
+          // article bodies), so switching locale re-requests the page rather
+          // than patching the half of it the client can reach.
+          if (window.location && typeof window.location.assign === 'function') {
+            window.location.assign(next.toString());
             return;
           }
-          window.history.pushState({ lang: lang }, '', next.toString());
+          // No navigation available (non-browser host): best-effort patch.
+          if (window.history && typeof window.history.pushState === 'function') {
+            window.history.pushState({ lang: lang }, '', next.toString());
+          }
           document.documentElement.lang = lang;
           _patchDOM(lang);
         };
@@ -375,7 +430,14 @@ export function getLanguageScript(toolId, serverLang = DEFAULT_LANGUAGE) {
 
         document.addEventListener('DOMContentLoaded', function() {
           var lang = _getLang();
-          if (lang !== 'en') _patchDOM(lang);
+          // Skip only when the server already rendered this exact locale in
+          // the default language. Everything else — including a wanted locale
+          // of 'en' on a page the server rendered in another language — needs
+          // the patch, since the bootstrap redirect cannot fix a route that
+          // ignores the lang param.
+          if (lang !== _serverLang || lang !== ${JSON.stringify(DEFAULT_LANGUAGE)}) {
+            _patchDOM(lang);
+          }
 
           var langButton = document.querySelector('[aria-haspopup="true"]');
           var langDropdown = document.querySelector('.language-dropdown');
@@ -446,20 +508,24 @@ export function getLanguageScript(toolId, serverLang = DEFAULT_LANGUAGE) {
  */
 export function getLanguageSelectorHTML(lang = DEFAULT_LANGUAGE) {
   const current = normalizeLanguage(lang);
-  const changeLanguageLabel = t('nav.changeLanguage', current);
-  const options = Object.entries(SUPPORTED_LANGUAGES).map(([code, { name, flag }]) => `
-    <button data-lang="${code}" 
-            class="flex items-center gap-2 w-full px-4 py-2 text-sm text-surface-700 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors ${current === code ? 'bg-surface-50 dark:bg-surface-800/50 font-semibold' : ''}"
-            role="menuitem">
+  const changeLanguageLabel = t("nav.changeLanguage", current);
+  const options = Object.entries(SUPPORTED_LANGUAGES)
+    .map(
+      ([code, { name, flag }]) => `
+    <button data-lang="${code}"
+            class="btn-ghost w-full justify-start gap-2${code === current ? " bg-surface-50 dark:bg-surface-800/50 font-semibold" : ""}"
+            role="menuitem"${code === current ? ' aria-current="true"' : ""}>
       <span>${flag}</span>
       <span>${name}</span>
     </button>
-  `).join('');
+  `,
+    )
+    .join("");
 
   return `
     <div class="relative inline-block text-left group">
       <button type="button"
-              class="flex items-center gap-2 p-2 rounded-lg text-surface-600 hover:bg-surface-100 dark:text-surface-400 dark:hover:bg-surface-800 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500"
+              class="btn-ghost gap-2"
               aria-haspopup="true"
               aria-expanded="false"
               aria-label="${changeLanguageLabel}"

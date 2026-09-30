@@ -2,18 +2,12 @@
 node_modules/
 
 # Local scratch / accidental checkouts
-package/
 
 # Notes / local docs (not part of deploy)
-feedback.md
 
 # Cloudflare / Wrangler
 .wrangler/
 .dev.vars
-AGENTS.md
-BUG.md
-changelog.md
-TODO.md
 .dev.vars
 
 # Build outputs
@@ -57,7 +51,6 @@ yarn-error.log*
 .AppleDouble
 .LSOverride
 Thumbs.db
-.playwright-mcp/
 .vscode/
 .idea/
 *.swp
@@ -65,24 +58,26 @@ Thumbs.db
 *~
 
 # Tests
-tests/*
-!tests/e2e/
 test-results/*
 
 # Opencode
-.sisyphus/
-.opencode/
-.gstack/
 
 # Claude Code project config
 .claude/
 
 # Local screenshots / media
 *.png
-youtube-output/
 
 # Draft scripts and tests (not yet production-ready)
-scripts/add-missing-sri.mjs
-src/utils/ads.test.js
-src/utils/sri.test.js
-src/worker.test.js
+
+# local git worktrees (gitlinks were committed by accident once)
+.bob-worker-worktrees/
+
+# session-local working dirs
+.clawhip/
+.design-capture/
+.fablize/
+
+# local build cache (holds the unsubsetted 5.3MB Material Symbols font for
+# comparison; scripts/download-fonts.js never reads it — see DESIGN.md)
+.cache/

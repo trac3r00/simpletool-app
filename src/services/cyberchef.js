@@ -4,15 +4,49 @@
  */
 
 const MORSE = {
-  A: '.-', B: '-...', C: '-.-.', D: '-..', E: '.', F: '..-.',
-  G: '--.', H: '....', I: '..', J: '.---', K: '-.-', L: '.-..',
-  M: '--', N: '-.', O: '---', P: '.--.', Q: '--.-', R: '.-.',
-  S: '...', T: '-', U: '..-', V: '...-', W: '.--', X: '-..-',
-  Y: '-.--', Z: '--..',
-  '0': '-----', '1': '.----', '2': '..---', '3': '...--', '4': '....-',
-  '5': '.....', '6': '-....', '7': '--...', '8': '---..', '9': '----.',
-  '.': '.-.-.-', ',': '--..--', '?': '..--..', '/': '-..-.',
-  '@': '.--.-.', ' ': '/', '-': '-....-'
+  A: ".-",
+  B: "-...",
+  C: "-.-.",
+  D: "-..",
+  E: ".",
+  F: "..-.",
+  G: "--.",
+  H: "....",
+  I: "..",
+  J: ".---",
+  K: "-.-",
+  L: ".-..",
+  M: "--",
+  N: "-.",
+  O: "---",
+  P: ".--.",
+  Q: "--.-",
+  R: ".-.",
+  S: "...",
+  T: "-",
+  U: "..-",
+  V: "...-",
+  W: ".--",
+  X: "-..-",
+  Y: "-.--",
+  Z: "--..",
+  0: "-----",
+  1: ".----",
+  2: "..---",
+  3: "...--",
+  4: "....-",
+  5: ".....",
+  6: "-....",
+  7: "--...",
+  8: "---..",
+  9: "----.",
+  ".": ".-.-.-",
+  ",": "--..--",
+  "?": "..--..",
+  "/": "-..-.",
+  "@": ".--.-.",
+  " ": "/",
+  "-": "-....-",
 };
 
 const REVERSE_MORSE = Object.entries(MORSE).reduce((acc, [char, code]) => {
@@ -37,19 +71,19 @@ function fromBase64(input) {
     const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
     return new TextDecoder().decode(bytes);
   } catch (error) {
-    throw new Error('Invalid base64 input');
+    throw new Error("Invalid base64 input");
   }
 }
 
 function toHex(input) {
   return Array.from(new TextEncoder().encode(input))
-    .map((byte) => byte.toString(16).padStart(2, '0'))
-    .join('');
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
 }
 
 function fromHex(input) {
   if (!/^[0-9a-fA-F]+$/.test(input) || input.length % 2 !== 0) {
-    throw new Error('Invalid hex input');
+    throw new Error("Invalid hex input");
   }
   const bytes = new Uint8Array(input.length / 2);
   for (let i = 0; i < input.length; i += 2) {
@@ -62,7 +96,7 @@ function urlDecode(input) {
   try {
     return decodeURIComponent(input);
   } catch (error) {
-    throw new Error('Invalid URL encoded input');
+    throw new Error("Invalid URL encoded input");
   }
 }
 
@@ -70,13 +104,13 @@ async function hashString(input, algorithm) {
   const data = new TextEncoder().encode(input);
   const buffer = await crypto.subtle.digest(algorithm, data);
   return Array.from(new Uint8Array(buffer))
-    .map((byte) => byte.toString(16).padStart(2, '0'))
-    .join('');
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
 }
 
 function rot13(input) {
   return input.replace(/[a-zA-Z]/g, (char) => {
-    const base = char <= 'Z' ? 65 : 97;
+    const base = char <= "Z" ? 65 : 97;
     return String.fromCharCode(((char.charCodeAt(0) - base + 13) % 26) + base);
   });
 }
@@ -90,7 +124,7 @@ function rot47(input) {
 
 function atbash(input) {
   return input.replace(/[a-zA-Z]/g, (char) => {
-    if (char <= 'Z') {
+    if (char <= "Z") {
       return String.fromCharCode(90 - (char.charCodeAt(0) - 65));
     }
     return String.fromCharCode(122 - (char.charCodeAt(0) - 97));
@@ -100,27 +134,31 @@ function atbash(input) {
 function caesar(input, shift = 13) {
   const normalized = ((shift % 26) + 26) % 26;
   return input.replace(/[a-zA-Z]/g, (char) => {
-    const base = char <= 'Z' ? 65 : 97;
-    return String.fromCharCode(((char.charCodeAt(0) - base + normalized) % 26) + base);
+    const base = char <= "Z" ? 65 : 97;
+    return String.fromCharCode(
+      ((char.charCodeAt(0) - base + normalized) % 26) + base,
+    );
   });
 }
 
-function vigenere(input, key = '') {
+function vigenere(input, key = "") {
   if (!key) {
-    throw new Error('Vigenère cipher requires a key');
+    throw new Error("Vigenère cipher requires a key");
   }
   let idx = 0;
   const upperKey = key.toUpperCase();
   return input.replace(/[a-zA-Z]/g, (char) => {
-    const base = char <= 'Z' ? 65 : 97;
+    const base = char <= "Z" ? 65 : 97;
     const shift = upperKey.charCodeAt(idx % upperKey.length) - 65;
     idx += 1;
-    return String.fromCharCode(((char.charCodeAt(0) - base + shift + 26) % 26) + base);
+    return String.fromCharCode(
+      ((char.charCodeAt(0) - base + shift + 26) % 26) + base,
+    );
   });
 }
 
 function reverseString(input) {
-  return [...input].reverse().join('');
+  return [...input].reverse().join("");
 }
 
 function capitalizeWords(input) {
@@ -128,34 +166,34 @@ function capitalizeWords(input) {
 }
 
 function removeWhitespace(input) {
-  return input.replace(/\s+/g, '');
+  return input.replace(/\s+/g, "");
 }
 
 function addLineBreaks(input, width = 64) {
-  return input.match(new RegExp(`.{1,${width}}`, 'g'))?.join('\n') ?? input;
+  return input.match(new RegExp(`.{1,${width}}`, "g"))?.join("\n") ?? input;
 }
 
 function encodeMorse(input) {
   return input
     .toUpperCase()
-    .split('')
-    .map((char) => MORSE[char] ?? '')
+    .split("")
+    .map((char) => MORSE[char] ?? "")
     .filter(Boolean)
-    .join(' ');
+    .join(" ");
 }
 
 function decodeMorse(input) {
   return input
     .trim()
     .split(/\s+/)
-    .map((code) => REVERSE_MORSE[code] ?? '')
-    .join('');
+    .map((code) => REVERSE_MORSE[code] ?? "")
+    .join("");
 }
 
 function timestampToDate(input) {
   const value = Number.parseInt(input, 10);
   if (!Number.isFinite(value)) {
-    throw new Error('Invalid timestamp');
+    throw new Error("Invalid timestamp");
   }
   const milliseconds = value < 1e12 ? value * 1000 : value;
   return new Date(milliseconds).toISOString();
@@ -164,13 +202,13 @@ function timestampToDate(input) {
 function dateToTimestamp(input) {
   const date = new Date(input);
   if (Number.isNaN(date.getTime())) {
-    throw new Error('Invalid date input');
+    throw new Error("Invalid date input");
   }
   return Math.floor(date.getTime() / 1000).toString();
 }
 
 function extractWithRegex(input, regex) {
-  return Array.from(new Set(input.match(regex) ?? [])).join('\n');
+  return Array.from(new Set(input.match(regex) ?? [])).join("\n");
 }
 
 function jsonBeautify(input) {
@@ -195,7 +233,7 @@ const OPERATIONS = {
   uppercase: (input) => input.toUpperCase(),
   lowercase: (input) => input.toLowerCase(),
   capitalize: (input) => capitalizeWords(input),
-  'capitalize-words': (input) => capitalizeWords(input),
+  "capitalize-words": (input) => capitalizeWords(input),
   removewhitespace: (input) => removeWhitespace(input),
   addlinebreaks: (input, options) => addLineBreaks(input, options?.width ?? 64),
   jsonbeautify: (input) => jsonBeautify(input),
@@ -208,13 +246,13 @@ const OPERATIONS = {
   morse: (input) => encodeMorse(input),
   frommorse: (input) => decodeMorse(input),
   caesar: (input, options) => caesar(input, options?.shift ?? 13),
-  vigenere: (input, options) => vigenere(input, options?.key ?? ''),
+  vigenere: (input, options) => vigenere(input, options?.key ?? ""),
 };
 
 const ASYNC_OPERATIONS = {
-  sha1: (input) => hashString(input, 'SHA-1'),
-  sha256: (input) => hashString(input, 'SHA-256'),
-  sha512: (input) => hashString(input, 'SHA-512'),
+  sha1: (input) => hashString(input, "SHA-1"),
+  sha256: (input) => hashString(input, "SHA-256"),
+  sha512: (input) => hashString(input, "SHA-512"),
 };
 
 function executeOperation(op, input, options) {
@@ -234,7 +272,7 @@ async function executeAsyncOperation(op, input) {
 
 function printableRatio(text) {
   if (!text) return 0;
-  const nonPrintable = text.replace(/[ -~]/g, '').length;
+  const nonPrintable = text.replace(/[ -~]/g, "").length;
   return 1 - nonPrintable / text.length;
 }
 
@@ -245,7 +283,9 @@ function isLikelyBase64(value) {
 }
 
 function isLikelyHex(value) {
-  return /^[0-9a-fA-F]+$/.test(value) && value.length % 2 === 0 && value.length >= 8;
+  return (
+    /^[0-9a-fA-F]+$/.test(value) && value.length % 2 === 0 && value.length >= 8
+  );
 }
 
 function isLikelyUrlEncoded(value) {
@@ -261,11 +301,11 @@ function isLikelyTimestamp(value) {
 function detectHashType(value) {
   const trimmed = value.trim();
   if (!/^[0-9a-fA-F]+$/.test(trimmed)) return null;
-  if (trimmed.length === 32) return 'MD5 (128-bit)';
-  if (trimmed.length === 40) return 'SHA-1 (160-bit)';
-  if (trimmed.length === 64) return 'SHA-256 (256-bit)';
-  if (trimmed.length === 96) return 'SHA-384 (384-bit)';
-  if (trimmed.length === 128) return 'SHA-512 (512-bit)';
+  if (trimmed.length === 32) return "MD5 (128-bit)";
+  if (trimmed.length === 40) return "SHA-1 (160-bit)";
+  if (trimmed.length === 64) return "SHA-256 (256-bit)";
+  if (trimmed.length === 96) return "SHA-384 (384-bit)";
+  if (trimmed.length === 128) return "SHA-512 (512-bit)";
   return null;
 }
 
@@ -283,10 +323,10 @@ async function autoDetectOperation(input) {
   // JSON
   try {
     const pretty = jsonBeautify(trimmed);
-    return createAutoResponse('jsonbeautify', pretty, {
-      detection: 'JSON payload',
+    return createAutoResponse("jsonbeautify", pretty, {
+      detection: "JSON payload",
       confidence: 0.9,
-      note: 'Auto-prettified JSON structure.',
+      note: "Auto-prettified JSON structure.",
     });
   } catch (error) {
     // ignore
@@ -297,10 +337,10 @@ async function autoDetectOperation(input) {
     try {
       const decoded = fromBase64(trimmed);
       if (printableRatio(decoded) > 0.6) {
-        return createAutoResponse('base64decode', decoded, {
-          detection: 'Base64 encoded data',
+        return createAutoResponse("base64decode", decoded, {
+          detection: "Base64 encoded data",
           confidence: 0.85,
-          note: 'Decoded from Base64.',
+          note: "Decoded from Base64.",
         });
       }
     } catch (error) {
@@ -313,10 +353,10 @@ async function autoDetectOperation(input) {
     try {
       const decoded = fromHex(trimmed);
       if (printableRatio(decoded) > 0.6) {
-        return createAutoResponse('hexdecode', decoded, {
-          detection: 'Hexadecimal data',
+        return createAutoResponse("hexdecode", decoded, {
+          detection: "Hexadecimal data",
           confidence: 0.8,
-          note: 'Converted from hexadecimal bytes.',
+          note: "Converted from hexadecimal bytes.",
         });
       }
     } catch (error) {
@@ -328,10 +368,10 @@ async function autoDetectOperation(input) {
   if (isLikelyUrlEncoded(trimmed)) {
     try {
       const decoded = urlDecode(trimmed);
-      return createAutoResponse('urldecode', decoded, {
-        detection: 'URL encoded string',
+      return createAutoResponse("urldecode", decoded, {
+        detection: "URL encoded string",
         confidence: 0.75,
-        note: 'Percent-encoding removed.',
+        note: "Percent-encoding removed.",
       });
     } catch (error) {
       // ignore
@@ -342,10 +382,10 @@ async function autoDetectOperation(input) {
   if (isLikelyTimestamp(trimmed)) {
     try {
       const iso = timestampToDate(trimmed);
-      return createAutoResponse('timestamptodate', iso, {
-        detection: 'Unix timestamp',
+      return createAutoResponse("timestamptodate", iso, {
+        detection: "Unix timestamp",
         confidence: 0.7,
-        note: 'Converted to ISO8601.',
+        note: "Converted to ISO8601.",
       });
     } catch (error) {
       // ignore
@@ -355,32 +395,34 @@ async function autoDetectOperation(input) {
   // Hash detection
   const hashType = detectHashType(trimmed);
   if (hashType) {
-    return createAutoResponse('hash-detect', input, {
+    return createAutoResponse("hash-detect", input, {
       detection: hashType,
       confidence: 0.75,
-      note: 'Cryptographic hashes are irreversible. Store or compare instead.',
+      note: "Cryptographic hashes are irreversible. Store or compare instead.",
     });
   }
 
-  return createAutoResponse('auto', input, {
-    detection: 'No automatic match',
+  return createAutoResponse("auto", input, {
+    detection: "No automatic match",
     confidence: 0.2,
-    note: 'Select a manual operation to continue.',
+    note: "Select a manual operation to continue.",
   });
 }
 
 export async function applyOperation(input, operation, options = {}) {
-  if (typeof input !== 'string') {
-    throw new Error('Input must be a string');
+  if (typeof input !== "string") {
+    throw new Error("Input must be a string");
   }
 
   const op = operation.toLowerCase();
 
-  if (op === 'md5') {
-    throw new Error('MD5 hashing is intentionally unavailable for security reasons');
+  if (op === "md5") {
+    throw new Error(
+      "MD5 hashing is intentionally unavailable for security reasons",
+    );
   }
 
-  if (op === 'auto') {
+  if (op === "auto") {
     return autoDetectOperation(input);
   }
 
@@ -392,7 +434,7 @@ export async function applyOperation(input, operation, options = {}) {
 }
 
 export function supportedOperations() {
-  return ['auto']
+  return ["auto"]
     .concat(Object.keys(OPERATIONS))
     .concat(Object.keys(ASYNC_OPERATIONS))
     .sort();

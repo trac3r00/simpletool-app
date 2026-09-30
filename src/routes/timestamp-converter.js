@@ -3,51 +3,74 @@
  * Convert between Unix timestamps and human-readable dates
  */
 
-import { respondHTML, respondJSON } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
-import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML, respondJSON } from "../utils/respond.js";
+import { createPageTemplate, createToolHeader } from "../utils/common-ui.js";
+import {
+  createEducationalSection,
+  createRelatedToolsSection,
+} from "../utils/content-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleTimestampConverterRoutes(request, url) {
   const { pathname } = url;
   const method = request.method;
 
   try {
-    if (pathname === '/timestamp-converter' || pathname === '/timestamp-converter/') {
-      if (method === 'GET') {
-        return renderTimestampConverterPage(resolveRequestLanguage(request, url));
+    if (
+      pathname === "/timestamp-converter" ||
+      pathname === "/timestamp-converter/"
+    ) {
+      if (method === "GET") {
+        return renderTimestampConverterPage(
+          resolveRequestLanguage(request, url),
+        );
       }
     }
 
-    return respondJSON({ error: 'Not found' }, { status: 404 });
+    return respondJSON({ error: "Not found" }, { status: 404 });
   } catch (error) {
-    console.error('Timestamp Converter Route Error:', error);
+    console.error("Timestamp Converter Route Error:", error);
     return respondJSON(
-      { error: 'Internal server error', message: error.message },
-      { status: 500 }
+      { error: "Internal server error", message: error.message },
+      { status: 500 },
     );
   }
 }
 
 function renderTimestampConverterPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('timestamp-converter', currentLang);
+  const translation = getToolTranslation("timestamp-converter", currentLang);
   const toolHeader = createToolHeader(
-    { emoji: '⏰' },
-    translation?.name || 'Timestamp Converter',
-    translation?.desc || 'Convert between Unix timestamps and human-readable dates with timezone support',
-    [{ text: translation?.ui?.badge17 || 'ISO 8601', color: 'orange', tooltip: 'Outputs converted timestamps in ISO 8601 format (e.g. 2025-01-30T12:00:00Z).' }],
-    { toolId: 'timestamp-converter' }
+    { emoji: "⏰" },
+    translation?.name || "Timestamp Converter",
+    translation?.desc ||
+      "Convert between Unix timestamps and human-readable dates with timezone support",
+    [
+      {
+        text: translation?.ui?.badge17 || "ISO 8601",
+        color: "orange",
+        tooltip:
+          "Outputs converted timestamps in ISO 8601 format (e.g. 2025-01-30T12:00:00Z).",
+      },
+    ],
+    { toolId: "timestamp-converter" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'timestamp-converter');
-    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
-
+  const currentTool = TOOLS.find((t) => t.id === "timestamp-converter");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
 
         ${toolHeader}
 
@@ -57,7 +80,7 @@ function renderTimestampConverterPage(lang = DEFAULT_LANGUAGE) {
           <div id="current-unix" class="text-4xl font-mono font-bold text-primary-600 dark:text-primary-400 mb-2">0</div>
           <div id="current-human" class="text-lg text-surface-700 dark:text-surface-300"></div>
           <button id="copy-current" class="mt-4 btn btn-secondary text-sm">
-            <span class="material-symbols-rounded text-sm" data-i18n="tools.timestamp-converter.ui.desc14">content_copy</span> Copy Timestamp
+            <span class="material-symbols-rounded text-sm" aria-hidden="true" data-i18n="tools.timestamp-converter.ui.desc14">content_copy</span> Copy Timestamp
           </button>
         </div>
 
@@ -66,7 +89,7 @@ function renderTimestampConverterPage(lang = DEFAULT_LANGUAGE) {
           <!-- Unix to Human -->
           <div class="space-y-6">
             <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50 flex items-center gap-2">
-              <span class="material-symbols-rounded text-primary-600">arrow_forward</span>
+              <span class="material-symbols-rounded text-primary-600 dark:text-primary-400">arrow_forward</span>
               Unix to Human
             </h2>
             
@@ -81,11 +104,11 @@ function renderTimestampConverterPage(lang = DEFAULT_LANGUAGE) {
                 </div>
                 <div class="flex gap-4 mt-3">
                   <label class="flex items-center space-x-2 cursor-pointer">
-                    <input type="radio" name="unix-unit" value="seconds" checked class="w-4 h-4 text-primary-600 focus:ring-primary-500">
+                    <input type="radio" name="unix-unit" value="seconds" checked class="w-4 h-4 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
                     <span class="text-sm text-surface-700 dark:text-surface-300" data-i18n="tools.timestamp-converter.ui.desc15" data-tooltip="Standard Unix epoch (10 digits)" data-i18n-tooltip="tools.timestamp-converter.ui.tip1">Seconds</span>
                   </label>
                   <label class="flex items-center space-x-2 cursor-pointer">
-                    <input type="radio" name="unix-unit" value="milliseconds" class="w-4 h-4 text-primary-600 focus:ring-primary-500">
+                    <input type="radio" name="unix-unit" value="milliseconds" class="w-4 h-4 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
                     <span class="text-sm text-surface-700 dark:text-surface-300" data-i18n="tools.timestamp-converter.ui.desc16" data-tooltip="JavaScript Date.now() format (13 digits)" data-i18n-tooltip="tools.timestamp-converter.ui.tip2">Milliseconds</span>
                   </label>
                 </div>
@@ -115,7 +138,7 @@ function renderTimestampConverterPage(lang = DEFAULT_LANGUAGE) {
           <!-- Human to Unix -->
           <div class="space-y-6">
             <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50 flex items-center gap-2">
-              <span class="material-symbols-rounded text-primary-600">arrow_back</span>
+              <span class="material-symbols-rounded text-primary-600 dark:text-primary-400">arrow_back</span>
               Human to Unix
             </h2>
             
@@ -164,24 +187,32 @@ function renderTimestampConverterPage(lang = DEFAULT_LANGUAGE) {
       </div>
     </main>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-      ${createEducationalSection([
-        {
-          title: 'What is Unix Time?',
-          content: '<p>Unix time (also known as Epoch time, POSIX time, or Unix timestamp) is a system for describing a point in time. It is the number of seconds that have elapsed since the Unix Epoch, minus leap seconds; the Unix Epoch is 00:00:00 UTC on 1 January 1970. It is widely used in operating systems and file formats because it is a single integer, making it easy for computers to store and manipulate.</p><p>This standard allows different systems to communicate time accurately regardless of their local timezone settings. While it might seem abstract to humans, it is the backbone of time representation in software development, database indexing, and performance-critical applications where string parsing would be too slow.</p>'
-        },
-        {
-          title: 'How to Use This Tool',
-          content: '<ol><li>To convert Unix to Human: Enter the timestamp in the "Unix Timestamp" field. Select whether it\'s in seconds or milliseconds.</li><li>To convert Human to Unix: Select the date and time using the pickers, then choose your desired timezone.</li><li>Use the "Now" button to quickly grab the current timestamp for either conversion direction.</li><li>View the results in real-time, including ISO 8601, Local Time, UTC, and relative time (e.g., "2 hours ago").</li><li>Click the "Copy" button next to any result to save it to your clipboard.</li></ol>'
-        },
-        {
-          title: 'Common Use Cases',
-          content: '<ul><li><strong>Log Analysis:</strong> Convert cryptic timestamps found in server logs or database entries into readable dates for debugging.</li><li><strong>API Development:</strong> Verify that your backend is sending the correct epoch values to your frontend or third-party integrations.</li><li><strong>Data Migration:</strong> Ensure time-based data remains consistent when moving between systems with different default time representations.</li><li><strong>Scheduling:</strong> Calculate future or past timestamps for cron jobs, expiration dates, or event triggers.</li></ul>'
-        },
-        {
-          title: 'Pro Tips',
-          content: '<ul><li>When working with JavaScript, remember that <code>Date.now()</code> returns milliseconds, while standard Unix timestamps are in seconds. Divide by 1000 to convert.</li><li>Always use the ISO 8601 format (e.g., 2025-01-30T12:00:00Z) for data exchange between systems to ensure maximum compatibility and readability.</li><li>Be aware of the "Year 2038 problem," where 32-bit signed integers will overflow. Modern systems use 64-bit integers, which solves this for the foreseeable future.</li></ul>'
-        }
-      ], 'timestamp-converter', currentLang)}
+      ${createEducationalSection(
+        [
+          {
+            title: "What is Unix Time?",
+            content:
+              "<p>Unix time (also known as Epoch time, POSIX time, or Unix timestamp) is a system for describing a point in time. It is the number of seconds that have elapsed since the Unix Epoch, minus leap seconds; the Unix Epoch is 00:00:00 UTC on 1 January 1970. It is widely used in operating systems and file formats because it is a single integer, making it easy for computers to store and manipulate.</p><p>This standard allows different systems to communicate time accurately regardless of their local timezone settings. While it might seem abstract to humans, it is the backbone of time representation in software development, database indexing, and performance-critical applications where string parsing would be too slow.</p>",
+          },
+          {
+            title: "How to Use This Tool",
+            content:
+              '<ol><li>To convert Unix to Human: Enter the timestamp in the "Unix Timestamp" field. Select whether it\'s in seconds or milliseconds.</li><li>To convert Human to Unix: Select the date and time using the pickers, then choose your desired timezone.</li><li>Use the "Now" button to quickly grab the current timestamp for either conversion direction.</li><li>View the results in real-time, including ISO 8601, Local Time, UTC, and relative time (e.g., "2 hours ago").</li><li>Click the "Copy" button next to any result to save it to your clipboard.</li></ol>',
+          },
+          {
+            title: "Common Use Cases",
+            content:
+              "<ul><li><strong>Log Analysis:</strong> Convert cryptic timestamps found in server logs or database entries into readable dates for debugging.</li><li><strong>API Development:</strong> Verify that your backend is sending the correct epoch values to your frontend or third-party integrations.</li><li><strong>Data Migration:</strong> Ensure time-based data remains consistent when moving between systems with different default time representations.</li><li><strong>Scheduling:</strong> Calculate future or past timestamps for cron jobs, expiration dates, or event triggers.</li></ul>",
+          },
+          {
+            title: "Pro Tips",
+            content:
+              '<ul><li>When working with JavaScript, remember that <code>Date.now()</code> returns milliseconds, while standard Unix timestamps are in seconds. Divide by 1000 to convert.</li><li>Always use the ISO 8601 format (e.g., 2025-01-30T12:00:00Z) for data exchange between systems to ensure maximum compatibility and readability.</li><li>Be aware of the "Year 2038 problem," where 32-bit signed integers will overflow. Modern systems use 64-bit integers, which solves this for the foreseeable future.</li></ul>',
+          },
+        ],
+        "timestamp-converter",
+        currentLang,
+      )}
     ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;
@@ -245,9 +276,19 @@ function renderTimestampConverterPage(lang = DEFAULT_LANGUAGE) {
       }
 
       // Unix to Human conversion
+      function clearUnixOutputs(isoText) {
+        document.getElementById('iso-output').textContent = isoText;
+        document.getElementById('local-output').textContent = '-';
+        document.getElementById('utc-output').textContent = '-';
+        document.getElementById('relative-output').textContent = '-';
+      }
+
       function convertUnixToHuman() {
         const input = unixInput.value.trim();
-        if (!input) return;
+        if (!input) {
+          clearUnixOutputs('-');
+          return;
+        }
 
         const unit = document.querySelector('input[name="unix-unit"]:checked').value;
         let timestamp = parseInt(input);
@@ -259,7 +300,7 @@ function renderTimestampConverterPage(lang = DEFAULT_LANGUAGE) {
         const date = new Date(timestamp);
 
         if (isNaN(date.getTime())) {
-          document.getElementById('iso-output').textContent = _t('tools.timestamp-converter.js.text0', 'Invalid timestamp');
+          clearUnixOutputs(_t('tools.timestamp-converter.js.text0', 'Invalid timestamp'));
           return;
         }
 
@@ -349,12 +390,15 @@ function renderTimestampConverterPage(lang = DEFAULT_LANGUAGE) {
     </script>
   `;
 
-  return respondHTML(createPageTemplate({
-    title: translation?.name || 'Timestamp Converter',
-    description: translation?.desc || 'Convert Unix timestamps to human dates.',
-    path: '/timestamp-converter',
-    content,
-    scripts: script,
-    lang: currentLang
-  }));
+  return respondHTML(
+    createPageTemplate({
+      title: translation?.name || "Timestamp Converter",
+      description:
+        translation?.desc || "Convert Unix timestamps to human dates.",
+      path: "/timestamp-converter",
+      content,
+      scripts: script,
+      lang: currentLang,
+    }),
+  );
 }

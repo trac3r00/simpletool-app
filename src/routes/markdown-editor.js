@@ -1,46 +1,59 @@
-import { respondHTML, respondJSON } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createCheatsheet } from '../utils/common-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { createRelatedToolsSection } from '../utils/content-ui.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML, respondJSON } from "../utils/respond.js";
+import {
+  createPageTemplate,
+  createToolHeader,
+  createCheatsheet,
+} from "../utils/common-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import { createRelatedToolsSection } from "../utils/content-ui.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleMarkdownEditorRoutes(request, url) {
   const { pathname } = url;
   const method = request.method;
 
   try {
-    if (pathname === '/markdown-editor' || pathname === '/markdown-editor/') {
-      if (method === 'GET') {
+    if (pathname === "/markdown-editor" || pathname === "/markdown-editor/") {
+      if (method === "GET") {
         return renderMarkdownEditorPage(resolveRequestLanguage(request, url));
       }
     }
-    return respondJSON({ error: 'Not found' }, { status: 404 });
+    return respondJSON({ error: "Not found" }, { status: 404 });
   } catch (error) {
-    console.error('Markdown Preview Route Error:', error);
+    console.error("Markdown Preview Route Error:", error);
     return respondJSON(
-      { error: 'Internal server error', message: error.message },
-      { status: 500 }
+      { error: "Internal server error", message: error.message },
+      { status: 500 },
     );
   }
 }
 
 function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('markdown-editor', currentLang);
+  const translation = getToolTranslation("markdown-editor", currentLang);
   const toolHeader = createToolHeader(
-    { emoji: '📝' },
-    translation?.name || 'Markdown Editor',
-    translation?.desc || 'Live Markdown editor with split-pane preview, Mermaid diagrams, and export tools.',
+    { emoji: "📝" },
+    translation?.name || "Markdown Editor",
+    translation?.desc ||
+      "Live Markdown editor with split-pane preview, Mermaid diagrams, and export tools.",
     [],
-    { toolId: 'markdown-editor' }
+    { toolId: "markdown-editor" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'markdown-editor');
-    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
-
+  const currentTool = TOOLS.find((t) => t.id === "markdown-editor");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main class="tool-page-shell min-h-[calc(100vh-4rem)] flex flex-col">
+      <div class="tool-page-panel tool-page-panel--fill">
       ${toolHeader}
 
       <div id="md-preview-root" class="flex flex-col gap-4 min-h-[560px] h-[calc(100vh-20rem)]" data-view="split" style="--split: 55%;">
@@ -55,13 +68,13 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
 
             <div class="hidden sm:flex items-center gap-2 text-sm text-surface-600 dark:text-surface-400">
               <span id="word-count" role="status">0 words</span>
-              <span class="text-surface-300 dark:text-surface-700">|</span>
+              <span class="text-surface-500 dark:text-surface-400">|</span>
               <span id="char-count">0 chars</span>
             </div>
 
             <div class="hidden md:block">
               <label for="outline-select" class="sr-only"><span data-i18n="tools.markdown-editor.ui.label0">Jump to heading</span></label>
-              <select id="outline-select" class="max-w-[220px] px-2.5 py-1.5 text-sm bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-700 rounded-md text-surface-700 dark:text-surface-200 focus:outline-none focus:ring-2 focus:ring-primary-500" disabled>
+              <select id="outline-select" class="input max-w-[220px] w-auto" disabled>
                 <option value="" data-i18n="tools.markdown-editor.ui.option9">Jump to heading...</option>
               </select>
             </div>
@@ -70,43 +83,43 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
           <div class="flex flex-wrap items-center gap-2">
             <input id="md-file-input" type="file" accept=".md,.markdown,text/markdown,text/plain" class="hidden" />
 
-            <button id="open-md-btn" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-surface-700 dark:text-surface-200 bg-surface-100 dark:bg-surface-800 hover:bg-surface-200 dark:hover:bg-surface-700 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500">
+            <button id="open-md-btn" class="btn-ghost btn-sm flex items-center gap-2">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"></path></svg>
               Open
             </button>
 
-            <button id="clear-md-btn" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-surface-700 dark:text-surface-200 bg-surface-100 dark:bg-surface-800 hover:bg-surface-200 dark:hover:bg-surface-700 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500">
+            <button id="clear-md-btn" class="btn-ghost btn-sm flex items-center gap-2">
               <span data-i18n="tools.markdown-editor.ui.button3">Clear</span>
             </button>
 
             <div class="h-4 w-px bg-surface-300 dark:bg-surface-700 mx-1 hidden sm:block"></div>
 
             <div class="relative group">
-              <button id="export-menu-btn" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-primary-700 dark:text-primary-300 bg-primary-50 dark:bg-primary-900/30 hover:bg-primary-100 dark:hover:bg-primary-900/50 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500">
+              <button id="export-menu-btn" class="btn-ghost btn-sm flex items-center gap-2" aria-haspopup="true" aria-expanded="false" aria-controls="export-menu">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                 <span data-i18n="tools.markdown-editor.ui.button11">Export</span>
                 <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
               </button>
-              <div class="absolute right-0 mt-1 w-48 bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-10">
-                <button id="copy-md-btn" class="w-full text-left px-4 py-2 text-sm text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors flex items-center gap-2">
+              <div id="export-menu" role="menu" aria-labelledby="export-menu-btn" class="absolute right-0 mt-1 w-48 bg-popover text-popover-foreground border border-border rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-10">
+                <button id="copy-md-btn" class="btn-ghost btn-sm w-full justify-start" role="menuitem">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
                   <span data-i18n="tools.markdown-editor.ui.button4">Copy MD</span>
                 </button>
-                <button id="copy-html-btn" class="w-full text-left px-4 py-2 text-sm text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors flex items-center gap-2">
+                <button id="copy-html-btn" class="btn-ghost btn-sm w-full justify-start" role="menuitem">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
                   <span data-i18n="tools.markdown-editor.ui.button5">Copy HTML</span>
                 </button>
                 <div class="border-t border-surface-200 dark:border-surface-700"></div>
-                <button id="download-md-btn" class="w-full text-left px-4 py-2 text-sm text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors flex items-center gap-2">
+                <button id="download-md-btn" class="btn-ghost btn-sm w-full justify-start" role="menuitem">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                   <span data-i18n="tools.markdown-editor.ui.button6">Download .md</span>
                 </button>
-                <button id="download-html-btn" class="w-full text-left px-4 py-2 text-sm text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors flex items-center gap-2">
+                <button id="download-html-btn" class="btn-ghost btn-sm w-full justify-start" role="menuitem">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                   <span data-i18n="tools.markdown-editor.ui.button7">Download .html</span>
                 </button>
                 <div class="border-t border-surface-200 dark:border-surface-700"></div>
-                <button id="print-btn" class="w-full text-left px-4 py-2 text-sm text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors flex items-center gap-2">
+                <button id="print-btn" class="btn-ghost btn-sm w-full justify-start" role="menuitem">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6v-8z"></path></svg>
                   <span data-i18n="tools.markdown-editor.ui.title8">Print</span>
                 </button>
@@ -124,7 +137,7 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
               <textarea
                 id="markdown-input"
                 dir="auto"
-                class="flex-grow w-full p-4 font-mono text-sm bg-white dark:bg-surface-900 text-surface-900 dark:text-surface-100 border border-surface-200 dark:border-surface-800 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-shadow"
+                class="input-mono flex-grow p-4 resize-none"
                 placeholder="# Start typing Markdown here...\n\nTip: Mermaid diagrams are supported via code fences:\n\n\`\`\`mermaid\nflowchart TD\n  A[Start] --> B{Works?}\n  B -->|Yes| C[Ship]\n  B -->|No| D[Fix]\n\`\`\`"
                 spellcheck="false"
               ></textarea>
@@ -139,7 +152,7 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
             </div>
 
             <!-- Preview -->
-            <div id="md-preview-pane" class="min-h-0 flex flex-col relative group bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-lg overflow-hidden">
+            <div id="md-preview-pane" class="tool-group tool-group--flush min-h-0 flex flex-col relative group overflow-hidden">
               <div
                 id="preview-output"
                 dir="auto"
@@ -172,6 +185,13 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
         textarea::-webkit-scrollbar-thumb:hover,
         #preview-output::-webkit-scrollbar-thumb:hover {
           background-color: rgba(156, 163, 175, 0.8);
+        }
+
+        /* Export dropdown: keyboard-openable counterpart to the hover state */
+        #export-menu[data-open="true"],
+        #export-menu:focus-within {
+          opacity: 1;
+          visibility: visible;
         }
 
         /* Default Split View Layout */
@@ -285,8 +305,10 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
         }
       </style>
 
-      ${createCheatsheet('markdown-preview', 'Markdown Quick Reference', [
-        { heading: 'Formatting', content: `
+      ${createCheatsheet("markdown-preview", "Markdown Quick Reference", [
+        {
+          heading: "Formatting",
+          content: `
           <table>
             <tr><th data-i18n="tools.markdown-editor.ui.th3">Syntax</th><th data-i18n="tools.markdown-editor.ui.th4">Result</th></tr>
             <tr><td><code>**bold**</code></td><td>Bold text</td></tr>
@@ -294,8 +316,11 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
             <tr><td><code>~~strike~~</code></td><td>Strikethrough</td></tr>
             <tr><td><code>\`code\`</code></td><td>Inline code</td></tr>
             <tr><td><code>&gt; quote</code></td><td>Blockquote</td></tr>
-          </table>` },
-        { heading: 'Structure', content: `
+          </table>`,
+        },
+        {
+          heading: "Structure",
+          content: `
           <table>
             <tr><th data-i18n="tools.markdown-editor.ui.th3">Syntax</th><th data-i18n="tools.markdown-editor.ui.th5">Element</th></tr>
             <tr><td><code># H1</code> to <code>###### H6</code></td><td>Headings</td></tr>
@@ -303,17 +328,26 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
             <tr><td><code>1. item</code></td><td>Ordered list</td></tr>
             <tr><td><code>---</code></td><td>Horizontal rule</td></tr>
             <tr><td><code>- [ ] task</code></td><td>Task list</td></tr>
-          </table>` },
-        { heading: 'Links &amp; Media', content: `
+          </table>`,
+        },
+        {
+          heading: "Links &amp; Media",
+          content: `
           <table>
             <tr><th data-i18n="tools.markdown-editor.ui.th3">Syntax</th><th data-i18n="tools.markdown-editor.ui.th4">Result</th></tr>
             <tr><td><code>[text](url)</code></td><td>Hyperlink</td></tr>
             <tr><td><code>![alt](url)</code></td><td>Image</td></tr>
             <tr><td><code>[text](url "title")</code></td><td>Link with tooltip</td></tr>
-          </table>` },
-        { heading: 'Code &amp; Tables', content: '<p>Use triple backticks for code blocks with optional language. Tables use pipes: <code>| Col1 | Col2 |</code> with <code>|---|---|</code> separator.</p>' }
+          </table>`,
+        },
+        {
+          heading: "Code &amp; Tables",
+          content:
+            "<p>Use triple backticks for code blocks with optional language. Tables use pipes: <code>| Col1 | Col2 |</code> with <code>|---|---|</code> separator.</p>",
+        },
       ])}
     ${createRelatedToolsSection(relatedToolsData)}
+      </div>
     </main>
   `;
 
@@ -771,13 +805,42 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
           setTimeout(() => w.print(), 250);
         });
 
+         // Export dropdown: click/keyboard disclosure alongside the CSS hover state
+         const exportMenu = document.getElementById('export-menu');
+         function setExportMenuOpen(open) {
+           if (!exportMenu || !exportMenuBtn) return;
+           exportMenu.dataset.open = open ? 'true' : 'false';
+           exportMenuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+         }
+         setExportMenuOpen(false);
+
+         exportMenuBtn?.addEventListener('click', (e) => {
+           e.stopPropagation();
+           setExportMenuOpen(exportMenu?.dataset.open !== 'true');
+         });
+
+         exportMenu?.addEventListener('keydown', (e) => {
+           if (e.key === 'Escape') {
+             setExportMenuOpen(false);
+             exportMenuBtn?.focus();
+           }
+         });
+
+         exportMenuBtn?.addEventListener('keydown', (e) => {
+           if (e.key === 'Escape') setExportMenuOpen(false);
+         });
+
+         exportMenu?.addEventListener('click', (e) => {
+           if (e.target.closest('[role="menuitem"]')) setExportMenuOpen(false);
+         });
+
          // Close export dropdown on click outside
          document.addEventListener('click', (e) => {
-           const exportMenu = exportMenuBtn?.closest('.group');
-           if (exportMenu && !exportMenu.contains(e.target)) {
-             exportMenu.classList.remove('group-hover:opacity-100', 'group-hover:visible');
+           const exportGroup = exportMenuBtn?.closest('.group');
+           if (exportGroup && !exportGroup.contains(e.target)) {
+             setExportMenuOpen(false);
            }
-           
+
            const toggleBtn = e.target.closest('[data-theme-toggle]');
            if (!toggleBtn) return;
            setTimeout(updatePreview, 200);
@@ -788,12 +851,14 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
 
   return respondHTML(
     createPageTemplate({
-      title: translation?.name || 'Markdown Editor',
-      description: translation?.desc || 'Split-pane Markdown editor with sync scroll and GFM support.',
-      path: '/markdown-editor',
+      title: translation?.name || "Markdown Editor",
+      description:
+        translation?.desc ||
+        "Split-pane Markdown editor with sync scroll and GFM support.",
+      path: "/markdown-editor",
       content,
       scripts,
-      lang: currentLang
-    })
+      lang: currentLang,
+    }),
   );
 }

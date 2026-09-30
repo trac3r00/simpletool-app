@@ -3,45 +3,68 @@
  * Generate PKCE challenges, visualize OAuth flows, and analyze security — all in-browser.
  */
 
-import { respondHTML, respondJSON } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
-import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML, respondJSON } from "../utils/respond.js";
+import { createPageTemplate, createToolHeader } from "../utils/common-ui.js";
+import {
+  createEducationalSection,
+  createRelatedToolsSection,
+} from "../utils/content-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleOAuthDebuggerRoutes(request, url) {
   const { pathname } = url;
   try {
-    if (pathname === '/oauth-debugger' || pathname === '/oauth-debugger/') {
-      if (request.method === 'GET') return renderOAuthDebuggerPage(resolveRequestLanguage(request, url));
+    if (pathname === "/oauth-debugger" || pathname === "/oauth-debugger/") {
+      if (request.method === "GET")
+        return renderOAuthDebuggerPage(resolveRequestLanguage(request, url));
     }
-    return respondJSON({ error: 'Not found' }, { status: 404 });
+    return respondJSON({ error: "Not found" }, { status: 404 });
   } catch (error) {
-    console.error('OAuth Debugger Route Error:', error);
-    return respondJSON({ error: 'Internal server error', message: error.message }, { status: 500 });
+    console.error("OAuth Debugger Route Error:", error);
+    return respondJSON(
+      { error: "Internal server error", message: error.message },
+      { status: 500 },
+    );
   }
 }
 
 function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('oauth-debugger', currentLang);
-  const title = translation?.name || 'OAuth 2.0 / PKCE Debugger';
-  const description = translation?.desc || 'Generate PKCE challenges, visualize OAuth flows, and analyze security.';
+  const translation = getToolTranslation("oauth-debugger", currentLang);
+  const title = translation?.name || "OAuth 2.0 / PKCE Debugger";
+  const description =
+    translation?.desc ||
+    "Generate PKCE challenges, visualize OAuth flows, and analyze security.";
 
   const toolHeader = createToolHeader(
-    { emoji: '🔑' },
+    { emoji: "🔑" },
     title,
     description,
-    [{ text: 'Privacy First', color: 'green', tooltip: 'All operations happen in your browser.' }],
-    { toolId: 'oauth-debugger' }
+    [
+      {
+        text: "Privacy First",
+        color: "green",
+        tooltip: "All operations happen in your browser.",
+      },
+    ],
+    { toolId: "oauth-debugger" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'oauth-debugger');
-  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+  const currentTool = TOOLS.find((t) => t.id === "oauth-debugger");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
         ${toolHeader}
 
         <div class="space-y-10">
@@ -57,20 +80,20 @@ function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
                 <div>
                   <label class="block text-xs font-semibold uppercase tracking-wide text-surface-500 dark:text-surface-400 mb-1" data-i18n="tools.oauth-debugger.ui.label0">code_verifier <span class="normal-case font-normal">(43–128 URL-safe chars)</span></label>
                   <div class="flex gap-2">
-                    <input id="pkce-verifier" readonly class="w-full p-3 font-mono text-sm bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg text-surface-900 dark:text-surface-100" placeholder="Click Generate..." data-i18n-placeholder="tools.oauth-debugger.ui.placeholder0" />
+                    <input id="pkce-verifier" readonly aria-label="PKCE code verifier" class="input-mono w-full" placeholder="Click Generate..." data-i18n-placeholder="tools.oauth-debugger.ui.placeholder0" />
                     <button id="copy-pkce-verifier" class="btn btn-secondary flex-shrink-0" data-i18n="tools.oauth-debugger.ui.button1">Copy</button>
                   </div>
                 </div>
                 <div>
                   <label class="block text-xs font-semibold uppercase tracking-wide text-surface-500 dark:text-surface-400 mb-1" data-i18n="tools.oauth-debugger.ui.label1">code_challenge <span class="normal-case font-normal">(SHA-256, base64url)</span></label>
                   <div class="flex gap-2">
-                    <input id="pkce-challenge" readonly class="w-full p-3 font-mono text-sm bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg text-surface-900 dark:text-surface-100" placeholder="Derived after generation..." data-i18n-placeholder="tools.oauth-debugger.ui.placeholder1" />
+                    <input id="pkce-challenge" readonly aria-label="PKCE code challenge" class="input-mono w-full" placeholder="Derived after generation..." data-i18n-placeholder="tools.oauth-debugger.ui.placeholder1" />
                     <button id="copy-pkce-challenge" class="btn btn-secondary flex-shrink-0" data-i18n="tools.oauth-debugger.ui.button2">Copy</button>
                   </div>
                 </div>
                 <div>
-                  <label class="block text-xs font-semibold uppercase tracking-wide text-surface-500 dark:text-surface-400 mb-1" data-i18n="tools.oauth-debugger.ui.label2">code_challenge_method</label>
-                  <input readonly value="S256" class="w-40 p-3 font-mono text-sm bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg text-surface-900 dark:text-surface-100" />
+                  <label for="pkce-method" class="block text-xs font-semibold uppercase tracking-wide text-surface-500 dark:text-surface-400 mb-1" data-i18n="tools.oauth-debugger.ui.label2">code_challenge_method</label>
+                  <input id="pkce-method" readonly value="S256" class="input-mono w-40" />
                 </div>
               </div>
             </div>
@@ -81,43 +104,56 @@ function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
             <h2 class="text-lg font-bold text-surface-900 dark:text-surface-50 mb-4" data-i18n="tools.oauth-debugger.ui.heading1">Authorization URL Builder</h2>
             <div class="bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-800 rounded-xl p-6 space-y-6">
 
-              <!-- Flow diagram -->
-              <div class="overflow-x-auto">
-                <div class="flex items-start gap-0 min-w-[600px] text-xs">
-                  ${flowStep('1', 'Client', 'Build authorization URL with code_challenge', 'bg-primary-100 dark:bg-primary-900/30 border-primary-300 dark:border-primary-700 text-primary-800 dark:text-primary-200')}
-                  ${flowArrow('GET /authorize?...')}
-                  ${flowStep('2', 'Auth Server', 'Authenticate user, display consent screen', 'bg-surface-100 dark:bg-surface-800 border-surface-300 dark:border-surface-600 text-surface-700 dark:text-surface-300')}
-                  ${flowArrow('302 redirect + code')}
-                  ${flowStep('3', 'Client', 'Receive auth code in redirect_uri', 'bg-surface-100 dark:bg-surface-800 border-surface-300 dark:border-surface-600 text-surface-700 dark:text-surface-300')}
-                  ${flowArrow('POST /token + code_verifier')}
-                  ${flowStep('4', 'Auth Server', 'Verify code_verifier against stored challenge', 'bg-surface-100 dark:bg-surface-800 border-surface-300 dark:border-surface-600 text-surface-700 dark:text-surface-300')}
-                  ${flowArrow('access_token')}
-                  ${flowStep('5', 'Client', 'Use access_token to call APIs', 'bg-success-100 dark:bg-success-900/30 border-success-300 dark:border-success-700 text-success-800 dark:text-success-200')}
+              <!-- Flow diagram. Genuinely horizontal (5 sequential steps) rather
+                   than reflowed, so below tablet width it becomes an explicit,
+                   keyboard-reachable scroll region (tabindex + role="region" +
+                   aria-label) with an edge fade signalling more content is
+                   off-screen, instead of silently clipping later steps. -->
+              <div class="relative">
+                <div
+                  class="overflow-x-auto rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  tabindex="0"
+                  role="region"
+                  aria-label="Authorization flow diagram, scroll horizontally to see all steps"
+                  data-i18n-aria="tools.oauth-debugger.ui.aria0"
+                >
+                  <div class="flex items-start gap-0 min-w-[600px] text-xs">
+                    ${flowStep("1", "Client", "Build authorization URL with code_challenge", "bg-primary-100 dark:bg-primary-900/30 border-primary-300 dark:border-primary-700 text-primary-800 dark:text-primary-200")}
+                    ${flowArrow("GET /authorize?...")}
+                    ${flowStep("2", "Auth Server", "Authenticate user, display consent screen", "bg-surface-100 dark:bg-surface-800 border-surface-300 dark:border-surface-600 text-surface-700 dark:text-surface-300")}
+                    ${flowArrow("302 redirect + code")}
+                    ${flowStep("3", "Client", "Receive auth code in redirect_uri", "bg-surface-100 dark:bg-surface-800 border-surface-300 dark:border-surface-600 text-surface-700 dark:text-surface-300")}
+                    ${flowArrow("POST /token + code_verifier")}
+                    ${flowStep("4", "Auth Server", "Verify code_verifier against stored challenge", "bg-surface-100 dark:bg-surface-800 border-surface-300 dark:border-surface-600 text-surface-700 dark:text-surface-300")}
+                    ${flowArrow("access_token")}
+                    ${flowStep("5", "Client", "Use access_token to call APIs", "bg-success-100 dark:bg-success-900/30 border-success-300 dark:border-success-700 text-success-800 dark:text-success-200")}
+                  </div>
                 </div>
+                <div class="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-r from-transparent to-surface-50 dark:to-surface-950" aria-hidden="true"></div>
               </div>
 
               <!-- Config fields -->
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label for="flow-auth-endpoint" class="block text-xs font-semibold uppercase tracking-wide text-surface-500 dark:text-surface-400 mb-1" data-i18n="tools.oauth-debugger.ui.label3">Authorization Endpoint</label>
-                  <input id="flow-auth-endpoint" type="url" class="w-full p-3 font-mono text-sm bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-700 rounded-lg text-surface-900 dark:text-surface-100" placeholder="https://auth.example.com/oauth2/authorize" value="" data-i18n-placeholder="tools.oauth-debugger.ui.placeholder2" />
+                  <input id="flow-auth-endpoint" type="url" class="input-mono" placeholder="https://auth.example.com/oauth2/authorize" value="" data-i18n-placeholder="tools.oauth-debugger.ui.placeholder2" />
                 </div>
                 <div>
                   <label for="flow-client-id" class="block text-xs font-semibold uppercase tracking-wide text-surface-500 dark:text-surface-400 mb-1" data-i18n="tools.oauth-debugger.ui.label4">client_id</label>
-                  <input id="flow-client-id" type="text" class="w-full p-3 font-mono text-sm bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-700 rounded-lg text-surface-900 dark:text-surface-100" placeholder="your-client-id" data-i18n-placeholder="tools.oauth-debugger.ui.placeholder3" />
+                  <input id="flow-client-id" type="text" class="input-mono" placeholder="your-client-id" data-i18n-placeholder="tools.oauth-debugger.ui.placeholder3" />
                 </div>
                 <div>
                   <label for="flow-redirect-uri" class="block text-xs font-semibold uppercase tracking-wide text-surface-500 dark:text-surface-400 mb-1" data-i18n="tools.oauth-debugger.ui.label5">redirect_uri</label>
-                  <input id="flow-redirect-uri" type="url" class="w-full p-3 font-mono text-sm bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-700 rounded-lg text-surface-900 dark:text-surface-100" placeholder="https://yourapp.example.com/callback" data-i18n-placeholder="tools.oauth-debugger.ui.placeholder4" />
+                  <input id="flow-redirect-uri" type="url" class="input-mono" placeholder="https://yourapp.example.com/callback" data-i18n-placeholder="tools.oauth-debugger.ui.placeholder4" />
                 </div>
                 <div>
                   <label for="flow-scope" class="block text-xs font-semibold uppercase tracking-wide text-surface-500 dark:text-surface-400 mb-1" data-i18n="tools.oauth-debugger.ui.label6">scope</label>
-                  <input id="flow-scope" type="text" class="w-full p-3 font-mono text-sm bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-700 rounded-lg text-surface-900 dark:text-surface-100" placeholder="openid profile email" value="openid profile email" data-i18n-placeholder="tools.oauth-debugger.ui.placeholder5" />
+                  <input id="flow-scope" type="text" class="input-mono" placeholder="openid profile email" value="openid profile email" data-i18n-placeholder="tools.oauth-debugger.ui.placeholder5" />
                 </div>
                 <div>
                   <label for="flow-state" class="block text-xs font-semibold uppercase tracking-wide text-surface-500 dark:text-surface-400 mb-1" data-i18n="tools.oauth-debugger.ui.label7">state <span class="normal-case font-normal">(CSRF token)</span></label>
                   <div class="flex gap-2">
-                    <input id="flow-state" type="text" class="w-full p-3 font-mono text-sm bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-700 rounded-lg text-surface-900 dark:text-surface-100" placeholder="random-state-value" data-i18n-placeholder="tools.oauth-debugger.ui.placeholder6" />
+                    <input id="flow-state" type="text" class="input-mono" placeholder="random-state-value" data-i18n-placeholder="tools.oauth-debugger.ui.placeholder6" />
                     <button id="flow-gen-state" class="btn btn-ghost flex-shrink-0 text-xs" data-i18n="tools.oauth-debugger.ui.button3">Random</button>
                   </div>
                 </div>
@@ -134,7 +170,7 @@ function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
               <div id="flow-url-wrap" class="hidden space-y-2">
                 <label class="block text-xs font-semibold uppercase tracking-wide text-surface-500 dark:text-surface-400" data-i18n="tools.oauth-debugger.ui.label9">Authorization URL</label>
                 <div class="flex gap-2">
-                  <textarea id="flow-url-output" readonly rows="4" class="w-full p-3 font-mono text-sm bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-700 rounded-lg text-surface-900 dark:text-surface-100 resize-none"></textarea>
+                  <textarea id="flow-url-output" readonly rows="4" class="input-mono resize-none"></textarea>
                   <button id="copy-flow-url" class="btn btn-secondary flex-shrink-0 self-start" data-i18n="tools.oauth-debugger.ui.button5">Copy</button>
                 </div>
               </div>
@@ -150,7 +186,7 @@ function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label for="sec-response-type" class="block text-xs font-semibold uppercase tracking-wide text-surface-500 dark:text-surface-400 mb-1" data-i18n="tools.oauth-debugger.ui.label10">response_type</label>
-                  <select id="sec-response-type" class="w-full p-3 font-mono text-sm bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-700 rounded-lg text-surface-900 dark:text-surface-100">
+                  <select id="sec-response-type" class="input-mono">
                     <option value="code" data-i18n="tools.oauth-debugger.ui.option19">code (Authorization Code)</option>
                     <option value="token" data-i18n="tools.oauth-debugger.ui.option20">token (Implicit — deprecated)</option>
                     <option value="id_token" data-i18n="tools.oauth-debugger.ui.option21">id_token (Implicit OIDC — deprecated)</option>
@@ -159,7 +195,7 @@ function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
                 </div>
                 <div>
                   <label for="sec-grant-type" class="block text-xs font-semibold uppercase tracking-wide text-surface-500 dark:text-surface-400 mb-1" data-i18n="tools.oauth-debugger.ui.label11">grant_type (token endpoint)</label>
-                  <select id="sec-grant-type" class="w-full p-3 font-mono text-sm bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-700 rounded-lg text-surface-900 dark:text-surface-100">
+                  <select id="sec-grant-type" class="input-mono">
                     <option value="authorization_code" data-i18n="tools.oauth-debugger.ui.option23">authorization_code</option>
                     <option value="client_credentials" data-i18n="tools.oauth-debugger.ui.option24">client_credentials</option>
                     <option value="refresh_token" data-i18n="tools.oauth-debugger.ui.option25">refresh_token</option>
@@ -168,11 +204,11 @@ function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
                 </div>
                 <div>
                   <label for="sec-redirect-uri" class="block text-xs font-semibold uppercase tracking-wide text-surface-500 dark:text-surface-400 mb-1" data-i18n="tools.oauth-debugger.ui.label12">redirect_uri</label>
-                  <input id="sec-redirect-uri" type="text" class="w-full p-3 font-mono text-sm bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-700 rounded-lg text-surface-900 dark:text-surface-100" placeholder="https://yourapp.example.com/callback" data-i18n-placeholder="tools.oauth-debugger.ui.placeholder7" />
+                  <input id="sec-redirect-uri" type="text" class="input-mono" placeholder="https://yourapp.example.com/callback" data-i18n-placeholder="tools.oauth-debugger.ui.placeholder7" />
                 </div>
                 <div>
                   <label for="sec-scope" class="block text-xs font-semibold uppercase tracking-wide text-surface-500 dark:text-surface-400 mb-1" data-i18n="tools.oauth-debugger.ui.label13">scope</label>
-                  <input id="sec-scope" type="text" class="w-full p-3 font-mono text-sm bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-700 rounded-lg text-surface-900 dark:text-surface-100" placeholder="openid profile email" data-i18n-placeholder="tools.oauth-debugger.ui.placeholder8" />
+                  <input id="sec-scope" type="text" class="input-mono" placeholder="openid profile email" data-i18n-placeholder="tools.oauth-debugger.ui.placeholder8" />
                 </div>
                 <div class="flex flex-col gap-3 sm:col-span-2">
                   <label class="inline-flex items-center gap-2 cursor-pointer">
@@ -199,23 +235,24 @@ function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
       </div>
 
       <div class="mt-8">
-        ${createEducationalSection([
-          {
-            title: 'What is PKCE and Why Does It Matter?',
-            content: `
+        ${createEducationalSection(
+          [
+            {
+              title: "What is PKCE and Why Does It Matter?",
+              content: `
               <p>Proof Key for Code Exchange (PKCE, RFC 7636) was originally designed for mobile and native apps that cannot securely store a client secret. It works by having the client generate a random <code>code_verifier</code>, derive a <code>code_challenge</code> from it (SHA-256 + base64url), and send the challenge with the authorization request. When exchanging the authorization code for tokens, the client sends the original <code>code_verifier</code>. The authorization server verifies it matches the earlier challenge — proving the token request came from the same client that started the flow.</p>
               <p>Even for confidential clients (server-side apps with a client secret), PKCE is now recommended by OAuth 2.1 as a defense against authorization code interception attacks.</p>
-            `
-          },
-          {
-            title: 'Why Is the Implicit Flow Deprecated?',
-            content: `
+            `,
+            },
+            {
+              title: "Why Is the Implicit Flow Deprecated?",
+              content: `
               <p>The implicit flow (<code>response_type=token</code>) was designed as a shortcut for single-page apps, returning the access token directly in the URL fragment. This creates serious problems: tokens in URLs appear in browser history, server logs, and referrer headers, and the flow is vulnerable to token injection attacks. OAuth 2.0 Security Best Current Practice (RFC 9700) and OAuth 2.1 explicitly remove the implicit flow in favor of Authorization Code + PKCE, which SPAs can use safely without a client secret.</p>
-            `
-          },
-          {
-            title: 'Key OAuth 2.1 Changes',
-            content: `
+            `,
+            },
+            {
+              title: "Key OAuth 2.1 Changes",
+              content: `
               <ul>
                 <li><strong>PKCE required</strong> for all Authorization Code flows, including confidential clients.</li>
                 <li><strong>Implicit flow removed</strong> — use Authorization Code + PKCE instead.</li>
@@ -223,11 +260,11 @@ function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
                 <li><strong>Refresh token rotation required</strong> for public clients — a new refresh token must be issued with each use.</li>
                 <li><strong>Redirect URI exact matching required</strong> — no pattern matching or wildcards.</li>
               </ul>
-            `
-          },
-          {
-            title: 'Authorization Code Flow Step by Step',
-            content: `
+            `,
+            },
+            {
+              title: "Authorization Code Flow Step by Step",
+              content: `
               <ol>
                 <li><strong>Generate PKCE pair:</strong> Create a random <code>code_verifier</code> and compute <code>code_challenge = BASE64URL(SHA256(code_verifier))</code>.</li>
                 <li><strong>Redirect to authorization endpoint:</strong> Include <code>response_type=code</code>, <code>client_id</code>, <code>redirect_uri</code>, <code>scope</code>, <code>state</code>, <code>code_challenge</code>, and <code>code_challenge_method=S256</code>.</li>
@@ -236,9 +273,12 @@ function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
                 <li><strong>Exchange code for tokens:</strong> POST to the token endpoint with <code>grant_type=authorization_code</code>, <code>code</code>, <code>redirect_uri</code>, <code>client_id</code>, and <code>code_verifier</code>.</li>
                 <li><strong>Receive access token</strong> (and optionally <code>id_token</code> and <code>refresh_token</code>) and use them to call APIs.</li>
               </ol>
-            `
-          }
-        ], 'oauth-debugger', currentLang)}
+            `,
+            },
+          ],
+          "oauth-debugger",
+          currentLang,
+        )}
       </div>
 
       ${createRelatedToolsSection(relatedToolsData)}
@@ -416,14 +456,16 @@ function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
     </script>
   `;
 
-  return respondHTML(createPageTemplate({
-    title,
-    description,
-    lang: currentLang,
-    path: '/oauth-debugger',
-    content,
-    scripts
-  }));
+  return respondHTML(
+    createPageTemplate({
+      title,
+      description,
+      lang: currentLang,
+      path: "/oauth-debugger",
+      content,
+      scripts,
+    }),
+  );
 }
 
 function flowStep(num, actor, desc, colorClasses) {
@@ -442,7 +484,7 @@ function flowArrow(label) {
   return `
     <div class="flex flex-col items-center justify-center gap-1 px-1 pt-8">
       <div class="text-xs text-surface-500 dark:text-surface-400 whitespace-nowrap text-center max-w-[80px] leading-snug">${label}</div>
-      <div class="text-surface-400 dark:text-surface-500 text-base">→</div>
+      <div class="text-surface-500 dark:text-surface-400 text-base">→</div>
     </div>
   `;
 }

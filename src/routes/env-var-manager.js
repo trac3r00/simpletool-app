@@ -6,45 +6,72 @@
  * All processing is client-side.
  */
 
-import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
-import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML } from "../utils/respond.js";
+import {
+  createPageTemplate,
+  createToolHeader,
+  createCheatsheet,
+  infoHint,
+} from "../utils/common-ui.js";
+import {
+  createEducationalSection,
+  createRelatedToolsSection,
+} from "../utils/content-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleEnvVarManagerRoutes(request, url) {
   const { pathname } = url;
-  if (pathname === '/env-var-manager' || pathname === '/env-var-manager/') {
-    if (request.method === 'GET') return respondHTML(renderEnvVarManagerPage(resolveRequestLanguage(request, url)));
-    return new Response('Method not allowed', { status: 405 });
+  if (pathname === "/env-var-manager" || pathname === "/env-var-manager/") {
+    if (request.method === "GET")
+      return respondHTML(
+        renderEnvVarManagerPage(resolveRequestLanguage(request, url)),
+      );
+    return new Response("Method not allowed", { status: 405 });
   }
   return null;
 }
 
 function renderEnvVarManagerPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('env-var-manager', currentLang);
-  const title = translation?.name || 'Env Var Manager';
-  const description = translation?.desc || 'Compare .env files across environments and generate a share-safe (masked) diff.';
+  const translation = getToolTranslation("env-var-manager", currentLang);
+  const title = translation?.name || "Env Var Manager";
+  const description =
+    translation?.desc ||
+    "Compare .env files across environments and generate a share-safe (masked) diff.";
 
   const header = createToolHeader(
-    { emoji: '🧪' },
+    { emoji: "🧪" },
     title,
     description,
     [
-      { text: '<span data-i18n="tools.env-var-manager.ui.badge0">Diff</span>', tooltip: 'Find missing keys and value drift between environments.' },
-      { text: '<span data-i18n="tools.env-var-manager.ui.badge1">Mask Secrets</span>', tooltip: 'Generate a shareable report without exposing sensitive values.' }
+      {
+        text: '<span data-i18n="tools.env-var-manager.ui.badge0">Diff</span>',
+        tooltip: "Find missing keys and value drift between environments.",
+      },
+      {
+        text: '<span data-i18n="tools.env-var-manager.ui.badge1">Mask Secrets</span>',
+        tooltip:
+          "Generate a shareable report without exposing sensitive values.",
+      },
     ],
-    { toolId: 'env-var-manager' }
+    { toolId: "env-var-manager" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'env-var-manager');
-    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
-
+  const currentTool = TOOLS.find((t) => t.id === "env-var-manager");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
         ${header}
 
         <div class="flex flex-wrap gap-3 mb-6 bg-surface-50 dark:bg-surface-950/50 p-2 rounded-lg border border-surface-100 dark:border-surface-800">
@@ -60,11 +87,11 @@ function renderEnvVarManagerPage(lang = DEFAULT_LANGUAGE) {
             <div class="flex items-center justify-between gap-3">
               <label class="label flex items-center gap-2">
                 <span data-i18n="tools.env-var-manager.ui.label0">Environment A</span>
-                ${infoHint('Paste dotenv-style KEY=VALUE lines. Comments (#) are supported. No data leaves your device.', 'Help', { i18nKey: 'tools.env-var-manager.ui.desc0' })}
+                ${infoHint("Paste dotenv-style KEY=VALUE lines. Comments (#) are supported. Your input is processed locally and not sent to our servers.", "Help", { i18nKey: "tools.env-var-manager.ui.desc0" })}
               </label>
               <input id="name-a" class="input w-40" value="Dev" aria-label="Name A" data-i18n-aria="tools.env-var-manager.ui.aria0" />
             </div>
-            <textarea id="env-a" rows="16" class="input-mono resize-y" placeholder="API_URL=https://dev.example.com&#10;JWT_SECRET=..." data-i18n-placeholder="tools.env-var-manager.ui.placeholder0"></textarea>
+            <textarea id="env-a" rows="16" aria-label="Environment A variables" class="input-mono resize-y" placeholder="API_URL=https://dev.example.com&#10;JWT_SECRET=..." data-i18n-placeholder="tools.env-var-manager.ui.placeholder0"></textarea>
             <div id="parse-a" class="hidden text-xs rounded-lg p-3 border"></div>
           </div>
 
@@ -73,55 +100,55 @@ function renderEnvVarManagerPage(lang = DEFAULT_LANGUAGE) {
               <label class="label" data-i18n="tools.env-var-manager.ui.label1">Environment B</label>
               <input id="name-b" class="input w-40" value="Prod" aria-label="Name B" data-i18n-aria="tools.env-var-manager.ui.aria1" />
             </div>
-            <textarea id="env-b" rows="16" class="input-mono resize-y" placeholder="API_URL=https://example.com&#10;JWT_SECRET=..." data-i18n-placeholder="tools.env-var-manager.ui.placeholder1"></textarea>
+            <textarea id="env-b" rows="16" aria-label="Environment B variables" class="input-mono resize-y" placeholder="API_URL=https://example.com&#10;JWT_SECRET=..." data-i18n-placeholder="tools.env-var-manager.ui.placeholder1"></textarea>
             <div id="parse-b" class="hidden text-xs rounded-lg p-3 border"></div>
           </div>
         </div>
 
         <div class="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div class="lg:col-span-1 space-y-4">
-            <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+            <div class="tool-group p-5">
               <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400 mb-3" data-i18n="tools.env-var-manager.ui.heading0">Options</h2>
               <label class="inline-flex items-center gap-2 cursor-pointer text-sm text-surface-700 dark:text-surface-300">
-                <input id="mask" type="checkbox" class="w-4 h-4 rounded border-surface-300 text-primary-600 focus:ring-primary-500" checked>
+                <input id="mask" type="checkbox" class="w-4 h-4 rounded border-surface-300 text-primary-600 dark:text-primary-400 focus:ring-primary-500" checked>
                 <span data-i18n="tools.env-var-manager.ui.label2">Mask sensitive values</span>
               </label>
               <div class="mt-3">
                 <label class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" data-i18n="tools.env-var-manager.ui.label3">Filter keys</label>
-                <input id="filter" class="input font-mono" placeholder="e.g., AWS_, SECRET, DB_" data-i18n-placeholder="tools.env-var-manager.ui.placeholder2" />
+                <input id="filter" aria-label="Filter variables" class="input font-mono" placeholder="e.g., AWS_, SECRET, DB_" data-i18n-placeholder="tools.env-var-manager.ui.placeholder2" />
               </div>
             </div>
 
             <div class="p-5 bg-surface-50 dark:bg-surface-950 rounded-xl border border-surface-200 dark:border-surface-800">
               <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400 mb-3" data-i18n="tools.env-var-manager.ui.heading1">Summary</h2>
               <div class="grid grid-cols-2 gap-3 text-sm">
-                <div class="p-3 bg-white dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-800">
+                <div class="tool-group p-3">
                   <div class="text-xs text-surface-500 dark:text-surface-400 uppercase" data-i18n="tools.env-var-manager.ui.stat0">Same</div>
                   <div class="text-xl font-bold font-mono" id="same-count">0</div>
                 </div>
-                <div class="p-3 bg-white dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-800">
+                <div class="tool-group p-3">
                   <div class="text-xs text-surface-500 dark:text-surface-400 uppercase" data-i18n="tools.env-var-manager.ui.stat1">Changed</div>
                   <div class="text-xl font-bold font-mono" id="changed-count">0</div>
                 </div>
-                <div class="p-3 bg-white dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-800">
+                <div class="tool-group p-3">
                   <div class="text-xs text-surface-500 dark:text-surface-400 uppercase" data-i18n="tools.env-var-manager.ui.stat2">Only A</div>
                   <div class="text-xl font-bold font-mono" id="only-a-count">0</div>
                 </div>
-                <div class="p-3 bg-white dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-800">
+                <div class="tool-group p-3">
                   <div class="text-xs text-surface-500 dark:text-surface-400 uppercase" data-i18n="tools.env-var-manager.ui.stat3">Only B</div>
                   <div class="text-xl font-bold font-mono" id="only-b-count">0</div>
                 </div>
               </div>
             </div>
 
-            <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+            <div class="tool-group p-5">
               <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400 mb-3" data-i18n="tools.env-var-manager.ui.heading2">Share-safe report</h2>
-              <textarea id="share" rows="10" class="input-mono resize-y bg-surface-50 dark:bg-surface-950" readonly placeholder="Click Compare to generate..." data-i18n-placeholder="tools.env-var-manager.ui.placeholder3"></textarea>
+              <textarea id="share" rows="10" aria-label="Shareable comparison output" class="input-mono resize-y bg-surface-50 dark:bg-surface-950" readonly placeholder="Click Compare to generate..." data-i18n-placeholder="tools.env-var-manager.ui.placeholder3"></textarea>
             </div>
           </div>
 
           <div class="lg:col-span-2">
-            <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+            <div class="tool-group p-5">
               <div class="flex items-center justify-between mb-3 gap-3">
                 <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400" data-i18n="tools.env-var-manager.ui.heading3">Diff</h2>
                 <span id="row-count" class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.env-var-manager.ui.text0">0 rows</span>
@@ -144,45 +171,59 @@ function renderEnvVarManagerPage(lang = DEFAULT_LANGUAGE) {
           </div>
         </div>
 
-        ${createCheatsheet('env-var-manager', '<span data-i18n="tools.env-var-manager.ui.heading4">Dotenv Notes</span>', [
-          {
-            heading: '<span data-i18n="tools.env-var-manager.ui.heading5">Masking strategy</span>',
-            content: `
+        ${createCheatsheet(
+          "env-var-manager",
+          '<span data-i18n="tools.env-var-manager.ui.heading4">Dotenv Notes</span>',
+          [
+            {
+              heading:
+                '<span data-i18n="tools.env-var-manager.ui.heading5">Masking strategy</span>',
+              content: `
               <p data-i18n="tools.env-var-manager.ui.desc2">Sensitive keys are detected by name (SECRET, TOKEN, KEY, PASSWORD, etc.) and by value heuristics (JWT-like, long random strings). You can disable masking to see raw values locally.</p>
-            `
-          },
-          {
-            heading: '<span data-i18n="tools.env-var-manager.ui.heading6">Parsing</span>',
-            content: `
+            `,
+            },
+            {
+              heading:
+                '<span data-i18n="tools.env-var-manager.ui.heading6">Parsing</span>',
+              content: `
               <ul class="list-disc ml-6 space-y-1">
                 <li><span data-i18n="tools.env-var-manager.ui.desc3">Supports</span> <code>export KEY=VALUE</code></li>
                 <li><span data-i18n="tools.env-var-manager.ui.desc4">Supports quoted values</span> (<code>"..."</code> <span data-i18n="tools.env-var-manager.ui.text1">or</span> <code>'...'</code>)</li>
                 <li><span data-i18n="tools.env-var-manager.ui.desc5">Inline comments are stripped for unquoted values</span> (<code>VALUE # comment</code>)</li>
               </ul>
-            `
-          }
-        ])}
+            `,
+            },
+          ],
+        )}
       </div>
     </main>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-      ${createEducationalSection([
-        {
-          title: 'Environment Variables Best Practices',
-          content: '<p>Environment variables are a fundamental part of the "Twelve-Factor App" methodology, which advocates for a strict separation of configuration from code. By using environment variables, you can run the same code in different environments (development, staging, production) simply by changing the configuration values.</p><p>Best practices include using descriptive, uppercase names (e.g., <code>DATABASE_URL</code>), providing default values for non-critical settings, and never hardcoding sensitive information directly into your source control.</p>'
-        },
-        {
-          title: 'Secret Management',
-          content: '<p>Secrets are a special category of environment variables that contain sensitive information like API keys, database passwords, and private certificates. Managing these securely is critical to preventing data breaches. You should use a dedicated secret management service (like AWS Secrets Manager, HashiCorp Vault, or Cloudflare Secrets) for production environments.</p><p>For local development, <code>.env</code> files are commonly used, but they should <strong>never</strong> be committed to your git repository. Always add <code>*.env</code> to your <code>.gitignore</code> file.</p>'
-        },
-        {
-          title: '.env Security',
-          content: '<p>When sharing <code>.env</code> files with teammates for debugging, there is a high risk of accidentally exposing production secrets. Our manager helps mitigate this risk by providing a "Mask sensitive values" feature. It uses heuristics to identify keys like <code>SECRET</code>, <code>TOKEN</code>, or <code>PASSWORD</code> and replaces their values with a masked version (e.g., <code>ab...yz (32)</code>).</p><p>This allows you to compare the structure and non-sensitive values of your environment files without leaking the actual secrets.</p>'
-        },
-        {
-          title: 'Pro Tips',
-          content: '<ul><li>Use the <strong>"Swap"</strong> button to quickly reverse the comparison direction between Environment A and Environment B.</li><li>Leverage the <strong>"Filter keys"</strong> input to focus on specific groups of variables, such as all keys starting with <code>AWS_</code> or <code>DB_</code>.</li><li>Always include a <code>.env.example</code> file in your repository with dummy values to show other developers which variables are required for the app to run.</li><li>Remember that environment variables are typically strings; if your app needs a boolean or a number, ensure you parse the value correctly in your code.</li></ul>'
-        }
-      ], 'env-var-manager', currentLang)}
+      ${createEducationalSection(
+        [
+          {
+            title: "Environment Variables Best Practices",
+            content:
+              '<p>Environment variables are a fundamental part of the "Twelve-Factor App" methodology, which advocates for a strict separation of configuration from code. By using environment variables, you can run the same code in different environments (development, staging, production) simply by changing the configuration values.</p><p>Best practices include using descriptive, uppercase names (e.g., <code>DATABASE_URL</code>), providing default values for non-critical settings, and never hardcoding sensitive information directly into your source control.</p>',
+          },
+          {
+            title: "Secret Management",
+            content:
+              "<p>Secrets are a special category of environment variables that contain sensitive information like API keys, database passwords, and private certificates. Managing these securely is critical to preventing data breaches. You should use a dedicated secret management service (like AWS Secrets Manager, HashiCorp Vault, or Cloudflare Secrets) for production environments.</p><p>For local development, <code>.env</code> files are commonly used, but they should <strong>never</strong> be committed to your git repository. Always add <code>*.env</code> to your <code>.gitignore</code> file.</p>",
+          },
+          {
+            title: ".env Security",
+            content:
+              '<p>When sharing <code>.env</code> files with teammates for debugging, there is a high risk of accidentally exposing production secrets. Our manager helps mitigate this risk by providing a "Mask sensitive values" feature. It uses heuristics to identify keys like <code>SECRET</code>, <code>TOKEN</code>, or <code>PASSWORD</code> and replaces their values with a masked version (e.g., <code>ab...yz (32)</code>).</p><p>This allows you to compare the structure and non-sensitive values of your environment files without leaking the actual secrets.</p>',
+          },
+          {
+            title: "Pro Tips",
+            content:
+              '<ul><li>Use the <strong>"Swap"</strong> button to quickly reverse the comparison direction between Environment A and Environment B.</li><li>Leverage the <strong>"Filter keys"</strong> input to focus on specific groups of variables, such as all keys starting with <code>AWS_</code> or <code>DB_</code>.</li><li>Always include a <code>.env.example</code> file in your repository with dummy values to show other developers which variables are required for the app to run.</li><li>Remember that environment variables are typically strings; if your app needs a boolean or a number, ensure you parse the value correctly in your code.</li></ul>',
+          },
+        ],
+        "env-var-manager",
+        currentLang,
+      )}
     ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;
@@ -534,9 +575,9 @@ function renderEnvVarManagerPage(lang = DEFAULT_LANGUAGE) {
   return createPageTemplate({
     title,
     description,
-    path: '/env-var-manager',
+    path: "/env-var-manager",
     content,
     scripts,
-    lang: currentLang
+    lang: currentLang,
   });
 }

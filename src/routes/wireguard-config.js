@@ -1,70 +1,96 @@
 /**
  * WireGuard Config Studio
  * Generate, parse, and manage WireGuard configurations client-side
- * All key generation happens locally using libsodium.js
+ * All key generation happens locally using Web Crypto X25519.
  */
 
-import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { createRelatedToolsSection } from '../utils/content-ui.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML } from "../utils/respond.js";
+import {
+  createPageTemplate,
+  createToolHeader,
+  createCheatsheet,
+  infoHint,
+} from "../utils/common-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import { createRelatedToolsSection } from "../utils/content-ui.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleWireguardConfigRoutes(request, url) {
-  if (url.pathname !== '/wireguard-config' && url.pathname !== '/wireguard-config/') return null;
-  if (request.method !== 'GET') return null;
+  if (
+    url.pathname !== "/wireguard-config" &&
+    url.pathname !== "/wireguard-config/"
+  )
+    return null;
+  if (request.method !== "GET") return null;
   const lang = resolveRequestLanguage(request, url);
   return respondHTML(renderWireguardConfigPage(lang));
 }
 
 function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('wireguard-config', currentLang);
-  const title = translation?.name || 'WireGuard Config Studio';
-  const description = translation?.desc || 'Generate WireGuard configurations with local key generation and QR export.';
+  const translation = getToolTranslation("wireguard-config", currentLang);
+  const title = translation?.name || "WireGuard Config Studio";
+  const description =
+    translation?.desc ||
+    "Generate WireGuard configurations with local key generation and QR export.";
 
   const toolHeader = createToolHeader(
-    { emoji: '🔒' },
+    { emoji: "🔒" },
     title,
     description,
     [
-      { text: translation?.ui?.badge41 || 'Client-Side Keys', tooltip: 'All private keys generated locally in your browser using libsodium.js. Keys never leave your device.' }
+      {
+        text: translation?.ui?.badge41 || "Client-Side Keys",
+        tooltip:
+          "Private keys are generated in the browser with the Web Crypto X25519 API. Keys stay in your browser and are not sent to our servers.",
+      },
     ],
-    { toolId: 'wireguard-config' }
+    { toolId: "wireguard-config" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'wireguard-config');
-  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+  const currentTool = TOOLS.find((t) => t.id === "wireguard-config");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
-    <!-- Libsodium for WireGuard key generation -->
-    <!-- WireGuard key generation uses Web Crypto API (X25519) with libsodium fallback -->
     <script>
     (function() {
-      // Polyfill sodium API using Web Crypto or fallback
-      var _sodium = { ready: Promise.resolve(), _ready: false };
+      function base64UrlToBytes(value) {
+        var normalized = value.replace(/-/g, '+').replace(/_/g, '/');
+        var padded = normalized + '='.repeat((4 - (normalized.length % 4)) % 4);
+        var binary = atob(padded);
+        var bytes = new Uint8Array(binary.length);
+        for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+        return bytes;
+      }
 
       async function generateX25519KeyPair() {
-        // Try Web Crypto X25519 first
-        try {
-          var keyPair = await crypto.subtle.generateKey({ name: 'X25519' }, true, ['deriveBits']);
-          var privRaw = new Uint8Array(await crypto.subtle.exportKey('raw', keyPair.privateKey));
-          var pubRaw = new Uint8Array(await crypto.subtle.exportKey('raw', keyPair.publicKey));
-          return { privateKey: privRaw, publicKey: pubRaw };
-        } catch(e) {
-          // Fallback: generate random 32-byte Curve25519 private key and derive public key
-          var priv = new Uint8Array(32);
-          crypto.getRandomValues(priv);
-          // Clamp private key per Curve25519 spec
-          priv[0] &= 248;
-          priv[31] &= 127;
-          priv[31] |= 64;
-          // For WireGuard, we generate random keys - public key derivation requires Curve25519 math
-          // Use a simplified approach: generate both keys randomly (user can replace with real keys)
-          var pub = new Uint8Array(32);
-          crypto.getRandomValues(pub);
-          return { privateKey: priv, publicKey: pub };
+        if (!crypto.subtle || !crypto.subtle.generateKey) {
+          throw new Error('Web Crypto is not available in this browser');
         }
+        var keyPair = await crypto.subtle.generateKey({ name: 'X25519' }, true, ['deriveBits']);
+        var pubRaw = new Uint8Array(await crypto.subtle.exportKey('raw', keyPair.publicKey));
+        var privRaw;
+        try {
+          privRaw = new Uint8Array(await crypto.subtle.exportKey('raw', keyPair.privateKey));
+        } catch (rawErr) {
+          var jwk = await crypto.subtle.exportKey('jwk', keyPair.privateKey);
+          if (!jwk || typeof jwk.d !== 'string') {
+            throw new Error('X25519 private key export is not supported in this browser');
+          }
+          privRaw = base64UrlToBytes(jwk.d);
+        }
+        if (privRaw.length !== 32 || pubRaw.length !== 32) {
+          throw new Error('X25519 keys must be 32 bytes');
+        }
+        return { privateKey: privRaw, publicKey: pubRaw };
       }
 
       function toBase64(arr) {
@@ -73,19 +99,14 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
         return btoa(bin);
       }
 
-      window.sodium = {
-        ready: Promise.resolve(),
-        crypto_box_keypair: function() { return null; },
-        to_base64: function(arr) { return toBase64(arr); },
-        base64_variants: { ORIGINAL: 0 },
-        _generateKeyPair: generateX25519KeyPair
-      };
+      window.generateWireGuardKeyPair = generateX25519KeyPair;
+      window.wireGuardToBase64 = toBase64;
     })();
     </script>
     <script src="/vendor/qrcode.min.js" integrity="sha384-B3w4ObQEXH2D3E8FlVZ+pBTHHTrPFwqbXjfU/95D5ekt8DVTeG+cB6s6nVpsvh3m" crossorigin="anonymous"></script>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="tool-card">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
 
         ${toolHeader}
 
@@ -105,14 +126,14 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
             <!-- Private Key -->
             <div>
               <div class="flex items-center justify-between mb-2">
-                <label class="text-xs font-semibold text-surface-600 dark:text-surface-400 uppercase" data-i18n="tools.wireguard-config.ui.label0">Private Key</label>
+                <label for="private-key" class="text-xs font-semibold text-surface-600 dark:text-surface-400 uppercase" data-i18n="tools.wireguard-config.ui.label0">Private Key</label>
                 <div class="flex gap-2">
                   <button id="toggle-private-key" class="btn btn-ghost btn-xs" data-i18n="tools.wireguard-config.ui.button1">Show</button>
                   <button id="copy-private-key" class="btn btn-secondary btn-xs" data-i18n="tools.wireguard-config.ui.button2">Copy</button>
                 </div>
               </div>
               <input type="password" id="private-key" readonly 
-                class="w-full p-3 bg-error-50 dark:bg-error-900/10 border border-error-200 dark:border-error-900 rounded-lg font-mono text-sm text-surface-900 dark:text-surface-100"
+                class="input-mono w-full"
                 placeholder="Click Generate to create..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder0">
               <p class="mt-1 text-xs text-error-600 dark:text-error-400" data-i18n="tools.wireguard-config.ui.warning0">⚠️ Never share your private key!</p>
             </div>
@@ -120,11 +141,11 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
             <!-- Public Key -->
             <div>
               <div class="flex items-center justify-between mb-2">
-                <label class="text-xs font-semibold text-surface-600 dark:text-surface-400 uppercase" data-i18n="tools.wireguard-config.ui.label1">Public Key</label>
+                <label for="public-key" class="text-xs font-semibold text-surface-600 dark:text-surface-400 uppercase" data-i18n="tools.wireguard-config.ui.label1">Public Key</label>
                 <button id="copy-public-key" class="btn btn-secondary btn-xs" data-i18n="tools.wireguard-config.ui.button2">Copy</button>
               </div>
               <input type="text" id="public-key" readonly 
-                class="w-full p-3 bg-surface-100 dark:bg-surface-900 border border-surface-300 dark:border-surface-700 rounded-lg font-mono text-sm text-surface-900 dark:text-surface-100"
+                class="input-mono w-full"
                 placeholder="Generated from private key..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder1">
             </div>
           </div>
@@ -132,7 +153,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
 
         <!-- Template Quick Start -->
         <div class="mb-8">
-          <label class="label mb-2" data-i18n="tools.wireguard-config.ui.label2">Template Quick Start</label>
+          <label for="template-select" class="label mb-2" data-i18n="tools.wireguard-config.ui.label2">Template Quick Start</label>
           <select id="template-select" class="input">
             <option value="" data-i18n="tools.wireguard-config.ui.option0">-- Select a template --</option>
             <option value="p2p-client" data-i18n="tools.wireguard-config.ui.option1">Point-to-Point (Client)</option>
@@ -165,7 +186,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
                   <div>
                     <label for="iface-address" class="label">
                       <span data-i18n="tools.wireguard-config.ui.label4">Address</span>
-                      ${infoHint('IP address with CIDR, e.g., 10.0.0.2/24')}
+                      ${infoHint("IP address with CIDR, e.g., 10.0.0.2/24")}
                     </label>
                     <input type="text" id="iface-address" class="input font-mono text-sm" placeholder="10.0.0.2/24" data-i18n-placeholder="tools.wireguard-config.ui.placeholder3">
                   </div>
@@ -179,14 +200,14 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
                   <div>
                     <label for="iface-dns" class="label">
                       <span data-i18n="tools.wireguard-config.ui.label6">DNS</span>
-                      ${infoHint('Optional. Comma-separated DNS servers.')}
+                      ${infoHint("Optional. Comma-separated DNS servers.")}
                     </label>
                     <input type="text" id="iface-dns" class="input font-mono text-sm" placeholder="1.1.1.1, 8.8.8.8" data-i18n-placeholder="tools.wireguard-config.ui.placeholder5">
                   </div>
                   <div>
                     <label for="iface-mtu" class="label">
                       <span data-i18n="tools.wireguard-config.ui.label7">MTU</span>
-                      ${infoHint('Default: 1420 for IPv4, 1400 for IPv6')}
+                      ${infoHint("Default: 1420 for IPv4, 1400 for IPv6")}
                     </label>
                     <input type="number" id="iface-mtu" class="input font-mono text-sm" placeholder="1420" min="576" max="9000" data-i18n-placeholder="tools.wireguard-config.ui.placeholder6">
                   </div>
@@ -195,7 +216,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
                 <div>
                   <label for="iface-post-up" class="label">
                     <span data-i18n="tools.wireguard-config.ui.label8">PostUp</span>
-                    ${infoHint('Command to run after interface is brought up.')}
+                    ${infoHint("Command to run after interface is brought up.")}
                   </label>
                   <input type="text" id="iface-post-up" class="input font-mono text-sm" placeholder="iptables -A FORWARD -i %i -j ACCEPT..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder7">
                 </div>
@@ -203,7 +224,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
                 <div>
                   <label for="iface-post-down" class="label">
                     <span data-i18n="tools.wireguard-config.ui.label9">PostDown</span>
-                    ${infoHint('Command to run after interface is brought down.')}
+                    ${infoHint("Command to run after interface is brought down.")}
                   </label>
                   <input type="text" id="iface-post-down" class="input font-mono text-sm" placeholder="iptables -D FORWARD -i %i -j ACCEPT..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder8">
                 </div>
@@ -231,8 +252,9 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
                 <span data-i18n="tools.wireguard-config.ui.heading2">📥 Config Parser</span>
               </h3>
               <p class="text-xs text-surface-500 dark:text-surface-400 mb-3" data-i18n="tools.wireguard-config.ui.desc1">Paste an existing .conf file to populate the form.</p>
-              <textarea id="config-parser-input" rows="6" class="input font-mono text-sm resize-vertical" 
-                placeholder="[Interface]\nPrivateKey = ...\nAddress = ..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder9"></textarea>
+              <textarea id="config-parser-input" rows="6" class="input font-mono text-sm resize-vertical"
+                placeholder="[Interface]\nPrivateKey = ...\nAddress = ..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder9"
+                aria-label="WireGuard config to parse" data-i18n-aria="tools.wireguard-config.ui.aria0"></textarea>
               <button id="parse-config-btn" class="btn btn-primary w-full mt-3" data-i18n="tools.wireguard-config.ui.button4">Parse Configuration</button>
             </div>
           </div>
@@ -264,7 +286,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
                 <button id="generate-qr-btn" class="btn btn-primary btn-sm" data-i18n="tools.wireguard-config.ui.button7">Generate QR</button>
               </div>
               <div id="qr-container" class="flex items-center justify-center p-8 bg-white rounded-lg">
-                <p class="text-surface-400 text-sm" data-i18n="tools.wireguard-config.ui.desc2">Generate a config to create QR code</p>
+                <p class="text-surface-600 text-sm" data-i18n="tools.wireguard-config.ui.desc2">Generate a config to create QR code</p>
               </div>
               <p class="mt-3 text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.wireguard-config.ui.desc3">Scan with the WireGuard mobile app to import configuration.</p>
             </div>
@@ -282,8 +304,10 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
           </div>
         </div>
 
-        ${createCheatsheet('wireguard-config', 'WireGuard Quick Reference', [
-          { heading: 'Interface Fields', content: `
+        ${createCheatsheet("wireguard-config", "WireGuard Quick Reference", [
+          {
+            heading: "Interface Fields",
+            content: `
             <table>
               <tr><th data-i18n="tools.wireguard-config.ui.th29">Field</th><th data-i18n="tools.wireguard-config.ui.th30">Required</th><th data-i18n="tools.wireguard-config.ui.th31">Description</th></tr>
               <tr><td><code>PrivateKey</code></td><td>Yes</td><td>Base64 private key for this peer</td></tr>
@@ -293,8 +317,11 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
               <tr><td><code>MTU</code></td><td>No</td><td>Maximum transmission unit (default: 1420)</td></tr>
               <tr><td><code>PostUp</code></td><td>No</td><td>Command after interface up</td></tr>
               <tr><td><code>PostDown</code></td><td>No</td><td>Command after interface down</td></tr>
-            </table>` },
-          { heading: 'Peer Fields', content: `
+            </table>`,
+          },
+          {
+            heading: "Peer Fields",
+            content: `
             <table>
               <tr><th data-i18n="tools.wireguard-config.ui.th29">Field</th><th data-i18n="tools.wireguard-config.ui.th30">Required</th><th data-i18n="tools.wireguard-config.ui.th31">Description</th></tr>
               <tr><td><code>PublicKey</code></td><td>Yes</td><td>Base64 public key of remote peer</td></tr>
@@ -302,8 +329,11 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
               <tr><td><code>AllowedIPs</code></td><td>Yes</td><td>CIDRs this peer can route (0.0.0.0/0 for all)</td></tr>
               <tr><td><code>Endpoint</code></td><td>No</td><td>host:port of remote peer (client only)</td></tr>
               <tr><td><code>PersistentKeepalive</code></td><td>No</td><td>Seconds between keepalive packets (NAT)</td></tr>
-            </table>` },
-          { heading: 'Common Commands', content: `
+            </table>`,
+          },
+          {
+            heading: "Common Commands",
+            content: `
             <table>
               <tr><th data-i18n="tools.wireguard-config.ui.th32">Command</th><th data-i18n="tools.wireguard-config.ui.th31">Description</th></tr>
               <tr><td><code>wg genkey | tee private.key | wg pubkey > public.key</code></td><td>Generate key pair</td></tr>
@@ -311,15 +341,19 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
               <tr><td><code>wg-quick down wg0</code></td><td>Stop interface</td></tr>
               <tr><td><code>wg show</code></td><td>Show interface status</td></tr>
               <tr><td><code>wg showconf wg0</code></td><td>Dump current config</td></tr>
-            </table>` },
-          { heading: 'Template Types', content: `
+            </table>`,
+          },
+          {
+            heading: "Template Types",
+            content: `
             <table>
               <tr><th data-i18n="tools.wireguard-config.ui.th33">Topology</th><th data-i18n="tools.wireguard-config.ui.th34">Use Case</th></tr>
               <tr><td><code>Point-to-Point</code></td><td>Direct connection between two peers</td></tr>
               <tr><td><code>Hub-and-Spoke</code></td><td>Central server with multiple clients</td></tr>
               <tr><td><code>Site-to-Site</code></td><td>Connect two networks</td></tr>
               <tr><td><code>Road Warrior</code></td><td>Remote client with split tunneling</td></tr>
-            </table>` }
+            </table>`,
+          },
         ])}
 
         ${createRelatedToolsSection(relatedToolsData)}
@@ -329,70 +363,39 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
 
   const script = `
     <script>
-      // Wait for sodium polyfill
-      let sodiumReady = false;
-
-      async function initSodium() {
-        try {
-          if (typeof sodium !== 'undefined' && sodium && sodium.ready) {
-            await sodium.ready;
-            sodiumReady = true;
-          }
-        } catch (e) {
-          console.warn('sodium init:', e.message);
-        }
-      }
-
-      initSodium();
-
       // Peer counter for unique IDs
       let peerCounter = 0;
       const peers = new Map();
 
       function toBase64(arr) {
-        var bin = '';
-        for (var i = 0; i < arr.length; i++) bin += String.fromCharCode(arr[i]);
-        return btoa(bin);
+        return (window.wireGuardToBase64 || function(bytes) {
+          var bin = '';
+          for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+          return btoa(bin);
+        })(arr);
       }
 
-      // Key Generation
       document.getElementById('generate-keys-btn').addEventListener('click', async () => {
-        if (!sodiumReady) await initSodium();
-
         try {
-          let privateKey, publicKey;
-          // Try Web Crypto X25519 first
-          try {
-            const keyPair = await crypto.subtle.generateKey({ name: 'X25519' }, true, ['deriveBits']);
-            const privRaw = new Uint8Array(await crypto.subtle.exportKey('raw', keyPair.privateKey));
-            const pubRaw = new Uint8Array(await crypto.subtle.exportKey('raw', keyPair.publicKey));
-            privateKey = toBase64(privRaw);
-            publicKey = toBase64(pubRaw);
-          } catch (wcErr) {
-            // Fallback to sodium polyfill
-            if (sodiumReady && sodium._generateKeyPair) {
-              const kp = await sodium._generateKeyPair();
-              privateKey = toBase64(kp.privateKey);
-              publicKey = toBase64(kp.publicKey);
-            } else {
-              showValidation('error', ['Key generation not supported in this browser. Please use a modern browser.']);
-              return;
-            }
+          if (typeof generateWireGuardKeyPair !== 'function') {
+            throw new Error('Key generator failed to load');
           }
+          const kp = await generateWireGuardKeyPair();
+          const privateKey = toBase64(kp.privateKey);
+          const publicKey = toBase64(kp.publicKey);
 
           document.getElementById('private-key').value = privateKey;
           document.getElementById('public-key').value = publicKey;
-          
-          // Also fill in the interface private key if empty
+
           const ifacePrivateKey = document.getElementById('iface-private-key');
           if (!ifacePrivateKey.value) {
             ifacePrivateKey.value = privateKey;
           }
-          
+
           updateConfigPreview();
           showValidation('success', ['Key pair generated successfully!']);
         } catch (error) {
-          showValidation('error', ['Failed to generate keys: ' + error.message]);
+          showValidation('error', ['Failed to generate keys: ' + error.message + '. Use a current Chrome, Firefox, or Safari, or run wg genkey locally.']);
         }
       });
 
@@ -500,7 +503,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
                 <span class="px-2 py-1 bg-secondary-100 dark:bg-secondary-900/30 text-secondary-700 dark:text-secondary-300 rounded text-xs font-mono">[Peer]</span>
                 <span class="peer-number">Peer \${peerId}</span>
               </h4>
-              <button class="remove-peer-btn btn btn-ghost btn-xs text-error-600 dark:text-error-400" data-peer-id="\${peerId}">
+              <button class="remove-peer-btn btn btn-ghost btn-xs text-error-600 dark:text-error-400" data-peer-id="\${peerId}" aria-label="\${_t('tools.wireguard-config.js.removePeer', 'Remove peer')}" data-i18n-aria="tools.wireguard-config.js.removePeer">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
@@ -509,28 +512,28 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
             
             <div class="space-y-4">
               <div>
-                <label class="label">PublicKey <span class="text-error-500">*</span></label>
-                <input type="text" class="peer-public-key input font-mono text-sm" placeholder="Base64 public key of peer..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder20" value="\${peerData.publicKey}">
+                <label class="label" for="peer-public-key-\${peerId}">PublicKey <span class="text-error-500">*</span></label>
+                <input type="text" id="peer-public-key-\${peerId}" class="peer-public-key input font-mono text-sm" placeholder="Base64 public key of peer..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder20" value="\${peerData.publicKey}">
               </div>
-              
+
               <div>
-                <label class="label">PresharedKey <span class="text-xs text-surface-400">(optional)</span></label>
-                <input type="text" class="peer-preshared-key input font-mono text-sm" placeholder="Additional symmetric key..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder21" value="\${peerData.presharedKey}">
+                <label class="label" for="peer-preshared-key-\${peerId}">PresharedKey <span class="text-xs text-muted-foreground">(optional)</span></label>
+                <input type="text" id="peer-preshared-key-\${peerId}" class="peer-preshared-key input font-mono text-sm" placeholder="Additional symmetric key..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder21" value="\${peerData.presharedKey}">
               </div>
-              
+
               <div>
-                <label class="label">AllowedIPs <span class="text-error-500">*</span></label>
-                <input type="text" class="peer-allowed-ips input font-mono text-sm" placeholder="0.0.0.0/0 or 10.0.0.1/32..." value="\${peerData.allowedIPs}">
+                <label class="label" for="peer-allowed-ips-\${peerId}">AllowedIPs <span class="text-error-500">*</span></label>
+                <input type="text" id="peer-allowed-ips-\${peerId}" class="peer-allowed-ips input font-mono text-sm" placeholder="0.0.0.0/0 or 10.0.0.1/32..." value="\${peerData.allowedIPs}">
               </div>
-              
+
               <div class="grid grid-cols-2 gap-4">
                 <div>
-                  <label class="label"><span data-i18n="tools.wireguard-config.ui.label10">Endpoint</span></label>
-                  <input type="text" class="peer-endpoint input font-mono text-sm" placeholder="host:port..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder22" value="\${peerData.endpoint}">
+                  <label class="label" for="peer-endpoint-\${peerId}"><span data-i18n="tools.wireguard-config.ui.label10">Endpoint</span></label>
+                  <input type="text" id="peer-endpoint-\${peerId}" class="peer-endpoint input font-mono text-sm" placeholder="host:port..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder22" value="\${peerData.endpoint}">
                 </div>
                 <div>
-                  <label class="label"><span data-i18n="tools.wireguard-config.ui.label11">PersistentKeepalive</span></label>
-                  <input type="number" class="peer-keepalive input font-mono text-sm" placeholder="25" min="0" max="65535" value="\${peerData.persistentKeepalive}">
+                  <label class="label" for="peer-keepalive-\${peerId}"><span data-i18n="tools.wireguard-config.ui.label11">PersistentKeepalive</span></label>
+                  <input type="number" id="peer-keepalive-\${peerId}" class="peer-keepalive input font-mono text-sm" placeholder="25" min="0" max="65535" value="\${peerData.persistentKeepalive}">
                 </div>
               </div>
             </div>
@@ -892,8 +895,8 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
     title,
     description,
     lang: currentLang,
-    path: '/wireguard-config',
+    path: "/wireguard-config",
     content,
-    scripts: script
+    scripts: script,
   });
 }

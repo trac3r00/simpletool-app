@@ -4,40 +4,62 @@
  * All processing happens client-side
  */
 
-import { createPageTemplate, createToolHeader, getDownloadFileScript } from '../utils/common-ui.js';
-import { respondHTML } from '../utils/respond.js';
-import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import {
+  createPageTemplate,
+  createToolHeader,
+  getDownloadFileScript,
+} from "../utils/common-ui.js";
+import { respondHTML } from "../utils/respond.js";
+import {
+  createEducationalSection,
+  createRelatedToolsSection,
+} from "../utils/content-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 /**
  * Render the Code Minifier page
  */
 function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('code-minifier', currentLang);
+  const translation = getToolTranslation("code-minifier", currentLang);
   const toolHeader = createToolHeader(
-    { emoji: '📦' },
-    translation?.name || 'Code Minifier',
-    translation?.desc || 'Minify and beautify JavaScript, CSS, and HTML code with one click. Optimize your code for production or improve readability.',
-    [{ text: translation?.ui?.badge16 || 'Client-Side Only', tooltip: 'Runs entirely in your browser using Web APIs — your code never leaves your device.' }],
-    { toolId: 'code-minifier' }
+    { emoji: "📦" },
+    translation?.name || "Code Minifier",
+    translation?.desc ||
+      "Minify and beautify JavaScript, CSS, and HTML code with one click. Optimize your code for production or improve readability.",
+    [
+      {
+        text: translation?.ui?.badge16 || "Client-Side Only",
+        tooltip:
+          "Runs entirely in your browser using Web APIs — your code is processed locally and not sent to our servers.",
+      },
+    ],
+    { toolId: "code-minifier" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'code-minifier');
-  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+  const currentTool = TOOLS.find((t) => t.id === "code-minifier");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
   const pageContent = `
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
         ${toolHeader}
 
       <!-- Language Tabs -->
       <div class="flex justify-center mb-6 border-b-2 border-surface-200 dark:border-surface-700">
         <div class="flex gap-2">
-          <button class="language-tab active" data-lang="javascript" data-tooltip="Minify JavaScript code" data-i18n-tooltip="tools.code-minifier.ui.tip0"><span data-i18n="tools.code-minifier.ui.button0">JavaScript</span></button>
-          <button class="language-tab" data-lang="css" data-tooltip="Minify CSS stylesheets" data-i18n-tooltip="tools.code-minifier.ui.tip1"><span data-i18n="tools.code-minifier.ui.button6">CSS</span></button>
-          <button class="language-tab" data-lang="html" data-tooltip="Minify HTML markup" data-i18n-tooltip="tools.code-minifier.ui.tip2"><span data-i18n="tools.code-minifier.ui.button7">HTML</span></button>
+          <button class="tab-trigger language-tab active" data-lang="javascript" data-tooltip="Minify JavaScript code" data-i18n-tooltip="tools.code-minifier.ui.tip0"><span data-i18n="tools.code-minifier.ui.button0">JavaScript</span></button>
+          <button class="tab-trigger language-tab" data-lang="css" data-tooltip="Minify CSS stylesheets" data-i18n-tooltip="tools.code-minifier.ui.tip1"><span data-i18n="tools.code-minifier.ui.button6">CSS</span></button>
+          <button class="tab-trigger language-tab" data-lang="html" data-tooltip="Minify HTML markup" data-i18n-tooltip="tools.code-minifier.ui.tip2"><span data-i18n="tools.code-minifier.ui.button7">HTML</span></button>
         </div>
       </div>
 
@@ -63,7 +85,7 @@ function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
             </button>
           </div>
 
-          <textarea id="input-code" class="code-editor w-full p-4 border-2 border-surface-300 dark:border-surface-700 rounded-lg bg-surface-50 dark:bg-surface-950 text-surface-900 dark:text-surface-100 resize-vertical" placeholder="Paste your code here..." data-i18n-placeholder="tools.code-minifier.ui.placeholder6"></textarea>
+          <textarea id="input-code" aria-label="Code input" class="input w-full resize-vertical" placeholder="Paste your code here..." data-i18n-placeholder="tools.code-minifier.ui.placeholder6"></textarea>
 
           <div class="mt-3 text-sm text-surface-600 dark:text-surface-400">
             <span id="input-size">Size: 0 bytes</span>
@@ -84,7 +106,7 @@ function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
             </div>
           </div>
 
-          <textarea id="output-code" class="code-editor w-full p-4 border-2 border-surface-300 dark:border-surface-700 rounded-lg bg-surface-50 dark:bg-surface-950 text-surface-900 dark:text-surface-100 resize-vertical" readonly placeholder="Output will appear here..." data-i18n-placeholder="tools.code-minifier.ui.placeholder7"></textarea>
+          <textarea id="output-code" aria-label="Minified output" class="input w-full resize-vertical" readonly placeholder="Output will appear here..." data-i18n-placeholder="tools.code-minifier.ui.placeholder7"></textarea>
 
           <div id="output-stats" class="mt-3 text-sm text-surface-600 dark:text-surface-400 hidden">
             <span id="output-size"></span>
@@ -112,35 +134,42 @@ function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
         <div class="bg-surface-50 dark:bg-surface-800/50 rounded-xl p-4 border border-surface-200 dark:border-surface-700">
           <h3 class="font-bold text-surface-900 dark:text-surface-100 mb-2" data-i18n="tools.code-minifier.ui.heading12">🔒 Privacy First</h3>
           <p class="text-sm text-surface-600 dark:text-surface-400" data-i18n="tools.code-minifier.ui.desc15">
-            All processing happens in your browser. Your code never leaves your device.
+            All processing happens in your browser. Your code is processed locally and not sent to our servers.
           </p>
         </div>
       </div>
       </div>
     </main>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-      ${createEducationalSection([
-        {
-          title: 'What is Minification?',
-          content: '<p>Minification is the process of removing all unnecessary characters from source code without changing its functionality. This includes removing whitespace, newlines, comments, and sometimes shortening variable names. The goal is to reduce the file size of the code, which in turn reduces the amount of data that needs to be transferred over the network.</p><p>This leads to faster page load times and improved performance for web applications. While minification is essential for production environments, it makes the code nearly impossible for humans to read and debug. Therefore, it is typically performed as a final step in the build process before deploying to a live server.</p>'
-        },
-        {
-          title: 'How to Use This Tool',
-          content: '<ol><li>Select the programming language (JavaScript, CSS, or HTML) from the tabs at the top.</li><li>Paste your source code into the "Input Code" text area on the left.</li><li>Click the "Minify Code" button to reduce the file size for production use.</li><li>Alternatively, click "Beautify Code" to add indentation and formatting for better readability.</li><li>View the results in the "Output Code" area and click "Copy" or "Download" to save your optimized code.</li><li>Need to format or minify JSON? Use the <a href="/json-formatter" class="text-primary-600 dark:text-primary-400 underline">JSON Formatter</a> tool.</li></ol>'
-        },
-        {
-          title: 'Common Use Cases',
-          content: '<ul><li><strong>Production Deployment:</strong> Minify your JS and CSS files before uploading them to your web server to improve site speed and SEO.</li><li><strong>Email Templates:</strong> Minify HTML email code to ensure it stays under the size limits of various email clients and loads quickly for recipients.</li><li><strong>API Responses:</strong> Minify JSON data before sending it from your server to reduce bandwidth usage and egress costs.</li><li><strong>Code Auditing:</strong> Use the beautifier to format messy or minified code you\'ve found online to understand how it works.</li></ul>'
-        },
-        {
-          title: 'Pro Tips',
-          content: '<ul><li>Always keep your original, unminified source code for development and only use the minified version for production deployment.</li><li>Use Source Maps to bridge the gap between minified production code and readable development code, allowing for efficient debugging in the browser.</li><li>Combine minification with Gzip or Brotli compression on your server for the maximum possible reduction in file size and transfer time.</li></ul>'
-        }
-      ], 'code-minifier', currentLang)}
+      ${createEducationalSection(
+        [
+          {
+            title: "What is Minification?",
+            content:
+              "<p>Minification is the process of removing all unnecessary characters from source code without changing its functionality. This includes removing whitespace, newlines, comments, and sometimes shortening variable names. The goal is to reduce the file size of the code, which in turn reduces the amount of data that needs to be transferred over the network.</p><p>This leads to faster page load times and improved performance for web applications. While minification is essential for production environments, it makes the code nearly impossible for humans to read and debug. Therefore, it is typically performed as a final step in the build process before deploying to a live server.</p>",
+          },
+          {
+            title: "How to Use This Tool",
+            content:
+              '<ol><li>Select the programming language (JavaScript, CSS, or HTML) from the tabs at the top.</li><li>Paste your source code into the "Input Code" text area on the left.</li><li>Click the "Minify Code" button to reduce the file size for production use.</li><li>Alternatively, click "Beautify Code" to add indentation and formatting for better readability.</li><li>View the results in the "Output Code" area and click "Copy" or "Download" to save your optimized code.</li><li>Need to format or minify JSON? Use the <a href="/json-formatter" class="text-primary-600 dark:text-primary-400 underline">JSON Formatter</a> tool.</li></ol>',
+          },
+          {
+            title: "Common Use Cases",
+            content:
+              "<ul><li><strong>Production Deployment:</strong> Minify your JS and CSS files before uploading them to your web server to improve site speed and SEO.</li><li><strong>Email Templates:</strong> Minify HTML email code to ensure it stays under the size limits of various email clients and loads quickly for recipients.</li><li><strong>API Responses:</strong> Minify JSON data before sending it from your server to reduce bandwidth usage and egress costs.</li><li><strong>Code Auditing:</strong> Use the beautifier to format messy or minified code you've found online to understand how it works.</li></ul>",
+          },
+          {
+            title: "Pro Tips",
+            content:
+              "<ul><li>Always keep your original, unminified source code for development and only use the minified version for production deployment.</li><li>Use Source Maps to bridge the gap between minified production code and readable development code, allowing for efficient debugging in the browser.</li><li>Combine minification with Gzip or Brotli compression on your server for the maximum possible reduction in file size and transfer time.</li></ul>",
+          },
+        ],
+        "code-minifier",
+        currentLang,
+      )}
     </div>
     ${createRelatedToolsSection(relatedToolsData)}
   `;
-
 
   const customStyles = `
     <style>
@@ -209,22 +238,34 @@ function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
           });
           tab.classList.add('active');
           currentLang = tab.dataset.lang;
+          // The mode buttons below re-run processCode(); this did not, so after
+          // switching language the output pane kept showing the result computed
+          // with the PREVIOUS language until the user touched something else.
+          processCode();
         });
       });
 
       // ── Mode button switching ─────────────────────────────────────────────
-      document.getElementById('minify-btn').addEventListener('click', function() {
-        document.getElementById('minify-btn').classList.add('active');
-        document.getElementById('beautify-btn').classList.remove('active');
-        currentMode = 'minify';
+      // The solid btn-primary fill is the dominant "selected" signal, so it has
+      // to move with .active — otherwise the deselected button keeps its fill
+      // and both modes read as active at once.
+      function setMode(mode) {
+        var selected = document.getElementById(mode === 'minify' ? 'minify-btn' : 'beautify-btn');
+        var other = document.getElementById(mode === 'minify' ? 'beautify-btn' : 'minify-btn');
+        selected.classList.add('active', 'btn-primary');
+        selected.classList.remove('btn-secondary');
+        other.classList.remove('active', 'btn-primary');
+        other.classList.add('btn-secondary');
+        currentMode = mode;
         processCode();
+      }
+
+      document.getElementById('minify-btn').addEventListener('click', function() {
+        setMode('minify');
       });
 
       document.getElementById('beautify-btn').addEventListener('click', function() {
-        document.getElementById('beautify-btn').classList.add('active');
-        document.getElementById('minify-btn').classList.remove('active');
-        currentMode = 'beautify';
-        processCode();
+        setMode('beautify');
       });
 
       // ── Input size display ────────────────────────────────────────────────
@@ -477,17 +518,22 @@ function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
         while (i < len) {
           var ch = stripped[i];
           if (ch === '{') {
-            result += ' {\\n';
+            // trimTrailingSpaces: the separator space before the brace is
+            // already accounted for by the ' {' we emit here.
+            result = result.replace(/ +$/, '') + ' {\\n';
             indent++;
             result += indentStr.repeat(indent);
           } else if (ch === '}') {
-            // Remove trailing space/indent before }
-            result = result.trimEnd() + '\\n}\\n\\n';
+            // Remove trailing space/indent before }, close the block at the
+            // PARENT indent level so nested blocks (@media) line their braces
+            // up, then re-indent for whatever follows inside that parent.
             indent = Math.max(0, indent - 1);
+            result = result.trimEnd() + '\\n' + indentStr.repeat(indent) + '}\\n\\n' +
+              indentStr.repeat(indent);
           } else if (ch === ';') {
-            result += ';\\n' + indentStr.repeat(indent);
+            result = result.replace(/ +$/, '') + ';\\n' + indentStr.repeat(indent);
           } else if (ch === ':' && indent > 0) {
-            result += ': ';
+            result = result.replace(/ +$/, '') + ': ';
             // Skip following space if any
             if (stripped[i+1] === ' ') i++;
           } else if (ch === ',') {
@@ -498,7 +544,10 @@ function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
               result += ', ';
             }
           } else {
-            result += ch;
+            // The \\s+ collapse above leaves a separator space between rules,
+            // which would land after the newline emitted by '}' and show up as
+            // a stray leading space on the next selector.
+            if (!(ch === ' ' && /\\n *$/.test(result))) result += ch;
           }
           i++;
         }
@@ -530,6 +579,7 @@ function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
         var inlineTags = /^(a|abbr|acronym|b|bdo|big|br|button|cite|code|dfn|em|i|img|input|kbd|label|map|object|output|q|samp|select|small|span|strong|sub|sup|textarea|time|tt|u|var)$/i;
 
         // Simple tag-by-tag pass
+        var prevWasInline = false;
         var re = /(<[^>]+>|[^<]+)/g;
         var match;
         while ((match = re.exec(normalized)) !== null) {
@@ -541,8 +591,10 @@ function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
             if (!inlineTags.test(name)) {
               indent = Math.max(0, indent - 1);
               result += '\\n' + indentStr.repeat(indent) + piece;
+              prevWasInline = false;
             } else {
               result += piece;
+              prevWasInline = true;
             }
           } else if (piece.startsWith('<')) {
             // Opening or self-closing tag
@@ -552,27 +604,36 @@ function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
             if (!inlineTags.test(name2)) {
               result += '\\n' + indentStr.repeat(indent) + piece;
               if (!selfClosing) indent++;
+              prevWasInline = false;
             } else {
               result += piece;
+              prevWasInline = true;
             }
           } else {
-            // Text node
-            var text = piece.replace(/\\s+/g, ' ').trim();
-            if (text) result += text;
+            // Text node — collapse runs, but keep the boundary space that
+            // separates text from an adjacent inline tag; trimming it glued
+            // "Hello <b>world</b>" into "Hello<b>world</b>".
+            var text = piece.replace(/\\s+/g, ' ');
+            if (text.trim()) {
+              // Only an inline neighbour makes the leading space meaningful;
+              // after a block tag (or at the start of a line) it is noise.
+              if (!prevWasInline) text = text.replace(/^ /, '');
+              result += text;
+            }
           }
         }
-        return result.replace(/^\\n/, '').replace(/\\n{3,}/g, '\\n\\n');
+        return result.replace(/^\\n/, '').replace(/ +\\n/g, '\\n').replace(/\\n{3,}/g, '\\n\\n');
       }
     </script>
   `;
 
   return createPageTemplate({
-    title: translation?.name || 'Code Minifier',
-    description: translation?.desc || 'Minify JS, CSS, and HTML code.',
-    path: '/code-minifier',
+    title: translation?.name || "Code Minifier",
+    description: translation?.desc || "Minify JS, CSS, and HTML code.",
+    path: "/code-minifier",
     content: customStyles + pageContent,
     scripts,
-    lang: currentLang
+    lang: currentLang,
   });
 }
 
@@ -584,15 +645,15 @@ export async function handleCodeMinifierRoutes(request, url) {
   const lang = resolveRequestLanguage(request, url);
 
   // Only handle exact matches for the code minifier route
-  if (pathname === '/code-minifier' || pathname === '/code-minifier/') {
-    if (request.method !== 'GET') {
+  if (pathname === "/code-minifier" || pathname === "/code-minifier/") {
+    if (request.method !== "GET") {
       // Return 405 Method Not Allowed for non-GET requests
-      return new Response('Method Not Allowed', {
+      return new Response("Method Not Allowed", {
         status: 405,
         headers: {
-          'Content-Type': 'text/plain',
-          'Allow': 'GET'
-        }
+          "Content-Type": "text/plain",
+          Allow: "GET",
+        },
       });
     }
     return respondHTML(renderCodeMinifierPage(lang));

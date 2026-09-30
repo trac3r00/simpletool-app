@@ -2,92 +2,74 @@
  * Response helpers
  */
 
-import { getSecurityHeaders, generateNonce } from './security.js';
+import { getSecurityHeaders, generateNonce } from "./security.js";
+import { getAdConfig } from "./ads.js";
 import {
   createPageTemplate,
   getThemeBootstrapScript,
   getLanguageBootstrapScript,
   getStylesheetLinks,
   getAdSenseScript,
-  getAdSlotHTML
-} from './common-ui.js';
+} from "./common-ui.js";
 
 function injectStylesheet(html) {
-  if (html.includes('data-bundled-stylesheet')) {
+  if (html.includes("data-bundled-stylesheet")) {
     return html;
   }
 
   const styles = getStylesheetLinks();
 
-  if (html.includes('</head>')) {
-    return html.replace('</head>', `${styles}\n</head>`);
+  if (html.includes("</head>")) {
+    return html.replace("</head>", `${styles}\n</head>`);
   }
 
   return `${styles}\n${html}`;
 }
 
 function injectThemeBootstrap(html) {
-  if (html.includes('data-theme-bootstrap')) {
+  if (html.includes("data-theme-bootstrap")) {
     return html;
   }
 
   const bootstrap = getThemeBootstrapScript();
 
-  if (html.includes('</head>')) {
-    return html.replace('</head>', `${bootstrap}\n</head>`);
+  if (html.includes("</head>")) {
+    return html.replace("</head>", `${bootstrap}\n</head>`);
   }
 
   return `${bootstrap}\n${html}`;
 }
 
 function injectLanguageBootstrap(html) {
-  if (html.includes('data-i18n-bootstrap')) {
+  if (html.includes("data-i18n-bootstrap")) {
     return html;
   }
 
   const bootstrap = getLanguageBootstrapScript();
 
-  if (html.includes('</head>')) {
-    return html.replace('</head>', `${bootstrap}\n</head>`);
+  if (html.includes("</head>")) {
+    return html.replace("</head>", `${bootstrap}\n</head>`);
   }
 
   return `${bootstrap}\n${html}`;
 }
 
-function injectAdSenseScript(html) {
-  if (html.includes('adsbygoogle.js')) {
+function injectAdSenseScript(html, pathname) {
+  if (!pathname) return html;
+  if (html.includes("adsbygoogle.js") || html.includes("requestNonPersonalizedAds")) {
     return html;
   }
 
-  const adScript = getAdSenseScript();
+  const adScript = getAdSenseScript(pathname);
   if (!adScript.trim()) {
     return html;
   }
 
-  if (html.includes('</head>')) {
-    return html.replace('</head>', `${adScript}\n</head>`);
+  if (html.includes("</head>")) {
+    return html.replace("</head>", `${adScript}\n</head>`);
   }
 
   return `${adScript}\n${html}`;
-}
-
-function injectAdSlot(html) {
-  if (html.includes('class="adsbygoogle"') || html.includes("class='adsbygoogle'") || html.includes('data-ad-slot=')) {
-    return html;
-  }
-
-  const adSlot = getAdSlotHTML('tool', {
-    wrapperClassName: 'max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8'
-  });
-  if (!adSlot) {
-    return html;
-  }
-
-  if (html.includes('</body>')) {
-    return html.replace('</body>', `${adSlot}\n</body>`);
-  }
-
-  return `${html}\n${adSlot}`;
 }
 
 export function respondJSON(data, options = {}) {
@@ -95,14 +77,14 @@ export function respondJSON(data, options = {}) {
 
   // Ensure Cache-Control defaults to no-store for JSON unless explicitly overridden
   const finalHeaders = {
-    ...getSecurityHeaders('application/json; charset=utf-8'),
-    'Cache-Control': 'no-store, no-cache, must-revalidate',
-    ...headers
+    ...getSecurityHeaders("application/json; charset=utf-8"),
+    "Cache-Control": "no-store, no-cache, must-revalidate",
+    ...headers,
   };
 
   return new Response(JSON.stringify(data), {
     status,
-    headers: finalHeaders
+    headers: finalHeaders,
   });
 }
 
@@ -114,25 +96,30 @@ export function respondHTML(html, options = {}) {
 
   // Determine cache control: bypass caching for URLs with query parameters
   const hasQueryParams = url && url.search && url.search.length > 1;
-  const cacheControl = hasQueryParams ? 'private, no-cache, must-revalidate' : null;
+  const cacheControl = hasQueryParams
+    ? "private, no-cache, must-revalidate"
+    : null;
 
   const htmlWithStyles = injectStylesheet(html);
   const htmlWithTheme = injectThemeBootstrap(htmlWithStyles);
   const htmlWithLang = injectLanguageBootstrap(htmlWithTheme);
-  const htmlWithAds = injectAdSlot(injectAdSenseScript(htmlWithLang));
+  const htmlWithAds = injectAdSenseScript(
+    htmlWithLang,
+    url ? url.pathname : getAdConfig().path,
+  );
 
   // Inject nonce into ALL script tags (both inline and external)
   const htmlWithNonce = htmlWithAds.replace(
     /<script(\s|>)/g,
-    `<script nonce="${nonce}"$1`
+    `<script nonce="${nonce}"$1`,
   );
 
   return new Response(htmlWithNonce, {
     status,
     headers: {
-      ...getSecurityHeaders('text/html; charset=utf-8', cacheControl, nonce),
-      ...headers
-    }
+      ...getSecurityHeaders("text/html; charset=utf-8", cacheControl, nonce),
+      ...headers,
+    },
   });
 }
 
@@ -141,16 +128,16 @@ export function respondText(text, options = {}) {
   return new Response(text, {
     status,
     headers: {
-      ...getSecurityHeaders('text/plain; charset=utf-8'),
-      ...headers
-    }
+      ...getSecurityHeaders("text/plain; charset=utf-8"),
+      ...headers,
+    },
   });
 }
 
 export function respond404() {
   const html = createPageTemplate({
-    title: '404 - Page Not Found',
-    description: 'The requested page could not be found.',
+    title: "404 - Page Not Found",
+    description: "The requested page could not be found.",
     content: `
       <main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
         <div class="card p-8 sm:p-10 text-center">
@@ -176,25 +163,44 @@ export function respond404() {
           </div>
         </div>
       </main>
-    `
+    `,
+    path: "/404",
+    robots: "noindex, nofollow",
   });
   return respondHTML(html, {
     status: 404,
-    headers: { 'Cache-Control': 'no-store' }
+    headers: { "Cache-Control": "no-store" },
   });
+}
+
+export function respond405(allowedMethods = ["GET", "HEAD"]) {
+  const allow = allowedMethods.join(", ");
+  return respondJSON(
+    {
+      error: "Method not allowed",
+      message: `This resource only supports ${allow}.`,
+    },
+    {
+      status: 405,
+      headers: { Allow: allow, "Cache-Control": "no-store" },
+    },
+  );
 }
 
 export function respond429(options = {}) {
   const { retryAfterSeconds } = options;
-  const headers = { 'Cache-Control': 'no-store' };
+  const headers = { "Cache-Control": "no-store" };
   if (Number.isFinite(retryAfterSeconds) && retryAfterSeconds > 0) {
-    headers['Retry-After'] = String(Math.ceil(retryAfterSeconds));
+    headers["Retry-After"] = String(Math.ceil(retryAfterSeconds));
   }
   return respondJSON(
-    { error: 'Rate limit exceeded', message: 'Too many requests. Please try again later.' },
+    {
+      error: "Rate limit exceeded",
+      message: "Too many requests. Please try again later.",
+    },
     {
       status: 429,
-      headers
-    }
+      headers,
+    },
   );
 }

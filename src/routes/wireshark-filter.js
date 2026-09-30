@@ -1,36 +1,51 @@
-import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createCheatsheet } from '../utils/common-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { createRelatedToolsSection } from '../utils/content-ui.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML } from "../utils/respond.js";
+import {
+  createPageTemplate,
+  createToolHeader,
+  createCheatsheet,
+} from "../utils/common-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import { createRelatedToolsSection } from "../utils/content-ui.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleWiresharkFilterRoutes(request, url) {
-  if (url.pathname !== '/wireshark-filter' && url.pathname !== '/wireshark-filter/') return null;
-  if (request.method !== 'GET') return null;
+  if (
+    url.pathname !== "/wireshark-filter" &&
+    url.pathname !== "/wireshark-filter/"
+  )
+    return null;
+  if (request.method !== "GET") return null;
   const lang = resolveRequestLanguage(request, url);
   return respondHTML(renderWiresharkFilterPage(lang));
 }
 
 function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('wireshark-filter', currentLang);
-  const title = translation?.name || 'Wireshark Filter Builder';
-  const description = translation?.desc || 'Build Wireshark display filters and BPF capture expressions visually.';
+  const translation = getToolTranslation("wireshark-filter", currentLang);
+  const title = translation?.name || "Wireshark Filter Builder";
+  const description =
+    translation?.desc ||
+    "Build Wireshark display filters and BPF capture expressions visually.";
 
-  const header = createToolHeader(
-    { emoji: '🦈' },
-    title,
-    description,
-    [],
-    { toolId: 'wireshark-filter' }
-  );
+  const header = createToolHeader({ emoji: "🦈" }, title, description, [], {
+    toolId: "wireshark-filter",
+  });
 
-  const currentTool = TOOLS.find(t => t.id === 'wireshark-filter');
-  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+  const currentTool = TOOLS.find((t) => t.id === "wireshark-filter");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      ${header}
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
+        ${header}
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <!-- Left Panel: Filter Builder -->
@@ -38,10 +53,10 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
           <!-- Mode Tabs -->
           <div class="tool-card">
             <div class="flex space-x-1 border-b border-surface-200 dark:border-surface-700 mb-4">
-              <button id="tab-display" class="tab-btn px-4 py-2 text-sm font-medium text-primary-600 border-b-2 border-primary-600" data-tab="display">
+              <button id="tab-display" class="tab-trigger tab-btn active" data-tab="display">
                 <span data-i18n="tools.wireshark-filter.ui.button0">Display Filter</span>
               </button>
-              <button id="tab-bpf" class="tab-btn px-4 py-2 text-sm font-medium text-surface-500 dark:text-surface-400" data-tab="bpf">
+              <button id="tab-bpf" class="tab-trigger tab-btn" data-tab="bpf">
                 <span data-i18n="tools.wireshark-filter.ui.button1">Capture Filter (BPF)</span>
               </button>
             </div>
@@ -50,8 +65,8 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
             <div id="panel-display" class="tab-panel">
               <div class="space-y-4">
                 <div>
-                  <label class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label0">Protocol</label>
-                  <select id="df-protocol" class="w-full bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500">
+                  <label for="df-protocol" class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label0">Protocol</label>
+                  <select id="df-protocol" class="input w-full">
                     <option value="">-- Select Protocol --</option>
                     <option value="ip">IP</option>
                     <option value="tcp">TCP</option>
@@ -73,15 +88,15 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
                 </div>
 
                 <div>
-                  <label class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label1">Field</label>
-                  <select id="df-field" class="w-full bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500">
+                  <label for="df-field" class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label1">Field</label>
+                  <select id="df-field" class="input w-full">
                     <option value="" data-i18n="tools.wireshark-filter.ui.option0">-- Select Field --</option>
                   </select>
                 </div>
 
                 <div>
-                  <label class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label2">Operator</label>
-                  <select id="df-operator" class="w-full bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500">
+                  <label for="df-operator" class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label2">Operator</label>
+                  <select id="df-operator" class="input w-full">
                     <option value="==" data-i18n="tools.wireshark-filter.ui.option22">== (equals)</option>
                     <option value="!=" data-i18n="tools.wireshark-filter.ui.option23">!= (not equals)</option>
                     <option value=">" data-i18n="tools.wireshark-filter.ui.option24">&gt; (greater than)</option>
@@ -94,8 +109,8 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
                 </div>
 
                 <div>
-                  <label class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label3">Value</label>
-                  <input type="text" id="df-value" class="w-full bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500" placeholder="e.g., 80, 192.168.1.1">
+                  <label for="df-value" class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label3">Value</label>
+                  <input type="text" id="df-value" class="input w-full" placeholder="e.g., 80, 192.168.1.1">
                 </div>
 
                 <button id="df-add-btn" class="btn btn-primary w-full">
@@ -130,8 +145,8 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
             <div id="panel-bpf" class="tab-panel hidden">
               <div class="space-y-4">
                 <div>
-                  <label class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label6">Primitive</label>
-                  <select id="bpf-primitive" class="w-full bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500">
+                  <label for="bpf-primitive" class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label6">Primitive</label>
+                  <select id="bpf-primitive" class="input w-full">
                     <option value="host" data-i18n="tools.wireshark-filter.ui.option28">host</option>
                     <option value="net" data-i18n="tools.wireshark-filter.ui.option29">net</option>
                     <option value="port" data-i18n="tools.wireshark-filter.ui.option30">port</option>
@@ -141,8 +156,8 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
                 </div>
 
                 <div>
-                  <label class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label7">Direction</label>
-                  <select id="bpf-direction" class="w-full bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500">
+                  <label for="bpf-direction" class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label7">Direction</label>
+                  <select id="bpf-direction" class="input w-full">
                     <option value="" data-i18n="tools.wireshark-filter.ui.option33">src or dst (either)</option>
                     <option value="src" data-i18n="tools.wireshark-filter.ui.option34">src (source only)</option>
                     <option value="dst" data-i18n="tools.wireshark-filter.ui.option35">dst (destination only)</option>
@@ -150,13 +165,13 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
                 </div>
 
                 <div>
-                  <label class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label8">Value</label>
-                  <input type="text" id="bpf-value" class="w-full bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500" placeholder="e.g., 192.168.1.1, 80, 1-1024">
+                  <label for="bpf-value" class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label8">Value</label>
+                  <input type="text" id="bpf-value" class="input w-full" placeholder="e.g., 192.168.1.1, 80, 1-1024">
                 </div>
 
                 <div>
-                  <label class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label9">Protocol</label>
-                  <select id="bpf-protocol" class="w-full bg-surface-50 dark:bg-surface-950 border border-surface-300 dark:border-surface-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500">
+                  <label for="bpf-protocol" class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label9">Protocol</label>
+                  <select id="bpf-protocol" class="input w-full">
                     <option value="" data-i18n="tools.wireshark-filter.ui.option36">Any</option>
                     <option value="tcp">tcp</option>
                     <option value="udp" data-i18n="tools.wireshark-filter.ui.option37">udp</option>
@@ -199,7 +214,7 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
           <div class="tool-card">
             <div class="flex justify-between items-center mb-4">
               <h2 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.wireshark-filter.ui.heading0">Filter Preview</h2>
-              <button id="clear-filter-btn" class="btn btn-ghost btn-xs text-surface-500">
+              <button id="clear-filter-btn" class="btn btn-ghost btn-xs">
                 <span data-i18n="tools.wireshark-filter.ui.button9">Clear</span>
               </button>
             </div>
@@ -237,16 +252,16 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
                 </summary>
                 <div class="mt-2 px-3 pb-3 text-sm text-surface-600 dark:text-surface-300">
                   <table class="w-full">
-                    <tr><td class="font-mono text-primary-600">tcp.port</td><td>Source or destination port</td></tr>
-                    <tr><td class="font-mono text-primary-600">tcp.srcport</td><td>Source port</td></tr>
-                    <tr><td class="font-mono text-primary-600">tcp.dstport</td><td>Destination port</td></tr>
-                    <tr><td class="font-mono text-primary-600">tcp.seq</td><td>Sequence number</td></tr>
-                    <tr><td class="font-mono text-primary-600">tcp.ack</td><td>Acknowledgment number</td></tr>
-                    <tr><td class="font-mono text-primary-600">tcp.flags.syn</td><td>SYN flag</td></tr>
-                    <tr><td class="font-mono text-primary-600">tcp.flags.ack</td><td>ACK flag</td></tr>
-                    <tr><td class="font-mono text-primary-600">tcp.flags.fin</td><td>FIN flag</td></tr>
-                    <tr><td class="font-mono text-primary-600">tcp.flags.rst</td><td>RST flag</td></tr>
-                    <tr><td class="font-mono text-primary-600">tcp.window_size</td><td>Window size</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">tcp.port</td><td>Source or destination port</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">tcp.srcport</td><td>Source port</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">tcp.dstport</td><td>Destination port</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">tcp.seq</td><td>Sequence number</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">tcp.ack</td><td>Acknowledgment number</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">tcp.flags.syn</td><td>SYN flag</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">tcp.flags.ack</td><td>ACK flag</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">tcp.flags.fin</td><td>FIN flag</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">tcp.flags.rst</td><td>RST flag</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">tcp.window_size</td><td>Window size</td></tr>
                   </table>
                 </div>
               </details>
@@ -257,13 +272,13 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
                 </summary>
                 <div class="mt-2 px-3 pb-3 text-sm text-surface-600 dark:text-surface-300">
                   <table class="w-full">
-                    <tr><td class="font-mono text-primary-600">ip.addr</td><td>Source or destination IP</td></tr>
-                    <tr><td class="font-mono text-primary-600">ip.src</td><td>Source IP address</td></tr>
-                    <tr><td class="font-mono text-primary-600">ip.dst</td><td>Destination IP address</td></tr>
-                    <tr><td class="font-mono text-primary-600">ip.proto</td><td>Protocol number</td></tr>
-                    <tr><td class="font-mono text-primary-600">ip.ttl</td><td>Time to live</td></tr>
-                    <tr><td class="font-mono text-primary-600">ip.len</td><td>Total length</td></tr>
-                    <tr><td class="font-mono text-primary-600">ip.version</td><td>IP version (4 or 6)</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">ip.addr</td><td>Source or destination IP</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">ip.src</td><td>Source IP address</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">ip.dst</td><td>Destination IP address</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">ip.proto</td><td>Protocol number</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">ip.ttl</td><td>Time to live</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">ip.len</td><td>Total length</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">ip.version</td><td>IP version (4 or 6)</td></tr>
                   </table>
                 </div>
               </details>
@@ -274,14 +289,14 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
                 </summary>
                 <div class="mt-2 px-3 pb-3 text-sm text-surface-600 dark:text-surface-300">
                   <table class="w-full">
-                    <tr><td class="font-mono text-primary-600">http.request</td><td>HTTP request</td></tr>
-                    <tr><td class="font-mono text-primary-600">http.response</td><td>HTTP response</td></tr>
-                    <tr><td class="font-mono text-primary-600">http.method</td><td>Request method (GET, POST, etc)</td></tr>
-                    <tr><td class="font-mono text-primary-600">http.host</td><td>Host header value</td></tr>
-                    <tr><td class="font-mono text-primary-600">http.uri</td><td>Request URI</td></tr>
-                    <tr><td class="font-mono text-primary-600">http.user_agent</td><td>User-Agent header</td></tr>
-                    <tr><td class="font-mono text-primary-600">http.status_code</td><td>Response status code</td></tr>
-                    <tr><td class="font-mono text-primary-600">http.content_type</td><td>Content-Type header</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">http.request</td><td>HTTP request</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">http.response</td><td>HTTP response</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">http.method</td><td>Request method (GET, POST, etc)</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">http.host</td><td>Host header value</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">http.uri</td><td>Request URI</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">http.user_agent</td><td>User-Agent header</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">http.status_code</td><td>Response status code</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">http.content_type</td><td>Content-Type header</td></tr>
                   </table>
                 </div>
               </details>
@@ -292,11 +307,11 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
                 </summary>
                 <div class="mt-2 px-3 pb-3 text-sm text-surface-600 dark:text-surface-300">
                   <table class="w-full">
-                    <tr><td class="font-mono text-primary-600">dns.qry.name</td><td>Query name</td></tr>
-                    <tr><td class="font-mono text-primary-600">dns.qry.type</td><td>Query type (A, AAAA, MX, etc)</td></tr>
-                    <tr><td class="font-mono text-primary-600">dns.resp.name</td><td>Response name</td></tr>
-                    <tr><td class="font-mono text-primary-600">dns.resp.addr</td><td>Response address</td></tr>
-                    <tr><td class="font-mono text-primary-600">dns.flags.response</td><td>Is response flag</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">dns.qry.name</td><td>Query name</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">dns.qry.type</td><td>Query type (A, AAAA, MX, etc)</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">dns.resp.name</td><td>Response name</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">dns.resp.addr</td><td>Response address</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">dns.flags.response</td><td>Is response flag</td></tr>
                   </table>
                 </div>
               </details>
@@ -307,11 +322,11 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
                 </summary>
                 <div class="mt-2 px-3 pb-3 text-sm text-surface-600 dark:text-surface-300">
                   <table class="w-full">
-                    <tr><td class="font-mono text-primary-600">udp.port</td><td>Source or destination port</td></tr>
-                    <tr><td class="font-mono text-primary-600">udp.srcport</td><td>Source port</td></tr>
-                    <tr><td class="font-mono text-primary-600">udp.dstport</td><td>Destination port</td></tr>
-                    <tr><td class="font-mono text-primary-600">udp.length</td><td>UDP length</td></tr>
-                    <tr><td class="font-mono text-primary-600">udp.checksum</td><td>Checksum value</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">udp.port</td><td>Source or destination port</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">udp.srcport</td><td>Source port</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">udp.dstport</td><td>Destination port</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">udp.length</td><td>UDP length</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">udp.checksum</td><td>Checksum value</td></tr>
                   </table>
                 </div>
               </details>
@@ -322,10 +337,10 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
                 </summary>
                 <div class="mt-2 px-3 pb-3 text-sm text-surface-600 dark:text-surface-300">
                   <table class="w-full">
-                    <tr><td class="font-mono text-primary-600">tls.handshake.type</td><td>Handshake type</td></tr>
-                    <tr><td class="font-mono text-primary-600">tls.record.content_type</td><td>Record content type</td></tr>
-                    <tr><td class="font-mono text-primary-600">tls.alert.level</td><td>Alert level</td></tr>
-                    <tr><td class="font-mono text-primary-600">tls.alert.desc</td><td>Alert description</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">tls.handshake.type</td><td>Handshake type</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">tls.record.content_type</td><td>Record content type</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">tls.alert.level</td><td>Alert level</td></tr>
+                    <tr><td class="font-mono text-primary-600 dark:text-primary-400">tls.alert.desc</td><td>Alert description</td></tr>
                   </table>
                 </div>
               </details>
@@ -334,16 +349,24 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
         </div>
       </div>
 
-      ${createCheatsheet('wireshark-filter', 'Display Filters vs BPF Comparison', [
-        { heading: 'When to Use Each', content: `
+      ${createCheatsheet(
+        "wireshark-filter",
+        "Display Filters vs BPF Comparison",
+        [
+          {
+            heading: "When to Use Each",
+            content: `
           <table>
             <tr><th data-i18n="tools.wireshark-filter.ui.th42">Display Filter</th><th data-i18n="tools.wireshark-filter.ui.th43">BPF Capture Filter</th></tr>
             <tr><td>Applied <strong>after</strong> capture</td><td>Applied <strong>during</strong> capture</td></tr>
             <tr><td>More flexible (deep packet inspection)</td><td>Faster performance</td></tr>
             <tr><td>Can filter on any dissected field</td><td>Limited to link-layer headers</td></tr>
             <tr><td>Use for: protocol analysis</td><td>Use for: reducing capture size</td></tr>
-          </table>` },
-        { heading: 'Common Display Filter Examples', content: `
+          </table>`,
+          },
+          {
+            heading: "Common Display Filter Examples",
+            content: `
           <table>
             <tr><th data-i18n="tools.wireshark-filter.ui.th44">Filter</th><th data-i18n="tools.wireshark-filter.ui.th45">Description</th></tr>
             <tr><td><code>ip.addr == 192.168.1.1</code></td><td>Traffic to/from IP</td></tr>
@@ -352,8 +375,11 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
             <tr><td><code>dns.qry.type == 1</code></td><td>A record queries</td></tr>
             <tr><td><code>tcp.flags.syn == 1</code></td><td>TCP SYN packets</td></tr>
             <tr><td><code>frame.len > 1000</code></td><td>Large frames</td></tr>
-          </table>` },
-        { heading: 'Common BPF Examples', content: `
+          </table>`,
+          },
+          {
+            heading: "Common BPF Examples",
+            content: `
           <table>
             <tr><th data-i18n="tools.wireshark-filter.ui.th44">Filter</th><th data-i18n="tools.wireshark-filter.ui.th45">Description</th></tr>
             <tr><td><code>host 192.168.1.1</code></td><td>Traffic to/from host</td></tr>
@@ -362,9 +388,12 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
             <tr><td><code>tcp port 443</code></td><td>HTTPS only</td></tr>
             <tr><td><code>not port 22</code></td><td>Exclude SSH</td></tr>
             <tr><td><code>icmp</code></td><td>Ping traffic only</td></tr>
-          </table>` }
-      ])}
+          </table>`,
+          },
+        ],
+      )}
       ${createRelatedToolsSection(relatedToolsData)}
+      </div>
     </main>
   `;
 
@@ -717,8 +746,8 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
     title,
     description,
     lang: currentLang,
-    path: '/wireshark-filter',
+    path: "/wireshark-filter",
     content,
-    scripts
+    scripts,
   });
 }

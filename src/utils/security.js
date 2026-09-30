@@ -2,24 +2,26 @@
  * Security utilities for rate limiting and headers
  */
 
+import { hasPublisherClient, pageAllowsAdScript, getAdConfig } from "./ads.js";
+
 export const RATE_LIMIT_WINDOW_MS = 60_000;
 export const RATE_LIMIT_MAX_REQUESTS = 120;
 export const RATE_LIMIT_MAX_REQUESTS_SHARED_IP = 240;
 
 export const KNOWN_SHARED_IP_ASNS = new Set([
-  13335,   // Cloudflare (WARP VPN)
-  396982,  // Google LLC (Cloud VPN)
-  14618,   // Amazon (AWS VPN endpoints)
-  8075,    // Microsoft (Azure VPN)
-  20473,   // Choopa/Vultr (VPN providers)
-  60068,   // Datacamp Limited (CDN/proxy)
-  209242,  // Cloudflare WARP consumer
+  13335, // Cloudflare (WARP VPN)
+  396982, // Google LLC (Cloud VPN)
+  14618, // Amazon (AWS VPN endpoints)
+  8075, // Microsoft (Azure VPN)
+  20473, // Choopa/Vultr (VPN providers)
+  60068, // Datacamp Limited (CDN/proxy)
+  209242, // Cloudflare WARP consumer
 ]);
 
 export function isLikelySharedIP(request) {
   if (!request || !request.cf) return false;
   const asn = request.cf.asn;
-  return typeof asn === 'number' && KNOWN_SHARED_IP_ASNS.has(asn);
+  return typeof asn === "number" && KNOWN_SHARED_IP_ASNS.has(asn);
 }
 
 /**
@@ -33,8 +35,13 @@ export function generateNonce() {
   return btoa(String.fromCharCode(...bytes));
 }
 
-export function shouldRateLimit(rateLimiter, ip, now, maxRequests = RATE_LIMIT_MAX_REQUESTS) {
-  if (!ip || ip === 'unknown') return false;
+export function shouldRateLimit(
+  rateLimiter,
+  ip,
+  now,
+  maxRequests = RATE_LIMIT_MAX_REQUESTS,
+) {
+  if (!ip || ip === "unknown") return false;
 
   const entry = rateLimiter.get(ip);
   if (!entry || now - entry.start >= RATE_LIMIT_WINDOW_MS) {
@@ -53,70 +60,76 @@ export function sweepRateLimiter(rateLimiter, now) {
       toDelete.push(ip);
     }
   }
-  toDelete.forEach(ip => rateLimiter.delete(ip));
+  toDelete.forEach((ip) => rateLimiter.delete(ip));
 }
 
-export function getSecurityHeaders(contentType = 'text/html; charset=utf-8', cacheControl = null, nonce = null) {
+export function getSecurityHeaders(
+  contentType = "text/html; charset=utf-8",
+  cacheControl = null,
+  nonce = null,
+) {
   // Default cache control based on content type
-  let defaultCacheControl = 'public, s-maxage=60, max-age=0, must-revalidate'; // HTML pages: 60s edge cache, browser no-cache
+  let defaultCacheControl = "public, s-maxage=60, max-age=0, must-revalidate"; // HTML pages: 60s edge cache, browser no-cache
 
-  if (contentType.startsWith('application/json')) {
-    defaultCacheControl = 'no-store, no-cache, must-revalidate'; // API/JSON: no caching
-  } else if (contentType.startsWith('text/plain')) {
-    defaultCacheControl = 'no-cache, must-revalidate'; // Text responses
+  if (contentType.startsWith("application/json")) {
+    defaultCacheControl = "no-store, no-cache, must-revalidate"; // API/JSON: no caching
+  } else if (contentType.startsWith("text/plain")) {
+    defaultCacheControl = "no-cache, must-revalidate"; // Text responses
   }
 
   // Build CSP with nonce if provided (eliminates need for unsafe-inline)
   let csp;
-  const adScriptSrc = [
-    'https://pagead2.googlesyndication.com',
-    'https://www.googletagservices.com',
-    'https://tpc.googlesyndication.com',
-    'https://googleads.g.doubleclick.net',
-    'https://adservice.google.com',
-    'https://www.googletagmanager.com',
-    'https://static.cloudflareinsights.com'
-  ].join(' ');
+  const extraScriptSrc = ["https://static.cloudflareinsights.com"];
+  const extraFrameSrc = [];
+  const extraConnectSrc = ["https://cloudflareinsights.com"];
 
-  const adFrameSrc = [
-    'https://googleads.g.doubleclick.net',
-    'https://tpc.googlesyndication.com',
-    'https://pagead2.googlesyndication.com',
-    'https://*.adtrafficquality.google'
-  ].join(' ');
-
-  const adConnectSrc = [
-    'https://pagead2.googlesyndication.com',
-    'https://googleads.g.doubleclick.net',
-    'https://adservice.google.com',
-    'https://tpc.googlesyndication.com',
-    'https://www.google-analytics.com',
-    'https://www.googletagmanager.com',
-    'https://analytics.google.com',
-    'https://cloudflareinsights.com',
-    'https://*.adtrafficquality.google'
-  ].join(' ');
-
-  if (nonce) {
-    csp = `default-src 'self'; script-src 'self' 'nonce-${nonce}' ${adScriptSrc}; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: blob:; media-src 'self' data: blob:; connect-src 'self' ${adConnectSrc}; font-src 'self' data: https://fonts.gstatic.com; frame-src 'self' ${adFrameSrc};`;
-  } else {
-    // Fallback for non-HTML responses
-    csp = `default-src 'self'; script-src 'self' 'unsafe-inline' ${adScriptSrc}; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: blob:; media-src 'self' data: blob:; connect-src 'self' ${adConnectSrc}; font-src 'self' data: https://fonts.gstatic.com; frame-src 'self' ${adFrameSrc};`;
+  if (hasPublisherClient() && pageAllowsAdScript(getAdConfig().path)) {
+    extraScriptSrc.push(
+      "https://pagead2.googlesyndication.com",
+      "https://www.googletagservices.com",
+      "https://tpc.googlesyndication.com",
+    );
+    extraFrameSrc.push(
+      "https://googleads.g.doubleclick.net",
+      "https://tpc.googlesyndication.com",
+      "https://pagead2.googlesyndication.com",
+      "https://*.adtrafficquality.google",
+      "https://www.google.com",
+      "https://www.googleadservices.com",
+    );
+    extraConnectSrc.push(
+      "https://pagead2.googlesyndication.com",
+      "https://googleads.g.doubleclick.net",
+      "https://adservice.google.com",
+      "https://tpc.googlesyndication.com",
+      "https://*.adtrafficquality.google",
+    );
   }
 
+  const scriptExtras = extraScriptSrc.join(" ");
+  const frameExtras = extraFrameSrc.length ? ` ${extraFrameSrc.join(" ")}` : "";
+  const connectExtras = extraConnectSrc.join(" ");
+
+  if (nonce) {
+    csp = `default-src 'self'; script-src 'self' 'nonce-${nonce}' ${scriptExtras}; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: blob:; media-src 'self' data: blob:; connect-src 'self' ${connectExtras}; font-src 'self' data: https://fonts.gstatic.com; frame-src 'self'${frameExtras};`;
+  } else {
+    // Fallback for non-HTML responses
+    csp = `default-src 'self'; script-src 'self' 'unsafe-inline' ${scriptExtras}; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: blob:; media-src 'self' data: blob:; connect-src 'self' ${connectExtras}; font-src 'self' data: https://fonts.gstatic.com; frame-src 'self'${frameExtras};`;
+  }
 
   return {
-    'Content-Type': contentType,
-    'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
-    'X-Content-Type-Options': 'nosniff',
-    'X-Frame-Options': 'DENY',
-    'Referrer-Policy': 'strict-origin-when-cross-origin',
-    'Permissions-Policy': 'screen-wake-lock=(self), camera=(), microphone=(), geolocation=()',
-    'Content-Security-Policy': csp,
-    'Cache-Control': cacheControl || defaultCacheControl,
-    'Vary': 'Accept-Encoding',
-    'Cross-Origin-Opener-Policy': 'same-origin',
-    'Cross-Origin-Resource-Policy': 'same-origin',
-    'Server': 'SimpleTool-Worker/2.0'
+    "Content-Type": contentType,
+    "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Permissions-Policy":
+      "screen-wake-lock=(self), camera=(), microphone=(), geolocation=()",
+    "Content-Security-Policy": csp,
+    "Cache-Control": cacheControl || defaultCacheControl,
+    Vary: "Accept-Encoding",
+    "Cross-Origin-Opener-Policy": "same-origin",
+    "Cross-Origin-Resource-Policy": "same-origin",
+    Server: "SimpleTool-Worker/2.0",
   };
 }

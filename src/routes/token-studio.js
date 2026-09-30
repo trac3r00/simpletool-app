@@ -3,63 +3,82 @@
  * All cryptographic operations happen client-side using Web Crypto API
  */
 
-import { respondHTML, respondJSON } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader } from '../utils/common-ui.js';
-import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML, respondJSON } from "../utils/respond.js";
+import { createPageTemplate, createToolHeader } from "../utils/common-ui.js";
+import {
+  createEducationalSection,
+  createRelatedToolsSection,
+} from "../utils/content-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleTokenStudioRoutes(request, url) {
   const { pathname } = url;
 
   try {
-    if (pathname === '/token-studio' || pathname === '/token-studio/') {
-      if (request.method === 'GET') return renderTokenStudioPage(resolveRequestLanguage(request, url));
+    if (pathname === "/token-studio" || pathname === "/token-studio/") {
+      if (request.method === "GET")
+        return renderTokenStudioPage(resolveRequestLanguage(request, url));
     }
 
-    return respondJSON({ error: 'Not found' }, { status: 404 });
+    return respondJSON({ error: "Not found" }, { status: 404 });
   } catch (error) {
-    console.error('Token Studio Route Error:', error);
+    console.error("Token Studio Route Error:", error);
     return respondJSON(
-      { error: 'Internal server error', message: error.message },
-      { status: 500 }
+      { error: "Internal server error", message: error.message },
+      { status: 500 },
     );
   }
 }
 
 function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('token-studio', currentLang);
+  const translation = getToolTranslation("token-studio", currentLang);
   const toolHeader = createToolHeader(
-    { emoji: '🔐' },
-    translation?.name || 'Token Cryptography Suite',
-    translation?.desc || 'Inspect, generate, and manage JWT tokens and cryptographic keys',
-    [{ text: 'Privacy First', color: 'green', tooltip: 'All cryptographic operations happen in your browser.' }],
-    { toolId: 'token-studio' }
+    { emoji: "🔐" },
+    translation?.name || "Token Cryptography Suite",
+    translation?.desc ||
+      "Inspect, generate, and manage JWT tokens and cryptographic keys",
+    [
+      {
+        text: "Privacy First",
+        color: "green",
+        tooltip: "All cryptographic operations happen in your browser.",
+      },
+    ],
+    { toolId: "token-studio" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'token-studio');
-  const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+  const currentTool = TOOLS.find((t) => t.id === "token-studio");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
 
         ${toolHeader}
 
         <!-- Tabs -->
         <div class="border-b border-surface-200 dark:border-surface-700 mb-8">
           <nav class="flex flex-wrap gap-2" aria-label="Token studio modes" role="tablist">
-            <button id="tab-trigger-inspect" class="tab-button active px-4 py-2 border-b-2 border-primary-600 font-medium text-sm text-primary-600 dark:text-primary-400 transition-colors" data-tab="inspect" role="tab" aria-controls="tab-inspect" aria-selected="true" tabindex="0">
+            <button id="tab-trigger-inspect" class="tab-trigger tab-button active" data-tab="inspect" role="tab" aria-controls="tab-inspect" aria-selected="true" tabindex="0">
               <span data-i18n="tools.token-studio.ui.tabInspect">🔍 Inspect Token</span>
             </button>
-            <button id="tab-trigger-generate" class="tab-button px-4 py-2 border-b-2 border-transparent font-medium text-sm text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-200 transition-colors" data-tab="generate" role="tab" aria-controls="tab-generate" aria-selected="false" tabindex="-1">
+            <button id="tab-trigger-generate" class="tab-trigger tab-button" data-tab="generate" role="tab" aria-controls="tab-generate" aria-selected="false" tabindex="-1">
               <span data-i18n="tools.token-studio.ui.tabGenerate">✏️ Generate Token</span>
             </button>
-            <button id="tab-trigger-keys" class="tab-button px-4 py-2 border-b-2 border-transparent font-medium text-sm text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-200 transition-colors" data-tab="keys" role="tab" aria-controls="tab-keys" aria-selected="false" tabindex="-1">
+            <button id="tab-trigger-keys" class="tab-trigger tab-button" data-tab="keys" role="tab" aria-controls="tab-keys" aria-selected="false" tabindex="-1">
               <span data-i18n="tools.token-studio.ui.tabKeys">🗝️ Key Management</span>
             </button>
-            <button id="tab-trigger-jwks" class="tab-button px-4 py-2 border-b-2 border-transparent font-medium text-sm text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-200 transition-colors" data-tab="jwks" role="tab" aria-controls="tab-jwks" aria-selected="false" tabindex="-1">
+            <button id="tab-trigger-jwks" class="tab-trigger tab-button" data-tab="jwks" role="tab" aria-controls="tab-jwks" aria-selected="false" tabindex="-1">
               <span data-i18n="tools.token-studio.ui.tabJwks">📋 JWKS Endpoint</span>
             </button>
           </nav>
@@ -75,7 +94,7 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
               <textarea
                 id="inspect-jwt-input"
                 rows="4"
-                class="w-full p-3 font-mono text-sm bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none resize-y"
+                class="input-mono w-full resize-y"
                 placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0...."
                 data-i18n-placeholder="tools.token-studio.ui.placeholderJwt"
                 aria-label="JWT token input"
@@ -98,7 +117,7 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
               <!-- Header -->
               <div>
                 <div class="flex items-center justify-between mb-2">
-                  <h3 class="text-sm font-semibold text-surface-700 dark:text-surface-300 uppercase tracking-wide" data-i18n="tools.token-studio.ui.headingHeader">Header</h3>
+                  <h2 class="text-sm font-semibold text-surface-700 dark:text-surface-300 uppercase tracking-wide" data-i18n="tools.token-studio.ui.headingHeader">Header</h2>
                   <button class="copy-btn btn btn-secondary text-xs px-2 py-1" data-copy-target="inspect-header-output">
                     <span data-i18n="tools.token-studio.ui.btnCopy">Copy</span>
                   </button>
@@ -109,7 +128,7 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
               <!-- Payload -->
               <div>
                 <div class="flex items-center justify-between mb-2">
-                  <h3 class="text-sm font-semibold text-surface-700 dark:text-surface-300 uppercase tracking-wide" data-i18n="tools.token-studio.ui.headingPayload">Payload</h3>
+                  <h2 class="text-sm font-semibold text-surface-700 dark:text-surface-300 uppercase tracking-wide" data-i18n="tools.token-studio.ui.headingPayload">Payload</h2>
                   <button class="copy-btn btn btn-secondary text-xs px-2 py-1" data-copy-target="inspect-payload-output">
                     <span data-i18n="tools.token-studio.ui.btnCopy">Copy</span>
                   </button>
@@ -119,7 +138,7 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
 
               <!-- Signature Status -->
               <div>
-                <h3 class="text-sm font-semibold text-surface-700 dark:text-surface-300 uppercase tracking-wide mb-2" data-i18n="tools.token-studio.ui.headingSignature">Signature</h3>
+                <h2 class="text-sm font-semibold text-surface-700 dark:text-surface-300 uppercase tracking-wide mb-2" data-i18n="tools.token-studio.ui.headingSignature">Signature</h2>
                 <div class="flex flex-col gap-3">
                   <div id="inspect-sig-status" class="rounded-lg p-3 text-sm border bg-surface-50 dark:bg-surface-950 border-surface-200 dark:border-surface-700 font-mono break-all"></div>
                   <!-- Optional verification -->
@@ -130,7 +149,7 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
                     <textarea
                       id="inspect-verify-key"
                       rows="3"
-                      class="w-full p-3 font-mono text-sm bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none resize-y"
+                      class="input-mono w-full resize-y"
                       placeholder='{"kty":"RSA",...} or shared secret string'
                     ></textarea>
                     <button id="inspect-verify-btn" class="btn btn-secondary mt-2">
@@ -154,7 +173,7 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
               <!-- Algorithm -->
               <div>
                 <label for="gen-algorithm" class="label" data-i18n="tools.token-studio.ui.labelAlgorithm">Algorithm</label>
-                <select id="gen-algorithm" class="w-full p-2.5 bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg focus:ring-2 focus:ring-primary-500 text-sm">
+                <select id="gen-algorithm" class="input w-full">
                   <optgroup label="HMAC">
                     <option value="HS256" selected data-i18n="tools.token-studio.ui.option19">HS256</option>
                     <option value="HS384" data-i18n="tools.token-studio.ui.option20">HS384</option>
@@ -184,7 +203,7 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
                 <textarea
                   id="gen-header"
                   rows="3"
-                  class="w-full p-3 font-mono text-sm bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none resize-y"
+                  class="input-mono w-full resize-y"
                 ></textarea>
               </div>
 
@@ -204,7 +223,7 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
                 <textarea
                   id="gen-payload"
                   rows="6"
-                  class="w-full p-3 font-mono text-sm bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none resize-y"
+                  class="input-mono w-full resize-y"
                 ></textarea>
               </div>
 
@@ -216,7 +235,7 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
                 <textarea
                   id="gen-key"
                   rows="3"
-                  class="w-full p-3 font-mono text-sm bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none resize-y"
+                  class="input-mono w-full resize-y"
                   placeholder="your-256-bit-secret" data-i18n-placeholder="tools.token-studio.ui.placeholder17"
                 ></textarea>
                 <p class="text-xs text-surface-500 dark:text-surface-400 mt-1" id="gen-key-hint" data-i18n="tools.token-studio.ui.hintSecret">For HMAC algorithms, enter any UTF-8 string as the shared secret.</p>
@@ -237,20 +256,20 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
                     <span data-i18n="tools.token-studio.ui.btnCopy">Copy</span>
                   </button>
                 </div>
-                <div id="gen-jwt-empty" class="rounded-lg p-8 text-center text-surface-400 dark:text-surface-600 bg-surface-50 dark:bg-surface-950 border border-dashed border-surface-200 dark:border-surface-700 font-mono text-sm">
+                <div id="gen-jwt-empty" class="rounded-lg p-8 text-center text-surface-500 dark:text-surface-400 bg-surface-50 dark:bg-surface-950 border border-dashed border-surface-200 dark:border-surface-700 font-mono text-sm">
                   <span data-i18n="tools.token-studio.ui.emptyJwt">Generated JWT will appear here</span>
                 </div>
                 <textarea
                   id="gen-jwt-output"
                   rows="8"
-                  class="hidden w-full p-3 font-mono text-sm bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg resize-y"
+                  class="input-mono hidden w-full resize-y"
                   readonly
                 ></textarea>
               </div>
 
               <!-- Color-coded breakdown -->
               <div id="gen-breakdown" class="hidden">
-                <h4 class="text-xs font-semibold text-surface-500 dark:text-surface-400 uppercase tracking-wide mb-2" data-i18n="tools.token-studio.ui.headingBreakdown">Token Breakdown</h4>
+                <h3 class="text-xs font-semibold text-surface-500 dark:text-surface-400 uppercase tracking-wide mb-2" data-i18n="tools.token-studio.ui.headingBreakdown">Token Breakdown</h3>
                 <div class="font-mono text-sm break-all leading-loose p-3 bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg">
                   <span id="breakdown-header" class="text-red-600 dark:text-red-400"></span><span class="text-surface-400">.</span><span id="breakdown-payload" class="text-blue-600 dark:text-blue-400"></span><span class="text-surface-400">.</span><span id="breakdown-sig" class="text-green-600 dark:text-green-400"></span>
                 </div>
@@ -269,11 +288,11 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
           <div class="space-y-6">
             <!-- Generate section -->
             <div class="p-4 bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg">
-              <h3 class="font-semibold text-surface-800 dark:text-surface-200 mb-4" data-i18n="tools.token-studio.ui.headingGenerateKey">Generate Key Pair</h3>
+              <h2 class="font-semibold text-surface-800 dark:text-surface-200 mb-4" data-i18n="tools.token-studio.ui.headingGenerateKey">Generate Key Pair</h2>
               <div class="flex flex-wrap gap-4 items-end">
                 <div>
                   <label for="keys-algorithm" class="label" data-i18n="tools.token-studio.ui.labelKeyAlgorithm">Algorithm</label>
-                  <select id="keys-algorithm" class="p-2.5 bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-700 rounded-lg focus:ring-2 focus:ring-primary-500 text-sm">
+                  <select id="keys-algorithm" class="input w-auto">
                     <optgroup label="RSA">
                       <option value="RSA-2048" data-i18n="tools.token-studio.ui.option31">RSA 2048</option>
                       <option value="RSA-4096" data-i18n="tools.token-studio.ui.option32">RSA 4096</option>
@@ -306,21 +325,21 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
             <div id="keys-output" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div>
                 <div class="flex items-center justify-between mb-2">
-                  <h4 class="text-sm font-semibold text-surface-700 dark:text-surface-300" data-i18n="tools.token-studio.ui.headingPrivateKey">Private Key</h4>
+                  <h3 class="text-sm font-semibold text-surface-700 dark:text-surface-300" data-i18n="tools.token-studio.ui.headingPrivateKey">Private Key</h3>
                   <button class="copy-btn btn btn-secondary text-xs px-2 py-1" data-copy-target="keys-private-output">
                     <span data-i18n="tools.token-studio.ui.btnCopy">Copy</span>
                   </button>
                 </div>
-                <textarea id="keys-private-output" rows="10" class="w-full p-3 font-mono text-xs bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg resize-y" readonly></textarea>
+                <textarea id="keys-private-output" rows="10" class="input-mono w-full resize-y" readonly></textarea>
               </div>
               <div>
                 <div class="flex items-center justify-between mb-2">
-                  <h4 class="text-sm font-semibold text-surface-700 dark:text-surface-300" data-i18n="tools.token-studio.ui.headingPublicKey">Public Key</h4>
+                  <h3 class="text-sm font-semibold text-surface-700 dark:text-surface-300" data-i18n="tools.token-studio.ui.headingPublicKey">Public Key</h3>
                   <button class="copy-btn btn btn-secondary text-xs px-2 py-1" data-copy-target="keys-public-output">
                     <span data-i18n="tools.token-studio.ui.btnCopy">Copy</span>
                   </button>
                 </div>
-                <textarea id="keys-public-output" rows="10" class="w-full p-3 font-mono text-xs bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg resize-y" readonly></textarea>
+                <textarea id="keys-public-output" rows="10" class="input-mono w-full resize-y" readonly></textarea>
                 <div id="keys-thumbprint-row" class="hidden mt-2 text-xs text-surface-500 dark:text-surface-400">
                   <span data-i18n="tools.token-studio.ui.labelThumbprint">JWK Thumbprint (kid):</span>
                   <code id="keys-thumbprint" class="ml-1 font-mono text-surface-700 dark:text-surface-300"></code>
@@ -330,11 +349,11 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
 
             <!-- Import section -->
             <div class="p-4 bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg">
-              <h3 class="font-semibold text-surface-800 dark:text-surface-200 mb-3" data-i18n="tools.token-studio.ui.headingImportKey">Import / Convert Key</h3>
+              <h2 class="font-semibold text-surface-800 dark:text-surface-200 mb-3" data-i18n="tools.token-studio.ui.headingImportKey">Import / Convert Key</h2>
               <textarea
                 id="keys-import-input"
                 rows="5"
-                class="w-full p-3 font-mono text-sm bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-700 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none resize-y"
+                class="input-mono resize-y"
                 placeholder="Paste JWK JSON or PEM key here..." data-i18n-placeholder="tools.token-studio.ui.placeholder18"
               ></textarea>
               <div class="flex gap-3 mt-2">
@@ -353,13 +372,13 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <!-- Left: Input keys -->
               <div class="space-y-4">
-                <h3 class="font-semibold text-surface-800 dark:text-surface-200" data-i18n="tools.token-studio.ui.headingAddKeys">Add Public Keys</h3>
+                <h2 class="font-semibold text-surface-800 dark:text-surface-200" data-i18n="tools.token-studio.ui.headingAddKeys">Add Public Keys</h2>
                 <div>
                   <label for="jwks-key-input" class="label" data-i18n="tools.token-studio.ui.labelJwkInput">Paste Public JWK (one at a time)</label>
                   <textarea
                     id="jwks-key-input"
                     rows="6"
-                    class="w-full p-3 font-mono text-sm bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none resize-y"
+                    class="input-mono w-full resize-y"
                     placeholder='{"kty":"EC","crv":"P-256","x":"...","y":"..."}'
                   ></textarea>
                   <div class="flex gap-3 mt-2">
@@ -375,9 +394,9 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
 
                 <!-- Key list -->
                 <div>
-                  <h4 class="text-sm font-semibold text-surface-600 dark:text-surface-400 mb-2" data-i18n="tools.token-studio.ui.headingKeyList">Keys in Set</h4>
+                  <h3 class="text-sm font-semibold text-surface-600 dark:text-surface-400 mb-2" data-i18n="tools.token-studio.ui.headingKeyList">Keys in Set</h3>
                   <div id="jwks-key-list" class="space-y-2 min-h-12">
-                    <p class="text-sm text-surface-400 dark:text-surface-600 italic" id="jwks-empty-label" data-i18n="tools.token-studio.ui.labelNoKeys">No keys added yet.</p>
+                    <p class="text-sm text-surface-500 dark:text-surface-400 italic" id="jwks-empty-label" data-i18n="tools.token-studio.ui.labelNoKeys">No keys added yet.</p>
                   </div>
                 </div>
               </div>
@@ -385,7 +404,7 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
               <!-- Right: JWKS output -->
               <div class="space-y-4">
                 <div class="flex items-center justify-between">
-                  <h3 class="font-semibold text-surface-800 dark:text-surface-200" data-i18n="tools.token-studio.ui.headingJwksOutput">JWKS Output</h3>
+                  <h2 class="font-semibold text-surface-800 dark:text-surface-200" data-i18n="tools.token-studio.ui.headingJwksOutput">JWKS Output</h2>
                   <button class="copy-btn btn btn-secondary text-xs px-2 py-1" data-copy-target="jwks-output">
                     <span data-i18n="tools.token-studio.ui.btnCopy">Copy</span>
                   </button>
@@ -393,7 +412,7 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
                 <textarea
                   id="jwks-output"
                   rows="14"
-                  class="w-full p-3 font-mono text-sm bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg resize-y"
+                  class="input-mono w-full resize-y"
                   readonly
                   aria-label="JWKS JSON output"
                 >{"keys": []}</textarea>
@@ -419,24 +438,32 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
     </main>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-      ${createEducationalSection([
-        {
-          title: 'What is a JWT?',
-          content: '<p>A JSON Web Token (JWT) is a compact, URL-safe means of representing claims to be transferred between two parties. A JWT consists of three Base64URL-encoded parts separated by dots: the <strong>Header</strong> (algorithm &amp; type), the <strong>Payload</strong> (claims), and the <strong>Signature</strong>. The signature ensures the token has not been tampered with. JWTs are commonly used for authentication and information exchange in web APIs.</p><p>Standard claims include <code>sub</code> (subject), <code>iss</code> (issuer), <code>aud</code> (audience), <code>exp</code> (expiration), <code>nbf</code> (not before), <code>iat</code> (issued at), and <code>jti</code> (JWT ID).</p>'
-        },
-        {
-          title: 'JWT Algorithms',
-          content: '<ul><li><strong>HS256/384/512</strong> — HMAC with SHA-2. Uses a shared secret. Simple, but both parties must hold the same secret key.</li><li><strong>RS256/384/512</strong> — RSA PKCS#1 v1.5 signature. Asymmetric: sign with private key, verify with public key. Ideal for microservice architectures.</li><li><strong>ES256/384/512</strong> — ECDSA with NIST curves (P-256, P-384, P-521). Smaller signatures than RSA with equivalent security.</li><li><strong>PS256/384/512</strong> — RSA-PSS. A probabilistic variant of RSA signing, preferred over RS* in modern systems.</li></ul>'
-        },
-        {
-          title: 'JWK and JWKS',
-          content: '<p>A JSON Web Key (JWK) is a JSON structure representing a cryptographic key. A JWK Set (JWKS) is a JSON structure containing an array of JWKs under the <code>keys</code> property. Services publish their JWKS at a well-known URL (e.g., <code>/.well-known/jwks.json</code>), allowing clients to fetch public keys for JWT verification without out-of-band key exchange. Keys in a JWKS are identified by their <code>kid</code> (Key ID), which JWT headers reference.</p>'
-        },
-        {
-          title: 'Security Best Practices',
-          content: '<ul><li>Always validate <code>exp</code>, <code>nbf</code>, <code>iss</code>, and <code>aud</code> claims server-side.</li><li>Never use the <code>alg: none</code> algorithm in production — it removes all signature protection.</li><li>Prefer asymmetric algorithms (RS*, ES*, PS*) over HMAC when multiple services need to verify tokens.</li><li>Rotate keys regularly and use <code>kid</code> to identify which key was used to sign each token.</li><li>Store private keys securely — never commit them to version control.</li><li>Use short expiration times and refresh tokens rather than long-lived JWTs.</li></ul>'
-        }
-      ], 'token-studio', currentLang)}
+      ${createEducationalSection(
+        [
+          {
+            title: "What is a JWT?",
+            content:
+              "<p>A JSON Web Token (JWT) is a compact, URL-safe means of representing claims to be transferred between two parties. A JWT consists of three Base64URL-encoded parts separated by dots: the <strong>Header</strong> (algorithm &amp; type), the <strong>Payload</strong> (claims), and the <strong>Signature</strong>. The signature ensures the token has not been tampered with. JWTs are commonly used for authentication and information exchange in web APIs.</p><p>Standard claims include <code>sub</code> (subject), <code>iss</code> (issuer), <code>aud</code> (audience), <code>exp</code> (expiration), <code>nbf</code> (not before), <code>iat</code> (issued at), and <code>jti</code> (JWT ID).</p>",
+          },
+          {
+            title: "JWT Algorithms",
+            content:
+              "<ul><li><strong>HS256/384/512</strong> — HMAC with SHA-2. Uses a shared secret. Simple, but both parties must hold the same secret key.</li><li><strong>RS256/384/512</strong> — RSA PKCS#1 v1.5 signature. Asymmetric: sign with private key, verify with public key. Ideal for microservice architectures.</li><li><strong>ES256/384/512</strong> — ECDSA with NIST curves (P-256, P-384, P-521). Smaller signatures than RSA with equivalent security.</li><li><strong>PS256/384/512</strong> — RSA-PSS. A probabilistic variant of RSA signing, preferred over RS* in modern systems.</li></ul>",
+          },
+          {
+            title: "JWK and JWKS",
+            content:
+              "<p>A JSON Web Key (JWK) is a JSON structure representing a cryptographic key. A JWK Set (JWKS) is a JSON structure containing an array of JWKs under the <code>keys</code> property. Services publish their JWKS at a well-known URL (e.g., <code>/.well-known/jwks.json</code>), allowing clients to fetch public keys for JWT verification without out-of-band key exchange. Keys in a JWKS are identified by their <code>kid</code> (Key ID), which JWT headers reference.</p>",
+          },
+          {
+            title: "Security Best Practices",
+            content:
+              "<ul><li>Always validate <code>exp</code>, <code>nbf</code>, <code>iss</code>, and <code>aud</code> claims server-side.</li><li>Never use the <code>alg: none</code> algorithm in production — it removes all signature protection.</li><li>Prefer asymmetric algorithms (RS*, ES*, PS*) over HMAC when multiple services need to verify tokens.</li><li>Rotate keys regularly and use <code>kid</code> to identify which key was used to sign each token.</li><li>Store private keys securely — never commit them to version control.</li><li>Use short expiration times and refresh tokens rather than long-lived JWTs.</li></ul>",
+          },
+        ],
+        "token-studio",
+        currentLang,
+      )}
       ${createRelatedToolsSection(relatedToolsData)}
     </div>
   `;
@@ -706,7 +733,7 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
                 : 'bg-error-50 dark:bg-error-900/20 text-error-700 dark:text-error-300 border-error-200 dark:border-error-800');
             verifyResultEl.classList.remove('hidden');
           } catch(e) {
-            verifyResultEl.textContent = _t('tools.token-studio.js.text16', 'Verification error: ') + e.message;
+            verifyResultEl.textContent = 'Verification error: ' + e.message;
             verifyResultEl.className = 'rounded-lg p-3 text-sm font-medium border bg-error-50 dark:bg-error-900/20 text-error-700 dark:text-error-300 border-error-200 dark:border-error-800';
             verifyResultEl.classList.remove('hidden');
           }
@@ -1001,7 +1028,7 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
               if (jwk.alg) info += ', alg: ' + jwk.alg;
               if (jwk.use) info += ', use: ' + jwk.use;
               if (jwk.kid) info += ', kid: ' + jwk.kid;
-              var keyUse = jwk.d ? 'private' : 'public';
+              var keyUse = jwk.d ? 'private' : (kty === 'oct' ? 'symmetric secret' : 'public');
               importResult.textContent = _t('tools.token-studio.js.text11', 'Valid JWK (') + keyUse + ' key). ' + info;
               importResult.className = 'rounded-lg p-3 text-sm border bg-success-50 dark:bg-success-900/20 text-success-700 dark:text-success-300 border-success-200 dark:border-success-800';
             } else if (raw.includes('-----BEGIN')) {
@@ -1082,10 +1109,10 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
           }
           emptyLabel.classList.add('hidden');
           var items = keys.map(function(k, i) {
-            var label = k.kid ? k.kid : (k.kty + (k.crv ? ' (' + k.crv + ')' : ''));
+            var label = k.kid ? k.kid : ((k.kty === 'oct' ? 'oct (symmetric secret)' : k.kty) + (k.crv ? ' (' + k.crv + ')' : ''));
             label = escapeHtml(label);
             return '<div class="flex items-center justify-between px-3 py-2 bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg text-sm">' +
-              '<span class="font-mono text-surface-700 dark:text-surface-300 truncate" data-i18n="tools.token-studio.ui.desc51">' + label + '</span>' +
+              '<span class="font-mono text-surface-700 dark:text-surface-300 truncate">' + label + '</span>' +
               '<button class="ml-2 text-error-500 hover:text-error-700 text-xs px-2 py-1 rounded" data-remove-idx="' + i + '" aria-label="Remove key"><span data-i18n="tools.token-studio.ui.button7">Remove</span></button>' +
               '</div>';
           });
@@ -1109,6 +1136,7 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
             var jwk = JSON.parse(raw);
             if (!jwk.kty) throw new Error('Missing kty property — not a valid JWK.');
             if (jwk.d) throw new Error('This appears to be a private key. Only add public keys to a JWKS endpoint.');
+            if (jwk.kty === 'oct') throw new Error('This is a symmetric secret (oct), not a public key. Publishing a shared secret in a JWKS endpoint would expose it to everyone who can verify tokens; keep it private instead.');
             keys.push(jwk);
             keyInput.value = '';
             renderKeyList();
@@ -1133,12 +1161,16 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
     </script>
   `;
 
-  return respondHTML(createPageTemplate({
-    title: translation?.name || 'Token Cryptography Suite',
-    description: translation?.desc || 'Inspect, decode, generate, and verify JWT tokens. Manage JWK keys and JWKS endpoints. All cryptographic operations run in your browser.',
-    path: '/token-studio',
-    content,
-    scripts: script,
-    lang: currentLang
-  }));
+  return respondHTML(
+    createPageTemplate({
+      title: translation?.name || "Token Cryptography Suite",
+      description:
+        translation?.desc ||
+        "Inspect, decode, generate, and verify JWT tokens. Manage JWK keys and JWKS endpoints. All cryptographic operations run in your browser.",
+      path: "/token-studio",
+      content,
+      scripts: script,
+      lang: currentLang,
+    }),
+  );
 }

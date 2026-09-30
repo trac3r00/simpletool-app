@@ -41,7 +41,7 @@
 export function countKeys(obj, depth) {
   // First call: callers omit depth. Treat root container as depth 1.
   if (depth === undefined) {
-    if (obj === null || typeof obj !== 'object') {
+    if (obj === null || typeof obj !== "object") {
       return { count: 0, maxDepth: 0 };
     }
     return countKeys(obj, 1);
@@ -50,7 +50,7 @@ export function countKeys(obj, depth) {
   let count = 0;
   let maxDepth = depth;
 
-  if (obj !== null && typeof obj === 'object') {
+  if (obj !== null && typeof obj === "object") {
     const isArray = Array.isArray(obj);
     for (const key in obj) {
       // Skip inherited properties; only count own keys.
@@ -59,7 +59,7 @@ export function countKeys(obj, depth) {
       if (!isArray) count += 1;
 
       const value = obj[key];
-      if (value !== null && typeof value === 'object') {
+      if (value !== null && typeof value === "object") {
         const nested = countKeys(value, depth + 1);
         count += nested.count;
         if (nested.maxDepth > maxDepth) maxDepth = nested.maxDepth;

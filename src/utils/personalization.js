@@ -4,8 +4,8 @@
  * Used by common-ui.js and home.js for personalized tool discovery
  */
 
-const RECENT_KEY = 'simpletool-recent';
-const FAVORITES_KEY = 'simpletool-favorites';
+const RECENT_KEY = "simpletool-recent";
+const FAVORITES_KEY = "simpletool-favorites";
 const MAX_RECENT = 10;
 
 // --- Recently Used Tools ---
@@ -17,7 +17,7 @@ const MAX_RECENT = 10;
 export function trackToolVisit(toolId) {
   if (!toolId) return;
   const current = getRecentTools();
-  const deduped = current.filter(id => id !== toolId);
+  const deduped = current.filter((id) => id !== toolId);
   const updated = [toolId, ...deduped].slice(0, MAX_RECENT);
   try {
     localStorage.setItem(RECENT_KEY, JSON.stringify(updated));
@@ -64,7 +64,7 @@ export function toggleFavorite(toolId) {
   const current = getFavorites();
   const isCurrentlyFavorited = current.includes(toolId);
   const updated = isCurrentlyFavorited
-    ? current.filter(id => id !== toolId)
+    ? current.filter((id) => id !== toolId)
     : [...current, toolId];
   try {
     localStorage.setItem(FAVORITES_KEY, JSON.stringify(updated));
@@ -131,10 +131,13 @@ export function exportPreferences() {
 export function importPreferences(jsonString) {
   try {
     const data = JSON.parse(jsonString);
-    if (typeof data !== 'object' || data === null) return false;
+    if (typeof data !== "object" || data === null) return false;
 
     if (Array.isArray(data.recent)) {
-      localStorage.setItem(RECENT_KEY, JSON.stringify(data.recent.slice(0, MAX_RECENT)));
+      localStorage.setItem(
+        RECENT_KEY,
+        JSON.stringify(data.recent.slice(0, MAX_RECENT)),
+      );
     }
     if (Array.isArray(data.favorites)) {
       localStorage.setItem(FAVORITES_KEY, JSON.stringify(data.favorites));
@@ -154,7 +157,7 @@ export function importPreferences(jsonString) {
  * @returns {string}
  */
 export function getPersonalizationScript(toolId) {
-  const toolIdLiteral = toolId ? JSON.stringify(toolId) : 'null';
+  const toolIdLiteral = toolId ? JSON.stringify(toolId) : "null";
   return `<script>
 (function() {
   'use strict';

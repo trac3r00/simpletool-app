@@ -1,34 +1,29 @@
-import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, infoHint } from '../utils/common-ui.js';
-import { createRelatedToolsSection } from '../utils/content-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
-
-export async function handlePublicReposYmlBuilderRoutes(request, url) {
-  const { pathname } = url;
-  if (pathname === '/public-repos-yml-builder' || pathname === '/public-repos-yml-builder/') {
-    if (request.method === 'GET') {
-      return respondHTML(renderPublicReposYmlBuilderPage(resolveRequestLanguage(request, url)));
-    }
-    return new Response('Method not allowed', { status: 405 });
-  }
-  return null;
-}
+import { createToolHeader, infoHint } from "../utils/common-ui.js";
+import { createRelatedToolsSection } from "../utils/content-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+} from "../utils/i18n.js";
 
 function coerceText(value) {
-  return value == null ? '' : '' + value;
+  return value == null ? "" : "" + value;
 }
 
-export function normalizeRepoToken(token, fallbackOwner = '') {
+export function normalizeRepoToken(token, fallbackOwner = "") {
   const value = coerceText(token).trim();
   if (!value) return null;
-  let match = value.match(/^https?:\/\/github\.com\/([^/\s]+)\/([^/\s#?]+)(?:[/#?].*)?$/i);
-  if (match) return { owner: match[1], name: match[2].replace(/\.git$/i, '') };
+  let match = value.match(
+    /^https?:\/\/github\.com\/([^/\s]+)\/([^/\s#?]+)(?:[/#?].*)?$/i,
+  );
+  if (match) return { owner: match[1], name: match[2].replace(/\.git$/i, "") };
   match = value.match(/^git@github\.com:([^/\s]+)\/([^/\s#?]+?)(?:\.git)?$/i);
-  if (match) return { owner: match[1], name: match[2].replace(/\.git$/i, '') };
+  if (match) return { owner: match[1], name: match[2].replace(/\.git$/i, "") };
   match = value.match(/^([^/\s]+)\/([^/\s]+)$/);
-  if (match) return { owner: match[1], name: match[2].replace(/\.git$/i, '') };
-  if (/^[A-Za-z0-9._-]+$/.test(value) && fallbackOwner) return { owner: fallbackOwner, name: value.replace(/\.git$/i, '') };
+  if (match) return { owner: match[1], name: match[2].replace(/\.git$/i, "") };
+  if (/^[A-Za-z0-9._-]+$/.test(value) && fallbackOwner)
+    return { owner: fallbackOwner, name: value.replace(/\.git$/i, "") };
   return null;
 }
 
@@ -37,56 +32,62 @@ export function parsePublicRepoMetadata(parts) {
   parts.forEach((part) => {
     const match = coerceText(part).match(/^([A-Za-z][A-Za-z0-9_-]*)=(.*)$/);
     if (!match) return;
-    metadata[match[1].replace(/-/g, '_').toLowerCase()] = match[2];
+    metadata[match[1].replace(/-/g, "_").toLowerCase()] = match[2];
   });
   return metadata;
 }
 
 export function createPublicRepoEntry(repo, metadata = {}, options = {}) {
   return {
-    slug: repo.owner + '/' + repo.name,
+    slug: repo.owner + "/" + repo.name,
     owner: repo.owner,
     name: repo.name,
-    visibility: 'public',
+    visibility: "public",
     automation: {
-      cadence: metadata.cadence || options.cadence || 'weekly',
+      cadence: metadata.cadence || options.cadence || "weekly",
       kanban: true,
-      recurring_demand: true
+      recurring_demand: true,
     },
     stewardship: {
-      team: metadata.team || 'maintainers',
-      topic: metadata.topic || 'public-repo-audit'
+      team: metadata.team || "maintainers",
+      topic: metadata.topic || "public-repo-audit",
     },
     policy: {
-      sha_pinning: metadata.sha || 'review',
-      branch_protection: metadata.branch || 'review',
-      secrets_posture: metadata.secrets || 'review',
-      monetization_readiness: metadata.monetization || 'review'
+      sha_pinning: metadata.sha || "review",
+      branch_protection: metadata.branch || "review",
+      secrets_posture: metadata.secrets || "review",
+      monetization_readiness: metadata.monetization || "review",
     },
-    notes: metadata.notes || ''
+    notes: metadata.notes || "",
   };
 }
 
 export function parseLinePublicRepo(line, index, options = {}) {
-  const raw = coerceText(line).replace(/\s+#.*$/, '').trim();
+  const raw = coerceText(line)
+    .replace(/\s+#.*$/, "")
+    .trim();
   if (!raw) return null;
   const parts = raw.split(/[,\s]+/).filter(Boolean);
-  const repo = normalizeRepoToken(parts[0], options.fallbackOwner || '');
+  const repo = normalizeRepoToken(parts[0], options.fallbackOwner || "");
   if (!repo) {
-    return { invalid: true, line: index + 1, raw, reason: 'invalid_repo' };
+    return { invalid: true, line: index + 1, raw, reason: "invalid_repo" };
   }
-  return createPublicRepoEntry(repo, parsePublicRepoMetadata(parts.slice(1)), options);
+  return createPublicRepoEntry(
+    repo,
+    parsePublicRepoMetadata(parts.slice(1)),
+    options,
+  );
 }
 
 export function publicRepoDetailsFromApiObject(item) {
   const details = {};
-  ['description', 'language', 'homepage'].forEach((key) => {
-    if (typeof item[key] === 'string' && item[key].trim()) {
+  ["description", "language", "homepage"].forEach((key) => {
+    if (typeof item[key] === "string" && item[key].trim()) {
       details[key] = item[key].trim();
     }
   });
-  ['archived', 'fork'].forEach((key) => {
-    if (typeof item[key] === 'boolean') {
+  ["archived", "fork"].forEach((key) => {
+    if (typeof item[key] === "boolean") {
       details[key] = item[key];
     }
   });
@@ -94,19 +95,34 @@ export function publicRepoDetailsFromApiObject(item) {
 }
 
 export function parseJsonPublicRepo(item, index, options = {}) {
-  if (!item || typeof item !== 'object' || Array.isArray(item)) {
-    return { invalid: true, line: index + 1, raw: '', reason: 'invalid_json_repo' };
+  if (!item || typeof item !== "object" || Array.isArray(item)) {
+    return {
+      invalid: true,
+      line: index + 1,
+      raw: "",
+      reason: "invalid_json_repo",
+    };
   }
 
-  const ownerValue = typeof item.owner === 'string' ? item.owner : item.owner?.login;
+  const ownerValue =
+    typeof item.owner === "string" ? item.owner : item.owner?.login;
   const candidates = [
     item.full_name,
     item.html_url,
-    ownerValue && item.name ? ownerValue + '/' + item.name : ''
+    ownerValue && item.name ? ownerValue + "/" + item.name : "",
   ];
-  const repo = candidates.map((candidate) => normalizeRepoToken(candidate, options.fallbackOwner || '')).find(Boolean);
+  const repo = candidates
+    .map((candidate) =>
+      normalizeRepoToken(candidate, options.fallbackOwner || ""),
+    )
+    .find(Boolean);
   if (!repo) {
-    return { invalid: true, line: index + 1, raw: JSON.stringify(item), reason: 'invalid_json_repo' };
+    return {
+      invalid: true,
+      line: index + 1,
+      raw: JSON.stringify(item),
+      reason: "invalid_json_repo",
+    };
   }
 
   const entry = createPublicRepoEntry(repo, {}, options);
@@ -120,20 +136,25 @@ export function parseJsonPublicRepo(item, index, options = {}) {
 export function parsePublicReposInput(input, options = {}) {
   const value = coerceText(input);
   const trimmed = value.trim();
-  if (trimmed.startsWith('[')) {
+  if (trimmed.startsWith("[")) {
     let parsed;
     try {
       parsed = JSON.parse(trimmed);
     } catch {
-      return [{ invalid: true, line: 1, raw: trimmed, reason: 'invalid_json' }];
+      return [{ invalid: true, line: 1, raw: trimmed, reason: "invalid_json" }];
     }
     if (!Array.isArray(parsed)) {
-      return [{ invalid: true, line: 1, raw: trimmed, reason: 'invalid_json' }];
+      return [{ invalid: true, line: 1, raw: trimmed, reason: "invalid_json" }];
     }
-    return parsed.map((item, index) => parseJsonPublicRepo(item, index, options)).filter(Boolean);
+    return parsed
+      .map((item, index) => parseJsonPublicRepo(item, index, options))
+      .filter(Boolean);
   }
 
-  return value.split(/\n+/).map((line, index) => parseLinePublicRepo(line, index, options)).filter(Boolean);
+  return value
+    .split(/\n+/)
+    .map((line, index) => parseLinePublicRepo(line, index, options))
+    .filter(Boolean);
 }
 
 const publicReposParserScript = String.raw`
@@ -262,43 +283,56 @@ const publicReposParserScript = String.raw`
         }
 `;
 
-function renderPublicReposYmlBuilderPage(lang = DEFAULT_LANGUAGE) {
+export function renderPublicReposYmlBuilderSection(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('public-repos-yml-builder', currentLang);
-  const title = translation?.name || 'Public Repos YAML Builder';
-  const description = translation?.desc || 'Generate and validate repos.yml inventories for public repository automation.';
-  const currentTool = TOOLS.find((tool) => tool.id === 'public-repos-yml-builder');
-  const relatedToolsData = currentTool?.relatedTools?.map((id) => TOOLS.find((tool) => tool.id === id)).filter(Boolean) || [];
+  const translation = getToolTranslation(
+    "public-repos-yml-builder",
+    currentLang,
+  );
+  const title = translation?.name || "Public Repos YAML Builder";
+  const description =
+    translation?.desc ||
+    "Generate and validate repos.yml inventories for public repository automation.";
+  const currentTool = TOOLS.find(
+    (tool) => tool.id === "public-repos-yml-builder",
+  );
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((tool) => tool.id === id))
+      .filter(Boolean) || [];
 
   const header = createToolHeader(
-    { emoji: '📦' },
+    { emoji: "📦" },
     title,
     description,
     [
-      { text: '<span data-i18n="tools.public-repos-yml-builder.ui.badge0">Client-Side Only</span>', tooltip: 'All parsing and YAML generation runs in your browser.' }
+      {
+        text: '<span data-i18n="tools.public-repos-yml-builder.ui.badge0">Client-Side Only</span>',
+        tooltip: "All parsing and YAML generation runs in your browser.",
+      },
     ],
-    { toolId: 'public-repos-yml-builder' }
+    { toolId: "public-repos-yml-builder" },
   );
 
   const sampleRepos = [
-    'trac3r00/simpletool-app team=maintainers cadence=weekly sha=missing branch=unknown secrets=review monetization=ready',
-    'https://github.com/trac3r00/docs-site team=docs cadence=monthly sha=ok branch=protected secrets=ok monetization=todo'
-  ].join('&#10;');
+    "example-api team=platform cadence=weekly sha=ok branch=protected secrets=ok monetization=ready",
+    "https://github.com/example/docs-site team=docs cadence=monthly sha=ok branch=protected secrets=ok monetization=todo",
+  ].join("&#10;");
 
   const content = `
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+      <div class="tool-group p-6 sm:p-8">
         ${header}
 
         <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
           <section class="lg:col-span-2 space-y-5">
-            <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+            <div class="tool-group p-5">
               <div class="flex items-center justify-between gap-3 mb-3">
-                <label for="repo-input" class="label flex items-center gap-2">
+                <label for="repo-input" class="label flex items-center gap-2 min-w-0">
                   <span data-i18n="tools.public-repos-yml-builder.ui.label0">Repository slugs or URLs</span>
-                  ${infoHint('Use one repository per line. Add metadata as key=value pairs after the slug, for example team=platform cadence=weekly sha=ok.', 'Help', { i18nKey: 'tools.public-repos-yml-builder.ui.desc0' })}
+                  ${infoHint("Use one repository per line. Add metadata as key=value pairs after the slug, for example team=platform cadence=weekly sha=ok.", "Help", { i18nKey: "tools.public-repos-yml-builder.ui.desc0" })}
                 </label>
-                <button id="load-sample" class="btn btn-ghost btn-xs" type="button" data-i18n="tools.public-repos-yml-builder.ui.button0">Sample</button>
+                <button id="load-sample" class="btn btn-ghost btn-xs flex-shrink-0" type="button" data-i18n="tools.public-repos-yml-builder.ui.button0">Sample</button>
               </div>
               <textarea id="repo-input" rows="13" class="input-mono resize-y" placeholder="${sampleRepos}" data-i18n-placeholder="tools.public-repos-yml-builder.ui.placeholder0"></textarea>
               <p class="mt-3 text-xs font-semibold uppercase tracking-wide text-surface-700 dark:text-surface-300" data-i18n="tools.public-repos-yml-builder.ui.badge1">Kanban Automation</p>
@@ -310,7 +344,7 @@ function renderPublicReposYmlBuilderPage(lang = DEFAULT_LANGUAGE) {
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label for="inventory-owner" class="label" data-i18n="tools.public-repos-yml-builder.ui.label1">Owner</label>
-                  <input id="inventory-owner" class="input" value="trac3r00" placeholder="trac3r00" />
+                  <input id="inventory-owner" class="input" value="example" placeholder="example" />
                 </div>
                 <div>
                   <label for="automation-cadence" class="label" data-i18n="tools.public-repos-yml-builder.ui.label2">Default cadence</label>
@@ -322,10 +356,10 @@ function renderPublicReposYmlBuilderPage(lang = DEFAULT_LANGUAGE) {
                 </div>
               </div>
               <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                ${policyCheckbox('sha-pinning', 'SHA pinning', 'Require GitHub Actions and external references to use immutable SHAs.', true)}
-                ${policyCheckbox('branch-protection', 'branch protection', 'Require protected default branches and review gates.', true)}
-                ${policyCheckbox('secrets-posture', 'secrets posture', 'Require secret scanning and no public repo secrets.', true)}
-                ${policyCheckbox('monetization-readiness', 'monetization readiness', 'Track README, license, support, and sponsor readiness.', false)}
+                ${policyCheckbox("sha-pinning", "SHA pinning", "Require GitHub Actions and external references to use immutable SHAs.", true)}
+                ${policyCheckbox("branch-protection", "branch protection", "Require protected default branches and review gates.", true)}
+                ${policyCheckbox("secrets-posture", "secrets posture", "Require secret scanning and no public repo secrets.", true)}
+                ${policyCheckbox("monetization-readiness", "monetization readiness", "Track README, license, support, and sponsor readiness.", false)}
               </div>
             </div>
 
@@ -337,31 +371,31 @@ function renderPublicReposYmlBuilderPage(lang = DEFAULT_LANGUAGE) {
 
           <section class="lg:col-span-3 space-y-5">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3" aria-live="polite">
-              ${statBox('repo-count', 'Repos', '0')}
-              ${statBox('finding-count', 'Findings', '0')}
-              ${statBox('ready-count', 'Ready', '0')}
-              ${statBox('policy-count', 'Policies', '3')}
+              ${statBox("repo-count", "Repos", "0")}
+              ${statBox("finding-count", "Findings", "0")}
+              ${statBox("ready-count", "Ready", "0")}
+              ${statBox("policy-count", "Policies", "3")}
             </div>
 
             <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
-              <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+              <div class="tool-group p-5">
                 <div class="flex items-center justify-between gap-3 mb-3">
                   <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400" data-i18n="tools.public-repos-yml-builder.ui.heading1">repos.yml</h2>
-                  <button id="copy-yaml" class="btn btn-secondary btn-xs" type="button" disabled data-i18n="tools.public-repos-yml-builder.ui.button3">Copy</button>
+                  <button id="copy-yaml" class="btn btn-secondary btn-xs flex-shrink-0" type="button" disabled data-i18n="tools.public-repos-yml-builder.ui.button3">Copy</button>
                 </div>
-                <textarea id="repos-yaml-output" rows="18" class="input-mono resize-y bg-surface-50 dark:bg-surface-950" readonly placeholder="repositories: []" data-i18n-placeholder="tools.public-repos-yml-builder.ui.placeholder1"></textarea>
+                <textarea id="repos-yaml-output" rows="18" aria-label="Generated repositories YAML" class="input-mono resize-y bg-surface-50 dark:bg-surface-950" readonly placeholder="repositories: []" data-i18n-placeholder="tools.public-repos-yml-builder.ui.placeholder1"></textarea>
               </div>
 
-              <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+              <div class="tool-group p-5">
                 <div class="flex items-center justify-between gap-3 mb-3">
                   <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400" data-i18n="tools.public-repos-yml-builder.ui.heading2">GitHub Actions audit</h2>
-                  <button id="copy-actions" class="btn btn-secondary btn-xs" type="button" disabled data-i18n="tools.public-repos-yml-builder.ui.button3">Copy</button>
+                  <button id="copy-actions" class="btn btn-secondary btn-xs flex-shrink-0" type="button" disabled data-i18n="tools.public-repos-yml-builder.ui.button3">Copy</button>
                 </div>
-                <textarea id="actions-output" rows="18" class="input-mono resize-y bg-surface-50 dark:bg-surface-950" readonly placeholder="name: Public repos audit" data-i18n-placeholder="tools.public-repos-yml-builder.ui.placeholder2"></textarea>
+                <textarea id="actions-output" rows="18" aria-label="Generated GitHub Actions workflow" class="input-mono resize-y bg-surface-50 dark:bg-surface-950" readonly placeholder="name: Public repos audit" data-i18n-placeholder="tools.public-repos-yml-builder.ui.placeholder2"></textarea>
               </div>
             </div>
 
-            <div class="p-5 bg-white dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-800">
+            <div class="tool-group p-5">
               <div class="flex items-center justify-between gap-3 mb-3">
                 <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400" data-i18n="tools.public-repos-yml-builder.ui.heading3">Policy findings</h2>
                 <span id="validation-status" class="text-xs font-medium text-surface-500 dark:text-surface-400" data-i18n="tools.public-repos-yml-builder.ui.text0">Waiting for input</span>
@@ -403,8 +437,8 @@ function renderPublicReposYmlBuilderPage(lang = DEFAULT_LANGUAGE) {
         };
 
         const sample = [
-          'trac3r00/simpletool-app team=maintainers cadence=weekly sha=missing branch=unknown secrets=review monetization=ready',
-          'https://github.com/trac3r00/docs-site team=docs cadence=monthly sha=ok branch=protected secrets=ok monetization=todo'
+          'example-api team=platform cadence=weekly sha=ok branch=protected secrets=ok monetization=ready',
+          'https://github.com/example/docs-site team=docs cadence=monthly sha=ok branch=protected secrets=ok monetization=todo'
         ].join('\n');
 
 ${publicReposParserScript}
@@ -490,7 +524,7 @@ ${publicReposParserScript}
             '  audit:',
             '    runs-on: ubuntu-latest',
             '    steps:',
-            '      # Replace action ref placeholders with approved full 40-character commit SHAs.',
+            '      # Pin each action to a full 40-character commit SHA before enabling the workflow.',
             '      - uses: actions/checkout@<actions_checkout_commit_sha>',
             '      - name: Initialize CodeQL for public repo posture',
             '        uses: github/codeql-action/init@<codeql_action_init_commit_sha>',
@@ -606,20 +640,20 @@ ${publicReposParserScript}
     </script>
   `;
 
-  return createPageTemplate({
-    title,
-    description,
-    path: '/public-repos-yml-builder',
-    content,
+  return {
+    content: content
+      .replace(/^\s*<main\b[^>]*>/, '<section class="py-2">')
+      .replace(/<\/main>\s*$/, "</section>")
+      .replace(/<h1\b/, "<h2")
+      .replace("</h1>", "</h2>"),
     scripts,
-    lang: currentLang
-  });
+  };
 }
 
 function policyCheckbox(id, label, help, checked) {
   return `
-    <label class="flex items-start gap-3 rounded-lg border border-surface-200 dark:border-surface-800 bg-white dark:bg-surface-900 p-3 cursor-pointer">
-      <input id="policy-${id}" type="checkbox" class="mt-1 w-4 h-4 rounded border-surface-300 text-primary-600 focus:ring-primary-500" ${checked ? 'checked' : ''}>
+    <label class="tool-group flex items-start gap-3 p-3 cursor-pointer">
+      <input id="policy-${id}" type="checkbox" class="mt-1 w-4 h-4 rounded border-surface-300 text-primary-600 dark:text-primary-400 focus:ring-primary-500" ${checked ? "checked" : ""}>
       <span>
         <span class="block text-sm font-semibold text-surface-900 dark:text-surface-100">${label}</span>
         <span class="block text-xs text-surface-500 dark:text-surface-400">${help}</span>

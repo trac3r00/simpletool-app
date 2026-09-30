@@ -35,38 +35,64 @@
  * @param {string} [opts.wrapClass=''] - Extra classes on the outer wrap
  * @returns {string} HTML string
  */
+
+/**
+ * Escapes a value for interpolation into a double-quoted HTML attribute.
+ * Callers pass code samples containing `"`, `<` and `&`, which would otherwise
+ * terminate the attribute and inject stray attributes onto the element.
+ */
+function escapeAttribute(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
 export function createRichEditorPane(opts = {}) {
   const {
     id,
-    mode = 'textarea',
-    placeholder = '',
+    mode = "textarea",
+    placeholder = "",
     rows = 20,
-    ariaLabel = '',
+    ariaLabel = "",
     hidden = false,
-    wrapClass = ''
+    wrapClass = "",
   } = opts;
 
   const wrapId = `re-${id}-wrap`;
   const lineId = `re-${id}-lines`;
-  const hiddenClass = hidden ? ' hidden' : '';
-  const extraWrap = wrapClass ? ` ${wrapClass}` : '';
+  const hiddenClass = hidden ? " hidden" : "";
+  const extraWrap = wrapClass ? ` ${wrapClass}` : "";
 
-  if (mode === 'textarea') {
-    const phAttr = placeholder ? ` placeholder="${placeholder}"` : '';
-    return `<div id="${wrapId}" class="re-wrap${extraWrap}${hiddenClass}">` +
+  const ariaAttr = ariaLabel ? ` aria-label="${escapeAttribute(ariaLabel)}"` : "";
+
+  if (mode === "textarea") {
+    // Placeholders here are code samples that legitimately contain quotes and
+    // angle brackets (JSON, SQL, XML). Interpolating them raw closed the
+    // attribute early: the JSON sample rendered as placeholder="{" and the
+    // rest of the sample was parsed as bogus attributes on the <textarea>.
+    // ariaAttr applies here too — this branch used to drop it, which left
+    // every editor textarea without an accessible name.
+    const phAttr = placeholder
+      ? ` placeholder="${escapeAttribute(placeholder)}"`
+      : "";
+    return (
+      `<div id="${wrapId}" class="re-wrap${extraWrap}${hiddenClass}">` +
       `<div id="${lineId}" class="re-line-numbers" aria-hidden="true">1</div>` +
-      `<textarea id="re-${id}" rows="${rows}" spellcheck="false"${phAttr} class="input-mono resize-none re-textarea"></textarea>` +
-      `</div>`;
+      `<textarea id="re-${id}" rows="${rows}" spellcheck="false"${phAttr}${ariaAttr} class="input-mono resize-none re-textarea"></textarea>` +
+      `</div>`
+    );
   }
 
   // mode === 'pre'
-  const ariaAttr = ariaLabel ? ` aria-label="${ariaLabel}"` : '';
-  return `<div id="${wrapId}" class="re-wrap${extraWrap}${hiddenClass}">` +
+  return (
+    `<div id="${wrapId}" class="re-wrap${extraWrap}${hiddenClass}">` +
     `<div id="${lineId}" class="re-line-numbers" aria-hidden="true">1</div>` +
     `<pre id="re-${id}" class="re-highlighted" tabindex="0" role="region"${ariaAttr}></pre>` +
-    `</div>`;
+    `</div>`
+  );
 }
-
 
 // ---------------------------------------------------------------------------
 // Server-side: CSS for the editor (emitted once per page inside <style>)
@@ -87,6 +113,7 @@ export function getRichEditorStyles() {
   overflow: hidden;
   background: var(--color-surface-50, #f8fafc);
   position: relative;
+  min-width: 0;
 }
 .dark .re-wrap {
   border-color: var(--color-surface-700);
@@ -155,7 +182,6 @@ export function getRichEditorStyles() {
 .re-toggle.collapsed + .re-ellipsis { display: inline; }
 `;
 }
-
 
 // ---------------------------------------------------------------------------
 // Server-side: client script (creates window.RichEditor)

@@ -1,24 +1,35 @@
 #!/usr/bin/env node
-import fs from 'node:fs';
-import path from 'node:path';
-import os from 'node:os';
-import { spawnSync } from 'node:child_process';
-import { fileURLToPath } from 'node:url';
+import fs from "node:fs";
+import path from "node:path";
+import os from "node:os";
+import { spawnSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const MANIFEST_PATH = path.join(__dirname, 'i18n-manifest.json');
-const I18N_DIR = path.join(__dirname, '..', 'src', 'i18n');
+const MANIFEST_PATH = path.join(__dirname, "i18n-manifest.json");
+const I18N_DIR = path.join(__dirname, "..", "src", "i18n");
 
-const LANG_ORDER = ['en', 'ko', 'ja', 'es', 'zh-CN', 'zh-TW', 'fr', 'de', 'pt', 'vi'];
+const LANG_ORDER = [
+  "en",
+  "ko",
+  "ja",
+  "es",
+  "zh-CN",
+  "zh-TW",
+  "fr",
+  "de",
+  "pt",
+  "vi",
+];
 
-const manifest = JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf-8'));
+const manifest = JSON.parse(fs.readFileSync(MANIFEST_PATH, "utf-8"));
 
 function loadLangMap(langCode) {
   const fp = `/tmp/i18n-${langCode}.json`;
   if (!fs.existsSync(fp)) {
     return {};
   }
-  return JSON.parse(fs.readFileSync(fp, 'utf-8'));
+  return JSON.parse(fs.readFileSync(fp, "utf-8"));
 }
 
 function buildToolTranslations(langCode, enToTarget) {
@@ -29,16 +40,16 @@ function buildToolTranslations(langCode, enToTarget) {
     const js = {};
 
     for (const [fullKey, info] of Object.entries(strings)) {
-      const parts = fullKey.split('.');
+      const parts = fullKey.split(".");
       const section = parts[2];
-      const subKey = parts.slice(3).join('.');
+      const subKey = parts.slice(3).join(".");
 
       const en = info.en;
-      const translated = langCode === 'en' ? en : (enToTarget[en] || en);
+      const translated = langCode === "en" ? en : enToTarget[en] || en;
 
-      if (section === 'ui') {
+      if (section === "ui") {
         ui[subKey] = translated;
-      } else if (section === 'js') {
+      } else if (section === "js") {
         js[subKey] = translated;
       }
     }
@@ -54,14 +65,14 @@ function buildToolTranslations(langCode, enToTarget) {
 // Load translation maps dynamically for all non-English languages
 const langMaps = {};
 for (const lang of LANG_ORDER) {
-  if (lang === 'en') continue;
+  if (lang === "en") continue;
   langMaps[lang] = loadLangMap(lang);
 }
 
 // Build per-language tool translations
-const perLang = { en: buildToolTranslations('en', null) };
+const perLang = { en: buildToolTranslations("en", null) };
 for (const lang of LANG_ORDER) {
-  if (lang === 'en') continue;
+  if (lang === "en") continue;
   perLang[lang] = buildToolTranslations(lang, langMaps[lang]);
 }
 
@@ -74,8 +85,8 @@ for (const lang of LANG_ORDER) {
     continue;
   }
 
-  const originalSource = fs.readFileSync(langFile, 'utf-8');
-  const lines = originalSource.split('\n');
+  const originalSource = fs.readFileSync(langFile, "utf-8");
+  const lines = originalSource.split("\n");
   const toolData = perLang[lang];
 
   // Find the tools section start
@@ -98,8 +109,11 @@ for (const lang of LANG_ORDER) {
   let foundStart = false;
   for (let i = toolsLineIdx; i < lines.length; i++) {
     for (const ch of lines[i]) {
-      if (ch === '{') { depth++; foundStart = true; }
-      if (ch === '}') depth--;
+      if (ch === "{") {
+        depth++;
+        foundStart = true;
+      }
+      if (ch === "}") depth--;
     }
     if (foundStart && depth === 0) {
       toolsEndIdx = i;
@@ -115,12 +129,14 @@ for (const lang of LANG_ORDER) {
     const extra = [
       uiJson ? `ui: ${uiJson}` : null,
       jsJson ? `js: ${jsJson}` : null,
-    ].filter(Boolean).join(', ');
+    ]
+      .filter(Boolean)
+      .join(", ");
 
     if (!extra) continue;
 
     const toolEntryRe = new RegExp(
-      `('${toolId}':\\s*\\{\\s*name:\\s*'[^']*'\\s*,\\s*desc:\\s*'[^']*')(?:,\\s*ui:\\s*\\{[^}]*\\})?(?:,\\s*js:\\s*\\{[^}]*\\})?\\s*\\}`
+      `('${toolId}':\\s*\\{\\s*name:\\s*'[^']*'\\s*,\\s*desc:\\s*'[^']*')(?:,\\s*ui:\\s*\\{[^}]*\\})?(?:,\\s*js:\\s*\\{[^}]*\\})?\\s*\\}`,
     );
 
     for (let i = toolsLineIdx; i <= toolsEndIdx; i++) {
@@ -132,18 +148,27 @@ for (const lang of LANG_ORDER) {
     }
   }
 
-  const nextSource = lines.join('\n');
+  const nextSource = lines.join("\n");
 
   if (nextSource === originalSource) continue;
 
   // Syntax check
-  const tmpFile = path.join(os.tmpdir(), `i18n-merge-${lang}-${Date.now()}.mjs`);
+  const tmpFile = path.join(
+    os.tmpdir(),
+    `i18n-merge-${lang}-${Date.now()}.mjs`,
+  );
   fs.writeFileSync(tmpFile, nextSource);
-  const syntaxCheck = spawnSync(process.execPath, ['--check', tmpFile], { encoding: 'utf-8' });
-  try { fs.unlinkSync(tmpFile); } catch {}
+  const syntaxCheck = spawnSync(process.execPath, ["--check", tmpFile], {
+    encoding: "utf-8",
+  });
+  try {
+    fs.unlinkSync(tmpFile);
+  } catch {}
 
   if (syntaxCheck.status !== 0) {
-    console.error(`Merge aborted for ${lang}: generated file failed syntax validation.`);
+    console.error(
+      `Merge aborted for ${lang}: generated file failed syntax validation.`,
+    );
     if (syntaxCheck.stderr) console.error(syntaxCheck.stderr.trim());
     continue;
   }
@@ -156,6 +181,10 @@ for (const lang of LANG_ORDER) {
 
 let totalStrings = 0;
 for (const toolData of Object.values(perLang.en)) {
-  totalStrings += Object.keys(toolData.ui || {}).length + Object.keys(toolData.js || {}).length;
+  totalStrings +=
+    Object.keys(toolData.ui || {}).length +
+    Object.keys(toolData.js || {}).length;
 }
-console.log(`Merged ${totalStrings} UI strings per language across ${totalUpdated} files`);
+console.log(
+  `Merged ${totalStrings} UI strings per language across ${totalUpdated} files`,
+);

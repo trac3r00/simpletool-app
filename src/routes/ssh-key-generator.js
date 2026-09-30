@@ -1,57 +1,81 @@
 /**
  * SSH Key Generator Tool
- * Generate ECDSA and RSA key pairs securely in the browser using Web Crypto API
- * All processing happens client-side - keys never leave your browser
+ * Generate Ed25519, ECDSA, and RSA key pairs in the browser using Web Crypto API
+ * All processing happens client-side - keys stay in your browser and are not sent to our servers
  */
 
-import { respondHTML, respondJSON } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { createRelatedToolsSection } from '../utils/content-ui.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML, respondJSON } from "../utils/respond.js";
+import {
+  createPageTemplate,
+  createToolHeader,
+  createCheatsheet,
+  infoHint,
+} from "../utils/common-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import { createRelatedToolsSection } from "../utils/content-ui.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleSSHKeyGeneratorRoutes(request, url) {
   const { pathname } = url;
   const method = request.method;
 
   try {
-    if (pathname === '/ssh-key-generator' || pathname === '/ssh-key-generator/') {
-      if (method === 'GET') {
+    if (
+      pathname === "/ssh-key-generator" ||
+      pathname === "/ssh-key-generator/"
+    ) {
+      if (method === "GET") {
         return renderSSHKeyGeneratorPage(resolveRequestLanguage(request, url));
       }
     }
 
-    return respondJSON({ error: 'Not found' }, { status: 404 });
+    return respondJSON({ error: "Not found" }, { status: 404 });
   } catch (error) {
-    console.error('SSH Key Generator Route Error:', error);
+    console.error("SSH Key Generator Route Error:", error);
     return respondJSON(
-      { error: 'Internal server error', message: error.message },
-      { status: 500 }
+      { error: "Internal server error", message: error.message },
+      { status: 500 },
     );
   }
 }
 
 function renderSSHKeyGeneratorPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
-  const translation = getToolTranslation('ssh-key-generator', currentLang);
-  const title = translation?.name || 'SSH Key Generator';
-  const description = translation?.desc || 'Generate secure SSH key pairs client-side using Web Crypto API';
+  const translation = getToolTranslation("ssh-key-generator", currentLang);
+  const title = translation?.name || "SSH Key Generator";
+  const description =
+    translation?.desc ||
+    "Generate Ed25519, ECDSA, and RSA SSH keys in the browser";
 
   const toolHeader = createToolHeader(
-    { emoji: '🔑' },
+    { emoji: "🔑" },
     title,
     description,
-    [{ text: translation?.ui?.badge18 || 'Private & Secure', color: 'green', tooltip: 'Keys are generated in the browser via the Web Crypto API and private material never leaves your device.' }],
-    { toolId: 'ssh-key-generator' }
+    [
+      {
+        text: translation?.ui?.badge18 || "Private & Secure",
+        color: "green",
+        tooltip:
+          "Keys are generated in the browser via the Web Crypto API and the private key stays in your browser and is not sent to our servers.",
+      },
+    ],
+    { toolId: "ssh-key-generator" },
   );
 
-  const currentTool = TOOLS.find(t => t.id === 'ssh-key-generator');
-    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
-
+  const currentTool = TOOLS.find((t) => t.id === "ssh-key-generator");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-xl shadow-sm p-6 sm:p-8">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
 
         ${toolHeader}
 
@@ -60,11 +84,11 @@ function renderSSHKeyGeneratorPage(lang = DEFAULT_LANGUAGE) {
            <div class="flex items-start gap-3">
              <span class="text-2xl">🔒</span>
              <div>
-               <h2 class="text-sm font-bold text-success-900 dark:text-success-300 mb-1" data-i18n="tools.ssh-key-generator.ui.heading11">100% Client-Side & Private</h2>
+               <h2 class="text-sm font-bold text-success-900 dark:text-success-300 mb-1" data-i18n="tools.ssh-key-generator.ui.heading11">Keys Generated in Your Browser</h2>
                <ul class="text-xs text-success-800 dark:text-success-200 space-y-1 list-disc list-inside">
                 <li>All keys generated in your browser using Web Crypto API</li>
-                <li>Private keys NEVER leave your device</li>
-                <li>No logging, no tracking, no data collection</li>
+                <li>Private keys stay in your browser and are not sent to our servers</li>
+                <li>Page assets load over the network, but the keys this tool generates are not transmitted</li>
               </ul>
             </div>
           </div>
@@ -76,20 +100,27 @@ function renderSSHKeyGeneratorPage(lang = DEFAULT_LANGUAGE) {
           <div class="space-y-6">
             <!-- Key Type Selection -->
             <div>
-              <label class="label mb-3"><span data-i18n="tools.ssh-key-generator.ui.label2">Key Type</span> ${infoHint('Choose ECDSA for modern clients or RSA when you need older-system compatibility.')}</label>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <label class="label mb-3"><span data-i18n="tools.ssh-key-generator.ui.label2">Key Type</span> ${infoHint("Ed25519 is the default for new servers. ECDSA P-256 and RSA remain for older systems.")}</label>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <label class="relative flex items-start p-4 bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-800 rounded-lg cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-900 transition-all has-[:checked]:border-primary-500 has-[:checked]:bg-primary-50 dark:has-[:checked]:bg-primary-900/20">
-                  <input type="radio" name="keyType" value="ecdsa" data-tooltip="Modern, smaller keys, faster operations" data-i18n-tooltip="tools.ssh-key-generator.ui.tip0" checked class="mt-1 w-4 h-4 text-primary-600 focus:ring-primary-500">
+                  <input type="radio" name="keyType" value="ed25519" data-tooltip="Recommended for new deployments" checked class="mt-1 w-4 h-4 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
                   <div class="ml-3">
-                    <div class="text-sm font-bold text-surface-900 dark:text-surface-50">ECDSA (P-256)</div>
-                    <div class="text-xs text-surface-500 dark:text-surface-400 mt-1">Modern, secure, fast. Compatible with most systems.</div>
+                    <div class="text-sm font-bold text-surface-900 dark:text-surface-50">Ed25519</div>
+                    <div class="text-xs text-surface-500 dark:text-surface-400 mt-1">Recommended. Fast, small, modern default.</div>
                   </div>
                 </label>
                 <label class="relative flex items-start p-4 bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-800 rounded-lg cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-900 transition-all has-[:checked]:border-primary-500 has-[:checked]:bg-primary-50 dark:has-[:checked]:bg-primary-900/20">
-                  <input type="radio" name="keyType" value="rsa" data-tooltip="Traditional, widely compatible with older systems" data-i18n-tooltip="tools.ssh-key-generator.ui.tip1" class="mt-1 w-4 h-4 text-primary-600 focus:ring-primary-500">
+                  <input type="radio" name="keyType" value="ecdsa" data-tooltip="Modern, smaller keys, faster operations" data-i18n-tooltip="tools.ssh-key-generator.ui.tip0" class="mt-1 w-4 h-4 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
+                  <div class="ml-3">
+                    <div class="text-sm font-bold text-surface-900 dark:text-surface-50">ECDSA (P-256)</div>
+                    <div class="text-xs text-surface-500 dark:text-surface-400 mt-1">Compact keys. Broad current-system support.</div>
+                  </div>
+                </label>
+                <label class="relative flex items-start p-4 bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-800 rounded-lg cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-900 transition-all has-[:checked]:border-primary-500 has-[:checked]:bg-primary-50 dark:has-[:checked]:bg-primary-900/20">
+                  <input type="radio" name="keyType" value="rsa" data-tooltip="Traditional, widely compatible with older systems" data-i18n-tooltip="tools.ssh-key-generator.ui.tip1" class="mt-1 w-4 h-4 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
                   <div class="ml-3">
                     <div class="text-sm font-bold text-surface-900 dark:text-surface-50">RSA</div>
-                    <div class="text-xs text-surface-500 dark:text-surface-400 mt-1">Traditional, widely supported. Larger key size.</div>
+                    <div class="text-xs text-surface-500 dark:text-surface-400 mt-1">Legacy compatibility. Larger key size.</div>
                   </div>
                 </label>
               </div>
@@ -97,7 +128,7 @@ function renderSSHKeyGeneratorPage(lang = DEFAULT_LANGUAGE) {
 
             <!-- RSA Key Size (only shown for RSA) -->
             <div id="rsa-options" class="hidden">
-            <label for="rsa-size" class="label"><span data-i18n="tools.ssh-key-generator.ui.label3">RSA Key Size</span> ${infoHint('Larger bit sizes (2048/3072/4096) increase security but slow generation.')}</label>
+            <label for="rsa-size" class="label"><span data-i18n="tools.ssh-key-generator.ui.label3">RSA Key Size</span> ${infoHint("Larger bit sizes (2048/3072/4096) increase security but slow generation.")}</label>
               <select id="rsa-size" class="input">
                 <option value="2048" data-i18n="tools.ssh-key-generator.ui.option6">2048 bits (Minimum, faster)</option>
                 <option value="3072" data-i18n="tools.ssh-key-generator.ui.option7">3072 bits (Balanced)</option>
@@ -113,7 +144,7 @@ function renderSSHKeyGeneratorPage(lang = DEFAULT_LANGUAGE) {
             </div>
 
             <!-- Generate Button -->
-            <button id="generate-btn" class="btn btn-primary" data-tooltip="Generate a new SSH key pair in your browser" data-i18n-tooltip="tools.ssh-key-generator.ui.tip2" w-full py-3 text-lg">
+            <button id="generate-btn" class="btn btn-primary w-full py-3 text-lg" data-tooltip="Generate a new SSH key pair in your browser" data-i18n-tooltip="tools.ssh-key-generator.ui.tip2">
               <span id="btn-text">Generate Key Pair</span>
               <span id="btn-loading" class="hidden flex items-center gap-2">
                 <span class="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
@@ -181,21 +212,29 @@ chmod 600 ~/.ssh/authorized_keys</pre>
 
       </div>
 
-      ${createCheatsheet('ssh-key-generator', 'SSH Key Quick Reference', [
-        { heading: 'Key Types', content: `
+      ${createCheatsheet("ssh-key-generator", "SSH Key Quick Reference", [
+        {
+          heading: "Key Types",
+          content: `
           <table>
             <tr><th data-i18n="tools.ssh-key-generator.ui.th7">Algorithm</th><th data-i18n="tools.ssh-key-generator.ui.th8">Key Size</th><th data-i18n="tools.ssh-key-generator.ui.th9">Security</th><th data-i18n="tools.ssh-key-generator.ui.th10">Use Case</th></tr>
-            <tr><td><code>RSA</code></td><td>2048/4096-bit</td><td>✅ Secure</td><td>General purpose, widest compatibility</td></tr>
+            <tr><td><code>Ed25519</code></td><td>256-bit</td><td>✅ Recommended</td><td>New deployments, OpenSSH default</td></tr>
             <tr><td><code>ECDSA</code></td><td>P-256</td><td>✅ Secure</td><td>Modern systems, compact keys</td></tr>
-          </table>` },
-        { heading: 'Common Commands', content: `
+            <tr><td><code>RSA</code></td><td>2048/4096-bit</td><td>✅ Compatible</td><td>Older appliances that reject Ed25519</td></tr>
+          </table>`,
+        },
+        {
+          heading: "Common Commands",
+          content: `
           <table>
             <tr><th data-i18n="tools.ssh-key-generator.ui.th11">Command</th><th data-i18n="tools.ssh-key-generator.ui.th12">Description</th></tr>
+            <tr><td><code>ssh-keygen -t ed25519</code></td><td>Generate Ed25519 key (recommended)</td></tr>
             <tr><td><code>ssh-keygen -t ecdsa -b 256</code></td><td>Generate ECDSA key (P-256)</td></tr>
             <tr><td><code>ssh-keygen -t rsa -b 4096</code></td><td>Generate RSA key (4096-bit)</td></tr>
             <tr><td><code>ssh-copy-id user@host</code></td><td>Copy public key to server</td></tr>
             <tr><td><code>chmod 600 ~/.ssh/id_*</code></td><td>Set correct permissions</td></tr>
-          </table>` }
+          </table>`,
+        },
       ])}
     ${createRelatedToolsSection(relatedToolsData)}
     </main>
@@ -236,7 +275,9 @@ chmod 600 ~/.ssh/authorized_keys</pre>
         btnLoading.classList.remove('hidden');
 
         try {
-          if (keyType === 'ecdsa') {
+          if (keyType === 'ed25519') {
+            await generateEd25519();
+          } else if (keyType === 'ecdsa') {
             await generateECDSA();
           } else {
             await generateRSA();
@@ -256,6 +297,30 @@ chmod 600 ~/.ssh/authorized_keys</pre>
           btnLoading.classList.add('hidden');
         }
       });
+
+       async function generateEd25519() {
+         const keyPair = await window.crypto.subtle.generateKey(
+           { name: 'Ed25519' },
+           true,
+           ['sign', 'verify']
+         );
+
+         const publicKeyRaw = new Uint8Array(await window.crypto.subtle.exportKey('raw', keyPair.publicKey));
+         const privateKeyRaw = await window.crypto.subtle.exportKey('pkcs8', keyPair.privateKey);
+
+         if (publicKeyRaw.length !== 32) {
+           throw new Error('Unexpected Ed25519 public key format');
+         }
+
+         const comment = keyComment.value.trim() || 'user@simpletool';
+         const { key: publicKeySSH, wireBytes } = encodeEd25519PublicKey(publicKeyRaw, comment);
+         const privateKeySSH = arrayBufferToPEM(privateKeyRaw, 'PRIVATE KEY');
+         const fingerprint = await calculateFingerprint(wireBytes);
+
+         publicKeyEl.value = publicKeySSH;
+         privateKeyEl.value = privateKeySSH;
+         fingerprintEl.textContent = fingerprint;
+       }
 
        async function generateECDSA() {
          const keyPair = await window.crypto.subtle.generateKey(
@@ -382,6 +447,18 @@ chmod 600 ~/.ssh/authorized_keys</pre>
         return btoa(binary);
       }
 
+      function encodeEd25519PublicKey(keyBytes, comment) {
+        const wireBytes = concat(
+          writeString(toUtf8Bytes('ssh-ed25519')),
+          writeString(keyBytes)
+        );
+
+        return {
+          key: \`ssh-ed25519 \${toBase64(wireBytes)} \${comment}\`,
+          wireBytes
+        };
+      }
+
       function encodeECDSAPublicKey(x, y, comment) {
         const wireBytes = concat(
           writeString(toUtf8Bytes('ecdsa-sha2-nistp256')),
@@ -468,12 +545,14 @@ chmod 600 ~/.ssh/authorized_keys</pre>
     </script>
   `;
 
-  return respondHTML(createPageTemplate({
-    title,
-    description,
-    path: '/ssh-key-generator',
-    content,
-    scripts: script,
-    lang: currentLang
-  }));
+  return respondHTML(
+    createPageTemplate({
+      title,
+      description,
+      path: "/ssh-key-generator",
+      content,
+      scripts: script,
+      lang: currentLang,
+    }),
+  );
 }

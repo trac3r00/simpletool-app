@@ -53,7 +53,9 @@ export function shuffleInPlace(arr) {
     const m = (i + 1) >>> 0;
     const limit = Math.floor(0x100000000 / m) * m;
     let x = 0;
-    do { x = cryptoUint32() >>> 0; } while (x >= limit);
+    do {
+      x = cryptoUint32() >>> 0;
+    } while (x >= limit);
     const j = x % m;
     const t = arr[i];
     arr[i] = arr[j];
@@ -74,11 +76,11 @@ export function clamp(n, min, max) {
 /** Escape HTML entities (&, <, >, ", '). */
 export function escapeHtml(s) {
   return String(s)
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#39;');
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
 }
 
 // ── Audio helpers ───────────────────────────────────────────────────
@@ -94,7 +96,9 @@ export function ensureAudioCtx(audioHolder) {
     if (!AC) return null;
     audioHolder.ctx = new AC();
     return audioHolder.ctx;
-  } catch (e) { return null; }
+  } catch (e) {
+    return null;
+  }
 }
 
 /**
@@ -107,12 +111,15 @@ export function playBeep(audioHolder, freq, durMs, gain) {
   try {
     const o = c.createOscillator();
     const g = c.createGain();
-    o.type = 'sine';
+    o.type = "sine";
     o.frequency.value = freq;
     const t0 = c.currentTime;
     const dur = clamp(durMs, 10, 500) / 1000;
     g.gain.setValueAtTime(0.0001, t0);
-    g.gain.exponentialRampToValueAtTime(Math.max(0.0001, clamp(gain, 0, 0.5)), t0 + 0.008);
+    g.gain.exponentialRampToValueAtTime(
+      Math.max(0.0001, clamp(gain, 0, 0.5)),
+      t0 + 0.008,
+    );
     g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
     o.connect(g);
     g.connect(c.destination);
@@ -148,7 +155,7 @@ export function spawnConfetti(particles, cx, cy, count, colors, speedMult) {
       h: 8 + randInt(12),
       alpha: 1,
       shimmer: randFloat() > 0.6,
-      color: colors[randInt(colors.length)]
+      color: colors[randInt(colors.length)],
     });
   }
 }

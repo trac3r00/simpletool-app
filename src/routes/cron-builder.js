@@ -1,47 +1,81 @@
-import { respondHTML } from '../utils/respond.js';
-import { createPageTemplate, createToolHeader, createCheatsheet, infoHint } from '../utils/common-ui.js';
-import { createEducationalSection, createRelatedToolsSection } from '../utils/content-ui.js';
-import { TOOLS } from '../utils/tool-registry.js';
-import { DEFAULT_LANGUAGE, getToolTranslation, normalizeLanguage, resolveRequestLanguage } from '../utils/i18n.js';
+import { respondHTML } from "../utils/respond.js";
+import {
+  createPageTemplate,
+  createToolHeader,
+  createCheatsheet,
+  infoHint,
+} from "../utils/common-ui.js";
+import {
+  createRelatedToolsSection,
+  createVisibleArticle,
+} from "../utils/content-ui.js";
+import { TOOLS } from "../utils/tool-registry.js";
+import {
+  DEFAULT_LANGUAGE,
+  getToolTranslation,
+  normalizeLanguage,
+  resolveRequestLanguage,
+} from "../utils/i18n.js";
 
 export async function handleCronBuilderRoutes(request) {
   const requestPath = new URL(request.url).pathname;
-  const canonicalPath = requestPath.replace(/\/$/, '') || '/';
+  const canonicalPath = requestPath.replace(/\/$/, "") || "/";
   const currentLang = resolveRequestLanguage(request, new URL(request.url));
   const normalizedLang = normalizeLanguage(currentLang);
-  const translation = getToolTranslation('cron-builder', normalizedLang);
-  const currentTool = TOOLS.find(t => t.id === 'cron-builder');
-    const relatedToolsData = currentTool?.relatedTools?.map(id => TOOLS.find(t => t.id === id)).filter(Boolean) || [];
+  const translation = getToolTranslation("cron-builder", normalizedLang);
+  const currentTool = TOOLS.find((t) => t.id === "cron-builder");
+  const relatedToolsData =
+    currentTool?.relatedTools
+      ?.map((id) => TOOLS.find((t) => t.id === id))
+      .filter(Boolean) || [];
 
   const content = `
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6 lg:h-[calc(100vh-9rem)] min-h-[800px]">
+    <main class="tool-page-shell">
+      <div class="tool-page-panel">
       ${createToolHeader(
-        { emoji: '⏰' },
-        translation?.name || 'Cron Builder',
-        translation?.desc || 'Visually build, parse, and schedule cron jobs with next execution previews.',
-        [{ text: translation?.ui?.badge21 || 'Bi-directional', color: 'blue', tooltip: 'Parse cron expressions and build them visually in either direction without leaving the page.' }],
-        { toolId: 'cron-builder' }
+        { emoji: "⏰" },
+        translation?.name || "Cron Builder",
+        translation?.desc ||
+          "Visually build, parse, and schedule cron jobs with next execution previews.",
+        [
+          {
+            text: translation?.ui?.badge21 || "Bi-directional",
+            color: "blue",
+            tooltip:
+              "Parse cron expressions and build them visually in either direction without leaving the page.",
+          },
+        ],
+        { toolId: "cron-builder" },
       )}
+
+      ${createVisibleArticle({
+        title: "Five-field crontab, explained in this tab",
+        paragraphs: [
+          `This builder speaks classic Vixie/crontab syntax: minute, hour, day of month, month, day of week. It does not accept a sixth seconds field, Quartz, or systemd <code>OnCalendar=</code>. If your scheduler wants those, this page will not silently translate them.`,
+          `The next-run list is computed in the browser from the expression and your current timezone. It is a preview, not a job runner. Nothing is stored and no webhook is registered.`,
+          `Day-of-week <code>0</code> and <code>7</code> are both Sunday. Lists, ranges, and steps (<code>1,15</code>, <code>1-5</code>, <code>*/5</code>) work; named months and days are accepted where crontab does. If the parser cannot read a field, the preview stays empty instead of inventing a schedule.`,
+        ],
+      })}
 
       <div class="flex-grow flex flex-col lg:flex-row gap-6 min-h-0">
         
         <!-- Left Column: Visual Builder (Editor) -->
-        <div class="flex-1 flex flex-col min-h-0 bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 overflow-hidden">
+        <div class="tool-group tool-group--flush flex-1 flex flex-col min-h-0 overflow-hidden">
           <div class="border-b border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-950/50">
             <nav class="flex -mb-px" aria-label="Tabs" id="builder-tabs">
-              <button class="tab-btn active group inline-flex items-center py-4 px-6 border-b-2 font-medium text-sm transition-colors border-primary-500 text-primary-600 dark:text-primary-400 focus:outline-none" data-target="minute" data-tooltip="0-59, which minutes to run">
+              <button class="tab-trigger tab-btn active" data-target="minute" data-tooltip="0-59, which minutes to run">
                 <span data-i18n="tools.cron-builder.ui.button0">Minute</span>
               </button>
-              <button class="tab-btn group inline-flex items-center py-4 px-6 border-b-2 border-transparent font-medium text-sm text-surface-500 hover:text-surface-700 hover:border-surface-300 dark:text-surface-400 dark:hover:text-surface-300 focus:outline-none" data-target="hour" data-tooltip="0-23, which hours to run">
+              <button class="tab-trigger tab-btn" data-target="hour" data-tooltip="0-23, which hours to run">
                 <span data-i18n="tools.cron-builder.ui.button1">Hour</span>
               </button>
-              <button class="tab-btn group inline-flex items-center py-4 px-6 border-b-2 border-transparent font-medium text-sm text-surface-500 hover:text-surface-700 hover:border-surface-300 dark:text-surface-400 dark:hover:text-surface-300 focus:outline-none" data-target="dom" data-tooltip="1-31, which days of the month">
+              <button class="tab-trigger tab-btn" data-target="dom" data-tooltip="1-31, which days of the month">
                 <span data-i18n="tools.cron-builder.ui.button2">Day</span>
               </button>
-              <button class="tab-btn group inline-flex items-center py-4 px-6 border-b-2 border-transparent font-medium text-sm text-surface-500 hover:text-surface-700 hover:border-surface-300 dark:text-surface-400 dark:hover:text-surface-300 focus:outline-none" data-target="month" data-tooltip="1-12, which months">
+              <button class="tab-trigger tab-btn" data-target="month" data-tooltip="1-12, which months">
                 <span data-i18n="tools.cron-builder.ui.button3">Month</span>
               </button>
-              <button class="tab-btn group inline-flex items-center py-4 px-6 border-b-2 border-transparent font-medium text-sm text-surface-500 hover:text-surface-700 hover:border-surface-300 dark:text-surface-400 dark:hover:text-surface-300 focus:outline-none" data-target="dow" data-tooltip="0-6 (Sun-Sat), which days of week">
+              <button class="tab-trigger tab-btn" data-target="dow" data-tooltip="0-6 (Sun-Sat), which days of week">
                 <span data-i18n="tools.cron-builder.ui.button4">Week</span>
               </button>
             </nav>
@@ -179,20 +213,20 @@ export async function handleCronBuilderRoutes(request) {
         <div class="flex-1 flex flex-col gap-6 overflow-y-auto pr-1">
           
           <!-- Main Output -->
-          <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 p-6">
+          <div class="tool-group p-6">
             <label for="cron-expression" class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
-              <span data-i18n="tools.cron-builder.ui.label6">Cron Expression</span> ${infoHint('Enter five fields (min hour day month dow); use * or lists/ranges to control scheduling.')}
+              <span data-i18n="tools.cron-builder.ui.label6">Cron Expression</span> ${infoHint("Enter five fields (min hour day month dow); use * or lists/ranges to control scheduling.")}
             </label>
             <div class="flex gap-3 mb-4">
               <div class="relative flex-grow">
                 <input type="text" id="cron-expression" 
-                  class="w-full text-2xl font-mono tracking-wider p-4 rounded-lg border border-surface-300 dark:border-surface-700 bg-surface-50 dark:bg-surface-950 text-surface-900 dark:text-surface-50 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors" 
+                  class="input-mono w-full tracking-wider" 
                   value="* * * * *" 
                   spellcheck="false"
                   autocomplete="off">
               </div>
               <button id="copy-cron-btn" 
-                class="flex-shrink-0 px-6 py-2 bg-surface-100 dark:bg-surface-800 hover:bg-surface-200 dark:hover:bg-surface-700 text-surface-700 dark:text-surface-300 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-surface-900">
+                class="tab-trigger flex-shrink-0">
                 <span data-i18n="tools.cron-builder.ui.button5">Copy</span>
               </button>
             </div>
@@ -210,7 +244,7 @@ export async function handleCronBuilderRoutes(request) {
           </div>
 
           <!-- Next Executions -->
-          <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 p-6">
+          <div class="tool-group p-6">
             <div class="flex items-center justify-between mb-4">
               <h2 class="text-lg font-semibold text-surface-900 dark:text-surface-50" data-i18n="tools.cron-builder.ui.heading7">Next Runs</h2>
               <span class="text-xs px-2 py-1 rounded bg-surface-100 dark:bg-surface-800 text-surface-500 dark:text-surface-400" data-i18n="tools.cron-builder.ui.desc20">Local Time</span>
@@ -224,7 +258,7 @@ export async function handleCronBuilderRoutes(request) {
           </div>
 
           <!-- Recipes -->
-          <div class="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-800 p-6">
+          <div class="tool-group p-6">
             <h2 class="text-lg font-semibold text-surface-900 dark:text-surface-50 mb-4" data-i18n="tools.cron-builder.ui.heading8">Common Recipes</h2>
             <div class="space-y-2" id="recipes-list">
               <!-- Populated by JS -->
@@ -248,8 +282,10 @@ export async function handleCronBuilderRoutes(request) {
         </div>
       </div>
 
-      ${createCheatsheet('cron-builder', 'Cron Syntax Reference', [
-        { heading: 'Field Order', content: `
+      ${createCheatsheet("cron-builder", "Cron Syntax Reference", [
+        {
+          heading: "Field Order",
+          content: `
           <table>
             <tr><th data-i18n="tools.cron-builder.ui.th0">Position</th><th data-i18n="tools.cron-builder.ui.th1">Field</th><th data-i18n="tools.cron-builder.ui.th2">Range</th></tr>
             <tr><td>1</td><td>Minute</td><td>0–59</td></tr>
@@ -257,16 +293,22 @@ export async function handleCronBuilderRoutes(request) {
             <tr><td>3</td><td>Day of Month</td><td>1–31</td></tr>
             <tr><td>4</td><td>Month</td><td>1–12</td></tr>
             <tr><td>5</td><td>Day of Week</td><td>0–7 (0,7 = Sun)</td></tr>
-          </table>` },
-        { heading: 'Special Characters', content: `
+          </table>`,
+        },
+        {
+          heading: "Special Characters",
+          content: `
           <table>
             <tr><th data-i18n="tools.cron-builder.ui.th3">Char</th><th data-i18n="tools.cron-builder.ui.th4">Meaning</th><th data-i18n="tools.cron-builder.ui.th5">Example</th></tr>
             <tr><td><code>*</code></td><td>Any value</td><td>Every minute</td></tr>
             <tr><td><code>,</code></td><td>List</td><td><code>1,15</code> (1st and 15th)</td></tr>
             <tr><td><code>-</code></td><td>Range</td><td><code>1-5</code> (Mon–Fri)</td></tr>
             <tr><td><code>/</code></td><td>Step</td><td><code>*/5</code> (every 5 min)</td></tr>
-          </table>` },
-        { heading: 'Common Examples', content: `
+          </table>`,
+        },
+        {
+          heading: "Common Examples",
+          content: `
           <table>
             <tr><th data-i18n="tools.cron-builder.ui.th6">Expression</th><th data-i18n="tools.cron-builder.ui.th7">Description</th></tr>
             <tr><td><code>0 * * * *</code></td><td>Every hour</td></tr>
@@ -274,9 +316,11 @@ export async function handleCronBuilderRoutes(request) {
             <tr><td><code>0 0 * * 1</code></td><td>Every Monday</td></tr>
             <tr><td><code>*/5 * * * *</code></td><td>Every 5 minutes</td></tr>
             <tr><td><code>0 9-17 * * 1-5</code></td><td>Hourly 9am–5pm weekdays</td></tr>
-          </table>` }
+          </table>`,
+        },
       ])}
     ${createRelatedToolsSection(relatedToolsData)}
+      </div>
     </main>
 
     <script>
@@ -438,10 +482,8 @@ export async function handleCronBuilderRoutes(request) {
               cb.checked = isSelected;
               if (isSelected) {
                 label.classList.add('bg-primary-50', 'dark:bg-primary-900/30', 'border-primary-200', 'dark:border-primary-800');
-                label.setAttribute('aria-selected', 'true');
               } else {
                 label.classList.remove('bg-primary-50', 'dark:bg-primary-900/30', 'border-primary-200', 'dark:border-primary-800');
-                label.setAttribute('aria-selected', 'false');
               }
             });
           });
@@ -549,17 +591,23 @@ export async function handleCronBuilderRoutes(request) {
           renderGrid('dow', 0, 6, (i) => DAYS[i]);
         }
 
-function renderGrid(part, start, end, labelFn) {
+const GRID_LABELS = {
+          minute: 'Minute selector',
+          hour: 'Hour selector',
+          dom: 'Day of month selector',
+          month: 'Month selector',
+          dow: 'Day of week selector',
+        };
+
+        function renderGrid(part, start, end, labelFn) {
           const container = document.getElementById(\`\${part}-grid\`);
           container.innerHTML = '';
-          container.setAttribute('role', 'grid');
-          container.setAttribute('aria-label', 'Minute selector');
+          container.setAttribute('role', 'group');
+          container.setAttribute('aria-label', GRID_LABELS[part] || 'Value selector');
 
           for (let i = start; i <= end; i++) {
             const label = document.createElement('label');
             label.className = 'flex items-center justify-center w-8 h-8 border border-surface-200 dark:border-surface-700 rounded-full cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors select-none text-sm';
-            label.setAttribute('role', 'gridcell');
-            label.setAttribute('aria-selected', 'false');
 
             const input = document.createElement('input');
             input.type = 'checkbox';
@@ -573,10 +621,8 @@ function renderGrid(part, start, end, labelFn) {
             input.addEventListener('change', () => {
               if (input.checked) {
                 label.classList.add('bg-primary-50', 'dark:bg-primary-900/30', 'border-primary-200', 'dark:border-primary-800');
-                label.setAttribute('aria-selected', 'true');
               } else {
                 label.classList.remove('bg-primary-50', 'dark:bg-primary-900/30', 'border-primary-200', 'dark:border-primary-800');
-                label.setAttribute('aria-selected', 'false');
               }
               updatePartFromGrid(part);
             });
@@ -679,7 +725,7 @@ function renderGrid(part, start, end, labelFn) {
                nextExecutionsList.appendChild(li);
              });
            } catch (e) {
-             nextExecutionsList.innerHTML = '<li class="text-error-500 text-sm">' + (window._t ? window._t('tools.cron-builder.js.text0', 'Invalid expression') : 'Invalid expression') + '</li>';
+             nextExecutionsList.innerHTML = '<li class="text-error-500 text-sm">' + (window._t ? window._t('tools.cron-builder.js.text0', 'Invalid cron expression') : 'Invalid cron expression') + '</li>';
            }
          }
 
@@ -789,16 +835,21 @@ function renderGrid(part, start, end, labelFn) {
     </script>
   `;
 
-  return respondHTML(createPageTemplate({
-    title: translation?.name || 'Cron Builder',
-    description: translation?.desc || 'Visual cron editor with human-readable descriptions and next-run preview.',
-    path: canonicalPath,
-    content: content,
-    scripts: '',
-    lang: normalizedLang
-  }), {
-    headers: {
-      'Cache-Control': 'public, max-age=3600'
-    }
-  });
+  return respondHTML(
+    createPageTemplate({
+      title: translation?.name || "Cron Builder",
+      description:
+        translation?.desc ||
+        "Visual cron editor with human-readable descriptions and next-run preview.",
+      path: canonicalPath,
+      content: content,
+      scripts: "",
+      lang: normalizedLang,
+    }),
+    {
+      headers: {
+        "Cache-Control": "public, max-age=3600",
+      },
+    },
+  );
 }
