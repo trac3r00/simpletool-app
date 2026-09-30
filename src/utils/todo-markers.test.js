@@ -34,6 +34,26 @@ const MARKER_RE = new RegExp(
 );
 const TEST_BLOCK_RE = new RegExp("test\\." + M_F.toLowerCase() + "\\s*\\(");
 
+// Same heuristic git uses for its own binary detection: a NUL byte in the
+// first 8000 bytes. Content-based, so extensionless text files stay scanned.
+const BINARY_SNIFF_BYTES = 8000;
+
+function isBinary(buffer) {
+  return buffer.subarray(0, BINARY_SNIFF_BYTES).includes(0);
+}
+
+function findMarkerViolations(file, buffer) {
+  if (isBinary(buffer)) return [];
+  const violations = [];
+  const lines = buffer.toString("utf8").split("\n");
+  for (let i = 0; i < lines.length; i++) {
+    if (MARKER_RE.test(lines[i]) || TEST_BLOCK_RE.test(lines[i])) {
+      violations.push(`${file}:${i + 1}: ${lines[i].trim()}`);
+    }
+  }
+  return violations;
+}
+
 function getTrackedSourceFiles() {
   try {
     const output = execSync("git ls-files", { cwd: ROOT, encoding: "utf8" });
@@ -46,29 +66,51 @@ function getTrackedSourceFiles() {
   }
 }
 
+describe("marker scan", () => {
+  const marked = `// ${M_T}: remove this\n`;
+
+  it("flags markers in text files, including extensionless ones", () => {
+    expect(findMarkerViolations("CODEOWNERS", Buffer.from(`# ${M_H} owner\n`))).toEqual([
+      `CODEOWNERS:1: # ${M_H} owner`,
+    ]);
+    expect(findMarkerViolations("docs/a.md", Buffer.from(`x\n<!-- ${M_F} -->\n`))).toEqual([
+      `docs/a.md:2: <!-- ${M_F} -->`,
+    ]);
+    expect(findMarkerViolations("a.js", Buffer.from(`test.${M_F.toLowerCase()}("x")\n`))).toHaveLength(1);
+  });
+
+  it("skips binary files even when their bytes spell a marker", () => {
+    const png = Buffer.concat([
+      Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x0a]),
+      Buffer.from(marked),
+    ]);
+    expect(findMarkerViolations("shot.png", png)).toEqual([]);
+  });
+
+  it("treats a NUL byte past the sniff window as text", () => {
+    const late = Buffer.concat([Buffer.from(marked), Buffer.alloc(8000, 0x20), Buffer.from([0])]);
+    expect(findMarkerViolations("big.txt", late)).toHaveLength(1);
+  });
+});
+
 describe("tracked source files", () => {
-  // Reads every tracked file (~50MB incl. screenshots), so its runtime scales
-  // with the repo and the runner, not with the code under test. The 5s
-  // default fails on the shared self-hosted pve-ci runner (8.8s observed).
+  // Reads every tracked file, so its runtime scales with the repo and the
+  // runner, not with the code under test. Binaries (~43MB of screenshots) are
+  // skipped before decoding; the 30s cap keeps headroom on the shared pve-ci
+  // runner, where the 5s default failed before that skip (8.8s observed).
   it(`contain no ${M_T}/${M_F}/${M_H} markers or test.${M_F.toLowerCase()} calls`, () => {
     const files = getTrackedSourceFiles();
     expect(files.length).toBeGreaterThan(0);
 
     const violations = [];
     for (const file of files) {
-      const fullPath = join(ROOT, file);
-      let content;
+      let buffer;
       try {
-        content = readFileSync(fullPath, "utf8");
+        buffer = readFileSync(join(ROOT, file));
       } catch {
         continue;
       }
-      const lines = content.split("\n");
-      for (let i = 0; i < lines.length; i++) {
-        if (MARKER_RE.test(lines[i]) || TEST_BLOCK_RE.test(lines[i])) {
-          violations.push(`${file}:${i + 1}: ${lines[i].trim()}`);
-        }
-      }
+      violations.push(...findMarkerViolations(file, buffer));
     }
 
     expect(violations).toEqual([]);
