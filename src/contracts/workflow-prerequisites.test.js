@@ -99,7 +99,30 @@ describe('workflow prerequisites', () => {
       ))
       .map(({ location }) => location);
 
-    expect(installCommands).toHaveLength(4);
+    expect(installCommands).toHaveLength(2);
+    expect(violations).toEqual([]);
+  });
+
+  // The pve-ci runner keeps $HOME between jobs, so ~/.bun/install/cache and
+  // ~/.cache/ms-playwright already persist on disk. Uploading them through
+  // actions/cache only re-tars them in a post step, which took 8+ minutes on the
+  // shared box and hit the Build job's 10-minute timeout.
+  it('does not round-trip on-disk caches through actions/cache in self-hosted jobs', () => {
+    const violations = [];
+
+    for (const workflowPath of workflowPaths) {
+      const workflow = load(fs.readFileSync(new URL(workflowPath, import.meta.url), 'utf8'));
+
+      for (const [jobName, job] of Object.entries(workflow.jobs)) {
+        const runnerLabels = Array.isArray(job['runs-on']) ? job['runs-on'] : [job['runs-on']];
+        if (!runnerLabels.includes('self-hosted')) continue;
+
+        for (const step of job.steps) {
+          if (step.uses?.startsWith('actions/cache@')) violations.push(`${workflowPath}:${jobName}:${step.name}`);
+        }
+      }
+    }
+
     expect(violations).toEqual([]);
   });
 
