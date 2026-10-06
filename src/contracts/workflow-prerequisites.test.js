@@ -2,6 +2,7 @@ import { execFileSync, spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { load } from 'js-yaml';
 import { describe, expect, it } from 'vitest';
 
@@ -9,6 +10,19 @@ const workflowPaths = [
   '../../.github/workflows/ci.yml',
   '../../.github/workflows/deploy.yml',
 ];
+
+const unzipShimScript = fileURLToPath(new URL('../../scripts/ci/setup-unzip-shim.sh', import.meta.url));
+
+function runUnzipShimScript(env) {
+  return spawnSync('bash', [unzipShimScript], {
+    encoding: 'utf8',
+    env: { ...process.env, ...env },
+  });
+}
+
+function isActionsCacheStep(uses) {
+  return /^actions\/cache(?:\/|@)/.test(uses ?? '');
+}
 
 function getSetupBunPrerequisites() {
   const prerequisites = [];
@@ -56,12 +70,17 @@ function getSelfHostedE2ePlaywrightInstallCommands() {
 }
 
 describe('workflow prerequisites', () => {
-  it('cleans stale Bun binaries and adds a non-privileged unzip shim before all seven setup-bun steps', () => {
-    const violations = [];
+  it('runs the shared non-privileged unzip shim script before all seven setup-bun steps', () => {
     const prerequisites = getSetupBunPrerequisites();
+    const violations = prerequisites
+      .filter(({ command }) => command.trim() !== 'bash scripts/ci/setup-unzip-shim.sh')
+      .map(({ location }) => location);
 
-    for (const { command, location } of prerequisites) {
-      const requiredFragments = [
+    const script = fs.readFileSync(unzipShimScript, 'utf8')
+      .split('\n')
+      .filter((line) => !line.startsWith('# '))
+      .join('\n');
+    const requiredFragments = [
         '$HOME/.bun/bin/bun',
         '$HOME/.bun/bin/bunx',
         '! -x',
@@ -76,18 +95,12 @@ describe('workflow prerequisites', () => {
         'os.chmod',
         'chmod +x',
         'GITHUB_PATH',
-      ];
-
-      if (
-        /\bsudo\b|\bapt-get\b/.test(command)
-        || requiredFragments.some((fragment) => !command.includes(fragment))
-      ) {
-        violations.push(location);
-      }
-    }
+    ];
 
     expect(prerequisites).toHaveLength(7);
     expect(violations).toEqual([]);
+    expect(script).not.toMatch(/\bsudo\b|\bapt-get\b/);
+    expect(requiredFragments.filter((fragment) => !script.includes(fragment))).toEqual([]);
   });
 
   it('installs Playwright browsers without privileged dependency installation in self-hosted E2E jobs', () => {
@@ -118,12 +131,21 @@ describe('workflow prerequisites', () => {
         if (!runnerLabels.includes('self-hosted')) continue;
 
         for (const step of job.steps) {
-          if (step.uses?.startsWith('actions/cache@')) violations.push(`${workflowPath}:${jobName}:${step.name}`);
+          if (isActionsCacheStep(step.uses)) violations.push(`${workflowPath}:${jobName}:${step.name}`);
         }
       }
     }
 
     expect(violations).toEqual([]);
+  });
+
+  it('treats split cache actions as actions/cache steps', () => {
+    expect(isActionsCacheStep('actions/cache@v4')).toBe(true);
+    expect(isActionsCacheStep('actions/cache/restore@v4')).toBe(true);
+    expect(isActionsCacheStep('actions/cache/save@v4')).toBe(true);
+    expect(isActionsCacheStep('actions/cache-something@v1')).toBe(false);
+    expect(isActionsCacheStep('actions/checkout@v4')).toBe(false);
+    expect(isActionsCacheStep(undefined)).toBe(false);
   });
 
   it('provides Chromium system libraries in user space after browser install and before E2E runs', () => {
@@ -159,10 +181,11 @@ describe('workflow prerequisites', () => {
     expect(script).not.toMatch(/\bsudo\b|apt-get install/);
     expect(script).toContain('apt-get download');
     expect(script).toContain('GITHUB_ENV');
+    expect(script).toMatch(/^deps_dir=.*\$version-\$os_release-\$\(dpkg --print-architecture\)/m);
+    expect(script).toContain('/etc/os-release');
   });
 
   it('removes non-executable Bun leftovers without deleting a healthy Bun executable', () => {
-    const [{ command }] = getSetupBunPrerequisites();
     const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'workflow-bun-cleanup-'));
     const home = path.join(tempRoot, 'home');
     const bunDirectory = path.join(home, '.bun', 'bin');
@@ -177,15 +200,7 @@ describe('workflow prerequisites', () => {
       fs.chmodSync(bunPath, 0o644);
       fs.chmodSync(bunxPath, 0o644);
 
-      const staleCleanup = spawnSync('bash', ['-euo', 'pipefail', '-c', command], {
-        encoding: 'utf8',
-        env: {
-          ...process.env,
-          GITHUB_PATH: githubPath,
-          HOME: home,
-          RUNNER_TEMP: tempRoot,
-        },
-      });
+      const staleCleanup = runUnzipShimScript({ GITHUB_PATH: githubPath, HOME: home, RUNNER_TEMP: tempRoot });
       expect(staleCleanup.stderr).toBe('');
       expect(staleCleanup.status).toBe(0);
       expect(fs.existsSync(bunPath)).toBe(false);
@@ -194,15 +209,7 @@ describe('workflow prerequisites', () => {
       fs.writeFileSync(bunPath, '#!/bin/sh\nexit 0\n');
       fs.chmodSync(bunPath, 0o755);
 
-      const healthyCleanup = spawnSync('bash', ['-euo', 'pipefail', '-c', command], {
-        encoding: 'utf8',
-        env: {
-          ...process.env,
-          GITHUB_PATH: githubPath,
-          HOME: home,
-          RUNNER_TEMP: tempRoot,
-        },
-      });
+      const healthyCleanup = runUnzipShimScript({ GITHUB_PATH: githubPath, HOME: home, RUNNER_TEMP: tempRoot });
       expect(healthyCleanup.stderr).toBe('');
       expect(healthyCleanup.status).toBe(0);
       expect(fs.readFileSync(bunPath, 'utf8')).toBe('#!/bin/sh\nexit 0\n');
@@ -213,7 +220,6 @@ describe('workflow prerequisites', () => {
   });
 
   it('supports setup-bun unzip -o -q invocation and preserves Unix modes', () => {
-    const [{ command }] = getSetupBunPrerequisites();
     const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'workflow-unzip-shim-'));
     const githubPath = path.join(tempRoot, 'github-path');
     const archivePath = path.join(tempRoot, 'archive.zip');
@@ -222,14 +228,7 @@ describe('workflow prerequisites', () => {
     try {
       fs.mkdirSync(destination);
 
-      const setup = spawnSync('bash', ['-euo', 'pipefail', '-c', command], {
-        encoding: 'utf8',
-        env: {
-          ...process.env,
-          GITHUB_PATH: githubPath,
-          RUNNER_TEMP: tempRoot,
-        },
-      });
+      const setup = runUnzipShimScript({ GITHUB_PATH: githubPath, RUNNER_TEMP: tempRoot });
       expect(setup.stderr).toBe('');
       expect(setup.status).toBe(0);
 

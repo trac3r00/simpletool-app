@@ -12,7 +12,11 @@ set -euo pipefail
 
 playwright="./node_modules/.bin/playwright"
 version=$("$playwright" --version | awk '{print $2}')
-deps_dir="$HOME/.cache/ms-playwright-deps/$version"
+# The runner keeps $HOME across OS upgrades, so key the unpacked libraries by
+# distro release and architecture too, not only by Playwright version.
+# shellcheck source=/dev/null
+os_release=$(. /etc/os-release; printf '%s-%s' "$ID" "$VERSION_ID")
+deps_dir="$HOME/.cache/ms-playwright-deps/$version-$os_release-$(dpkg --print-architecture)"
 
 if [ ! -f "$deps_dir/.complete" ]; then
   packages=$("$playwright" install-deps --dry-run chromium \
