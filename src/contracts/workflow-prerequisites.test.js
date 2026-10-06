@@ -70,6 +70,27 @@ function getSelfHostedE2ePlaywrightInstallCommands() {
 }
 
 describe('workflow prerequisites', () => {
+  it('keeps fork pull requests off the persistent self-hosted runner', () => {
+    const sameRepoGuard =
+      "github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository";
+    const unguarded = [];
+
+    for (const workflowPath of workflowPaths) {
+      const workflow = load(fs.readFileSync(new URL(workflowPath, import.meta.url), 'utf8'));
+      const triggers = Object.keys(workflow.on ?? {});
+      if (!triggers.some((trigger) => trigger.startsWith('pull_request'))) continue;
+
+      for (const [jobName, job] of Object.entries(workflow.jobs)) {
+        const runnerLabels = Array.isArray(job['runs-on']) ? job['runs-on'] : [job['runs-on']];
+        if (runnerLabels.includes('self-hosted') && job.if !== sameRepoGuard) {
+          unguarded.push(`${workflowPath}:${jobName}`);
+        }
+      }
+    }
+
+    expect(unguarded).toEqual([]);
+  });
+
   it('runs the shared non-privileged unzip shim script before all seven setup-bun steps', () => {
     const prerequisites = getSetupBunPrerequisites();
     const violations = prerequisites
