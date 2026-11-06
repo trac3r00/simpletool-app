@@ -46,6 +46,10 @@ const PROTOCOLS = ["", "tcp", "udp", "icmp", "arp", "ip", "ip6"];
 describe.skipIf(!hasTcpdump)("buildBpfClause against libpcap (tcpdump -d)", () => {
   // The IP protocol field is 8 bits; libpcap compiles "proto 300" anyway.
   const STRICTER_THAN_LIBPCAP = (c) => c.primitive === "proto" && Number(c.value) > 255;
+  // A service name such as "http" resolves through the host's /etc/services,
+  // and distributions differ on whether it lists a udp entry, so libpcap's
+  // verdict on a named port is a property of the machine, not of the filter.
+  const HOST_DEPENDENT = (c) => c.primitive === "port" && /^[a-z]/i.test(c.value);
 
   it("emits only expressions libpcap compiles, and errors only where the naive form fails", async () => {
     const cases = [];
@@ -65,6 +69,7 @@ describe.skipIf(!hasTcpdump)("buildBpfClause against libpcap (tcpdump -d)", () =
       verdicts.push(...(await Promise.all(cases.slice(i, i + 16).map((c) => libpcapAcceptsAsync(c.expression)))));
     }
     cases.forEach((c, i) => {
+      if (HOST_DEPENDENT(c)) return;
       if (c.result.clause) expect(verdicts[i], JSON.stringify(c)).toBe(true);
       else if (!STRICTER_THAN_LIBPCAP(c)) expect(verdicts[i], JSON.stringify(c)).toBe(false);
     });

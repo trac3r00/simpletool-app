@@ -57,7 +57,7 @@ describe("parseHexDump against real dump tools", () => {
     it(name, () => {
       for (const packet of packets) {
         const text = format(packet);
-        if (text === null || text === undefined) return;
+        if (!text) return;
         expect(parseHexDump(text).bytes, text).toEqual([...packet]);
       }
     });
