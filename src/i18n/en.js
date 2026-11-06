@@ -237,7 +237,7 @@ export default {
         heading3: "Common Use Cases",
         p3: "Primary keys in distributed databases, session identifiers, transaction tracking, and naming temporary files or resources where uniqueness is critical across multiple systems.",
         heading4: "Pro Tips",
-        p4: "UUID v4 is the most common choice for general-purpose unique IDs because it relies on high-quality randomness. Use v1 if you need to sort IDs by creation time.",
+        p4: "UUID v4 is the most common choice for general-purpose unique IDs because it relies on high-quality randomness. Use v7 if you need IDs that sort by creation time.",
       },
     },
     "password-generator": {
@@ -954,8 +954,8 @@ export default {
         option21: "TLS/SSL",
         option22: "== (equals)",
         option23: "!= (not equals)",
-        option24: "\">> (greater than)",
-        option25: "=\">>= (greater or equal)",
+        option24: "> (greater than)",
+        option25: ">= (greater or equal)",
         option26: "contains",
         option27: "matches (regex)",
         option28: "host",
@@ -1376,8 +1376,8 @@ export default {
       },
     },
     "certificate-decoder": {
-      name: "X.509 Certificate Inspector",
-      desc: "Parse X.509 certificates and CSRs.",
+      name: "X.509 Certificate Decoder",
+      desc: "Decode X.509 certificates and CSRs, and check chains.",
       ui: {
         button0: "Parse Certificate",
         button1: "Clear",
@@ -1427,8 +1427,8 @@ export default {
       },
     },
     "saml-decoder": {
-      name: "SAML Inspector",
-      desc: "Decode SAML requests and responses.",
+      name: "SAML Decoder",
+      desc: "Decode SAML responses and requests and diagnose SSO errors.",
       ui: {
         button0: "Clear",
         button1: "Load sample",
@@ -1712,8 +1712,8 @@ export default {
       },
     },
     "htpasswd-generator": {
-      name: "Htpasswd Entry Generator",
-      desc: "Generate apache htpasswd entries.",
+      name: "Htpasswd Generator",
+      desc: "Generate .htpasswd entries for Apache and Nginx Basic Auth.",
       ui: {
         button0: "Show",
         button1: "Generate strong",
@@ -2362,7 +2362,7 @@ export default {
     },
     "token-counter": {
       name: "Token Counter & Cost Estimator",
-      desc: "Estimate token counts for GPT, Claude, and Llama families and calculate cost with your pricing.",
+      desc: "Count tokens exactly for OpenAI models, estimate Claude, Gemini, and Llama, and calculate cost with your pricing.",
       ui: {
         desc1: "Each model family uses a different tokenizer (BPE / SentencePiece / custom).",
         badge0: "Offline",

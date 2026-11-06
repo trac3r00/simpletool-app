@@ -19,6 +19,7 @@ import fr from "../i18n/fr.js";
 import de from "../i18n/de.js";
 import pt from "../i18n/pt.js";
 import vi from "../i18n/vi.js";
+import ROUND3 from "../i18n/supplements/round3.js";
 
 export const SUPPORTED_LANGUAGES = {
   en: { name: "English", flag: "🇺🇸" },
@@ -36,17 +37,29 @@ export const SUPPORTED_LANGUAGES = {
 export const DEFAULT_LANGUAGE = "en";
 export const LANGUAGE_QUERY_KEY = "lang";
 
+// Generated supplements add ui keys under tools; a key the catalog already
+// defines always wins.
+function withSupplement(catalog, supplement) {
+  if (!supplement?.tools) return catalog;
+  const tools = { ...catalog.tools };
+  for (const [toolId, extra] of Object.entries(supplement.tools)) {
+    const base = tools[toolId] || {};
+    tools[toolId] = { ...base, ui: { ...extra.ui, ...base.ui } };
+  }
+  return { ...catalog, tools };
+}
+
 const TRANSLATIONS = {
-  en,
-  ko,
-  ja,
-  es,
-  "zh-CN": zhCN,
-  "zh-TW": zhTW,
-  fr,
-  de,
-  pt,
-  vi,
+  en: withSupplement(en, ROUND3.en),
+  ko: withSupplement(ko, ROUND3.ko),
+  ja: withSupplement(ja, ROUND3.ja),
+  es: withSupplement(es, ROUND3.es),
+  "zh-CN": withSupplement(zhCN, ROUND3["zh-CN"]),
+  "zh-TW": withSupplement(zhTW, ROUND3["zh-TW"]),
+  fr: withSupplement(fr, ROUND3.fr),
+  de: withSupplement(de, ROUND3.de),
+  pt: withSupplement(pt, ROUND3.pt),
+  vi: withSupplement(vi, ROUND3.vi),
 };
 
 function getLanguageCatalog(lang) {
