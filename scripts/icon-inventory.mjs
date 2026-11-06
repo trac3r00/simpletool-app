@@ -66,6 +66,13 @@ function listJsFiles(dir) {
 function scanMarkup(text) {
   const icons = new Set();
   const i18nKeys = new Set();
+  // Current form: the glyph name is an attribute, painted by CSS ::before
+  //   <span class="material-symbols-rounded ..." aria-hidden="true" data-icon="content_copy"></span>
+  const attr =
+    /class="material-symbols-rounded[^"]*"[^>]*\bdata-icon="([a-z][a-z0-9_]*)"/g;
+  let a;
+  while ((a = attr.exec(text)) !== null) icons.add(a[1]);
+  // Legacy form, still scanned so a reintroduced text ligature is subset too.
   const span =
     /class="material-symbols-rounded[^"]*"([^>]*)>\s*([A-Za-z0-9_]+)\s*</g;
   let m;
