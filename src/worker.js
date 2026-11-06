@@ -257,6 +257,11 @@ function stripBody(response) {
 
 async function handleRequest(request, env, ctx) {
   const now = Date.now();
+  // wrangler dev's internal Durable Object probes arrive with a non-URL;
+  // answer them instead of throwing an uncaught TypeError.
+  if (!URL.canParse(request.url)) {
+    return new Response("Bad Request", { status: 400 });
+  }
   const url = new URL(request.url);
   const path =
     url.pathname.length > 1 && url.pathname.endsWith("/")

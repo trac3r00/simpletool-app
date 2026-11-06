@@ -273,12 +273,17 @@ export function getKeyboardShortcutsScript() {
   }
 
   // Add visual indicator for shortcut availability
+  // Keyboard shortcuts mean nothing on a touch screen, where this button only
+  // covers page content (it sat on top of /pipe's "Add step" at 390px).
+  const touchOnly = window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches;
   const indicator = document.createElement('button');
+  indicator.type = 'button';
+  indicator.setAttribute('aria-label', 'Keyboard shortcuts');
   indicator.className = 'btn-fab fixed bottom-4 left-4 z-40';
   indicator.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>';
   indicator.title = 'Press ' + modKeyName + '+/ for keyboard shortcuts';
   indicator.addEventListener('click', showHelpModal);
-  document.body.appendChild(indicator);
+  if (!touchOnly) document.body.appendChild(indicator);
 
   // Add CSS animations
   const style = document.createElement('style');

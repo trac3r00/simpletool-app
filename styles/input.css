@@ -84,6 +84,21 @@
 
   body {
     @apply bg-background text-foreground transition-colors duration-200;
+    /* A pasted URL, hash or token has no break opportunity; `anywhere` also
+       lowers min-content width so flex/grid children shrink instead of
+       pushing the page sideways on a phone. Tables keep whole words and
+       scroll inside their overflow-x-auto wrappers instead. */
+    overflow-wrap: anywhere;
+  }
+
+  :where(table) {
+    overflow-wrap: normal;
+  }
+
+  /* Reading measure for prose blocks (DESIGN.md: 65-75 characters). */
+  :where(.content-page-panel, #home-editorial, article) :where(p, li),
+  :where(.card) > p {
+    max-width: 54ch;
   }
 
   .theme-transition *,
@@ -960,7 +975,6 @@
 }
 
 .mobile-tab-active {
-  @apply text-primary-600 dark:text-primary-400
-          border-b-2 border-primary-600 dark:border-primary-400
+  @apply text-primary-700 dark:text-primary-300
           bg-primary-50 dark:bg-primary-900/20;
 }

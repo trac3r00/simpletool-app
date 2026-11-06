@@ -128,7 +128,7 @@ export function getRichEditorStyles() {
   font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
   font-size: 0.8125rem;
   line-height: 1.5rem;
-  color: var(--color-surface-400, #9ca3af);
+  color: #475569;
   background: var(--color-surface-100, #f1f5f9);
   border-right: 1px solid var(--color-surface-200, #e2e8f0);
   user-select: none;
@@ -138,7 +138,7 @@ export function getRichEditorStyles() {
 .dark .re-line-numbers {
   background: var(--color-surface-900, #111);
   border-right-color: var(--color-surface-700);
-  color: var(--color-surface-500);
+  color: #94a3b8;
 }
 .re-textarea {
   padding-left: 3.75rem !important;

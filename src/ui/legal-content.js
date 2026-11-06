@@ -897,6 +897,13 @@ const LEGAL_CONTENT = {
           ],
         },
         {
+          heading: "Verify It Yourself",
+          paragraphs: [
+            "\"Client-side\" is a claim you should not have to take on trust. Every tool page shows a live count of the network requests the page has made since it finished loading, with the list of URLs.",
+            "To check independently, open your browser's developer tools, select the Network tab, then use the tool with real input. You should see no request that carries what you typed or pasted. The few static files some tools load on demand (for example a tokenizer table) come from this site and contain no user data.",
+          ],
+        },
+        {
           heading: "Privacy Commitment",
           paragraphs: [
             "Privacy is not a feature added later. It is the default design constraint for every tool we ship.",
@@ -956,19 +963,19 @@ const LEGAL_CONTENT = {
                 <h3 class="font-bold mb-1">General Support</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Questions, suggestions, or bug reports.</p>
                 <a href="mailto:hello@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">hello@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Response time: 2-3 business days</p>
+                <p class="text-xs text-surface-600 dark:text-surface-400 mt-2">Response time: 2-3 business days</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Security Team</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Vulnerability reports and security concerns.</p>
                 <a href="mailto:security@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">security@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Response time: Prioritized, within 3 business days</p>
+                <p class="text-xs text-surface-600 dark:text-surface-400 mt-2">Response time: Prioritized, within 3 business days</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Business Inquiries</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Press, media, or other non-product questions.</p>
                 <a href="mailto:business@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">business@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Response time: 2-3 business days</p>
+                <p class="text-xs text-surface-600 dark:text-surface-400 mt-2">Response time: 2-3 business days</p>
               </div>
             </div>
           `,
@@ -1090,19 +1097,19 @@ const LEGAL_CONTENT = {
                 <h3 class="font-bold mb-1">일반 지원</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">질문, 제안, 버그 리포트.</p>
                 <a href="mailto:hello@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">hello@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">응답 시간: 영업일 2-3일</p>
+                <p class="text-xs text-surface-600 dark:text-surface-400 mt-2">응답 시간: 영업일 2-3일</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">보안 팀</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">취약점 제보 및 보안 문의.</p>
                 <a href="mailto:security@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">security@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">응답 시간: 우선 처리, 영업일 3일 이내</p>
+                <p class="text-xs text-surface-600 dark:text-surface-400 mt-2">응답 시간: 우선 처리, 영업일 3일 이내</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">비즈니스 문의</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">보도, 미디어, 그 외 제품 외 문의.</p>
                 <a href="mailto:business@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">business@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">응답 시간: 영업일 2-3일</p>
+                <p class="text-xs text-surface-600 dark:text-surface-400 mt-2">응답 시간: 영업일 2-3일</p>
               </div>
             </div>
           `,
@@ -1224,19 +1231,19 @@ const LEGAL_CONTENT = {
                 <h3 class="font-bold mb-1">General Support</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Questions, suggestions, or bug reports.</p>
                 <a href="mailto:hello@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">hello@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Response time: 2-3 business days</p>
+                <p class="text-xs text-surface-600 dark:text-surface-400 mt-2">Response time: 2-3 business days</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Security Team</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Vulnerability reports and security concerns.</p>
                 <a href="mailto:security@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">security@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Response time: Prioritized, within 3 business days</p>
+                <p class="text-xs text-surface-600 dark:text-surface-400 mt-2">Response time: Prioritized, within 3 business days</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Business Inquiries</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Press, media, or other non-product questions.</p>
                 <a href="mailto:business@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">business@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Response time: 2-3 business days</p>
+                <p class="text-xs text-surface-600 dark:text-surface-400 mt-2">Response time: 2-3 business days</p>
               </div>
             </div>
           `,
@@ -1358,19 +1365,19 @@ const LEGAL_CONTENT = {
                 <h3 class="font-bold mb-1">General Support</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Questions, suggestions, or bug reports.</p>
                 <a href="mailto:hello@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">hello@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Response time: 2-3 business days</p>
+                <p class="text-xs text-surface-600 dark:text-surface-400 mt-2">Response time: 2-3 business days</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Security Team</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Vulnerability reports and security concerns.</p>
                 <a href="mailto:security@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">security@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Response time: Prioritized, within 3 business days</p>
+                <p class="text-xs text-surface-600 dark:text-surface-400 mt-2">Response time: Prioritized, within 3 business days</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Business Inquiries</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Press, media, or other non-product questions.</p>
                 <a href="mailto:business@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">business@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Response time: 2-3 business days</p>
+                <p class="text-xs text-surface-600 dark:text-surface-400 mt-2">Response time: 2-3 business days</p>
               </div>
             </div>
           `,
@@ -1490,19 +1497,19 @@ const LEGAL_CONTENT = {
                 <h3 class="font-bold mb-1">通用支持</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">问题、建议或错误报告。</p>
                 <a href="mailto:hello@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">hello@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">响应时间：2-3 个工作日</p>
+                <p class="text-xs text-surface-600 dark:text-surface-400 mt-2">响应时间：2-3 个工作日</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">安全团队</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">漏洞报告及安全相关问题。</p>
                 <a href="mailto:security@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">security@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">响应时间：优先处理，3 个工作日内</p>
+                <p class="text-xs text-surface-600 dark:text-surface-400 mt-2">响应时间：优先处理，3 个工作日内</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">商务合作</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">合作伙伴关系、企业授权或媒体事宜。</p>
                 <a href="mailto:business@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">business@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">响应时间：2-3 个工作日</p>
+                <p class="text-xs text-surface-600 dark:text-surface-400 mt-2">响应时间：2-3 个工作日</p>
               </div>
             </div>
           `,
@@ -1622,19 +1629,19 @@ const LEGAL_CONTENT = {
                 <h3 class="font-bold mb-1">一般支援</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">問題、建議或錯誤回報。</p>
                 <a href="mailto:hello@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">hello@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">回應時間：2-3 個工作日</p>
+                <p class="text-xs text-surface-600 dark:text-surface-400 mt-2">回應時間：2-3 個工作日</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">安全團隊</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">漏洞回報及安全相關問題。</p>
                 <a href="mailto:security@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">security@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">回應時間：優先處理，3 個工作日內</p>
+                <p class="text-xs text-surface-600 dark:text-surface-400 mt-2">回應時間：優先處理，3 個工作日內</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">商務合作</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">合作夥伴關係、企業授權或媒體事宜。</p>
                 <a href="mailto:business@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">business@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">回應時間：2-3 個工作日</p>
+                <p class="text-xs text-surface-600 dark:text-surface-400 mt-2">回應時間：2-3 個工作日</p>
               </div>
             </div>
           `,
@@ -1756,19 +1763,19 @@ const LEGAL_CONTENT = {
                 <h3 class="font-bold mb-1">Support général</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Questions, suggestions ou rapports de bugs.</p>
                 <a href="mailto:hello@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">hello@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Délai de réponse : 2-3 jours ouvrés</p>
+                <p class="text-xs text-surface-600 dark:text-surface-400 mt-2">Délai de réponse : 2-3 jours ouvrés</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Équipe sécurité</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Rapports de vulnérabilité et questions de sécurité.</p>
                 <a href="mailto:security@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">security@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Délai de réponse : Prioritaire, sous 3 jours ouvrés</p>
+                <p class="text-xs text-surface-600 dark:text-surface-400 mt-2">Délai de réponse : Prioritaire, sous 3 jours ouvrés</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Demandes commerciales</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Presse, médias ou autres questions hors produit.</p>
                 <a href="mailto:business@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">business@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Délai de réponse : 2-3 jours ouvrés</p>
+                <p class="text-xs text-surface-600 dark:text-surface-400 mt-2">Délai de réponse : 2-3 jours ouvrés</p>
               </div>
             </div>
           `,
@@ -1890,19 +1897,19 @@ const LEGAL_CONTENT = {
                 <h3 class="font-bold mb-1">Allgemeiner Support</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Fragen, Vorschläge oder Fehlerberichte.</p>
                 <a href="mailto:hello@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">hello@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Reaktionszeit: 2-3 Werktage</p>
+                <p class="text-xs text-surface-600 dark:text-surface-400 mt-2">Reaktionszeit: 2-3 Werktage</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Sicherheitsteam</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Meldung von Sicherheitslücken und Sicherheitsbedenken.</p>
                 <a href="mailto:security@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">security@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Reaktionszeit: Priorität, innerhalb von 3 Werktagen</p>
+                <p class="text-xs text-surface-600 dark:text-surface-400 mt-2">Reaktionszeit: Priorität, innerhalb von 3 Werktagen</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Geschäftliche Anfragen</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Presse, Medien oder andere produktfremde Fragen.</p>
                 <a href="mailto:business@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">business@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Reaktionszeit: 2-3 Werktage</p>
+                <p class="text-xs text-surface-600 dark:text-surface-400 mt-2">Reaktionszeit: 2-3 Werktage</p>
               </div>
             </div>
           `,
@@ -2024,19 +2031,19 @@ const LEGAL_CONTENT = {
                 <h3 class="font-bold mb-1">Suporte geral</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Perguntas, sugestões ou relatórios de bugs.</p>
                 <a href="mailto:hello@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">hello@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Tempo de resposta: 2-3 dias úteis</p>
+                <p class="text-xs text-surface-600 dark:text-surface-400 mt-2">Tempo de resposta: 2-3 dias úteis</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Equipe de segurança</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Relatórios de vulnerabilidade e questões de segurança.</p>
                 <a href="mailto:security@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">security@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Tempo de resposta: Prioritário, em até 3 dias úteis</p>
+                <p class="text-xs text-surface-600 dark:text-surface-400 mt-2">Tempo de resposta: Prioritário, em até 3 dias úteis</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Consultas comerciais</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Imprensa, mídia ou outras perguntas que não sejam de produto.</p>
                 <a href="mailto:business@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">business@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Tempo de resposta: 2-3 dias úteis</p>
+                <p class="text-xs text-surface-600 dark:text-surface-400 mt-2">Tempo de resposta: 2-3 dias úteis</p>
               </div>
             </div>
           `,
@@ -2158,19 +2165,19 @@ const LEGAL_CONTENT = {
                 <h3 class="font-bold mb-1">Hỗ trợ chung</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Câu hỏi, góp ý hoặc báo cáo lỗi.</p>
                 <a href="mailto:hello@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">hello@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Thời gian phản hồi: 2-3 ngày làm việc</p>
+                <p class="text-xs text-surface-600 dark:text-surface-400 mt-2">Thời gian phản hồi: 2-3 ngày làm việc</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Nhóm bảo mật</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Báo cáo lỗ hổng và các vấn đề bảo mật.</p>
                 <a href="mailto:security@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">security@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Thời gian phản hồi: Ưu tiên, trong vòng 3 ngày làm việc</p>
+                <p class="text-xs text-surface-600 dark:text-surface-400 mt-2">Thời gian phản hồi: Ưu tiên, trong vòng 3 ngày làm việc</p>
               </div>
               <div class="card p-4 border border-surface-200 dark:border-surface-800">
                 <h3 class="font-bold mb-1">Liên hệ khác</h3>
                 <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Báo chí, truyền thông hoặc câu hỏi không liên quan đến sản phẩm.</p>
                 <a href="mailto:business@simpletool.app" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">business@simpletool.app</a>
-                <p class="text-xs text-surface-500 mt-2">Thời gian phản hồi: 2-3 ngày làm việc</p>
+                <p class="text-xs text-surface-600 dark:text-surface-400 mt-2">Thời gian phản hồi: 2-3 ngày làm việc</p>
               </div>
             </div>
           `,

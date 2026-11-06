@@ -17,7 +17,7 @@ export const TOOLS = [
     description: "Validate, format, and minify JSON data.",
     path: "/json-formatter",
     category: "formatters",
-    keywords: "lint, validator, beautify",
+    keywords: "lint, validator, beautify, repair, fix broken json, llm output",
     relatedTools: [
       "json-schema-studio",
       "yaml-toml-converter",
@@ -96,7 +96,7 @@ export const TOOLS = [
     description: "Calculate transfer times, bandwidth needs, and TCP overhead.",
     path: "/bandwidth-calculator",
     category: "network",
-    keywords: "transfer, throughput, speed, bdp, tcp, latency",
+    keywords: "transfer, throughput, speed, bdp, tcp, latency, mbps, download time",
     tip: "Calculate transfer time, required bandwidth, data capacity, and TCP bandwidth-delay product",
     relatedTools: ["cidr-calculator", "curl-studio", "user-agent-decoder"],
   },
@@ -149,7 +149,7 @@ export const TOOLS = [
     description: "Compare two text files for differences.",
     path: "/text-diff",
     category: "utils",
-    keywords: "compare, changes, delta",
+    keywords: "compare, changes, delta, diff, patch, unified diff",
     relatedTools: [
       "json-formatter",
       "code-minifier",
@@ -203,12 +203,12 @@ export const TOOLS = [
   },
   {
     id: "certificate-decoder",
-    name: "X.509 Certificate Inspector",
+    name: "X.509 Certificate Decoder",
     icon: "📜",
-    description: "Parse X.509 certificates and CSRs.",
+    description: "Decode X.509 certificates and CSRs, and check chains.",
     path: "/certificate-decoder",
     category: "security",
-    keywords: "ssl, tls, pem, x509",
+    keywords: "ssl, tls, pem, x509, csr, chain, decoder",
     tip: "Paste a PEM certificate to see issuer, subject, validity dates, SANs, and key details",
     relatedTools: [
       "ssh-key-generator",
@@ -226,7 +226,7 @@ export const TOOLS = [
     path: "/token-studio",
     category: "security",
     keywords:
-      "jwt, jwk, jwks, token, auth, jose, oidc, rsa, ec, sign, verify, kid, thumbprint",
+      "jwt, jwk, jwks, token, auth, jose, oidc, rsa, ec, sign, verify, kid, thumbprint, decode, decoder",
     tip: "All-in-one JWT inspect/generate, JWK key management, and JWKS endpoint simulation",
     relatedTools: [
       "certificate-decoder",
@@ -254,12 +254,12 @@ export const TOOLS = [
   },
   {
     id: "saml-decoder",
-    name: "SAML Inspector",
+    name: "SAML Decoder",
     icon: "🛡️",
-    description: "Decode SAML requests and responses.",
+    description: "Decode SAML responses and requests and diagnose SSO errors.",
     path: "/saml-decoder",
     category: "security",
-    keywords: "sso, xml, assertion",
+    keywords: "sso, xml, assertion, decoder, okta, azure ad, idp",
     tip: "Decode Base64-encoded SAML requests and responses into readable XML for SSO debugging",
     relatedTools: [
       "token-studio",
@@ -293,7 +293,7 @@ export const TOOLS = [
     description: "Parse and analyze User-Agent strings.",
     path: "/user-agent-decoder",
     category: "network",
-    keywords: "browser, os, device",
+    keywords: "browser, os, device, bot, crawler, googlebot, gptbot",
     relatedTools: [
       "curl-studio",
       "cidr-calculator",
@@ -363,12 +363,12 @@ export const TOOLS = [
   },
   {
     id: "htpasswd-generator",
-    name: "Htpasswd Entry Generator",
+    name: "Htpasswd Generator",
     icon: "🔒",
-    description: "Generate apache htpasswd entries.",
+    description: "Generate .htpasswd entries for Apache and Nginx Basic Auth.",
     path: "/htpasswd-generator",
     category: "security",
-    keywords: "apache, basic auth",
+    keywords: "apache, nginx, basic auth, bcrypt, apr1, caddy, traefik",
     tip: "Create Apache htpasswd entries with bcrypt, SHA-1, or MD5 for HTTP Basic Auth",
     relatedTools: [
       "password-generator",
@@ -576,10 +576,10 @@ export const TOOLS = [
     name: "Token Counter & Cost Estimator",
     icon: "🧮",
     description:
-      "Heuristic token estimates for GPT, Claude, Llama, and Gemini families. Enter your own $/1M rates.",
+      "Exact token counts for OpenAI models, estimates for Claude, Llama, and Gemini. Enter your own $/1M rates.",
     path: "/token-counter",
     category: "utils",
-    keywords: "llm, tokens, pricing, estimate, cost",
+    keywords: "llm, tokens, pricing, estimate, cost, tiktoken, openai, gpt, context window",
     relatedTools: [
       "prompt-template-builder",
       "json-formatter",
