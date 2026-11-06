@@ -134,13 +134,44 @@ test.describe("Generator and utility tools UI interactions", () => {
     await expect(page.locator("#schema-output")).toContainText('"properties"');
   });
 
-  test("caffeniate toggles wake lock mode/status", async ({ page }) => {
+  // Headless Chromium denies screen wake locks, so each outcome is pinned with
+  // a stubbed navigator.wakeLock instead of depending on the host's power policy.
+  test("caffeniate shows stats when the wake lock is granted", async ({ page }) => {
+    await page.addInitScript(() => {
+      const sentinel = new EventTarget();
+      sentinel.released = false;
+      sentinel.type = "screen";
+      sentinel.release = async () => { sentinel.released = true; };
+      Object.defineProperty(navigator, "wakeLock", {
+        configurable: true,
+        value: { request: async () => sentinel },
+      });
+    });
     await openTool(page, "/caffeniate");
 
     await page.locator("#toggle-btn").click();
 
     await expect(page.locator("#stats-panel")).toBeVisible();
     await expect(page.locator("#status-text")).not.toHaveText("");
+  });
+
+  test("caffeniate keeps stats hidden and explains a denied wake lock", async ({ page }) => {
+    await page.addInitScript(() => {
+      Object.defineProperty(navigator, "wakeLock", {
+        configurable: true,
+        value: {
+          request: async () => {
+            throw new DOMException("Wake Lock permission request denied", "NotAllowedError");
+          },
+        },
+      });
+    });
+    await openTool(page, "/caffeniate");
+
+    await page.locator("#toggle-btn").click();
+
+    await expect(page.locator("#status-text")).toContainText("permission request denied");
+    await expect(page.locator("#stats-panel")).toBeHidden();
   });
 
   test("token-counter updates token estimates and costs", async ({ page }) => {

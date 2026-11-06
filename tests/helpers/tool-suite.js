@@ -85,8 +85,13 @@ export const TOOL_ACTIONS = {
   },
 
   'wireshark-filter': {
+    // Under full-suite load the click can land before the page script binds
+    // its delegated handler, so re-click until the preview reflects it.
     async action(page) {
-      await page.locator('[data-filter="http"]').click();
+      await expect(async () => {
+        await page.locator('[data-filter="http"]').click();
+        await expect(page.locator('#filter-preview')).toContainText('http', { timeout: 1000 });
+      }).toPass({ timeout: 10_000 });
     },
     async waitFor(page) {
       await expect(page.locator('#filter-preview')).toContainText('http');
