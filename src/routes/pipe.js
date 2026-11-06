@@ -131,6 +131,9 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
       // Inlined from src/utils/case-converter-logic.js and src/utils/pipe-logic.js
       // (tested in their .test.js files).
       ${INLINE_LOGIC}
+      // This script runs before the i18n bootstrap defines window._t, so resolve
+      // it at call time and fall back to English until it exists.
+      const _t = (key, fallback) => (typeof window._t === 'function' ? window._t(key, fallback) : fallback);
 
       // ── Contract Registry (client-side) ──────────────────────
       // fullTool: the standalone page that does the same job, or null.
@@ -219,7 +222,7 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
           }
         }
         if (container.children.length === 0) {
-          container.innerHTML = '<div class="text-xs text-surface-500 dark:text-surface-400 py-2">No tools match</div>';
+          container.innerHTML = '<div class="text-xs text-surface-500 dark:text-surface-400 py-2">' + _t('tools.pipe.js.r4_9', 'No tools match') + '</div>';
         }
       }
 
@@ -285,8 +288,8 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
               \${contract.fullTool ? '<a href="' + contract.fullTool + '" class="text-[11px] text-info-600 dark:text-info-400 hover:underline">Open full tool</a>' : ''}
             </div>
             <div class="flex items-center gap-1">
-              <button class="move-up btn btn-ghost btn-icon-sm text-xs" title="Move up (Alt+Up)" aria-label="Move \${contract.name} step up" \${i===0?'disabled':''}>&uarr;</button>
-              <button class="move-down btn btn-ghost btn-icon-sm text-xs" title="Move down (Alt+Down)" aria-label="Move \${contract.name} step down" \${i===pipeSteps.length-1?'disabled':''}>&darr;</button>
+              <button class="move-up btn btn-ghost btn-icon-sm text-xs" title="\${_t('tools.pipe.js.r4_0', 'Move up (Alt+Up)')}" aria-label="Move \${contract.name} step up" \${i===0?'disabled':''}>&uarr;</button>
+              <button class="move-down btn btn-ghost btn-icon-sm text-xs" title="\${_t('tools.pipe.js.r4_1', 'Move down (Alt+Down)')}" aria-label="Move \${contract.name} step down" \${i===pipeSteps.length-1?'disabled':''}>&darr;</button>
               <button class="remove-step btn btn-ghost btn-icon-sm text-error-600 dark:text-error-400" aria-label="Remove \${contract.name} step">&times;</button>
             </div>
           \`;
@@ -310,7 +313,7 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
           const outputDiv = document.createElement('div');
           outputDiv.className = STEP_OUTPUT_CLASS + ' text-surface-500 dark:text-surface-400';
           outputDiv.setAttribute('aria-live', 'polite');
-          outputDiv.textContent = 'Waiting...';
+          outputDiv.textContent = _t('tools.pipe.js.r4_2', 'Waiting...');
 
           card.appendChild(header);
           if (optionsHtml) { const d = document.createElement('div'); d.innerHTML = optionsHtml; card.appendChild(d.firstElementChild); }
@@ -345,7 +348,7 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
 
           if (failed) {
             card.className = 'pipe-step border border-border rounded-lg overflow-hidden opacity-50';
-            outputEl.textContent = 'Skipped';
+            outputEl.textContent = _t('tools.pipe.js.r4_3', 'Skipped');
             return;
           }
 
@@ -358,7 +361,7 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
           } catch (err) {
             card.className = 'pipe-step border border-error-300 dark:border-error-800 rounded-lg overflow-hidden bg-error-50 dark:bg-error-900/20';
             outputEl.className = STEP_OUTPUT_CLASS + ' text-error-600 dark:text-error-400';
-            outputEl.textContent = 'Error in step ' + (i + 1) + ': ' + (err.message || err);
+            outputEl.textContent = (_t('tools.pipe.js.r4_4', 'Error in step') + ' ') + (i + 1) + ': ' + (err.message || err);
             failed = true;
           }
         });
@@ -401,7 +404,7 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
           card.innerHTML = \`
             <div class="font-medium text-sm text-surface-800 dark:text-surface-200 mb-1">\${recipe.name}</div>
             <div class="text-xs text-surface-500 dark:text-surface-400">\${recipe.steps.map(s => CONTRACTS[s.id]?.name || s.id).join(' → ')}</div>
-            <div class="text-xs text-info-700 dark:text-info-300 mt-2">Try it →</div>
+            <div class="text-xs text-info-700 dark:text-info-300 mt-2">\${_t('tools.pipe.js.r4_10', 'Try it →')}</div>
           \`;
           card.onclick = () => {
             pipeSteps = recipe.steps.map(s => ({ contractId: s.id, options: { ...s.options } }));
@@ -423,7 +426,7 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
       document.getElementById('copy-output').onclick = () => {
         navigator.clipboard.writeText(finalOutput.textContent).then(() => {
           const btn = document.getElementById('copy-output');
-          btn.textContent = 'Copied!';
+          btn.textContent = _t('tools.pipe.js.r4_5', 'Copied!');
           setTimeout(() => { btn.textContent = 'Copy'; }, 1500);
         }, () => setStatus('Copy failed: the browser blocked clipboard access. Select the output and copy it manually.'));
       };
@@ -435,7 +438,7 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
         const url = location.origin + '/pipe#' + encoded;
         navigator.clipboard.writeText(url).then(() => {
           const btn = document.getElementById('share-btn');
-          btn.textContent = 'Link copied!';
+          btn.textContent = _t('tools.pipe.js.r4_6', 'Link copied!');
           setStatus('Share link copied. It contains the steps only, not your input.');
           setTimeout(() => { btn.textContent = 'Share'; }, 2000);
         }, () => setStatus('Clipboard blocked. Share link: ' + url));
@@ -450,7 +453,7 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
           return;
         }
         const btn = document.getElementById('save-btn');
-        btn.textContent = 'Saved!';
+        btn.textContent = _t('tools.pipe.js.r4_7', 'Saved!');
         setStatus('Pipeline saved in this browser. It reloads automatically next time.');
         setTimeout(() => { btn.textContent = 'Save'; }, 1500);
       };
@@ -530,7 +533,7 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
               // Show shared pipeline banner
               const banner = document.createElement('div');
               banner.className = 'bg-info-50 dark:bg-info-900/20 border border-info-200 dark:border-info-800 rounded-lg px-4 py-3 mb-4 text-sm text-info-800 dark:text-info-200';
-              banner.textContent = 'Someone shared this pipeline with you. Paste your data above to run it.';
+              banner.textContent = _t('tools.pipe.js.r4_8', 'Someone shared this pipeline with you. Paste your data above to run it.');
               inputEl.parentElement.parentElement.insertBefore(banner, inputEl.parentElement);
               renderSteps();
               runPipe();

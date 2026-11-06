@@ -209,7 +209,7 @@ export async function handleLogViewerRoutes(request, url) {
           const reader = new FileReader();
           reader.onerror = () => {
             logSpinner.classList.add('hidden');
-            statusText.textContent = 'Could not read ' + file.name + '.';
+            statusText.textContent = (_t('tools.log-viewer.js.r4_0', 'Could not read') + ' ') + file.name + '.';
           };
           reader.onload = (event) => {
             const text = event.target.result;

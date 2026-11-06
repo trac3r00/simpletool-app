@@ -738,7 +738,7 @@ while ((m = regex.exec(str)) !== null) {
           highlightDisplay.textContent = text;
           if (outcome.status === 'timeout') {
             groupsTableBody.innerHTML = '';
-            matchCount.textContent = 'Stopped';
+            matchCount.textContent = _t('tools.regex-visualizer.js.r4_0', 'Stopped');
             showMatchTimeout(REGEX_TIMEOUT_MESSAGE);
             return;
           }
@@ -773,7 +773,7 @@ while ((m = regex.exec(str)) !== null) {
           copyStatus.textContent = _t('common.copied', 'Copied!');
           if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
         }).catch(() => {
-          copyStatus.textContent = 'Copy failed: your browser blocked clipboard access. Select the code and copy it manually.';
+          copyStatus.textContent = _t('tools.regex-visualizer.js.r4_1', 'Copy failed: your browser blocked clipboard access. Select the code and copy it manually.');
         });
       }
 

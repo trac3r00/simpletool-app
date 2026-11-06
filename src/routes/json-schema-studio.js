@@ -61,9 +61,9 @@ function renderJsonSchemaStudioPage(lang = DEFAULT_LANGUAGE) {
         ${header}
 
       <div class="tabs-list max-w-full flex-wrap h-auto mb-6" role="tablist" aria-label="JSON Schema Studio modes">
-        <button id="tab-generate" type="button" role="tab" class="tab-trigger min-h-[44px]" aria-selected="true" aria-controls="panel-generate" tabindex="0">Generate</button>
-        <button id="tab-validate" type="button" role="tab" class="tab-trigger min-h-[44px]" aria-selected="false" aria-controls="panel-validate" tabindex="-1">Validate</button>
-        <button id="tab-mcp" type="button" role="tab" class="tab-trigger min-h-[44px]" aria-selected="false" aria-controls="panel-mcp" tabindex="-1">MCP tools/list</button>
+        <button id="tab-generate" type="button" role="tab" class="tab-trigger min-h-[44px]" aria-selected="true" aria-controls="panel-generate" tabindex="0" data-i18n="tools.json-schema-studio.ui.r4_0">Generate</button>
+        <button id="tab-validate" type="button" role="tab" class="tab-trigger min-h-[44px]" aria-selected="false" aria-controls="panel-validate" tabindex="-1" data-i18n="tools.json-schema-studio.ui.r4_1">Validate</button>
+        <button id="tab-mcp" type="button" role="tab" class="tab-trigger min-h-[44px]" aria-selected="false" aria-controls="panel-mcp" tabindex="-1" data-i18n="tools.json-schema-studio.ui.r4_2">MCP tools/list</button>
       </div>
 
       <div id="panel-generate" role="tabpanel" aria-labelledby="tab-generate">
@@ -115,29 +115,29 @@ function renderJsonSchemaStudioPage(lang = DEFAULT_LANGUAGE) {
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div class="tool-group p-5">
           <div class="flex justify-between items-center mb-4 gap-2">
-            <h2 class="text-lg font-semibold text-foreground">Document and schema</h2>
+            <h2 class="text-lg font-semibold text-foreground" data-i18n="tools.json-schema-studio.ui.r4_12">Document and schema</h2>
             <button id="val-sample" type="button" class="btn btn-secondary btn-xs">Sample</button>
           </div>
-          <label for="val-doc" class="label block mb-1">JSON document</label>
+          <label for="val-doc" class="label block mb-1" data-i18n="tools.json-schema-studio.ui.r4_5">JSON document</label>
           <textarea id="val-doc" rows="9" class="input-mono w-full resize-y" placeholder='{ "id": 1, "name": "Ada" }' aria-describedby="val-status"></textarea>
           <div class="flex justify-between items-center mt-4 mb-1 gap-2 flex-wrap">
             <label for="val-schema" class="label">JSON Schema</label>
-            <button id="val-use-generated" type="button" class="btn btn-secondary btn-xs" disabled>Use generated schema</button>
+            <button id="val-use-generated" type="button" class="btn btn-secondary btn-xs" disabled data-i18n="tools.json-schema-studio.ui.r4_3">Use generated schema</button>
           </div>
           <textarea id="val-schema" rows="9" class="input-mono w-full resize-y" placeholder='{ "type": "object", "required": ["id"] }' aria-describedby="val-status"></textarea>
-          <label for="val-dialect" class="label block mt-4 mb-1">Dialect</label>
+          <label for="val-dialect" class="label block mt-4 mb-1" data-i18n="tools.json-schema-studio.ui.r4_6">Dialect</label>
           <select id="val-dialect" class="input w-full">
-            <option value="auto">Auto (from $schema, else 2020-12)</option>
-            <option value="2020-12">Draft 2020-12</option>
-            <option value="2019-09">Draft 2019-09</option>
-            <option value="7">Draft-07</option>
+            <option value="auto" data-i18n="tools.json-schema-studio.ui.r4_8">Auto (from $schema, else 2020-12)</option>
+            <option value="2020-12" data-i18n="tools.json-schema-studio.ui.r4_9">Draft 2020-12</option>
+            <option value="2019-09" data-i18n="tools.json-schema-studio.ui.r4_10">Draft 2019-09</option>
+            <option value="7" data-i18n="tools.json-schema-studio.ui.r4_11">Draft-07</option>
           </select>
           <p class="text-xs text-muted-foreground mt-2">Validation runs in your browser with @cfworker/json-schema. <code>format</code> is asserted. Press Ctrl+Enter (Cmd+Enter on Mac) in either box to validate.</p>
           <button id="val-run" type="button" class="btn btn-primary w-full mt-4">Validate</button>
         </div>
         <div class="tool-group p-5 flex flex-col">
-          <h2 class="text-lg font-semibold text-foreground mb-4">Validation result</h2>
-          <p id="val-status" class="text-sm mb-3 text-muted-foreground" role="status" aria-live="polite">Paste a document and a schema, then press Validate.</p>
+          <h2 class="text-lg font-semibold text-foreground mb-4" data-i18n="tools.json-schema-studio.ui.r4_13">Validation result</h2>
+          <p id="val-status" class="text-sm mb-3 text-muted-foreground" role="status" aria-live="polite" data-i18n="tools.json-schema-studio.ui.r4_16">Paste a document and a schema, then press Validate.</p>
           <div id="val-results" tabindex="0" aria-label="Validation errors" class="flex-1 overflow-auto max-h-96 rounded-lg border border-border"></div>
         </div>
       </div>
@@ -147,24 +147,24 @@ function renderJsonSchemaStudioPage(lang = DEFAULT_LANGUAGE) {
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div class="tool-group p-5">
           <div class="flex justify-between items-center mb-4 gap-2">
-            <h2 class="text-lg font-semibold text-foreground">tools/list result</h2>
+            <h2 class="text-lg font-semibold text-foreground" data-i18n="tools.json-schema-studio.ui.r4_14">tools/list result</h2>
             <button id="mcp-sample" type="button" class="btn btn-secondary btn-xs">Sample</button>
           </div>
-          <label for="mcp-input" class="label block mb-1">JSON-RPC response, result object, or tools array</label>
+          <label for="mcp-input" class="label block mb-1" data-i18n="tools.json-schema-studio.ui.r4_7">JSON-RPC response, result object, or tools array</label>
           <textarea id="mcp-input" rows="18" class="input-mono w-full resize-y" placeholder='{ "jsonrpc": "2.0", "id": 1, "result": { "tools": [] } }' aria-describedby="mcp-status"></textarea>
           <p class="text-xs text-muted-foreground mt-2">Checked against the Tool shape in the MCP specification 2025-11-25. Each inputSchema is checked as a JSON Schema too. Risk notes are heuristics based on wording and annotations, so treat them as prompts to review, not verdicts.</p>
-          <button id="mcp-run" type="button" class="btn btn-primary w-full mt-4">Check tools</button>
+          <button id="mcp-run" type="button" class="btn btn-primary w-full mt-4" data-i18n="tools.json-schema-studio.ui.r4_4">Check tools</button>
         </div>
         <div class="tool-group p-5 flex flex-col">
-          <h2 class="text-lg font-semibold text-foreground mb-4">Tool report</h2>
-          <p id="mcp-status" class="text-sm mb-3 text-muted-foreground" role="status" aria-live="polite">Paste a tools/list result, then press Check tools.</p>
+          <h2 class="text-lg font-semibold text-foreground mb-4" data-i18n="tools.json-schema-studio.ui.r4_15">Tool report</h2>
+          <p id="mcp-status" class="text-sm mb-3 text-muted-foreground" role="status" aria-live="polite" data-i18n="tools.json-schema-studio.ui.r4_17">Paste a tools/list result, then press Check tools.</p>
           <dl id="mcp-summary" class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4 hidden">
             <div class="rounded-lg bg-muted p-3"><dt class="text-xs text-muted-foreground">Tools</dt><dd id="mcp-count" class="text-xl font-semibold text-foreground">0</dd></div>
             <div class="rounded-lg bg-muted p-3"><dt class="text-xs text-muted-foreground">Errors</dt><dd id="mcp-errors" class="text-xl font-semibold text-foreground">0</dd></div>
             <div class="rounded-lg bg-muted p-3"><dt class="text-xs text-muted-foreground">Warnings</dt><dd id="mcp-warnings" class="text-xl font-semibold text-foreground">0</dd></div>
             <div class="rounded-lg bg-muted p-3"><dt class="text-xs text-muted-foreground">Tokens (estimate)</dt><dd id="mcp-tokens" class="text-xl font-semibold text-foreground">0</dd></div>
           </dl>
-          <p id="mcp-token-note" class="text-xs text-muted-foreground mb-3 hidden">Estimate: characters of every description plus its serialised inputSchema, divided by 4. Real tokenizers and client framing differ.</p>
+          <p id="mcp-token-note" class="text-xs text-muted-foreground mb-3 hidden" data-i18n="tools.json-schema-studio.ui.r4_18">Estimate: characters of every description plus its serialised inputSchema, divided by 4. Real tokenizers and client framing differ.</p>
           <div id="mcp-results" tabindex="0" aria-label="Tool check results" class="flex-1 overflow-auto max-h-96 space-y-3"></div>
         </div>
       </div>
@@ -179,7 +179,7 @@ function renderJsonSchemaStudioPage(lang = DEFAULT_LANGUAGE) {
             <tr><td><code>type</code></td><td>Data type (string, number, integer, boolean, object, array, null)</td></tr>
             <tr><td><code>enum</code></td><td>Allowed values list</td></tr>
             <tr><td><code>const</code></td><td>Single allowed value</td></tr>
-            <tr><td><code>$ref</code></td><td>Reference another schema</td></tr>
+            <tr><td><code>$ref</code></td><td data-i18n="tools.json-schema-studio.ui.r4_19">Reference another schema</td></tr>
           </table>`,
         },
         {
@@ -190,7 +190,7 @@ function renderJsonSchemaStudioPage(lang = DEFAULT_LANGUAGE) {
             <tr><td>String</td><td><code>minLength</code>, <code>maxLength</code>, <code>pattern</code>, <code>format</code></td></tr>
             <tr><td>Number</td><td><code>minimum</code>, <code>maximum</code>, <code>multipleOf</code>, <code>exclusiveMinimum</code></td></tr>
             <tr><td>Object</td><td><code>required</code>, <code>properties</code>, <code>additionalProperties</code>, <code>minProperties</code></td></tr>
-            <tr><td>Array</td><td><code>items</code>, <code>minItems</code>, <code>maxItems</code>, <code>uniqueItems</code></td></tr>
+            <tr><td data-i18n="tools.json-schema-studio.ui.r4_20">Array</td><td><code>items</code>, <code>minItems</code>, <code>maxItems</code>, <code>uniqueItems</code></td></tr>
           </table>`,
         },
       ])}

@@ -293,7 +293,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
             <textarea
               id="identify-input"
               rows="4"
-              placeholder="Paste a hash or encoded string…"
+              placeholder="Paste a hash or encoded string…" data-i18n-placeholder="tools.encoding-workbench.ui.r4_0"
               data-i18n-placeholder="tools.encoding-workbench.ui.identifyPlaceholder"
               class="input-mono w-full resize-none"
             ></textarea>
@@ -783,7 +783,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
             var rounds = parseInt(document.getElementById('bcrypt-rounds').value, 10);
             var byteLength = new TextEncoder().encode(text).length;
             if (byteLength > 72) {
-              lengthWarning.textContent = 'bcrypt only reads the first 72 bytes of its input. This input is ' + byteLength + ' bytes (UTF-8), so everything after byte 72 has no effect on the hash.';
+              lengthWarning.textContent = (_t('tools.encoding-workbench.js.r4_0', 'bcrypt only reads the first 72 bytes of its input. This input is') + ' ') + byteLength + ' bytes (UTF-8), so everything after byte 72 has no effect on the hash.';
               lengthWarning.classList.remove('hidden');
             }
             var bcryptLib = (typeof window.dcodeIO !== 'undefined' && window.dcodeIO.bcrypt) ? window.dcodeIO.bcrypt : (typeof window.bcrypt !== 'undefined' ? window.bcrypt : null);

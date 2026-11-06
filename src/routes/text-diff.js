@@ -298,7 +298,7 @@ function renderTextDiffPage(lang = DEFAULT_LANGUAGE) {
         document.getElementById('stat-added').textContent = result.stats.added.toLocaleString();
         document.getElementById('stat-removed').textContent = result.stats.removed.toLocaleString();
         document.getElementById('stat-unchanged').textContent = result.stats.unchanged.toLocaleString();
-        document.getElementById('stat-unit').textContent = 'Counts are in ' + UNIT_LABELS[result.mode] + '.';
+        document.getElementById('stat-unit').textContent = (_t('tools.text-diff.js.r4_0', 'Counts are in') + ' ') + UNIT_LABELS[result.mode] + '.';
 
         const output = document.getElementById('diff-output');
         if (!hasChanges) {
@@ -332,9 +332,9 @@ function renderTextDiffPage(lang = DEFAULT_LANGUAGE) {
         if (!lastUnifiedDiff) return;
         try {
           await navigator.clipboard.writeText(lastUnifiedDiff);
-          status.textContent = 'Unified diff copied to clipboard.';
+          status.textContent = _t('tools.text-diff.js.r4_1', 'Unified diff copied to clipboard.');
         } catch (error) {
-          status.textContent = 'Copy failed: your browser blocked clipboard access. Select the diff above and copy it manually.';
+          status.textContent = _t('tools.text-diff.js.r4_2', 'Copy failed: your browser blocked clipboard access. Select the diff above and copy it manually.');
         }
       });
 
@@ -349,7 +349,7 @@ function renderTextDiffPage(lang = DEFAULT_LANGUAGE) {
         link.click();
         link.remove();
         setTimeout(() => URL.revokeObjectURL(href), 0);
-        document.getElementById('unified-status').textContent = 'Downloaded text-diff.diff.';
+        document.getElementById('unified-status').textContent = _t('tools.text-diff.js.r4_3', 'Downloaded text-diff.diff.');
       });
     </script>
   `;

@@ -268,7 +268,7 @@ function renderUserAgentDecoderPage(lang = DEFAULT_LANGUAGE) {
           await navigator.clipboard.writeText(jsonOutput ? jsonOutput.textContent : '');
           copyJsonBtn.textContent = '✓ Copied!';
         } catch (err) {
-          copyJsonBtn.textContent = 'Copy failed: select the JSON and copy manually';
+          copyJsonBtn.textContent = _t('tools.user-agent-decoder.js.r4_0', 'Copy failed: select the JSON and copy manually');
         }
         setTimeout(() => copyJsonBtn.textContent = orig, 2000);
       });
@@ -296,7 +296,7 @@ function renderUserAgentDecoderPage(lang = DEFAULT_LANGUAGE) {
           copyAnalysisBtn.textContent = _t('tools.user-agent-decoder.js.text0', '✓ Copied!');
           if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
         } catch (err) {
-          copyAnalysisBtn.textContent = 'Copy failed: select the text and copy manually';
+          copyAnalysisBtn.textContent = _t('tools.user-agent-decoder.js.r4_1', 'Copy failed: select the text and copy manually');
         }
         setTimeout(() => copyAnalysisBtn.textContent = orig, 2000);
       });

@@ -708,7 +708,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
           const pub = await window.deriveWireGuardPublicKey(value);
           if (seq !== deriveSeq) return;
           derivedPublicEl.className = 'mt-1 text-xs font-mono break-all text-surface-700 dark:text-surface-300';
-          derivedPublicEl.textContent = 'PublicKey for this PrivateKey: ' + pub;
+          derivedPublicEl.textContent = (_t('tools.wireguard-config.js.r4_0', 'PublicKey for this PrivateKey:') + ' ') + pub;
         } catch (err) {
           if (seq !== deriveSeq) return;
           derivedPublicEl.className = 'mt-1 text-xs break-all text-error-700 dark:text-error-300';

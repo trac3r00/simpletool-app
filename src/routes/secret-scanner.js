@@ -362,7 +362,7 @@ function renderSecretScannerPage(lang = DEFAULT_LANGUAGE) {
           if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
           setTimeout(() => (els.copyRedacted.innerHTML = old), 1200);
         } catch (e) {
-          els.copyRedacted.textContent = 'Copy failed: select the redacted text and copy it manually.';
+          els.copyRedacted.textContent = _t('tools.secret-scanner.js.r4_0', 'Copy failed: select the redacted text and copy it manually.');
         }
       });
       els.show.addEventListener('change', () => {
