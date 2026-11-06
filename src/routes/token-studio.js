@@ -10,6 +10,7 @@ import {
   createRelatedToolsSection,
 } from "../utils/content-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
+import { createJwtLogic } from "../utils/token-studio-logic.js";
 import {
   DEFAULT_LANGUAGE,
   getToolTranslation,
@@ -157,6 +158,36 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
                     </button>
                   </div>
                   <div id="inspect-verify-result" class="hidden rounded-lg p-3 text-sm font-medium border"></div>
+
+                  <section aria-labelledby="inspect-jwks-heading" class="rounded-lg border border-border bg-card p-4 space-y-3">
+                    <div>
+                      <h3 id="inspect-jwks-heading" class="text-sm font-semibold text-foreground" data-i18n="tools.token-studio.ui.r3_1">Verify with JWKS</h3>
+                      <p class="text-xs text-muted-foreground mt-1">
+                        Paste the issuer's JWK Set (the JSON served at its jwks_uri). Nothing is fetched; the set stays in this tab.
+                        The key is chosen by the token's <code class="font-mono">kid</code>; without a kid, every key whose type and alg fit is tried.
+                      </p>
+                    </div>
+                    <div>
+                      <label for="inspect-jwks-input" class="label text-xs" data-i18n="tools.token-studio.ui.r3_3">JWKS JSON</label>
+                      <textarea
+                        id="inspect-jwks-input"
+                        rows="5"
+                        class="input-mono w-full resize-y"
+                        placeholder='{"keys":[{"kty":"RSA","kid":"...","n":"...","e":"AQAB"}]}'
+                        spellcheck="false"
+                      ></textarea>
+                    </div>
+                    <div class="flex flex-wrap items-end gap-3">
+                      <div>
+                        <label for="inspect-jwks-skew" class="label text-xs" data-i18n="tools.token-studio.ui.r3_4">Clock skew (seconds)</label>
+                        <input id="inspect-jwks-skew" type="number" min="0" max="86400" step="1" value="60" inputmode="numeric" class="input w-28 min-h-[44px]" aria-describedby="inspect-jwks-skew-hint">
+                      </div>
+                      <button id="inspect-jwks-btn" type="button" class="btn btn-secondary min-h-[44px]">Verify with JWKS</button>
+                      <button id="inspect-jwks-from-tab" type="button" class="btn btn-ghost min-h-[44px]" data-i18n="tools.token-studio.ui.r3_2">Use the set from the JWKS tab</button>
+                    </div>
+                    <p id="inspect-jwks-skew-hint" class="text-xs text-muted-foreground" data-i18n="tools.token-studio.ui.r3_6">Skew is the leeway applied to exp, nbf and iat against this device's clock.</p>
+                    <div id="inspect-jwks-result" class="hidden rounded-lg p-3 text-sm border" role="status" aria-live="polite"></div>
+                  </section>
                 </div>
               </div>
             </div>
@@ -193,6 +224,9 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
                     <option value="PS256" data-i18n="tools.token-studio.ui.option28">PS256</option>
                     <option value="PS384" data-i18n="tools.token-studio.ui.option29">PS384</option>
                     <option value="PS512" data-i18n="tools.token-studio.ui.option30">PS512</option>
+                  </optgroup>
+                  <optgroup label="EdDSA">
+                    <option value="EdDSA" data-i18n="tools.token-studio.ui.r3_5">EdDSA (Ed25519)</option>
                   </optgroup>
                 </select>
               </div>
@@ -562,6 +596,9 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
         return btoa(raw).replace(/\\+/g, '-').replace(/\\//g, '_').replace(/=/g, '');
       }
 
+      // Inlined from src/utils/token-studio-logic.js (tested in token-studio-logic.test.js).
+      var JwtLogic = (${createJwtLogic.toString()})();
+
       // --- Syntax highlighting for JSON output ---
       function syntaxHighlightJson(obj) {
         var str = JSON.stringify(obj, null, 2);
@@ -596,6 +633,7 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
         var verifyBtn = document.getElementById('inspect-verify-btn');
         var verifyKeyEl = document.getElementById('inspect-verify-key');
         var verifyResultEl = document.getElementById('inspect-verify-result');
+        var jwksResultEl = document.getElementById('inspect-jwks-result');
 
         var lastParsed = null;
 
@@ -616,23 +654,27 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
           try { return new Date(ts * 1000).toISOString(); } catch(e) { return escHtml(String(ts)); }
         }
 
-        decodeBtn.addEventListener('click', function() {
+        function decodeToken() {
           hideError();
-          var token = input.value.trim();
-          if (!token) { showError('Please paste a JWT token.'); return; }
+          var token = JwtLogic.normalizeJwtInput(input.value);
+          if (!token) { showError('Please paste a JWT token.'); return false; }
 
           var parts = token.split('.');
-          if (parts.length !== 3) { showError('Invalid JWT: expected 3 dot-separated parts.'); return; }
+          if (parts.length === 5) { showError(_t('tools.token-studio.js.jwe', 'This looks like an encrypted JWE (5 parts). Only signed JWS tokens (3 parts) can be decoded here.')); return false; }
+          if (parts.length !== 3) { showError('Invalid JWT: expected 3 dot-separated parts.'); return false; }
 
           var header, payload;
-          try { header = JSON.parse(b64urlDecode(parts[0])); } catch(e) { showError('Failed to decode header: ' + e.message); return; }
-          try { payload = JSON.parse(b64urlDecode(parts[1])); } catch(e) { showError('Failed to decode payload: ' + e.message); return; }
+          try { header = JSON.parse(b64urlDecode(parts[0])); } catch(e) { showError('Failed to decode header: ' + e.message); return false; }
+          try { payload = JSON.parse(b64urlDecode(parts[1])); } catch(e) { showError('Failed to decode payload: ' + e.message); return false; }
+          if (!header || typeof header !== 'object' || Array.isArray(header)) { showError(_t('tools.token-studio.js.headerNotObject', 'Invalid JWT: the header must be a JSON object.')); return false; }
 
-          lastParsed = { header: header, payload: payload, parts: parts };
+          lastParsed = { header: header, payload: payload, parts: parts, raw: token };
 
           headerEl.innerHTML = syntaxHighlightJson(header);
           payloadEl.innerHTML = syntaxHighlightJson(payload);
-          sigStatusEl.textContent = parts[2];
+          sigStatusEl.textContent = String(header.alg).toLowerCase() === 'none'
+            ? _t('tools.token-studio.js.algNone', 'alg is "none": this token is unsigned and must never be accepted.') + (parts[2] ? ' ' + parts[2] : '')
+            : (parts[2] || _t('tools.token-studio.js.noSignature', '(empty signature)'));
 
           // Claim validation
           var now = Math.floor(Date.now() / 1000);
@@ -666,8 +708,12 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
           }
 
           verifyResultEl.classList.add('hidden');
+          jwksResultEl.classList.add('hidden');
           resultEl.classList.remove('hidden');
-        });
+          return true;
+        }
+
+        decodeBtn.addEventListener('click', decodeToken);
 
         clearBtn.addEventListener('click', function() {
           input.value = '';
@@ -675,11 +721,108 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
           claimsBanner.classList.add('hidden');
           hideError();
           verifyResultEl.classList.add('hidden');
+          jwksResultEl.classList.add('hidden');
           lastParsed = null;
         });
 
+        // --- Verify with JWKS (logic in JwtLogic.verifyWithJwks) ---
+        var jwksInputEl = document.getElementById('inspect-jwks-input');
+        var jwksSkewEl = document.getElementById('inspect-jwks-skew');
+        var jwksBtn = document.getElementById('inspect-jwks-btn');
+        var jwksFromTabBtn = document.getElementById('inspect-jwks-from-tab');
+        var JWKS_OK = 'rounded-lg p-3 text-sm border bg-success-50 dark:bg-success-900/20 text-success-800 dark:text-success-200 border-success-200 dark:border-success-800';
+        var JWKS_BAD = 'rounded-lg p-3 text-sm border bg-error-50 dark:bg-error-900/20 text-error-800 dark:text-error-200 border-error-200 dark:border-error-800';
+
+        function jwksLine(parent, text, strong) {
+          var el = document.createElement(strong ? 'p' : 'li');
+          if (strong) el.className = 'font-semibold';
+          el.textContent = text;
+          parent.appendChild(el);
+          return el;
+        }
+
+        function jwksList(title, items) {
+          if (!items.length) return;
+          var heading = document.createElement('p');
+          heading.className = 'mt-2 text-xs font-semibold uppercase tracking-wide';
+          heading.textContent = title;
+          var ul = document.createElement('ul');
+          ul.className = 'mt-1 list-disc pl-5 space-y-0.5 break-words';
+          items.forEach(function(t) { jwksLine(ul, t); });
+          jwksResultEl.appendChild(heading);
+          jwksResultEl.appendChild(ul);
+        }
+
+        function keyName(index, kid) {
+          return 'key #' + (index + 1) + (kid !== undefined ? ' (kid "' + kid + '")' : ' (no kid)');
+        }
+
+        function showJwksError(msg) {
+          jwksResultEl.replaceChildren();
+          jwksLine(jwksResultEl, 'Not verified', true);
+          var p = document.createElement('p');
+          p.className = 'mt-1 break-words';
+          p.textContent = msg;
+          jwksResultEl.appendChild(p);
+          jwksResultEl.className = JWKS_BAD;
+        }
+
+        jwksFromTabBtn.addEventListener('click', function() {
+          var built = document.getElementById('jwks-output');
+          jwksInputEl.value = built ? built.value : '';
+          jwksInputEl.focus();
+        });
+
+        jwksBtn.addEventListener('click', async function() {
+          if (!lastParsed || lastParsed.raw !== JwtLogic.normalizeJwtInput(input.value)) {
+            if (!decodeToken()) return;
+          }
+          var skewText = jwksSkewEl.value.trim();
+          var skew = skewText === '' ? 0 : Number(skewText);
+          jwksResultEl.classList.remove('hidden');
+          if (!isFinite(skew) || skew < 0 || Math.floor(skew) !== skew) {
+            showJwksError('Clock skew must be a whole number of seconds, 0 or more.');
+            return;
+          }
+          if (!jwksInputEl.value.trim()) {
+            showJwksError('Paste a JWKS JSON document first.');
+            return;
+          }
+          jwksBtn.disabled = true;
+          try {
+            var r = await JwtLogic.verifyWithJwks(lastParsed.raw, jwksInputEl.value, { skew: skew }, crypto.subtle);
+            jwksResultEl.replaceChildren();
+            var verdict = r.valid ? 'Valid: signature verified and time claims pass'
+              : r.signatureValid ? 'Signature verified, but the time claims fail'
+              : 'Signature does not verify with any matching key';
+            jwksLine(jwksResultEl, verdict, true);
+            if (r.verifiedBy) {
+              var v = r.verifiedBy;
+              var detail = document.createElement('p');
+              detail.className = 'mt-1 break-words';
+              detail.textContent = 'Verified by ' + keyName(v.index, v.kid) + ': ' + v.kty + (v.crv ? ' ' + v.crv : '') +
+                (v.alg ? ', alg ' + v.alg : '') + ', token alg ' + r.header.alg + '.';
+              jwksResultEl.appendChild(detail);
+            }
+            jwksList('Keys tried', r.tried.map(function(t) {
+              return keyName(t.index, t.kid) + ': ' + (t.ok ? 'verified' : t.error ? 'import failed (' + t.error + ')' : 'signature mismatch');
+            }));
+            jwksList('Keys skipped', r.skipped.map(function(s) { return keyName(s.index, s.kid) + ': ' + s.reason; }));
+            jwksList('Time claims (skew ' + skew + 's)', r.claims.length
+              ? r.claims.map(function(c) { return (c.ok ? 'Pass, ' : 'Fail, ') + c.claim + ': ' + c.message; })
+              : ['No exp, nbf or iat claim in the payload.']);
+            jwksResultEl.className = r.valid ? JWKS_OK : JWKS_BAD;
+          } catch (e) {
+            showJwksError(e && e.message ? e.message : String(e));
+          } finally {
+            jwksBtn.disabled = false;
+          }
+        });
+
         verifyBtn.addEventListener('click', async function() {
-          if (!lastParsed) { return; }
+          if (!lastParsed || lastParsed.raw !== JwtLogic.normalizeJwtInput(input.value)) {
+            if (!decodeToken()) return;
+          }
           var keyInput = verifyKeyEl.value.trim();
           if (!keyInput) {
             verifyResultEl.textContent = _t('tools.token-studio.js.text0', 'Please provide a JWK or shared secret to verify against.');
@@ -704,26 +847,14 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
                 'raw', enc.encode(keyInput), { name: 'HMAC', hash: hashAlg }, false, ['verify']
               );
               isValid = await crypto.subtle.verify('HMAC', importedKey, sigBytes, enc.encode(signingInput));
-            } else if (alg.startsWith('RS') || alg.startsWith('PS') || alg.startsWith('ES')) {
-              // Asymmetric: keyInput is JWK JSON
-              var jwk = JSON.parse(keyInput);
-              var webCryptoAlg;
-              if (alg.startsWith('RS')) {
-                var hash = alg === 'RS256' ? 'SHA-256' : alg === 'RS384' ? 'SHA-384' : 'SHA-512';
-                webCryptoAlg = { name: 'RSASSA-PKCS1-v1_5', hash: hash };
-              } else if (alg.startsWith('PS')) {
-                var hash = alg === 'PS256' ? 'SHA-256' : alg === 'PS384' ? 'SHA-384' : 'SHA-512';
-                webCryptoAlg = { name: 'RSA-PSS', hash: hash, saltLength: parseInt(hash.replace('SHA-','')) / 8 };
-              } else {
-                var namedCurve = jwk.crv || 'P-256';
-                var hash = namedCurve === 'P-521' ? 'SHA-512' : namedCurve === 'P-384' ? 'SHA-384' : 'SHA-256';
-                webCryptoAlg = { name: 'ECDSA', namedCurve: namedCurve, hash: hash };
-              }
-              var importedKey = await crypto.subtle.importKey('jwk', jwk, webCryptoAlg, false, ['verify']);
-              var enc = new TextEncoder();
-              isValid = await crypto.subtle.verify(webCryptoAlg, importedKey, sigBytes, enc.encode(signingInput));
             } else {
-              throw new Error('Unsupported algorithm: ' + alg);
+              // Asymmetric: keyInput is a JWK. A pasted private JWK is reduced to its public part.
+              var jwk;
+              try { jwk = JSON.parse(keyInput); } catch (parseErr) { throw new Error('For ' + alg + ' tokens, paste the public key as JWK JSON.'); }
+              if (jwk && jwk.d) jwk = JwtLogic.publicJwkFrom(jwk);
+              var params = JwtLogic.jwsParams(alg, jwk);
+              var importedKey = await crypto.subtle.importKey('jwk', jwk, params.importAlg, false, ['verify']);
+              isValid = await crypto.subtle.verify(params.signAlg, importedKey, sigBytes, new TextEncoder().encode(signingInput));
             }
 
             verifyResultEl.textContent = isValid ? '✓ Signature is valid.' : '✗ Signature is INVALID.';
@@ -783,7 +914,7 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
 
         algSelect.addEventListener('change', function() {
           updateKeyLabel();
-          headerTa.value = getDefaultHeader(algSelect.value);
+          headerTa.value = JwtLogic.withHeaderAlg(headerTa.value, algSelect.value) || getDefaultHeader(algSelect.value);
         });
 
         // Initialize defaults
@@ -797,7 +928,15 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
             var claim = btn.dataset.claim;
             var now = Math.floor(Date.now() / 1000);
             var payload;
-            try { payload = JSON.parse(payloadTa.value || '{}'); } catch(e) { payload = {}; }
+            try { payload = JSON.parse(payloadTa.value || '{}'); } catch(e) {
+              showError(_t('tools.token-studio.js.claimBadJson', 'Fix the payload JSON first; adding a claim would otherwise replace it.') + ' ' + e.message);
+              return;
+            }
+            if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
+              showError(_t('tools.token-studio.js.payloadNotObject', 'The payload must be a JSON object, e.g. {"sub":"123"}.'));
+              return;
+            }
+            hideError();
             switch(claim) {
               case 'exp': payload.exp = now + 3600; break;
               case 'iat': payload.iat = now; break;
@@ -828,6 +967,12 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
           var header, payload;
           try { header = JSON.parse(headerTa.value); } catch(e) { showError('Invalid header JSON: ' + e.message); return; }
           try { payload = JSON.parse(payloadTa.value || '{}'); } catch(e) { showError('Invalid payload JSON: ' + e.message); return; }
+          if (!header || typeof header !== 'object' || Array.isArray(header)) { showError(_t('tools.token-studio.js.headerNotObject', 'Invalid JWT: the header must be a JSON object.')); return; }
+          if (!payload || typeof payload !== 'object' || Array.isArray(payload)) { showError(_t('tools.token-studio.js.payloadNotObject', 'The payload must be a JSON object, e.g. {"sub":"123"}.')); return; }
+          if (header.alg !== alg) {
+            showError('The header says alg "' + header.alg + '" but ' + alg + ' is selected. Make them match so verifiers use the right algorithm.');
+            return;
+          }
           var keyRaw = keyTa.value.trim();
           if (!keyRaw) { showError('Please provide a key.'); return; }
 
@@ -845,21 +990,12 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
               );
               sigBytes = new Uint8Array(await crypto.subtle.sign('HMAC', importedKey, enc.encode(signingInput)));
             } else {
-              var jwk = JSON.parse(keyRaw);
-              var webCryptoAlg;
-              if (alg.startsWith('RS')) {
-                var hash = alg === 'RS256' ? 'SHA-256' : alg === 'RS384' ? 'SHA-384' : 'SHA-512';
-                webCryptoAlg = { name: 'RSASSA-PKCS1-v1_5', hash: hash };
-              } else if (alg.startsWith('PS')) {
-                var hash = alg === 'PS256' ? 'SHA-256' : alg === 'PS384' ? 'SHA-384' : 'SHA-512';
-                webCryptoAlg = { name: 'RSA-PSS', hash: hash, saltLength: parseInt(hash.replace('SHA-','')) / 8 };
-              } else {
-                var namedCurve = jwk.crv || 'P-256';
-                var hash = namedCurve === 'P-521' ? 'SHA-512' : namedCurve === 'P-384' ? 'SHA-384' : 'SHA-256';
-                webCryptoAlg = { name: 'ECDSA', namedCurve: namedCurve, hash: hash };
-              }
-              var importedKey = await crypto.subtle.importKey('jwk', jwk, webCryptoAlg, false, ['sign']);
-              sigBytes = new Uint8Array(await crypto.subtle.sign(webCryptoAlg, importedKey, enc.encode(signingInput)));
+              var jwk;
+              try { jwk = JSON.parse(keyRaw); } catch (parseErr) { throw new Error(_t('tools.token-studio.js.needPrivateJwk', 'paste the private key as JWK JSON (generate one in the Key Management tab).')); }
+              if (!jwk || !jwk.d) throw new Error(_t('tools.token-studio.js.notPrivate', 'this JWK has no private part ("d"); signing needs the private key.'));
+              var params = JwtLogic.jwsParams(alg, jwk);
+              var importedKey = await crypto.subtle.importKey('jwk', jwk, params.importAlg, false, ['sign']);
+              sigBytes = new Uint8Array(await crypto.subtle.sign(params.signAlg, importedKey, enc.encode(signingInput)));
             }
 
             var encodedSig = bytesToB64url(sigBytes);

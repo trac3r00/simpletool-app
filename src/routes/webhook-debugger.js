@@ -1,6 +1,13 @@
 import { respondHTML } from "../utils/respond.js";
 import { createPageTemplate, createToolHeader } from "../utils/common-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
+import {
+  buildCurlCommand,
+  shellQuote,
+  signatureCandidates,
+  utf8ByteLength,
+} from "../utils/webhook-logic.js";
+import { createSseWsLogic } from "../utils/sse-ws-logic.js";
 import { createRelatedToolsSection } from "../utils/content-ui.js";
 import {
   DEFAULT_LANGUAGE,
@@ -8,6 +15,15 @@ import {
   normalizeLanguage,
   resolveRequestLanguage,
 } from "../utils/i18n.js";
+
+// Bundlers may rename module functions (shellQuote -> shellQuote3) and the
+// renamed name is what other injected bodies call, so inject each function
+// under its real name and alias it to the name the page script uses.
+function inlineFunctions(fns) {
+  return Object.entries(fns)
+    .map(([name, fn]) => fn.toString() + (fn.name === name ? "" : "\nvar " + name + " = " + fn.name + ";"))
+    .join("\n");
+}
 
 export async function handleWebhookDebuggerRoutes(request, url) {
   const path = url.pathname;
@@ -94,7 +110,7 @@ function renderWebhookDebuggerPage(lang = DEFAULT_LANGUAGE) {
               <svg id="headers-chevron" class="w-4 h-4 text-surface-400 ml-auto transition-transform rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
             </button>
             <div id="headers-panel" class="px-5 pb-4">
-              <pre id="headers-content" class="font-mono text-xs text-surface-700 dark:text-surface-300 whitespace-pre-wrap break-all max-h-48 overflow-y-auto"></pre>
+              <pre id="headers-content" tabindex="0" aria-label="Request headers" class="font-mono text-xs text-surface-700 dark:text-surface-300 whitespace-pre-wrap break-all max-h-48 overflow-y-auto"></pre>
             </div>
           </div>
 
@@ -108,12 +124,12 @@ function renderWebhookDebuggerPage(lang = DEFAULT_LANGUAGE) {
             <div id="body-panel" class="px-5 pb-4">
               <div class="flex items-center justify-between mb-2">
                 <div class="flex gap-2">
-                  <button id="body-pretty-btn" class="btn btn-ghost btn-xs" data-i18n="tools.webhook-debugger.ui.button4">Pretty</button>
-                  <button id="body-raw-btn" class="btn btn-ghost btn-xs" data-i18n="tools.webhook-debugger.ui.button5">Raw</button>
+                  <button id="body-pretty-btn" type="button" aria-pressed="true" class="btn btn-ghost btn-xs bg-surface-200 dark:bg-surface-700" data-i18n="tools.webhook-debugger.ui.button4">Pretty</button>
+                  <button id="body-raw-btn" type="button" aria-pressed="false" class="btn btn-ghost btn-xs" data-i18n="tools.webhook-debugger.ui.button5">Raw</button>
                 </div>
                 <button id="copy-body-btn" class="btn btn-ghost btn-xs" data-tooltip="Copy body" data-i18n-tooltip="tools.webhook-debugger.ui.tip2"><span data-i18n="tools.webhook-debugger.ui.button6">Copy Body</span></button>
               </div>
-              <pre id="body-content" class="font-mono text-xs text-surface-700 dark:text-surface-300 whitespace-pre-wrap break-all max-h-80 overflow-y-auto"></pre>
+              <pre id="body-content" tabindex="0" aria-label="Request body" class="font-mono text-xs text-surface-700 dark:text-surface-300 whitespace-pre-wrap break-all max-h-80 overflow-y-auto"></pre>
             </div>
           </div>
 
@@ -131,9 +147,9 @@ function renderWebhookDebuggerPage(lang = DEFAULT_LANGUAGE) {
                   <label for="sig-algorithm" class="label block mb-1" data-i18n="tools.webhook-debugger.ui.label4">HMAC algorithm</label>
                   <select id="sig-algorithm" class="input w-full">
                     <option value="auto" data-i18n="tools.webhook-debugger.ui.option0">Auto-detect</option>
-                    <option value="sha256">HMAC-SHA256</option>
-                    <option value="sha1">HMAC-SHA1</option>
-                    <option value="sha512">HMAC-SHA512</option>
+                    <option value="sha256" data-i18n="tools.webhook-debugger.ui.r3_7">HMAC-SHA256</option>
+                    <option value="sha1" data-i18n="tools.webhook-debugger.ui.r3_8">HMAC-SHA1</option>
+                    <option value="sha512" data-i18n="tools.webhook-debugger.ui.r3_9">HMAC-SHA512</option>
                   </select>
                 </div>
                 <div>
@@ -167,12 +183,134 @@ function renderWebhookDebuggerPage(lang = DEFAULT_LANGUAGE) {
         <p class="text-sm text-surface-600 dark:text-surface-400" data-i18n="tools.webhook-debugger.ui.desc1">Paste a delivery above, or load a sample. Headers, body, and signature checks are computed in this browser tab.</p>
       </div>
 
+      <!-- Stream captures -->
+      <section class="tool-group p-5 mb-6" aria-labelledby="stream-heading">
+        <h2 id="stream-heading" class="text-sm font-semibold text-surface-800 dark:text-surface-200 mb-1" data-i18n="tools.webhook-debugger.ui.r3_10">Decode a stream capture</h2>
+        <p class="text-sm text-surface-600 dark:text-surface-400 mb-4" data-i18n="tools.webhook-debugger.ui.r3_11">Paste what you captured from a Server-Sent Events response or a WebSocket. This page opens no connections; it only reads what you paste.</p>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div>
+            <label for="sse-input" class="label block mb-1" data-i18n="tools.webhook-debugger.ui.r3_5">text/event-stream body</label>
+            <textarea id="sse-input" rows="8" spellcheck="false" class="input input-mono w-full" placeholder="event: delta&#10;data: {&quot;text&quot;:&quot;Hel&quot;}&#10;&#10;data: [DONE]&#10;&#10;"></textarea>
+            <div class="flex flex-wrap items-center gap-2 mt-3">
+              <button id="sse-parse-btn" type="button" class="btn btn-secondary btn-sm" data-i18n="tools.webhook-debugger.ui.r3_1">Parse events</button>
+              <button id="sse-sample-btn" type="button" class="btn btn-ghost btn-sm" data-i18n="tools.webhook-debugger.ui.r3_2">LLM stream sample</button>
+            </div>
+            <p id="sse-summary" class="mt-3 text-sm text-surface-700 dark:text-surface-300" role="status"></p>
+            <div id="sse-output" class="mt-2 space-y-2"></div>
+          </div>
+          <div>
+            <label for="ws-input" class="label block mb-1" data-i18n="tools.webhook-debugger.ui.r3_6">WebSocket frame bytes (hex)</label>
+            <textarea id="ws-input" rows="8" spellcheck="false" class="input input-mono w-full" placeholder="81 85 37 fa 21 3d 7f 9f 4d 51 58" data-i18n-placeholder="tools.webhook-debugger.ui.r3_0"></textarea>
+            <div class="flex flex-wrap items-center gap-2 mt-3">
+              <button id="ws-decode-btn" type="button" class="btn btn-secondary btn-sm" data-i18n="tools.webhook-debugger.ui.r3_3">Decode frames</button>
+              <button id="ws-sample-btn" type="button" class="btn btn-ghost btn-sm" data-i18n="tools.webhook-debugger.ui.r3_4">RFC 6455 sample</button>
+            </div>
+            <p id="ws-summary" class="mt-3 text-sm text-surface-700 dark:text-surface-300" role="status"></p>
+            <div id="ws-output" class="mt-2 space-y-2"></div>
+          </div>
+        </div>
+      </section>
+
       ${relatedToolsData.length > 0 ? createRelatedToolsSection(relatedToolsData) : ""}
       </div>
     </main>
 
     <script>
       (function() {
+        var logic = (${createSseWsLogic.toString()})();
+        function el(tag, cls, text) {
+          var n = document.createElement(tag);
+          if (cls) n.className = cls;
+          if (text != null) n.textContent = text;
+          return n;
+        }
+        function row(label, value) {
+          var r = el('div', 'flex gap-2 text-xs');
+          r.appendChild(el('span', 'shrink-0 w-16 sm:w-24 text-surface-600 dark:text-surface-400', label));
+          r.appendChild(el('span', 'min-w-0 font-mono text-surface-900 dark:text-surface-100', value));
+          return r;
+        }
+        function card() {
+          return el('div', 'rounded-lg border border-surface-200 dark:border-surface-700 p-3 space-y-1');
+        }
+        function prettyData(data) {
+          try {
+            var v = JSON.parse(data);
+            if (v !== null && typeof v === 'object') return JSON.stringify(v, null, 2);
+          } catch (e) {}
+          return null;
+        }
+
+        var sseInput = document.getElementById('sse-input');
+        var sseOut = document.getElementById('sse-output');
+        var sseSummary = document.getElementById('sse-summary');
+        function renderSse() {
+          sseOut.textContent = '';
+          var r = logic.parseEventStream(sseInput.value);
+          var parts = [r.events.length + (r.events.length === 1 ? ' event' : ' events')];
+          if (r.comments.length) parts.push(r.comments.length + ' comment line(s)');
+          if (r.retry !== null) parts.push('retry ' + r.retry + ' ms');
+          if (r.lastEventId) parts.push('Last-Event-ID ' + r.lastEventId);
+          if (r.discardedTail) parts.push('the last event has no blank line after it, so a browser would discard it');
+          sseSummary.textContent = parts.join(' \u00b7 ');
+          r.events.forEach(function(ev, i) {
+            var c = card();
+            c.appendChild(row('#' + (i + 1), ev.type));
+            if (ev.lastEventId) c.appendChild(row('id', ev.lastEventId));
+            var pretty = prettyData(ev.data);
+            if (pretty) {
+              var pre = el('pre', 'font-mono text-xs whitespace-pre-wrap break-all text-surface-900 dark:text-surface-100 max-h-48 overflow-y-auto', pretty);
+              pre.tabIndex = 0;
+              pre.setAttribute('aria-label', 'Event ' + (i + 1) + ' data as JSON');
+              c.appendChild(pre);
+            } else {
+              c.appendChild(row('data', ev.data === '' ? '(empty)' : ev.data));
+            }
+            sseOut.appendChild(c);
+          });
+        }
+        document.getElementById('sse-parse-btn').addEventListener('click', renderSse);
+        document.getElementById('sse-sample-btn').addEventListener('click', function() {
+          sseInput.value = ': keep-alive\\n\\nevent: message_start\\ndata: {"type":"message_start","id":"msg_1"}\\n\\nevent: content_block_delta\\ndata: {"type":"content_block_delta","delta":{"text":"Hel"}}\\n\\nevent: content_block_delta\\ndata: {"type":"content_block_delta","delta":{"text":"lo"}}\\n\\ndata: [DONE]\\n\\n';
+          renderSse();
+        });
+
+        var wsInput = document.getElementById('ws-input');
+        var wsOut = document.getElementById('ws-output');
+        var wsSummary = document.getElementById('ws-summary');
+        function renderWs() {
+          wsOut.textContent = '';
+          var hex = logic.parseHex(wsInput.value);
+          if (hex.error) {
+            wsSummary.textContent = hex.error;
+            return;
+          }
+          var r = logic.decodeWebSocketFrames(hex.bytes);
+          wsSummary.textContent = r.frames.length + (r.frames.length === 1 ? ' frame' : ' frames') + ' from ' + r.bytesTotal + ' bytes' + (r.error ? '. ' + r.error : '');
+          r.frames.forEach(function(f) {
+            var c = card();
+            c.appendChild(row('#' + f.index, f.opcodeName + ' (opcode ' + f.opcode + ')' + (f.fin ? ', FIN' : ', not final')));
+            c.appendChild(row('payload', f.payloadLength + ' bytes, ' + f.lengthEncoding + ' length' + (f.masked ? ', masked with ' + f.maskingKey : ', unmasked')));
+            if (f.closeCode != null) c.appendChild(row('close', f.closeCode + (f.closeReason ? ' ' + f.closeReason : '')));
+            if (f.text != null) c.appendChild(row('text', f.text));
+            else if (f.payloadLength > 0 && f.closeCode == null) c.appendChild(row('hex', f.payloadHex));
+            f.warnings.forEach(function(w) {
+              c.appendChild(el('p', 'text-xs text-warning-800 dark:text-warning-300', w));
+            });
+            wsOut.appendChild(c);
+          });
+        }
+        document.getElementById('ws-decode-btn').addEventListener('click', renderWs);
+        document.getElementById('ws-sample-btn').addEventListener('click', function() {
+          wsInput.value = '81 85 37 fa 21 3d 7f 9f 4d 51 58\\n01 03 48 65 6c\\n80 02 6c 6f\\n88 07 03 e8 62 79 65 21 21';
+          renderWs();
+        });
+      })();
+    </script>
+
+    <script>
+      (function() {
+      ${inlineFunctions({ shellQuote, buildCurlCommand, utf8ByteLength, signatureCandidates })}
       // --- State ---
       var parsed = null;
       var prettyMode = true;
@@ -313,7 +451,9 @@ function renderWebhookDebuggerPage(lang = DEFAULT_LANGUAGE) {
           var orig = label.textContent;
           label.textContent = _t('tools.webhook-debugger.js.text2', 'Copied');
           setTimeout(function() { label.textContent = orig; }, 1500);
-        }).catch(function() {});
+        }).catch(function() {
+          showError('Copy failed: the browser blocked clipboard access. Select the text and copy it manually.');
+        });
       }
 
       function methodColorClass(method) {
@@ -352,7 +492,7 @@ function renderWebhookDebuggerPage(lang = DEFAULT_LANGUAGE) {
         document.getElementById('detail-path').textContent = parsed.path;
 
         var ct = contentTypeOf(parsed);
-        var bytes = parsed.body ? parsed.body.length : 0;
+        var bytes = utf8ByteLength(parsed.body);
         document.getElementById('detail-meta').textContent =
           parsed.headers.length + ' headers - ' + bytes + ' bytes';
 
@@ -412,17 +552,6 @@ function renderWebhookDebuggerPage(lang = DEFAULT_LANGUAGE) {
           return { base: 'v0:' + slackTs + ':' + body, note: 'Slack scheme: v0:timestamp:body' };
         }
         return { base: body, note: _t('tools.webhook-debugger.js.text7', 'the raw request body') };
-      }
-
-      /** Strips the scheme prefix providers put in front of the digest. */
-      function normalizeSignature(sig) {
-        var value = sig.value.trim();
-        if (sig.header === 'stripe-signature') {
-          var v1 = /(?:^|,)\\s*v1=([^,]+)/.exec(value);
-          if (v1) return v1[1].trim();
-        }
-        var prefixed = /^(?:sha1|sha256|sha512|v0|v1)=(.+)$/i.exec(value);
-        return prefixed ? prefixed[1].trim() : value;
       }
 
       function algorithmFor(sig, selected) {
@@ -516,14 +645,18 @@ function renderWebhookDebuggerPage(lang = DEFAULT_LANGUAGE) {
       setupToggle('body-toggle', 'body-panel', 'body-chevron');
       setupToggle('sig-toggle', 'sig-panel', 'sig-chevron');
 
-      document.getElementById('body-pretty-btn').addEventListener('click', function() {
-        prettyMode = true;
+      function setPretty(on) {
+        prettyMode = on;
+        document.getElementById('body-pretty-btn').setAttribute('aria-pressed', on ? 'true' : 'false');
+        document.getElementById('body-raw-btn').setAttribute('aria-pressed', on ? 'false' : 'true');
+        ['bg-surface-200', 'dark:bg-surface-700'].forEach(function(cls) {
+          document.getElementById('body-pretty-btn').classList.toggle(cls, on);
+          document.getElementById('body-raw-btn').classList.toggle(cls, !on);
+        });
         render();
-      });
-      document.getElementById('body-raw-btn').addEventListener('click', function() {
-        prettyMode = false;
-        render();
-      });
+      }
+      document.getElementById('body-pretty-btn').addEventListener('click', function() { setPretty(true); });
+      document.getElementById('body-raw-btn').addEventListener('click', function() { setPretty(false); });
 
       document.getElementById('copy-body-btn').addEventListener('click', function() {
         if (parsed) copyToClipboard(parsed.body || '', this);
@@ -556,8 +689,12 @@ function renderWebhookDebuggerPage(lang = DEFAULT_LANGUAGE) {
           return;
         }
 
-        var provided = normalizeSignature(sig);
-        var match = provided.toLowerCase() === digest.hex.toLowerCase() || provided === digest.base64;
+        var candidates = signatureCandidates(sig.header, sig.value);
+        var matched = candidates.filter(function(c) {
+          return c.toLowerCase() === digest.hex.toLowerCase() || c === digest.base64;
+        });
+        var match = matched.length > 0;
+        var provided = match ? matched[0] : candidates.join(', ');
 
         sigResult.className = 'mt-3 font-mono text-xs p-3 rounded-lg ' + (match
           ? 'bg-success-100 dark:bg-success-900/30 text-success-800 dark:text-success-300'
@@ -596,15 +733,7 @@ function renderWebhookDebuggerPage(lang = DEFAULT_LANGUAGE) {
 
       document.getElementById('copy-curl-btn').addEventListener('click', function() {
         if (!parsed) return;
-        var cmd = 'curl -X ' + parsed.method + ' \\\\\\n  "' + requestUrl() + '"';
-        var headers = replayHeaders();
-        Object.keys(headers).forEach(function(k) {
-          cmd += ' \\\\\\n  -H "' + k + ': ' + headers[k] + '"';
-        });
-        if (parsed.body && parsed.method !== 'GET') {
-          cmd += ' \\\\\\n  -d ' + JSON.stringify(parsed.body);
-        }
-        copyToClipboard(cmd, this);
+        copyToClipboard(buildCurlCommand(parsed.method, requestUrl(), replayHeaders(), parsed.body), this);
       });
 
       document.getElementById('replay-btn').addEventListener('click', function() {

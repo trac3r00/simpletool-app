@@ -52,6 +52,20 @@ describe("handleMarkdownEditorRoutes", () => {
     expect(text).toContain("--split");
   });
 
+  it("renders the Lint as select, findings panel and inlined linter", async () => {
+    const url = new URL("http://localhost/markdown-editor");
+    const response = await handleMarkdownEditorRoutes(new Request(url), url);
+    const text = await response.text();
+
+    const select = text.match(/<select id="lint-format"[\s\S]*?<\/select>/);
+    expect(select).not.toBeNull();
+    expect([...select[0].matchAll(/<option value="([a-z]+)"/g)].map((m) => m[1])).toEqual(["off", "agents", "skill", "llms"]);
+    expect(text).toContain('<label for="lint-format"');
+    expect(text).toMatch(/id="lint-panel"[^>]*aria-labelledby="lint-panel-title"/);
+    expect(text).toMatch(/id="lint-findings"[^>]*tabindex="0"[^>]*aria-label="Lint findings list"/);
+    expect(text).toContain("const MdLint = (function createMarkdownLint()");
+  });
+
   it("should contain markdown input textarea", async () => {
     const url = new URL("http://localhost/markdown-editor");
     const request = new Request(url, { method: "GET" });

@@ -16,6 +16,7 @@ import {
   normalizeLanguage,
   resolveRequestLanguage,
 } from "../utils/i18n.js";
+import { createCronLogic } from "../utils/cron-builder-logic.js";
 
 export async function handleCronBuilderRoutes(request) {
   const requestPath = new URL(request.url).pathname;
@@ -53,7 +54,7 @@ export async function handleCronBuilderRoutes(request) {
         paragraphs: [
           `This builder speaks classic Vixie/crontab syntax: minute, hour, day of month, month, day of week. It does not accept a sixth seconds field, Quartz, or systemd <code>OnCalendar=</code>. If your scheduler wants those, this page will not silently translate them.`,
           `The next-run list is computed in the browser from the expression and your current timezone. It is a preview, not a job runner. Nothing is stored and no webhook is registered.`,
-          `Day-of-week <code>0</code> and <code>7</code> are both Sunday. Lists, ranges, and steps (<code>1,15</code>, <code>1-5</code>, <code>*/5</code>) work; named months and days are accepted where crontab does. If the parser cannot read a field, the preview stays empty instead of inventing a schedule.`,
+          `Day-of-week <code>0</code> and <code>7</code> are both Sunday. Lists, ranges, and steps (<code>1,15</code>, <code>1-5</code>, <code>*/5</code>) work; named months and days are accepted where crontab does, and so are macros like <code>@daily</code>. If the parser cannot read a field, the page names the field and the problem instead of inventing a schedule. Quartz's <code>?</code> is rejected for the same reason.`,
         ],
       })}
 
@@ -62,39 +63,39 @@ export async function handleCronBuilderRoutes(request) {
         <!-- Left Column: Visual Builder (Editor) -->
         <div class="tool-group tool-group--flush flex-1 flex flex-col min-h-0 overflow-hidden">
           <div class="border-b border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-950/50">
-            <nav class="flex -mb-px" aria-label="Tabs" id="builder-tabs">
-              <button class="tab-trigger tab-btn active" data-target="minute" data-tooltip="0-59, which minutes to run">
+            <div class="flex -mb-px" role="tablist" aria-label="Cron field" id="builder-tabs">
+              <button type="button" role="tab" id="tabbtn-minute" aria-controls="tab-minute" aria-selected="true" tabindex="0" class="tab-trigger tab-btn active" data-target="minute" data-tooltip="0-59, which minutes to run">
                 <span data-i18n="tools.cron-builder.ui.button0">Minute</span>
               </button>
-              <button class="tab-trigger tab-btn" data-target="hour" data-tooltip="0-23, which hours to run">
+              <button type="button" role="tab" id="tabbtn-hour" aria-controls="tab-hour" aria-selected="false" tabindex="-1" class="tab-trigger tab-btn" data-target="hour" data-tooltip="0-23, which hours to run">
                 <span data-i18n="tools.cron-builder.ui.button1">Hour</span>
               </button>
-              <button class="tab-trigger tab-btn" data-target="dom" data-tooltip="1-31, which days of the month">
+              <button type="button" role="tab" id="tabbtn-dom" aria-controls="tab-dom" aria-selected="false" tabindex="-1" class="tab-trigger tab-btn" data-target="dom" data-tooltip="1-31, which days of the month">
                 <span data-i18n="tools.cron-builder.ui.button2">Day</span>
               </button>
-              <button class="tab-trigger tab-btn" data-target="month" data-tooltip="1-12, which months">
+              <button type="button" role="tab" id="tabbtn-month" aria-controls="tab-month" aria-selected="false" tabindex="-1" class="tab-trigger tab-btn" data-target="month" data-tooltip="1-12, which months">
                 <span data-i18n="tools.cron-builder.ui.button3">Month</span>
               </button>
-              <button class="tab-trigger tab-btn" data-target="dow" data-tooltip="0-6 (Sun-Sat), which days of week">
+              <button type="button" role="tab" id="tabbtn-dow" aria-controls="tab-dow" aria-selected="false" tabindex="-1" class="tab-trigger tab-btn" data-target="dow" data-tooltip="0-6 (Sun-Sat), which days of week">
                 <span data-i18n="tools.cron-builder.ui.button4">Week</span>
               </button>
-            </nav>
+            </div>
           </div>
 
           <div class="p-6 flex-grow overflow-y-auto bg-surface-50/30 dark:bg-surface-950/30">
             <!-- Minute Tab -->
-            <div id="tab-minute" class="tab-content flex flex-col gap-6">
+            <div id="tab-minute" role="tabpanel" aria-labelledby="tabbtn-minute" class="tab-content flex flex-col gap-6">
               <div class="flex flex-col sm:flex-row gap-4">
                 <label class="flex-1 relative flex items-center p-3 rounded-full border border-surface-200 dark:border-surface-700 cursor-pointer hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors group select-none">
                   <input type="radio" name="minute-type" value="*" class="peer sr-only" checked>
-                  <div class="absolute inset-0 z-0 pointer-events-none rounded-full border border-transparent peer-checked:border-2 peer-checked:border-primary-500 peer-checked:bg-primary-50 dark:peer-checked:bg-primary-900/20 transition-all"></div>
+                  <div class="absolute inset-0 z-0 pointer-events-none rounded-full peer-checked:bg-primary-50 dark:peer-checked:bg-primary-900/20 transition-all"></div>
                   <div class="relative z-10 flex-shrink-0 w-5 h-5 rounded-full border-2 border-surface-400 peer-checked:border-primary-500 peer-checked:bg-primary-500 mr-3 transition-all after:content-[''] after:absolute after:left-1/2 after:top-1/2 after:w-2 after:h-2 after:-translate-x-1/2 after:-translate-y-1/2 after:rounded-full after:bg-white after:opacity-0 after:transition-opacity peer-checked:after:opacity-100"></div>
                   <span class="relative z-10 text-surface-700 dark:text-surface-300 font-medium peer-checked:text-primary-700 dark:peer-checked:text-primary-300" data-i18n="tools.cron-builder.ui.desc9">Every minute (*)</span>
                 </label>
                 
                 <label class="flex-1 relative flex items-center p-3 rounded-full border border-surface-200 dark:border-surface-700 cursor-pointer hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors group select-none">
                   <input type="radio" name="minute-type" value="range" class="peer sr-only">
-                  <div class="absolute inset-0 z-0 pointer-events-none rounded-full border border-transparent peer-checked:border-2 peer-checked:border-primary-500 peer-checked:bg-primary-50 dark:peer-checked:bg-primary-900/20 transition-all"></div>
+                  <div class="absolute inset-0 z-0 pointer-events-none rounded-full peer-checked:bg-primary-50 dark:peer-checked:bg-primary-900/20 transition-all"></div>
                   <div class="relative z-10 flex-shrink-0 w-5 h-5 rounded-full border-2 border-surface-400 peer-checked:border-primary-500 peer-checked:bg-primary-500 mr-3 transition-all after:content-[''] after:absolute after:left-1/2 after:top-1/2 after:w-2 after:h-2 after:-translate-x-1/2 after:-translate-y-1/2 after:rounded-full after:bg-white after:opacity-0 after:transition-opacity peer-checked:after:opacity-100"></div>
                   <span class="relative z-10 text-surface-700 dark:text-surface-300 font-medium peer-checked:text-primary-700 dark:peer-checked:text-primary-300" data-i18n="tools.cron-builder.ui.desc10">Specific minutes</span>
                 </label>
@@ -106,18 +107,18 @@ export async function handleCronBuilderRoutes(request) {
             </div>
 
             <!-- Hour Tab -->
-            <div id="tab-hour" class="tab-content hidden flex flex-col gap-6">
+            <div id="tab-hour" role="tabpanel" aria-labelledby="tabbtn-hour" class="tab-content hidden flex flex-col gap-6">
               <div class="flex flex-col sm:flex-row gap-4">
                 <label class="flex-1 relative flex items-center p-3 rounded-full border border-surface-200 dark:border-surface-700 cursor-pointer hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors group select-none">
                   <input type="radio" name="hour-type" value="*" class="peer sr-only" checked>
-                  <div class="absolute inset-0 z-0 pointer-events-none rounded-full border border-transparent peer-checked:border-2 peer-checked:border-primary-500 peer-checked:bg-primary-50 dark:peer-checked:bg-primary-900/20 transition-all"></div>
+                  <div class="absolute inset-0 z-0 pointer-events-none rounded-full peer-checked:bg-primary-50 dark:peer-checked:bg-primary-900/20 transition-all"></div>
                   <div class="relative z-10 flex-shrink-0 w-5 h-5 rounded-full border-2 border-surface-400 peer-checked:border-primary-500 peer-checked:bg-primary-500 mr-3 transition-all after:content-[''] after:absolute after:left-1/2 after:top-1/2 after:w-2 after:h-2 after:-translate-x-1/2 after:-translate-y-1/2 after:rounded-full after:bg-white after:opacity-0 after:transition-opacity peer-checked:after:opacity-100"></div>
                   <span class="relative z-10 text-surface-700 dark:text-surface-300 font-medium peer-checked:text-primary-700 dark:peer-checked:text-primary-300" data-i18n="tools.cron-builder.ui.desc11">Every hour (*)</span>
                 </label>
                 
                 <label class="flex-1 relative flex items-center p-3 rounded-full border border-surface-200 dark:border-surface-700 cursor-pointer hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors group select-none">
                   <input type="radio" name="hour-type" value="range" class="peer sr-only">
-                  <div class="absolute inset-0 z-0 pointer-events-none rounded-full border border-transparent peer-checked:border-2 peer-checked:border-primary-500 peer-checked:bg-primary-50 dark:peer-checked:bg-primary-900/20 transition-all"></div>
+                  <div class="absolute inset-0 z-0 pointer-events-none rounded-full peer-checked:bg-primary-50 dark:peer-checked:bg-primary-900/20 transition-all"></div>
                   <div class="relative z-10 flex-shrink-0 w-5 h-5 rounded-full border-2 border-surface-400 peer-checked:border-primary-500 peer-checked:bg-primary-500 mr-3 transition-all after:content-[''] after:absolute after:left-1/2 after:top-1/2 after:w-2 after:h-2 after:-translate-x-1/2 after:-translate-y-1/2 after:rounded-full after:bg-white after:opacity-0 after:transition-opacity peer-checked:after:opacity-100"></div>
                   <span class="relative z-10 text-surface-700 dark:text-surface-300 font-medium peer-checked:text-primary-700 dark:peer-checked:text-primary-300" data-i18n="tools.cron-builder.ui.desc12">Specific hours</span>
                 </label>
@@ -128,25 +129,18 @@ export async function handleCronBuilderRoutes(request) {
             </div>
 
             <!-- Day of Month Tab -->
-            <div id="tab-dom" class="tab-content hidden flex flex-col gap-6">
+            <div id="tab-dom" role="tabpanel" aria-labelledby="tabbtn-dom" class="tab-content hidden flex flex-col gap-6">
               <div class="flex flex-col sm:flex-row gap-4">
                 <label class="flex-1 relative flex items-center p-3 rounded-full border border-surface-200 dark:border-surface-700 cursor-pointer hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors group select-none">
                   <input type="radio" name="dom-type" value="*" class="peer sr-only" checked>
-                  <div class="absolute inset-0 z-0 pointer-events-none rounded-full border border-transparent peer-checked:border-2 peer-checked:border-primary-500 peer-checked:bg-primary-50 dark:peer-checked:bg-primary-900/20 transition-all"></div>
+                  <div class="absolute inset-0 z-0 pointer-events-none rounded-full peer-checked:bg-primary-50 dark:peer-checked:bg-primary-900/20 transition-all"></div>
                   <div class="relative z-10 flex-shrink-0 w-5 h-5 rounded-full border-2 border-surface-400 peer-checked:border-primary-500 peer-checked:bg-primary-500 mr-3 transition-all after:content-[''] after:absolute after:left-1/2 after:top-1/2 after:w-2 after:h-2 after:-translate-x-1/2 after:-translate-y-1/2 after:rounded-full after:bg-white after:opacity-0 after:transition-opacity peer-checked:after:opacity-100"></div>
                   <span class="relative z-10 text-surface-700 dark:text-surface-300 font-medium peer-checked:text-primary-700 dark:peer-checked:text-primary-300" data-i18n="tools.cron-builder.ui.desc13">Every day (*)</span>
                 </label>
                 
                 <label class="flex-1 relative flex items-center p-3 rounded-full border border-surface-200 dark:border-surface-700 cursor-pointer hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors group select-none">
-                  <input type="radio" name="dom-type" value="?" class="peer sr-only">
-                  <div class="absolute inset-0 z-0 pointer-events-none rounded-full border border-transparent peer-checked:border-2 peer-checked:border-primary-500 peer-checked:bg-primary-50 dark:peer-checked:bg-primary-900/20 transition-all"></div>
-                  <div class="relative z-10 flex-shrink-0 w-5 h-5 rounded-full border-2 border-surface-400 peer-checked:border-primary-500 peer-checked:bg-primary-500 mr-3 transition-all after:content-[''] after:absolute after:left-1/2 after:top-1/2 after:w-2 after:h-2 after:-translate-x-1/2 after:-translate-y-1/2 after:rounded-full after:bg-white after:opacity-0 after:transition-opacity peer-checked:after:opacity-100"></div>
-                  <span class="relative z-10 text-surface-700 dark:text-surface-300 font-medium peer-checked:text-primary-700 dark:peer-checked:text-primary-300" data-i18n="tools.cron-builder.ui.desc14">No specific day (?)</span>
-                </label>
-                
-                <label class="flex-1 relative flex items-center p-3 rounded-full border border-surface-200 dark:border-surface-700 cursor-pointer hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors group select-none">
                   <input type="radio" name="dom-type" value="range" class="peer sr-only">
-                  <div class="absolute inset-0 z-0 pointer-events-none rounded-full border border-transparent peer-checked:border-2 peer-checked:border-primary-500 peer-checked:bg-primary-50 dark:peer-checked:bg-primary-900/20 transition-all"></div>
+                  <div class="absolute inset-0 z-0 pointer-events-none rounded-full peer-checked:bg-primary-50 dark:peer-checked:bg-primary-900/20 transition-all"></div>
                   <div class="relative z-10 flex-shrink-0 w-5 h-5 rounded-full border-2 border-surface-400 peer-checked:border-primary-500 peer-checked:bg-primary-500 mr-3 transition-all after:content-[''] after:absolute after:left-1/2 after:top-1/2 after:w-2 after:h-2 after:-translate-x-1/2 after:-translate-y-1/2 after:rounded-full after:bg-white after:opacity-0 after:transition-opacity peer-checked:after:opacity-100"></div>
                   <span class="relative z-10 text-surface-700 dark:text-surface-300 font-medium peer-checked:text-primary-700 dark:peer-checked:text-primary-300" data-i18n="tools.cron-builder.ui.desc15">Specific days</span>
                 </label>
@@ -157,18 +151,18 @@ export async function handleCronBuilderRoutes(request) {
             </div>
 
             <!-- Month Tab -->
-            <div id="tab-month" class="tab-content hidden flex flex-col gap-6">
+            <div id="tab-month" role="tabpanel" aria-labelledby="tabbtn-month" class="tab-content hidden flex flex-col gap-6">
               <div class="flex flex-col sm:flex-row gap-4">
                 <label class="flex-1 relative flex items-center p-3 rounded-full border border-surface-200 dark:border-surface-700 cursor-pointer hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors group select-none">
                   <input type="radio" name="month-type" value="*" class="peer sr-only" checked>
-                  <div class="absolute inset-0 z-0 pointer-events-none rounded-full border border-transparent peer-checked:border-2 peer-checked:border-primary-500 peer-checked:bg-primary-50 dark:peer-checked:bg-primary-900/20 transition-all"></div>
+                  <div class="absolute inset-0 z-0 pointer-events-none rounded-full peer-checked:bg-primary-50 dark:peer-checked:bg-primary-900/20 transition-all"></div>
                   <div class="relative z-10 flex-shrink-0 w-5 h-5 rounded-full border-2 border-surface-400 peer-checked:border-primary-500 peer-checked:bg-primary-500 mr-3 transition-all after:content-[''] after:absolute after:left-1/2 after:top-1/2 after:w-2 after:h-2 after:-translate-x-1/2 after:-translate-y-1/2 after:rounded-full after:bg-white after:opacity-0 after:transition-opacity peer-checked:after:opacity-100"></div>
                   <span class="relative z-10 text-surface-700 dark:text-surface-300 font-medium peer-checked:text-primary-700 dark:peer-checked:text-primary-300" data-i18n="tools.cron-builder.ui.desc16">Every month (*)</span>
                 </label>
                 
                 <label class="flex-1 relative flex items-center p-3 rounded-full border border-surface-200 dark:border-surface-700 cursor-pointer hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors group select-none">
                   <input type="radio" name="month-type" value="range" class="peer sr-only">
-                  <div class="absolute inset-0 z-0 pointer-events-none rounded-full border border-transparent peer-checked:border-2 peer-checked:border-primary-500 peer-checked:bg-primary-50 dark:peer-checked:bg-primary-900/20 transition-all"></div>
+                  <div class="absolute inset-0 z-0 pointer-events-none rounded-full peer-checked:bg-primary-50 dark:peer-checked:bg-primary-900/20 transition-all"></div>
                   <div class="relative z-10 flex-shrink-0 w-5 h-5 rounded-full border-2 border-surface-400 peer-checked:border-primary-500 peer-checked:bg-primary-500 mr-3 transition-all after:content-[''] after:absolute after:left-1/2 after:top-1/2 after:w-2 after:h-2 after:-translate-x-1/2 after:-translate-y-1/2 after:rounded-full after:bg-white after:opacity-0 after:transition-opacity peer-checked:after:opacity-100"></div>
                   <span class="relative z-10 text-surface-700 dark:text-surface-300 font-medium peer-checked:text-primary-700 dark:peer-checked:text-primary-300" data-i18n="tools.cron-builder.ui.desc17">Specific months</span>
                 </label>
@@ -179,25 +173,18 @@ export async function handleCronBuilderRoutes(request) {
             </div>
 
             <!-- Day of Week Tab -->
-            <div id="tab-dow" class="tab-content hidden flex flex-col gap-6">
+            <div id="tab-dow" role="tabpanel" aria-labelledby="tabbtn-dow" class="tab-content hidden flex flex-col gap-6">
               <div class="flex flex-col sm:flex-row gap-4">
                 <label class="flex-1 relative flex items-center p-3 rounded-full border border-surface-200 dark:border-surface-700 cursor-pointer hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors group select-none">
                   <input type="radio" name="dow-type" value="*" class="peer sr-only" checked>
-                  <div class="absolute inset-0 z-0 pointer-events-none rounded-full border border-transparent peer-checked:border-2 peer-checked:border-primary-500 peer-checked:bg-primary-50 dark:peer-checked:bg-primary-900/20 transition-all"></div>
+                  <div class="absolute inset-0 z-0 pointer-events-none rounded-full peer-checked:bg-primary-50 dark:peer-checked:bg-primary-900/20 transition-all"></div>
                   <div class="relative z-10 flex-shrink-0 w-5 h-5 rounded-full border-2 border-surface-400 peer-checked:border-primary-500 peer-checked:bg-primary-500 mr-3 transition-all after:content-[''] after:absolute after:left-1/2 after:top-1/2 after:w-2 after:h-2 after:-translate-x-1/2 after:-translate-y-1/2 after:rounded-full after:bg-white after:opacity-0 after:transition-opacity peer-checked:after:opacity-100"></div>
                   <span class="relative z-10 text-surface-700 dark:text-surface-300 font-medium peer-checked:text-primary-700 dark:peer-checked:text-primary-300" data-i18n="tools.cron-builder.ui.desc18">Every day of the week (*)</span>
                 </label>
                 
                 <label class="flex-1 relative flex items-center p-3 rounded-full border border-surface-200 dark:border-surface-700 cursor-pointer hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors group select-none">
-                  <input type="radio" name="dow-type" value="?" class="peer sr-only">
-                  <div class="absolute inset-0 z-0 pointer-events-none rounded-full border border-transparent peer-checked:border-2 peer-checked:border-primary-500 peer-checked:bg-primary-50 dark:peer-checked:bg-primary-900/20 transition-all"></div>
-                  <div class="relative z-10 flex-shrink-0 w-5 h-5 rounded-full border-2 border-surface-400 peer-checked:border-primary-500 peer-checked:bg-primary-500 mr-3 transition-all after:content-[''] after:absolute after:left-1/2 after:top-1/2 after:w-2 after:h-2 after:-translate-x-1/2 after:-translate-y-1/2 after:rounded-full after:bg-white after:opacity-0 after:transition-opacity peer-checked:after:opacity-100"></div>
-                  <span class="relative z-10 text-surface-700 dark:text-surface-300 font-medium peer-checked:text-primary-700 dark:peer-checked:text-primary-300" data-i18n="tools.cron-builder.ui.desc14">No specific day (?)</span>
-                </label>
-                
-                <label class="flex-1 relative flex items-center p-3 rounded-full border border-surface-200 dark:border-surface-700 cursor-pointer hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors group select-none">
                   <input type="radio" name="dow-type" value="range" class="peer sr-only">
-                  <div class="absolute inset-0 z-0 pointer-events-none rounded-full border border-transparent peer-checked:border-2 peer-checked:border-primary-500 peer-checked:bg-primary-50 dark:peer-checked:bg-primary-900/20 transition-all"></div>
+                  <div class="absolute inset-0 z-0 pointer-events-none rounded-full peer-checked:bg-primary-50 dark:peer-checked:bg-primary-900/20 transition-all"></div>
                   <div class="relative z-10 flex-shrink-0 w-5 h-5 rounded-full border-2 border-surface-400 peer-checked:border-primary-500 peer-checked:bg-primary-500 mr-3 transition-all"></div>
                   <span class="relative z-10 text-surface-700 dark:text-surface-300 font-medium peer-checked:text-primary-700 dark:peer-checked:text-primary-300" data-i18n="tools.cron-builder.ui.desc19">Specific days of week</span>
                 </label>
@@ -223,10 +210,11 @@ export async function handleCronBuilderRoutes(request) {
                   class="input-mono w-full tracking-wider" 
                   value="* * * * *" 
                   spellcheck="false"
-                  autocomplete="off">
+                  autocomplete="off"
+                  aria-describedby="human-readable">
               </div>
-              <button id="copy-cron-btn" 
-                class="tab-trigger flex-shrink-0">
+              <button id="copy-cron-btn" type="button"
+                class="btn btn-secondary flex-shrink-0">
                 <span data-i18n="tools.cron-builder.ui.button5">Copy</span>
               </button>
             </div>
@@ -247,7 +235,14 @@ export async function handleCronBuilderRoutes(request) {
           <div class="tool-group p-6">
             <div class="flex items-center justify-between mb-4">
               <h2 class="text-lg font-semibold text-surface-900 dark:text-surface-50" data-i18n="tools.cron-builder.ui.heading7">Next Runs</h2>
-              <span class="text-xs px-2 py-1 rounded bg-surface-100 dark:bg-surface-800 text-surface-500 dark:text-surface-400" data-i18n="tools.cron-builder.ui.desc20">Local Time</span>
+              <div class="flex flex-wrap items-center justify-end gap-2">
+                <span class="text-xs px-2 py-1 rounded bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-300" data-i18n="tools.cron-builder.ui.desc20">Local Time</span>
+                <span id="tz-name" class="text-xs text-surface-500 dark:text-surface-400 font-mono"></span>
+                <label class="inline-flex items-center gap-2 min-h-[44px] text-sm text-surface-700 dark:text-surface-300 cursor-pointer">
+                  <input type="checkbox" id="use-utc" class="w-5 h-5 accent-primary-600">
+                  Show in UTC
+                </label>
+              </div>
             </div>
             <div class="relative">
               <div class="absolute left-2 top-2 bottom-2 w-0.5 bg-surface-200 dark:bg-surface-700"></div>
@@ -292,7 +287,7 @@ export async function handleCronBuilderRoutes(request) {
             <tr><td>2</td><td>Hour</td><td>0–23</td></tr>
             <tr><td>3</td><td>Day of Month</td><td>1–31</td></tr>
             <tr><td>4</td><td>Month</td><td>1–12</td></tr>
-            <tr><td>5</td><td>Day of Week</td><td>0–7 (0,7 = Sun)</td></tr>
+            <tr><td>5</td><td>Day of Week</td><td data-i18n="tools.cron-builder.ui.r3_0">0–7 (0,7 = Sun)</td></tr>
           </table>`,
         },
         {
@@ -303,7 +298,7 @@ export async function handleCronBuilderRoutes(request) {
             <tr><td><code>*</code></td><td>Any value</td><td>Every minute</td></tr>
             <tr><td><code>,</code></td><td>List</td><td><code>1,15</code> (1st and 15th)</td></tr>
             <tr><td><code>-</code></td><td>Range</td><td><code>1-5</code> (Mon–Fri)</td></tr>
-            <tr><td><code>/</code></td><td>Step</td><td><code>*/5</code> (every 5 min)</td></tr>
+            <tr><td><code>/</code></td><td data-i18n="tools.cron-builder.ui.r3_1">Step</td><td><code>*/5</code> (every 5 min)</td></tr>
           </table>`,
         },
         {
@@ -315,7 +310,7 @@ export async function handleCronBuilderRoutes(request) {
             <tr><td><code>0 0 * * *</code></td><td>Daily at midnight</td></tr>
             <tr><td><code>0 0 * * 1</code></td><td>Every Monday</td></tr>
             <tr><td><code>*/5 * * * *</code></td><td>Every 5 minutes</td></tr>
-            <tr><td><code>0 9-17 * * 1-5</code></td><td>Hourly 9am–5pm weekdays</td></tr>
+            <tr><td><code>0 9-17 * * 1-5</code></td><td data-i18n="tools.cron-builder.ui.r3_2">Hourly 9am–5pm weekdays</td></tr>
           </table>`,
         },
       ])}
@@ -323,17 +318,17 @@ export async function handleCronBuilderRoutes(request) {
       </div>
     </main>
 
+    <style>
+      .cron-cell:focus-within { outline: 2px solid hsl(var(--ring)); outline-offset: 2px; }
+    </style>
     <script>
-      /**
-       * Cron Logic & UI Controller
-       */
       (function() {
-        // --- Constants & Data ---
+        const cronLogic = (${createCronLogic.toString()})();
         const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-        const MONTH_MAP = {JAN:1,FEB:2,MAR:3,APR:4,MAY:5,JUN:6,JUL:7,AUG:8,SEP:9,OCT:10,NOV:11,DEC:12};
-        const DAY_MAP = {SUN:0,MON:1,TUE:2,WED:3,THU:4,FRI:5,SAT:6};
-        
+        const PARTS = ['minute', 'hour', 'dom', 'month', 'dow'];
+        const SELECTED = ['bg-primary-50', 'dark:bg-primary-900/30', 'border-primary-200', 'dark:border-primary-800'];
+
         const RECIPES = [
           { name: 'Every minute', cron: '* * * * *' },
           { name: 'Every 5 minutes', cron: '*/5 * * * *' },
@@ -345,253 +340,7 @@ export async function handleCronBuilderRoutes(request) {
           { name: 'Weekdays at 9am', cron: '0 9 * * 1-5' },
         ];
 
-        // --- State ---
-        let state = {
-          minute: '*',
-          hour: '*',
-          dom: '*',
-          month: '*',
-          dow: '*'
-        };
-
-        // --- DOM Elements ---
-        const input = document.getElementById('cron-expression');
-        const humanReadable = document.getElementById('human-readable');
-        const nextExecutionsList = document.getElementById('next-executions');
-        const recipesList = document.getElementById('recipes-list');
-        const tabs = document.querySelectorAll('.tab-btn');
-        const tabContents = document.querySelectorAll('.tab-content');
-
-        // --- Initialization ---
-        function init() {
-          renderGrids();
-          renderRecipes();
-          
-          // Event Listeners
-          input.addEventListener('input', handleInput);
-          
-          document.getElementById('copy-cron-btn').addEventListener('click', function() {
-             copyToClipboard(input.value, this);
-          });
-          
-          tabs.forEach(tab => {
-            tab.addEventListener('click', () => switchTab(tab.dataset.target));
-          });
-
-          // Radio buttons for types
-          ['minute', 'hour', 'dom', 'month', 'dow'].forEach(part => {
-            document.querySelectorAll(\`input[name="\${part}-type"]\`).forEach(radio => {
-              radio.addEventListener('change', (e) => handleTypeChange(part, e.target.value));
-            });
-          });
-
-          // Initial Parse
-          handleInput();
-        }
-
-        // --- Core Logic: Parsing & Stringifying ---
-
-        function parseCron(cronStr) {
-          const parts = cronStr.trim().split(/\\s+/);
-          if (parts.length < 5) return null;
-          
-          return {
-            minute: parts[0],
-            hour: parts[1],
-            dom: parts[2],
-            month: parts[3],
-            dow: parts[4]
-          };
-        }
-
-        function stringifyState() {
-          return \`\${state.minute} \${state.hour} \${state.dom} \${state.month} \${state.dow}\`;
-        }
-
-        function updateStateFromInput() {
-          const parsed = parseCron(input.value);
-          if (parsed) {
-            state = parsed;
-            updateUIFromState();
-            updateHumanReadable();
-            updateNextExecutions();
-          }
-        }
-
-        function updateInputFromState() {
-          const str = stringifyState();
-          input.value = str;
-          updateHumanReadable();
-          updateNextExecutions();
-        }
-
-        // --- UI Updates ---
-
-        function handleInput() {
-          updateStateFromInput();
-        }
-
-        function handleTypeChange(part, type) {
-          if (type === '*' || type === '?') {
-            state[part] = type;
-            toggleGrid(part, false);
-          } else {
-            // If switching to range, default to '0' or '1' if currently *
-            if (state[part] === '*' || state[part] === '?') {
-              state[part] = (part === 'dom' || part === 'month') ? '1' : '0';
-            }
-            toggleGrid(part, true);
-          }
-          updateInputFromState();
-          updateUIFromState(); // To refresh grid selection
-        }
-
-        function toggleGrid(part, enabled) {
-          const grid = document.getElementById(\`\${part}-grid\`);
-          if (enabled) {
-            grid.classList.remove('opacity-50', 'pointer-events-none');
-          } else {
-            grid.classList.add('opacity-50', 'pointer-events-none');
-          }
-        }
-
-        function updateUIFromState() {
-          ['minute', 'hour', 'dom', 'month', 'dow'].forEach(part => {
-            const val = state[part];
-            const radios = document.querySelectorAll(\`input[name="\${part}-type"]\`);
-            const grid = document.getElementById(\`\${part}-grid\`);
-            
-            // Update Radios
-            let type = 'range';
-            if (val === '*') type = '*';
-            else if (val === '?') type = '?';
-            
-            // Simple check for * or ?
-            radios.forEach(r => {
-              if (r.value === type) r.checked = true;
-            });
-
-            toggleGrid(part, type === 'range');
-
-            // Update Grid Selections
-            const selected = parsePartToSet(val, part);
-            const checkboxes = grid.querySelectorAll('input[type="checkbox"]');
-            checkboxes.forEach(cb => {
-              const label = cb.closest('label');
-              const isSelected = selected.has(parseInt(cb.value));
-              cb.checked = isSelected;
-              if (isSelected) {
-                label.classList.add('bg-primary-50', 'dark:bg-primary-900/30', 'border-primary-200', 'dark:border-primary-800');
-              } else {
-                label.classList.remove('bg-primary-50', 'dark:bg-primary-900/30', 'border-primary-200', 'dark:border-primary-800');
-              }
-            });
-          });
-        }
-
-        function parsePartToSet(partStr, partType) {
-          const set = new Set();
-          if (partStr === '*' || partStr === '?') return set;
-
-          const parseVal = (v) => {
-            if (!isNaN(v)) return parseInt(v);
-            const u = v.toUpperCase();
-            if (partType === 'month' && MONTH_MAP[u] !== undefined) return MONTH_MAP[u];
-            if (partType === 'dow' && DAY_MAP[u] !== undefined) return DAY_MAP[u];
-            return parseInt(v);
-          };
-
-          // Handle lists
-          const items = partStr.split(',');
-          items.forEach(item => {
-            if (item.includes('-')) {
-              const [s, e] = item.split('-');
-              const start = parseVal(s);
-              const end = parseVal(e);
-              for (let i = start; i <= end; i++) set.add(i);
-            } else if (item.includes('/')) {
-              // Handle step values like */5 or 0/5
-              const [range, step] = item.split('/');
-              let start = 0, end = 0;
-              
-              if (partType === 'minute') end = 59;
-              if (partType === 'hour') end = 23;
-              if (partType === 'dom') { start = 1; end = 31; }
-              if (partType === 'month') { start = 1; end = 12; }
-              if (partType === 'dow') end = 6;
-
-              if (range !== '*') {
-                 if (range.includes('-')) {
-                    const [s, e] = range.split('-');
-                    start = parseVal(s);
-                    end = parseVal(e);
-                 } else {
-                    start = parseVal(range);
-                 }
-              }
-              
-              const stepNum = parseInt(step);
-              for (let i = start; i <= end; i += stepNum) set.add(i);
-
-            } else {
-              set.add(parseVal(item));
-            }
-          });
-          return set;
-        }
-
-        function updatePartFromGrid(part) {
-          const grid = document.getElementById(\`\${part}-grid\`);
-          const checked = Array.from(grid.querySelectorAll('input:checked')).map(cb => parseInt(cb.value));
-          
-          if (checked.length === 0) {
-            state[part] = '*';
-            document.querySelector(\`input[name="\${part}-type"][value="*"]\`).checked = true;
-            toggleGrid(part, false);
-          } else {
-            checked.sort((a, b) => a - b);
-            state[part] = compressSelection(checked);
-          }
-          updateInputFromState();
-        }
-
-        function compressSelection(nums) {
-          if (nums.length === 0) return '*';
-          
-          let ranges = [];
-          let start = nums[0];
-          let prev = nums[0];
-
-          for (let i = 1; i < nums.length; i++) {
-            if (nums[i] === prev + 1) {
-              prev = nums[i];
-            } else {
-              ranges.push(start === prev ? \`\${start}\` : \`\${start}-\${prev}\`);
-              start = nums[i];
-              prev = nums[i];
-            }
-          }
-          ranges.push(start === prev ? \`\${start}\` : \`\${start}-\${prev}\`);
-          
-          return ranges.join(',');
-        }
-
-        // --- Rendering ---
-
-        function renderGrids() {
-          // Minute (0-59)
-          renderGrid('minute', 0, 59, (i) => i.toString().padStart(2, '0'));
-          // Hour (0-23)
-          renderGrid('hour', 0, 23, (i) => i.toString().padStart(2, '0'));
-          // DOM (1-31)
-          renderGrid('dom', 1, 31, (i) => i.toString());
-          // Month (1-12)
-          renderGrid('month', 1, 12, (i) => MONTHS[i-1]);
-          // DOW (0-6)
-          renderGrid('dow', 0, 6, (i) => DAYS[i]);
-        }
-
-const GRID_LABELS = {
+        const GRID_LABELS = {
           minute: 'Minute selector',
           hour: 'Hour selector',
           dom: 'Day of month selector',
@@ -599,237 +348,265 @@ const GRID_LABELS = {
           dow: 'Day of week selector',
         };
 
+        let state = { minute: '*', hour: '*', dom: '*', month: '*', dow: '*' };
+        let parsed = null;
+
+        const input = document.getElementById('cron-expression');
+        const humanReadable = document.getElementById('human-readable');
+        const nextExecutionsList = document.getElementById('next-executions');
+        const recipesList = document.getElementById('recipes-list');
+        const useUtc = document.getElementById('use-utc');
+        const tzName = document.getElementById('tz-name');
+        const tabs = Array.from(document.querySelectorAll('.tab-btn'));
+        const tabContents = document.querySelectorAll('.tab-content');
+        const localZone = (Intl.DateTimeFormat().resolvedOptions().timeZone) || 'local';
+
+        function init() {
+          renderGrids();
+          renderRecipes();
+          input.addEventListener('input', handleInput);
+          useUtc.addEventListener('change', function() {
+            updateZoneLabel();
+            updateNextExecutions();
+          });
+          document.getElementById('copy-cron-btn').addEventListener('click', function() {
+            copyToClipboard(input.value.trim(), this);
+          });
+          tabs.forEach(function(tab) {
+            tab.addEventListener('click', function() { switchTab(tab.dataset.target, false); });
+          });
+          document.getElementById('builder-tabs').addEventListener('keydown', function(e) {
+            const keys = { ArrowLeft: -1, ArrowRight: 1, Home: 'first', End: 'last' };
+            if (!(e.key in keys)) return;
+            e.preventDefault();
+            const cur = tabs.findIndex(function(t) { return t.getAttribute('aria-selected') === 'true'; });
+            let next = keys[e.key] === 'first' ? 0 : keys[e.key] === 'last' ? tabs.length - 1 : (cur + keys[e.key] + tabs.length) % tabs.length;
+            switchTab(tabs[next].dataset.target, true);
+          });
+          PARTS.forEach(function(part) {
+            document.querySelectorAll('input[name="' + part + '-type"]').forEach(function(radio) {
+              radio.addEventListener('change', function(e) { handleTypeChange(part, e.target.value); });
+            });
+          });
+          updateZoneLabel();
+          handleInput();
+        }
+
+        function updateZoneLabel() {
+          tzName.textContent = useUtc.checked ? 'UTC' : localZone;
+        }
+
+        function stringifyState() {
+          return PARTS.map(function(p) { return state[p]; }).join(' ');
+        }
+
+        function handleInput() {
+          parsed = cronLogic.parseCron(input.value);
+          if (parsed.ok) {
+            const f = parsed.fields;
+            state = { minute: f.minute.raw, hour: f.hour.raw, dom: f.dom.raw, month: f.month.raw, dow: f.dow.raw };
+            updateUIFromState();
+          }
+          render();
+        }
+
+        function updateInputFromState() {
+          input.value = stringifyState();
+          parsed = cronLogic.parseCron(input.value);
+          render();
+        }
+
+        function render() {
+          updateHumanReadable();
+          updateNextExecutions();
+        }
+
+        function handleTypeChange(part, type) {
+          if (type === '*') {
+            state[part] = '*';
+          } else if (state[part] === '*') {
+            state[part] = (part === 'dom' || part === 'month') ? '1' : '0';
+          }
+          updateInputFromState();
+          updateUIFromState();
+        }
+
+        function toggleGrid(part, enabled) {
+          const grid = document.getElementById(part + '-grid');
+          grid.classList.toggle('opacity-50', !enabled);
+          grid.classList.toggle('pointer-events-none', !enabled);
+          grid.querySelectorAll('input').forEach(function(cb) { cb.disabled = !enabled; });
+        }
+
+        function updateUIFromState() {
+          if (!parsed || !parsed.ok) return;
+          PARTS.forEach(function(part) {
+            const isAll = state[part] === '*';
+            document.querySelectorAll('input[name="' + part + '-type"]').forEach(function(r) {
+              r.checked = r.value === (isAll ? '*' : 'range');
+            });
+            toggleGrid(part, !isAll);
+            const selected = isAll ? [] : parsed.fields[part].values;
+            document.getElementById(part + '-grid').querySelectorAll('input[type="checkbox"]').forEach(function(cb) {
+              const on = selected.indexOf(parseInt(cb.value, 10)) !== -1;
+              cb.checked = on;
+              SELECTED.forEach(function(c) { cb.closest('label').classList.toggle(c, on); });
+            });
+          });
+        }
+
+        function updatePartFromGrid(part) {
+          const grid = document.getElementById(part + '-grid');
+          const checked = Array.from(grid.querySelectorAll('input:checked')).map(function(cb) { return parseInt(cb.value, 10); });
+          if (checked.length === 0) {
+            state[part] = '*';
+          } else {
+            checked.sort(function(a, b) { return a - b; });
+            state[part] = compressSelection(checked);
+          }
+          updateInputFromState();
+          updateUIFromState();
+        }
+
+        function compressSelection(nums) {
+          const ranges = [];
+          let start = nums[0];
+          let prev = nums[0];
+          for (let i = 1; i <= nums.length; i++) {
+            if (i < nums.length && nums[i] === prev + 1) { prev = nums[i]; continue; }
+            ranges.push(start === prev ? String(start) : start + '-' + prev);
+            start = nums[i];
+            prev = nums[i];
+          }
+          return ranges.join(',');
+        }
+
+        function renderGrids() {
+          renderGrid('minute', 0, 59, function(i) { return String(i).padStart(2, '0'); });
+          renderGrid('hour', 0, 23, function(i) { return String(i).padStart(2, '0'); });
+          renderGrid('dom', 1, 31, function(i) { return String(i); });
+          renderGrid('month', 1, 12, function(i) { return MONTHS[i - 1]; });
+          renderGrid('dow', 0, 6, function(i) { return DAYS[i]; });
+        }
+
         function renderGrid(part, start, end, labelFn) {
-          const container = document.getElementById(\`\${part}-grid\`);
+          const container = document.getElementById(part + '-grid');
           container.innerHTML = '';
           container.setAttribute('role', 'group');
-          container.setAttribute('aria-label', GRID_LABELS[part] || 'Value selector');
-
+          container.setAttribute('aria-label', GRID_LABELS[part]);
           for (let i = start; i <= end; i++) {
             const label = document.createElement('label');
-            label.className = 'flex items-center justify-center w-8 h-8 border border-surface-200 dark:border-surface-700 rounded-full cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors select-none text-sm';
-
-            const input = document.createElement('input');
-            input.type = 'checkbox';
-            input.value = i;
-            input.className = 'hidden peer';
-
+            label.className = 'cron-cell relative flex items-center justify-center w-8 h-8 border border-surface-200 dark:border-surface-700 rounded-full cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors select-none text-sm';
+            const cb = document.createElement('input');
+            cb.type = 'checkbox';
+            cb.value = i;
+            cb.className = 'sr-only peer';
+            cb.setAttribute('aria-label', GRID_LABELS[part].replace(' selector', '') + ' ' + labelFn(i));
             const span = document.createElement('span');
             span.textContent = labelFn(i);
+            span.setAttribute('aria-hidden', 'true');
             span.className = 'peer-checked:font-bold peer-checked:text-primary-600 dark:peer-checked:text-primary-400';
-
-            input.addEventListener('change', () => {
-              if (input.checked) {
-                label.classList.add('bg-primary-50', 'dark:bg-primary-900/30', 'border-primary-200', 'dark:border-primary-800');
-              } else {
-                label.classList.remove('bg-primary-50', 'dark:bg-primary-900/30', 'border-primary-200', 'dark:border-primary-800');
-              }
-              updatePartFromGrid(part);
-            });
-
-            label.appendChild(input);
+            cb.addEventListener('change', function() { updatePartFromGrid(part); });
+            label.appendChild(cb);
             label.appendChild(span);
             container.appendChild(label);
           }
         }
 
         function renderRecipes() {
-          recipesList.innerHTML = RECIPES.map(r => \`
-            <button class="recipe-btn w-full text-left px-4 py-3 rounded-lg hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors flex justify-between items-center group" data-cron="\${r.cron}">
-              <span class="text-sm font-medium text-surface-700 dark:text-surface-300 group-hover:text-primary-600 dark:group-hover:text-primary-400">\${r.name}</span>
-              <code class="text-xs bg-surface-100 dark:bg-surface-950 px-2 py-1 rounded text-surface-500 dark:text-surface-400 font-mono">\${r.cron}</code>
-            </button>
-          \`).join('');
-          
-          recipesList.querySelectorAll('.recipe-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
+          recipesList.innerHTML = RECIPES.map(function(r) {
+            return '<button type="button" class="recipe-btn w-full text-left px-4 py-3 rounded-lg hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors flex justify-between items-center group" data-cron="' + r.cron + '">' +
+              '<span class="text-sm font-medium text-surface-700 dark:text-surface-300 group-hover:text-primary-600 dark:group-hover:text-primary-400">' + r.name + '</span>' +
+              '<code class="text-xs bg-surface-100 dark:bg-surface-950 px-2 py-1 rounded text-surface-600 dark:text-surface-300 font-mono">' + r.cron + '</code></button>';
+          }).join('');
+          recipesList.querySelectorAll('.recipe-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
               input.value = btn.dataset.cron;
               handleInput();
             });
           });
         }
 
-        function switchTab(target) {
-          tabs.forEach(t => {
-            if (t.dataset.target === target) {
-              t.classList.add('border-primary-500', 'text-primary-600', 'dark:text-primary-400');
-              t.classList.remove('border-transparent', 'text-surface-500', 'dark:text-surface-400');
-            } else {
-              t.classList.remove('border-primary-500', 'text-primary-600', 'dark:text-primary-400');
-              t.classList.add('border-transparent', 'text-surface-500', 'dark:text-surface-400');
-            }
+        function switchTab(target, focus) {
+          tabs.forEach(function(t) {
+            const on = t.dataset.target === target;
+            t.classList.toggle('active', on);
+            t.setAttribute('aria-selected', on ? 'true' : 'false');
+            t.setAttribute('tabindex', on ? '0' : '-1');
+            if (on && focus) t.focus();
           });
-          
-          tabContents.forEach(c => {
-            if (c.id === \`tab-\${target}\`) c.classList.remove('hidden');
-            else c.classList.add('hidden');
-          });
+          tabContents.forEach(function(c) { c.classList.toggle('hidden', c.id !== 'tab-' + target); });
         }
 
-        // --- Human Readable & Next Execution Logic ---
+        function showError(message) {
+          humanReadable.textContent = message;
+          humanReadable.classList.add('text-error-700');
+          humanReadable.classList.remove('text-primary-800', 'dark:text-primary-200');
+          input.setAttribute('aria-invalid', 'true');
+        }
 
-         function updateHumanReadable() {
-           try {
-             const desc = describeCron(state);
-             humanReadable.textContent = desc;
-             humanReadable.classList.remove('text-error-500');
-             humanReadable.classList.add('text-primary-800', 'dark:text-primary-200');
-           } catch (e) {
-             humanReadable.textContent = _t('tools.cron-builder.js.text0', 'Invalid cron expression');
-             humanReadable.classList.add('text-error-500');
-             humanReadable.classList.remove('text-primary-800', 'dark:text-primary-200');
-           }
-         }
-
-        function describeCron(s) {
-          if (s.minute === '*' && s.hour === '*' && s.dom === '*' && s.month === '*' && s.dow === '*') return 'Every minute';
-          
-          let desc = '';
-          
-          // Time
-          if (s.minute === '0' && s.hour === '0') desc += 'At midnight';
-          else if (s.minute === '0' && s.hour !== '*') desc += \`At \${s.hour}:00\`;
-          else if (s.minute !== '*' && s.hour !== '*') desc += \`At \${s.hour}:\${s.minute.padStart(2,'0')}\`;
-          else if (s.minute !== '*' && s.hour === '*') desc += \`At minute \${s.minute} of every hour\`;
-          else desc += 'Every minute';
-
-          // Day
-          if (s.dom !== '*' && s.dom !== '?') desc += \` on day \${s.dom} of the month\`;
-          
-          // Weekday
-          if (s.dow !== '*' && s.dow !== '?') {
-             const days = s.dow.split(',').map(d => {
-               if(d.includes('-')) return d; // keep ranges simple for now
-               return DAYS[parseInt(d)];
-             }).join(', ');
-             desc += \` on \${days}\`;
+        function updateHumanReadable() {
+          if (!parsed.ok) {
+            showError(_t('tools.cron-builder.js.text0', 'Invalid cron expression') + ': ' + parsed.error);
+            return;
           }
-          
-          // Month
-          if (s.month !== '*') desc += \` in \${s.month}\`;
-
-          return desc.charAt(0).toUpperCase() + desc.slice(1);
+          input.removeAttribute('aria-invalid');
+          humanReadable.textContent = cronLogic.describeCron(parsed) + (parsed.macro ? ' (' + parsed.macro + ' = ' + parsed.expression + ')' : '');
+          humanReadable.classList.remove('text-error-700');
+          humanReadable.classList.add('text-primary-800', 'dark:text-primary-200');
         }
 
-         function updateNextExecutions() {
-           nextExecutionsList.innerHTML = '';
-           try {
-             const dates = calculateNextRuns(input.value, 5);
-             dates.forEach(date => {
-               const li = document.createElement('li');
-               li.className = 'flex items-center gap-3 text-sm';
-               li.innerHTML = \`
-                 <span class="font-mono text-surface-500 dark:text-surface-400">\${formatDate(date)}</span>
-                 <span class="text-xs text-surface-400 dark:text-surface-400">(\${timeFromNow(date)})</span>
-               \`;
-               nextExecutionsList.appendChild(li);
-             });
-           } catch (e) {
-             nextExecutionsList.innerHTML = '<li class="text-error-500 text-sm">' + (window._t ? window._t('tools.cron-builder.js.text0', 'Invalid cron expression') : 'Invalid cron expression') + '</li>';
-           }
-         }
+        function addListItem(text, cls) {
+          const li = document.createElement('li');
+          li.className = cls;
+          li.textContent = text;
+          nextExecutionsList.appendChild(li);
+        }
+
+        function updateNextExecutions() {
+          nextExecutionsList.innerHTML = '';
+          if (!parsed.ok) {
+            addListItem(_t('tools.cron-builder.js.text0', 'Invalid cron expression'), 'text-error-700 text-sm');
+            return;
+          }
+          const dates = cronLogic.nextRuns(parsed, new Date(), 5, { utc: useUtc.checked });
+          if (dates.length === 0) {
+            addListItem('This schedule never runs: no matching date exists (for example, February 30).', 'text-error-700 text-sm');
+            return;
+          }
+          dates.forEach(function(date) {
+            const li = document.createElement('li');
+            li.className = 'flex flex-wrap items-center gap-x-3 text-sm';
+            const when = document.createElement('span');
+            when.className = 'font-mono text-surface-700 dark:text-surface-300';
+            when.textContent = formatDate(date);
+            const rel = document.createElement('span');
+            rel.className = 'text-xs text-surface-500 dark:text-surface-400';
+            rel.textContent = '(' + timeFromNow(date) + ')';
+            li.appendChild(when);
+            li.appendChild(rel);
+            nextExecutionsList.appendChild(li);
+          });
+        }
 
         function formatDate(date) {
-          return date.toLocaleString('en-US', { 
-            weekday: 'short', 
-            month: 'short', 
-            day: 'numeric', 
-            hour: '2-digit', 
-            minute: '2-digit', 
-            second: '2-digit',
-            hour12: false 
+          return date.toLocaleString('en-US', {
+            weekday: 'short', year: 'numeric', month: 'short', day: 'numeric',
+            hour: '2-digit', minute: '2-digit', hour12: false,
+            timeZone: useUtc.checked ? 'UTC' : undefined,
           });
         }
 
         function timeFromNow(date) {
-          const diff = date - new Date();
-          const mins = Math.floor(diff / 60000);
+          const mins = Math.max(0, Math.ceil((date - new Date()) / 60000));
           const hours = Math.floor(mins / 60);
           const days = Math.floor(hours / 24);
-          
-          if (days > 0) return \`in \${days}d \${hours % 24}h\`;
-          if (hours > 0) return \`in \${hours}h \${mins % 60}m\`;
-          return \`in \${mins}m\`;
+          if (days > 365) return 'in ' + Math.floor(days / 365) + 'y ' + (days % 365) + 'd';
+          if (days > 0) return 'in ' + days + 'd ' + (hours % 24) + 'h';
+          if (hours > 0) return 'in ' + hours + 'h ' + (mins % 60) + 'm';
+          return 'in ' + mins + 'm';
         }
 
-        // --- Scheduler Logic (Simplified) ---
-        
-        function calculateNextRuns(cronStr, count) {
-          const parsed = parseCron(cronStr);
-          if (!parsed) throw new Error('Invalid');
-
-          const schedule = {
-            m: parsePartToSet(parsed.minute, 'minute'),
-            h: parsePartToSet(parsed.hour, 'hour'),
-            D: parsePartToSet(parsed.dom, 'dom'),
-            M: parsePartToSet(parsed.month, 'month'),
-            d: parsePartToSet(parsed.dow, 'dow')
-          };
-
-          let results = [];
-          let current = new Date();
-          current.setSeconds(0);
-          current.setMilliseconds(0);
-          current.setMinutes(current.getMinutes() + 1); // Start from next minute
-
-          let safety = 0;
-          while (results.length < count && safety < 5000) { // 5000 iterations max
-            safety++;
-            
-            // Check Month
-            if (schedule.M.size > 0 && !schedule.M.has(current.getMonth() + 1)) {
-              current.setMonth(current.getMonth() + 1);
-              current.setDate(1);
-              current.setHours(0, 0, 0, 0);
-              continue;
-            }
-
-            // Check Day (DOM and DOW)
-            const domMatch = schedule.D.size === 0 || schedule.D.has(current.getDate());
-            const dowMatch = schedule.d.size === 0 || schedule.d.has(current.getDay());
-            
-            let dayOk = false;
-            const domRestricted = schedule.D.size > 0;
-            const dowRestricted = schedule.d.size > 0;
-
-            if (domRestricted && dowRestricted) {
-              dayOk = domMatch || dowMatch;
-            } else if (domRestricted) {
-              dayOk = domMatch;
-            } else if (dowRestricted) {
-              dayOk = dowMatch;
-            } else {
-              dayOk = true;
-            }
-
-            if (!dayOk) {
-              current.setDate(current.getDate() + 1);
-              current.setHours(0, 0, 0, 0);
-              continue;
-            }
-
-            // Check Hour
-            if (schedule.h.size > 0 && !schedule.h.has(current.getHours())) {
-              current.setHours(current.getHours() + 1);
-              current.setMinutes(0);
-              continue;
-            }
-
-            // Check Minute
-            if (schedule.m.size > 0 && !schedule.m.has(current.getMinutes())) {
-              current.setMinutes(current.getMinutes() + 1);
-              continue;
-            }
-
-            // Match found
-            results.push(new Date(current));
-            current.setMinutes(current.getMinutes() + 1);
-          }
-          
-          return results;
-        }
-
-        // Start
         init();
       })();
     </script>

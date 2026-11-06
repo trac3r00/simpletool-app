@@ -5,6 +5,7 @@ import {
   createRelatedToolsSection,
 } from "../utils/content-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
+import { createLogMasker } from "../utils/log-masker-logic.js";
 import {
   DEFAULT_LANGUAGE,
   getToolTranslation,
@@ -77,8 +78,16 @@ function renderLogMaskerPage(lang = DEFAULT_LANGUAGE) {
                 <span class="text-sm text-surface-700 dark:text-surface-300" data-i18n="tools.log-masker.ui.desc9">IP Addresses</span>
               </label>
               <label class="flex items-center gap-3 cursor-pointer">
-                <input type="checkbox" id="mask-credit-card" checked data-tooltip="Matches 16-digit credit card numbers" data-i18n-tooltip="tools.log-masker.ui.tip3" class="w-4 h-4 rounded border-surface-300 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
+                <input type="checkbox" id="mask-credit-card" checked data-tooltip="Matches 13-19 digit card numbers that pass the Luhn check" data-i18n-tooltip="tools.log-masker.ui.tip3" class="w-4 h-4 rounded border-surface-300 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
                 <span class="text-sm text-surface-700 dark:text-surface-300" data-i18n="tools.log-masker.ui.desc10">Credit Card Numbers</span>
+              </label>
+              <label class="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" id="mask-ssn" checked class="w-4 h-4 rounded border-surface-300 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
+                <span class="text-sm text-surface-700 dark:text-surface-300" data-i18n="tools.log-masker.ui.r3_1">US Social Security Numbers</span>
+              </label>
+              <label class="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" id="mask-phone" checked class="w-4 h-4 rounded border-surface-300 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
+                <span class="text-sm text-surface-700 dark:text-surface-300" data-i18n="tools.log-masker.ui.r3_2">Phone Numbers</span>
               </label>
               <div class="pt-2">
                 <label for="custom-patterns" class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1"><span data-i18n="tools.log-masker.ui.label3">Custom Keywords (comma separated)</span></label>
@@ -95,7 +104,7 @@ function renderLogMaskerPage(lang = DEFAULT_LANGUAGE) {
              <h2 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.log-masker.ui.heading7">Masked Logs</h2>
               <button id="copy-result-btn" type="button" class="btn btn-ghost btn-xs"><span data-i18n="tools.log-masker.ui.button1">Copy Result</span></button>
            </div>
-          <div id="log-output" class="flex-1 bg-surface-900 text-surface-50 p-4 rounded-lg text-sm font-mono whitespace-pre-wrap overflow-y-auto min-h-[400px]" data-i18n="tools.log-masker.ui.desc11">Logs will appear here after masking...</div>
+          <div id="log-output" role="region" aria-label="Masked logs" tabindex="0" class="flex-1 bg-surface-900 text-surface-50 p-4 rounded-lg text-sm font-mono whitespace-pre-wrap overflow-y-auto min-h-[400px]" data-i18n="tools.log-masker.ui.desc11">Logs will appear here after masking...</div>
         </div>
       </div>
       </div>
@@ -121,7 +130,7 @@ function renderLogMaskerPage(lang = DEFAULT_LANGUAGE) {
           {
             title: "Pro Tips",
             content:
-              '<ul><li>Use the <strong>"Custom Keywords"</strong> field to redact internal identifiers like API keys, session tokens, or proprietary project names that aren\'t covered by standard patterns.</li><li>Always perform masking <strong>locally</strong> (as this tool does) to ensure sensitive data never touches a third-party server during the scrubbing process.</li><li>If you are correlating logs across multiple systems, consider using a consistent "salt" with a hashing tool instead of simple redaction to maintain traceability.</li><li>Regularly audit your application code to prevent PII from being logged in the first place; "log at the source" is the best defense.</li></ul>',
+              '<ul><li>Use the <strong>"Custom Keywords"</strong> field to redact internal identifiers like API keys, session tokens, or proprietary project names that aren\'t covered by standard patterns.</li><li>Always perform masking <strong>locally</strong> (as this tool does) to ensure sensitive data never touches a third-party server during the scrubbing process.</li><li>If you are correlating logs across multiple systems, consider using a consistent "salt" with a hashing tool instead of simple redaction to maintain traceability.</li><li data-i18n="tools.log-masker.ui.r3_0">Regularly audit your application code to prevent PII from being logged in the first place; "log at the source" is the best defense.</li></ul>',
           },
         ],
         "log-masker",
@@ -133,53 +142,7 @@ function renderLogMaskerPage(lang = DEFAULT_LANGUAGE) {
 
   const scripts = `
       <script type="module">
-      // Local PII redaction implementation
-      function redactPII(text, options = {}) {
-        let result = text;
-
-        // Redaction patterns
-        const patterns = {
-          email: {
-            regex: /\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\\b/g,
-            replacement: '[EMAIL_REDACTED]'
-          },
-          ipv4: {
-            regex: /\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b/g,
-            replacement: '[IP_REDACTED]'
-          },
-          creditCard: {
-            regex: /\\b\\d{4}[\\s-]?\\d{4}[\\s-]?\\d{4}[\\s-]?\\d{4}\\b/g,
-            replacement: '[CARD_REDACTED]'
-          },
-          ssn: {
-            regex: /\\b\\d{3}-\\d{2}-\\d{4}\\b/g,
-            replacement: '[SSN_REDACTED]'
-          },
-          phone: {
-            regex: /\\b\\d{3}[-.]?\\d{3}[-.]?\\d{4}\\b/g,
-            replacement: '[PHONE_REDACTED]'
-          }
-        };
-
-        // Apply enabled patterns
-        if (options.email !== false) {
-          result = result.replace(patterns.email.regex, patterns.email.replacement);
-        }
-        if (options.ip !== false) {
-          result = result.replace(patterns.ipv4.regex, patterns.ipv4.replacement);
-        }
-        if (options.creditCard !== false) {
-          result = result.replace(patterns.creditCard.regex, patterns.creditCard.replacement);
-        }
-        if (options.ssn !== false) {
-          result = result.replace(patterns.ssn.regex, patterns.ssn.replacement);
-        }
-        if (options.phone !== false) {
-          result = result.replace(patterns.phone.regex, patterns.phone.replacement);
-        }
-
-        return result;
-      }
+      const logMasker = (${createLogMasker.toString()})();
 
       const logInput = document.getElementById('log-input');
       const logOutput = document.getElementById('log-output');
@@ -189,42 +152,47 @@ function renderLogMaskerPage(lang = DEFAULT_LANGUAGE) {
       const maskEmail = document.getElementById('mask-email');
       const maskIp = document.getElementById('mask-ip');
       const maskCc = document.getElementById('mask-credit-card');
+      const maskSsn = document.getElementById('mask-ssn');
+      const maskPhone = document.getElementById('mask-phone');
       const customPatterns = document.getElementById('custom-patterns');
 
-      maskBtn.addEventListener('click', async () => {
+      const placeholderText = logOutput.textContent;
+      copyResultBtn.disabled = true;
+
+      function runMask() {
         const text = logInput.value;
-        if (!text) return;
+        if (!text) {
+          logOutput.textContent = placeholderText;
+          copyResultBtn.disabled = true;
+          logInput.focus();
+          return;
+        }
+        const result = logMasker.redact(text, {
+          email: maskEmail.checked,
+          ip: maskIp.checked,
+          creditCard: maskCc.checked,
+          ssn: maskSsn.checked,
+          phone: maskPhone.checked,
+          keywords: customPatterns.value.split(','),
+        });
+        logOutput.textContent = result;
+        copyResultBtn.disabled = false;
+      }
 
-        logOutput.textContent = _t('tools.log-masker.js.text0', 'Masking...');
-        
-        try {
-          // Build options from checkboxes
-          const options = {
-            email: maskEmail.checked,
-            ip: maskIp.checked,
-            creditCard: maskCc.checked
-          };
-
-          let result = redactPII(text, options);
-
-          // Apply custom simple redaction for keywords
-          const keywords = customPatterns.value.split(',').map(s => s.trim()).filter(Boolean);
-          if (keywords.length > 0) {
-            keywords.forEach(kw => {
-              const regex = new RegExp(kw, 'gi');
-              result = result.replace(regex, '[REDACTED]');
-            });
-          }
-
-          logOutput.textContent = result;
-        } catch (e) {
-          logOutput.textContent = (window._t ? window._t('tools.log-masker.js.text1', 'Error masking logs: ') : 'Error masking logs: ') + e.message;
+      maskBtn.addEventListener('click', runMask);
+      logInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+          e.preventDefault();
+          runMask();
         }
       });
+      [maskEmail, maskIp, maskCc, maskSsn, maskPhone].forEach((el) => el.addEventListener('change', () => {
+        if (!copyResultBtn.disabled) runMask();
+      }));
 
       copyResultBtn?.addEventListener('click', () => {
-        const text = logOutput.textContent || '';
-        copyToClipboard(text, copyResultBtn);
+        if (copyResultBtn.disabled) return;
+        copyToClipboard(logOutput.textContent || '', copyResultBtn);
       });
     </script>
   `;

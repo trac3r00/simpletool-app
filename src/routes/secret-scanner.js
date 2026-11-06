@@ -17,6 +17,7 @@ import {
   createRelatedToolsSection,
 } from "../utils/content-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
+import { createSecretScanner } from "../utils/secret-scanner-logic.js";
 import {
   DEFAULT_LANGUAGE,
   getToolTranslation,
@@ -181,7 +182,7 @@ function renderSecretScannerPage(lang = DEFAULT_LANGUAGE) {
           {
             title: "Pro Tips",
             content:
-              '<ul><li>Always rotate your credentials immediately if you discover they have been leaked.</li><li>Use environment variables or secret managers instead of hardcoding secrets in your source code.</li><li>Enable "Include low severity patterns" for a more thorough scan, but be prepared for more false positives.</li></ul>',
+              '<ul><li>Always rotate your credentials immediately if you discover they have been leaked.</li><li>Use environment variables or secret managers instead of hardcoding secrets in your source code.</li><li data-i18n="tools.secret-scanner.ui.r3_0">Enable "Include low severity patterns" for a more thorough scan, but be prepared for more false positives.</li></ul>',
           },
         ],
         "secret-scanner",
@@ -223,134 +224,18 @@ function renderSecretScannerPage(lang = DEFAULT_LANGUAGE) {
 	        '-----END PRIVATE KEY-----',
 	      ].join('\n');
 
-      const PATTERNS = [
-        {
-          id: 'private_key',
-          labelKey: 'text0',
-          label: 'Private key block',
-          severity: 'high',
-          re: /-----BEGIN [A-Z0-9 ]*PRIVATE KEY-----[\s\S]*?(?:-----END [A-Z0-9 ]*PRIVATE KEY-----|$)/g,
-          adviceKey: 'text1',
-          advice: 'Revoke/rotate the key. Treat as compromised.'
-        },
-	        {
-	          id: 'aws_access_key_id',
-	          labelKey: 'text2',
-	          label: 'AWS Access Key ID',
-	          severity: 'high',
-	          re: /\b(AKIA|ASIA)[0-9A-Z]{16}\b/g,
-	          adviceKey: 'text3',
-	          advice: 'Rotate AWS keys and investigate CloudTrail usage.'
-	        },
-	        {
-	          id: 'aws_secret_access_key',
-	          labelKey: 'text23',
-	          label: 'AWS Secret Access Key',
-	          severity: 'high',
-	          // Context-anchored: a bare 40-char base64 string is far too common
-	          // to flag on its own, so require the AWS key name beside it.
-	          // redactGroup keeps the label visible and masks only the value.
-	          re: /\b(AWS_?SECRET_?ACCESS_?KEY|aws_secret_access_key)(\s*[:=]\s*)(['"]?)([A-Za-z0-9\/+=]{40})\3/g,
-	          redactGroup: 4,
-	          adviceKey: 'text24',
-	          advice: 'Rotate this key immediately in IAM. A secret access key grants full API access.'
-	        },
-	        {
-	          id: 'generic_secret_assign',
-	          labelKey: 'text25',
-	          label: 'Secret assignment (unquoted)',
-	          severity: 'medium',
-	          // The quoted api_key_assign pattern below misses env-file style
-	          // NAME=value with no quotes, which is how secrets usually leak.
-	          re: /\b([A-Za-z0-9_]*(?:SECRET|TOKEN|PASSWORD|PASSWD|APIKEY|API_KEY|PRIVATE_KEY)[A-Za-z0-9_]*)(\s*[:=]\s*)([^\s'"#\[(){};,<>]{16,})/gi,
-	          redactGroup: 3,
-	          adviceKey: 'text26',
-	          advice: 'Move this value to a secret manager and rotate it.'
-	        },
-	        {
-	          id: 'github_pat',
-	          labelKey: 'text4',
-	          label: 'GitHub token',
-	          severity: 'high',
-	          re: /\b(ghp_[A-Za-z0-9]{36,}|github_pat_[A-Za-z0-9_]{20,})\b/g,
-	          adviceKey: 'text5',
-	          advice: 'Revoke the token in GitHub and audit access.'
-	        },
-	        {
-	          id: 'google_api_key',
-	          labelKey: 'text6',
-	          label: 'Google API key',
-	          severity: 'high',
-	          re: /\bAIza[0-9A-Za-z_-]{35}\b/g,
-	          adviceKey: 'text7',
-	          advice: 'Restrict/rotate the key in Google Cloud Console.'
-	        },
-	        {
-	          id: 'stripe_secret',
-	          labelKey: 'text8',
-	          label: 'Stripe secret key',
-	          severity: 'high',
-	          re: /\bsk_live_[0-9a-zA-Z]{20,}\b/g,
-	          adviceKey: 'text9',
-	          advice: 'Roll the key in Stripe and check recent charges/activity.'
-	        },
-	        {
-	          id: 'slack_token',
-	          labelKey: 'text10',
-	          label: 'Slack token',
-	          severity: 'high',
-	          re: /\bxox[baprs]-[0-9A-Za-z-]{10,}\b/g,
-	          adviceKey: 'text11',
-	          advice: 'Revoke the Slack token and review app scopes.'
-	        },
-	        {
-	          id: 'jwt',
-	          labelKey: 'text12',
-	          label: 'JWT-like token',
-	          severity: 'medium',
-	          re: /\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\b/g,
-	          adviceKey: 'text13',
-	          advice: 'If this is a real session token, invalidate sessions and rotate signing keys if needed.'
-	        },
-	        {
-	          id: 'bearer',
-	          labelKey: 'text14',
-	          label: 'Bearer token in header',
-	          severity: 'medium',
-	          re: /\bBearer\s+[A-Za-z0-9._+/=-]{16,}/g,
-	          adviceKey: 'text15',
-	          advice: 'Treat as credential. Rotate/invalidate token and audit usage.'
-	        },
-	        {
-	          id: 'password_assign',
-	          labelKey: 'text16',
-	          label: 'Password assignment',
-	          severity: 'medium',
-	          re: /\b(pass(word)?|pwd)\s*[:=]\s*['"][^'"]{6,}['"]/gi,
-	          adviceKey: 'text17',
-	          advice: 'Remove hardcoded passwords. Store in a secret manager or env var.'
-	        },
-	        {
-	          id: 'api_key_assign',
-	          labelKey: 'text18',
-	          label: 'API key assignment',
-	          severity: 'low',
-	          re: /\b(api[_-]?key|token|secret)\s*[:=]\s*['"][^'"]{8,}['"]/gi,
-	          adviceKey: 'text19',
-	          advice: 'Review if this is a real secret. Consider moving to a secret store.'
-	        }
-	      ];
+      const scanner = (${createSecretScanner.toString()})();
 
       function labelFor(p) {
-        return t(p.labelKey || '', p.label || p.id);
+        return p.labelKey ? t(p.labelKey, p.label) : p.label;
       }
 
       function adviceFor(p) {
-        return t(p.adviceKey || '', p.advice || '');
+        return p.adviceKey ? t(p.adviceKey, p.advice) : p.advice;
       }
 
-      function maskToken(t) {
-        const s = String(t || '');
+      function maskToken(token) {
+        const s = String(token || '');
         if (s.length <= 8) return t('text20', '[REDACTED]');
         return s.slice(0, 4) + '…' + s.slice(-4) + ' (' + s.length + ')';
       }
@@ -365,65 +250,16 @@ function renderSecretScannerPage(lang = DEFAULT_LANGUAGE) {
         return { high, med, low };
       }
 
-      function escapeHtml(s) {
-        return String(s ?? '')
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;')
-          .replace(/'/g, '&#39;');
-      }
-
-	      function scanText(text, includeLow) {
-	        const src = String(text || '');
-	        const maxLen = 250_000;
-	        const truncated = src.length > maxLen ? src.slice(0, maxLen) : src;
-	        const lines = truncated.split('\n');
-
-        const findings = [];
-        const patterns = includeLow ? PATTERNS : PATTERNS.filter(p => p.severity !== 'low');
-
-        for (let i = 0; i < lines.length; i++) {
-          const line = lines[i];
-          for (const p of patterns) {
-            p.re.lastIndex = 0;
-            let m;
-            while ((m = p.re.exec(line)) !== null) {
-              findings.push({
-                id: p.id,
-                label: labelFor(p),
-                severity: p.severity,
-                advice: adviceFor(p),
-                line: i + 1,
-                match: m[0],
-                col: (m.index || 0) + 1,
-              });
-              if (findings.length >= 200) return { findings, truncated: src.length > maxLen };
-            }
-          }
-        }
-        return { findings, truncated: src.length > maxLen };
-      }
-
-      function redact(text, includeLow) {
-        let out = String(text || '');
-        const patterns = includeLow ? PATTERNS : PATTERNS.filter(p => p.severity !== 'low');
-        patterns.forEach(p => {
-          // Rebuild regex without global state issues per replace
-          const re = new RegExp(p.re.source, p.re.flags.includes('g') ? p.re.flags : (p.re.flags + 'g'));
-          out = out.replace(re, function(m) {
-            if (!p.redactGroup) return '[REDACTED:' + p.id + ']';
-            // Mask only the captured secret so the surrounding assignment stays
-            // readable: AWS_SECRET_ACCESS_KEY=[REDACTED:...]
-            var groups = Array.prototype.slice.call(arguments, 1, -2);
-            var value = groups[p.redactGroup - 1];
-            if (!value) return '[REDACTED:' + p.id + ']';
-            var at = m.lastIndexOf(value);
-            return m.slice(0, at) + '[REDACTED:' + p.id + ']' + m.slice(at + value.length);
-          });
+      function scanText(text, includeLow) {
+        const res = scanner.scanText(text, includeLow);
+        res.findings.forEach(f => {
+          f.label = labelFor(f.pattern);
+          f.advice = adviceFor(f.pattern);
         });
-        return out;
+        return res;
       }
+
+      const redact = scanner.redact;
 
       function renderFindings(findings, showFull, truncated) {
         els.findings.innerHTML = '';
@@ -505,11 +341,12 @@ function renderSecretScannerPage(lang = DEFAULT_LANGUAGE) {
       els.scan.addEventListener('click', run);
       els.sample.addEventListener('click', () => {
         els.input.value = SAMPLE;
+        run();
       });
       els.clear.addEventListener('click', () => {
         els.input.value = '';
         els.redacted.value = '';
-        els.findings.innerHTML = '<p class="text-surface-500 dark:text-surface-400" data-i18n="tools.secret-scanner.ui.desc7">' + t('text28', 'Click Scan to find secrets.') + '</p>';
+        els.findings.innerHTML = '<p class="text-surface-500 dark:text-surface-400" data-i18n="tools.secret-scanner.ui.desc1">' + t('text28', 'Click Scan to find secrets.') + '</p>';
         els.high.textContent = '0';
         els.med.textContent = '0';
         els.low.textContent = '0';
@@ -520,12 +357,12 @@ function renderSecretScannerPage(lang = DEFAULT_LANGUAGE) {
         if (!text.trim()) return;
         try {
           await navigator.clipboard.writeText(text);
-          const old = els.copyRedacted.textContent;
+          const old = els.copyRedacted.innerHTML;
           els.copyRedacted.textContent = t('text29', '✓ Copied');
           if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
-          setTimeout(() => (els.copyRedacted.textContent = old), 1200);
+          setTimeout(() => (els.copyRedacted.innerHTML = old), 1200);
         } catch (e) {
-          console.error('Copy failed:', e);
+          els.copyRedacted.textContent = 'Copy failed: select the redacted text and copy it manually.';
         }
       });
       els.show.addEventListener('change', () => {

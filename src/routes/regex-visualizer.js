@@ -17,6 +17,11 @@ import {
   normalizeLanguage,
   resolveRequestLanguage,
 } from "../utils/i18n.js";
+import { createRegexLogic } from "../utils/regex-visualizer-logic.js";
+import {
+  createRegexWorkerClient,
+  REGEX_TIMEOUT_MESSAGE,
+} from "../utils/regex-worker-client.js";
 
 export async function handleRegexVisualizerRoutes(request) {
   const requestPath = new URL(request.url).pathname;
@@ -76,15 +81,17 @@ export async function handleRegexVisualizerRoutes(request) {
                </select>
              </div>
              <div class="relative flex items-center">
-               <span class="absolute left-3 text-surface-400 font-mono text-lg">/</span>
+               <span class="absolute left-3 text-surface-500 font-mono text-lg">/</span>
                <input type="text" id="regex-input" data-tooltip="Enter a regular expression pattern" data-i18n-tooltip="tools.regex-visualizer.ui.tip0"
                  class="input-mono w-full pl-6 pr-16"
                  placeholder="e.g. [a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}"
                  value="([A-Z])\\w+"
                  spellcheck="false"
+                 aria-describedby="regex-error"
                >
-               <span class="absolute right-3 text-surface-400 font-mono text-lg">/</span>
+               <span class="absolute right-3 text-surface-500 font-mono text-lg">/</span>
              </div>
+             <p id="regex-error" class="hidden mt-2 text-sm text-error-700 dark:text-error-300" role="alert"></p>
             
             <!-- Flags -->
             <div class="mt-3 flex flex-wrap gap-2">
@@ -100,6 +107,14 @@ export async function handleRegexVisualizerRoutes(request) {
                 <input type="checkbox" id="flag-m" data-tooltip="Multiline — ^ and $ match line boundaries" data-i18n-tooltip="tools.regex-visualizer.ui.tip3" class="rounded border-surface-300 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
                 <span class="ml-2 text-xs font-mono text-surface-700 dark:text-surface-300" data-i18n="tools.regex-visualizer.ui.desc15">m (multiline)</span>
               </label>
+              <label class="inline-flex items-center px-2 py-1 rounded bg-surface-100 dark:bg-surface-800 cursor-pointer hover:bg-surface-200 dark:hover:bg-surface-700 transition-colors">
+                <input type="checkbox" id="flag-s" data-tooltip="dotAll: . also matches newlines" class="rounded border-surface-300 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
+                <span class="ml-2 text-xs font-mono text-surface-700 dark:text-surface-300" data-i18n="tools.regex-visualizer.ui.r3_4">s (dotAll)</span>
+              </label>
+              <label class="inline-flex items-center px-2 py-1 rounded bg-surface-100 dark:bg-surface-800 cursor-pointer hover:bg-surface-200 dark:hover:bg-surface-700 transition-colors">
+                <input type="checkbox" id="flag-u" data-tooltip="Unicode: \\u{...}, \\p{...} and astral characters" class="rounded border-surface-300 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
+                <span class="ml-2 text-xs font-mono text-surface-700 dark:text-surface-300" data-i18n="tools.regex-visualizer.ui.r3_5">u (unicode)</span>
+              </label>
             </div>
           </div>
 
@@ -112,20 +127,21 @@ export async function handleRegexVisualizerRoutes(request) {
             <textarea id="test-string" rows="6" data-tooltip="Text to test the regex pattern against" data-i18n-tooltip="tools.regex-visualizer.ui.tip4"
               class="input-mono w-full resize-y"
               placeholder="Enter text to test against..." data-i18n-placeholder="tools.regex-visualizer.ui.placeholder6"
-              spellcheck="false"></textarea>
+              spellcheck="false">Hello World from Regex Studio.
+Test Every Capitalized Word here.</textarea>
           </div>
 
           <!-- Code Generator -->
           <div class="tool-group p-5">
             <label class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-3"><span data-i18n="tools.regex-visualizer.ui.label5">Code Snippet</span></label>
             <div class="flex gap-2 mb-3 overflow-x-auto pb-1">
-              <button class="lang-btn active px-3 py-1 text-xs font-medium rounded-md bg-primary-100 text-primary-700 dark:bg-primary-900/50 dark:text-primary-300 whitespace-nowrap" data-lang="js"><span data-i18n="tools.regex-visualizer.ui.button0">JavaScript</span></button>
-              <button class="lang-btn px-3 py-1 text-xs font-medium rounded-md bg-surface-100 text-surface-600 dark:bg-surface-800 dark:text-surface-400 hover:bg-surface-200 dark:hover:bg-surface-700 whitespace-nowrap" data-lang="python"><span data-i18n="tools.regex-visualizer.ui.button1">Python</span></button>
-              <button class="lang-btn px-3 py-1 text-xs font-medium rounded-md bg-surface-100 text-surface-600 dark:bg-surface-800 dark:text-surface-400 hover:bg-surface-200 dark:hover:bg-surface-700 whitespace-nowrap" data-lang="php"><span data-i18n="tools.regex-visualizer.ui.button3">PHP</span></button>
-              <button class="lang-btn px-3 py-1 text-xs font-medium rounded-md bg-surface-100 text-surface-600 dark:bg-surface-800 dark:text-surface-400 hover:bg-surface-200 dark:hover:bg-surface-700 whitespace-nowrap" data-lang="java"><span data-i18n="tools.regex-visualizer.ui.button2">Java</span></button>
+              <button class="lang-btn active px-3 py-1 text-xs font-medium rounded-md bg-primary-100 text-primary-700 dark:bg-primary-900/50 dark:text-primary-300 whitespace-nowrap" data-lang="js" type="button" aria-pressed="true"><span data-i18n="tools.regex-visualizer.ui.button0">JavaScript</span></button>
+              <button class="lang-btn px-3 py-1 text-xs font-medium rounded-md bg-surface-100 text-surface-600 dark:bg-surface-800 dark:text-surface-400 hover:bg-surface-200 dark:hover:bg-surface-700 whitespace-nowrap" data-lang="python" type="button" aria-pressed="false"><span data-i18n="tools.regex-visualizer.ui.button1">Python</span></button>
+              <button class="lang-btn px-3 py-1 text-xs font-medium rounded-md bg-surface-100 text-surface-600 dark:bg-surface-800 dark:text-surface-400 hover:bg-surface-200 dark:hover:bg-surface-700 whitespace-nowrap" data-lang="php" type="button" aria-pressed="false"><span data-i18n="tools.regex-visualizer.ui.button3">PHP</span></button>
+              <button class="lang-btn px-3 py-1 text-xs font-medium rounded-md bg-surface-100 text-surface-600 dark:bg-surface-800 dark:text-surface-400 hover:bg-surface-200 dark:hover:bg-surface-700 whitespace-nowrap" data-lang="java" type="button" aria-pressed="false"><span data-i18n="tools.regex-visualizer.ui.button2">Java</span></button>
             </div>
             <div class="relative group">
-              <pre class="bg-surface-900 text-surface-50 p-3 rounded-lg text-xs font-mono overflow-x-auto"><code id="code-output">const regex = /([A-Z])\w+/g;
+              <pre tabindex="0" aria-label="Generated code snippet" class="bg-surface-900 text-surface-50 p-3 pr-10 rounded-lg text-xs font-mono overflow-x-auto"><code id="code-output">const regex = /([A-Z])\w+/g;
 const str = '';
 let m;
 
@@ -144,6 +160,7 @@ while ((m = regex.exec(str)) !== null) {
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
               </button>
             </div>
+            <p id="copy-status" class="text-xs mt-2 text-muted-foreground" role="status" aria-live="polite"></p>
           </div>
 
         </div>
@@ -159,7 +176,7 @@ while ((m = regex.exec(str)) !== null) {
             </h2>
             <div id="railroad-container" class="w-full overflow-x-auto flex justify-center py-4 min-h-[120px] bg-surface-50 dark:bg-surface-950/50 rounded-lg border border-surface-100 dark:border-surface-800/50">
               <!-- SVG injected here -->
-              <div class="flex items-center justify-center text-surface-400 text-sm italic">Generating diagram...</div>
+              <div class="flex items-center justify-center text-surface-600 dark:text-surface-400 text-sm italic">Generating diagram...</div>
             </div>
             <div id="explanation-container" class="mt-4 p-4 bg-info-50 dark:bg-info-900/20 rounded-lg border border-info-100 dark:border-info-800/30">
               <h3 class="text-sm font-semibold text-info-800 dark:text-info-300 mb-2" data-i18n="tools.regex-visualizer.ui.heading12">Explanation</h3>
@@ -178,11 +195,12 @@ while ((m = regex.exec(str)) !== null) {
             
             <!-- Highlighted Text Display -->
             <div class="relative mb-6">
-              <div id="highlight-display" class="w-full p-4 bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg font-mono text-sm whitespace-pre-wrap break-all min-h-[100px] max-h-[300px] overflow-y-auto text-surface-800 dark:text-surface-200"></div>
+              <p id="match-timeout" class="hidden mb-3 text-sm text-error-700 dark:text-error-300" role="alert"></p>
+              <div id="highlight-display" tabindex="0" role="region" aria-label="Highlighted matches" class="w-full p-4 bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-700 rounded-lg font-mono text-sm whitespace-pre-wrap break-all min-h-[100px] max-h-[300px] overflow-y-auto text-surface-800 dark:text-surface-200"></div>
             </div>
 
             <!-- Groups Table -->
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto" tabindex="0" role="region" aria-label="Match groups table">
               <table class="min-w-full divide-y divide-surface-200 dark:divide-surface-700">
                 <thead class="bg-surface-50 dark:bg-surface-800">
                   <tr>
@@ -213,7 +231,7 @@ while ((m = regex.exec(str)) !== null) {
             <tr><td><code>\\\\s</code></td><td>Whitespace</td></tr>
             <tr><td><code>.</code></td><td>Any char except newline</td></tr>
             <tr><td><code>[abc]</code></td><td>Any of a, b, or c</td></tr>
-            <tr><td><code>[^abc]</code></td><td>Not a, b, or c</td></tr>
+            <tr><td><code>[^abc]</code></td><td data-i18n="tools.regex-visualizer.ui.r3_0">Not a, b, or c</td></tr>
           </table>`,
         },
         {
@@ -225,7 +243,7 @@ while ((m = regex.exec(str)) !== null) {
             <tr><td><code>+</code></td><td>1 or more</td></tr>
             <tr><td><code>?</code></td><td>0 or 1</td></tr>
             <tr><td><code>{n}</code></td><td>Exactly n</td></tr>
-            <tr><td><code>{n,m}</code></td><td>Between n and m</td></tr>
+            <tr><td><code>{n,m}</code></td><td data-i18n="tools.regex-visualizer.ui.r3_1">Between n and m</td></tr>
           </table>`,
         },
         {
@@ -238,7 +256,7 @@ while ((m = regex.exec(str)) !== null) {
             <tr><td><code>(...)</code></td><td>Capture group</td></tr>
             <tr><td><code>(?:...)</code></td><td>Non-capture group</td></tr>
             <tr><td><code>(?=...)</code></td><td>Lookahead</td></tr>
-            <tr><td><code>\\\\b</code></td><td>Word boundary</td></tr>
+            <tr><td><code>\\\\b</code></td><td data-i18n="tools.regex-visualizer.ui.r3_2">Word boundary</td></tr>
           </table>`,
         },
         {
@@ -428,11 +446,16 @@ while ((m = regex.exec(str)) !== null) {
             node = Railroad.Terminal(char);
           }
 
-          // Check for quantifier
+          // Check for quantifier; "{" only counts when it forms {n}, {n,} or {n,m}.
           if (this.more()) {
             const next = this.peek();
-            if (['*', '+', '?', '{'].includes(next)) {
+            const isBrace = next === '{' && /^\\{\\d+(,\\d*)?\\}/.test(this.str.slice(this.pos));
+            if (['*', '+', '?'].includes(next) || isBrace) {
               node = this.parseQuantifier(node);
+              if (this.peek() === '?') {
+                this.consume();
+                node = Railroad.Comment(node, 'lazy');
+              }
             }
           }
 
@@ -444,14 +467,19 @@ while ((m = regex.exec(str)) !== null) {
           this.consume(); // (
           
           // Check for non-capturing or other group types
-          let comment = 'group';
-          if (this.peek() === '?') {
-            this.consume();
-            if (this.peek() === ':') {
-              this.consume();
-              comment = null; // Non-capturing
-            }
-            // Add more group types here if needed
+          this.groupCount = (this.groupCount || 0) + 1;
+          let comment = 'group ' + this.groupCount;
+          const rest = this.str.slice(this.pos);
+          const named = /^\\?<([A-Za-z_$][\\w$]*)>/.exec(rest);
+          const kinds = [['?:', null], ['?=', 'followed by'], ['?!', 'not followed by'], ['?<=', 'preceded by'], ['?<!', 'not preceded by']];
+          const kind = kinds.find(function(k) { return rest.indexOf(k[0]) === 0; });
+          if (named) {
+            this.pos += named[0].length;
+            comment = 'group ' + this.groupCount + ' "' + named[1] + '"';
+          } else if (kind) {
+            this.groupCount--;
+            this.pos += kind[0].length;
+            comment = kind[1];
           }
 
           const branches = this.parseAlternation();
@@ -489,11 +517,28 @@ while ((m = regex.exec(str)) !== null) {
           if (typeof Railroad === 'undefined') return null;
           this.consume(); // \\
           const char = this.consume();
+          const braced = /^\\{[^}]*\\}/.exec(this.str.slice(this.pos));
+          if ((char === 'p' || char === 'P' || char === 'u') && braced) {
+            this.pos += braced[0].length;
+            return Railroad.NonTerminal((char === 'P' ? 'not ' : '') + (char === 'u' ? 'U+' : 'property ') + braced[0].slice(1, -1));
+          }
+          if (char === 'k' && this.peek() === '<') {
+            const end = this.str.indexOf('>', this.pos);
+            const name = this.str.slice(this.pos + 1, end);
+            this.pos = end + 1;
+            return Railroad.NonTerminal('same as "' + name + '"');
+          }
+          if (/[1-9]/.test(char)) {
+            let digits = char;
+            while (/[0-9]/.test(this.peek() || '')) digits += this.consume();
+            return Railroad.NonTerminal('same as group ' + digits);
+          }
           const map = {
             'w': 'word char', 'W': 'non-word',
             'd': 'digit', 'D': 'non-digit',
             's': 'whitespace', 'S': 'non-whitespace',
-            'b': 'word boundary', 'B': 'non-boundary'
+            'b': 'word boundary', 'B': 'non-boundary',
+            'n': 'newline', 't': 'tab', 'r': 'carriage return'
           };
           return map[char] ? Railroad.NonTerminal(map[char]) : Railroad.Terminal(char);
         }
@@ -523,6 +568,11 @@ while ((m = regex.exec(str)) !== null) {
        const flagG = document.getElementById('flag-g');
        const flagI = document.getElementById('flag-i');
        const flagM = document.getElementById('flag-m');
+       const flagS = document.getElementById('flag-s');
+       const flagU = document.getElementById('flag-u');
+       const regexError = document.getElementById('regex-error');
+       const copyStatus = document.getElementById('copy-status');
+       const regexLogic = (${createRegexLogic.toString()})();
        const presetSelect = document.getElementById('preset-select');
        const railroadContainer = document.getElementById('railroad-container');
        const explanationList = document.getElementById('explanation-list');
@@ -532,6 +582,11 @@ while ((m = regex.exec(str)) !== null) {
        const codeOutput = document.getElementById('code-output');
        const copyCodeBtn = document.getElementById('copy-code-btn');
        const langBtns = document.querySelectorAll('.lang-btn');
+       const matchTimeout = document.getElementById('match-timeout');
+       const regexWorker = (${createRegexWorkerClient.toString()})({ timeoutMs: 1500 });
+       const REGEX_TIMEOUT_MESSAGE = ${JSON.stringify(REGEX_TIMEOUT_MESSAGE)};
+       let matchToken = 0;
+       let updateTimer = 0;
 
        let currentLang = 'js';
 
@@ -571,9 +626,20 @@ while ((m = regex.exec(str)) !== null) {
       function updateAll() {
         const pattern = regexInput.value;
         const text = testStringInput.value;
-        const flags = (flagG.checked ? 'g' : '') + (flagI.checked ? 'i' : '') + (flagM.checked ? 'm' : '');
+        const flags = (flagG.checked ? 'g' : '') + (flagI.checked ? 'i' : '') + (flagM.checked ? 'm' : '') + (flagS.checked ? 's' : '') + (flagU.checked ? 'u' : '');
 
-        updateVisualization(pattern);
+        let syntaxError = '';
+        try { new RegExp(pattern, flags); } catch (e) { syntaxError = e.message; }
+        regexError.textContent = syntaxError;
+        regexError.classList.toggle('hidden', !syntaxError);
+        if (syntaxError) regexInput.setAttribute('aria-invalid', 'true');
+        else regexInput.removeAttribute('aria-invalid');
+
+        if (syntaxError) {
+          railroadContainer.innerHTML = '<div class="text-error-700 dark:text-error-300 text-sm p-4">' + _t('tools.regex-visualizer.js.text3', 'Invalid Regex for Visualization') + '</div>';
+        } else {
+          updateVisualization(pattern);
+        }
         updateMatches(pattern, flags, text);
         updateCode(pattern, flags, text);
         updateExplanation(pattern);
@@ -600,126 +666,91 @@ while ((m = regex.exec(str)) !== null) {
         }
       }
 
-      function updateMatches(pattern, flags, text) {
-        highlightDisplay.innerHTML = '';
+      function renderMatches(matches, text) {
         groupsTableBody.innerHTML = '';
-        
-if (!pattern) {
-           highlightDisplay.textContent = text;
-           matchCount.textContent = _t('tools.regex-visualizer.js.text0', '0 matches');
-           return;
-         }
+        matchCount.textContent = matches.length >= 1000
+          ? 'First 1000 matches'
+          : matches.length + ' match' + (matches.length !== 1 ? 'es' : '');
 
-         if (!text) {
-           highlightDisplay.innerHTML = '';
-           matchCount.textContent = '—';
-           return;
-         }
+        let lastIdx = 0;
+        let html = '';
+        matches.forEach((m, i) => {
+          html += escapeHtml(text.substring(lastIdx, m.index));
+          html += '<span class="match-highlight" title="Match ' + (i + 1) + ': ' + escapeHtml(m.match) + '" data-match-index="' + (i + 1) + '">' + escapeHtml(m.match) + '</span>';
+          lastIdx = m.index + m.match.length;
 
-        try {
-          const regex = new RegExp(pattern, flags);
-          let match;
-          let matches = [];
-          
-          // Prevent infinite loop with empty matches
-          if (regex.global) {
-            let lastIndex = 0;
-            while ((match = regex.exec(text)) !== null) {
-              matches.push(match);
-              if (match.index === regex.lastIndex) {
-                regex.lastIndex++;
-              }
-              if (matches.length > 1000) break; // Safety break
+          const row = document.createElement('tr');
+          row.className = 'hover:bg-surface-50 dark:hover:bg-surface-800/50 transition-colors';
+
+          let groupsHtml = '';
+          if (m.groups.length > 0) {
+            groupsHtml = '<div class="flex flex-wrap gap-1">';
+            for (let g = 0; g < m.groups.length; g++) {
+              groupsHtml += '<span class="px-1.5 py-0.5 rounded text-xs bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300">$' + (g + 1) + ': ' + escapeHtml(m.groups[g] || '') + '</span>';
             }
+            groupsHtml += '</div>';
           } else {
-            match = regex.exec(text);
-            if (match) matches.push(match);
+            groupsHtml = '<span class="text-surface-400 text-xs italic" data-i18n="tools.regex-visualizer.ui.desc17">No groups</span>';
           }
 
-          matchCount.textContent = \`\${matches.length} match\${matches.length !== 1 ? 'es' : ''}\`;
+          row.innerHTML =
+            '<td class="px-4 py-2 whitespace-nowrap text-sm text-surface-500 dark:text-surface-400">#' + (i + 1) + '</td>' +
+            '<td class="px-4 py-2 whitespace-nowrap text-sm font-mono text-surface-900 dark:text-white">' + escapeHtml(m.match) + '</td>' +
+            '<td class="px-4 py-2 text-sm text-surface-500 dark:text-surface-400">' + groupsHtml + '</td>' +
+            '<td class="px-4 py-2 whitespace-nowrap text-sm text-surface-500 dark:text-surface-400">' + m.index + '-' + (m.index + m.match.length) + '</td>';
+          groupsTableBody.appendChild(row);
+        });
 
-           // Render Highlights
-           let lastIdx = 0;
-           let html = '';
-           
-           matches.forEach((m, i) => {
-             // Text before match
-             html += escapeHtml(text.substring(lastIdx, m.index));
-             // Match with enhanced styling
-             html += \`<span class="match-highlight" title="Match \${i + 1}: \${escapeHtml(m[0])}" data-match-index="\${i + 1}">\${escapeHtml(m[0])}</span>\`;
-             lastIdx = m.index + m[0].length;
+        html += escapeHtml(text.substring(lastIdx));
+        highlightDisplay.innerHTML = html;
+      }
 
-            // Add to table
-            const row = document.createElement('tr');
-            row.className = 'hover:bg-surface-50 dark:hover:bg-surface-800/50 transition-colors';
-            
-            let groupsHtml = '';
-            if (m.length > 1) {
-              groupsHtml = '<div class="flex flex-wrap gap-1">';
-              for (let g = 1; g < m.length; g++) {
-                groupsHtml += \`<span class="px-1.5 py-0.5 rounded text-xs bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300">$\${g}: \${escapeHtml(m[g] || '')}</span>\`;
-              }
-              groupsHtml += '</div>';
-            } else {
-              groupsHtml = '<span class="text-surface-400 text-xs italic" data-i18n="tools.regex-visualizer.ui.desc17">No groups</span>';
-            }
+      function showMatchTimeout(message) {
+        matchTimeout.textContent = message || '';
+        matchTimeout.classList.toggle('hidden', !message);
+      }
 
-            row.innerHTML = \`
-              <td class="px-4 py-2 whitespace-nowrap text-sm text-surface-500 dark:text-surface-400">#\${i + 1}</td>
-              <td class="px-4 py-2 whitespace-nowrap text-sm font-mono text-surface-900 dark:text-white">\${escapeHtml(m[0])}</td>
-              <td class="px-4 py-2 text-sm text-surface-500 dark:text-surface-400">\${groupsHtml}</td>
-              <td class="px-4 py-2 whitespace-nowrap text-sm text-surface-500 dark:text-surface-400">\${m.index}-\${m.index + m[0].length}</td>
-            \`;
-            groupsTableBody.appendChild(row);
-          });
+      // Matching runs in /vendor/regex-worker.js under a deadline, so a catastrophic
+      // pattern such as (a+)+$ is terminated instead of freezing this page.
+      function updateMatches(pattern, flags, text) {
+        const token = ++matchToken;
+        showMatchTimeout('');
 
-          html += escapeHtml(text.substring(lastIdx));
-          highlightDisplay.innerHTML = html;
-
-         } catch (e) {
-           highlightDisplay.textContent = text;
-           matchCount.textContent = _t('tools.regex-visualizer.js.text1', 'Error');
-           groupsTableBody.innerHTML = '<tr><td colspan="4" class="px-4 py-2 text-error-500 text-sm">' + _t('tools.regex-visualizer.js.text4', 'Invalid Regular Expression') + '</td></tr>';
+        if (!pattern || !text) {
+          regexWorker.cancel();
+          groupsTableBody.innerHTML = '';
+          if (!pattern) {
+            highlightDisplay.textContent = text;
+            matchCount.textContent = _t('tools.regex-visualizer.js.text0', '0 matches');
+          } else {
+            highlightDisplay.innerHTML = '';
+            matchCount.textContent = '—';
+          }
+          return;
         }
+
+        regexWorker.run(regexLogic.buildMatchRequest(pattern, flags, text)).then((outcome) => {
+          if (token !== matchToken || outcome.status === 'cancelled') return;
+          if (outcome.status === 'ok') {
+            renderMatches(outcome.result.matches, text);
+            return;
+          }
+          highlightDisplay.textContent = text;
+          if (outcome.status === 'timeout') {
+            groupsTableBody.innerHTML = '';
+            matchCount.textContent = 'Stopped';
+            showMatchTimeout(REGEX_TIMEOUT_MESSAGE);
+            return;
+          }
+          matchCount.textContent = _t('tools.regex-visualizer.js.text1', 'Error');
+          groupsTableBody.innerHTML = '<tr><td colspan="4" class="px-4 py-2 text-error-500 text-sm">' + _t('tools.regex-visualizer.js.text4', 'Invalid Regular Expression') + '</td></tr>';
+        });
       }
 
       function updateExplanation(pattern) {
         explanationList.innerHTML = '';
         if (!pattern) return;
-
-        // Basic explanation logic (can be expanded)
-        const explanations = [];
-        
-        // Simple token analysis
-        if (pattern.startsWith('^')) explanations.push('Asserts position at start of the string');
-        if (pattern.endsWith('$')) explanations.push('Asserts position at end of the string');
-        
-        // Character classes
-        if (pattern.includes('\\\\d')) explanations.push('Matches any digit (0-9)');
-        if (pattern.includes('\\\\w')) explanations.push('Matches any word character (alphanumeric + underscore)');
-        if (pattern.includes('\\\\s')) explanations.push('Matches any whitespace character');
-        if (pattern.includes('.')) explanations.push('Matches any character (except newline)');
-        
-        // Quantifiers
-        if (pattern.includes('*')) explanations.push('Matches the previous token zero or more times');
-        if (pattern.includes('+')) explanations.push('Matches the previous token one or more times');
-        if (pattern.includes('?')) explanations.push('Matches the previous token zero or one time');
-        
-        // Groups
-        const groupCount = (pattern.match(/\\((?!\\?)/g) || []).length;
-        if (groupCount > 0) explanations.push(\`Contains \${groupCount} capturing group\${groupCount > 1 ? 's' : ''}\`);
-
-        // Custom classes
-        const classes = pattern.match(/\\[.*?\\]/g);
-        if (classes) {
-          classes.forEach(c => explanations.push(\`Matches any character in the set \${escapeHtml(c)}\`));
-        }
-
-        if (explanations.length === 0) {
-          explanations.push('Matches the literal characters exactly');
-        }
-
-        explanations.forEach(text => {
+        regexLogic.explainPattern(pattern).forEach(function(text) {
           const li = document.createElement('li');
           li.textContent = text;
           explanationList.appendChild(li);
@@ -727,88 +758,7 @@ if (!pattern) {
       }
 
       function updateCode(pattern, flags, text) {
-        let code = '';
-        
-        const bt = String.fromCharCode(96);
-        
-        const escJSString = s => s.replace(/\\\\/g, '\\\\\\\\').replace(/'/g, "\\\\'");
-        const escJSRegex = s => s.replace(/\\//g, '\\\\/');
-        const escDoubleQuoteString = s => s.replace(/\\\\/g, '\\\\\\\\').replace(/"/g, '\\\\"');
-        const escSingleQuoteString = s => s.replace(/\\\\/g, '\\\\\\\\').replace(/'/g, "\\\\'");
-
-        if (currentLang === 'js') {
-          const jsPattern = escJSRegex(pattern);
-          const jsText = escJSString(text);
-          
-          code = \`const regex = /\${jsPattern}/\${flags};
-const str = '\${jsText}';
-let m;
-
-while ((m = regex.exec(str)) !== null) {
-    if (m.index === regex.lastIndex) {
-        regex.lastIndex++;
-    }
-    
-    m.forEach((match, groupIndex) => {
-        console.log(\\\`Found match, group \\\${groupIndex}: \\\${match}\\\`);
-    });
-}\`;
-        } else if (currentLang === 'python') {
-          let pyFlags = [];
-          if (flags.includes('i')) pyFlags.push('re.IGNORECASE');
-          if (flags.includes('m')) pyFlags.push('re.MULTILINE');
-          const pyFlagStr = pyFlags.length ? \`, \${pyFlags.join(' | ')}\` : '';
-          
-          // Use normal string for regex to be safe
-          const pyPattern = escDoubleQuoteString(pattern);
-          const pyText = escDoubleQuoteString(text);
-          
-          code = \`import re
-
-regex = "\${pyPattern}"
-test_str = "\${pyText}"
-
-matches = re.finditer(regex, test_str\${pyFlagStr})
-
-for matchNum, match in enumerate(matches, start=1):
-    print ("Match {matchNum} was found at {start}-{end}: {match}".format(matchNum = matchNum, start = match.start(), end = match.end(), match = match.group()))
-    
-    for groupNum in range(0, len(match.groups())):
-        groupNum = groupNum + 1
-        print ("Group {groupNum} found at {start}-{end}: {group}".format(groupNum = groupNum, start = match.start(groupNum), end = match.end(groupNum), group = match.group(groupNum)))\`;
-        } else if (currentLang === 'php') {
-           const phpPattern = escSingleQuoteString(pattern);
-           const phpText = escSingleQuoteString(text);
-           
-           code = \`$re = '/\${phpPattern}/\${flags}';
-$str = '\${phpText}';
-
-preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
-
-// Print the entire match result
-var_dump($matches);\`;
-        } else if (currentLang === 'java') {
-           const javaPattern = escDoubleQuoteString(pattern);
-           const javaText = escDoubleQuoteString(text);
-           
-           code = \`import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-final String regex = "\${javaPattern}";
-final String string = "\${javaText}";
-
-final Pattern pattern = Pattern.compile(regex\${flags.includes('i') ? ', Pattern.CASE_INSENSITIVE' : ''}\${flags.includes('m') ? ', Pattern.MULTILINE' : ''});
-final Matcher matcher = pattern.matcher(string);
-
-while (matcher.find()) {
-    System.out.println("Full match: " + matcher.group(0));
-    for (int i = 1; i <= matcher.groupCount(); i++) {
-        System.out.println("Group " + i + ": " + matcher.group(i));
-    }
-}\`;
-        }
-
-        codeOutput.textContent = code;
+        codeOutput.textContent = regexLogic.buildSnippet(currentLang, pattern, flags, text);
       }
 
       function escapeHtml(text) {
@@ -820,15 +770,22 @@ while (matcher.find()) {
       function copyCode() {
         const text = codeOutput.textContent;
         navigator.clipboard.writeText(text).then(() => {
+          copyStatus.textContent = _t('common.copied', 'Copied!');
           if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
         }).catch(() => {
-          // Ignore clipboard failures (e.g., blocked permission).
+          copyStatus.textContent = 'Copy failed: your browser blocked clipboard access. Select the code and copy it manually.';
         });
       }
 
        // Event Listeners
-       [regexInput, testStringInput, flagG, flagI, flagM].forEach(el => {
-         el.addEventListener('input', updateAll);
+       // Debounced so each keystroke does not spawn a new worker run.
+       function scheduleUpdate() {
+         clearTimeout(updateTimer);
+         updateTimer = setTimeout(updateAll, 150);
+       }
+
+       [regexInput, testStringInput, flagG, flagI, flagM, flagS, flagU].forEach(el => {
+         el.addEventListener('input', scheduleUpdate);
        });
 
        presetSelect.addEventListener('change', (e) => {
@@ -839,6 +796,8 @@ while (matcher.find()) {
            flagG.checked = preset.flags.includes('g');
            flagI.checked = preset.flags.includes('i');
            flagM.checked = preset.flags.includes('m');
+           flagS.checked = false;
+           flagU.checked = false;
            presetSelect.value = '';
            updateAll();
          }
@@ -852,6 +811,8 @@ while (matcher.find()) {
           });
           btn.classList.remove('bg-surface-100', 'text-surface-600', 'dark:bg-surface-800', 'dark:text-surface-400');
           btn.classList.add('bg-primary-100', 'text-primary-700', 'dark:bg-primary-900/50', 'dark:text-primary-300');
+          langBtns.forEach(b => b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'));
+          copyStatus.textContent = '';
           currentLang = btn.dataset.lang;
           updateAll();
         });

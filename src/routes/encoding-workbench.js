@@ -15,6 +15,7 @@ import {
   createRelatedToolsSection,
 } from "../utils/content-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
+import { createEncodingWorkbenchLogic } from "../utils/encoding-workbench-logic.js";
 import {
   DEFAULT_LANGUAGE,
   getToolTranslation,
@@ -81,7 +82,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
 
         <!-- Tab Navigation -->
         <div class="mb-8">
-          <div class="tabs-list flex bg-surface-100 dark:bg-surface-800 p-1 rounded-xl border border-surface-200 dark:border-surface-700 w-fit" role="tablist">
+          <div class="tabs-list flex bg-surface-100 dark:bg-surface-800 p-1 rounded-xl border border-surface-200 dark:border-surface-700 w-fit max-w-full overflow-x-auto" role="tablist">
             <button id="tab-encode" class="tab-trigger tab-btn active" role="tab" aria-controls="panel-encode" aria-selected="true" data-tooltip="Encode and decode text between formats" data-i18n-tooltip="tools.encoding-workbench.ui.tip0">
               <span data-i18n="tools.encoding-workbench.ui.tab0">🔄 Encode / Decode</span>
             </button>
@@ -95,7 +96,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
         </div>
 
         <!-- ===== PANEL: Encode / Decode ===== -->
-        <div id="panel-encode" class="tab-panel">
+        <div id="panel-encode" class="tab-panel" role="tabpanel" aria-labelledby="tab-encode">
 
           <!-- Input -->
           <div class="mb-4">
@@ -161,7 +162,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
         </div>
 
         <!-- ===== PANEL: Hash ===== -->
-        <div id="panel-hash" class="tab-panel hidden">
+        <div id="panel-hash" class="tab-panel hidden" role="tabpanel" aria-labelledby="tab-hash">
           <div class="grid lg:grid-cols-2 gap-8">
 
             <!-- Input side -->
@@ -189,7 +190,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
 
               <!-- File input -->
               <div id="hash-file-section" class="hidden">
-                <div id="hash-drop-zone" class="border-2 border-dashed border-surface-300 dark:border-surface-700 rounded-xl p-10 text-center cursor-pointer hover:border-primary-500 dark:hover:border-primary-500 hover:bg-surface-50 dark:hover:bg-surface-800/50 transition-all group">
+                <div id="hash-drop-zone" class="border border-dashed border-surface-300 dark:border-surface-700 rounded-xl p-10 text-center cursor-pointer hover:border-primary-500 dark:hover:border-primary-500 hover:bg-surface-50 dark:hover:bg-surface-800/50 transition-all group">
                   <input type="file" id="hash-file-input" class="hidden">
                   <div class="w-14 h-14 bg-primary-50 dark:bg-primary-900/30 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
                     <span class="text-3xl">📁</span>
@@ -214,7 +215,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
                 <p class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2" data-i18n="tools.encoding-workbench.ui.algoLabel">Algorithms</p>
                 <div class="flex flex-wrap gap-2" id="algo-checkboxes">
                   <label class="algo-label"><input type="checkbox" class="algo-cb" value="SHA-256" checked> SHA-256</label>
-                  <label class="algo-label"><input type="checkbox" class="algo-cb" value="SHA-384"> SHA-384</label>
+                  <label class="algo-label"><input type="checkbox" class="algo-cb" value="SHA-384" data-i18n="tools.encoding-workbench.ui.r3_7"> SHA-384</label>
                   <label class="algo-label"><input type="checkbox" class="algo-cb" value="SHA-512"> SHA-512</label>
                   <label class="algo-label"><input type="checkbox" class="algo-cb" value="SHA-1"> SHA-1</label>
                   <label class="algo-label"><input type="checkbox" class="algo-cb" value="MD5"> MD5</label>
@@ -256,6 +257,12 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
                 </div>
               </div>
 
+              <div>
+                <label for="hash-expected" class="label block mb-1" data-i18n="tools.encoding-workbench.ui.r3_6">Expected hash (optional)</label>
+                <input id="hash-expected" type="text" spellcheck="false" autocomplete="off" class="input-mono w-full" placeholder="Paste a hash to compare the result against" data-i18n-placeholder="tools.encoding-workbench.ui.r3_5">
+                <p id="bcrypt-length-warning" class="hidden mt-2 text-sm text-warning-800 dark:text-warning-300" role="status"></p>
+              </div>
+
               <div class="flex gap-3">
                 <button id="hash-all-btn" class="btn btn-primary flex-1" data-i18n="tools.encoding-workbench.ui.hashAll">Hash All</button>
                 <button id="hash-clear-btn" class="btn btn-secondary" data-i18n="tools.encoding-workbench.ui.clear">Clear</button>
@@ -277,7 +284,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
         </div>
 
         <!-- ===== PANEL: Identify ===== -->
-        <div id="panel-identify" class="tab-panel hidden">
+        <div id="panel-identify" class="tab-panel hidden" role="tabpanel" aria-labelledby="tab-identify">
 
           <div class="mb-4">
             <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
@@ -337,7 +344,6 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
   `;
 
   const script = `
-    <script src="/vendor/md5.min.js" integrity="sha384-JmVtRz6RWiXnA14QbIOJzPuU3MidULOpBP66deeLLyyoF4Tr/gZlbkHkL6vTthxH" crossorigin="anonymous"></script>
     <script src="/vendor/bcrypt.min.js" integrity="sha384-qGFE4FIJLgCFuYs3nzg39XpCtvT5AZUhaBdjB3e1+vpKQa03AkyWOyBSFb9OcQ/g" crossorigin="anonymous"></script>
     <style>
       .tab-btn { outline: none; }
@@ -449,21 +455,37 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
       var tabBtns = document.querySelectorAll('.tab-btn');
       var tabPanels = document.querySelectorAll('.tab-panel');
 
-      tabBtns.forEach(function(btn) {
-        btn.addEventListener('click', function() {
-          var targetId = btn.getAttribute('aria-controls');
-          tabBtns.forEach(function(b) {
-            b.classList.remove('active', 'bg-white', 'dark:bg-surface-900', 'text-primary-600', 'dark:text-primary-400', 'shadow-sm');
-            b.classList.add('text-surface-600', 'dark:text-surface-400');
-            b.setAttribute('aria-selected', 'false');
-          });
-          tabPanels.forEach(function(p) { p.classList.add('hidden'); });
+      function activateWorkbenchTab(btn, focus) {
+        var targetId = btn.getAttribute('aria-controls');
+        tabBtns.forEach(function(b) {
+          b.classList.remove('active', 'bg-white', 'dark:bg-surface-900', 'text-primary-600', 'dark:text-primary-400', 'shadow-sm');
+          b.classList.add('text-surface-600', 'dark:text-surface-400');
+          b.setAttribute('aria-selected', 'false');
+          b.setAttribute('tabindex', '-1');
+        });
+        tabPanels.forEach(function(p) { p.classList.add('hidden'); });
 
-          btn.classList.add('active', 'bg-white', 'dark:bg-surface-900', 'text-primary-600', 'dark:text-primary-400', 'shadow-sm');
-          btn.classList.remove('text-surface-600', 'dark:text-surface-400');
-          btn.setAttribute('aria-selected', 'true');
-          var panel = document.getElementById(targetId);
-          if (panel) panel.classList.remove('hidden');
+        btn.classList.add('active', 'bg-white', 'dark:bg-surface-900', 'text-primary-600', 'dark:text-primary-400', 'shadow-sm');
+        btn.classList.remove('text-surface-600', 'dark:text-surface-400');
+        btn.setAttribute('aria-selected', 'true');
+        btn.setAttribute('tabindex', '0');
+        var panel = document.getElementById(targetId);
+        if (panel) panel.classList.remove('hidden');
+        if (focus) btn.focus();
+      }
+
+      tabBtns.forEach(function(btn, index) {
+        btn.setAttribute('tabindex', btn.getAttribute('aria-selected') === 'true' ? '0' : '-1');
+        btn.addEventListener('click', function() { activateWorkbenchTab(btn, false); });
+        btn.addEventListener('keydown', function(e) {
+          var next = null;
+          if (e.key === 'ArrowRight') next = tabBtns[(index + 1) % tabBtns.length];
+          else if (e.key === 'ArrowLeft') next = tabBtns[(index - 1 + tabBtns.length) % tabBtns.length];
+          else if (e.key === 'Home') next = tabBtns[0];
+          else if (e.key === 'End') next = tabBtns[tabBtns.length - 1];
+          if (!next) return;
+          e.preventDefault();
+          activateWorkbenchTab(next, true);
         });
       });
 
@@ -472,45 +494,52 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
         return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
                 .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
       }
+      // A <textarea> parses its content as RCDATA: entities are decoded, but
+      // tags stay literal text and nothing (e.g. <img onerror>) is fetched or run.
       function htmlDecode(s) {
-        var d = document.createElement('div');
-        d.innerHTML = s;
-        return d.textContent || d.innerText || '';
+        var ta = document.createElement('textarea');
+        ta.innerHTML = s;
+        return ta.value;
       }
-      function hexEncode(s) {
-        return Array.from(s).map(function(c) {
-          return c.charCodeAt(0).toString(16).padStart(2,'0');
-        }).join('');
-      }
-      function hexDecode(s) {
-        var clean = s.replace(/\\s/g,'');
-        if (clean.length % 2 !== 0) throw new Error('Odd-length hex string');
-        var out = '';
-        for (var i = 0; i < clean.length; i += 2) {
-          out += String.fromCharCode(parseInt(clean.slice(i, i+2), 16));
+
+      // Inlined from src/utils/encoding-workbench-logic.js (tested in encoding-workbench-logic.test.js).
+      var EncodingLogic = (${createEncodingWorkbenchLogic.toString()})();
+      var utf8Encode = EncodingLogic.utf8Encode;
+      var utf8DecodeStrict = EncodingLogic.utf8DecodeStrict;
+      var bytesToHex = EncodingLogic.bytesToHex;
+      var hexToBytes = EncodingLogic.hexToBytes;
+      var bytesToBase64 = EncodingLogic.bytesToBase64;
+      var base64ToBytes = EncodingLogic.base64ToBytes;
+      var detectEncodingLayers = EncodingLogic.detectEncodingLayers;
+      var md5Bytes = EncodingLogic.md5Bytes;
+      var hmacMd5Bytes = EncodingLogic.hmacMd5Bytes;
+
+      function bytesToTextOrThrow(bytes) {
+        var text = utf8DecodeStrict(bytes);
+        if (text === null) {
+          var hex = bytesToHex(bytes);
+          throw new Error(_t('tools.encoding-workbench.js.notUtf8', 'Decoded bytes are not UTF-8 text. As hex:') + ' ' + (hex.length > 2000 ? hex.slice(0, 2000) + '…' : hex));
         }
-        return out;
+        return text;
       }
 
       function applyOp(op, text) {
         switch (op) {
-          case 'base64-encode': return btoa(unescape(encodeURIComponent(text)));
-          case 'base64-decode':
-            try { return decodeURIComponent(escape(atob(text.replace(/[\\r\\n]/g,'')))); }
-            catch(e) { throw new Error('Invalid Base64 input'); }
+          case 'base64-encode': return bytesToBase64(utf8Encode(text));
+          case 'base64-decode': return bytesToTextOrThrow(base64ToBytes(text));
           case 'url-encode': return encodeURIComponent(text);
           case 'url-decode':
             try { return decodeURIComponent(text); }
-            catch(e) { throw new Error('Malformed URL encoding'); }
+            catch(e) { throw new Error('Malformed URL encoding: every % must be followed by two hex digits of valid UTF-8'); }
           case 'html-encode': return htmlEncode(text);
           case 'html-decode': return htmlDecode(text);
-          case 'hex-encode': return hexEncode(text);
-          case 'hex-decode':
-            try { return hexDecode(text); }
-            catch(e) { throw new Error('Invalid hex input'); }
+          case 'hex-encode': return bytesToHex(utf8Encode(text));
+          case 'hex-decode': return bytesToTextOrThrow(hexToBytes(text));
           default: throw new Error('Unknown operation: ' + op);
         }
       }
+
+      var EMPTY_INPUT_MSG = _t('tools.encoding-workbench.js.emptyInput', 'Enter some input first.');
 
       // ─── Encode/Decode panel wiring ──────────────────────────────────────────
       var encInput   = document.getElementById('enc-input');
@@ -542,7 +571,8 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
       document.querySelectorAll('.enc-op-btn').forEach(function(btn) {
         btn.addEventListener('click', function() {
           var input = encInput.value;
-          if (!input.trim()) return;
+          encChain.classList.add('hidden');
+          if (!input) { showEncError(EMPTY_INPUT_MSG); return; }
           var op = btn.getAttribute('data-op');
           try {
             showEncOutput(applyOp(op, input));
@@ -553,55 +583,6 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
       });
 
       // ─── Auto-detect layers ──────────────────────────────────────────────────
-      function detectEncodingLayers(input) {
-        var layers = [];
-        var current = input.trim();
-
-        // Try hex decode
-        if (/^[0-9a-fA-F\\s]+$/.test(current) && current.replace(/\\s/g,'').length % 2 === 0 && current.replace(/\\s/g,'').length >= 4) {
-          try {
-            var d = hexDecode(current);
-            if (d && d.length > 0 && /[\\x20-\\x7E]/.test(d)) {
-              layers.push({ type: 'Hex', decoded: d });
-              current = d;
-            }
-          } catch(e) {}
-        }
-
-        // Try base64 decode
-        if (/^[A-Za-z0-9+/\\n\\r]+=*$/.test(current.trim()) && current.trim().length >= 4) {
-          try {
-            var b = atob(current.replace(/[\\r\\n]/g,''));
-            var bText = decodeURIComponent(escape(b));
-            if (bText && bText.length > 0) {
-              layers.push({ type: 'Base64', decoded: bText });
-              current = bText;
-            }
-          } catch(e) {}
-        }
-
-        // Try URL decode
-        if (current.includes('%') && current !== input.trim()) {
-          try {
-            var u = decodeURIComponent(current);
-            if (u !== current) {
-              layers.push({ type: 'URL', decoded: u });
-              current = u;
-            }
-          } catch(e) {}
-        } else if (input.includes('%')) {
-          try {
-            var u2 = decodeURIComponent(input);
-            if (u2 !== input) {
-              layers.push({ type: 'URL', decoded: u2 });
-              current = u2;
-            }
-          } catch(e) {}
-        }
-
-        return { layers: layers, final: current };
-      }
-
       function buildChainHTML(input, layers, final) {
         var parts = [];
         parts.push(buildCard('Input', input.length > 40 ? input.slice(0,40)+'…' : input));
@@ -622,7 +603,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
 
       document.getElementById('auto-detect-btn').addEventListener('click', function() {
         var input = encInput.value;
-        if (!input.trim()) return;
+        if (!input.trim()) { encChain.classList.add('hidden'); showEncError(EMPTY_INPUT_MSG); return; }
         var result = detectEncodingLayers(input);
         if (result.layers.length === 0) {
           showEncError(_t('tools.encoding-workbench.js.noLayers', 'No recognisable encoding layers detected.'));
@@ -643,7 +624,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
 
       document.getElementById('enc-copy-btn').addEventListener('click', function() {
         var text = encOutput.value;
-        if (!text) return;
+        if (!text || encOutput.classList.contains('hidden')) return;
         copyToClipboard(text, this);
       });
 
@@ -752,14 +733,13 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
 
       async function computeHash(algo, data, hmacKey) {
         if (algo === 'MD5') {
-          if (typeof window.md5 !== 'function') throw new Error('MD5 library not loaded');
-          var text = typeof data === 'string' ? data : new TextDecoder().decode(data);
-          return window.md5(text);
+          var bytes = typeof data === 'string' ? utf8Encode(data) : new Uint8Array(data);
+          return hmacKey === null ? md5Bytes(bytes) : hmacMd5Bytes(utf8Encode(hmacKey), bytes);
         }
         var algoMap = { 'SHA-1': 'SHA-1', 'SHA-256': 'SHA-256', 'SHA-384': 'SHA-384', 'SHA-512': 'SHA-512' };
         var webAlgo = algoMap[algo];
         if (!webAlgo) throw new Error('Unsupported algorithm: ' + algo);
-        if (hmacKey) return hmacSha(webAlgo, hmacKey, data);
+        if (hmacKey !== null) return hmacSha(webAlgo, hmacKey, data);
         return sha(webAlgo, data);
       }
 
@@ -773,22 +753,26 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
         var hmacMode   = document.getElementById('hmac-toggle').checked;
         var hmacKey    = document.getElementById('hmac-key').value;
         var selectedAlgos = Array.from(document.querySelectorAll('.algo-cb:checked')).map(function(cb) { return cb.value; });
+        var expected = document.getElementById('hash-expected').value.trim();
+        var lengthWarning = document.getElementById('bcrypt-length-warning');
+        lengthWarning.classList.add('hidden');
         var data;
+
+        function stopWithMessage(msg) {
+          document.getElementById('hash-results').innerHTML = '<p class="text-sm text-error-600 dark:text-error-400" role="alert">' + escapeHTML(msg) + '</p>';
+          btn.disabled = false;
+          btn.innerHTML = original;
+        }
 
         if (hashMode === 'text') {
           data = document.getElementById('hash-text-input').value;
-          if (!data) {
-            btn.disabled = false;
-            btn.innerHTML = original;
-            return;
-          }
+          if (!data) return stopWithMessage(_t('tools.encoding-workbench.js.hashEmpty', 'Enter text to hash first.'));
         } else {
-          if (!currentFileBuffer) {
-            btn.disabled = false;
-            btn.innerHTML = original;
-            return;
-          }
+          if (!currentFileBuffer) return stopWithMessage(_t('tools.encoding-workbench.js.hashNoFile', 'Choose a file to hash first.'));
           data = currentFileBuffer;
+        }
+        if (hmacMode && !bcryptMode && !hmacKey) {
+          return stopWithMessage(_t('tools.encoding-workbench.js.hmacEmptyKey', 'Enter an HMAC secret key (the browser cannot compute HMAC with an empty key).'));
         }
 
         try {
@@ -797,14 +781,20 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
           if (bcryptMode) {
             var text = typeof data === 'string' ? data : new TextDecoder().decode(data);
             var rounds = parseInt(document.getElementById('bcrypt-rounds').value, 10);
-            if (typeof window.dcodeIO !== 'undefined' && window.dcodeIO.bcrypt) {
-              var salt = window.dcodeIO.bcrypt.genSaltSync(rounds);
-              var hash = window.dcodeIO.bcrypt.hashSync(text, salt);
+            var byteLength = new TextEncoder().encode(text).length;
+            if (byteLength > 72) {
+              lengthWarning.textContent = 'bcrypt only reads the first 72 bytes of its input. This input is ' + byteLength + ' bytes (UTF-8), so everything after byte 72 has no effect on the hash.';
+              lengthWarning.classList.remove('hidden');
+            }
+            var bcryptLib = (typeof window.dcodeIO !== 'undefined' && window.dcodeIO.bcrypt) ? window.dcodeIO.bcrypt : (typeof window.bcrypt !== 'undefined' ? window.bcrypt : null);
+            if (bcryptLib && expected.indexOf('$2') === 0) {
+              var same = false;
+              try { same = bcryptLib.compareSync(text, expected); } catch (compareError) { same = false; }
+              resultsHTML = renderVerdict(same, same ? 'The text matches this bcrypt hash.' : 'The text does not match this bcrypt hash.');
+            } else if (bcryptLib) {
+              var salt = bcryptLib.genSaltSync(rounds);
+              var hash = bcryptLib.hashSync(text, salt);
               resultsHTML = renderHashRow('bcrypt (cost ' + rounds + ')', hash);
-            } else if (typeof window.bcrypt !== 'undefined') {
-              var salt2 = window.bcrypt.genSaltSync(rounds);
-              var hash2 = window.bcrypt.hashSync(text, salt2);
-              resultsHTML = renderHashRow('bcrypt (cost ' + rounds + ')', hash2);
             } else {
               resultsHTML = '<p class="text-sm text-error-600 dark:text-error-400" data-i18n="tools.encoding-workbench.ui.desc40">bcrypt library not available. Please check vendor scripts.</p>';
             }
@@ -814,6 +804,10 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
               try {
                 var hashVal = await computeHash(algo, data, hmacMode ? hmacKey : null);
                 resultsHTML += renderHashRow(hmacMode ? 'HMAC-' + algo : algo, hashVal);
+                if (expected) {
+                  var matches = hashVal.toLowerCase() === expected.toLowerCase();
+                  resultsHTML += renderVerdict(matches, (hmacMode ? 'HMAC-' + algo : algo) + (matches ? ' matches the expected hash.' : ' does not match the expected hash.'));
+                }
               } catch(e) {
                 resultsHTML += renderHashRow(algo, 'Error: ' + e.message);
               }
@@ -831,6 +825,11 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
           btn.innerHTML = original;
         }
       });
+
+      function renderVerdict(ok, message) {
+        return '<p class="py-2 text-sm font-medium ' + (ok ? 'text-success-700 dark:text-success-300' : 'text-error-700 dark:text-error-300') + '" role="status">' +
+          '<span aria-hidden="true">' + (ok ? '\u2713 ' : '\u2717 ') + '</span>' + escapeHTML(message) + '</p>';
+      }
 
       function renderHashRow(algo, value) {
         var safeAlgo  = escapeHTML(algo);
@@ -854,6 +853,8 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
 
       document.getElementById('hash-clear-btn').addEventListener('click', function() {
         document.getElementById('hash-text-input').value = '';
+        document.getElementById('hash-expected').value = '';
+        document.getElementById('bcrypt-length-warning').classList.add('hidden');
         currentFileBuffer = null;
         document.getElementById('hash-file-info').classList.add('hidden');
         dropZone.classList.remove('hidden');
@@ -937,7 +938,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
           if (c.action === 'decode') {
             actionBtn = '<button class="btn btn-ghost btn-xs identify-action-btn" data-action="decode" data-v="' + escapeHTML(inputVal).replace(/"/g, '&quot;') + '" data-i18n="tools.encoding-workbench.ui.decodeThis">Decode this \u2192</button>';
           } else if (c.action === 'hash') {
-            actionBtn = '<button class="btn btn-ghost btn-xs identify-action-btn" data-action="hash" data-i18n="tools.encoding-workbench.ui.verifyHash">Verify hash →</button>';
+            actionBtn = '<button class="btn btn-ghost btn-xs identify-action-btn" data-action="hash" data-algo="' + escapeHTML(c.algo) + '" data-v="' + escapeHTML(inputVal.trim()).replace(/"/g, '&quot;') + '" data-i18n="tools.encoding-workbench.ui.verifyHash">Verify hash →</button>';
           }
           return '<div class="flex items-center justify-between py-3 border-b border-surface-100 dark:border-surface-800 last:border-0">' +
             '<div class="flex items-center gap-3">' +
@@ -967,7 +968,21 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
           document.getElementById('tab-encode').click();
           document.getElementById('auto-detect-btn').click();
         } else if (btn.dataset.action === 'hash') {
+          var algoName = btn.dataset.algo;
+          var isBcrypt = algoName === 'bcrypt';
+          var bcryptToggle = document.getElementById('bcrypt-toggle');
+          bcryptToggle.checked = isBcrypt;
+          document.getElementById('bcrypt-section').classList.toggle('hidden', !isBcrypt);
+          document.getElementById('hmac-toggle').checked = false;
+          document.getElementById('hmac-key-section').classList.add('hidden');
+          if (!isBcrypt) {
+            document.querySelectorAll('.algo-cb').forEach(function(cb) { cb.checked = cb.value === algoName; });
+          }
+          document.getElementById('hash-expected').value = btn.dataset.v;
           document.getElementById('tab-hash').click();
+          document.getElementById('hash-results').innerHTML = '<p class="text-sm text-surface-700 dark:text-surface-300" role="status">' + escapeHTML('Expected ' + algoName + ' hash filled in. Enter the original text and click Hash All to compare.') + '</p>';
+          var textInput = document.getElementById('hash-text-input');
+          if (textInput) textInput.focus();
         }
       });
 

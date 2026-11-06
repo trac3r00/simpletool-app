@@ -10,6 +10,7 @@ import {
   createRelatedToolsSection,
 } from "../utils/content-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
+import { createPasswordLogic } from "../utils/password-generator-logic.js";
 import {
   DEFAULT_LANGUAGE,
   getToolTranslation,
@@ -99,16 +100,16 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
         <div class="border-b border-surface-200 dark:border-surface-700 mb-8">
           <nav class="flex flex-wrap gap-2" aria-label="Password generator modes" role="tablist">
             <button id="tab-trigger-password" class="tab-trigger tab-button active" data-tab="password" role="tab" aria-controls="tab-password" aria-selected="true" tabindex="0">
-              <span class="material-symbols-rounded text-base align-middle" aria-hidden="true">lock</span> <span data-i18n="tools.password-generator.ui.tab0">Password</span>
+              <span class="material-symbols-rounded text-base align-middle" aria-hidden="true" data-icon="lock"></span> <span data-i18n="tools.password-generator.ui.tab0">Password</span>
             </button>
             <button id="tab-trigger-username" class="tab-trigger tab-button" data-tab="username" role="tab" aria-controls="tab-username" aria-selected="false" tabindex="-1">
-              <span class="material-symbols-rounded text-base align-middle" aria-hidden="true">person</span> <span data-i18n="tools.password-generator.ui.tab1">Username</span>
+              <span class="material-symbols-rounded text-base align-middle" aria-hidden="true" data-icon="person"></span> <span data-i18n="tools.password-generator.ui.tab1">Username</span>
             </button>
             <button id="tab-trigger-passphrase" class="tab-trigger tab-button" data-tab="passphrase" role="tab" aria-controls="tab-passphrase" aria-selected="false" tabindex="-1">
-              <span class="material-symbols-rounded text-base align-middle" aria-hidden="true">description</span> <span data-i18n="tools.password-generator.ui.tab2">Passphrase</span>
+              <span class="material-symbols-rounded text-base align-middle" aria-hidden="true" data-icon="description"></span> <span data-i18n="tools.password-generator.ui.tab2">Passphrase</span>
             </button>
             <button id="tab-trigger-email" class="tab-trigger tab-button" data-tab="email" role="tab" aria-controls="tab-email" aria-selected="false" tabindex="-1">
-              <span class="material-symbols-rounded text-base align-middle" aria-hidden="true">email</span> <span data-i18n="tools.password-generator.ui.tab3">Email</span>
+              <span class="material-symbols-rounded text-base align-middle" aria-hidden="true" data-icon="email"></span> <span data-i18n="tools.password-generator.ui.tab3">Email</span>
             </button>
           </nav>
         </div>
@@ -156,7 +157,7 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
                     <p id="password-output" class="text-2xl font-mono font-bold text-surface-900 dark:text-white break-all"></p>
                   </div>
                    <button id="copy-password" class="flex-shrink-0 btn btn-secondary" aria-label="Copy password to clipboard">
-                     <span class="material-symbols-rounded" aria-hidden="true">content_copy</span>
+                     <span class="material-symbols-rounded" aria-hidden="true" data-icon="content_copy"></span>
                    </button>
                 </div>
                 <div id="password-strength" class="mt-4">
@@ -213,7 +214,7 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
                     <p id="username-output" class="text-2xl font-mono font-bold text-surface-900 dark:text-white break-all"></p>
                   </div>
                    <button id="copy-username" class="flex-shrink-0 btn btn-secondary" aria-label="Copy username to clipboard">
-                     <span class="material-symbols-rounded" aria-hidden="true">content_copy</span>
+                     <span class="material-symbols-rounded" aria-hidden="true" data-icon="content_copy"></span>
                    </button>
                 </div>
               </div>
@@ -259,7 +260,7 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
                     <p id="passphrase-output" class="text-2xl font-mono font-bold text-surface-900 dark:text-white break-all"></p>
                   </div>
                    <button id="copy-passphrase" class="flex-shrink-0 btn btn-secondary" aria-label="Copy passphrase to clipboard">
-                     <span class="material-symbols-rounded" aria-hidden="true">content_copy</span>
+                     <span class="material-symbols-rounded" aria-hidden="true" data-icon="content_copy"></span>
                    </button>
                 </div>
               </div>
@@ -296,6 +297,8 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
               </select>
             </div>
 
+            <div id="catchall-error" role="alert" class="hidden rounded-lg border border-error-200 dark:border-error-800 bg-error-50 dark:bg-error-900/30 text-sm text-error-700 dark:text-error-200 px-4 py-3"></div>
+
             <button id="generate-catchall" class="btn btn-primary w-full py-4 text-lg">
               <span data-i18n="tools.password-generator.ui.button3">Generate Catch-all Email</span>
             </button>
@@ -308,7 +311,7 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
                      <p id="catchall-output" class="text-xl font-mono font-bold text-surface-900 dark:text-white break-all"></p>
                    </div>
                     <button id="copy-catchall" class="flex-shrink-0 btn btn-secondary" aria-label="Copy catch-all email to clipboard">
-                      <span class="material-symbols-rounded" aria-hidden="true">content_copy</span>
+                      <span class="material-symbols-rounded" aria-hidden="true" data-icon="content_copy"></span>
                     </button>
                  </div>
                </div>
@@ -345,7 +348,7 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
                      <p id="alias-output" class="text-xl font-mono font-bold text-surface-900 dark:text-white break-all"></p>
                    </div>
                     <button id="copy-alias" class="flex-shrink-0 btn btn-secondary" aria-label="Copy email alias to clipboard">
-                      <span class="material-symbols-rounded" aria-hidden="true">content_copy</span>
+                      <span class="material-symbols-rounded" aria-hidden="true" data-icon="content_copy"></span>
                     </button>
                  </div>
                </div>
@@ -372,7 +375,7 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
               <li><strong>Adjust length:</strong> Use the slider to set the desired length. For passwords, 16+ characters is recommended for high security.</li>
               <li><strong>Configure options:</strong> Toggle character sets (symbols, numbers, etc.) or styles (readable vs. secure).</li>
               <li><strong>Generate:</strong> Click the "Generate" button to create your unique credential.</li>
-              <li><strong>Copy:</strong> Use the copy icon to safely move the result to your clipboard or password manager.</li>
+              <li><strong data-i18n="tools.password-generator.ui.r3_0">Copy:</strong> Use the copy icon to safely move the result to your clipboard or password manager.</li>
             </ol>
           `,
           },
@@ -383,7 +386,7 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
               <li><strong>Account Security:</strong> Generating unique, high-entropy passwords for every online service you use.</li>
               <li><strong>System Administration:</strong> Creating secure temporary passwords for new users or service accounts.</li>
               <li><strong>Privacy Protection:</strong> Using "Plus Aliases" (e.g., user+service@domain.com) to track which services sell your data or to filter spam.</li>
-              <li><strong>Memorable Security:</strong> Using the Passphrase generator for master passwords that need to be typed manually but remain resistant to cracking.</li>
+              <li><strong data-i18n="tools.password-generator.ui.r3_1">Memorable Security:</strong> Using the Passphrase generator for master passwords that need to be typed manually but remain resistant to cracking.</li>
             </ul>
           `,
           },
@@ -393,7 +396,7 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
             <ul>
               <li><strong>Use a Password Manager:</strong> Never try to memorize complex passwords. Use this tool to generate them, and store them in a reputable password manager like Bitwarden, 1Password, or KeePassXC.</li>
               <li><strong>Entropy over Complexity:</strong> Length is often more important than character variety. A 20-character lowercase password is often harder to crack than an 8-character "complex" one.</li>
-              <li><strong>Rotate on Breach:</strong> If a service you use is compromised, use this generator to create a completely new, unrelated password immediately.</li>
+              <li><strong data-i18n="tools.password-generator.ui.r3_2">Rotate on Breach:</strong> If a service you use is compromised, use this generator to create a completely new, unrelated password immediately.</li>
             </ul>
           `,
           },
@@ -502,6 +505,7 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
         if (useSymbols) charsets.push('!@#$%^&*()_+-=[]{}|;:,.<>?');
 
          if (charsets.length === 0) {
+           document.getElementById('password-result').classList.add('hidden');
            document.getElementById('pw-error').textContent = _t('tools.password-generator.js.alert1', 'Please select at least one character type!');
            document.getElementById('pw-error').classList.remove('hidden');
            return;
@@ -509,36 +513,14 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
 
          // Ensure minimum length
          if (length < charsets.length) {
+           document.getElementById('password-result').classList.add('hidden');
            document.getElementById('pw-error').textContent = _t('tools.password-generator.js.alert2', 'Password length too short for selected options.');
            document.getElementById('pw-error').classList.remove('hidden');
            return;
          }
 
-        // Combine all charsets
+        const password = PwLogic.generatePassword(length, charsets);
         const allChars = charsets.join('');
-        const passwordArray = [];
-
-        // Guarantee representation
-        for (const charset of charsets) {
-          const randomBytes = crypto.getRandomValues(new Uint32Array(1));
-          passwordArray.push(charset[randomBytes[0] % charset.length]);
-        }
-
-        // Fill remaining
-        const remaining = length - charsets.length;
-        const remainingBytes = crypto.getRandomValues(new Uint32Array(remaining));
-        for (let i = 0; i < remaining; i++) {
-          passwordArray.push(allChars[remainingBytes[i] % allChars.length]);
-        }
-
-        // Shuffle
-        for (let i = passwordArray.length - 1; i > 0; i--) {
-          const randomBytes = crypto.getRandomValues(new Uint32Array(1));
-          const j = randomBytes[0] % (i + 1);
-          [passwordArray[i], passwordArray[j]] = [passwordArray[j], passwordArray[i]];
-        }
-
-         const password = passwordArray.join('');
 
          // Display result
          document.getElementById('pw-error').classList.add('hidden');
@@ -595,86 +577,8 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
         }
       }
 
-      // Username generator
-      const CONSONANTS = 'bcdfghjklmnpqrstvwxyz';
-      const VOWELS = 'aeiou';
-
-      function randomSyllable() {
-        const pattern = secureRandomInt(3);
-        if (pattern === 0) {
-          return CONSONANTS[secureRandomInt(CONSONANTS.length)] +
-                 VOWELS[secureRandomInt(VOWELS.length)] +
-                 CONSONANTS[secureRandomInt(CONSONANTS.length)];
-        }
-        if (pattern === 1) {
-          return CONSONANTS[secureRandomInt(CONSONANTS.length)] +
-                 VOWELS[secureRandomInt(VOWELS.length)];
-        }
-        return VOWELS[secureRandomInt(VOWELS.length)] +
-               CONSONANTS[secureRandomInt(CONSONANTS.length)];
-      }
-
-      function randomWord(minSyllables = 2, maxSyllables = 3) {
-        const syllables = minSyllables + secureRandomInt(maxSyllables - minSyllables + 1);
-        let word = '';
-        for (let i = 0; i < syllables; i++) {
-          word += randomSyllable();
-        }
-        return word.toLowerCase();
-      }
-
-      function generateUsername(length, style, includeNumbers) {
-        const target = Math.max(6, Math.min(32, length));
-        const lowercase = 'abcdefghijklmnopqrstuvwxyz';
-        const numbers = '0123456789';
-
-        if (style === 'readable') {
-          let username = randomWord(2, 3) + randomWord(1, 2);
-          if (includeNumbers) {
-            while (username.length < target) {
-              username += secureRandomInt(10).toString();
-            }
-          }
-          return username.slice(0, target);
-        }
-
-        if (style === 'color') {
-          const color = secureRandomInt(0xffffff).toString(16).padStart(6, '0');
-          let name = color;
-          const pool = lowercase + (includeNumbers ? numbers : '');
-          while (name.length < target) {
-            name += pool[secureRandomInt(pool.length)];
-          }
-          return name.slice(0, target).toLowerCase();
-        }
-
-        // Secure random
-        const pool = lowercase + (includeNumbers ? numbers : '');
-        let username = lowercase[secureRandomInt(lowercase.length)];
-        while (username.length < target) {
-          username += pool[secureRandomInt(pool.length)];
-        }
-        return username;
-      }
-
-      // Passphrase generator
-      function generatePassphrase(wordCount, separator, capitalize, includeNumbers) {
-        const count = Math.max(3, Math.min(8, wordCount));
-        const words = [];
-
-        for (let i = 0; i < count; i++) {
-          words.push(randomWord(2, 3));
-        }
-
-        const processed = words.map(word => {
-          const base = capitalize ? word.charAt(0).toUpperCase() + word.slice(1) : word;
-          if (!includeNumbers) return base;
-          const suffix = secureRandomInt(100).toString().padStart(2, '0');
-          return base + suffix;
-        });
-
-        return processed.join(separator);
-      }
+      // Inlined from src/utils/password-generator-logic.js (tested in password-generator-logic.test.js).
+      const PwLogic = (${createPasswordLogic.toString()})(secureRandomInt);
 
       // Username length slider
       const usernameLengthSlider = document.getElementById('username-length');
@@ -689,7 +593,7 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
         const style = document.getElementById('username-style').value;
         const includeNumbers = document.getElementById('username-include-numbers').checked;
 
-        const username = generateUsername(length, style, includeNumbers);
+        const username = PwLogic.generateUsername(length, style, includeNumbers);
 
         document.getElementById('username-output').textContent = username;
         document.getElementById('username-result').classList.remove('hidden');
@@ -714,7 +618,7 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
         const capitalize = document.getElementById('passphrase-capitalize').checked;
         const includeNumbers = document.getElementById('passphrase-include-numbers').checked;
 
-        const passphrase = generatePassphrase(wordCount, separator, capitalize, includeNumbers);
+        const passphrase = PwLogic.generatePassphrase(wordCount, separator, capitalize, includeNumbers);
 
         document.getElementById('passphrase-output').textContent = passphrase;
         document.getElementById('passphrase-result').classList.remove('hidden');
@@ -726,50 +630,6 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
       });
 
       // ========== EMAIL TOOLS ==========
-      const RANDOM_TLDS = ['com', 'net', 'org', 'io', 'dev', 'app', 'tech'];
-
-      function generateCatchAllEmail(prefix, domain, prefixLength, style) {
-        const localLength = Math.max(6, Math.min(20, prefixLength));
-        const lowercase = 'abcdefghijklmnopqrstuvwxyz';
-        const numbers = '0123456789';
-
-        let localPart = prefix?.toLowerCase();
-        if (!localPart) {
-          if (style === 'syllable') {
-            localPart = randomWord(2, 3);
-          } else {
-            const pool = lowercase + numbers;
-            localPart = lowercase[secureRandomInt(lowercase.length)];
-            while (localPart.length < localLength) {
-              localPart += pool[secureRandomInt(pool.length)];
-            }
-          }
-          localPart = localPart.slice(0, localLength);
-        }
-
-        const chosenDomain = domain?.toLowerCase() ||
-          randomWord(2, 2) + '.' + RANDOM_TLDS[secureRandomInt(RANDOM_TLDS.length)];
-
-        return localPart + '@' + chosenDomain;
-      }
-
-      function generatePlusAddress(baseEmail, tagLength) {
-        if (!baseEmail || !baseEmail.includes('@')) {
-          throw new Error('A valid base email address is required');
-        }
-
-        const [localPart, domain] = baseEmail.split('@');
-        const length = Math.max(2, Math.min(16, tagLength));
-        const pool = 'abcdefghijklmnopqrstuvwxyz0123456789';
-
-        let tag = '';
-        for (let i = 0; i < length; i++) {
-          tag += pool[secureRandomInt(pool.length)];
-        }
-
-        return localPart + '+' + tag + '@' + domain;
-      }
-
       // Email prefix length slider
       const emailPrefixLengthSlider = document.getElementById('email-prefix-length');
       const emailPrefixLengthValue = document.getElementById('email-prefix-length-value');
@@ -784,8 +644,19 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
         const prefixLength = parseInt(emailPrefixLengthSlider.value);
         const style = document.getElementById('email-style').value;
 
-        const email = generateCatchAllEmail(prefix, domain, prefixLength, style);
-
+        const catchallError = document.getElementById('catchall-error');
+        let email;
+        try {
+          email = PwLogic.generateCatchAllEmail(prefix, domain, prefixLength, style);
+        } catch (error) {
+          catchallError.textContent = error.message === 'BAD_DOMAIN'
+            ? _t('tools.password-generator.js.badDomain', 'Enter a domain like example.com (letters, digits and hyphens, separated by dots).')
+            : _t('tools.password-generator.js.badPrefix', 'The prefix can only contain letters, digits, dots, hyphens, underscores and plus signs (no spaces or @).');
+          catchallError.classList.remove('hidden');
+          document.getElementById('catchall-result').classList.add('hidden');
+          return;
+        }
+        catchallError.classList.add('hidden');
         document.getElementById('catchall-output').textContent = email;
         document.getElementById('catchall-result').classList.remove('hidden');
       });
@@ -805,22 +676,17 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
        // Plus alias generation
        document.getElementById('generate-alias')?.addEventListener('click', () => {
          const baseEmail = document.getElementById('alias-base-email').value;
-         if (!baseEmail || !baseEmail.includes('@')) {
-           document.getElementById('alias-error').textContent = _t('tools.password-generator.js.text1', 'Please enter a valid base email address.');
-           document.getElementById('alias-error').classList.remove('hidden');
-           return;
-         }
-
          try {
            const tagLength = parseInt(aliasTagLengthSlider.value);
-           const email = generatePlusAddress(baseEmail, tagLength);
+           const email = PwLogic.generatePlusAddress(baseEmail, tagLength);
 
            document.getElementById('alias-error').classList.add('hidden');
            document.getElementById('alias-output').textContent = email;
            document.getElementById('alias-result').classList.remove('hidden');
          } catch (error) {
-           document.getElementById('alias-error').textContent = error.message;
+           document.getElementById('alias-error').textContent = _t('tools.password-generator.js.text1', 'Please enter a valid base email address.');
            document.getElementById('alias-error').classList.remove('hidden');
+           document.getElementById('alias-result').classList.add('hidden');
          }
       });
 

@@ -5,6 +5,14 @@ import {
   createCheatsheet,
 } from "../utils/common-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
+import {
+  appendOperator,
+  buildBpfClause,
+  buildDisplayClause,
+  ipv4NetError,
+  joinClause,
+  validateFilter,
+} from "../utils/wireshark-filter-logic.js";
 import { createRelatedToolsSection } from "../utils/content-ui.js";
 import {
   DEFAULT_LANGUAGE,
@@ -12,6 +20,15 @@ import {
   normalizeLanguage,
   resolveRequestLanguage,
 } from "../utils/i18n.js";
+
+// Bundlers may rename module functions (shellQuote -> shellQuote3) and the
+// renamed name is what other injected bodies call, so inject each function
+// under its real name and alias it to the name the page script uses.
+function inlineFunctions(fns) {
+  return Object.entries(fns)
+    .map(([name, fn]) => fn.toString() + (fn.name === name ? "" : "\nvar " + name + " = " + fn.name + ";"))
+    .join("\n");
+}
 
 export async function handleWiresharkFilterRoutes(request, url) {
   if (
@@ -52,17 +69,17 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
         <div class="space-y-6">
           <!-- Mode Tabs -->
           <div class="tool-card">
-            <div class="flex space-x-1 border-b border-surface-200 dark:border-surface-700 mb-4">
-              <button id="tab-display" class="tab-trigger tab-btn active" data-tab="display">
-                <span data-i18n="tools.wireshark-filter.ui.button0">Display Filter</span>
+            <div class="tabs-list mb-4 flex-wrap" role="tablist" aria-label="Filter type">
+              <button id="tab-display" type="button" class="tab-trigger tab-btn active" role="tab" aria-selected="true" aria-controls="panel-display" tabindex="0" data-tab="display">
+                <span data-i18n="tools.wireshark-filter.ui.th42">Display Filter</span>
               </button>
-              <button id="tab-bpf" class="tab-trigger tab-btn" data-tab="bpf">
-                <span data-i18n="tools.wireshark-filter.ui.button1">Capture Filter (BPF)</span>
+              <button id="tab-bpf" type="button" class="tab-trigger tab-btn" role="tab" aria-selected="false" aria-controls="panel-bpf" tabindex="-1" data-tab="bpf">
+                <span>Capture Filter (BPF)</span>
               </button>
             </div>
 
             <!-- Display Filter Mode -->
-            <div id="panel-display" class="tab-panel">
+            <div id="panel-display" class="tab-panel" role="tabpanel" aria-labelledby="tab-display">
               <div class="space-y-4">
                 <div>
                   <label for="df-protocol" class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label0">Protocol</label>
@@ -99,10 +116,10 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
                   <select id="df-operator" class="input w-full">
                     <option value="==" data-i18n="tools.wireshark-filter.ui.option22">== (equals)</option>
                     <option value="!=" data-i18n="tools.wireshark-filter.ui.option23">!= (not equals)</option>
-                    <option value=">" data-i18n="tools.wireshark-filter.ui.option24">&gt; (greater than)</option>
-                    <option value="<">< (less than)</option>
-                    <option value=">=" data-i18n="tools.wireshark-filter.ui.option25">&gt;= (greater or equal)</option>
-                    <option value="<="><= (less or equal)</option>
+                    <option value=">">&gt; (greater than)</option>
+                    <option value="<">&lt; (less than)</option>
+                    <option value=">=">&gt;= (greater or equal)</option>
+                    <option value="<=">&lt;= (less or equal)</option>
                     <option value="contains" data-i18n="tools.wireshark-filter.ui.option26">contains</option>
                     <option value="matches" data-i18n="tools.wireshark-filter.ui.option27">matches (regex)</option>
                   </select>
@@ -110,39 +127,39 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
 
                 <div>
                   <label for="df-value" class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label3">Value</label>
-                  <input type="text" id="df-value" class="input w-full" placeholder="e.g., 80, 192.168.1.1">
+                  <input type="text" id="df-value" class="input w-full" placeholder="e.g., 80, 192.168.1.1 (empty = field exists)">
                 </div>
 
-                <button id="df-add-btn" class="btn btn-primary w-full">
-                  <span data-i18n="tools.wireshark-filter.ui.button2">Add to Filter</span>
+                <button id="df-add-btn" type="button" class="btn btn-primary w-full">
+                  <span>Add to Filter</span>
                 </button>
 
                 <div class="border-t border-surface-200 dark:border-surface-700 pt-4">
                   <label class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-2" data-i18n="tools.wireshark-filter.ui.label4">Logical Operators</label>
                   <div class="flex flex-wrap gap-2">
-                    <button class="logic-btn btn btn-secondary btn-sm" data-op="&&"><span data-i18n="tools.wireshark-filter.ui.button5">AND</span></button>
-                    <button class="logic-btn btn btn-secondary btn-sm" data-op="||"><span data-i18n="tools.wireshark-filter.ui.button6">OR</span></button>
-                    <button class="logic-btn btn btn-secondary btn-sm" data-op="!"><span data-i18n="tools.wireshark-filter.ui.button7">NOT</span></button>
-                    <button class="logic-btn btn btn-secondary btn-sm" data-op="(">(</button>
-                    <button class="logic-btn btn btn-secondary btn-sm" data-op=")">)</button>
+                    <button type="button" class="logic-btn btn btn-secondary btn-sm" data-op="&&" aria-label="AND (&&)">AND</button>
+                    <button type="button" class="logic-btn btn btn-secondary btn-sm" data-op="||" aria-label="OR (||)">OR</button>
+                    <button type="button" class="logic-btn btn btn-secondary btn-sm" data-op="!" aria-label="NOT (!)">NOT</button>
+                    <button type="button" class="logic-btn btn btn-secondary btn-sm" data-op="(" aria-label="Open parenthesis">(</button>
+                    <button type="button" class="logic-btn btn btn-secondary btn-sm" data-op=")" aria-label="Close parenthesis">)</button>
                   </div>
                 </div>
 
                 <div class="border-t border-surface-200 dark:border-surface-700 pt-4">
                   <label class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-2" data-i18n="tools.wireshark-filter.ui.label5">Preset Filters</label>
                   <div class="flex flex-wrap gap-2">
-                    <button class="preset-btn btn btn-ghost btn-xs" data-filter="http" data-i18n="tools.wireshark-filter.ui.button3">HTTP Traffic</button>
-                    <button class="preset-btn btn btn-ghost btn-xs" data-filter="dns" data-i18n="tools.wireshark-filter.ui.button4">DNS Queries</button>
-                    <button class="preset-btn btn btn-ghost btn-xs" data-filter="tcp-errors" data-i18n="tools.wireshark-filter.ui.button5">TCP Errors</button>
-                    <button class="preset-btn btn btn-ghost btn-xs" data-filter="retrans" data-i18n="tools.wireshark-filter.ui.button6">Retransmissions</button>
-                    <button class="preset-btn btn btn-ghost btn-xs" data-filter="ssl-handshake" data-i18n="tools.wireshark-filter.ui.button7">SSL Handshake</button>
+                    <button type="button" class="preset-btn btn btn-ghost btn-xs" data-filter="http" data-i18n="tools.wireshark-filter.ui.button0">HTTP Traffic</button>
+                    <button type="button" class="preset-btn btn btn-ghost btn-xs" data-filter="dns" data-i18n="tools.wireshark-filter.ui.button1">DNS Queries</button>
+                    <button type="button" class="preset-btn btn btn-ghost btn-xs" data-filter="tcp-errors" data-i18n="tools.wireshark-filter.ui.button2">TCP Errors</button>
+                    <button type="button" class="preset-btn btn btn-ghost btn-xs" data-filter="retrans" data-i18n="tools.wireshark-filter.ui.button3">Retransmissions</button>
+                    <button type="button" class="preset-btn btn btn-ghost btn-xs" data-filter="ssl-handshake" data-i18n="tools.wireshark-filter.ui.button4">SSL Handshake</button>
                   </div>
                 </div>
               </div>
             </div>
 
             <!-- BPF Capture Filter Mode -->
-            <div id="panel-bpf" class="tab-panel hidden">
+            <div id="panel-bpf" class="tab-panel hidden" role="tabpanel" aria-labelledby="tab-bpf">
               <div class="space-y-4">
                 <div>
                   <label for="bpf-primitive" class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.wireshark-filter.ui.label6">Primitive</label>
@@ -178,32 +195,32 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
                     <option value="icmp" data-i18n="tools.wireshark-filter.ui.option38">icmp</option>
                     <option value="arp" data-i18n="tools.wireshark-filter.ui.option39">arp</option>
                     <option value="ip" data-i18n="tools.wireshark-filter.ui.option40">ip</option>
-                    <option value="ipv6" data-i18n="tools.wireshark-filter.ui.option41">ipv6</option>
+                    <option value="ip6" data-i18n="tools.wireshark-filter.ui.r3_0">ip6</option>
                   </select>
                 </div>
 
-                <button id="bpf-add-btn" class="btn btn-primary w-full">
-                  <span data-i18n="tools.wireshark-filter.ui.button8">Add to Filter</span>
+                <button id="bpf-add-btn" type="button" class="btn btn-primary w-full">
+                  <span>Add to Filter</span>
                 </button>
 
                 <div class="border-t border-surface-200 dark:border-surface-700 pt-4">
                   <label class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-2" data-i18n="tools.wireshark-filter.ui.label10">Logical Operators</label>
                   <div class="flex flex-wrap gap-2">
-                    <button class="bpf-logic-btn btn btn-secondary btn-sm" data-op="and"><span data-i18n="tools.wireshark-filter.ui.button5">and</span></button>
-                    <button class="bpf-logic-btn btn btn-secondary btn-sm" data-op="or"><span data-i18n="tools.wireshark-filter.ui.button6">or</span></button>
-                    <button class="bpf-logic-btn btn btn-secondary btn-sm" data-op="not"><span data-i18n="tools.wireshark-filter.ui.button7">not</span></button>
-                    <button class="bpf-logic-btn btn btn-secondary btn-sm" data-op="(">(</button>
-                    <button class="bpf-logic-btn btn btn-secondary btn-sm" data-op=")">)</button>
+                    <button type="button" class="bpf-logic-btn btn btn-secondary btn-sm" data-op="and"><span data-i18n="tools.wireshark-filter.ui.button5">and</span></button>
+                    <button type="button" class="bpf-logic-btn btn btn-secondary btn-sm" data-op="or"><span data-i18n="tools.wireshark-filter.ui.button6">or</span></button>
+                    <button type="button" class="bpf-logic-btn btn btn-secondary btn-sm" data-op="not"><span data-i18n="tools.wireshark-filter.ui.button7">not</span></button>
+                    <button type="button" class="bpf-logic-btn btn btn-secondary btn-sm" data-op="(" aria-label="Open parenthesis">(</button>
+                    <button type="button" class="bpf-logic-btn btn btn-secondary btn-sm" data-op=")" aria-label="Close parenthesis">)</button>
                   </div>
                 </div>
 
                 <div class="border-t border-surface-200 dark:border-surface-700 pt-4">
                   <label class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-2" data-i18n="tools.wireshark-filter.ui.label11">Common BPF Filters</label>
                   <div class="flex flex-wrap gap-2">
-                    <button class="bpf-preset-btn btn btn-ghost btn-xs" data-filter="port-80"><span data-i18n="tools.wireshark-filter.ui.button8">port 80</span></button>
-                    <button class="bpf-preset-btn btn btn-ghost btn-xs" data-filter="host-local"><span data-i18n="tools.wireshark-filter.ui.button9">host 127.0.0.1</span></button>
-                    <button class="bpf-preset-btn btn btn-ghost btn-xs" data-filter="tcp-only"><span data-i18n="tools.wireshark-filter.ui.button10">tcp</span></button>
-                    <button class="bpf-preset-btn btn btn-ghost btn-xs" data-filter="no-arp"><span data-i18n="tools.wireshark-filter.ui.button11">not arp</span></button>
+                    <button type="button" class="bpf-preset-btn btn btn-ghost btn-xs" data-filter="port-80"><span data-i18n="tools.wireshark-filter.ui.button8">port 80</span></button>
+                    <button type="button" class="bpf-preset-btn btn btn-ghost btn-xs" data-filter="host-local"><span data-i18n="tools.wireshark-filter.ui.button9">host 127.0.0.1</span></button>
+                    <button type="button" class="bpf-preset-btn btn btn-ghost btn-xs" data-filter="tcp-only"><span data-i18n="tools.wireshark-filter.ui.button10">tcp</span></button>
+                    <button type="button" class="bpf-preset-btn btn btn-ghost btn-xs" data-filter="no-arp"><span data-i18n="tools.wireshark-filter.ui.button11">not arp</span></button>
                   </div>
                 </div>
               </div>
@@ -214,11 +231,11 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
           <div class="tool-card">
             <div class="flex justify-between items-center mb-4">
               <h2 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.wireshark-filter.ui.heading0">Filter Preview</h2>
-              <button id="clear-filter-btn" class="btn btn-ghost btn-xs">
-                <span data-i18n="tools.wireshark-filter.ui.button9">Clear</span>
+              <button id="clear-filter-btn" type="button" class="btn btn-ghost btn-xs">
+                <span>Clear</span>
               </button>
             </div>
-            <pre id="filter-preview" class="bg-surface-900 text-surface-50 p-4 rounded-lg text-sm font-mono overflow-x-auto min-h-[80px] whitespace-pre-wrap"></pre>
+            <pre id="filter-preview" tabindex="0" aria-label="Filter preview" class="bg-surface-900 text-surface-50 p-4 rounded-lg text-sm font-mono overflow-x-auto min-h-[80px] whitespace-pre-wrap"></pre>
           </div>
         </div>
 
@@ -229,16 +246,16 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
             <div class="flex justify-between items-center mb-4">
               <h2 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.wireshark-filter.ui.heading1">Generated Filter</h2>
               <button id="copy-filter-btn" type="button" class="btn btn-primary btn-xs">
-                <span data-i18n="tools.wireshark-filter.ui.button10">Copy</span>
+                <span>Copy</span>
               </button>
             </div>
             <div class="relative">
-              <pre id="generated-filter" class="bg-surface-900 text-surface-50 p-4 rounded-lg text-sm font-mono overflow-x-auto min-h-[100px] whitespace-pre-wrap select-all"></pre>
+              <pre id="generated-filter" tabindex="0" aria-label="Generated filter" aria-live="polite" class="bg-surface-900 text-surface-50 p-4 rounded-lg text-sm font-mono overflow-x-auto min-h-[100px] whitespace-pre-wrap select-all"></pre>
               <div id="validation-badge" class="absolute top-2 right-2 hidden">
                 <span id="validation-icon" class="inline-flex items-center px-2 py-1 rounded text-xs font-medium"></span>
               </div>
             </div>
-            <div id="validation-message" class="mt-3 text-sm hidden"></div>
+            <div id="validation-message" class="mt-3 text-sm hidden" role="status"></div>
           </div>
 
           <!-- Protocol Field Reference -->
@@ -494,7 +511,7 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
         'dns': 'dns',
         'tcp-errors': 'tcp.analysis.flags && !tcp.analysis.window_update',
         'retrans': 'tcp.analysis.retransmission',
-        'ssl-handshake': 'ssl.handshake.type == 1 || ssl.handshake.type == 2'
+        'ssl-handshake': 'tls.handshake.type == 1 || tls.handshake.type == 2'
       };
 
       const BPF_PRESETS = {
@@ -529,34 +546,50 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
       const validationIcon = document.getElementById('validation-icon');
       const validationMessage = document.getElementById('validation-message');
 
-      let currentFilter = '';
+      ${inlineFunctions({ joinClause, appendOperator, buildDisplayClause, ipv4NetError, buildBpfClause, validateFilter })}
+
+      // Each mode keeps its own expression: a display filter is not a valid
+      // capture filter, so switching tabs must not carry one into the other.
+      const filters = { display: '', bpf: '' };
       let currentMode = 'display';
 
-      // Tab switching
-      tabBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-          const tab = btn.dataset.tab;
-          currentMode = tab;
-          
-          tabBtns.forEach(b => {
-            b.classList.remove('text-primary-600', 'border-b-2', 'border-primary-600');
-            b.classList.add('text-surface-500', 'dark:text-surface-400');
-          });
-          btn.classList.remove('text-surface-500', 'dark:text-surface-400');
-          btn.classList.add('text-primary-600', 'border-b-2', 'border-primary-600');
+      function setFilter(value) {
+        filters[currentMode] = value;
+        updateFilterDisplay();
+      }
 
-          tabPanels.forEach(p => p.classList.add('hidden'));
-          document.getElementById('panel-' + tab).classList.remove('hidden');
-          
-          updateFilterDisplay();
+      function showBuilderError(message) {
+        validationBadge.classList.add('hidden');
+        validationMessage.textContent = message;
+        validationMessage.className = 'mt-3 text-sm text-error-600 dark:text-error-400';
+      }
+
+      function selectTab(btn, focus) {
+        currentMode = btn.dataset.tab;
+        tabBtns.forEach(b => {
+          const on = b === btn;
+          b.classList.toggle('active', on);
+          b.setAttribute('aria-selected', on ? 'true' : 'false');
+          b.tabIndex = on ? 0 : -1;
+        });
+        tabPanels.forEach(p => p.classList.add('hidden'));
+        document.getElementById('panel-' + currentMode).classList.remove('hidden');
+        if (focus) btn.focus();
+        updateFilterDisplay();
+      }
+
+      tabBtns.forEach((btn, index) => {
+        btn.addEventListener('click', () => selectTab(btn, false));
+        btn.addEventListener('keydown', (e) => {
+          if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+          e.preventDefault();
+          selectTab(tabBtns[(index + 1) % tabBtns.length], true);
         });
       });
 
-      // Update fields based on protocol selection
       dfProtocol.addEventListener('change', () => {
         const protocol = dfProtocol.value;
         dfField.innerHTML = '<option value="">-- Select Field --</option>';
-        
         if (protocol && PROTOCOL_FIELDS[protocol]) {
           PROTOCOL_FIELDS[protocol].forEach(field => {
             const option = document.createElement('option');
@@ -564,142 +597,74 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
             option.textContent = field.label;
             dfField.appendChild(option);
           });
+          dfField.selectedIndex = 1;
         }
       });
 
-      // Add display filter clause
-      dfAddBtn.addEventListener('click', () => {
-        const field = dfField.value;
-        const operator = dfOperator.value;
-        const value = dfValue.value.trim();
-        
-        if (!field) return;
-        
-        let clause = field + ' ' + operator + ' ';
-        
-        // Quote value if needed
-        if (operator === 'contains' || operator === 'matches') {
-          clause += '"' + value + '"';
-        } else if (isNaN(value) && !value.match(/^\\d+\\.\\d+\\.\\d+\\.\\d+$/)) {
-          clause += '"' + value + '"';
-        } else {
-          clause += value;
-        }
-        
-        if (currentFilter) {
-          currentFilter += ' && ';
-        }
-        currentFilter += clause;
-        
-        updateFilterDisplay();
+      function addDisplayClause() {
+        const result = buildDisplayClause(dfField.value, dfOperator.value, dfValue.value);
+        if (result.error) return showBuilderError(result.error);
+        setFilter(joinClause(filters.display, result.clause, '&&'));
         dfValue.value = '';
+      }
+      dfAddBtn.addEventListener('click', addDisplayClause);
+      dfValue.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); addDisplayClause(); }
       });
 
-      // Add logical operator
       logicBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-          const op = btn.dataset.op;
-          if (currentMode === 'display') {
-            if (op === '!' || op === '(' || op === ')') {
-              currentFilter += ' ' + op;
-            } else {
-              currentFilter += ' ' + op + ' ';
-            }
-          }
-          updateFilterDisplay();
-        });
+        btn.addEventListener('click', () => setFilter(appendOperator(filters.display, btn.dataset.op)));
       });
-
-      // Add BPF logical operator
       bpfLogicBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-          const op = btn.dataset.op;
-          if (currentMode === 'bpf') {
-            if (op === 'not' || op === '(' || op === ')') {
-              currentFilter += ' ' + op;
-            } else {
-              currentFilter += ' ' + op + ' ';
-            }
-          }
-          updateFilterDisplay();
-        });
+        btn.addEventListener('click', () => setFilter(appendOperator(filters.bpf, btn.dataset.op)));
       });
 
-      // Display filter presets
       presetBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-          const filterKey = btn.dataset.filter;
-          currentFilter = PRESET_FILTERS[filterKey] || '';
-          updateFilterDisplay();
-        });
+        btn.addEventListener('click', () => setFilter(PRESET_FILTERS[btn.dataset.filter] || ''));
       });
-
-      // BPF presets
       bpfPresetBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-          const filterKey = btn.dataset.filter;
-          currentFilter = BPF_PRESETS[filterKey] || '';
-          updateFilterDisplay();
-        });
+        btn.addEventListener('click', () => setFilter(BPF_PRESETS[btn.dataset.filter] || ''));
       });
 
-      // Add BPF clause
-      bpfAddBtn.addEventListener('click', () => {
-        const primitive = bpfPrimitive.value;
-        const direction = bpfDirection.value;
-        const value = bpfValue.value.trim();
-        const proto = bpfProtocol.value;
-        
-        let clause = '';
-        
-        if (proto) {
-          clause += proto + ' ';
-        }
-        
-        if (direction) {
-          clause += direction + ' ';
-        }
-        
-        clause += primitive + ' ' + value;
-        
-        if (currentFilter) {
-          currentFilter += ' and ';
-        }
-        currentFilter += clause;
-        
-        updateFilterDisplay();
+      function addBpfClause() {
+        const result = buildBpfClause(bpfPrimitive.value, bpfDirection.value, bpfValue.value, bpfProtocol.value);
+        if (result.error) return showBuilderError(result.error);
+        setFilter(joinClause(filters.bpf, result.clause, 'and'));
         bpfValue.value = '';
+      }
+      bpfAddBtn.addEventListener('click', addBpfClause);
+      bpfValue.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); addBpfClause(); }
       });
 
-      // Clear filter
-      clearFilterBtn.addEventListener('click', () => {
-        currentFilter = '';
-        updateFilterDisplay();
-      });
+      clearFilterBtn.addEventListener('click', () => setFilter(''));
 
-      // Copy filter
       copyFilterBtn.addEventListener('click', () => {
-        copyToClipboard(currentFilter, copyFilterBtn);
+        const text = filters[currentMode];
+        if (!text) return showBuilderError('Nothing to copy yet: add a clause or pick a preset.');
+        navigator.clipboard.writeText(text).then(() => {
+          const label = copyFilterBtn.querySelector('span');
+          const original = label.textContent;
+          label.textContent = _t('common.copied', 'Copied!');
+          setTimeout(() => { label.textContent = original; }, 1500);
+        }).catch(() => showBuilderError('Copy failed: the browser blocked clipboard access. Select the filter text and copy it manually.'));
       });
 
-      // Validate and update display
       function updateFilterDisplay() {
+        const currentFilter = filters[currentMode];
         filterPreview.textContent = currentFilter || '(empty)';
         generatedFilter.textContent = currentFilter || '(empty)';
-        
-        // Simple validation
+
         if (!currentFilter) {
           validationBadge.classList.add('hidden');
           validationMessage.classList.add('hidden');
           return;
         }
-        
+
         validationBadge.classList.remove('hidden');
         validationMessage.classList.remove('hidden');
-        
-        // Basic syntax validation
         const issues = validateFilter(currentFilter, currentMode);
-        
+
         if (issues.length === 0) {
           validationIcon.textContent = _t('tools.wireshark-filter.js.text0', 'Valid');
           validationIcon.className = 'inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-success-100 text-success-800';
@@ -713,32 +678,7 @@ function renderWiresharkFilterPage(lang = DEFAULT_LANGUAGE) {
         }
       }
 
-      function validateFilter(filter, mode) {
-        const issues = [];
-        
-        if (mode === 'display') {
-          // Check for unbalanced parentheses
-          const openParens = (filter.match(/\\(/g) || []).length;
-          const closeParens = (filter.match(/\\)/g) || []).length;
-          if (openParens !== closeParens) {
-            issues.push('unbalanced parentheses');
-          }
-          
-          // Check for trailing operators
-          if (/\\&\\&\\s*$/.test(filter) || /\\|\\|\\s*$/.test(filter)) {
-            issues.push('trailing logical operator');
-          }
-        } else {
-          // BPF validation
-          const openParens = (filter.match(/\\(/g) || []).length;
-          const closeParens = (filter.match(/\\)/g) || []).length;
-          if (openParens !== closeParens) {
-            issues.push('unbalanced parentheses');
-          }
-        }
-        
-        return issues;
-      }
+      updateFilterDisplay();
     </script>
   `;
 

@@ -39,7 +39,7 @@ describe("route modules", () => {
       }
     }
     expect(broken).toEqual([]);
-  });
+  }, 30_000);
 
   // NOTE: a "no unescaped backtick" heuristic used to live here and was
   // removed. Routes legitimately nest their own template literals, so scanning

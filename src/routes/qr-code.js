@@ -16,6 +16,7 @@ import {
   normalizeLanguage,
   resolveRequestLanguage,
 } from "../utils/i18n.js";
+import { createQrCodeLogic } from "../utils/qr-code-logic.js";
 
 export async function handleQRCodeRoutes(request, url) {
   const { pathname } = url;
@@ -76,10 +77,10 @@ function renderQRCodePage(lang = DEFAULT_LANGUAGE) {
         <div class="border-b border-surface-200 dark:border-surface-700 mb-8">
           <nav class="flex flex-wrap gap-2" aria-label="QR code tool modes" role="tablist">
             <button id="tab-trigger-generate" class="tab-trigger tab-button active" data-tab="generate" role="tab" aria-controls="tab-generate" aria-selected="true" tabindex="0">
-              <span class="material-symbols-rounded text-base align-middle" aria-hidden="true">qr_code_2</span> <span data-i18n="tools.qr-code.ui.tab0">Generate</span>
+              <span class="material-symbols-rounded text-base align-middle" aria-hidden="true" data-icon="qr_code_2"></span> <span data-i18n="tools.qr-code.ui.tab0">Generate</span>
             </button>
             <button id="tab-trigger-decode" class="tab-trigger tab-button" data-tab="decode" role="tab" aria-controls="tab-decode" aria-selected="false" tabindex="-1">
-              <span class="material-symbols-rounded text-base align-middle" aria-hidden="true">qr_code_scanner</span> <span data-i18n="tools.qr-code.ui.tab1">Decode</span>
+              <span class="material-symbols-rounded text-base align-middle" aria-hidden="true" data-icon="qr_code_scanner"></span> <span data-i18n="tools.qr-code.ui.tab1">Decode</span>
             </button>
           </nav>
         </div>
@@ -119,33 +120,34 @@ function renderQRCodePage(lang = DEFAULT_LANGUAGE) {
                   <label for="qr-fg-color" class="label"><span data-i18n="tools.qr-code.ui.label6">Foreground Color</span></label>
                   <div class="flex gap-2 items-center">
                     <input type="color" id="qr-fg-color" value="#000000" class="h-9 w-12 cursor-pointer rounded border border-input bg-background p-1">
-                    <input type="text" id="qr-fg-text" value="#000000" maxlength="7" class="input flex-1 font-mono text-sm" aria-label="Foreground color hex value">
+                    <input type="text" id="qr-fg-text" value="#000000" maxlength="7" spellcheck="false" class="input flex-1 font-mono text-sm" aria-label="Foreground color hex value">
                   </div>
                 </div>
                 <div>
                   <label for="qr-bg-color" class="label"><span data-i18n="tools.qr-code.ui.label7">Background Color</span></label>
                   <div class="flex gap-2 items-center">
                     <input type="color" id="qr-bg-color" value="#ffffff" class="h-9 w-12 cursor-pointer rounded border border-input bg-background p-1">
-                    <input type="text" id="qr-bg-text" value="#ffffff" maxlength="7" class="input flex-1 font-mono text-sm" aria-label="Background color hex value">
+                    <input type="text" id="qr-bg-text" value="#ffffff" maxlength="7" spellcheck="false" class="input flex-1 font-mono text-sm" aria-label="Background color hex value">
                   </div>
                 </div>
               </div>
 
               <!-- Generate Button -->
               <button id="generate-qr" class="btn btn-primary w-full">
-                <span class="material-symbols-rounded text-base align-middle" aria-hidden="true">qr_code_2</span>
+                <span class="material-symbols-rounded text-base align-middle" aria-hidden="true" data-icon="qr_code_2"></span>
                 <span data-i18n="tools.qr-code.ui.btnGenerate">Generate QR Code</span>
               </button>
 
               <!-- Error Message -->
               <div id="qr-error-msg" role="alert" class="hidden rounded-lg p-3 text-sm border bg-error-50 dark:bg-error-900/20 text-error-700 dark:text-error-300 border-error-200 dark:border-error-800"></div>
+              <p id="qr-scan-warning" role="status" class="hidden text-sm text-warning-800 dark:text-warning-200"></p>
             </div>
 
             <!-- Right: Preview & Download -->
             <div class="space-y-4">
               <div id="qr-preview" class="flex items-center justify-center min-h-[256px] rounded-xl border-2 border-dashed border-surface-300 dark:border-surface-600 bg-surface-50 dark:bg-surface-950" aria-label="QR code preview (awaiting input)">
                 <div class="text-center text-surface-500 dark:text-surface-400">
-                  <span class="material-symbols-rounded text-5xl">qr_code_2</span>
+                  <span class="material-symbols-rounded text-5xl" aria-hidden="true" data-icon="qr_code_2"></span>
                   <p class="mt-2 text-sm" data-i18n="tools.qr-code.ui.previewPlaceholder">Your QR code will appear here</p>
                 </div>
                 <canvas id="qr-canvas" class="hidden rounded-lg max-w-full" aria-label="QR code preview"></canvas>
@@ -154,11 +156,11 @@ function renderQRCodePage(lang = DEFAULT_LANGUAGE) {
               <!-- Download Buttons -->
               <div class="flex gap-3">
                 <button id="download-qr-png" disabled class="btn btn-secondary flex-1">
-                  <span class="material-symbols-rounded text-base align-middle" aria-hidden="true">download</span>
+                  <span class="material-symbols-rounded text-base align-middle" aria-hidden="true" data-icon="download"></span>
                   <span data-i18n="tools.qr-code.ui.btnDownloadPng">Download PNG</span>
                 </button>
                 <button id="download-qr-svg" disabled class="btn btn-secondary flex-1">
-                  <span class="material-symbols-rounded text-base align-middle" aria-hidden="true">download</span>
+                  <span class="material-symbols-rounded text-base align-middle" aria-hidden="true" data-icon="download"></span>
                   <span data-i18n="tools.qr-code.ui.btnDownloadSvg">Download SVG</span>
                 </button>
               </div>
@@ -178,16 +180,17 @@ function renderQRCodePage(lang = DEFAULT_LANGUAGE) {
 
               <div id="decode-preview" class="flex items-center justify-center min-h-[200px] rounded-xl border-2 border-dashed border-surface-300 dark:border-surface-600 bg-surface-50 dark:bg-surface-950">
                 <div class="text-center text-surface-500 dark:text-surface-400">
-                  <span class="material-symbols-rounded text-5xl">image</span>
+                  <span class="material-symbols-rounded text-5xl" aria-hidden="true" data-icon="image"></span>
                   <p class="mt-2 text-sm" data-i18n="tools.qr-code.ui.decodePlaceholder">Upload an image to decode</p>
                 </div>
                 <img id="decode-image" class="hidden max-w-full max-h-64 rounded-lg object-contain" alt="QR code to decode">
               </div>
 
               <button id="decode-qr" disabled class="btn btn-primary w-full">
-                <span class="material-symbols-rounded text-base align-middle" aria-hidden="true">qr_code_scanner</span>
+                <span class="material-symbols-rounded text-base align-middle" aria-hidden="true" data-icon="qr_code_scanner"></span>
                 <span data-i18n="tools.qr-code.ui.btnDecode">Decode QR Code</span>
               </button>
+              <div id="qr-decode-error" role="alert" class="hidden rounded-lg p-3 text-sm border bg-error-50 dark:bg-error-900/20 text-error-700 dark:text-error-300 border-error-200 dark:border-error-800"></div>
             </div>
 
             <!-- Right: Results -->
@@ -199,7 +202,7 @@ function renderQRCodePage(lang = DEFAULT_LANGUAGE) {
                   <pre id="qr-decode-output" class="input font-mono text-sm whitespace-pre-wrap break-all min-h-[120px]"></pre>
                 </div>
                 <button id="copy-decoded" class="btn btn-secondary w-full">
-                  <span class="material-symbols-rounded text-base align-middle" aria-hidden="true">content_copy</span>
+                  <span class="material-symbols-rounded text-base align-middle" aria-hidden="true" data-icon="content_copy"></span>
                   <span data-i18n="tools.qr-code.ui.btnCopyDecoded">Copy Decoded Text</span>
                 </button>
               </div>
@@ -235,7 +238,7 @@ function renderQRCodePage(lang = DEFAULT_LANGUAGE) {
         )}
       </div>
     </main>
-    ${createRelatedToolsSection(relatedToolsData)}
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">${createRelatedToolsSection(relatedToolsData)}</div>
   `;
 
   const script = `
@@ -297,7 +300,9 @@ function renderQRCodePage(lang = DEFAULT_LANGUAGE) {
       const sizeValue = document.getElementById('size-value');
       sizeSlider.addEventListener('input', (e) => {
         sizeValue.textContent = e.target.value;
+        scheduleRegenerate();
       });
+      document.getElementById('qr-error-correction').addEventListener('change', () => scheduleRegenerate());
 
       // Color sync
       const fgColor = document.getElementById('qr-fg-color');
@@ -305,10 +310,30 @@ function renderQRCodePage(lang = DEFAULT_LANGUAGE) {
       const bgColor = document.getElementById('qr-bg-color');
       const bgText = document.getElementById('qr-bg-text');
 
-      fgColor.addEventListener('input', (e) => fgText.value = e.target.value);
-      fgText.addEventListener('input', (e) => fgColor.value = e.target.value);
-      bgColor.addEventListener('input', (e) => bgText.value = e.target.value);
-      bgText.addEventListener('input', (e) => bgColor.value = e.target.value);
+      const qrLogic = (${createQrCodeLogic.toString()})();
+      const syncColor = (picker, text) => {
+        picker.addEventListener('input', () => { text.value = picker.value; scheduleRegenerate(); });
+        text.addEventListener('input', () => {
+          const hex = qrLogic.normalizeHex(text.value);
+          if (hex) { picker.value = hex; scheduleRegenerate(); }
+        });
+        text.addEventListener('blur', () => {
+          const hex = qrLogic.normalizeHex(text.value);
+          if (hex) text.value = hex;
+        });
+      };
+      syncColor(fgColor, fgText);
+      syncColor(bgColor, bgText);
+
+      let hasGenerated = false;
+      let regenTimer = null;
+      function scheduleRegenerate() {
+        if (!hasGenerated) return;
+        clearTimeout(regenTimer);
+        regenTimer = setTimeout(() => {
+          if (document.getElementById('qr-data').value.trim()) generateButton.click();
+        }, 250);
+      }
 
       let currentQRDataURL = null;
       let currentSVGMarkup = null;
@@ -344,6 +369,7 @@ function renderQRCodePage(lang = DEFAULT_LANGUAGE) {
         if (!e.target.value.trim()) return;
         const errMsg = document.getElementById('qr-error-msg');
         if (errMsg) errMsg.classList.add('hidden');
+        scheduleRegenerate();
       });
 
       generateButton.addEventListener('click', async () => {
@@ -360,8 +386,18 @@ function renderQRCodePage(lang = DEFAULT_LANGUAGE) {
         const canvas = document.getElementById('qr-canvas');
         const size = parseInt(sizeSlider.value);
         const errorCorrection = document.getElementById('qr-error-correction').value;
-        const fg = fgText.value;
-        const bg = bgText.value;
+        const fg = qrLogic.normalizeHex(fgText.value);
+        const bg = qrLogic.normalizeHex(bgText.value);
+        if (!fg || !bg) {
+          const errMsg = document.getElementById('qr-error-msg');
+          errMsg.textContent = (fg ? 'Background' : 'Foreground') + ' colour must be a hex value like #1a2b3c or #fff.';
+          errMsg.classList.remove('hidden');
+          return;
+        }
+        const warning = document.getElementById('qr-scan-warning');
+        const warnText = qrLogic.scanWarning(fg, bg);
+        warning.textContent = warnText || '';
+        warning.classList.toggle('hidden', !warnText);
 
         generateButton.disabled = true;
         generateButton.innerHTML = window._t ? window._t('tools.qr-code.ui.generating', 'Generating...') : 'Generating...';
@@ -376,6 +412,8 @@ function renderQRCodePage(lang = DEFAULT_LANGUAGE) {
           // Show canvas, hide placeholder
           document.querySelector('#qr-preview > div').classList.add('hidden');
           canvas.classList.remove('hidden');
+          document.getElementById('qr-preview').setAttribute('aria-label', 'QR code preview');
+          hasGenerated = true;
 
           // Enable download buttons
           document.getElementById('download-qr-png').disabled = false;
@@ -436,9 +474,16 @@ function renderQRCodePage(lang = DEFAULT_LANGUAGE) {
           document.querySelector('#decode-preview > div').classList.add('hidden');
           decodeButton.disabled = false;
           decodeResult.classList.add('hidden');
+          showDecodeError('');
         };
         reader.readAsDataURL(file);
       });
+
+      const decodeError = document.getElementById('qr-decode-error');
+      function showDecodeError(message) {
+        decodeError.textContent = message;
+        decodeError.classList.toggle('hidden', !message);
+      }
 
       decodeButton.addEventListener('click', () => {
         if (!decodeImage.src) return;
@@ -457,13 +502,15 @@ function renderQRCodePage(lang = DEFAULT_LANGUAGE) {
            if (code) {
              decodeOutput.textContent = code.data;
              decodeResult.classList.remove('hidden');
+             showDecodeError('');
            } else {
-             const errMsg = document.getElementById('qr-error-msg');
-             if (errMsg) {
-               errMsg.textContent = _t('tools.qr-code.js.alert2', 'No QR code found in the image. Please try another image.');
-               errMsg.classList.remove('hidden');
-             }
+             decodeResult.classList.add('hidden');
+             showDecodeError(_t('tools.qr-code.js.alert2', 'No QR code found in the image. Please try another image.'));
            }
+        };
+        img.onerror = () => {
+          decodeResult.classList.add('hidden');
+          showDecodeError('This file could not be read as an image. Upload a PNG, JPEG, GIF or WebP file.');
         };
 
         img.src = decodeImage.src;

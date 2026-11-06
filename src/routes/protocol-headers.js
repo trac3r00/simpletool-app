@@ -13,6 +13,7 @@ import {
   getToolTranslation,
   normalizeLanguage,
 } from "../utils/i18n.js";
+import { parseHexDump } from "../utils/protocol-headers-logic.js";
 
 // Merged into /network-reference (Track A). Returns the Protocol-headers tab's
 // content + script (IIFE-wrapped here so its globals don't collide with the
@@ -74,6 +75,7 @@ export function renderProtocolHeadersSection(lang = DEFAULT_LANGUAGE) {
             </div>
             <div id="hex-error" class="mt-3 p-3 bg-error-50 dark:bg-error-900/20 border border-error-200 dark:border-error-800 rounded-lg text-sm text-error-700 dark:text-error-200 hidden">
               <span data-i18n="tools.protocol-headers.ui.text0">Invalid hex format</span>
+              <span id="hex-error-detail"></span>
             </div>
           </div>
 
@@ -484,18 +486,7 @@ export function renderProtocolHeadersSection(lang = DEFAULT_LANGUAGE) {
         \`;
       }
 
-      function parseHexDump(hexText) {
-        // Remove common hex dump formatting
-        const cleaned = hexText
-          .replace(/0x/g, '')
-          .replace(/:/g, ' ')
-          .replace(/\\|/g, ' ')
-          .replace(/[^0-9a-fA-F\\s]/g, ' ')
-          .trim();
-
-        const bytes = cleaned.split(/\\s+/).filter(b => b.length === 2);
-        return bytes.map(b => parseInt(b, 16));
-      }
+      const parseHexDump = ${parseHexDump.toString()};
 
       function formatMAC(bytes) {
         return bytes.map(b => b.toString(16).padStart(2, '0').toUpperCase()).join(':');
@@ -632,35 +623,44 @@ export function renderProtocolHeadersSection(lang = DEFAULT_LANGUAGE) {
 
         const sections = [];
 
-        // Try Ethernet
-        const eth = parseEthernetFrame(bytes);
-        if (eth) {
-          sections.push({ title: 'Ethernet II', fields: eth });
-
-          const etherType = (bytes[12] << 8) | bytes[13];
-          let nextBytes = bytes.slice(14);
-
-          if (etherType === 0x0800 && nextBytes.length >= 20) {
-            const ip = parseIPv4Packet(nextBytes);
-            if (ip) {
-              sections.push({ title: 'IPv4 Header', fields: ip });
-
-              const ihl = (nextBytes[0] & 0x0F) * 4;
-              const proto = nextBytes[9];
-              const payload = nextBytes.slice(ihl);
-
-              if (proto === 6 && payload.length >= 20) {
-                const tcp = parseTCP(payload);
-                if (tcp) sections.push({ title: 'TCP Header', fields: tcp });
-              } else if (proto === 17 && payload.length >= 8) {
-                const udp = parseUDP(payload);
-                if (udp) sections.push({ title: 'UDP Header', fields: udp });
-              } else if (proto === 1 && payload.length >= 8) {
-                const icmp = parseICMP(payload);
-                if (icmp) sections.push({ title: 'ICMP Header', fields: icmp });
-              }
-            }
+        function pushIPv4(ipBytes) {
+          const ip = parseIPv4Packet(ipBytes);
+          if (!ip) return;
+          sections.push({ title: 'IPv4 Header', fields: ip });
+          const ihl = (ipBytes[0] & 0x0F) * 4;
+          const proto = ipBytes[9];
+          const payload = ipBytes.slice(ihl);
+          if (proto === 6 && payload.length >= 20) {
+            const tcp = parseTCP(payload);
+            if (tcp) sections.push({ title: 'TCP Header', fields: tcp });
+          } else if (proto === 17 && payload.length >= 8) {
+            const udp = parseUDP(payload);
+            if (udp) sections.push({ title: 'UDP Header', fields: udp });
+          } else if (proto === 1 && payload.length >= 8) {
+            const icmp = parseICMP(payload);
+            if (icmp) sections.push({ title: 'ICMP Header', fields: icmp });
           }
+        }
+
+        // tcpdump -x and most IP-level captures start at the IPv4 header, not
+        // at an Ethernet frame; detect that instead of decoding it as MACs.
+        const knownEtherTypes = [0x0800, 0x86DD, 0x0806, 0x8100];
+        const etherTypeAt12 = (bytes[12] << 8) | bytes[13];
+        const startsAtIPv4 = (bytes[0] >> 4) === 4 && (bytes[0] & 0x0F) >= 5 && bytes.length >= 20 &&
+          !knownEtherTypes.includes(etherTypeAt12);
+        const eth = startsAtIPv4 ? null : parseEthernetFrame(bytes);
+        if (startsAtIPv4) {
+          pushIPv4(bytes);
+        } else if (eth) {
+          sections.push({ title: 'Ethernet II', fields: eth });
+          const nextBytes = bytes.slice(14);
+          if (etherTypeAt12 === 0x0800 && nextBytes.length >= 20) pushIPv4(nextBytes);
+        }
+        if (!sections.length) {
+          document.getElementById('hex-error-detail').textContent = ': too few bytes for an Ethernet frame (14) or IPv4 header (20).';
+          document.getElementById('hex-error').classList.remove('hidden');
+          outputSection.classList.add('hidden');
+          return;
         }
 
         output.innerHTML = sections.map(section => \`
@@ -704,19 +704,15 @@ export function renderProtocolHeadersSection(lang = DEFAULT_LANGUAGE) {
           return;
         }
 
-        try {
-          const bytes = parseHexDump(hexText);
-          const nonWs = hexText.replace(/\\s+/g, '');
-          const looksLikeHex = bytes.length >= 2 && (bytes.length * 2) >= (nonWs.length * 0.3);
-          if (bytes.length === 0 || !looksLikeHex) {
-            errorEl.classList.remove('hidden');
-            return;
-          }
-          errorEl.classList.add('hidden');
-          updateParsedOutput(bytes);
-        } catch (e) {
+        const result = parseHexDump(hexText);
+        const detail = document.getElementById('hex-error-detail');
+        if (result.error || result.bytes.length < 2) {
+          detail.textContent = ': ' + (result.error || 'only one byte found; paste at least a full header.');
           errorEl.classList.remove('hidden');
+          return;
         }
+        errorEl.classList.add('hidden');
+        updateParsedOutput(result.bytes);
       });
 
       document.getElementById('clear-hex-btn').addEventListener('click', () => {

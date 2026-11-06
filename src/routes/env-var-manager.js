@@ -18,6 +18,7 @@ import {
   createRelatedToolsSection,
 } from "../utils/content-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
+import { createEnvVarEngine } from "../utils/env-var-logic.js";
 import {
   DEFAULT_LANGUAGE,
   getToolTranslation,
@@ -218,7 +219,7 @@ function renderEnvVarManagerPage(lang = DEFAULT_LANGUAGE) {
           {
             title: "Pro Tips",
             content:
-              '<ul><li>Use the <strong>"Swap"</strong> button to quickly reverse the comparison direction between Environment A and Environment B.</li><li>Leverage the <strong>"Filter keys"</strong> input to focus on specific groups of variables, such as all keys starting with <code>AWS_</code> or <code>DB_</code>.</li><li>Always include a <code>.env.example</code> file in your repository with dummy values to show other developers which variables are required for the app to run.</li><li>Remember that environment variables are typically strings; if your app needs a boolean or a number, ensure you parse the value correctly in your code.</li></ul>',
+              '<ul><li>Use the <strong>"Swap"</strong> button to quickly reverse the comparison direction between Environment A and Environment B.</li><li>Leverage the <strong>"Filter keys"</strong> input to focus on specific groups of variables, such as all keys starting with <code>AWS_</code> or <code>DB_</code>.</li><li>Always include a <code>.env.example</code> file in your repository with dummy values to show other developers which variables are required for the app to run.</li><li data-i18n="tools.env-var-manager.ui.r3_0">Remember that environment variables are typically strings; if your app needs a boolean or a number, ensure you parse the value correctly in your code.</li></ul>',
           },
         ],
         "env-var-manager",
@@ -281,104 +282,23 @@ function renderEnvVarManagerPage(lang = DEFAULT_LANGUAGE) {
 	        'SENTRY_DSN=https://public@example.ingest.sentry.io/123',
 	      ].join('\n');
 
-	      function normalizeNewlines(s) {
-	        return String(s || '').replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-	      }
+      const engine = (${createEnvVarEngine.toString()})();
+      const parseDotenv = engine.parseDotenv;
+      const diffEnvs = engine.diffEnvs;
+      const isSensitive = engine.isSensitive;
+      const maskValue = engine.maskValue;
 
-      function looksSensitiveKey(key) {
-        return /(SECRET|TOKEN|API[_-]?KEY|PASSWORD|PASS|PRIVATE|CREDENTIAL|BEARER|SESSION|COOKIE|DSN)/i.test(String(key || ''));
-      }
-
-	      function looksSensitiveValue(value) {
-	        const v = String(value || '');
-	        if (!v) return false;
-	        if (/^eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(v)) return true; // JWT-ish
-	        if (v.length >= 24 && /^[A-Za-z0-9_+/=-]+$/.test(v) && !v.includes(' ')) return true;
-	        if (/-----BEGIN [A-Z ]+PRIVATE KEY-----/.test(v)) return true;
-	        return false;
-	      }
-
-      function maskValue(value) {
-        const v = String(value ?? '');
-        if (!v) return '';
-        if (v.length <= 6) return '[REDACTED]';
-        return v.slice(0, 2) + '…' + v.slice(-2) + ' (' + v.length + ')';
-      }
-
-	      function parseDotenv(text) {
-	        const src = normalizeNewlines(text);
-	        const lines = src.split('\n');
-        const map = new Map();
-        const order = [];
-        const duplicates = [];
-        const errors = [];
-
-        for (let idx = 0; idx < lines.length; idx++) {
-          const raw = lines[idx];
-          if (!raw) continue;
-          const trimmed = raw.trim();
-          if (!trimmed) continue;
-          if (trimmed.startsWith('#')) continue;
-
-	          let line = raw;
-	          if (/^\s*export\s+/.test(line)) line = line.replace(/^\s*export\s+/, '');
-
-          const eq = line.indexOf('=');
-          if (eq <= 0) {
-            errors.push({ line: idx + 1, msg: fmt(t('text0', 'Missing "=" in: {v}'), { v: raw.trim().slice(0, 80) }) });
-            continue;
-          }
-
-          const key = line.slice(0, eq).trim();
-          if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(key)) {
-            errors.push({ line: idx + 1, msg: fmt(t('text1', 'Invalid key: {key}'), { key }) });
-            continue;
-          }
-
-          let valueRaw = line.slice(eq + 1).trim();
-          let value = valueRaw;
-
-          // Strip inline comment for unquoted values: VALUE # comment
-          if (valueRaw && valueRaw[0] !== '"' && valueRaw[0] !== '\'') {
-            const hash = valueRaw.indexOf('#');
-            if (hash >= 0) {
-              const before = valueRaw.slice(0, hash);
-              const prevChar = before.slice(-1);
-              if (prevChar === ' ' || prevChar === '\t' || before === '') {
-                valueRaw = before.trimEnd();
-                value = valueRaw;
-              }
-            }
-          }
-
-          // Unquote
-          if (valueRaw.startsWith('"')) {
-            const end = valueRaw.lastIndexOf('"');
-            value = end > 0 ? valueRaw.slice(1, end) : valueRaw.slice(1);
-            value = value
-              .replace(/\\n/g, '\n')
-              .replace(/\\r/g, '\r')
-              .replace(/\\t/g, '\t')
-              .replace(/\\"/g, '"')
-              .replace(/\\\\/g, '\\');
-          } else if (valueRaw.startsWith("'")) {
-            const end = valueRaw.lastIndexOf("'");
-            value = end > 0 ? valueRaw.slice(1, end) : valueRaw.slice(1);
-          }
-
-          if (map.has(key)) duplicates.push({ line: idx + 1, key });
-          map.set(key, { key, value, raw: valueRaw });
-          order.push(key);
-        }
-
-        return { map, order, duplicates, errors };
+      function parseMessage(e) {
+        if (e.code === 'missing_eq') return fmt(t('text0', 'Missing "=" in: {v}'), { v: e.v });
+        if (e.code === 'invalid_key') return fmt(t('text1', 'Invalid key: {key}'), { key: e.key });
+        return 'Unterminated quoted value for ' + e.key;
       }
 
       function renderParseInfo(el, parsed, envName) {
         const issues = [
-          ...parsed.errors.map(e => 'L' + e.line + ': ' + e.msg),
-          ...parsed.duplicates.map(d => 'L' + d.line + ': ' + fmt(t('text2', 'duplicate key {key}'), { key: d.key }))
-        ];
+          ...parsed.errors.map(e => ({ line: e.line, text: parseMessage(e) })),
+          ...parsed.duplicates.map(d => ({ line: d.line, text: fmt(t('text2', 'duplicate key {key}'), { key: d.key }) }))
+        ].sort((x, y) => x.line - y.line).map(i => 'L' + i.line + ': ' + i.text);
         if (!issues.length) {
           el.classList.add('hidden');
           el.innerHTML = '';
@@ -392,21 +312,6 @@ function renderEnvVarManagerPage(lang = DEFAULT_LANGUAGE) {
 	          '</ul>';
 	      }
 
-      function diffEnvs(a, b) {
-        const keys = new Set([...a.map.keys(), ...b.map.keys()]);
-        const rows = [];
-        for (const key of Array.from(keys).sort()) {
-          const av = a.map.get(key)?.value ?? null;
-          const bv = b.map.get(key)?.value ?? null;
-          let status = 'same';
-          if (av === null) status = 'onlyB';
-          else if (bv === null) status = 'onlyA';
-          else if (av !== bv) status = 'changed';
-          rows.push({ key, av, bv, status });
-        }
-        return rows;
-      }
-
        function statusLabel(status) {
          if (status === 'same') return { text: t('text4', 'Same'), cls: 'text-success-700 dark:text-success-200' };
         if (status === 'changed') return { text: t('text5', 'Changed'), cls: 'text-warning-700 dark:text-warning-200' };
@@ -415,7 +320,7 @@ function renderEnvVarManagerPage(lang = DEFAULT_LANGUAGE) {
       }
 
       function renderTable(rows) {
-        const filter = els.filter.value.trim().toLowerCase();
+        const filter = els.filter.value;
         const mask = els.mask.checked;
 
         els.tbody.innerHTML = '';
@@ -429,10 +334,10 @@ function renderEnvVarManagerPage(lang = DEFAULT_LANGUAGE) {
           else if (r.status === 'onlyA') onlyA++;
           else onlyB++;
 
-          if (filter && !r.key.toLowerCase().includes(filter)) return;
+          if (!engine.keyMatchesFilter(r.key, filter)) return;
           visible++;
 
-          const sensitive = looksSensitiveKey(r.key) || looksSensitiveValue(r.av) || looksSensitiveValue(r.bv);
+          const sensitive = isSensitive(r.key, r.av, r.bv);
           const avShown = (r.av === null) ? '' : (mask && sensitive ? maskValue(r.av) : r.av);
           const bvShown = (r.bv === null) ? '' : (mask && sensitive ? maskValue(r.bv) : r.bv);
 
@@ -453,6 +358,9 @@ function renderEnvVarManagerPage(lang = DEFAULT_LANGUAGE) {
         els.onlyBCount.textContent = String(onlyB);
         els.rowCount.textContent = fmt(t('text8', '{n} rows'), { n: visible });
         els.empty.style.display = visible ? 'none' : '';
+        if (!visible) {
+          els.empty.textContent = rows.length ? 'No keys match the filter.' : 'No variables found. Paste KEY=VALUE lines into A and B.';
+        }
       }
 
       function escapeHtml(s) {
@@ -480,7 +388,7 @@ function renderEnvVarManagerPage(lang = DEFAULT_LANGUAGE) {
         if (changed.length) {
           lines.push(t('text12', 'Changed:'));
           changed.slice(0, 60).forEach(r => {
-            const sensitive = looksSensitiveKey(r.key) || looksSensitiveValue(r.av) || looksSensitiveValue(r.bv);
+            const sensitive = isSensitive(r.key, r.av, r.bv);
             const avShown = sensitive ? maskValue(r.av) : r.av;
             const bvShown = sensitive ? maskValue(r.bv) : r.bv;
             lines.push('- ' + r.key + ': ' + avShown + '  ->  ' + bvShown);
@@ -507,6 +415,7 @@ function renderEnvVarManagerPage(lang = DEFAULT_LANGUAGE) {
 	      }
 
       let lastRows = null;
+      const emptyText = els.empty.textContent;
 
       function runCompare() {
         const a = parseDotenv(els.envA.value);
@@ -537,6 +446,7 @@ function renderEnvVarManagerPage(lang = DEFAULT_LANGUAGE) {
       els.loadSample.addEventListener('click', () => {
         els.envA.value = SAMPLE_A;
         els.envB.value = SAMPLE_B;
+        runCompare();
       });
       els.clear.addEventListener('click', () => {
         els.envA.value = '';
@@ -544,6 +454,7 @@ function renderEnvVarManagerPage(lang = DEFAULT_LANGUAGE) {
         els.share.value = '';
         els.tbody.innerHTML = '';
         els.empty.style.display = '';
+        els.empty.textContent = emptyText;
         els.rowCount.textContent = fmt(t('text8', '{n} rows'), { n: 0 });
         els.sameCount.textContent = '0';
         els.changedCount.textContent = '0';
@@ -561,12 +472,12 @@ function renderEnvVarManagerPage(lang = DEFAULT_LANGUAGE) {
         if (!text.trim()) return;
         try {
           await navigator.clipboard.writeText(text);
-          const old = els.copyReport.textContent;
+          const old = els.copyReport.innerHTML;
           els.copyReport.textContent = t('text16', '✓ Copied');
           if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
-          setTimeout(() => (els.copyReport.textContent = old), 1200);
+          setTimeout(() => (els.copyReport.innerHTML = old), 1200);
         } catch (e) {
-          console.error('Copy failed:', e);
+          els.copyReport.textContent = 'Copy failed: select the report and copy it manually.';
         }
       });
     </script>

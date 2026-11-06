@@ -119,7 +119,8 @@ function renderCaffeinatePage(lang = DEFAULT_LANGUAGE) {
         reactivationAttempts: 0,
         heartbeatCount: 0,
         reactivationCount: 0,
-        supportsWakeLock: 'wakeLock' in navigator
+        supportsWakeLock: 'wakeLock' in navigator,
+        lastError: ''
       };
 
       var statusPanel = document.getElementById('status-panel');
@@ -146,22 +147,26 @@ function renderCaffeinatePage(lang = DEFAULT_LANGUAGE) {
          }
       }
 
-      function showMode(mode) {
-        if (!mode || mode === 'none') {
-          modeLabel.classList.add('hidden');
-          return;
-        }
+      function modeName(mode) {
         var labels = {
           native: window._t ? window._t('tools.caffeinate.js.mode0') : 'Wake Lock API',
           fallback: window._t ? window._t('tools.caffeinate.js.mode1') : 'Video Fallback',
           basic: window._t ? window._t('tools.caffeinate.js.mode2') : 'Basic Fallback'
         };
-        modeLabel.textContent = labels[mode] || mode;
+        return labels[mode] || mode;
+      }
+
+      function showMode(mode) {
+        if (!mode || mode === 'none') {
+          modeLabel.classList.add('hidden');
+          return;
+        }
+        modeLabel.textContent = modeName(mode);
         modeLabel.classList.remove('hidden');
       }
 
       function updateStats() {
-        document.getElementById('stat-mode').textContent = state.mode === 'none' ? '—' : state.mode;
+        document.getElementById('stat-mode').textContent = state.mode === 'none' ? '—' : modeName(state.mode);
         document.getElementById('stat-heartbeats').textContent = state.heartbeatCount;
         document.getElementById('stat-reactivations').textContent = state.reactivationCount;
       }
@@ -230,6 +235,11 @@ function renderCaffeinatePage(lang = DEFAULT_LANGUAGE) {
           var msg = (window._t ? window._t('tools.caffeinate.js.status2') : 'Wake lock failed: {{reason}}. Please reactivate manually.').replace('{{reason}}', reason);
           updateUI('❌', msg, false, 'error');
           showMode('none');
+          state.intentActive = false;
+          state.reactivationAttempts = 0;
+          stopHeartbeat();
+          stopUptimeTimer();
+          statsPanel.classList.add('hidden');
           return false;
         }
         state.reactivationAttempts++;
@@ -261,9 +271,11 @@ function renderCaffeinatePage(lang = DEFAULT_LANGUAGE) {
           showMode('native');
           startHeartbeat();
           startUptimeTimer();
+          updateStats();
           return true;
         } catch (e) {
           state.wakeLock = null;
+          state.lastError = (e && (e.message || e.name)) || '';
           return false;
         }
       }
@@ -294,6 +306,7 @@ function renderCaffeinatePage(lang = DEFAULT_LANGUAGE) {
           showMode('fallback');
           startHeartbeat();
           startUptimeTimer();
+          updateStats();
           return true;
         } catch (e) {
           cleanupFallback();
@@ -316,7 +329,9 @@ function renderCaffeinatePage(lang = DEFAULT_LANGUAGE) {
         var fb = await activateFallback();
         if (fb) return true;
 
-        updateUI('❌', window._t ? window._t('tools.caffeinate.js.status9') : 'Wake lock unavailable on this device. Check system power settings.', false, 'error');
+        var failMsg = window._t ? window._t('tools.caffeinate.js.status9') : 'Wake lock unavailable on this device. Check system power settings.';
+        if (state.lastError) failMsg += ' (' + state.lastError + ')';
+        updateUI('❌', failMsg, false, 'error');
         return false;
       }
 
@@ -374,7 +389,7 @@ function renderCaffeinatePage(lang = DEFAULT_LANGUAGE) {
         toggleBtn.disabled = true;
         try {
           if (state.intentActive) {
-            await deactivateWakeLock('Wake lock deactivated.', true);
+            await deactivateWakeLock(null, true);
             statsPanel.classList.add('hidden');
             return;
           }
@@ -383,8 +398,12 @@ function renderCaffeinatePage(lang = DEFAULT_LANGUAGE) {
           state.reactivationCount = 0;
           statsPanel.classList.remove('hidden');
           updateStats();
+          state.lastError = '';
           var ok = await activateWakeLock();
-          if (!ok) state.intentActive = false;
+          if (!ok) {
+            state.intentActive = false;
+            statsPanel.classList.add('hidden');
+          }
         } finally {
           toggleBtn.disabled = false;
         }

@@ -17,11 +17,29 @@ import {
 } from "../utils/content-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
 import {
+  classifyBlock,
+  classifyIPv4,
+  classifyIPv6,
+  compressIPv6,
+  expandIPv6,
+  ipv4UsableLabel,
+  isValidIPv4,
+} from "../utils/cidr-logic.js";
+import {
   DEFAULT_LANGUAGE,
   getToolTranslation,
   normalizeLanguage,
   resolveRequestLanguage,
 } from "../utils/i18n.js";
+
+// Bundlers may rename module functions (shellQuote -> shellQuote3) and the
+// renamed name is what other injected bodies call, so inject each function
+// under its real name and alias it to the name the page script uses.
+function inlineFunctions(fns) {
+  return Object.entries(fns)
+    .map(([name, fn]) => fn.toString() + (fn.name === name ? "" : "\nvar " + name + " = " + fn.name + ";"))
+    .join("\n");
+}
 
 export async function handleCIDRCalculatorRoutes(request, url) {
   const { pathname } = url;
@@ -282,7 +300,7 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
                 <p class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.cidr-calculator.ui.desc33">Decimal Dotted</p>
                 <p id="format-decimal" class="font-mono text-sm text-surface-900 dark:text-surface-50 break-all">—</p>
               </div>
-              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-decimal" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard" data-i18n-title="tools.cidr-calculator.ui.title3">
+              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-decimal" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
               </button>
             </div>
@@ -292,7 +310,7 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
                 <p class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.cidr-calculator.ui.desc34">Binary</p>
                 <p id="format-binary" class="font-mono text-sm text-surface-900 dark:text-surface-50 break-all">—</p>
               </div>
-              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-binary" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard" data-i18n-title="tools.cidr-calculator.ui.title3">
+              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-binary" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
               </button>
             </div>
@@ -302,7 +320,7 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
                 <p class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.cidr-calculator.ui.desc35">Hexadecimal</p>
                 <p id="format-hex" class="font-mono text-sm text-surface-900 dark:text-surface-50 break-all">—</p>
               </div>
-              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-hex" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard" data-i18n-title="tools.cidr-calculator.ui.title3">
+              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-hex" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
               </button>
             </div>
@@ -312,7 +330,7 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
                 <p class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.cidr-calculator.ui.desc36">Integer (Decimal)</p>
                 <p id="format-integer" class="font-mono text-sm text-surface-900 dark:text-surface-50 break-all">—</p>
               </div>
-              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-integer" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard" data-i18n-title="tools.cidr-calculator.ui.title3">
+              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-integer" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
               </button>
             </div>
@@ -322,7 +340,7 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
                 <p class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.cidr-calculator.ui.desc37">IPv4-mapped IPv6</p>
                 <p id="format-ipv4mapped" class="font-mono text-sm text-surface-900 dark:text-surface-50 break-all">—</p>
               </div>
-              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-ipv4mapped" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard" data-i18n-title="tools.cidr-calculator.ui.title3">
+              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-ipv4mapped" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
               </button>
             </div>
@@ -332,7 +350,7 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
                 <p class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.cidr-calculator.ui.desc38">IPv6 Expanded</p>
                 <p id="format-ipv6expanded" class="font-mono text-sm text-surface-900 dark:text-surface-50 break-all">—</p>
               </div>
-              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-ipv6expanded" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard" data-i18n-title="tools.cidr-calculator.ui.title3">
+              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-ipv6expanded" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
               </button>
             </div>
@@ -342,7 +360,7 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
                 <p class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.cidr-calculator.ui.desc39">IPv6 Compressed</p>
                 <p id="format-ipv6compressed" class="font-mono text-sm text-surface-900 dark:text-surface-50 break-all">—</p>
               </div>
-              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-ipv6compressed" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard" data-i18n-title="tools.cidr-calculator.ui.title3">
+              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-ipv6compressed" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
               </button>
             </div>
@@ -352,7 +370,7 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
                 <p class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.cidr-calculator.ui.desc40">Reverse DNS (PTR)</p>
                 <p id="format-ptr" class="font-mono text-sm text-surface-900 dark:text-surface-50 break-all">—</p>
               </div>
-              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-ptr" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard" data-i18n-title="tools.cidr-calculator.ui.title3">
+              <button type="button" class="copy-format-btn btn btn-ghost py-1 px-2 text-xs shrink-0" data-target="format-ptr" data-i18n-title="tools.cidr-calculator.ui.title0" title="Copy to clipboard">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
               </button>
             </div>
@@ -396,7 +414,7 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
             <tr><td><code>/32</code></td><td>255.255.255.255</td><td>1</td><td>Single host</td></tr>
             <tr><td><code>/24</code></td><td>255.255.255.0</td><td>254</td><td>Small network</td></tr>
             <tr><td><code>/16</code></td><td>255.255.0.0</td><td>65,534</td><td>Medium network</td></tr>
-            <tr><td><code>/8</code></td><td>255.0.0.0</td><td>16M+</td><td>Large network</td></tr>
+            <tr><td><code>/8</code></td><td>255.0.0.0</td><td>16M+</td><td data-i18n="tools.cidr-calculator.ui.r3_0">Large network</td></tr>
           </table>`,
         },
         {
@@ -412,11 +430,12 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
       ])}
       </div>
     </main>
-    ${createRelatedToolsSection(relatedToolsData)}
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">${createRelatedToolsSection(relatedToolsData)}</div>
 
     <script>
       (function() {
         var _t = (typeof window._t === 'function') ? window._t : function(key, fallback) { return fallback || key; };
+        ${inlineFunctions({ isValidIPv4, expandIPv6, compressIPv6, classifyBlock, classifyIPv4, classifyIPv6, ipv4UsableLabel })}
         const cidrInput = document.getElementById('cidr-input');
         const prefixSlider = document.getElementById('prefix-slider');
         const prefixNumber = document.getElementById('prefix-number');
@@ -583,6 +602,9 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
           }
 
           if (family === 'ipv4') {
+            if (/(^|\\.)0\\d/.test(ipPart)) {
+              throw new Error('Octets with leading zeros are ambiguous (some tools read them as octal). Write ' + ipPart.split('.').map(o => String(Number(o))).join('.') + ' instead.');
+            }
             if (!isValidIPv4(ipPart)) {
               throw new Error('Invalid IPv4 address.');
             }
@@ -742,7 +764,7 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
             for (let i = 0; i < Math.min(subnetCount, limit); i++) {
               const start = details.networkInt + i * increment;
               const end = start + increment - 1;
-              const usable = targetPrefix >= 31 ? 'Point-to-point' : formatNumber(Math.max(Math.pow(2, 32 - targetPrefix) - 2, 0)) + ' hosts';
+              const usable = targetPrefix >= 31 ? ipv4UsableLabel(targetPrefix) : formatNumber(Math.max(Math.pow(2, 32 - targetPrefix) - 2, 0)) + ' hosts';
               rows.push('<tr><td class="py-2 pr-4 font-mono font-semibold">' + intToIPv4(start) + '/' + targetPrefix + '</td><td class="py-2 pr-4 font-mono text-xs sm:text-sm">' + intToIPv4(start) + ' – ' + intToIPv4(end) + '</td><td class="py-2 text-xs sm:text-sm">' + usable + '</td></tr>');
             }
             subnetSummary.textContent = (window._t ? window._t('tools.cidr-calculator.js.text2', 'Total subnets:') + ' ' : 'Total subnets: ') + formatNumber(subnetCount) + ' · ' + 'Showing first ' + Math.min(subnetCount, limit);
@@ -794,7 +816,7 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
           const usable = parsed.prefix >= 31 ? totalAddresses : Math.max(totalAddresses - 2, 0);
           const firstHost = parsed.prefix >= 31 ? networkInt : networkInt + 1;
           const lastHost = parsed.prefix >= 31 ? broadcastInt : broadcastInt - 1;
-          const classification = classifyIPv4(networkInt);
+          const classification = classifyIPv4(networkInt, parsed.prefix);
 
           return {
             family: 'IPv4',
@@ -811,7 +833,7 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
             hostBits,
             networkBits: parsed.prefix,
             totalDisplay: formatNumber(totalAddresses) + ' addresses',
-            usableDisplay: parsed.prefix >= 31 ? 'Point-to-point' : formatNumber(usable) + ' usable',
+            usableDisplay: ipv4UsableLabel(parsed.prefix),
             classification: classification.label,
             special: classification.special,
             ipClass: determineIPv4Class(networkInt),
@@ -830,7 +852,7 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
           const totalPower = hostBits;
           const firstHost = networkBigInt;
           const lastHost = networkBigInt + (hostBits === 0 ? 0n : (1n << BigInt(hostBits)) - 1n);
-          const classification = classifyIPv6(networkBigInt);
+          const classification = classifyIPv6(networkBigInt, parsed.prefix);
 
           return {
             family: 'IPv6',
@@ -847,7 +869,7 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
             hostBits,
             networkBits: parsed.prefix,
             totalDisplay: '2^' + totalPower + ' addresses',
-            usableDisplay: 'All addresses routable',
+            usableDisplay: 'All addresses (IPv6 has no broadcast)',
             classification: classification.label,
             special: classification.special,
             ipClass: null,
@@ -856,15 +878,6 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
           };
         }
 
-        function isValidIPv4(ip) {
-          const octets = ip.split('.');
-          if (octets.length !== 4) return false;
-          return octets.every(octet => {
-            if (octet === '' || /[^0-9]/.test(octet)) return false;
-            const value = Number(octet);
-            return value >= 0 && value <= 255;
-          });
-        }
 
         function normalizeIPv4(ip) {
           return ip.split('.').map(octet => String(Number(octet))).join('.');
@@ -923,77 +936,7 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
           return insertPrefixBoundary(chunks.join(' '), bits, group, boundary);
         }
 
-        function expandIPv6(address) {
-          if (address.includes('.')) {
-            const lastColon = address.lastIndexOf(':');
-            const ipv4Part = address.slice(lastColon + 1);
-            if (!isValidIPv4(ipv4Part)) {
-              return null;
-            }
-            const octets = ipv4Part.split('.').map(Number);
-            const high = ((octets[0] << 8) | octets[1]).toString(16);
-            const low = ((octets[2] << 8) | octets[3]).toString(16);
-            address = address.slice(0, lastColon) + ':' + high + ':' + low;
-          }
 
-          if (address.includes('::')) {
-            const parts = address.split('::');
-            if (parts.length > 2) return null;
-            const headParts = parts[0] ? parts[0].split(':').filter(Boolean) : [];
-            const tailParts = parts[1] ? parts[1].split(':').filter(Boolean) : [];
-            const missing = 8 - (headParts.length + tailParts.length);
-            if (missing < 0) return null;
-            const zeros = new Array(missing).fill('0');
-            const full = [...headParts, ...zeros, ...tailParts];
-            return full.map(part => (part || '0').padStart(4, '0')).join(':');
-          }
-
-          const straightParts = address.split(':');
-          if (straightParts.length !== 8) return null;
-          return straightParts.map(part => (part || '0').padStart(4, '0')).join(':');
-        }
-
-        function compressIPv6(address) {
-          const expanded = expandIPv6(address);
-          if (!expanded) return address;
-          const parts = expanded.split(':');
-          let bestStart = -1;
-          let bestLength = 0;
-          let currentStart = -1;
-          let currentLength = 0;
-          parts.forEach((part, index) => {
-            if (part === '0000') {
-              if (currentStart === -1) currentStart = index;
-              currentLength += 1;
-              if (currentLength > bestLength) {
-                bestStart = currentStart;
-                bestLength = currentLength;
-              }
-            } else {
-              currentStart = -1;
-              currentLength = 0;
-            }
-          });
-          if (bestLength < 2) {
-            return parts.map(part => part.replace(/^0+/, '') || '0').join(':');
-          }
-          const compressed = [];
-          let skip = false;
-          parts.forEach((part, index) => {
-            if (index === bestStart) {
-              compressed.push('');
-              skip = true;
-            }
-            if (index >= bestStart && index < bestStart + bestLength) {
-              return;
-            }
-            compressed.push(part.replace(/^0+/, '') || '0');
-          });
-          if (bestStart + bestLength === parts.length) {
-            compressed.push('');
-          }
-          return compressed.join(':').replace(':::', '::');
-        }
 
         function isValidIPv6(address) {
           return Boolean(expandIPv6(address));
@@ -1018,50 +961,7 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
           return (~((1n << BigInt(128 - prefix)) - 1n)) & ((1n << 128n) - 1n);
         }
 
-        function classifyIPv4(networkInt) {
-          const ranges = [
-            { range: [ipv4ToInt('0.0.0.0'), ipv4ToInt('0.255.255.255')], label: 'This network (0.0.0.0/8)', special: 'RFC1122 "this host on this network"' },
-            { range: [ipv4ToInt('10.0.0.0'), ipv4ToInt('10.255.255.255')], label: 'Private RFC1918 /8', special: 'Internal addressing' },
-            { range: [ipv4ToInt('172.16.0.0'), ipv4ToInt('172.31.255.255')], label: 'Private RFC1918 /12', special: 'Internal addressing' },
-            { range: [ipv4ToInt('192.168.0.0'), ipv4ToInt('192.168.255.255')], label: 'Private RFC1918 /16', special: 'Internal addressing' },
-            { range: [ipv4ToInt('100.64.0.0'), ipv4ToInt('100.127.255.255')], label: 'Carrier-grade NAT /10', special: 'RFC6598 shared space' },
-            { range: [ipv4ToInt('127.0.0.0'), ipv4ToInt('127.255.255.255')], label: 'Loopback', special: 'Host-local only' },
-            { range: [ipv4ToInt('169.254.0.0'), ipv4ToInt('169.254.255.255')], label: 'Link-local', special: 'APIPA auto configuration' },
-            { range: [ipv4ToInt('192.0.2.0'), ipv4ToInt('192.0.2.255')], label: 'TEST-NET-1', special: 'Documentation only' },
-            { range: [ipv4ToInt('198.51.100.0'), ipv4ToInt('198.51.100.255')], label: 'TEST-NET-2', special: 'Documentation only' },
-            { range: [ipv4ToInt('203.0.113.0'), ipv4ToInt('203.0.113.255')], label: 'TEST-NET-3', special: 'Documentation only' },
-            { range: [ipv4ToInt('224.0.0.0'), ipv4ToInt('239.255.255.255')], label: 'Multicast', special: 'RFC5771 special use' },
-            { range: [ipv4ToInt('255.255.255.255'), ipv4ToInt('255.255.255.255')], label: 'Limited broadcast', special: 'RFC919 local-link broadcast' },
-            { range: [ipv4ToInt('240.0.0.0'), ipv4ToInt('255.255.255.254')], label: 'Future use', special: 'Reserved / experimental' }
-          ];
 
-          for (const entry of ranges) {
-            if (networkInt >= entry.range[0] && networkInt <= entry.range[1]) {
-              return { label: entry.label, special: entry.special };
-            }
-          }
-          return { label: 'Public routable', special: 'Subject to RIR allocation policies' };
-        }
-
-        function classifyIPv6(networkBigInt) {
-          const ulaStart = ipv6ToBigInt('fc00:0000:0000:0000:0000:0000:0000:0000');
-          const ulaEnd = ipv6ToBigInt('fdff:ffff:ffff:ffff:ffff:ffff:ffff:ffff');
-          const llStart = ipv6ToBigInt('fe80:0000:0000:0000:0000:0000:0000:0000');
-          const llEnd = ipv6ToBigInt('febf:ffff:ffff:ffff:ffff:ffff:ffff:ffff');
-          const docStart = ipv6ToBigInt('2001:0db8:0000:0000:0000:0000:0000:0000');
-          const docEnd = ipv6ToBigInt('2001:0db8:ffff:ffff:ffff:ffff:ffff:ffff');
-
-          if (networkBigInt >= ulaStart && networkBigInt <= ulaEnd) {
-            return { label: 'Unique Local (fc00::/7)', special: 'RFC4193 private IPv6 space' };
-          }
-          if (networkBigInt >= llStart && networkBigInt <= llEnd) {
-            return { label: 'Link-local (fe80::/10)', special: 'Single segment only' };
-          }
-          if (networkBigInt >= docStart && networkBigInt <= docEnd) {
-            return { label: 'Documentation (2001:db8::/32)', special: 'Use in docs/examples' };
-          }
-          return { label: 'Global unicast', special: 'Routable on the public internet' };
-        }
 
         function determineIPv4Class(ipInt) {
           const firstOctet = ipInt >>> 24;
@@ -1171,7 +1071,7 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
                   this.classList.remove('text-success-600');
                 }, 1500);
               } catch (err) {
-                console.warn('Clipboard write failed in CIDR calculator', err);
+                showError('Copy failed: the browser blocked clipboard access. Select the value and copy it manually.');
               }
             }
           });

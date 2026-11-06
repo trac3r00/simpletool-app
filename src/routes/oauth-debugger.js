@@ -10,6 +10,7 @@ import {
   createRelatedToolsSection,
 } from "../utils/content-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
+import { createOAuthLogic } from "../utils/oauth-debugger-logic.js";
 import {
   DEFAULT_LANGUAGE,
   getToolTranslation,
@@ -163,6 +164,8 @@ function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
                 </div>
               </div>
 
+              <p id="flow-error" role="alert" class="hidden text-sm text-error-700 dark:text-error-300"></p>
+
               <div class="flex flex-wrap gap-3">
                 <button id="flow-build-btn" class="btn btn-primary" data-i18n="tools.oauth-debugger.ui.button4">Build Authorization URL</button>
               </div>
@@ -241,7 +244,7 @@ function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
               title: "What is PKCE and Why Does It Matter?",
               content: `
               <p>Proof Key for Code Exchange (PKCE, RFC 7636) was originally designed for mobile and native apps that cannot securely store a client secret. It works by having the client generate a random <code>code_verifier</code>, derive a <code>code_challenge</code> from it (SHA-256 + base64url), and send the challenge with the authorization request. When exchanging the authorization code for tokens, the client sends the original <code>code_verifier</code>. The authorization server verifies it matches the earlier challenge — proving the token request came from the same client that started the flow.</p>
-              <p>Even for confidential clients (server-side apps with a client secret), PKCE is now recommended by OAuth 2.1 as a defense against authorization code interception attacks.</p>
+              <p data-i18n="tools.oauth-debugger.ui.r3_0">Even for confidential clients (server-side apps with a client secret), PKCE is now recommended by OAuth 2.1 as a defense against authorization code interception attacks.</p>
             `,
             },
             {
@@ -258,7 +261,7 @@ function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
                 <li><strong>Implicit flow removed</strong> — use Authorization Code + PKCE instead.</li>
                 <li><strong>Resource Owner Password Credentials (ROPC) removed</strong> — the <code>password</code> grant type is deprecated.</li>
                 <li><strong>Refresh token rotation required</strong> for public clients — a new refresh token must be issued with each use.</li>
-                <li><strong>Redirect URI exact matching required</strong> — no pattern matching or wildcards.</li>
+                <li><strong data-i18n="tools.oauth-debugger.ui.r3_1">Redirect URI exact matching required</strong> — no pattern matching or wildcards.</li>
               </ul>
             `,
             },
@@ -271,7 +274,7 @@ function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
                 <li><strong>User authenticates</strong> at the authorization server and grants consent.</li>
                 <li><strong>Receive authorization code</strong> at your <code>redirect_uri</code> alongside the echoed <code>state</code> — verify <code>state</code> matches what you sent.</li>
                 <li><strong>Exchange code for tokens:</strong> POST to the token endpoint with <code>grant_type=authorization_code</code>, <code>code</code>, <code>redirect_uri</code>, <code>client_id</code>, and <code>code_verifier</code>.</li>
-                <li><strong>Receive access token</strong> (and optionally <code>id_token</code> and <code>refresh_token</code>) and use them to call APIs.</li>
+                <li><strong data-i18n="tools.oauth-debugger.ui.r3_2">Receive access token</strong> (and optionally <code>id_token</code> and <code>refresh_token</code>) and use them to call APIs.</li>
               </ol>
             `,
             },
@@ -310,12 +313,13 @@ function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
           return base64url(new Uint8Array(digest));
         }
 
-        document.getElementById('pkce-generate-btn').addEventListener('click', async function() {
+        async function generatePkcePair() {
           var verifier = generateVerifier();
           var challenge = await deriveChallenge(verifier);
           document.getElementById('pkce-verifier').value = verifier;
           document.getElementById('pkce-challenge').value = challenge;
-        });
+        }
+        document.getElementById('pkce-generate-btn').addEventListener('click', generatePkcePair);
 
         document.getElementById('copy-pkce-verifier').addEventListener('click', function() {
           copyToClipboard(document.getElementById('pkce-verifier').value, this);
@@ -334,7 +338,7 @@ function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
           document.getElementById('flow-state').value = base64url(arr);
         });
 
-        document.getElementById('flow-build-btn').addEventListener('click', function() {
+        document.getElementById('flow-build-btn').addEventListener('click', async function() {
           var endpoint = document.getElementById('flow-auth-endpoint').value.trim();
           var clientId = document.getElementById('flow-client-id').value.trim();
           var redirectUri = document.getElementById('flow-redirect-uri').value.trim();
@@ -342,9 +346,26 @@ function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
           var state = document.getElementById('flow-state').value.trim();
           var usePkce = document.getElementById('flow-use-pkce').checked;
 
+          var flowError = document.getElementById('flow-error');
+          function failFlow(msg) {
+            flowError.textContent = msg;
+            flowError.classList.remove('hidden');
+            document.getElementById('flow-url-wrap').classList.add('hidden');
+          }
+          flowError.classList.add('hidden');
+
           if (!endpoint || !clientId) {
-            if (window.Toast) window.Toast.error('Authorization endpoint and client_id are required.');
+            failFlow(_t('tools.oauth-debugger.js.flowRequired', 'Authorization endpoint and client_id are required.'));
             return;
+          }
+          var parsedEndpoint;
+          try { parsedEndpoint = new URL(endpoint); } catch (e) { parsedEndpoint = null; }
+          if (!parsedEndpoint || !/^https?:$/.test(parsedEndpoint.protocol)) {
+            failFlow(_t('tools.oauth-debugger.js.flowBadEndpoint', 'Invalid authorization endpoint URL. Use a full URL such as https://auth.example.com/oauth2/authorize.'));
+            return;
+          }
+          if (usePkce && !(document.getElementById('pkce-verifier').value && document.getElementById('pkce-challenge').value)) {
+            await generatePkcePair();
           }
 
           try {
@@ -361,73 +382,29 @@ function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
               if (verifier && challenge) {
                 u.searchParams.set('code_challenge', challenge);
                 u.searchParams.set('code_challenge_method', 'S256');
-              } else {
-                if (window.Toast) window.Toast.error('Generate a PKCE pair first using the PKCE Generator section.');
-                return;
               }
             }
 
             document.getElementById('flow-url-output').value = u.toString();
             document.getElementById('flow-url-wrap').classList.remove('hidden');
           } catch (e) {
-            if (window.Toast) window.Toast.error('Invalid authorization endpoint URL.');
+            failFlow(_t('tools.oauth-debugger.js.flowBadEndpoint', 'Invalid authorization endpoint URL. Use a full URL such as https://auth.example.com/oauth2/authorize.'));
           }
         });
 
         // ── Security Analyzer ───────────────────────────────────────────
+        // Inlined from src/utils/oauth-debugger-logic.js (tested in oauth-debugger-logic.test.js).
+        var OAuthLogic = (${createOAuthLogic.toString()})();
+
         document.getElementById('sec-analyze-btn').addEventListener('click', function() {
-          var responseType = document.getElementById('sec-response-type').value;
-          var grantType = document.getElementById('sec-grant-type').value;
-          var redirectUri = document.getElementById('sec-redirect-uri').value.trim();
-          var scope = document.getElementById('sec-scope').value.trim();
-          var hasPkce = document.getElementById('sec-has-pkce').checked;
-          var hasState = document.getElementById('sec-has-state').checked;
-
-          var findings = [];
-
-          // Critical: implicit flow
-          if (responseType === 'token' || responseType === 'id_token') {
-            findings.push({ severity: 'critical', text: 'Implicit flow is deprecated (OAuth 2.1). Use Authorization Code + PKCE instead (RFC 9700).' });
-          }
-
-          // Critical: no PKCE on authorization_code flow
-          if (responseType === 'code' && !hasPkce) {
-            findings.push({ severity: 'critical', text: 'PKCE is required for public clients and recommended for all clients (RFC 7636, OAuth 2.1). Add code_challenge and code_verifier.' });
-          }
-
-          // Critical: password grant
-          if (grantType === 'password') {
-            findings.push({ severity: 'critical', text: 'Resource Owner Password Credentials (password grant) is deprecated in OAuth 2.1. Migrate to Authorization Code + PKCE.' });
-          }
-
-          // Warning: HTTP redirect_uri
-          if (redirectUri && redirectUri.startsWith('http:') && !redirectUri.startsWith('http://localhost') && !redirectUri.startsWith('http://127.')) {
-            findings.push({ severity: 'warning', text: 'redirect_uri uses HTTP. Use HTTPS for all non-loopback redirect URIs to prevent token interception.' });
-          }
-
-          // Warning: no state
-          if (!hasState) {
-            findings.push({ severity: 'warning', text: 'No state parameter. The state parameter is strongly recommended for CSRF protection (RFC 6749 §10.12).' });
-          }
-
-          // Warning: wildcard or localhost in redirect_uri for non-dev
-          if (redirectUri && (redirectUri.includes('*') || redirectUri.includes('localhost')) && !redirectUri.startsWith('http://localhost') && !redirectUri.startsWith('http://127.')) {
-            findings.push({ severity: 'warning', text: 'Wildcard redirect URIs are prohibited in OAuth 2.1. Use exact URI matching.' });
-          }
-
-          // Info: OpenID Connect detected
-          if (scope && scope.includes('openid')) {
-            findings.push({ severity: 'info', text: 'OpenID Connect flow detected (scope includes "openid"). Validate the id_token signature and claims (iss, aud, exp, nonce).' });
-          }
-
-          // Info: client_credentials note
-          if (grantType === 'client_credentials') {
-            findings.push({ severity: 'info', text: 'client_credentials grant is for machine-to-machine flows. No user is involved; store client_secret securely and never expose it client-side.' });
-          }
-
-          if (findings.length === 0) {
-            findings.push({ severity: 'info', text: 'No issues detected. Configuration looks good based on the provided inputs.' });
-          }
+          var findings = OAuthLogic.analyzeOAuthConfig({
+            responseType: document.getElementById('sec-response-type').value,
+            grantType: document.getElementById('sec-grant-type').value,
+            redirectUri: document.getElementById('sec-redirect-uri').value,
+            scope: document.getElementById('sec-scope').value,
+            hasPkce: document.getElementById('sec-has-pkce').checked,
+            hasState: document.getElementById('sec-has-state').checked
+          });
 
           var findingsEl = document.getElementById('sec-findings');
           findingsEl.innerHTML = '';
@@ -446,7 +423,8 @@ function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
               label = '<span class="font-bold uppercase tracking-wide mr-2" data-i18n="tools.oauth-debugger.ui.stat33">Info:</span>';
             }
             div.className = classes;
-            div.innerHTML = label + f.text;
+            div.innerHTML = label;
+            div.appendChild(document.createTextNode(_t('tools.oauth-debugger.js.' + f.key, f.text)));
             findingsEl.appendChild(div);
           });
 

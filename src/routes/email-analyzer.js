@@ -17,6 +17,7 @@ import {
   createRelatedToolsSection,
 } from "../utils/content-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
+import { createEmailEngine } from "../utils/email-analyzer-logic.js";
 import {
   DEFAULT_LANGUAGE,
   getToolTranslation,
@@ -255,7 +256,7 @@ function renderEmailAnalyzerPage(lang = DEFAULT_LANGUAGE) {
           {
             title: "Pro Tips",
             content:
-              '<ul><li>Always check the <strong>"Authentication-Results"</strong> header first; it provides the definitive outcome of the security checks performed by your mail provider.</li><li>Use the <strong>"Mask PII"</strong> option when sharing reports with others to protect sensitive email addresses and IP information.</li><li>Pay close attention to the <strong>"Reply-To"</strong> header; if it differs from the "From" address, it may be a sign of a Business Email Compromise (BEC) attack.</li><li>Review the <strong>"Routing Hops"</strong> to see the path the email took; an unusually long or complex path through unknown servers can be a sign of relay abuse.</li></ul>',
+              '<ul><li>Always check the <strong>"Authentication-Results"</strong> header first; it provides the definitive outcome of the security checks performed by your mail provider.</li><li>Use the <strong>"Mask PII"</strong> option when sharing reports with others to protect sensitive email addresses and IP information.</li><li>Pay close attention to the <strong>"Reply-To"</strong> header; if it differs from the "From" address, it may be a sign of a Business Email Compromise (BEC) attack.</li><li>Review the <strong data-i18n="tools.email-analyzer.ui.r3_0">"Routing Hops"</strong> to see the path the email took; an unusually long or complex path through unknown servers can be a sign of relay abuse.</li></ul>',
           },
         ],
         "email-analyzer",
@@ -336,7 +337,7 @@ function renderEmailAnalyzerPage(lang = DEFAULT_LANGUAGE) {
          }
          els.status.classList.remove('hidden');
          if (kind === 'error') {
-           els.status.className = 'rounded-lg p-3 text-sm font-medium border bg-danger-50 dark:bg-danger-900/20 text-danger-700 dark:text-danger-200 border-danger-200 dark:border-danger-800';
+           els.status.className = 'rounded-lg p-3 text-sm font-medium border bg-error-50 dark:bg-error-900/20 text-error-700 dark:text-error-200 border-error-200 dark:border-error-800';
          } else if (kind === 'warn') {
            els.status.className = 'rounded-lg p-3 text-sm font-medium border bg-warning-50 dark:bg-warning-900/20 text-warning-700 dark:text-warning-200 border-warning-200 dark:border-warning-800';
          } else {
@@ -345,46 +346,8 @@ function renderEmailAnalyzerPage(lang = DEFAULT_LANGUAGE) {
          els.status.textContent = message;
        }
 
-      function normalizeNewlines(text) {
-        return String(text || '').replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-      }
-
-      function parseEmail(raw) {
-        const text = normalizeNewlines(raw);
-        const lines = text.split('\n');
-        const headerLines = [];
-        let current = '';
-        let i = 0;
-        for (; i < lines.length; i++) {
-          const line = lines[i];
-          if (line === '') {
-            if (current) headerLines.push(current);
-            i++;
-            break;
-          }
-          if (/^[ \t]/.test(line)) {
-            current += ' ' + line.trim();
-          } else {
-            if (current) headerLines.push(current);
-            current = line;
-          }
-        }
-        if (current && i >= lines.length) headerLines.push(current);
-
-        const headers = new Map(); // lowerName -> string[]
-        for (const hl of headerLines) {
-          const idx = hl.indexOf(':');
-          if (idx <= 0) continue;
-          const name = hl.slice(0, idx).trim().toLowerCase();
-          const value = hl.slice(idx + 1).trim();
-          const arr = headers.get(name) || [];
-          arr.push(value);
-          headers.set(name, arr);
-        }
-
-        const body = lines.slice(i).join('\n');
-        return { headers, body, rawHeaders: headerLines.join('\n') };
-      }
+      const engine = (${createEmailEngine.toString()})();
+      const parseEmail = engine.parseEmail;
 
       function firstHeader(headers, name) {
         const v = headers.get(String(name).toLowerCase());
@@ -394,16 +357,6 @@ function renderEmailAnalyzerPage(lang = DEFAULT_LANGUAGE) {
       function allHeaders(headers, name) {
         const v = headers.get(String(name).toLowerCase());
         return Array.isArray(v) ? v : [];
-      }
-
-      function extractEmailDomains(value) {
-        const re = /\b[A-Za-z0-9._%+-]+@([A-Za-z0-9.-]+\.[A-Za-z]{2,})\b/g;
-        const out = [];
-        let m;
-        while ((m = re.exec(String(value || ''))) !== null) {
-          out.push(m[1].toLowerCase());
-        }
-        return Array.from(new Set(out));
       }
 
       function maskEmailAddress(addr) {
@@ -529,43 +482,11 @@ function renderEmailAnalyzerPage(lang = DEFAULT_LANGUAGE) {
         return { ...parsed, raw: picked || receivedSpf || '' };
       }
 
-      function normalizeUrlCandidate(s) {
-        const raw = String(s || '').trim();
-        if (!raw) return '';
-        if (/^https?:\/\//i.test(raw)) return raw;
-        if (/^www\./i.test(raw)) return 'http://' + raw;
-        return '';
-      }
-
-      function extractUrls(text) {
-        const out = [];
-        const re = /(https?:\/\/[^\s<>"'()]+|www\.[^\s<>"'()]+)/gi;
-        let m;
-        while ((m = re.exec(String(text || ''))) !== null) {
-          const url = normalizeUrlCandidate(m[0]);
-          if (url) out.push(url);
-        }
-        return Array.from(new Set(out));
-      }
-
-      function scoreUrl(u) {
-        const flags = [];
-        let hostname = '';
-        try {
-          const url = new URL(u);
-          hostname = url.hostname || '';
-          if (hostname.startsWith('xn--')) flags.push('punycode');
-          if (/^\d{1,3}(\.\d{1,3}){3}$/.test(hostname)) flags.push('ip_host');
-          if (url.username || url.password) flags.push('userinfo');
-          if (url.protocol !== 'https:') flags.push('non_https');
-        } catch (e) {
-          flags.push('invalid');
-        }
-        return { flags, hostname };
-      }
+      const extractUrls = engine.extractUrls;
+      const scoreUrl = engine.scoreUrl;
 
        function severityBadge(sev) {
-         if (sev === 'high') return { label: t('text0', 'High'), cls: 'bg-danger-50 dark:bg-danger-900/20 text-danger-700 dark:text-danger-200 border-danger-200 dark:border-danger-800' };
+         if (sev === 'high') return { label: t('text0', 'High'), cls: 'bg-error-50 dark:bg-error-900/20 text-error-700 dark:text-error-200 border-error-200 dark:border-error-800' };
          if (sev === 'medium') return { label: t('text1', 'Medium'), cls: 'bg-warning-50 dark:bg-warning-900/20 text-warning-700 dark:text-warning-200 border-warning-200 dark:border-warning-800' };
          return { label: t('text2', 'Low'), cls: 'bg-surface-50 dark:bg-surface-950 text-surface-700 dark:text-surface-200 border-surface-200 dark:border-surface-800' };
        }
@@ -573,7 +494,7 @@ function renderEmailAnalyzerPage(lang = DEFAULT_LANGUAGE) {
        function authBadge(result) {
          const r = String(result || '').toLowerCase();
          if (r === 'pass') return { text: t('text3', 'pass'), cls: 'text-success-700 dark:text-success-200' };
-         if (r === 'fail') return { text: t('text4', 'fail'), cls: 'text-danger-700 dark:text-danger-200' };
+         if (r === 'fail') return { text: t('text4', 'fail'), cls: 'text-error-700 dark:text-error-200' };
          if (r === 'softfail' || r === 'neutral') return { text: r, cls: 'text-warning-700 dark:text-warning-200' };
          if (r) return { text: r, cls: 'text-surface-700 dark:text-surface-200' };
          return { text: t('text5', 'unknown'), cls: 'text-surface-500 dark:text-surface-400' };
@@ -586,11 +507,21 @@ function renderEmailAnalyzerPage(lang = DEFAULT_LANGUAGE) {
         const replyTo = summary.replyTo || '';
         const returnPath = summary.returnPath || '';
 
-        const fromDomains = extractEmailDomains(from);
-        const replyDomains = extractEmailDomains(replyTo);
-        const returnDomains = extractEmailDomains(returnPath);
+        const fromDomain = engine.domainOf(from);
+        const replyDomain = engine.domainOf(replyTo);
+        const returnDomain = engine.domainOf(returnPath);
+        const fromDomains = fromDomain ? [fromDomain] : [];
 
-        if (replyTo && fromDomains.length && replyDomains.length && fromDomains[0] !== replyDomains[0]) {
+        const nameDomain = engine.domainOf(engine.displayName(from));
+        if (nameDomain && fromDomain && !engine.domainsAligned(nameDomain, fromDomain)) {
+          findings.push({
+            severity: 'high',
+            title: 'Display name shows a different address',
+            detail: 'The From display name contains @' + nameDomain + ' but the message was sent from @' + fromDomain + '. A classic spoofing trick.'
+          });
+        }
+
+        if (replyDomain && fromDomain && !engine.domainsAligned(replyDomain, fromDomain)) {
           findings.push({
             severity: 'medium',
             title: t('text6', 'Reply-To mismatch'),
@@ -598,7 +529,7 @@ function renderEmailAnalyzerPage(lang = DEFAULT_LANGUAGE) {
           });
         }
 
-        if (returnPath && fromDomains.length && returnDomains.length && fromDomains[0] !== returnDomains[0]) {
+        if (returnDomain && fromDomain && !engine.domainsAligned(returnDomain, fromDomain)) {
           findings.push({
             severity: 'low',
             title: t('text8', 'Return-Path mismatch'),
@@ -614,6 +545,12 @@ function renderEmailAnalyzerPage(lang = DEFAULT_LANGUAGE) {
           findings.push({ severity: 'high', title: t('text10', 'DMARC failed'), detail: t('text11', 'DMARC indicates From alignment failed (phishing risk). Review authentication results and domains.') });
         }
         if (spf === 'fail') findings.push({ severity: 'medium', title: t('text12', 'SPF failed'), detail: t('text13', 'Sending IP not authorized for envelope sender domain.') });
+        // RFC 7208 section 2.6 result names other than pass/fail.
+        if (spf === 'softfail') findings.push({ severity: 'medium', title: 'SPF soft-failed (~all)', detail: 'The sender domain says this IP is probably not authorized. Receivers usually accept the message but treat it as suspicious.' });
+        if (spf === 'permerror') findings.push({ severity: 'medium', title: 'SPF record is broken (permerror)', detail: 'The domain published an SPF record the receiver could not evaluate, for example a syntax error or more than 10 DNS lookups.' });
+        if (spf === 'neutral') findings.push({ severity: 'low', title: 'SPF neutral (?all)', detail: 'The domain makes no statement about this IP, so SPF gives no protection here.' });
+        if (spf === 'none') findings.push({ severity: 'low', title: 'No SPF record', detail: 'The envelope sender domain publishes no SPF record.' });
+        if (spf === 'temperror') findings.push({ severity: 'low', title: 'SPF temporary error', detail: 'A DNS problem stopped the receiver from checking SPF; a later retry may pass.' });
         if (dkim === 'fail') findings.push({ severity: 'medium', title: t('text14', 'DKIM failed'), detail: t('text15', 'Signature validation failed or was missing.') });
 
         const publicIps = summary.routing?.ips?.filter(ip => !isPrivateIPv4(ip)) || [];
@@ -628,9 +565,6 @@ function renderEmailAnalyzerPage(lang = DEFAULT_LANGUAGE) {
           }
           if (flags.includes('ip_host')) findings.push({ severity: 'medium', title: t('text20', 'IP literal URL'), detail: t('text21', 'URL uses an IP address as host. Often suspicious for phishing/malware.') });
           if (flags.includes('non_https')) findings.push({ severity: 'low', title: t('text22', 'Non-HTTPS link'), detail: t('text23', 'URL is not HTTPS. Treat with extra caution.') });
-          if (hostname && fromDomains.length && hostname.endsWith(fromDomains[0]) === false && hostname.includes(fromDomains[0]) === false) {
-            // Soft heuristic only
-          }
         }
 
         return findings;
@@ -705,7 +639,7 @@ function renderEmailAnalyzerPage(lang = DEFAULT_LANGUAGE) {
 
           const a = document.createElement('a');
           a.className = 'font-mono text-sm text-primary-700 dark:text-primary-300 hover:underline break-words';
-          a.textContent = safeTrim(maskPii ? maskEmailAddress(u) : u, 200);
+          a.textContent = safeTrim(maskPii ? maskIPv4(maskEmailAddress(u)) : u, 200);
           try {
             const parsed = new URL(u);
             if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
@@ -817,7 +751,7 @@ function renderEmailAnalyzerPage(lang = DEFAULT_LANGUAGE) {
         lines.push('');
         if (summary.routing?.ips?.length) {
           const pub = summary.routing.ips.filter(ip => !isPrivateIPv4(ip));
-          lines.push(t('text43', 'IPs: ') + (pub.length ? pub.join(', ') : summary.routing.ips.join(', ')));
+          lines.push(t('text43', 'IPs: ') + m(pub.length ? pub.join(', ') : summary.routing.ips.join(', ')));
         }
         return lines.join('\n');
       }
@@ -830,19 +764,20 @@ function renderEmailAnalyzerPage(lang = DEFAULT_LANGUAGE) {
         }
 
         setStatus(null, '');
-        const { headers, body } = parseEmail(raw);
+        const parsed = parseEmail(raw);
+        const headers = parsed.headers;
 
-        const from = firstHeader(headers, 'from');
-        const to = firstHeader(headers, 'to');
-        const subject = firstHeader(headers, 'subject');
+        const from = engine.decodeEncodedWords(firstHeader(headers, 'from'));
+        const to = engine.decodeEncodedWords(firstHeader(headers, 'to'));
+        const subject = engine.decodeEncodedWords(firstHeader(headers, 'subject'));
         const date = firstHeader(headers, 'date');
         const returnPath = firstHeader(headers, 'return-path');
-        const replyTo = firstHeader(headers, 'reply-to');
+        const replyTo = engine.decodeEncodedWords(firstHeader(headers, 'reply-to'));
 
         const auth = parseAuthenticationResults(headers);
         const received = allHeaders(headers, 'received');
 
-        const urls = els.includeBodyUrls.checked ? extractUrls(body) : [];
+        const urls = els.includeBodyUrls.checked ? extractUrls(engine.decodedBody(parsed)) : [];
         const routing = renderHops(received, els.maskPii.checked);
 
         const summary = { from, to, subject, date, returnPath, replyTo, auth, urls, routing };
@@ -888,6 +823,9 @@ function renderEmailAnalyzerPage(lang = DEFAULT_LANGUAGE) {
       });
 
       els.analyzeBtn.addEventListener('click', runAnalysis);
+      [els.includeBodyUrls, els.maskPii].forEach((el) => el.addEventListener('change', () => {
+        if (lastSummary) runAnalysis();
+      }));
       els.loadSampleBtn.addEventListener('click', () => {
         els.input.value = SAMPLE_EMAIL;
         setStatus('success', t('text49', 'Sample loaded. Click Analyze.'));

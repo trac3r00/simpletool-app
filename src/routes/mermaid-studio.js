@@ -11,6 +11,7 @@ import {
   getRichEditorScript,
 } from "../utils/rich-editor.js";
 import { TOOLS } from "../utils/tool-registry.js";
+import { createMermaidExportLogic } from "../utils/mermaid-export-logic.js";
 import { createRelatedToolsSection } from "../utils/content-ui.js";
 import {
   getToolTranslation,
@@ -65,7 +66,7 @@ export async function handleMermaidStudioRoutes(request, url) {
           <div class="px-4 py-3 border-b border-surface-200 dark:border-surface-800 flex justify-between items-center bg-surface-50 dark:bg-surface-950">
             <span class="text-sm font-semibold text-surface-900 dark:text-white uppercase tracking-wider" data-i18n="tools.mermaid-studio.ui.stat3">Mermaid Code</span>
             <div class="flex gap-2">
-              <button id="sample-btn" data-tooltip="Load a sample diagram to get started" class="btn btn-secondary btn-xs"><span data-i18n="tools.mermaid-studio.ui.button0">Load Sample</span></button>
+              <button id="sample-btn" type="button" data-tooltip="Load a sample diagram to get started" class="btn btn-secondary btn-xs"><span data-i18n="tools.mermaid-studio.ui.button0">Load Sample</span></button>
             </div>
           </div>
           ${createRichEditorPane({ id: "mermaid-input", mode: "textarea", rows: 22, ariaLabel: "Mermaid diagram code", placeholder: "graph TD\\nA[Start] --> B{Is it working?}\\nB -- Yes --> C[Great!]\\nB -- No --> D[Debug]", wrapClass: "flex-1" })}
@@ -73,11 +74,19 @@ export async function handleMermaidStudioRoutes(request, url) {
 
         <!-- Preview -->
         <div id="preview-pane" class="tool-group tool-group--flush lg:col-span-7 flex flex-col overflow-hidden" role="tabpanel" aria-labelledby="mobile-tab-preview" tabindex="0">
-          <div class="px-4 py-3 border-b border-surface-200 dark:border-surface-800 flex justify-between items-center bg-surface-50 dark:bg-surface-950">
+          <div class="px-4 py-3 border-b border-surface-200 dark:border-surface-800 flex flex-wrap gap-2 justify-between items-center bg-surface-50 dark:bg-surface-950">
             <span class="text-sm font-semibold text-surface-900 dark:text-white uppercase tracking-wider" data-i18n="tools.mermaid-studio.ui.stat4">Preview</span>
-            <div class="flex gap-3">
-              <button id="download-svg" data-tooltip="Download the rendered diagram as SVG" class="btn btn-secondary btn-xs"><span data-i18n="tools.mermaid-studio.ui.button1">Download SVG</span></button>
+            <div class="flex flex-wrap items-center justify-end gap-2">
+              <button id="copy-svg" type="button" data-tooltip="Copy the rendered diagram's SVG markup" class="btn btn-secondary btn-xs min-h-[28px]" data-i18n="tools.mermaid-studio.ui.r3_2">Copy SVG</button>
+              <button id="download-svg" type="button" data-tooltip="Download the rendered diagram as SVG" class="btn btn-secondary btn-xs min-h-[28px]"><span data-i18n="tools.mermaid-studio.ui.button1">Download SVG</span></button>
+              <label for="png-background" class="sr-only" data-i18n="tools.mermaid-studio.ui.r3_4">PNG background</label>
+              <select id="png-background" class="input w-auto min-h-[28px] py-0.5 text-xs" data-tooltip="Background for the PNG export">
+                <option value="transparent" data-i18n="tools.mermaid-studio.ui.r3_5">Transparent</option>
+                <option value="theme" data-i18n="tools.mermaid-studio.ui.r3_6">Theme background</option>
+              </select>
+              <button id="download-png" type="button" data-tooltip="Download the rendered diagram as a 2x PNG" class="btn btn-secondary btn-xs min-h-[28px]" data-i18n="tools.mermaid-studio.ui.r3_3">Download PNG</button>
             </div>
+            <span id="download-status" class="basis-full text-right text-xs text-muted-foreground empty:hidden" role="status" aria-live="polite"></span>
           </div>
           <div id="mermaid-render" class="flex-1 min-h-[24rem] p-8 overflow-auto flex items-center justify-center bg-background">
             ${createEmptyState({ icon: "🧜‍♀️", title: "No diagram yet", description: "Write Mermaid code on the left to see it rendered here.", id: "mermaid-empty-state", i18nTitle: "tools.mermaid-studio.ui.desc10", i18nDesc: "tools.mermaid-studio.ui.desc11" })}
@@ -98,7 +107,7 @@ export async function handleMermaidStudioRoutes(request, url) {
             <tr><td><code>stateDiagram-v2</code></td><td>State diagram</td></tr>
             <tr><td><code>erDiagram</code></td><td>ER diagram</td></tr>
             <tr><td><code>gantt</code></td><td>Gantt chart</td></tr>
-            <tr><td><code>pie</code></td><td>Pie chart</td></tr>
+            <tr><td><code>pie</code></td><td data-i18n="tools.mermaid-studio.ui.r3_0">Pie chart</td></tr>
           </table>`,
         },
         {
@@ -111,7 +120,7 @@ export async function handleMermaidStudioRoutes(request, url) {
             <tr><td><code>A{Text}</code></td><td>Diamond</td></tr>
             <tr><td><code>A--&gt;B</code></td><td>Arrow</td></tr>
             <tr><td><code>A-.-&gt;B</code></td><td>Dotted arrow</td></tr>
-            <tr><td><code>A==&gt;B</code></td><td>Thick arrow</td></tr>
+            <tr><td><code>A==&gt;B</code></td><td data-i18n="tools.mermaid-studio.ui.r3_1">Thick arrow</td></tr>
           </table>`,
         },
       ])}
@@ -186,6 +195,7 @@ export async function handleMermaidStudioRoutes(request, url) {
     <script src="/vendor/mermaid.min.js" integrity="sha384-yQ4mmBBT+vhTAwjFH0toJXNYJ6O4usWnt6EPIdWwrRvx2V/n5lXuDZQwQFeSFydF" crossorigin="anonymous"></script>
     <script>
       const mermaid = window.mermaid;
+      const mermaidExport = (${createMermaidExportLogic.toString()})();
 
       // Mermaid's own theme must track the SITE's active theme (the "dark"
       // class the theme toggle puts on <html>), not a fresh, independent
@@ -212,21 +222,31 @@ export async function handleMermaidStudioRoutes(request, url) {
         };
       }
 
-      function applyMermaidTheme() {
+      function mermaidConfig() {
         const dark = isSiteDark();
-        mermaid.initialize({
+        return {
           startOnLoad: false,
           theme: dark ? 'dark' : 'default',
           securityLevel: 'strict',
           themeVariables: mermaidThemeVariables(dark),
-        });
+        };
+      }
+
+      function applyMermaidTheme() {
+        mermaid.initialize(mermaidConfig());
       }
 
       applyMermaidTheme();
 
       const editor = new RichEditor('mermaid-input');
       editor.setHighlighter('mermaid');
-      editor.setValue("graph TD\\n    A[Christmas] -->|Get money| B(Go shopping)\\n    B --> C{Let me think}\\n    C -->|One| D[Laptop]\\n    C -->|Two| E[iPhone]\\n    C -->|Three| F[fa:fa-car Car]");
+      const DRAFT_KEY = 'mermaid-studio-draft';
+      let savedDraft = null;
+      try { savedDraft = localStorage.getItem(DRAFT_KEY); } catch (e) {}
+      editor.setValue(savedDraft !== null ? savedDraft : "graph TD\\n    A[Christmas] -->|Get money| B(Go shopping)\\n    B --> C{Let me think}\\n    C -->|One| D[Laptop]\\n    C -->|Two| E[iPhone]\\n    C -->|Three| F[Car]");
+      function saveDraft() {
+        try { localStorage.setItem(DRAFT_KEY, editor.getValue()); } catch (e) {}
+      }
 
       const renderArea = document.getElementById('mermaid-render');
       const sampleBtn = document.getElementById('sample-btn');
@@ -286,26 +306,144 @@ export async function handleMermaidStudioRoutes(request, url) {
 
       editor.el.addEventListener('input', () => {
         clearTimeout(timeout);
-        timeout = setTimeout(renderDiagram, 500);
+        timeout = setTimeout(() => { saveDraft(); renderDiagram(); }, 500);
       });
 
       sampleBtn.addEventListener('click', () => {
         editor.setValue('sequenceDiagram\\n    Alice->>John: Hello John, how are you?\\n    John-->>Alice: Great!\\n    Alice-)John: See you later!');
+        saveDraft();
         renderDiagram();
       });
 
-      downloadBtn.addEventListener('click', () => {
-        const svg = renderArea.querySelector('svg');
-        if (!svg) return;
-        const svgData = new XMLSerializer().serializeToString(svg);
-        const blob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+      const downloadStatus = document.getElementById('download-status');
+      const copyBtn = document.getElementById('copy-svg');
+      const pngBtn = document.getElementById('download-png');
+      const pngBackground = document.getElementById('png-background');
+
+      function renderedSvg(action) {
+        const svg = renderArea.querySelector('.mermaid svg');
+        if (svg) return svg;
+        downloadStatus.textContent = renderArea.querySelector('.mermaid-error')
+          ? 'Fix the syntax error first; there is no diagram to ' + action + '.'
+          : 'Write a diagram first; there is nothing to ' + action + ' yet.';
+        return null;
+      }
+
+      function saveBlob(blob, filename) {
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = 'diagram.svg';
+        link.download = filename;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        setTimeout(() => URL.revokeObjectURL(url), 0);
+      }
+
+      downloadBtn.addEventListener('click', () => {
+        const svg = renderedSvg('download');
+        if (!svg) return;
+        const svgData = new XMLSerializer().serializeToString(svg);
+        saveBlob(new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' }), 'diagram.svg');
+        downloadStatus.textContent = 'Downloaded diagram.svg.';
+      });
+
+      copyBtn.addEventListener('click', async () => {
+        const svg = renderedSvg('copy');
+        if (!svg) return;
+        try {
+          await navigator.clipboard.writeText(new XMLSerializer().serializeToString(svg));
+          downloadStatus.textContent = 'Copied SVG markup to the clipboard.';
+        } catch (e) {
+          downloadStatus.textContent = 'Could not copy: the browser blocked clipboard access.';
+        }
+      });
+
+      // Rasterizing the on-screen SVG fails: Mermaid draws labels as HTML in
+      // <foreignObject>, and drawing such an SVG image taints the canvas, so
+      // toBlob throws SecurityError. Re-render the same code with htmlLabels
+      // off (plain SVG <text>) just for the export; any foreignObject a
+      // diagram type still emits is swapped for centred <text>.
+      let exportSeq = 0;
+      async function renderExportSvg(code) {
+        const config = mermaidConfig();
+        mermaid.initialize(Object.assign({}, config, {
+          htmlLabels: false,
+          flowchart: { htmlLabels: false },
+          class: { htmlLabels: false },
+          state: { htmlLabels: false },
+        }));
+        try {
+          exportSeq += 1;
+          return (await mermaid.render('mermaid-export-' + exportSeq, code)).svg;
+        } finally {
+          mermaid.initialize(config);
+        }
+      }
+
+      function replaceForeignObjects(svg) {
+        const SVG_NS = 'http://www.w3.org/2000/svg';
+        svg.querySelectorAll('foreignObject').forEach((fo) => {
+          const x = parseFloat(fo.getAttribute('x')) || 0;
+          const y = parseFloat(fo.getAttribute('y')) || 0;
+          const w = parseFloat(fo.getAttribute('width')) || 0;
+          const h = parseFloat(fo.getAttribute('height')) || 0;
+          const text = svg.ownerDocument.createElementNS(SVG_NS, 'text');
+          text.setAttribute('x', String(x + w / 2));
+          text.setAttribute('y', String(y + h / 2));
+          text.setAttribute('text-anchor', 'middle');
+          text.setAttribute('dominant-baseline', 'central');
+          text.textContent = (fo.textContent || '').trim();
+          fo.replaceWith(text);
+        });
+      }
+
+      async function buildPngBlob(code, background) {
+        const svgText = await renderExportSvg(code);
+        const svg = new DOMParser().parseFromString(svgText, 'image/svg+xml').documentElement;
+        if (!svg || svg.nodeName !== 'svg') throw new Error('Mermaid returned no SVG.');
+        replaceForeignObjects(svg);
+        const box = mermaidExport.parseViewBox(svg.getAttribute('viewBox'));
+        if (!box) throw new Error('The diagram has no usable size.');
+        const size = mermaidExport.exportDimensions(box, 2, 8192);
+        svg.setAttribute('width', String(box.width));
+        svg.setAttribute('height', String(box.height));
+        svg.removeAttribute('style');
+
+        const img = new Image();
+        img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(new XMLSerializer().serializeToString(svg));
+        await img.decode();
+
+        const canvas = document.createElement('canvas');
+        canvas.width = size.width;
+        canvas.height = size.height;
+        const ctx = canvas.getContext('2d');
+        if (background) {
+          ctx.fillStyle = background;
+          ctx.fillRect(0, 0, size.width, size.height);
+        }
+        ctx.drawImage(img, 0, 0, size.width, size.height);
+        const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+        if (!blob) throw new Error('The browser could not encode the PNG.');
+        return { blob, size };
+      }
+
+      pngBtn.addEventListener('click', async () => {
+        if (!renderedSvg('download')) return;
+        const background = pngBackground.value === 'theme'
+          ? getComputedStyle(renderArea).backgroundColor
+          : '';
+        pngBtn.disabled = true;
+        downloadStatus.textContent = 'Preparing PNG…';
+        try {
+          const { blob, size } = await buildPngBlob(editor.getValue().trim(), background);
+          saveBlob(blob, 'diagram.png');
+          downloadStatus.textContent = 'Downloaded diagram.png (' + size.width + ' × ' + size.height + ' px).';
+        } catch (e) {
+          downloadStatus.textContent = 'Could not export PNG: ' + (e && e.message ? e.message : String(e));
+        } finally {
+          pngBtn.disabled = false;
+        }
       });
 
       // Handle theme changes — watch the <html class="dark"> attribute

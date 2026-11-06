@@ -30,6 +30,7 @@ import {
   normalizeLanguage,
   resolveRequestLanguage,
 } from "../utils/i18n.js";
+import { SQL_FORMATTER_FUNCTIONS } from "../utils/sql-formatter-logic.js";
 
 export async function handleSQLFormatterRoutes(request, url) {
   const { pathname } = url;
@@ -168,7 +169,7 @@ function renderSQLFormatterPage(lang = DEFAULT_LANGUAGE) {
           {
             title: "Pro Tips",
             content:
-              '<ul><li>Use Common Table Expressions (CTEs) with the <code>WITH</code> clause to break down complex queries into smaller, more manageable parts.</li><li>Always use descriptive aliases for tables and columns to make the intent of your query clear to others.</li><li>Use the "Minify" button if you need to compress your SQL into a single line for use in configuration files or command-line tools.</li></ul>',
+              '<ul><li>Use Common Table Expressions (CTEs) with the <code>WITH</code> clause to break down complex queries into smaller, more manageable parts.</li><li>Always use descriptive aliases for tables and columns to make the intent of your query clear to others.</li><li data-i18n="tools.sql-formatter.ui.r3_0">Use the "Minify" button if you need to compress your SQL into a single line for use in configuration files or command-line tools.</li></ul>',
           },
         ],
         "sql-formatter",
@@ -206,28 +207,9 @@ function renderSQLFormatterPage(lang = DEFAULT_LANGUAGE) {
         issues: $('issues'),
       };
 
-      var BASE_KW = [
-        'SELECT','FROM','WHERE','GROUP','BY','ORDER','HAVING','LIMIT','OFFSET',
-        'INSERT','INTO','VALUES','UPDATE','SET','DELETE','RETURNING',
-        'JOIN','LEFT','RIGHT','FULL','INNER','OUTER','CROSS','ON',
-        'UNION','ALL','DISTINCT','AS','AND','OR','NOT','NULL','IS','IN','EXISTS',
-        'CASE','WHEN','THEN','ELSE','END',
-        'CREATE','ALTER','DROP','TABLE','VIEW','INDEX',
-        'WITH'
-      ];
-      var DIALECT_KW = {
-        postgres: ['ILIKE','LATERAL','RETURNING','PARTITION','WINDOW','EXCLUDE','FILTER','WITHIN'],
-        mysql: ['AUTO_INCREMENT','ENGINE','CHARSET','COLLATE','UNSIGNED','ENUM','REPLACE','IGNORE'],
-        bigquery: ['STRUCT','ARRAY','UNNEST','TABLESAMPLE','QUALIFY','PIVOT','UNPIVOT','SAFE_CAST','IFNULL','COUNTIF','ANY_VALUE','ARRAY_AGG','STRING_AGG','EXCEPT','REPLACE','WINDOW','ROWS','RANGE'],
-        snowflake: ['VARIANT','OBJECT','LATERAL','FLATTEN','QUALIFY','ILIKE','RLIKE','SAMPLE','STREAM','TASK','PIPE','STAGE','MERGE','CLONE','UNDROP','SWAP'],
-        clickhouse: ['ENGINE','PREWHERE','GLOBAL','FINAL','SAMPLE','MATERIALIZED','SETTINGS','FORMAT','ARRAY','TUPLE','NULLABLE','LOWCARDINALITY'],
-        sqlite: ['AUTOINCREMENT','GLOB','REPLACE','VACUUM','ATTACH','DETACH','PRAGMA','REINDEX','EXPLAIN']
-      };
-      function buildKeywords(dialect) {
-        var extra = DIALECT_KW[dialect] || [];
-        return new Set(BASE_KW.concat(extra));
-      }
-      var KEYWORDS = buildKeywords('postgres');
+      // Inlined from src/utils/sql-formatter-logic.js (tested in sql-formatter-logic.test.js).
+      ${SQL_FORMATTER_FUNCTIONS.map((fn) => fn.toString()).join("\n")}
+      var KEYWORDS = buildSqlKeywords('postgres');
 
        function setIssues(kind, html) {
          if (!html) {
@@ -246,130 +228,6 @@ function renderSQLFormatterPage(lang = DEFAULT_LANGUAGE) {
          els.issues.innerHTML = html;
        }
 
-      function tokenize(sql, dialect) {
-        const s = String(sql || '');
-        const tokens = [];
-        let i = 0;
-        let line = 1, col = 1;
-        const push = (type, value, at) => tokens.push({ type, value, at });
-        const BT = '\u0060';
-
-        function adv(n = 1) {
-          for (let k = 0; k < n; k++) {
-            const ch = s[i++];
-            if (ch === '\n') { line++; col = 1; } else { col++; }
-          }
-        }
-
-        while (i < s.length) {
-          const at = { i, line, col };
-          const ch = s[i];
-
-          // Whitespace
-          if (/\s/.test(ch)) {
-            adv(1);
-            continue;
-          }
-
-          // Line comment
-          if (ch === '-' && s[i + 1] === '-') {
-            let j = i + 2;
-            while (j < s.length && s[j] !== '\n') j++;
-            push('comment', s.slice(i, j), at);
-            adv(j - i);
-            continue;
-          }
-          if ((dialect === 'mysql' || dialect === 'clickhouse') && ch === '#') {
-            let j = i + 1;
-            while (j < s.length && s[j] !== '\n') j++;
-            push('comment', s.slice(i, j), at);
-            adv(j - i);
-            continue;
-          }
-          // Block comment
-          if (ch === '/' && s[i + 1] === '*') {
-            let j = i + 2;
-            while (j < s.length && !(s[j] === '*' && s[j + 1] === '/')) j++;
-            j = Math.min(s.length, j + 2);
-            push('comment', s.slice(i, j), at);
-            adv(j - i);
-            continue;
-          }
-
-          // Strings / quoted identifiers
-          if (ch === '\'') {
-            let j = i + 1;
-            while (j < s.length) {
-              if (s[j] === '\'' && s[j + 1] === '\'') { j += 2; continue; } // escaped ''
-              if (s[j] === '\'') { j++; break; }
-              j++;
-            }
-            push('string', s.slice(i, j), at);
-            adv(j - i);
-            continue;
-          }
-          if (ch === '"') {
-            let j = i + 1;
-            while (j < s.length) {
-              if (s[j] === '"' && s[j + 1] === '"') { j += 2; continue; }
-              if (s[j] === '"') { j++; break; }
-              j++;
-            }
-            push('ident', s.slice(i, j), at);
-            adv(j - i);
-            continue;
-          }
-          if ((dialect === 'mysql' || dialect === 'bigquery') && ch === BT) {
-            let j = i + 1;
-            while (j < s.length) {
-              if (s[j] === BT && s[j + 1] === BT) { j += 2; continue; }
-              if (s[j] === BT) { j++; break; }
-              j++;
-            }
-            push('ident', s.slice(i, j), at);
-            adv(j - i);
-            continue;
-          }
-
-          // Numbers
-          if (/\d/.test(ch)) {
-            let j = i + 1;
-            while (j < s.length && /[\d.]/.test(s[j])) j++;
-            push('number', s.slice(i, j), at);
-            adv(j - i);
-            continue;
-          }
-
-          // Words
-          if (/[A-Za-z_]/.test(ch)) {
-            let j = i + 1;
-            while (j < s.length && /[A-Za-z0-9_$]/.test(s[j])) j++;
-            push('word', s.slice(i, j), at);
-            adv(j - i);
-            continue;
-          }
-
-          // Operators / punctuation (prefer longer matches)
-          const two = s.slice(i, i + 2);
-          const three = s.slice(i, i + 3);
-          if (three === '->>') {
-            push('op', '->>', at);
-            adv(3);
-            continue;
-          }
-          if (['!=','<=','>=','<>','::','->','||'].includes(two)) {
-            push('op', two, at);
-            adv(2);
-            continue;
-          }
-
-          push('punct', ch, at);
-          adv(1);
-        }
-
-        return tokens;
-      }
-
       function validateSql(sql, dialect) {
         const s = String(sql || '');
         const issues = [];
@@ -382,10 +240,12 @@ function renderSQLFormatterPage(lang = DEFAULT_LANGUAGE) {
         let inBlockComment = false;
 
         let line = 1, col = 1;
+        let openLine = 1, openCol = 1;
 
-        function push(level, msg) {
-          issues.push({ level, msg, line, col });
+        function push(level, msg, at) {
+          issues.push({ level, msg, line: at ? at.line : line, col: at ? at.col : col });
         }
+        function markOpen() { openLine = line; openCol = col; }
 
         for (let i = 0; i < s.length; i++) {
           const ch = s[i];
@@ -397,7 +257,17 @@ function renderSQLFormatterPage(lang = DEFAULT_LANGUAGE) {
 
           // Block comment handling
           if (!inSingle && !inDouble && !inBacktick) {
-            if (!inBlockComment && ch === '/' && next === '*') { inBlockComment = true; i++; col++; continue; }
+            if (!inBlockComment && ch === '/' && next === '*') { markOpen(); inBlockComment = true; i++; col++; continue; }
+            if (!inBlockComment && ch === '$') {
+              const tag = /^\$([A-Za-z_][A-Za-z0-9_]*)?\$/.exec(s.slice(i, i + 64));
+              if (tag) {
+                const end = s.indexOf(tag[0], i + tag[0].length);
+                const stop = end < 0 ? s.length : end + tag[0].length;
+                for (let k = i + 1; k < stop; k++) { if (s[k] === '\n') { line++; col = 1; } else { col++; } }
+                i = stop - 1;
+                continue;
+              }
+            }
             if (inBlockComment && ch === '*' && next === '/') { inBlockComment = false; i++; col++; continue; }
           }
           if (inBlockComment) continue;
@@ -411,16 +281,19 @@ function renderSQLFormatterPage(lang = DEFAULT_LANGUAGE) {
           // Quotes
           if (!inDouble && !inBacktick && ch === '\'') {
             if (inSingle && next === '\'') { i++; col++; continue; }
+            if (!inSingle) markOpen();
             inSingle = !inSingle;
             continue;
           }
           if (!inSingle && !inBacktick && ch === '"') {
             if (inDouble && next === '"') { i++; col++; continue; }
+            if (!inDouble) markOpen();
             inDouble = !inDouble;
             continue;
           }
           if ((dialect === 'mysql' || dialect === 'bigquery') && !inSingle && !inDouble && ch === BT) {
             if (inBacktick && next === BT) { i++; col++; continue; }
+            if (!inBacktick) markOpen();
             inBacktick = !inBacktick;
             continue;
           }
@@ -435,10 +308,11 @@ function renderSQLFormatterPage(lang = DEFAULT_LANGUAGE) {
           }
         }
 
-        if (inBlockComment) push('error', t('text1', 'Unclosed block comment (/* ... */)'));
-        if (inSingle) push('error', t('text2', 'Unclosed single-quoted string'));
-        if (inDouble) push('error', t('text3', 'Unclosed double-quoted identifier/string'));
-        if (inBacktick) push('error', t('text4', 'Unclosed backtick-quoted identifier'));
+        const opened = { line: openLine, col: openCol };
+        if (inBlockComment) push('error', t('text1', 'Unclosed block comment (/* ... */)'), opened);
+        if (inSingle) push('error', t('text2', 'Unclosed single-quoted string'), opened);
+        if (inDouble) push('error', t('text3', 'Unclosed double-quoted identifier/string'), opened);
+        if (inBacktick) push('error', t('text4', 'Unclosed backtick-quoted identifier'), opened);
 	        if (paren !== 0) push('error', fmtVars(t('text5', 'Unbalanced parentheses: {n}'), { n: paren }));
 
         const trimmed = s.trim();
@@ -449,221 +323,6 @@ function renderSQLFormatterPage(lang = DEFAULT_LANGUAGE) {
         }
 
         return issues;
-      }
-
-      function kwTransform(word, mode) {
-        if (mode === 'keep') return word;
-        return mode === 'lower' ? word.toLowerCase() : word.toUpperCase();
-      }
-
-      function fmt(sql, opts) {
-        const tokens = tokenize(sql, opts.dialect);
-
-        const indentSize = opts.indentSize;
-        let parenDepth = 0;
-        let clause = '';
-        let clauseIndent = 0;
-        const lines = [];
-        let lineStr = '';
-        let prev = null;
-
-        function baseIndentLevel() {
-          return Math.max(0, parenDepth);
-        }
-
-        function contentIndentLevel() {
-          return Math.max(0, parenDepth + clauseIndent);
-        }
-
-        function setIndent(level) {
-          lineStr = ' '.repeat(Math.max(0, level * indentSize));
-          prev = null;
-        }
-
-        function hasLineContent() {
-          return lineStr.trim().length > 0;
-        }
-
-        function pushLine(nextIndentLevel, allowBlank = false) {
-          const outLine = lineStr.trimEnd();
-          if (outLine.trim() || allowBlank) lines.push(outLine);
-          lineStr = ' '.repeat(Math.max(0, nextIndentLevel * indentSize));
-          prev = null;
-        }
-
-        function append(val) {
-          if (!val) return;
-          lineStr += val;
-        }
-
-        function isTightOp(v) {
-          return v === '.' || v === '::' || v === '->' || v === '->>';
-        }
-
-        function needsSpace(prevTok, curTok) {
-          if (!prevTok) return false;
-          const pv = prevTok.value;
-          const cv = curTok.value;
-          if (cv === ',' || cv === ')' || cv === ';') return false;
-          if (pv === '(') return false;
-          if (isTightOp(cv) || isTightOp(pv)) return false;
-          if (cv === '.') return false;
-          return true;
-        }
-
-        function peekWord(i) {
-          const t = tokens[i];
-          return t && t.type === 'word' ? t.value.toUpperCase() : '';
-        }
-
-        function clauseStartAt(i) {
-          const w = peekWord(i);
-          const w2 = peekWord(i + 1);
-
-          if (w === 'GROUP' && w2 === 'BY') return { text: 'GROUP BY', consume: 2, clause: 'group' };
-          if (w === 'ORDER' && w2 === 'BY') return { text: 'ORDER BY', consume: 2, clause: 'order' };
-          if (w === 'UNION' && w2 === 'ALL') return { text: 'UNION ALL', consume: 2, clause: 'union' };
-          if ((w === 'LEFT' || w === 'RIGHT' || w === 'FULL' || w === 'INNER' || w === 'CROSS') && w2 === 'JOIN') {
-            return { text: w + ' JOIN', consume: 2, clause: 'join' };
-          }
-          if (w === 'JOIN') return { text: 'JOIN', consume: 1, clause: 'join' };
-          if (w === 'ON') return { text: 'ON', consume: 1, clause: 'on' };
-
-          const singles = new Set(['SELECT','FROM','WHERE','HAVING','LIMIT','OFFSET','INSERT','UPDATE','DELETE','VALUES','SET','RETURNING','WITH']);
-          if (singles.has(w)) {
-            const map = {
-              SELECT: 'select',
-              FROM: 'from',
-              WHERE: 'where',
-              HAVING: 'having',
-              LIMIT: 'limit',
-              OFFSET: 'offset',
-              INSERT: 'insert',
-              UPDATE: 'update',
-              DELETE: 'delete',
-              VALUES: 'values',
-              SET: 'set',
-              RETURNING: 'returning',
-              WITH: 'with'
-            };
-            return { text: w, consume: 1, clause: map[w] || 'clause' };
-          }
-
-          return null;
-        }
-
-        function setClause(name) {
-          clause = name || '';
-          clauseIndent = 1;
-          if (clause === 'on') clauseIndent = 2;
-          if (clause === 'limit' || clause === 'offset') clauseIndent = 1;
-        }
-
-        setIndent(0);
-
-        for (let i = 0; i < tokens.length; i++) {
-          const tok = tokens[i];
-
-          if (tok.type === 'comment') {
-            if (hasLineContent()) pushLine(contentIndentLevel(), false);
-            setIndent(baseIndentLevel());
-            append(tok.value.trim());
-            pushLine(contentIndentLevel(), false);
-            continue;
-          }
-
-          if (parenDepth === 0 && tok.type === 'word') {
-            const cs = clauseStartAt(i);
-            if (cs) {
-              if (hasLineContent()) pushLine(baseIndentLevel(), false);
-              setIndent(baseIndentLevel());
-              const parts = cs.text.split(' ');
-              const rendered = parts.map(p => kwTransform(p, opts.kwcase)).join(' ');
-              append(rendered);
-              setClause(cs.clause);
-              pushLine(contentIndentLevel(), false);
-              i += cs.consume - 1;
-              prev = { type: 'word', value: cs.text };
-              continue;
-            }
-          }
-
-          let val = tok.value;
-
-          if (tok.type === 'word') {
-            const upper = val.toUpperCase();
-            if (KEYWORDS.has(upper)) val = kwTransform(upper, opts.kwcase);
-          }
-
-          // Parentheses depth (close affects indentation of subsequent tokens)
-          if (val === ')') parenDepth = Math.max(0, parenDepth - 1);
-
-          // Line breaks
-          const upper = (tok.type === 'word') ? tok.value.toUpperCase() : '';
-          const isAndOr = (upper === 'AND' || upper === 'OR');
-          const isComma = val === ',';
-
-          if (isComma && parenDepth === 0 && ['select','from','set','values','returning'].includes(clause)) {
-            append(',');
-            pushLine(contentIndentLevel(), false);
-            prev = { type: 'punct', value: ',' };
-            continue;
-          }
-
-          if (isAndOr && parenDepth === 0 && ['where','having','on'].includes(clause)) {
-            pushLine(contentIndentLevel(), false);
-            append(val);
-            append(' ');
-            prev = { type: 'word', value: val };
-            continue;
-          }
-
-          // Spacing rules
-          if (needsSpace(prev, tok)) append(' ');
-          append(val);
-
-          if (val === '(') parenDepth++;
-
-          // Semicolon ends statement
-          if (val === ';') {
-            pushLine(0, false);
-            clause = '';
-            clauseIndent = 0;
-            setIndent(0);
-          }
-
-          prev = tok;
-        }
-
-        if (lineStr.trim()) lines.push(lineStr.trimEnd());
-        const formatted = lines.join('\n')
-          .replace(/\n{3,}/g, '\n\n')
-          .trim() + '\n';
-
-        return formatted;
-      }
-
-      function minifySql(sql, dialect) {
-        const tokens = tokenize(sql, dialect);
-        const out = [];
-        let prev = null;
-        function needsSpace(prevTok, curTok) {
-          if (!prevTok) return false;
-          const pv = prevTok.value;
-          const cv = curTok.value;
-          if (cv === ',' || cv === ')' || cv === ';') return false;
-          if (pv === '(') return false;
-          if (cv === '.' || pv === '.') return false;
-          if (cv === '::' || pv === '::' || cv === '->' || pv === '->' || cv === '->>' || pv === '->>') return false;
-          return true;
-        }
-        for (const tok of tokens) {
-          if (tok.type === 'comment') continue;
-          if (needsSpace(prev, tok)) out.push(' ');
-          out.push(tok.value);
-          prev = tok;
-        }
-        return out.join('').trim();
       }
 
       function renderIssues(issues) {
@@ -709,11 +368,12 @@ function renderSQLFormatterPage(lang = DEFAULT_LANGUAGE) {
         }
         const issues = validateSql(sql, els.dialect.value);
         renderIssues(issues);
-        const formatted = fmt(sql, {
+        lastAction = runFormat;
+        const formatted = formatSql(sql, {
           dialect: els.dialect.value,
           kwcase: els.kwcase.value,
           indentSize: Number(els.indent.value) || 2
-        });
+        }, KEYWORDS);
         showOutput(formatted);
       }
 
@@ -725,11 +385,17 @@ function renderSQLFormatterPage(lang = DEFAULT_LANGUAGE) {
         }
         const issues = validateSql(sql, els.dialect.value);
         renderIssues(issues);
-        const out = minifySql(sql, els.dialect.value);
+        lastAction = runMinify;
+        const out = minifySql(sql, els.dialect.value, KEYWORDS);
         showOutput(out);
       }
 
-      els.dialect.addEventListener('change', function() { KEYWORDS = buildKeywords(this.value); });
+      // Changing an option re-runs the last Format/Minify so the output never shows stale settings.
+      let lastAction = null;
+      function rerun() { if (lastAction && editorIn.getValue().trim()) lastAction(); }
+      els.dialect.addEventListener('change', function() { KEYWORDS = buildSqlKeywords(this.value); rerun(); });
+      els.kwcase.addEventListener('change', rerun);
+      els.indent.addEventListener('change', rerun);
       els.format.addEventListener('click', function() { window.btnLoading(this, runFormat); });
       els.validate.addEventListener('click', function() { window.btnLoading(this, runValidate); });
       els.minify.addEventListener('click', function() { window.btnLoading(this, runMinify); });
@@ -738,23 +404,16 @@ function renderSQLFormatterPage(lang = DEFAULT_LANGUAGE) {
         editorIn.clear();
         editorOut.clear(true);
         els.copy.disabled = true;
+        lastAction = null;
         setIssues(null, '');
         var emptyEl = document.getElementById('sql-empty-state');
         if (emptyEl) emptyEl.classList.remove('hidden');
       });
 
-      els.copy.addEventListener('click', async () => {
+      els.copy.addEventListener('click', function() {
         const text = editorOut.getValue();
         if (!text.trim()) return;
-        try {
-          await navigator.clipboard.writeText(text);
-          const old = els.copy.textContent;
-          els.copy.textContent = t('text10', '✓ Copied');
-          if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
-          setTimeout(() => (els.copy.textContent = old), 1200);
-        } catch (e) {
-          console.error('Copy failed:', e);
-        }
+        copyToClipboard(text, els.copy);
       });
     </script>
   `;

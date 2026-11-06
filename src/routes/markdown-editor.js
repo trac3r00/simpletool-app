@@ -5,6 +5,7 @@ import {
   createCheatsheet,
 } from "../utils/common-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
+import { createMarkdownLint } from "../utils/markdown-lint-logic.js";
 import { createRelatedToolsSection } from "../utils/content-ui.js";
 import {
   DEFAULT_LANGUAGE,
@@ -78,10 +79,20 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
                 <option value="" data-i18n="tools.markdown-editor.ui.option9">Jump to heading...</option>
               </select>
             </div>
+
+            <div class="flex items-center gap-2">
+              <label for="lint-format" class="text-sm text-muted-foreground whitespace-nowrap" data-i18n="tools.markdown-editor.ui.r3_4">Lint as</label>
+              <select id="lint-format" class="input w-auto" aria-controls="lint-panel">
+                <option value="off" data-i18n="tools.markdown-editor.ui.r3_5">Off</option>
+                <option value="agents">AGENTS.md</option>
+                <option value="skill">SKILL.md</option>
+                <option value="llms">llms.txt</option>
+              </select>
+            </div>
           </div>
 
           <div class="flex flex-wrap items-center gap-2">
-            <input id="md-file-input" type="file" accept=".md,.markdown,text/markdown,text/plain" class="hidden" />
+            <input id="md-file-input" type="file" accept=".md,.markdown,.txt,text/markdown,text/plain" class="hidden" />
 
             <button id="open-md-btn" class="btn-ghost btn-sm flex items-center gap-2">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"></path></svg>
@@ -164,6 +175,14 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
             </div>
           </div>
         </div>
+
+        <section id="lint-panel" class="hidden card flex-shrink-0 flex-col max-h-48 overflow-hidden" aria-labelledby="lint-panel-title">
+          <div class="flex flex-wrap items-center justify-between gap-2 px-4 py-2 border-b border-border">
+            <h2 id="lint-panel-title" class="text-sm font-semibold text-foreground" data-i18n="tools.markdown-editor.ui.r3_6">Lint findings</h2>
+            <p id="lint-summary" class="text-xs text-muted-foreground" role="status" aria-live="polite"></p>
+          </div>
+          <ol id="lint-findings" class="overflow-y-auto p-1 divide-y divide-border" tabindex="0" aria-label="Lint findings list"></ol>
+        </section>
       </div>
 
       <style>
@@ -313,9 +332,9 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
             <tr><th data-i18n="tools.markdown-editor.ui.th3">Syntax</th><th data-i18n="tools.markdown-editor.ui.th4">Result</th></tr>
             <tr><td><code>**bold**</code></td><td>Bold text</td></tr>
             <tr><td><code>*italic*</code></td><td>Italic text</td></tr>
-            <tr><td><code>~~strike~~</code></td><td>Strikethrough</td></tr>
+            <tr><td><code>~~strike~~</code></td><td data-i18n="tools.markdown-editor.ui.r3_0">Strikethrough</td></tr>
             <tr><td><code>\`code\`</code></td><td>Inline code</td></tr>
-            <tr><td><code>&gt; quote</code></td><td>Blockquote</td></tr>
+            <tr><td><code>&gt; quote</code></td><td data-i18n="tools.markdown-editor.ui.r3_1">Blockquote</td></tr>
           </table>`,
         },
         {
@@ -327,7 +346,7 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
             <tr><td><code>- item</code> or <code>* item</code></td><td>Unordered list</td></tr>
             <tr><td><code>1. item</code></td><td>Ordered list</td></tr>
             <tr><td><code>---</code></td><td>Horizontal rule</td></tr>
-            <tr><td><code>- [ ] task</code></td><td>Task list</td></tr>
+            <tr><td><code>- [ ] task</code></td><td data-i18n="tools.markdown-editor.ui.r3_2">Task list</td></tr>
           </table>`,
         },
         {
@@ -337,7 +356,7 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
             <tr><th data-i18n="tools.markdown-editor.ui.th3">Syntax</th><th data-i18n="tools.markdown-editor.ui.th4">Result</th></tr>
             <tr><td><code>[text](url)</code></td><td>Hyperlink</td></tr>
             <tr><td><code>![alt](url)</code></td><td>Image</td></tr>
-            <tr><td><code>[text](url "title")</code></td><td>Link with tooltip</td></tr>
+            <tr><td><code>[text](url "title")</code></td><td data-i18n="tools.markdown-editor.ui.r3_3">Link with tooltip</td></tr>
           </table>`,
         },
         {
@@ -357,6 +376,7 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
     <script src="/vendor/mermaid.min.js" integrity="sha384-yQ4mmBBT+vhTAwjFH0toJXNYJ6O4usWnt6EPIdWwrRvx2V/n5lXuDZQwQFeSFydF" crossorigin="anonymous"></script>
 
     <script>
+      const MdLint = (${createMarkdownLint.toString()})();
       document.addEventListener('DOMContentLoaded', () => {
         const root = document.getElementById('md-preview-root');
         const split = document.getElementById('md-split');
@@ -367,6 +387,16 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
         const wordCount = document.getElementById('word-count');
         const charCount = document.getElementById('char-count');
         const mdFileInput = document.getElementById('md-file-input');
+        const lintFormat = document.getElementById('lint-format');
+        const lintPanel = document.getElementById('lint-panel');
+        const lintSummary = document.getElementById('lint-summary');
+        const lintList = document.getElementById('lint-findings');
+        const LINT_LABELS = { agents: 'AGENTS.md', skill: 'SKILL.md', llms: 'llms.txt' };
+        const SEVERITY_STYLES = {
+          error: { label: 'Error', cls: 'bg-error-50 dark:bg-error-900/20 text-error-800 dark:text-error-200' },
+          warning: { label: 'Warning', cls: 'bg-warning-50 dark:bg-warning-900/20 text-warning-800 dark:text-warning-200' },
+          info: { label: 'Info', cls: 'bg-surface-100 dark:bg-surface-800 text-surface-700 dark:text-surface-200' }
+        };
 
          const openMdBtn = document.getElementById('open-md-btn');
          const clearMdBtn = document.getElementById('clear-md-btn');
@@ -523,11 +553,111 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
             await window.mermaid.run({ querySelector: '#preview-output .mermaid' });
           } catch (e) {
             console.error('Mermaid render failed:', e);
+            const failed = Array.from(preview.querySelectorAll('.mermaid')).find(el => !el.querySelector('svg') || el.querySelector('.error-icon'));
+            const target = failed || preview.querySelector('.mermaid');
+            if (target && !target.querySelector('.mermaid-error-detail')) {
+              const detail = document.createElement('pre');
+              detail.className = 'mermaid-error-detail text-xs whitespace-pre-wrap text-error-700 dark:text-error-200';
+              detail.setAttribute('role', 'alert');
+              detail.textContent = 'Mermaid: ' + String((e && (e.message || e.str)) || e).split('\\n').slice(0, 4).join('\\n');
+              target.appendChild(detail);
+            }
           }
         }
 
+        function plural(n, word) {
+          return n + ' ' + word + (n === 1 ? '' : 's');
+        }
+
+        function runLint(text) {
+          const format = lintFormat.value;
+          const active = Object.prototype.hasOwnProperty.call(LINT_LABELS, format);
+          lintPanel.classList.toggle('hidden', !active);
+          lintPanel.classList.toggle('flex', active);
+          if (!active) {
+            lintList.replaceChildren();
+            lintSummary.textContent = '';
+            return;
+          }
+          const result = MdLint.lint(text, format);
+          const c = result.counts;
+          lintSummary.textContent = result.findings.length
+            ? LINT_LABELS[format] + ': ' + plural(c.error, 'error') + ', ' + plural(c.warning, 'warning') + ', ' + c.info + ' info'
+            : LINT_LABELS[format] + ': no findings';
+
+          const items = result.findings.map(f => {
+            const li = document.createElement('li');
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'lint-finding w-full text-left flex flex-col sm:flex-row items-start gap-1 sm:gap-3 px-3 py-2 min-h-[44px] rounded-md text-foreground hover:bg-surface-100 dark:hover:bg-surface-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50 disabled:cursor-not-allowed transition-colors';
+            btn.dataset.line = String(f.line);
+            btn.setAttribute('aria-label', SEVERITY_STYLES[f.severity].label + ' on line ' + f.line + ': ' + f.message + ' ' + f.hint);
+
+            const badge = document.createElement('span');
+            badge.className = 'shrink-0 w-16 text-center rounded-md px-1.5 py-0.5 text-xs font-medium ' + SEVERITY_STYLES[f.severity].cls;
+            badge.textContent = SEVERITY_STYLES[f.severity].label;
+
+            const lineLabel = document.createElement('span');
+            lineLabel.className = 'shrink-0 w-14 py-0.5 text-xs font-mono text-muted-foreground';
+            lineLabel.textContent = 'Line ' + f.line;
+
+            const body = document.createElement('span');
+            body.className = 'min-w-0';
+            const msg = document.createElement('span');
+            msg.className = 'block text-sm';
+            msg.textContent = f.message;
+            const hint = document.createElement('span');
+            hint.className = 'block text-xs text-muted-foreground';
+            hint.textContent = f.hint;
+            body.append(msg, hint);
+
+            const meta = document.createElement('span');
+            meta.className = 'flex items-center gap-2 shrink-0';
+            meta.append(badge, lineLabel);
+            btn.append(meta, body);
+            li.appendChild(btn);
+            return li;
+          });
+          if (!items.length) {
+            const li = document.createElement('li');
+            li.className = 'px-4 py-3 text-sm text-muted-foreground';
+            li.textContent = 'No findings. The text follows the ' + LINT_LABELS[format] + ' format rules this linter checks.';
+            items.push(li);
+          }
+          lintList.replaceChildren(...items);
+        }
+
+        function jumpToLine(line) {
+          if (root.getAttribute('data-view') === 'preview') setViewMode('split');
+          const range = MdLint.lineRange(input.value, line);
+          const style = getComputedStyle(input);
+          const lineHeight = parseFloat(style.lineHeight) || (parseFloat(style.fontSize) || 14) * 1.5;
+          input.focus({ preventScroll: true });
+          input.setSelectionRange(range.start, range.end);
+          input.scrollTop = Math.max(0, (line - 1) * lineHeight - input.clientHeight / 3);
+          input.scrollIntoView({ block: 'nearest' });
+        }
+
+        lintList.addEventListener('click', (e) => {
+          const btn = e.target.closest('.lint-finding');
+          if (btn) jumpToLine(parseInt(btn.dataset.line, 10) || 1);
+        });
+
+        function setLintFormat(format) {
+          lintFormat.value = Object.prototype.hasOwnProperty.call(LINT_LABELS, format) ? format : 'off';
+          try {
+            localStorage.setItem('markdown-lint-format', lintFormat.value);
+          } catch (e) {}
+          runLint(input.value);
+        }
+        lintFormat.addEventListener('change', () => setLintFormat(lintFormat.value));
+        try {
+          lintFormat.value = Object.prototype.hasOwnProperty.call(LINT_LABELS, localStorage.getItem('markdown-lint-format')) ? localStorage.getItem('markdown-lint-format') : 'off';
+        } catch (e) {}
+
         function updatePreview() {
           const rawMarkdown = input.value;
+          runLint(rawMarkdown);
           const prevScrollPct = preview.scrollHeight > preview.clientHeight
             ? (preview.scrollTop / (preview.scrollHeight - preview.clientHeight))
             : 0;
@@ -688,6 +818,8 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
           try {
             const text = await file.text();
             input.value = text;
+            const detected = MdLint.detectFormat(file.name);
+            if (detected) setLintFormat(detected);
             updatePreview();
           } catch (e) {
             console.error('File read failed:', e);
@@ -790,8 +922,13 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
         // Print preview
         printBtn?.addEventListener('click', () => {
           const htmlContent = getExportHTML('Markdown Print');
-          const w = window.open('', '_blank', 'noopener,noreferrer');
-          if (!w) return;
+          // 'noopener' makes window.open() return null, which left Print writing nothing.
+          const w = window.open('', '_blank');
+          if (!w) {
+            preview.insertAdjacentHTML('afterbegin', '<p role="alert" class="text-sm text-error-700 dark:text-error-200">Your browser blocked the print window. Allow pop-ups for this site, or use Download .html.</p>');
+            return;
+          }
+          w.opener = null;
           w.document.open();
           w.document.write('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Markdown Print</title><style>body{font-family:system-ui,-apple-system,sans-serif;line-height:1.6;max-width:800px;margin:0 auto;padding:2rem;color:#111827;}pre{background:#f4f4f5;padding:1rem;border-radius:0.5rem;overflow-x:auto;}code{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;}img{max-width:100%;}blockquote{border-left:4px solid #e5e7eb;margin:0;padding-left:1rem;color:#6b7280;}table{border-collapse:collapse;width:100%;margin:1rem 0;}th,td{border:1px solid #e5e7eb;padding:0.5rem;text-align:left;}.mermaid{border:1px solid #e5e7eb;border-radius:0.75rem;padding:1rem;background:#f8fafc;overflow-x:auto;}@media print{body{padding:0;}}</style></head><body></body></html>');
           w.document.close();
@@ -831,7 +968,11 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
          });
 
          exportMenu?.addEventListener('click', (e) => {
-           if (e.target.closest('[role="menuitem"]')) setExportMenuOpen(false);
+           if (e.target.closest('[role="menuitem"]')) {
+             setExportMenuOpen(false);
+             // :focus-within would otherwise keep the menu visible after a choice.
+             exportMenuBtn?.focus();
+           }
          });
 
          // Close export dropdown on click outside
