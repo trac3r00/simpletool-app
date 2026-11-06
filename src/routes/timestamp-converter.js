@@ -306,9 +306,9 @@ function renderTimestampConverterPage(lang = DEFAULT_LANGUAGE) {
       const unixHint = document.getElementById('unix-hint');
       function setUnixHint(otherUnit) {
         if (!otherUnit) { unixHint.classList.add('hidden'); return; }
-        document.getElementById('unix-hint-text').textContent = 'This looks like a timestamp in ' + otherUnit + '.';
+        document.getElementById('unix-hint-text').textContent = (_t('tools.timestamp-converter.js.r4_0', 'This looks like a timestamp in') + ' ') + otherUnit + '.';
         const sw = document.getElementById('unix-hint-switch');
-        sw.textContent = 'Read it as ' + otherUnit;
+        sw.textContent = (_t('tools.timestamp-converter.js.r4_1', 'Read it as') + ' ') + otherUnit;
         sw.dataset.unit = otherUnit;
         unixHint.classList.remove('hidden');
       }

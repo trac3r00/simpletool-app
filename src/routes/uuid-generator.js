@@ -213,7 +213,7 @@ function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
         const uuids = uuidLogic.generateBatch(version, quantity, format, Date.now(), fillRandom);
 
         uuidOutput.innerHTML = uuids.map(uuid =>
-          \`<button type="button" class="uuid-item btn btn-ghost w-full justify-start font-mono font-normal text-surface-900 dark:text-surface-100" data-uuid="\${uuid}" title="Click to copy">\${uuid}</button>\`
+          \`<button type="button" class="uuid-item btn btn-ghost w-full justify-start font-mono font-normal text-surface-900 dark:text-surface-100" data-uuid="\${uuid}" title="\${_t('tools.uuid-generator.js.r4_0', 'Click to copy')}">\${uuid}</button>\`
         ).join('');
 
         resultDiv.classList.remove('hidden');

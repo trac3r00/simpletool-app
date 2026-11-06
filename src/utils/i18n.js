@@ -20,6 +20,7 @@ import de from "../i18n/de.js";
 import pt from "../i18n/pt.js";
 import vi from "../i18n/vi.js";
 import ROUND3 from "../i18n/supplements/round3.js";
+import ROUND4 from "../i18n/supplements/round4.js";
 
 export const SUPPORTED_LANGUAGES = {
   en: { name: "English", flag: "🇺🇸" },
@@ -37,29 +38,33 @@ export const SUPPORTED_LANGUAGES = {
 export const DEFAULT_LANGUAGE = "en";
 export const LANGUAGE_QUERY_KEY = "lang";
 
-// Generated supplements add ui keys under tools; a key the catalog already
+// Generated supplements add ui/js keys under tools; a key the catalog already
 // defines always wins.
 function withSupplement(catalog, supplement) {
   if (!supplement?.tools) return catalog;
   const tools = { ...catalog.tools };
   for (const [toolId, extra] of Object.entries(supplement.tools)) {
     const base = tools[toolId] || {};
-    tools[toolId] = { ...base, ui: { ...extra.ui, ...base.ui } };
+    tools[toolId] = {
+      ...base,
+      ui: { ...extra.ui, ...base.ui },
+      ...(extra.js || base.js ? { js: { ...extra.js, ...base.js } } : {}),
+    };
   }
   return { ...catalog, tools };
 }
 
 const TRANSLATIONS = {
-  en: withSupplement(en, ROUND3.en),
-  ko: withSupplement(ko, ROUND3.ko),
-  ja: withSupplement(ja, ROUND3.ja),
-  es: withSupplement(es, ROUND3.es),
-  "zh-CN": withSupplement(zhCN, ROUND3["zh-CN"]),
-  "zh-TW": withSupplement(zhTW, ROUND3["zh-TW"]),
-  fr: withSupplement(fr, ROUND3.fr),
-  de: withSupplement(de, ROUND3.de),
-  pt: withSupplement(pt, ROUND3.pt),
-  vi: withSupplement(vi, ROUND3.vi),
+  en: withSupplement(withSupplement(en, ROUND3.en), ROUND4.en),
+  ko: withSupplement(withSupplement(ko, ROUND3.ko), ROUND4.ko),
+  ja: withSupplement(withSupplement(ja, ROUND3.ja), ROUND4.ja),
+  es: withSupplement(withSupplement(es, ROUND3.es), ROUND4.es),
+  "zh-CN": withSupplement(withSupplement(zhCN, ROUND3["zh-CN"]), ROUND4["zh-CN"]),
+  "zh-TW": withSupplement(withSupplement(zhTW, ROUND3["zh-TW"]), ROUND4["zh-TW"]),
+  fr: withSupplement(withSupplement(fr, ROUND3.fr), ROUND4.fr),
+  de: withSupplement(withSupplement(de, ROUND3.de), ROUND4.de),
+  pt: withSupplement(withSupplement(pt, ROUND3.pt), ROUND4.pt),
+  vi: withSupplement(withSupplement(vi, ROUND3.vi), ROUND4.vi),
 };
 
 function getLanguageCatalog(lang) {

@@ -657,7 +657,7 @@ export function renderProtocolHeadersSection(lang = DEFAULT_LANGUAGE) {
           if (etherTypeAt12 === 0x0800 && nextBytes.length >= 20) pushIPv4(nextBytes);
         }
         if (!sections.length) {
-          document.getElementById('hex-error-detail').textContent = ': too few bytes for an Ethernet frame (14) or IPv4 header (20).';
+          document.getElementById('hex-error-detail').textContent = _t('tools.protocol-headers.js.r4_0', ': too few bytes for an Ethernet frame (14) or IPv4 header (20).');
           document.getElementById('hex-error').classList.remove('hidden');
           outputSection.classList.add('hidden');
           return;

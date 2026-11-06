@@ -499,7 +499,7 @@ function renderPromptTemplateBuilderPage(lang = DEFAULT_LANGUAGE) {
         try {
           await navigator.clipboard.writeText(text);
         } catch (e) {
-          els.copyStatus.textContent = 'Copy failed: the browser blocked clipboard access. Select the text and copy it manually.';
+          els.copyStatus.textContent = _t('tools.prompt-template-builder.js.r4_0', 'Copy failed: the browser blocked clipboard access. Select the text and copy it manually.');
           return;
         }
         const old = btn.textContent;

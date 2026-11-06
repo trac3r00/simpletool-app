@@ -169,7 +169,7 @@ function renderJSONFormatterPage(lang = "en") {
         </div>
 
         <section id="repair-help" class="card mt-6 p-4 sm:p-6" aria-labelledby="repair-help-title">
-          <h2 id="repair-help-title" class="text-lg font-semibold text-surface-900 dark:text-surface-50 mb-2">Repair broken JSON from LLMs</h2>
+          <h2 id="repair-help-title" class="text-lg font-semibold text-surface-900 dark:text-surface-50 mb-2" data-i18n="tools.json-formatter.ui.r4_0">Repair broken JSON from LLMs</h2>
           <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">The Repair button first removes a Markdown code fence (<code>\`\`\`json … \`\`\`</code>) and any text before the first <code>{</code> or <code>[</code>, then runs the open-source jsonrepair library in your browser. It fixes:</p>
           <ul class="list-disc pl-5 text-sm text-surface-600 dark:text-surface-400 space-y-1">
             <li>Trailing commas: <code>{"a": 1,}</code></li>
@@ -205,7 +205,7 @@ function renderJSONFormatterPage(lang = "en") {
           {
             title: "Pro Tips",
             content:
-              '<ul><li>Use the "Validate" button if you only want to check for syntax errors without changing the formatting of your input.</li><li>Pay attention to the "Max Depth" statistic to identify overly complex or deeply nested structures that might cause performance issues.</li><li>Always use double quotes for keys and string values, as single quotes are invalid in standard JSON.</li></ul>',
+              '<ul><li>Use the "Validate" button if you only want to check for syntax errors without changing the formatting of your input.</li><li>Pay attention to the "Max Depth" statistic to identify overly complex or deeply nested structures that might cause performance issues.</li><li data-i18n="tools.json-formatter.ui.r4_1">Always use double quotes for keys and string values, as single quotes are invalid in standard JSON.</li></ul>',
           },
         ],
         "json-formatter",
@@ -370,13 +370,13 @@ function renderJSONFormatterPage(lang = "en") {
           var raw = inputEditor.getValue();
           if (!raw.trim()) return showStatus(_t('tools.json-formatter.js.status0', 'Please enter JSON'), 'error');
           if (typeof JSONRepair === 'undefined' || typeof JSONRepair.jsonrepair !== 'function') {
-            showStatus('The repair library did not load. Reload the page and try again.', 'error');
+            showStatus(_t('tools.json-formatter.js.r4_0', 'The repair library did not load. Reload the page and try again.'), 'error');
             resetOutputPanel();
             return;
           }
           var result = repairJSONInput(raw, JSONRepair.jsonrepair);
           if (!result.ok) {
-            showStatus('Could not repair JSON: ' + result.error, 'error');
+            showStatus((_t('tools.json-formatter.js.r4_1', 'Could not repair JSON:') + ' ') + result.error, 'error');
             resetOutputPanel();
             return;
           }
