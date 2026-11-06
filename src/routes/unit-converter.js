@@ -12,6 +12,11 @@ import {
 } from "../utils/content-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
 import {
+  UNIT_CATEGORIES,
+  convertUnit,
+  formatUnitResult,
+} from "../utils/unit-converter-logic.js";
+import {
   DEFAULT_LANGUAGE,
   getToolTranslation,
   normalizeLanguage,
@@ -70,14 +75,14 @@ function renderUnitConverterPage(lang = DEFAULT_LANGUAGE) {
             </div>
             <div>
               <label for="from-value" class="sr-only"><span data-i18n="tools.unit-converter.ui.label0">Input value</span></label>
-              <input type="number" id="from-value" placeholder="0" data-tooltip="Enter the value to convert" data-i18n-tooltip="tools.unit-converter.ui.tip0" class="input-mono text-lg" />
+              <input type="number" id="from-value" aria-label="Value to convert" step="any" placeholder="0" data-tooltip="Enter the value to convert" data-i18n-tooltip="tools.unit-converter.ui.tip0" class="input-mono text-lg" />
             </div>
           </div>
 
           <!-- Swap Button -->
           <div class="flex justify-center md:pt-6">
-            <button id="swap-btn" data-tooltip="Swap input and output units" data-i18n-tooltip="tools.unit-converter.ui.tip1" class="btn-ghost btn-icon rounded-full rounded-full" title="Swap Units" data-i18n-title="tools.unit-converter.ui.title3">
-              <span class="material-symbols-rounded transform rotate-90 md:rotate-0 transition-transform group-hover:scale-110">swap_horiz</span>
+            <button id="swap-btn" data-tooltip="Swap input and output units" data-i18n-tooltip="tools.unit-converter.ui.tip1" class="btn-ghost btn-icon rounded-full rounded-full" title="Swap Units" aria-label="Swap units" data-i18n-title="tools.unit-converter.ui.title3">
+              <span class="material-symbols-rounded transform rotate-90 md:rotate-0 transition-transform group-hover:scale-110" aria-hidden="true" data-icon="swap_horiz"></span>
             </button>
           </div>
 
@@ -91,7 +96,7 @@ function renderUnitConverterPage(lang = DEFAULT_LANGUAGE) {
             </div>
             <div>
               <label for="to-value" class="sr-only"><span data-i18n="tools.unit-converter.ui.label1">Converted value</span></label>
-              <input type="number" id="to-value" placeholder="0" readonly class="input-mono w-full" />
+              <input type="number" id="to-value" aria-label="Converted value" step="any" placeholder="0" readonly class="input-mono w-full" />
               <span id="to-value-live" role="status" class="sr-only"></span>
             </div>
           </div>
@@ -127,177 +132,43 @@ function renderUnitConverterPage(lang = DEFAULT_LANGUAGE) {
           {
             title: "Pro Tips",
             content:
-              '<ul><li>Use the "Swap" button to quickly reverse the conversion direction between your selected units.</li><li>Always double-check the specific unit type, especially for volume and weight, as names can be similar across different systems (e.g., US vs. UK gallons).</li><li>When performing multiple conversions in a sequence, keep as many decimal places as possible until the final result to avoid cumulative rounding errors.</li></ul>',
+              '<ul><li>Use the "Swap" button to quickly reverse the conversion direction between your selected units.</li><li>Always double-check the specific unit type, especially for volume and weight, as names can be similar across different systems (e.g., US vs. UK gallons).</li><li data-i18n="tools.unit-converter.ui.r3_0">When performing multiple conversions in a sequence, keep as many decimal places as possible until the final result to avoid cumulative rounding errors.</li></ul>',
           },
         ],
         "unit-converter",
         currentLang,
       )}
     </div>
-    ${createRelatedToolsSection(relatedToolsData)}
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">${createRelatedToolsSection(relatedToolsData)}</div>
   `;
 
   const scripts = `
     <script>
       /* ===== Unit Data ===== */
-      const CATEGORIES = [
-        {
-          id: 'length',
-          label: _t('tools.unit-converter.js.cat_length', 'Length'),
-          icon: 'straighten',
-          units: [
-            { id: 'm',   label: 'Meter (m)',       factor: 1 },
-            { id: 'km',  label: 'Kilometer (km)',   factor: 1000 },
-            { id: 'cm',  label: 'Centimeter (cm)',  factor: 0.01 },
-            { id: 'mm',  label: 'Millimeter (mm)',  factor: 0.001 },
-            { id: 'nm',  label: 'Nanometer (nm)',   factor: 1e-9 },
-            { id: 'mi',  label: 'Mile (mi)',         factor: 1609.344 },
-            { id: 'yd',  label: 'Yard (yd)',         factor: 0.9144 },
-            { id: 'ft',  label: 'Foot (ft)',         factor: 0.3048 },
-            { id: 'in',  label: 'Inch (in)',         factor: 0.0254 }
-          ]
-        },
-        {
-          id: 'weight',
-          label: _t('tools.unit-converter.js.cat_weight', 'Weight'),
-          icon: 'monitor_weight',
-          units: [
-            { id: 'kg',  label: 'Kilogram (kg)',    factor: 1 },
-            { id: 'g',   label: 'Gram (g)',          factor: 0.001 },
-            { id: 'mg',  label: 'Milligram (mg)',    factor: 1e-6 },
-            { id: 'ton', label: 'Metric Ton (t)',    factor: 1000 },
-            { id: 'lb',  label: 'Pound (lb)',        factor: 0.453592 },
-            { id: 'oz',  label: 'Ounce (oz)',        factor: 0.0283495 },
-            { id: 'st',  label: 'Stone (st)',        factor: 6.35029 }
-          ]
-        },
-        {
-          id: 'temperature',
-          label: _t('tools.unit-converter.js.cat_temperature', 'Temperature'),
-          icon: 'thermostat',
-          units: [
-            { id: 'c', label: 'Celsius (°C)',    factor: null },
-            { id: 'f', label: 'Fahrenheit (°F)', factor: null },
-            { id: 'k', label: 'Kelvin (K)',       factor: null }
-          ]
-        },
-        {
-          id: 'volume',
-          label: _t('tools.unit-converter.js.cat_volume', 'Volume'),
-          icon: 'water_drop',
-          units: [
-            { id: 'l',    label: 'Liter (L)',          factor: 1 },
-            { id: 'ml',   label: 'Milliliter (mL)',    factor: 0.001 },
-            { id: 'm3',   label: 'Cubic Meter (m³)',   factor: 1000 },
-            { id: 'gal',  label: 'Gallon (US gal)',    factor: 3.78541 },
-            { id: 'qt',   label: 'Quart (US qt)',      factor: 0.946353 },
-            { id: 'pt',   label: 'Pint (US pt)',       factor: 0.473176 },
-            { id: 'cup',  label: 'Cup (US cup)',       factor: 0.236588 },
-            { id: 'floz', label: 'Fl. Ounce (fl oz)', factor: 0.0295735 }
-          ]
-        },
-        {
-          id: 'area',
-          label: _t('tools.unit-converter.js.cat_area', 'Area'),
-          icon: 'crop_square',
-          units: [
-            { id: 'm2',   label: 'Sq. Meter (m²)',      factor: 1 },
-            { id: 'km2',  label: 'Sq. Kilometer (km²)', factor: 1e6 },
-            { id: 'cm2',  label: 'Sq. Centimeter (cm²)',factor: 0.0001 },
-            { id: 'ha',   label: 'Hectare (ha)',         factor: 10000 },
-            { id: 'acre', label: 'Acre (acre)',          factor: 4046.86 },
-            { id: 'mi2',  label: 'Sq. Mile (mi²)',      factor: 2589988.11 },
-            { id: 'ft2',  label: 'Sq. Foot (ft²)',      factor: 0.092903 },
-            { id: 'in2',  label: 'Sq. Inch (in²)',      factor: 0.00064516 }
-          ]
-        },
-        {
-          id: 'speed',
-          label: _t('tools.unit-converter.js.cat_speed', 'Speed'),
-          icon: 'speed',
-          units: [
-            { id: 'ms',   label: 'Meter/sec (m/s)',   factor: 1 },
-            { id: 'kmh',  label: 'Kilometer/hr (km/h)', factor: 0.277778 },
-            { id: 'mph',  label: 'Mile/hr (mph)',      factor: 0.44704 },
-            { id: 'kn',   label: 'Knot (kn)',          factor: 0.514444 },
-            { id: 'fts',  label: 'Foot/sec (ft/s)',    factor: 0.3048 }
-          ]
-        },
-        {
-          id: 'time',
-          label: _t('tools.unit-converter.js.cat_time', 'Time'),
-          icon: 'schedule',
-          units: [
-            { id: 's',     label: 'Second (s)',    factor: 1 },
-            { id: 'ms',    label: 'Millisecond (ms)', factor: 0.001 },
-            { id: 'min',   label: 'Minute (min)', factor: 60 },
-            { id: 'hr',    label: 'Hour (hr)',     factor: 3600 },
-            { id: 'day',   label: 'Day (day)',     factor: 86400 },
-            { id: 'week',  label: 'Week (week)',   factor: 604800 },
-            { id: 'month', label: 'Month (month)', factor: 2629746 },
-            { id: 'year',  label: 'Year (year)',   factor: 31556952 }
-          ]
-        },
-        {
-          id: 'data',
-          label: _t('tools.unit-converter.js.cat_data', 'Data'),
-          icon: 'storage',
-          units: [
-            { id: 'B',   label: 'Byte (B)',      factor: 1 },
-            { id: 'KB',  label: 'Kilobyte (KB)', factor: 1024 },
-            { id: 'MB',  label: 'Megabyte (MB)', factor: 1048576 },
-            { id: 'GB',  label: 'Gigabyte (GB)', factor: 1073741824 },
-            { id: 'TB',  label: 'Terabyte (TB)', factor: 1099511627776 },
-            { id: 'PB',  label: 'Petabyte (PB)', factor: 1125899906842624 }
-          ]
-        },
-        {
-          id: 'pressure',
-          label: _t('tools.unit-converter.js.cat_pressure', 'Pressure'),
-          icon: 'compress',
-          units: [
-            { id: 'Pa',    label: 'Pascal (Pa)',        factor: 1 },
-            { id: 'kPa',   label: 'Kilopascal (kPa)',  factor: 1000 },
-            { id: 'bar',   label: 'Bar (bar)',          factor: 100000 },
-            { id: 'atm',   label: 'Atmosphere (atm)',  factor: 101325 },
-            { id: 'psi',   label: 'PSI (psi)',          factor: 6894.76 },
-            { id: 'mmHg',  label: 'mmHg (mmHg)',       factor: 133.322 }
-          ]
-        },
-        {
-          id: 'energy',
-          label: _t('tools.unit-converter.js.cat_energy', 'Energy'),
-          icon: 'bolt',
-          units: [
-            { id: 'J',    label: 'Joule (J)',            factor: 1 },
-            { id: 'kJ',   label: 'Kilojoule (kJ)',       factor: 1000 },
-            { id: 'cal',  label: 'Calorie (cal)',        factor: 4.184 },
-            { id: 'kcal', label: 'Kilocalorie (kcal)',   factor: 4184 },
-            { id: 'Wh',   label: 'Watt-hour (Wh)',      factor: 3600 },
-            { id: 'kWh',  label: 'Kilowatt-hour (kWh)', factor: 3600000 },
-            { id: 'BTU',  label: 'BTU (BTU)',            factor: 1055.06 },
-            { id: 'eV',   label: 'Electronvolt (eV)',   factor: 1.60218e-19 }
-          ]
-        }
-      ];
+      const CATEGORY_LABELS = {
+        length: _t('tools.unit-converter.js.cat_length', 'Length'),
+        weight: _t('tools.unit-converter.js.cat_weight', 'Weight'),
+        temperature: _t('tools.unit-converter.js.cat_temperature', 'Temperature'),
+        volume: _t('tools.unit-converter.js.cat_volume', 'Volume'),
+        area: _t('tools.unit-converter.js.cat_area', 'Area'),
+        speed: _t('tools.unit-converter.js.cat_speed', 'Speed'),
+        time: _t('tools.unit-converter.js.cat_time', 'Time'),
+        data: _t('tools.unit-converter.js.cat_data', 'Data'),
+        pressure: _t('tools.unit-converter.js.cat_pressure', 'Pressure'),
+        energy: _t('tools.unit-converter.js.cat_energy', 'Energy')
+      };
+      const UNIT_CATEGORIES = ${JSON.stringify(UNIT_CATEGORIES)};
+      const convertUnit = ${convertUnit.toString()};
+      const formatResult = ${formatUnitResult.toString()};
+      const CATEGORIES = UNIT_CATEGORIES.map(cat => ({
+        id: cat.id,
+        label: CATEGORY_LABELS[cat.id] || cat.id,
+        icon: cat.icon,
+        units: cat.units.map(([id, label, factor]) => ({ id, label, factor }))
+      }));
 
       /* ===== State ===== */
       let currentCategoryId = CATEGORIES[0].id;
-
-      /* ===== Temperature conversion (special case) ===== */
-      function convertTemperature(value, fromId, toId) {
-        if (fromId === toId) return value;
-        // Convert to Celsius first
-        let celsius;
-        if (fromId === 'c') celsius = value;
-        else if (fromId === 'f') celsius = (value - 32) * 5 / 9;
-        else celsius = value - 273.15; // K
-
-        // Convert from Celsius to target
-        if (toId === 'c') return celsius;
-        if (toId === 'f') return celsius * 9 / 5 + 32;
-        return celsius + 273.15; // K
-      }
 
       function temperatureFormula(fromId, toId) {
         if (fromId === toId) return 'x';
@@ -312,25 +183,6 @@ function renderUnitConverterPage(lang = DEFAULT_LANGUAGE) {
           'k-f': '(x − 273.15) × 9/5 + 32'
         };
         return formulas[fromId + '-' + toId] || 'x';
-      }
-
-      /* ===== Generic factor-based conversion ===== */
-      function convertValue(value, fromUnit, toUnit) {
-        if (fromUnit.id === toUnit.id) return value;
-        const valueInBase = value * fromUnit.factor;
-        return valueInBase / toUnit.factor;
-      }
-
-      function formatResult(num) {
-        if (!isFinite(num)) return '';
-        // Use toPrecision for very large/small numbers, otherwise plain
-        const abs = Math.abs(num);
-        if (abs !== 0 && (abs >= 1e12 || abs < 1e-6)) {
-          return parseFloat(num.toPrecision(10)).toString();
-        }
-        // Round to 10 significant figures to avoid floating point noise
-        const rounded = parseFloat(num.toPrecision(10));
-        return rounded.toString();
       }
 
       /* ===== Populate dropdowns ===== */
@@ -362,11 +214,12 @@ function renderUnitConverterPage(lang = DEFAULT_LANGUAGE) {
           const btn = document.createElement('button');
           btn.type = 'button';
           btn.dataset.categoryId = cat.id;
+          btn.setAttribute('aria-pressed', String(cat.id === currentCategoryId));
           btn.className = 'category-btn flex flex-col items-center gap-1.5 px-3 py-3 rounded-xl border-2 text-sm font-medium transition-all ' +
             (cat.id === currentCategoryId
               ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
               : 'border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 text-surface-600 dark:text-surface-400 hover:border-primary-300 dark:hover:border-primary-700 hover:text-primary-600 dark:hover:text-primary-400');
-          btn.innerHTML = '<span class="material-symbols-rounded text-lg">' + cat.icon + '</span>' +
+          btn.innerHTML = '<span class="material-symbols-rounded text-lg" aria-hidden="true" data-icon="' + cat.icon + '"></span>' +
             '<span>' + cat.label + '</span>';
           btn.addEventListener('click', () => selectCategory(cat.id));
           grid.appendChild(btn);
@@ -379,6 +232,7 @@ function renderUnitConverterPage(lang = DEFAULT_LANGUAGE) {
         // Update button styles
         document.querySelectorAll('.category-btn').forEach(btn => {
           const isActive = btn.dataset.categoryId === categoryId;
+          btn.setAttribute('aria-pressed', String(isActive));
           btn.className = 'category-btn flex flex-col items-center gap-1.5 px-3 py-3 rounded-xl border-2 text-sm font-medium transition-all ' +
             (isActive
               ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
@@ -386,10 +240,7 @@ function renderUnitConverterPage(lang = DEFAULT_LANGUAGE) {
         });
         const category = CATEGORIES.find(c => c.id === categoryId);
         populateDropdowns(category);
-        // Clear input and run conversion
-        document.getElementById('from-value').value = '';
-        document.getElementById('to-value').value = '';
-        updateFormulaDisplay();
+        performConversion();
       }
 
       /* ===== Perform conversion ===== */
@@ -397,28 +248,33 @@ function renderUnitConverterPage(lang = DEFAULT_LANGUAGE) {
         const category = CATEGORIES.find(c => c.id === currentCategoryId);
         if (!category) return;
 
-        const fromValue = parseFloat(document.getElementById('from-value').value);
+        const fromValueInput = document.getElementById('from-value');
+        const fromValue = parseFloat(fromValueInput.value);
         const fromId = document.getElementById('from-unit').value;
         const toId = document.getElementById('to-unit').value;
         const toValueEl = document.getElementById('to-value');
         const toLiveEl = document.getElementById('to-value-live');
 
         if (isNaN(fromValue)) {
+          fromValueInput.removeAttribute('aria-invalid');
           toValueEl.value = '';
           toLiveEl.textContent = '';
           updateFormulaDisplay();
           return;
         }
 
-        let result;
-        if (category.id === 'temperature') {
-          result = convertTemperature(fromValue, fromId, toId);
-        } else {
-          const fromUnit = category.units.find(u => u.id === fromId);
-          const toUnit = category.units.find(u => u.id === toId);
-          if (!fromUnit || !toUnit) return;
-          result = convertValue(fromValue, fromUnit, toUnit);
+        const result = convertUnit(UNIT_CATEGORIES, category.id, fromValue, fromId, toId);
+        if (result === null) {
+          toValueEl.value = '';
+          if (category.id === 'temperature') {
+            const msg = 'Below absolute zero (0 K = −273.15 °C = −459.67 °F).';
+            toLiveEl.textContent = msg;
+            document.getElementById('formula-display').textContent = msg;
+            fromValueInput.setAttribute('aria-invalid', 'true');
+          }
+          return;
         }
+        fromValueInput.removeAttribute('aria-invalid');
 
         const formatted = formatResult(result);
         toValueEl.value = formatted;
@@ -448,7 +304,7 @@ function renderUnitConverterPage(lang = DEFAULT_LANGUAGE) {
           }
           // Express as: x [fromUnit] = x * (fromFactor / toFactor) [toUnit]
           const ratio = fromUnit.factor / toUnit.factor;
-          const ratioStr = parseFloat(ratio.toPrecision(8)).toString();
+          const ratioStr = formatResult(ratio);
           formulaEl.textContent = '1 ' + fromUnit.label + ' = ' + ratioStr + ' ' + toUnit.label;
         }
       }
@@ -464,7 +320,6 @@ function renderUnitConverterPage(lang = DEFAULT_LANGUAGE) {
         fromSel.value = toSel.value;
         toSel.value = tmpUnit;
 
-        // Move result to input
         if (toVal.value !== '') {
           fromVal.value = toVal.value;
         }

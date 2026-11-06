@@ -196,7 +196,7 @@ function renderSVGOptimizerPage(lang = DEFAULT_LANGUAGE) {
           {
             title: "Pro Tips",
             content:
-              '<ul><li>Use the "currentColor" button to convert all explicit fills and strokes to <code>currentColor</code>, making your SVG easily styleable via CSS.</li><li>Always optimize your SVGs before using them in production to ensure they are as small as possible for fast web performance.</li><li>When creating SVGs in design tools, use the "Outline Stroke" and "Simplify Path" features to reduce the complexity of the generated code before optimization.</li></ul>',
+              '<ul><li>Use the "currentColor" button to convert all explicit fills and strokes to <code>currentColor</code>, making your SVG easily styleable via CSS.</li><li>Always optimize your SVGs before using them in production to ensure they are as small as possible for fast web performance.</li><li data-i18n="tools.svg-optimizer.ui.r3_0">When creating SVGs in design tools, use the "Outline Stroke" and "Simplify Path" features to reduce the complexity of the generated code before optimization.</li></ul>',
           },
         ],
         "svg-optimizer",
@@ -288,7 +288,24 @@ function renderSVGOptimizerPage(lang = DEFAULT_LANGUAGE) {
         });
       }
 
-      function optimizeDoc(doc, svg, { minify = false }) {
+      /* Lossless cleanup: drop empty <g>/<defs> and ids nothing references. */
+      function cleanupDoc(svg) {
+        let removed = true;
+        while (removed) {
+          removed = false;
+          svg.querySelectorAll('g, defs').forEach(el => {
+            if (!el.children.length && !el.textContent.trim()) { el.remove(); removed = true; }
+          });
+        }
+        const text = new XMLSerializer().serializeToString(svg);
+        svg.querySelectorAll('[id]').forEach(el => {
+          const id = el.getAttribute('id');
+          if (text.split('#' + id).length < 2) el.removeAttribute('id');
+        });
+      }
+
+      function optimizeDoc(doc, svg, { minify = false, cleanup = false }) {
+        if (cleanup) cleanupDoc(svg);
         if (els.stripMetadata.checked) {
           stripNodes(svg, ['title', 'desc', 'metadata']);
         }
@@ -368,7 +385,7 @@ function renderSVGOptimizerPage(lang = DEFAULT_LANGUAGE) {
             for (const prop of styleProps) {
               // Replace exact value occurrences in style declarations.
               Object.entries(mapping).forEach(([from, to]) => {
-                const re = new RegExp('(' + prop + '\\\\s*:\\\\s*)' + escapeRe(from) + '(\\\\s*;?)', 'g');
+                const re = new RegExp('(' + prop + '\\s*:\\s*)' + escapeRe(from) + '(\\s*(?:;|$))', 'g');
                 next = next.replace(re, '$1' + to + '$2');
               });
             }
@@ -414,6 +431,7 @@ function renderSVGOptimizerPage(lang = DEFAULT_LANGUAGE) {
           const input = document.createElement('input');
           input.className = 'input font-mono flex-1';
           input.placeholder = t('text4', 'Replace with… (e.g., #000000)');
+          input.setAttribute('aria-label', 'Replacement for ' + c);
           input.value = '';
 
           input.addEventListener('input', () => {
@@ -463,8 +481,23 @@ function renderSVGOptimizerPage(lang = DEFAULT_LANGUAGE) {
         els.downloadBtn.disabled = !has;
       }
 
-      function applyAndRender({ minify = false, makeCurrentColor = false } = {}) {
+      function applyAndRender({ minify = false, makeCurrentColor = false, cleanup = false } = {}) {
         current.input = els.input.value;
+        const rawDoc = new DOMParser().parseFromString(String(current.input || '').trim(), 'image/svg+xml');
+        const parseError = current.input.trim() && rawDoc.querySelector('parsererror');
+        if (parseError) {
+          const detail = (parseError.textContent || '')
+            .replace(/This page contains the following errors:/i, '')
+            .replace(/Below is a rendering of the page up to the first error\.?/i, '')
+            .split(/\r?\n/).map(x => x.trim()).filter(Boolean).slice(0, 2).join(' ');
+          setPreviewMessage(t('text9', 'This is not well-formed SVG/XML, so a browser would refuse to load it') + (detail ? ': ' + detail : '.'));
+          els.output.value = '';
+          els.colors.innerHTML = '<p class="text-surface-500 dark:text-surface-400">' + t('text5', 'Preview an SVG to extract colors.') + '</p>';
+          els.colorCount.textContent = '0';
+          syncOutputButtons();
+          updateStats();
+          return;
+        }
         const res = sanitizeSvg(current.input);
         if (!res.ok) {
           setPreviewMessage(res.error);
@@ -488,10 +521,16 @@ function renderSVGOptimizerPage(lang = DEFAULT_LANGUAGE) {
               if (!t || t === 'none' || t === 'currentColor' || /^url\(/i.test(t)) return;
               el.setAttribute(a, 'currentColor');
             });
+            const st = el.getAttribute('style');
+            if (st) {
+              const next = st.replace(/(^|;)(\s*(?:fill|stroke|stop-color|color)\s*:\s*)(?!none\b|currentColor\b|url\()([^;]+)/gi, '$1$2currentColor');
+              if (next !== st) el.setAttribute('style', next);
+            }
           });
         }
 
-        const out = optimizeDoc(res.doc, svg, { minify });
+        const out = optimizeDoc(res.doc, svg, { minify, cleanup });
+        current.cleanup = Boolean(cleanup);
         current.sanitized = new XMLSerializer().serializeToString(svg);
         current.optimized = out;
         current.lastMinify = Boolean(minify);
@@ -540,9 +579,9 @@ function renderSVGOptimizerPage(lang = DEFAULT_LANGUAGE) {
       });
 
       els.previewBtn.addEventListener('click', () => applyAndRender({ minify: false }));
-      els.optimizeBtn.addEventListener('click', () => applyAndRender({ minify: false }));
-      els.minifyBtn.addEventListener('click', () => applyAndRender({ minify: true }));
-      els.currentColorBtn.addEventListener('click', () => applyAndRender({ minify: true, makeCurrentColor: true }));
+      els.optimizeBtn.addEventListener('click', () => applyAndRender({ minify: false, cleanup: true }));
+      els.minifyBtn.addEventListener('click', () => applyAndRender({ minify: true, cleanup: true }));
+      els.currentColorBtn.addEventListener('click', () => applyAndRender({ minify: true, makeCurrentColor: true, cleanup: true }));
 
       els.clearBtn.addEventListener('click', () => {
         els.input.value = '';

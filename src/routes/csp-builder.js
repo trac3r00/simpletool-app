@@ -17,6 +17,7 @@ import {
   createRelatedToolsSection,
 } from "../utils/content-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
+import { createCspLogic } from "../utils/csp-builder-logic.js";
 import {
   DEFAULT_LANGUAGE,
   getToolTranslation,
@@ -88,8 +89,9 @@ function renderCSPBuilderPage(lang = DEFAULT_LANGUAGE) {
                 ${infoHint("Paste only the policy value (everything after “Content-Security-Policy:”). Then click Parse.", "Help", { i18nKey: "tools.csp-builder.ui.desc0" })}
               </label>
               <textarea id="csp-input" rows="6" aria-label="Existing CSP policy" class="input-mono resize-y" placeholder="default-src 'self'; script-src 'self' 'nonce-{{nonce}}'; object-src 'none'; base-uri 'none';" data-i18n-placeholder="tools.csp-builder.ui.placeholder0"></textarea>
-              <div class="mt-3 flex items-center justify-between gap-3">
-                <label class="inline-flex items-center gap-2 cursor-pointer text-sm text-surface-700 dark:text-surface-300">
+              <p id="parse-error" role="alert" class="hidden mt-2 text-sm text-error-700 dark:text-error-300"></p>
+              <div class="mt-3 flex flex-wrap items-center justify-between gap-3">
+                <label class="inline-flex items-center gap-2 cursor-pointer text-sm text-surface-700 dark:text-surface-300 whitespace-nowrap">
                   <input id="report-only" type="checkbox" class="w-4 h-4 rounded border-surface-300 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
                   <span data-i18n="tools.csp-builder.ui.label1">Report-Only header</span>
                 </label>
@@ -105,7 +107,7 @@ function renderCSPBuilderPage(lang = DEFAULT_LANGUAGE) {
             </div>
           </div>
 
-          <div class="space-y-4">
+          <div class="space-y-4 lg:sticky lg:top-20 lg:self-start">
             <div class="tool-group p-5">
               <div class="flex items-center justify-between mb-3">
                 <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400" data-i18n="tools.csp-builder.ui.heading1">Directives</h2>
@@ -192,32 +194,30 @@ function renderCSPBuilderPage(lang = DEFAULT_LANGUAGE) {
       const inputs = {};
       dirIds.forEach(id => (inputs[id] = $('dir-' + id)));
 
-      function normalizePolicyValue(s) {
-        // Allow full header lines too.
-        const raw = String(s || '').trim();
-        const m = raw.match(/content-security-policy(-report-only)?:\s*(.*)$/i);
-        return m ? m[2].trim() : raw;
-      }
+      // Inlined from src/utils/csp-builder-logic.js (tested in csp-builder-logic.test.js).
+      const Csp = (${createCspLogic.toString()})();
 
-      function parseCsp(value) {
-        const out = {};
-        const v = normalizePolicyValue(value);
-        v.split(';').map(p => p.trim()).filter(Boolean).forEach(part => {
-          const [name, ...rest] = part.split(/\s+/);
-          if (!name) return;
-          out[name.toLowerCase()] = rest.join(' ').trim();
+      // Directives this form has no field for (worker-src, report-to,
+      // upgrade-insecure-requests, ...). Kept from the last Parse and emitted
+      // unchanged so parsing a real policy never silently drops part of it.
+      let extraEntries = [];
+      let parsedDuplicates = [];
+
+      function currentDirectives() {
+        const map = {};
+        dirIds.forEach(name => {
+          const v = String(inputs[name].value || '').trim();
+          if (v) map[name] = v;
         });
-        return out;
+        extraEntries.forEach(([name, value]) => { map[name] = value; });
+        return map;
       }
 
       function buildCsp() {
-        const parts = [];
-        dirIds.forEach(name => {
-          const v = String(inputs[name].value || '').trim();
-          if (!v) return;
-          parts.push(name + ' ' + v);
-        });
-        return parts.join('; ') + (parts.length ? ';' : '');
+        const entries = dirIds
+          .map(name => [name, String(inputs[name].value || '').trim()])
+          .filter(([, v]) => v);
+        return Csp.buildCsp(entries.concat(extraEntries));
       }
 
        function addWarning(level, text) {
@@ -232,29 +232,18 @@ function renderCSPBuilderPage(lang = DEFAULT_LANGUAGE) {
          els.warnings.appendChild(row);
        }
 
-      function validateAndRenderWarnings(policy) {
+      function validateAndRenderWarnings() {
         els.warnings.innerHTML = '';
 
-        const def = String(inputs['default-src'].value || '').trim();
-        if (!def) addWarning('medium', t('text0', "Missing default-src. Consider setting default-src 'self' as a baseline."));
+        const withSemicolon = dirIds.filter(name => String(inputs[name].value || '').includes(';'));
+        const warnings = Csp.cspWarnings(currentDirectives(), { duplicates: parsedDuplicates, withSemicolon });
+        warnings.forEach(w => addWarning(w.level, Csp.formatWarning(w, t(w.key, w.text))));
 
-        const script = String(inputs['script-src'].value || '').trim();
-        if (script.includes("'unsafe-inline'")) addWarning('high', t('text1', "script-src contains 'unsafe-inline' (XSS risk). Prefer nonces/hashes."));
-        if (script.includes('*')) addWarning('high', t('text2', "script-src contains '*' (very permissive). Consider narrowing origins."));
-        if (!script) addWarning('medium', t('text3', 'Missing script-src. Many strict policies set script-src explicitly (often with nonces/hashes).'));
-
-        const obj = String(inputs['object-src'].value || '').trim();
-        if (!obj) addWarning('medium', t('text4', "Missing object-src. Recommended: object-src 'none'."));
-        if (obj && obj !== "'none'") addWarning('low', t('text5', "object-src is not 'none'. If you don't need plugins, set it to 'none'."));
-
-        const base = String(inputs['base-uri'].value || '').trim();
-        if (!base) addWarning('medium', t('text6', "Missing base-uri. Recommended: base-uri 'none'."));
-
-        const fa = String(inputs['frame-ancestors'].value || '').trim();
-        if (!fa) addWarning('medium', t('text7', "Missing frame-ancestors. Recommended: frame-ancestors 'none' (or allowed origins)."));
-
-        const style = String(inputs['style-src'].value || '').trim();
-        if (style.includes("'unsafe-inline'")) addWarning('low', t('text8', "style-src contains 'unsafe-inline'. Consider hashes/nonces if feasible."));
+        if (extraEntries.length) {
+          addWarning('low', t('keptExtra', 'Kept {count} directive(s) that have no field here, unchanged in the output: {names}')
+            .replace('{count}', String(extraEntries.length))
+            .replace('{names}', extraEntries.map(([name]) => name).join(', ')));
+        }
 
         if (!els.warnings.childElementCount) {
           const p = document.createElement('p');
@@ -269,7 +258,7 @@ function renderCSPBuilderPage(lang = DEFAULT_LANGUAGE) {
         const headerName = els.reportOnly.checked ? 'Content-Security-Policy-Report-Only' : 'Content-Security-Policy';
         els.output.value = headerName + ': ' + policy;
         els.copy.disabled = !policy.trim();
-        validateAndRenderWarnings(policy);
+        validateAndRenderWarnings();
       }
 
       let _updateTimer;
@@ -280,6 +269,8 @@ function renderCSPBuilderPage(lang = DEFAULT_LANGUAGE) {
 
       function applyBaseline() {
         clearTimeout(_updateTimer);
+        extraEntries = [];
+        parsedDuplicates = [];
         inputs['default-src'].value = "'self'";
         inputs['script-src'].value = "'self' 'nonce-{{nonce}}'";
         inputs['style-src'].value = "'self'";
@@ -295,13 +286,24 @@ function renderCSPBuilderPage(lang = DEFAULT_LANGUAGE) {
       }
 
       els.applyBaseline.addEventListener('click', applyBaseline);
+      const parseError = $('parse-error');
       els.parse.addEventListener('click', () => {
         clearTimeout(_updateTimer);
-        const parsed = parseCsp(els.input.value);
+        const parsed = Csp.parseCsp(els.input.value);
+        if (!parsed.order.length) {
+          parseError.textContent = t('parseEmpty', 'Paste a policy above first, e.g. default-src \'self\'; object-src \'none\'');
+          parseError.classList.remove('hidden');
+          return;
+        }
+        parseError.classList.add('hidden');
         dirIds.forEach(name => {
-          inputs[name].value = parsed[name] || '';
+          inputs[name].value = parsed.directives[name] || '';
         });
-        els.reportOnly.checked = /content-security-policy-report-only:/i.test(String(els.input.value || ''));
+        extraEntries = parsed.order
+          .filter(name => !dirIds.includes(name))
+          .map(name => [name, parsed.directives[name]]);
+        parsedDuplicates = parsed.duplicates;
+        els.reportOnly.checked = Csp.isReportOnlyHeader(els.input.value);
         updateOutput();
       });
 
@@ -309,10 +311,13 @@ function renderCSPBuilderPage(lang = DEFAULT_LANGUAGE) {
         clearTimeout(_updateTimer);
         els.input.value = '';
         dirIds.forEach(name => (inputs[name].value = ''));
+        extraEntries = [];
+        parsedDuplicates = [];
+        parseError.classList.add('hidden');
         els.reportOnly.checked = false;
         els.output.value = '';
         els.copy.disabled = true;
-        els.warnings.innerHTML = '<p class="text-surface-500 dark:text-surface-400" data-i18n="tools.csp-builder.ui.desc5">' + t('text10', 'No warnings yet.') + '</p>';
+        els.warnings.innerHTML = '<p class="text-surface-500 dark:text-surface-400" data-i18n="tools.csp-builder.ui.desc2">' + t('text10', 'No warnings yet.') + '</p>';
       });
 
       els.copy.addEventListener('click', async () => {
@@ -321,17 +326,22 @@ function renderCSPBuilderPage(lang = DEFAULT_LANGUAGE) {
         if (!text.trim()) return;
         try {
           await navigator.clipboard.writeText(text);
-          const old = els.copy.textContent;
+          const old = els.copy.innerHTML;
           els.copy.textContent = t('text11', '✓ Copied');
           if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
-          setTimeout(() => (els.copy.textContent = old), 1200);
+          setTimeout(() => (els.copy.innerHTML = old), 1200);
         } catch (e) {
-          console.error('Copy failed:', e);
+          if (window.Toast) window.Toast.error(t('copyFailed', 'Copy failed. Select the header text and copy it manually.'));
+          els.output.focus();
+          els.output.select();
         }
       });
 
       els.reportOnly.addEventListener('change', updateOutput);
-      dirIds.forEach(name => inputs[name].addEventListener('input', debouncedUpdate));
+      dirIds.forEach(name => inputs[name].addEventListener('input', () => {
+        parsedDuplicates = [];
+        debouncedUpdate();
+      }));
 
       updateOutput();
     </script>

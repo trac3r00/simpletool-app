@@ -16,6 +16,17 @@ import {
 } from "../utils/content-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
 import {
+  checkChainOrder,
+  computeCertWarnings,
+  detectPrivateKey,
+  extractCertFields,
+  describeCertExtensions,
+  extractPemCertificates,
+  parseCertificatePem,
+  verifyIssuedBy,
+  verifySignatureWebCrypto,
+} from "../utils/cert-logic.js";
+import {
   DEFAULT_LANGUAGE,
   getToolTranslation,
   normalizeLanguage,
@@ -53,7 +64,7 @@ function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
   const translation = getToolTranslation("certificate-decoder", currentLang);
   const toolHeader = createToolHeader(
     { emoji: "📜" },
-    translation?.name || "X.509 Certificate Inspector",
+    translation?.name || "X.509 Certificate Decoder",
     translation?.desc ||
       "Inspect PEM certificates client-side. Validate issuers, SANs, and extensions securely.",
     [
@@ -86,7 +97,7 @@ function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
 
           <div class="space-y-4">
             <label for="certificate-input" class="label"><span data-i18n="tools.certificate-decoder.ui.label2">Paste Certificate (PEM Format)</span> ${infoHint("Paste PEM block with BEGIN/END headers so the parser detects it.")}</label>
-            <textarea id="certificate-input" class="input font-mono" data-tooltip="Paste PEM certificate starting with -----BEGIN CERTIFICATE-----" data-i18n-tooltip="tools.certificate-decoder.ui.tip0" h-48 resize-y" placeholder="-----BEGIN CERTIFICATE-----&#10;MIIByzCCAXSgAwIBAgIUTQl...
+            <textarea id="certificate-input" class="input font-mono h-48 resize-y" data-tooltip="Paste PEM certificate starting with -----BEGIN CERTIFICATE-----" data-i18n-tooltip="tools.certificate-decoder.ui.tip0" placeholder="-----BEGIN CERTIFICATE-----&#10;MIIByzCCAXSgAwIBAgIUTQl...
 -----END CERTIFICATE-----"></textarea>
             
             <div class="flex gap-3">
@@ -112,7 +123,23 @@ function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
 
         <!-- Results Pane -->
         <section id="results-pane" class="hidden space-y-6">
-          
+
+          <div class="card p-6">
+            <h2 class="text-lg font-bold text-surface-900 dark:text-surface-100">Warnings</h2>
+            <div id="warnings-list" class="mt-4 text-sm text-surface-700 dark:text-surface-300"></div>
+          </div>
+
+          <div class="card p-6">
+            <h2 class="text-lg font-bold text-surface-900 dark:text-surface-100">Certificate Chain</h2>
+            <p class="mt-1 text-sm text-surface-600 dark:text-surface-400">Checks order and signatures between the certificates you pasted only. Trust stores and revocation are not checked.</p>
+            <p id="chain-summary" class="mt-4 text-sm font-semibold"></p>
+            <ol id="chain-list" class="mt-4 space-y-3 text-sm text-surface-700 dark:text-surface-300"></ol>
+            <div id="cert-select-wrap" class="hidden mt-4 max-w-md">
+              <label for="cert-select" class="label">Show details for</label>
+              <select id="cert-select" class="input"></select>
+            </div>
+          </div>
+
           <!-- Summary Cards -->
           <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4" id="summary-grid">
             <div class="card p-4">
@@ -139,7 +166,7 @@ function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
             <details class="group p-4" open>
               <summary class="flex items-center justify-between cursor-pointer list-none">
                 <span class="text-lg font-bold text-surface-900 dark:text-surface-100" data-i18n="tools.certificate-decoder.ui.desc7">Subject</span>
-                <span class="material-symbols-rounded text-surface-400 transition-transform group-open:rotate-180" data-i18n="tools.certificate-decoder.ui.desc8">expand_more</span>
+                <span class="material-symbols-rounded text-surface-400 transition-transform group-open:rotate-180" aria-hidden="true" data-icon="expand_more"></span>
               </summary>
               <div id="subject-details" class="mt-4 text-sm text-surface-700 dark:text-surface-300"></div>
             </details>
@@ -147,7 +174,7 @@ function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
             <details class="group p-4" open>
               <summary class="flex items-center justify-between cursor-pointer list-none">
                 <span class="text-lg font-bold text-surface-900 dark:text-surface-100">Issuer</span>
-                <span class="material-symbols-rounded text-surface-400 transition-transform group-open:rotate-180" data-i18n="tools.certificate-decoder.ui.desc8">expand_more</span>
+                <span class="material-symbols-rounded text-surface-400 transition-transform group-open:rotate-180" aria-hidden="true" data-icon="expand_more"></span>
               </summary>
               <div id="issuer-details" class="mt-4 text-sm text-surface-700 dark:text-surface-300"></div>
             </details>
@@ -155,7 +182,7 @@ function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
             <details class="group p-4" open>
               <summary class="flex items-center justify-between cursor-pointer list-none">
                 <span class="text-lg font-bold text-surface-900 dark:text-surface-100" data-i18n="tools.certificate-decoder.ui.desc9">Subject Alternative Names (SANs)</span>
-                <span class="material-symbols-rounded text-surface-400 transition-transform group-open:rotate-180" data-i18n="tools.certificate-decoder.ui.desc8">expand_more</span>
+                <span class="material-symbols-rounded text-surface-400 transition-transform group-open:rotate-180" aria-hidden="true" data-icon="expand_more"></span>
               </summary>
               <div id="sans-list" class="mt-4 text-sm text-surface-700 dark:text-surface-300"></div>
             </details>
@@ -163,7 +190,7 @@ function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
             <details class="group p-4" open>
               <summary class="flex items-center justify-between cursor-pointer list-none">
                 <span class="text-lg font-bold text-surface-900 dark:text-surface-100" data-i18n="tools.certificate-decoder.ui.desc10">Certificate Details</span>
-                <span class="material-symbols-rounded text-surface-400 transition-transform group-open:rotate-180" data-i18n="tools.certificate-decoder.ui.desc8">expand_more</span>
+                <span class="material-symbols-rounded text-surface-400 transition-transform group-open:rotate-180" aria-hidden="true" data-icon="expand_more"></span>
               </summary>
               <div id="details-list" class="mt-4 text-sm text-surface-700 dark:text-surface-300"></div>
             </details>
@@ -171,7 +198,7 @@ function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
             <details class="group p-4" open>
               <summary class="flex items-center justify-between cursor-pointer list-none">
                 <span class="text-lg font-bold text-surface-900 dark:text-surface-100" data-i18n="tools.certificate-decoder.ui.desc11">Extensions</span>
-                <span class="material-symbols-rounded text-surface-400 transition-transform group-open:rotate-180" data-i18n="tools.certificate-decoder.ui.desc8">expand_more</span>
+                <span class="material-symbols-rounded text-surface-400 transition-transform group-open:rotate-180" aria-hidden="true" data-icon="expand_more"></span>
               </summary>
               <div id="extensions-details" class="mt-4 text-sm text-surface-700 dark:text-surface-300"></div>
             </details>
@@ -286,6 +313,29 @@ function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
           extensions: document.getElementById('extensions-details')
         };
 
+        const detectPrivateKey = ${detectPrivateKey.toString()};
+        const extractPemCertificates = ${extractPemCertificates.toString()};
+        const computeCertWarnings = ${computeCertWarnings.toString()};
+        const checkChainOrder = ${checkChainOrder.toString()};
+        const extractCertFields = ${extractCertFields.toString()};
+        const verifyIssuedBy = ${verifyIssuedBy.toString()};
+        const verifySignatureWebCrypto = ${verifySignatureWebCrypto.toString()};
+        const parseCertificatePem = ${parseCertificatePem.toString()};
+        const describeCertExtensions = ${describeCertExtensions.toString()};
+
+        const warningsList = document.getElementById('warnings-list');
+        const chainSummary = document.getElementById('chain-summary');
+        const chainList = document.getElementById('chain-list');
+        const certSelectWrap = document.getElementById('cert-select-wrap');
+        const certSelect = document.getElementById('cert-select');
+        let parsedCerts = [];
+        let chainRun = 0;
+
+        certSelect.addEventListener('change', () => {
+          const entry = parsedCerts[Number(certSelect.value)];
+          if (entry) renderCertificate(entry.cert);
+        });
+
         const statusBaseClasses = 'flex items-center gap-4 rounded-lg border-2 px-4 py-4 transition-all shadow-sm';
            const statusThemes = {
             valid: { classes: 'border-success-200 bg-success-50 text-success-900 dark:border-success-800 dark:bg-success-900/20 dark:text-success-100', icon: '🟢', label: 'Currently Valid' },
@@ -315,14 +365,15 @@ function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
             return;
           }
 
-          if (/BEGIN (?:RSA|EC|DSA)? ?PRIVATE KEY/i.test(rawInput)) {
-            showError('⚠️ Security Warning: This looks like a PRIVATE KEY. This tool only processes PUBLIC certificates. Processing stopped for your security.');
+          const keyHeader = detectPrivateKey(rawInput);
+          if (keyHeader) {
+            showError('Private key detected (' + keyHeader + '). Nothing was parsed: this tool reads certificates only, so remove the key and paste just the certificate(s). If this key was ever shared (chat, ticket, email, or another website), treat it as compromised and rotate it.');
             return;
           }
 
-          const pem = extractFirstCertificate(rawInput);
+          const pems = extractPemCertificates(rawInput);
 
-          if (!pem) {
+          if (!pems.length) {
             if (/^[A-Za-z0-9+/=\\\\s]+$/.test(rawInput) && rawInput.length > 100) {
                showError('This looks like base64 data but is missing the PEM headers. Please ensure it starts with "-----BEGIN CERTIFICATE-----" and ends with "-----END CERTIFICATE-----".');
             } else {
@@ -336,18 +387,112 @@ function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
             return;
           }
 
-          try {
-            const cert = window.forge.pki.certificateFromPem(pem);
-            hideError();
-            renderCertificate(cert);
-          } catch (err) {
-            showError('Failed to parse certificate data. The format might be invalid or corrupted.');
+          const certs = [];
+          for (let i = 0; i < pems.length; i++) {
+            try {
+              certs.push(parseCertificatePem(window.forge, pems[i]));
+            } catch (err) {
+              showError('Certificate ' + (i + 1) + ' of ' + pems.length + ' could not be parsed. The block may be truncated or corrupted; copy it again including the BEGIN and END lines.');
+              return;
+            }
           }
+
+          const now = Date.now();
+          parsedCerts = certs.map((cert) => {
+            const fields = extractCertFields(window.forge, cert);
+            return { cert, fields, warnings: computeCertWarnings(fields, now) };
+          });
+          hideError();
+          renderWarnings(parsedCerts);
+          renderChain(parsedCerts).catch((err) => {
+            chainSummary.textContent = 'Signature check failed: ' + String((err && err.message) || err);
+          });
+          renderCertificate(parsedCerts[0].cert);
         }
 
-        function extractFirstCertificate(text) {
-          const match = text.match(/-----BEGIN CERTIFICATE-----[\\s\\S]+?-----END CERTIFICATE-----/);
-          return match ? match[0] : null;
+        function certLabel(entry, index) {
+          const cn = getAttributeValue(entry.cert.subject?.attributes, 'CN');
+          return '#' + (index + 1) + ' ' + (cn || entry.fields.subject || 'Certificate');
+        }
+
+        function renderWarnings(entries) {
+          const blocks = entries.map((entry, index) => {
+            if (!entry.warnings.length) return '';
+            const items = entry.warnings.map((w) => '<li>' + escapeHtml(w.message) + '</li>').join('');
+            return '<div class="p-4 rounded-lg border border-warning-200 bg-warning-50 text-warning-900 dark:border-warning-800 dark:bg-warning-900/20 dark:text-warning-100">'
+              + '<h3 class="font-semibold">' + escapeHtml(certLabel(entry, index)) + '</h3>'
+              + '<ul class="mt-2 list-disc pl-5 space-y-1">' + items + '</ul></div>';
+          }).filter(Boolean);
+          warningsList.innerHTML = blocks.length
+            ? '<div class="space-y-3">' + blocks.join('') + '</div>'
+            : '<p>No warnings for ' + entries.length + ' certificate(s): dates, SAN, signature algorithm and RSA key size look fine.</p>';
+        }
+
+        // RSA signatures are checked synchronously with forge; ECDSA and Ed25519 go to WebCrypto.
+        async function checkSignature(issuer, cert) {
+          const result = verifyIssuedBy(issuer, cert);
+          if (!result.unsupported) return result;
+          return verifySignatureWebCrypto(window.crypto && window.crypto.subtle, issuer.der, cert.der);
+        }
+
+        async function renderChain(entries) {
+          const run = ++chainRun;
+          const order = checkChainOrder(entries.map((entry) => entry.fields));
+          chainSummary.textContent = 'Checking signatures...';
+          chainList.innerHTML = '';
+          const [signed, selfVerified] = await Promise.all([
+            Promise.all(entries.map((entry, i) => i + 1 < entries.length ? checkSignature(entries[i + 1].cert, entry.cert) : null)),
+            Promise.all(entries.map((entry, i) => order.selfSigned[i] ? checkSignature(entry.cert, entry.cert) : null))
+          ]);
+          if (run !== chainRun) return;
+          const last = entries.length - 1;
+
+          const rows = entries.map((entry, i) => {
+            const lines = [
+              'Subject: ' + entry.fields.subject,
+              'Issuer: ' + entry.fields.issuer
+            ];
+            if (order.selfSigned[i]) {
+              lines.push(selfVerified[i].ok
+                ? 'Self-signed root: signature verifies with its own key.'
+                : selfVerified[i].unsupported
+                  ? 'Self-signed (subject equals issuer). Signature not checked: ' + selfVerified[i].error
+                  : 'Subject equals issuer, but the self-signature does not verify.');
+            }
+            if (i < last) {
+              lines.push(order.links[i].ok
+                ? 'Issuer matches the subject of #' + (i + 2) + '.'
+                : 'Out of order: issuer does not match the subject of #' + (i + 2) + '.');
+              lines.push(signed[i].ok
+                ? 'Signature verified with the public key of #' + (i + 2) + '.'
+                : signed[i].unsupported
+                  ? 'Signature not checked: ' + signed[i].error
+                  : 'Signature NOT verified by #' + (i + 2) + '.' + (signed[i].error ? ' ' + signed[i].error : ''));
+            } else if (!order.selfSigned[i]) {
+              lines.push('Last certificate is not self-signed; its issuer was not included.');
+            }
+            return '<li class="p-3 rounded-lg border border-surface-200 dark:border-surface-800">'
+              + '<p class="font-semibold text-surface-900 dark:text-surface-100">' + escapeHtml(certLabel(entry, i)) + '</p>'
+              + lines.map((line) => '<p class="mt-1 break-words">' + escapeHtml(line) + '</p>').join('')
+              + '</li>';
+          });
+          chainList.innerHTML = rows.join('');
+
+          const allSigned = signed.every((result) => result === null || result.ok);
+          const anyUnchecked = signed.some((result) => result && result.unsupported);
+          if (entries.length === 1) {
+            chainSummary.textContent = order.selfSigned[0] ? '1 certificate (self-signed).' : '1 certificate; paste the intermediates after it to check the chain.';
+          } else if (order.inOrder && allSigned) {
+            chainSummary.textContent = entries.length + ' certificates in order: each one is signed by the next.';
+          } else if (order.inOrder && signed.every((result) => result === null || result.ok || result.unsupported) && anyUnchecked) {
+            chainSummary.textContent = entries.length + ' certificates in order by name; some signatures could not be checked in this browser (see below).';
+          } else {
+            chainSummary.textContent = entries.length + ' certificates: chain is out of order or a signature does not verify. Expected order is leaf first, then each issuer.';
+          }
+
+          certSelect.innerHTML = entries.map((entry, i) => '<option value="' + i + '">' + escapeHtml(certLabel(entry, i)) + '</option>').join('');
+          certSelect.value = '0';
+          certSelectWrap.classList.toggle('hidden', entries.length < 2);
         }
 
         function renderCertificate(cert) {
@@ -356,7 +501,7 @@ function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
           sections.issuer.innerHTML = renderAttributes(cert.issuer?.attributes);
           sections.sans.innerHTML = renderSans(cert.extensions);
           sections.details.innerHTML = renderDetails(cert);
-          sections.extensions.innerHTML = renderExtensions(cert.extensions);
+          sections.extensions.innerHTML = renderExtensions(cert);
           updateValidity(cert.validity);
           resultsPane.classList.remove('hidden');
         }
@@ -434,7 +579,7 @@ function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
                 <span class="badge bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-400 text-xs px-2 py-0.5 rounded">
 \${type}</span>
                 <span class="font-mono text-sm break-all text-surface-900 dark:text-surface-100">
-\${escapeHtml(alt.value || '')}</span>
+\${escapeHtml(alt.type === 7 ? alt.ip : alt.value || '')}</span>
               </li>
             \`;
           }).join('');
@@ -445,8 +590,8 @@ function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
         function renderDetails(cert) {
           const fingerprint = computeFingerprint(cert);
           const serial = formatSerial(cert.serialNumber);
-          const signatureAlgorithm = describeSignature(cert);
-          const publicKey = describePublicKey(cert.publicKey);
+          const signatureAlgorithm = extractCertFields(window.forge, cert).signatureAlgorithm;
+          const publicKey = describePublicKey(cert);
           const table = [
             ['Serial Number', serial],
             ['Version', cert.version !== undefined ? 'v' + (cert.version + 1) : '—'],
@@ -458,21 +603,19 @@ function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
           return renderDefinitionList(table);
         }
 
-        function renderExtensions(extensions = []) {
-          if (!extensions.length) return '<p class="text-surface-500 dark:text-surface-400" data-i18n="tools.certificate-decoder.ui.desc14">No extensions parsed.</p>';
+        function renderExtensions(cert) {
+          if (!(cert.extensions || []).length) return '<p class="text-surface-500 dark:text-surface-400" data-i18n="tools.certificate-decoder.ui.desc14">No extensions parsed.</p>';
 
-          const keyUsage = extensions.find(ext => ext.name === 'keyUsage');
-          const extKeyUsage = extensions.find(ext => ext.name === 'extKeyUsage');
-          const basicConstraints = extensions.find(ext => ext.name === 'basicConstraints');
-          const crl = extensions.find(ext => ext.name === 'cRLDistributionPoints');
-          const aia = extensions.find(ext => ext.name === 'authorityInfoAccess');
+          const ext = describeCertExtensions(window.forge, cert);
+          const basicConstraints = cert.extensions.find(e => e.name === 'basicConstraints');
+          const list = (items, separator) => items === null ? 'Not present' : (items.length ? items.join(separator) : 'None');
 
           const rows = [
-            ['Key Usage', formatList(keyUsage?.usages)],
-            ['Extended Key Usage', formatList(extKeyUsage?.usages)],
+            ['Key Usage', list(ext.keyUsage, ', ') + (ext.keyUsageCritical ? ' (critical)' : '')],
+            ['Extended Key Usage', list(ext.extKeyUsage, ', ')],
             ['Basic Constraints', formatBasicConstraints(basicConstraints)],
-            ['CRL Distribution Points', formatUriList(crl)],
-            ['Authority Information Access', formatAuthorityInfo(aia)]
+            ['CRL Distribution Points', list(ext.crl, '\\n')],
+            ['Authority Information Access', list(ext.aia, '\\n')]
           ];
 
           return renderDefinitionList(rows);
@@ -497,21 +640,17 @@ function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
         // Helper functions from original...
         function describeSanType(type) { const map = { 1: 'RFC822', 2: 'DNS', 6: 'URI', 7: 'IP', 8: 'RID' }; return map[type] || 'Other'; }
 
-        function describeSignature(cert) { if (cert.signatureAlgorithm) return cert.signatureAlgorithm; const oid = cert.siginfo?.algorithmOid; if (oid && window.forge?.pki?.oids?.[oid]) return window.forge.pki.oids[oid]; return oid || 'Unknown'; }
 
-        function describePublicKey(key) { if (!key) return 'Unknown'; if (key.n) return 'RSA (' + key.n.bitLength() + ' bits)'; if (key.curve) return 'EC (' + (key.curve.name || 'elliptic') + ')'; if (key.type) return key.type.toUpperCase(); return 'Unknown'; }
+        function describePublicKey(cert) { const info = cert.keyInfo; if (!info) return 'Unknown'; if (info.bits) return info.type + ' (' + info.bits + ' bits)'; return info.curve ? info.type + ' (' + info.curve + ')' : info.type; }
 
-        function computeFingerprint(cert) { try { const der = window.forge.asn1.toDer(window.forge.pki.certificateToAsn1(cert)).getBytes(); const md = window.forge.md.sha256.create(); md.update(der); return md.digest().toHex().match(/.{1,2}/g).join(':').toUpperCase(); } catch { return 'Unavailable'; } }
+        function computeFingerprint(cert) { try { const md = window.forge.md.sha256.create(); md.update(cert.der); return md.digest().toHex().match(/.{1,2}/g).join(':').toUpperCase(); } catch { return 'Unavailable'; } }
 
         function formatBasicConstraints(ext) { if (!ext) return 'Not present'; const isCa = ext.cA ? 'TRUE' : 'FALSE'; const pathLen = typeof ext.pathLenConstraint === 'number' ? ', Path Length ≤ ' + ext.pathLenConstraint : ''; return 'Is CA: ' + isCa + pathLen; }
 
-        function formatUriList(ext) { if (!ext) return 'None'; const uris = []; if (Array.isArray(ext.distributionPoints)) { ext.distributionPoints.forEach(point => { (point.fullName || []).forEach(name => { if (name.value) uris.push(name.value); }); }); } if (Array.isArray(ext.altNames)) { ext.altNames.forEach(name => { if (name.value) uris.push(name.value); }); } return uris.length ? uris.join('\\n') : 'None'; }
 
-        function formatAuthorityInfo(ext) { if (!ext || !Array.isArray(ext.accessDescriptions)) return 'None'; const entries = ext.accessDescriptions.map(desc => { const method = window.forge.pki.oids[desc.accessMethod] || desc.accessMethod; const location = desc.accessLocation?.value || '—'; return method + ': ' + location; }).join('\\n'); return entries || 'None'; }
 
         function formatSerial(serialNumber) { if (!serialNumber) return '—'; const normalized = String(serialNumber).replace(/[^a-fA-F0-9]/g, ''); return normalized.match(/.{1,2}/g)?.join(':').toUpperCase() || normalized || serialNumber; }
 
-        function formatList(items) { if (!items || !items.length) return 'None'; return items.join(', '); }
 
         function getAttributeValue(attributes = [], shortName) { const match = attributes.find(attr => attr.shortName === shortName); return match?.value || ''; }
 
@@ -534,6 +673,7 @@ function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
         }
         
         function resetUI() {
+           chainRun++;
            document.getElementById('error-banner').classList.add('hidden');
            document.getElementById('results-pane').classList.add('hidden');
            document.getElementById('status-badge').classList.add('hidden');
@@ -544,7 +684,7 @@ function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
   `;
 
   return createPageTemplate({
-    title: translation?.name || "X.509 Certificate Inspector",
+    title: translation?.name || "X.509 Certificate Decoder",
     description:
       translation?.desc ||
       "Inspect PEM certificates client-side. Validate issuers, SANs, and extensions securely.",

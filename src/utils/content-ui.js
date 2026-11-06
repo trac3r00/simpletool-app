@@ -39,14 +39,14 @@ export function createEducationalSection(
           ? t(contentKey, currentLang)
           : section.content;
       return `
-    <details class="group border-l-4 border-primary-500 dark:border-primary-400 bg-white dark:bg-surface-900 rounded-r-lg shadow-sm"${i === 0 ? " open" : ""}>
+    <details class="group border border-border bg-card rounded-lg shadow-sm"${i === 0 ? " open" : ""}>
       <summary class="flex items-center justify-between w-full px-5 py-4 cursor-pointer select-none text-left text-surface-900 dark:text-surface-50 font-semibold text-base hover:bg-surface-50 dark:hover:bg-surface-800/50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500" data-i18n="${headingKey}">
         <span>${headingText}</span>
         <svg class="w-5 h-5 text-surface-500 dark:text-surface-400 transition-transform duration-200 group-open:rotate-180 flex-shrink-0 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
         </svg>
       </summary>
-      <div class="px-5 pb-5 pt-1 text-sm text-surface-700 dark:text-surface-300 leading-relaxed prose dark:prose-invert max-w-none" data-i18n-html="${contentKey}">
+      <div class="px-5 pb-5 pt-1 text-sm text-surface-700 dark:text-surface-300 leading-relaxed prose dark:prose-invert max-w-[60ch]" data-i18n-html="${contentKey}">
         ${contentText}
       </div>
     </details>
@@ -104,7 +104,7 @@ export function createFaqAccordion(items, options = {}) {
     .join("");
 
   return `
-    <div class="space-y-3" role="region" aria-label="Frequently asked questions">
+    <div class="space-y-3">
       ${faqItems}
     </div>
   `;

@@ -278,14 +278,23 @@ describe("createPageTemplate", () => {
     expect(catalog.en.tools["port-reference"]).not.toHaveProperty("js");
   });
 
-  it("emits SoftwareApplication JSON-LD only for registered tool paths", () => {
+  it("emits WebApplication + BreadcrumbList JSON-LD only for registered tool paths", () => {
     const toolHtml = createPageTemplate({
       title: "JSON Formatter",
       description: "Validate JSON",
       content: "<main></main>",
       path: "/json-formatter",
     });
-    expect(toolHtml).toContain('"@type":"SoftwareApplication"');
+    const ld = JSON.parse(
+      /<script type="application\/ld\+json">([^<]*)<\/script>/.exec(toolHtml)[1],
+    );
+    const app = ld["@graph"].find((n) => n["@type"] === "WebApplication");
+    const crumbs = ld["@graph"].find((n) => n["@type"] === "BreadcrumbList");
+    expect(app.offers.price).toBe("0");
+    expect(app.url).toBe("https://simpletool.app/json-formatter");
+    expect(crumbs.itemListElement.map((c) => c.position)).toEqual([1, 2, 3]);
+    expect(crumbs.itemListElement.at(-1).item).toBe(app.url);
+    expect(toolHtml).not.toContain("FAQPage");
 
     const legalHtml = createPageTemplate({
       title: "Terms of Service",
@@ -293,7 +302,39 @@ describe("createPageTemplate", () => {
       content: "<main></main>",
       path: "/terms",
     });
-    expect(legalHtml).not.toContain('"@type":"SoftwareApplication"');
+    expect(legalHtml).not.toContain('"@type":"WebApplication"');
+    expect(legalHtml).not.toContain("data-local-proof");
+  });
+
+  it("uses the search title and description on English tool pages only", () => {
+    const page = (lang) =>
+      createPageTemplate({
+        title: "SAML Decoder",
+        description: "short",
+        content: "<main></main>",
+        path: "/saml-decoder",
+        lang,
+      });
+    const en = page("en");
+    expect(en).toContain("<title>SAML Decoder Online - ");
+    expect(en).not.toContain('<meta name="description" content="short">');
+    expect(page("ko")).toContain("<title>SAML Decoder | SimpleTool</title>");
+  });
+
+  it("shows the live local-processing panel and the no-ads line on secret tools", () => {
+    const html = createPageTemplate({
+      title: "Password Generator",
+      description: "d",
+      content: "<main></main>",
+      path: "/password-generator",
+    });
+    expect(html).toContain("data-local-proof-count");
+    expect(html).toContain("No ads and no third-party trackers");
+    expect(html).toContain("PerformanceObserver");
+  });
+
+  it("does not link the version number to /changelog from every footer", () => {
+    expect(renderPage({})).not.toMatch(/href="\/changelog"[^>]*>v\d/);
   });
 
   it("uses a supplied schema instead of the automatic tool schema", () => {
@@ -305,6 +346,6 @@ describe("createPageTemplate", () => {
     const html = renderPage({ schema });
 
     expect(html).toContain(JSON.stringify(schema));
-    expect(html).not.toContain('"@type":"SoftwareApplication"');
+    expect(html).not.toContain('"@type":"WebApplication"');
   });
 });

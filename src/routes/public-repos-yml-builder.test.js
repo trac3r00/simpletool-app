@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, expect, it } from "vitest";
-import { parsePublicReposInput } from "./public-repos-yml-builder.js";
+import { parsePublicReposInput, splitInventoryLine } from "./public-repos-yml-builder.js";
 import { handleRepoOpsRoutes } from "./repo-ops.js";
 import { TOOLS } from "../utils/tool-registry.js";
 
@@ -189,5 +189,47 @@ describe("public-repos-yml-builder JSON import parsing", () => {
         reason: "invalid_json_repo",
       }),
     ]);
+  });
+});
+
+describe("public repos line parsing", () => {
+  it("flags tokens after the slug that are not key=value metadata", () => {
+    const [entry] = parsePublicReposInput("not a repo!!", { fallbackOwner: "example" });
+    expect(entry.slug).toBe("example/not");
+    expect(entry.ignored).toEqual(["a", "repo!!"]);
+    expect(entry.line).toBe(1);
+
+    const [clean] = parsePublicReposInput("example/api team=platform", {});
+    expect(clean.ignored).toBeUndefined();
+  });
+});
+
+describe("inventory metadata with quoted values", () => {
+  const lines = [
+    'owner/api team=platform notes="two words here" cadence=monthly',
+    "owner/docs notes='single quoted' team=docs",
+    'owner/x notes="unclosed words',
+    'owner/y,team=a,notes="a, b"',
+    "owner/z notes=\"\" team=empty",
+  ];
+
+  it("keeps spaces inside quoted values and drops the quotes", () => {
+    const [api, docs, unclosed, commas, empty] = parsePublicReposInput(lines.join("\n"), {});
+    expect([api.notes, api.stewardship.team, api.automation.cadence]).toEqual(["two words here", "platform", "monthly"]);
+    expect([docs.notes, docs.stewardship.team]).toEqual(["single quoted", "docs"]);
+    expect([unclosed.notes, unclosed.ignored]).toEqual(['"unclosed', ["words"]]);
+    expect([commas.notes, commas.stewardship.team]).toEqual(["a, b", "a"]);
+    expect([empty.notes, empty.stewardship.team]).toEqual(["", "empty"]);
+  });
+
+  it("the inline browser tokenizer matches the exported one", async () => {
+    const response = await handleRepoOpsRoutes(new Request("https://simpletool.app/repo-ops"), new URL("https://simpletool.app/repo-ops"));
+    const html = await response.text();
+    const start = html.indexOf("function splitInventoryLine(raw)");
+    expect(start).toBeGreaterThan(-1);
+    const end = html.indexOf("return parts;", start);
+    const source = html.slice(start, html.indexOf("}", end) + 1);
+    const inline = new Function(source + "; return splitInventoryLine;")();
+    for (const line of lines) expect(inline(line)).toEqual(splitInventoryLine(line));
   });
 });

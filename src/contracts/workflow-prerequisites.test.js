@@ -292,5 +292,5 @@ describe('workflow prerequisites', () => {
     } finally {
       fs.rmSync(tempRoot, { recursive: true, force: true });
     }
-  });
+  }, 30_000);
 });

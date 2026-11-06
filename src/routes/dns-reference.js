@@ -4,6 +4,7 @@ import {
 } from "../utils/common-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
 import { createRelatedToolsSection } from "../utils/content-ui.js";
+import { normalizeDnsTarget } from "../utils/dns-reference-logic.js";
 import {
   DEFAULT_LANGUAGE,
   getToolTranslation,
@@ -101,7 +102,7 @@ export function renderDnsReferenceSection(lang = DEFAULT_LANGUAGE) {
 
                 <div>
                   <h3 class="text-sm font-semibold uppercase tracking-wide text-surface-600 dark:text-surface-400 mb-2" data-i18n="tools.dns-reference.ui.heading2">Example</h3>
-                  <pre class="bg-surface-900 text-surface-50 p-3 rounded-lg text-xs font-mono overflow-x-auto"><code id="detail-example"></code></pre>
+                  <pre class="bg-surface-900 text-surface-50 p-3 rounded-lg text-xs font-mono overflow-x-auto" tabindex="0" aria-label="Record example"><code id="detail-example"></code></pre>
                 </div>
               </div>
 
@@ -151,7 +152,7 @@ export function renderDnsReferenceSection(lang = DEFAULT_LANGUAGE) {
                 <option value="SPF">SPF</option>
                 <option value="DMARC">DMARC</option>
               </select>
-              <p class="text-xs text-surface-500 dark:text-surface-400 mt-1">DKIM/SPF/DMARC use TXT records at specific subdomains.</p>
+              <p class="text-xs text-surface-500 dark:text-surface-400 mt-1" data-i18n="tools.dns-reference.ui.r3_0">DKIM/SPF/DMARC use TXT records at specific subdomains.</p>
             </div>
             <div>
               <label for="cmd-domain" class="label" data-i18n="tools.dns-reference.ui.label1">Domain</label>
@@ -162,6 +163,7 @@ export function renderDnsReferenceSection(lang = DEFAULT_LANGUAGE) {
               <input type="text" id="cmd-server" class="input w-full" placeholder="8.8.8.8" data-i18n-placeholder="tools.dns-reference.ui.placeholder2">
             </div>
           </div>
+          <p id="cmd-error" class="hidden mb-4 text-sm text-error-600 dark:text-error-400" role="alert"></p>
 
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <div>
@@ -169,14 +171,14 @@ export function renderDnsReferenceSection(lang = DEFAULT_LANGUAGE) {
                 <label class="text-sm font-medium text-surface-700 dark:text-surface-300" data-i18n="tools.dns-reference.ui.label3">dig Command</label>
                 <button id="copy-dig" class="btn btn-ghost btn-xs" data-i18n="tools.dns-reference.ui.button0">Copy</button>
               </div>
-              <pre class="bg-surface-900 text-surface-50 p-3 rounded-lg text-xs font-mono overflow-x-auto"><code id="dig-output">dig example.com A</code></pre>
+              <pre class="bg-surface-900 text-surface-50 p-3 rounded-lg text-xs font-mono overflow-x-auto" tabindex="0" aria-label="dig command"><code id="dig-output">dig example.com A</code></pre>
             </div>
             <div>
               <div class="flex items-center justify-between mb-2">
                 <label class="text-sm font-medium text-surface-700 dark:text-surface-300" data-i18n="tools.dns-reference.ui.label4">nslookup Command</label>
                 <button id="copy-nslookup" class="btn btn-ghost btn-xs" data-i18n="tools.dns-reference.ui.button1">Copy</button>
               </div>
-              <pre class="bg-surface-900 text-surface-50 p-3 rounded-lg text-xs font-mono overflow-x-auto"><code id="nslookup-output">nslookup -type=A example.com</code></pre>
+              <pre class="bg-surface-900 text-surface-50 p-3 rounded-lg text-xs font-mono overflow-x-auto" tabindex="0" aria-label="nslookup command"><code id="nslookup-output">nslookup -type=A example.com</code></pre>
             </div>
           </div>
         </div>
@@ -526,10 +528,24 @@ export function renderDnsReferenceSection(lang = DEFAULT_LANGUAGE) {
       });
 
       // Command builder
+      const normalizeDnsTarget = ${normalizeDnsTarget.toString()};
+      const cmdError = document.getElementById('cmd-error');
       function updateCommands() {
         const type = cmdRecordType.value;
-        const domain = cmdDomain.value.trim() || 'example.com';
-        const server = cmdServer.value.trim();
+        const domainResult = normalizeDnsTarget(cmdDomain.value);
+        const serverResult = normalizeDnsTarget(cmdServer.value);
+        const problem = domainResult.error || (serverResult.error && 'DNS server: ' + serverResult.error);
+        cmdError.textContent = problem || '';
+        cmdError.classList.toggle('hidden', !problem);
+        cmdDomain.setAttribute('aria-invalid', domainResult.error ? 'true' : 'false');
+        cmdServer.setAttribute('aria-invalid', serverResult.error ? 'true' : 'false');
+        if (problem) {
+          digOutput.textContent = '';
+          nslookupOutput.textContent = '';
+          return;
+        }
+        const domain = domainResult.name || 'example.com';
+        const server = serverResult.name;
 
         let digCmd;
         let nslookupCmd;

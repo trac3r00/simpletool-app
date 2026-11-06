@@ -62,21 +62,38 @@ export function createPublicRepoEntry(repo, metadata = {}, options = {}) {
   };
 }
 
+export function splitInventoryLine(raw) {
+  // key="two words" and key='two words' keep their spaces; quotes are dropped.
+  const parts = [];
+  const tokenRe = /([A-Za-z][A-Za-z0-9_-]*=)(?:"([^"]*)"|'([^']*)')|[^,\s]+/g;
+  let m;
+  while ((m = tokenRe.exec(raw))) {
+    parts.push(m[1] ? m[1] + (m[2] !== undefined ? m[2] : m[3]) : m[0]);
+  }
+  return parts;
+}
+
 export function parseLinePublicRepo(line, index, options = {}) {
   const raw = coerceText(line)
     .replace(/\s+#.*$/, "")
     .trim();
   if (!raw) return null;
-  const parts = raw.split(/[,\s]+/).filter(Boolean);
+  const parts = splitInventoryLine(raw);
   const repo = normalizeRepoToken(parts[0], options.fallbackOwner || "");
   if (!repo) {
     return { invalid: true, line: index + 1, raw, reason: "invalid_repo" };
   }
-  return createPublicRepoEntry(
+  const entry = createPublicRepoEntry(
     repo,
     parsePublicRepoMetadata(parts.slice(1)),
     options,
   );
+  const ignored = parts.slice(1).filter((part) => !/^[A-Za-z][A-Za-z0-9_-]*=/.test(part));
+  if (ignored.length) {
+    entry.ignored = ignored;
+    entry.line = index + 1;
+  }
+  return entry;
 }
 
 export function publicRepoDetailsFromApiObject(item) {
@@ -212,15 +229,32 @@ const publicReposParserScript = String.raw`
           return null;
         }
 
+        function splitInventoryLine(raw) {
+          // key="two words" and key='two words' keep their spaces; quotes are dropped.
+          const parts = [];
+          const tokenRe = /([A-Za-z][A-Za-z0-9_-]*=)(?:"([^"]*)"|'([^']*)')|[^,\s]+/g;
+          let m;
+          while ((m = tokenRe.exec(raw))) {
+            parts.push(m[1] ? m[1] + (m[2] !== undefined ? m[2] : m[3]) : m[0]);
+          }
+          return parts;
+        }
+
         function parseLinePublicRepo(line, index, options) {
           const raw = coerceText(line).replace(/\s+#.*$/, '').trim();
           if (!raw) return null;
-          const parts = raw.split(/[,\s]+/).filter(Boolean);
+          const parts = splitInventoryLine(raw);
           const repo = normalizeRepoToken(parts[0], options.fallbackOwner || '');
           if (!repo) {
             return { invalid: true, line: index + 1, raw, reason: 'invalid_repo' };
           }
-          return createPublicRepoEntry(repo, parsePublicRepoMetadata(parts.slice(1)), options);
+          const entry = createPublicRepoEntry(repo, parsePublicRepoMetadata(parts.slice(1)), options);
+          const ignored = parts.slice(1).filter((part) => !/^[A-Za-z][A-Za-z0-9_-]*=/.test(part));
+          if (ignored.length) {
+            entry.ignored = ignored;
+            entry.line = index + 1;
+          }
+          return entry;
         }
 
         function publicRepoDetailsFromApiObject(item) {
@@ -344,7 +378,7 @@ export function renderPublicReposYmlBuilderSection(lang = DEFAULT_LANGUAGE) {
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label for="inventory-owner" class="label" data-i18n="tools.public-repos-yml-builder.ui.label1">Owner</label>
-                  <input id="inventory-owner" class="input" value="example" placeholder="example" />
+                  <input id="inventory-owner" class="input" value="example" placeholder="example" data-i18n-placeholder="tools.public-repos-yml-builder.ui.r3_0" />
                 </div>
                 <div>
                   <label for="automation-cadence" class="label" data-i18n="tools.public-repos-yml-builder.ui.label2">Default cadence</label>
@@ -459,7 +493,18 @@ ${publicReposParserScript}
 
         function validateRepos(repos, policies) {
           const findings = [];
+          const seen = new Set();
           repos.forEach((repo) => {
+            if (!repo.invalid) {
+              const key = repo.slug.toLowerCase();
+              if (seen.has(key)) {
+                findings.push({ level: 'medium', repo: repo.slug, text: 'is listed more than once; the inventory will contain duplicate entries.' });
+              }
+              seen.add(key);
+              if (repo.ignored) {
+                findings.push({ level: 'medium', repo: 'line ' + repo.line, text: 'ignored "' + repo.ignored.join(' ') + '" after ' + repo.slug + ' (metadata must be key=value; check this line is really a repository).' });
+              }
+            }
             if (repo.invalid) {
               const message = repo.reason === 'invalid_json'
                 ? tr('invalidJson', 'Could not parse GitHub public repos JSON array.')
@@ -587,11 +632,29 @@ ${publicReposParserScript}
           els.status.textContent = findings.length ? tr('needsReview', 'Needs review') : tr('ready', 'Ready');
         }
 
+        function showEmpty() {
+          els.yaml.value = '';
+          els.actions.value = '';
+          els.copyYaml.disabled = true;
+          els.copyActions.disabled = true;
+          els.findings.innerHTML = '';
+          const p = document.createElement('p');
+          p.className = 'text-surface-500 dark:text-surface-400';
+          p.textContent = 'Paste repositories and build YAML to validate recurring automation policy needs.';
+          els.findings.appendChild(p);
+          updateStats([], [], selectedPolicies());
+          els.status.textContent = tr('waiting', 'Waiting for input');
+        }
+
         function build() {
           const repos = parsePublicReposInput(els.repoInput.value, {
             fallbackOwner: els.owner.value.trim(),
             cadence: els.cadence.value
           });
+          if (repos.length === 0) {
+            showEmpty();
+            return;
+          }
           const policies = selectedPolicies();
           const findings = validateRepos(repos, policies);
           const validRepos = repos.filter((repo) => !repo.invalid);
@@ -609,7 +672,7 @@ ${publicReposParserScript}
             button.textContent = tr('copied', 'Copied');
             setTimeout(() => { button.textContent = old; }, 1200);
           } catch {
-            console.error('Copy failed');
+            els.status.textContent = 'Copy failed: the browser blocked clipboard access.';
           }
         }
 
@@ -620,14 +683,12 @@ ${publicReposParserScript}
         });
         els.clear.addEventListener('click', () => {
           els.repoInput.value = '';
-          els.yaml.value = '';
-          els.actions.value = '';
-          els.copyYaml.disabled = true;
-          els.copyActions.disabled = true;
-          renderFindings([]);
-          updateStats([], [], selectedPolicies());
-          els.status.textContent = tr('waiting', 'Waiting for input');
+          showEmpty();
         });
+        // Owner and cadence feed straight into the YAML, so rebuild on change
+        // rather than leave stale output on screen until Build is pressed.
+        els.owner.addEventListener('change', build);
+        els.cadence.addEventListener('change', build);
         els.copyYaml.addEventListener('click', () => copyFrom(els.yaml, els.copyYaml));
         els.copyActions.addEventListener('click', () => copyFrom(els.actions, els.copyActions));
         ['sha-pinning', 'branch-protection', 'secrets-posture', 'monetization-readiness'].forEach((id) => {

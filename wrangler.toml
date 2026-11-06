@@ -2,6 +2,10 @@ name = "simpletool-app"
 main = "src/worker.js"
 compatibility_date = "2024-10-25"
 compatibility_flags = ["nodejs_compat"]
+# Routes inject tested helpers into inline <script> via fn.toString(). With
+# keep_names on, esbuild rewrites nested functions as __name(fn, "x"), and
+# __name does not exist in the browser, so the injected code throws.
+keep_names = false
 
 [assets]
 directory = "dist"

@@ -12,6 +12,7 @@ import {
   withLanguageQuery,
 } from "../utils/i18n.js";
 import { categoryIcon, toolSymbol } from "./home-icons.js";
+import { matchesToolQuery } from "../utils/tool-search.js";
 
 const FLAGSHIP_IDS = [
   "json-formatter",
@@ -75,7 +76,7 @@ export function renderHomePage({
 
       <div class="relative mt-8 max-w-xl group">
         <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-          <span class="material-symbols-rounded text-[20px] text-surface-400 group-focus-within:text-primary-500" aria-hidden="true">search</span>
+          <span class="material-symbols-rounded text-[20px] text-surface-400 group-focus-within:text-primary-500" aria-hidden="true" data-icon="search"></span>
         </div>
          <input type="text"
                 id="tool-search"
@@ -113,7 +114,7 @@ export function renderHomePage({
     <!-- Favorites Section (populated client-side from localStorage) -->
     <div id="favorites-section" class="hidden space-y-6">
       <div class="flex items-center gap-3">
-        <span class="material-symbols-rounded text-warning-700 dark:text-warning-300" aria-hidden="true">star</span>
+        <span class="material-symbols-rounded text-warning-700 dark:text-warning-300" aria-hidden="true" data-icon="star"></span>
         <h2 class="text-sm font-semibold text-surface-900 dark:text-surface-100 uppercase tracking-wide" data-i18n="home.favorites">${t("home.favorites", currentLang)}</h2>
         <span id="favorites-count" class="text-xs font-medium text-surface-500 bg-surface-100 dark:bg-surface-800 dark:text-surface-400 px-2 py-0.5 rounded-full">0</span>
       </div>
@@ -123,7 +124,7 @@ export function renderHomePage({
     <!-- Recently Used Section (populated client-side from localStorage) -->
     <div id="recent-section" class="hidden space-y-6">
       <div class="flex items-center gap-3">
-        <span class="material-symbols-rounded text-primary-600 dark:text-primary-400" aria-hidden="true">history</span>
+        <span class="material-symbols-rounded text-primary-600 dark:text-primary-400" aria-hidden="true" data-icon="history"></span>
         <h2 class="text-sm font-semibold text-surface-900 dark:text-surface-100 uppercase tracking-wide" data-i18n="home.recentlyUsed">${t("home.recentlyUsed", currentLang)}</h2>
         <span id="recent-count" class="text-xs font-medium text-surface-500 bg-surface-100 dark:bg-surface-800 dark:text-surface-400 px-2 py-0.5 rounded-full">0</span>
       </div>
@@ -132,7 +133,7 @@ export function renderHomePage({
 
     <div id="search-results-container" class="hidden space-y-8">
       <h2 id="search-results-heading" class="text-sm font-semibold text-surface-900 dark:text-surface-100 mb-6 flex items-center gap-2 uppercase tracking-wide">
-        <span class="material-symbols-rounded text-[20px]" aria-hidden="true">search</span>
+        <span class="material-symbols-rounded text-[20px]" aria-hidden="true" data-icon="search"></span>
         <span id="search-results-label" data-i18n="home.searchResultsLabel">${t("home.searchResultsLabel", currentLang)}</span>
         <span id="search-results-count" class="text-xs font-medium text-surface-500 bg-surface-100 dark:bg-surface-800 dark:text-surface-400 px-2 py-0.5 rounded-full"></span>
       </h2>
@@ -146,7 +147,7 @@ export function renderHomePage({
     </div>
 
     <div id="search-empty-state" class="hidden py-16 text-center">
-      <div class="mb-4" aria-hidden="true"><span class="material-symbols-rounded text-5xl text-surface-400">search</span></div>
+      <div class="mb-4" aria-hidden="true"><span class="material-symbols-rounded text-5xl text-surface-400" aria-hidden="true" data-icon="search"></span></div>
       <p class="text-lg text-surface-700 dark:text-surface-300">
         ${t("home.noResults", currentLang)}
         <span id="search-empty-query" class="font-semibold text-surface-900 dark:text-surface-100"></span>
@@ -223,6 +224,8 @@ export function renderHomePage({
         heroSearch.focus();
       }
 
+      var matchesToolQuery = ${matchesToolQuery.toString()};
+
       function filterCards(query) {
         const q = (query || '').toLowerCase().trim();
         const allCards = document.querySelectorAll('[data-tool-id]');
@@ -242,8 +245,7 @@ export function renderHomePage({
           const descEl = card.querySelector('.tool-desc');
           const renderedName = nameEl ? nameEl.textContent.toLowerCase() : '';
           const renderedDesc = descEl ? descEl.textContent.toLowerCase() : '';
-          const matches = name.indexOf(q) >= 0 || desc.indexOf(q) >= 0 || tags.indexOf(q) >= 0
-                       || renderedName.indexOf(q) >= 0 || renderedDesc.indexOf(q) >= 0;
+          const matches = matchesToolQuery([name, desc, tags, renderedName, renderedDesc].join(' '), q);
           card.classList.toggle('hidden', !matches);
           if (matches) visibleCount++;
         });
@@ -359,7 +361,7 @@ export function renderHomePage({
         var badge = tool.badge ? '<span class="px-2 py-0.5 text-xs font-semibold bg-primary-100 text-primary-700 dark:bg-primary-900/40 dark:text-primary-400 rounded-full">' + tool.badge + '</span>' : '';
         var dataAttrs = 'data-tool-id="' + escAttr(tool.id) + '" data-tool-name="' + escAttr(tool.name) + '" data-tool-desc="' + escAttr(tool.description) + '" data-tool-tags="' + escAttr(tool.keywords || '') + '"';
         return '<a href="' + tool.path + '" ' + dataAttrs + ' class="tool-card tool-card-link group flex flex-col p-4">' +
-          '<div class="flex items-start justify-between mb-3"><div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-muted"><span class="material-symbols-rounded text-[20px] text-primary" aria-hidden="true">' + tool.symbol + '</span></div>' + badge + '</div>' +
+          '<div class="flex items-start justify-between mb-3"><div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-muted"><span class="material-symbols-rounded text-[20px] text-primary" aria-hidden="true" data-icon="' + tool.symbol + '"></span></div>' + badge + '</div>' +
           '<h3 class="tool-name mb-1 font-semibold text-surface-900 transition-colors group-hover:text-primary dark:text-surface-50">' + tool.name + '</h3>' +
           '<p class="tool-desc text-sm leading-relaxed text-surface-500 line-clamp-3 dark:text-surface-400">' + tool.description + '</p></a>';
       }
@@ -397,9 +399,9 @@ function renderCategories(categories, lang = DEFAULT_LANGUAGE) {
   return Object.entries(categories)
     .map(
       ([key, section]) => `
-    <section class="category-section">
+    <section class="category-section scroll-mt-20" id="category-${key}">
       <div class="flex items-center gap-3 mb-6">
-        <span class="material-symbols-rounded text-primary" aria-hidden="true">${categoryIcon(key)}</span>
+        <span class="material-symbols-rounded text-primary" aria-hidden="true" data-icon="${categoryIcon(key)}"></span>
         <h2 class="text-sm font-semibold text-surface-900 dark:text-surface-100 uppercase tracking-wide" data-i18n="home.cat.${key}">
           ${stripLeadingEmoji(t("home.cat." + key, lang))}
         </h2>
@@ -435,7 +437,7 @@ function renderToolCard(tool, lang = DEFAULT_LANGUAGE) {
        data-tool-tags="${escapeAttr(tags)}">
       <div class="flex items-start justify-between mb-3">
         <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-muted">
-          <span class="material-symbols-rounded text-[20px] text-primary" aria-hidden="true">${toolSymbol(tool.id)}</span>
+          <span class="material-symbols-rounded text-[20px] text-primary" aria-hidden="true" data-icon="${toolSymbol(tool.id)}"></span>
         </div>
         ${tool.badge ? `<span class="rounded-full bg-primary-100 px-2 py-0.5 text-xs font-semibold text-primary-700 dark:bg-primary-900/40 dark:text-primary-400">${tool.badge}</span>` : ""}
       </div>

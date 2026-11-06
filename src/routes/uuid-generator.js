@@ -16,6 +16,7 @@ import {
   normalizeLanguage,
   resolveRequestLanguage,
 } from "../utils/i18n.js";
+import { createUuidLogic } from "../utils/uuid-generator-logic.js";
 
 export async function handleUUIDGeneratorRoutes(request, url) {
   const { pathname } = url;
@@ -164,7 +165,7 @@ function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
             {
               title: "Pro Tips",
               content:
-                "UUID v4 is the most common choice for general-purpose unique IDs because it relies on high-quality randomness. Use v1 if you need to sort IDs by creation time.",
+                "UUID v4 is the most common choice for general-purpose unique IDs because it relies on high-quality randomness. Use v7 if you need IDs that sort by creation time.",
             },
           ],
           "uuid-generator",
@@ -172,7 +173,7 @@ function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
         )}
       </div>
     </main>
-    ${createRelatedToolsSection(relatedToolsData)}
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">${createRelatedToolsSection(relatedToolsData)}</div>
   `;
 
   const script = `
@@ -200,94 +201,8 @@ function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
         if (quantityValue) quantityValue.textContent = e.target.value;
       });
 
-      // UUID v4 Generator (cryptographically secure)
-      function generateUUIDv4() {
-        const bytes = new Uint8Array(16);
-        crypto.getRandomValues(bytes);
-
-        // Set version (4) and variant bits according to RFC4122
-        bytes[6] = (bytes[6] & 0x0f) | 0x40; // Version 4
-        bytes[8] = (bytes[8] & 0x3f) | 0x80; // Variant 10
-
-        // Convert bytes to hex string with hyphens
-        const hexArray = Array.from(bytes, b => b.toString(16).padStart(2, '0'));
-        return [
-          hexArray.slice(0, 4).join(''),
-          hexArray.slice(4, 6).join(''),
-          hexArray.slice(6, 8).join(''),
-          hexArray.slice(8, 10).join(''),
-          hexArray.slice(10, 16).join('')
-        ].join('-');
-      }
-
-      // UUID v1 Generator (timestamp-based with cryptographically secure random components)
-      function generateUUIDv1() {
-        // 60-bit count of 100ns intervals since the UUID epoch (1582-10-15).
-        // Must be BigInt: the value exceeds Number.MAX_SAFE_INTEGER, and JS
-        // bitwise operators coerce to signed 32-bit, which produced a negative
-        // time_low and a stray leading '-' in the rendered UUID.
-        const timestamp = BigInt(Date.now()) * 10000n + 122192928000000000n;
-
-        const timeLow = (timestamp & 0xFFFFFFFFn).toString(16).padStart(8, '0');
-        const timeMid = ((timestamp >> 32n) & 0xFFFFn).toString(16).padStart(4, '0');
-        const timeHi = (((timestamp >> 48n) & 0x0FFFn) | 0x1000n).toString(16).padStart(4, '0');
-
-        // Use crypto.getRandomValues for clock sequence and node
-        const randomBytes = new Uint8Array(8);
-        crypto.getRandomValues(randomBytes);
-        randomBytes[2] |= 0x01;
-
-        // Clock sequence: 14 bits with variant bits set
-        const clockSeqLow = randomBytes[0];
-        const clockSeqHi = (randomBytes[1] & 0x3f) | 0x80; // Variant 10
-        const clockSeq = ((clockSeqHi << 8) | clockSeqLow).toString(16).padStart(4, '0');
-
-        // Node: 48 bits (6 bytes). RFC 4122 requires the multicast bit when the node is random.
-        const node = Array.from(randomBytes.slice(2, 8), b => b.toString(16).padStart(2, '0')).join('');
-
-        return \`\${timeLow}-\${timeMid}-\${timeHi}-\${clockSeq}-\${node}\`;
-      }
-
-      // NIL UUID
-      function generateUUIDv7() {
-        const bytes = new Uint8Array(16);
-        crypto.getRandomValues(bytes);
-        const ts = BigInt(Date.now());
-        bytes[0] = Number((ts >> 40n) & 0xffn);
-        bytes[1] = Number((ts >> 32n) & 0xffn);
-        bytes[2] = Number((ts >> 24n) & 0xffn);
-        bytes[3] = Number((ts >> 16n) & 0xffn);
-        bytes[4] = Number((ts >> 8n) & 0xffn);
-        bytes[5] = Number(ts & 0xffn);
-        bytes[6] = (bytes[6] & 0x0f) | 0x70;
-        bytes[8] = (bytes[8] & 0x3f) | 0x80;
-        const hex = Array.from(bytes, b => b.toString(16).padStart(2, '0'));
-        return [
-          hex.slice(0, 4).join(''),
-          hex.slice(4, 6).join(''),
-          hex.slice(6, 8).join(''),
-          hex.slice(8, 10).join(''),
-          hex.slice(10, 16).join('')
-        ].join('-');
-      }
-
-      function generateNIL() {
-        return '00000000-0000-0000-0000-000000000000';
-      }
-
-      // Format UUID
-      function formatUUID(uuid, format) {
-        switch (format) {
-          case 'plain':
-            return uuid.replace(/-/g, '');
-          case 'uppercase':
-            return uuid.toUpperCase();
-          case 'braces':
-            return '{' + uuid + '}';
-          default:
-            return uuid;
-        }
-      }
+      const uuidLogic = (${createUuidLogic.toString()})();
+      const fillRandom = (bytes) => crypto.getRandomValues(bytes);
 
       var generateBtn = document.getElementById('generate-btn');
       if (generateBtn) generateBtn.addEventListener('click', () => {
@@ -295,27 +210,10 @@ function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
         const quantity = parseInt(quantitySlider.value);
         const format = document.querySelector('input[name="format"]:checked').value;
 
-        const uuids = [];
-        for (let i = 0; i < quantity; i++) {
-          let uuid;
-
-          if (version === 'v4') {
-            uuid = generateUUIDv4();
-          } else if (version === 'v7') {
-            uuid = generateUUIDv7();
-          } else if (version === 'v1') {
-            uuid = generateUUIDv1();
-          } else if (version === 'nil') {
-            uuid = generateNIL();
-          }
-
-          uuid = formatUUID(uuid, format);
-
-          uuids.push(uuid);
-        }
+        const uuids = uuidLogic.generateBatch(version, quantity, format, Date.now(), fillRandom);
 
         uuidOutput.innerHTML = uuids.map(uuid =>
-          \`<div class="uuid-item text-surface-900 dark:text-surface-100 hover:bg-surface-200 dark:hover:bg-surface-800 p-2 rounded cursor-pointer transition-colors" data-uuid="\${uuid}">\${uuid}</div>\`
+          \`<button type="button" class="uuid-item btn btn-ghost w-full justify-start font-mono font-normal text-surface-900 dark:text-surface-100" data-uuid="\${uuid}" title="Click to copy">\${uuid}</button>\`
         ).join('');
 
         resultDiv.classList.remove('hidden');
@@ -346,7 +244,7 @@ function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
 
       var copyBtn = document.getElementById('copy-btn');
       if (copyBtn) copyBtn.addEventListener('click', async () => {
-        const allUUIDs = uuidOutput ? Array.from(uuidOutput.children).map(div => div.textContent.trim()).join('\\n') : '';
+        const allUUIDs = uuidOutput ? Array.from(uuidOutput.children).map(el => el.dataset.uuid).join('\\n') : '';
         if(window.copyToClipboard) {
             window.copyToClipboard(allUUIDs, copyBtn);
         } else {

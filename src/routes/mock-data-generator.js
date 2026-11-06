@@ -21,6 +21,7 @@ import {
   normalizeLanguage,
   resolveRequestLanguage,
 } from "../utils/i18n.js";
+import { createMockDataLogic } from "../utils/mock-data-logic.js";
 
 export async function handleMockDataRoutes(request, url) {
   const { pathname } = url;
@@ -126,7 +127,7 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
                 </div>
               </div>
               <div class="relative flex-1 min-h-0 bg-surface-900 rounded-lg overflow-hidden group">
-                  <pre id="output-area" class="absolute inset-0 p-4 overflow-auto text-sm text-primary-300 font-mono leading-relaxed selection:bg-primary-500/30" data-i18n="tools.mock-data-generator.ui.desc14">Click "Generate Data" to begin.</pre>
+                  <pre id="output-area" tabindex="0" aria-label="Generated output" class="absolute inset-0 p-4 overflow-auto text-sm text-primary-300 font-mono leading-relaxed selection:bg-primary-500/30" data-i18n="tools.mock-data-generator.ui.desc14">Click "Generate Data" to begin.</pre>
               </div>
             </div>
 
@@ -138,7 +139,7 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
                   <span data-i18n="tools.mock-data-generator.ui.heading3">Preview</span> <span class="text-xs font-normal text-surface-500 ml-1" data-i18n="tools.mock-data-generator.ui.desc13">(First 5 rows)</span>
                 </h2>
               </div>
-              <div class="flex-1 min-h-0 overflow-auto border border-surface-100 dark:border-surface-800 rounded-lg">
+              <div class="flex-1 min-h-0 overflow-auto border border-surface-100 dark:border-surface-800 rounded-lg" tabindex="0" aria-label="Preview of the first 5 rows">
                 <table class="w-full text-sm text-left border-collapse">
                   <thead class="sticky top-0 bg-surface-50 dark:bg-surface-800/80 backdrop-blur z-10">
                     <tr id="preview-head">
@@ -172,7 +173,7 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
             <tr><td><code>url</code></td><td>https://example.com</td></tr>
             <tr><td><code>ip</code></td><td>192.168.1.1</td></tr>
             <tr><td><code>color</code></td><td>#ff6b35</td></tr>
-            <tr><td><code>company</code></td><td>Acme Corp</td></tr>
+            <tr><td><code>company</code></td><td data-i18n="tools.mock-data-generator.ui.r3_0">Acme Corp</td></tr>
           </table>`,
         },
       ])}
@@ -205,10 +206,11 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
         currentLang,
       )}
     </div>
-    ${createRelatedToolsSection(relatedToolsData)}
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">${createRelatedToolsSection(relatedToolsData)}</div>
 
     <script>
       (function() {
+        const mockLogic = (${createMockDataLogic.toString()})();
         const FIELDS = [
           { id: 'fullName', label: 'Full Name' },
           { id: 'email', label: 'Email' },
@@ -243,6 +245,8 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
         let lastDataset = null;
         let lastFields = [];
 
+        tableNameInput.addEventListener('input', writeOutput);
+
         formatSelect.addEventListener('change', () => {
           sqlOptions.classList.toggle('hidden', formatSelect.value !== 'sql');
           // Re-serialise the dataset already on screen so the selector applies
@@ -252,7 +256,8 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
 
         generateBtn.addEventListener('click', () => {
           try {
-            const rows = clampRows(Number(rowCountInput.value) || 0);
+            const rows = mockLogic.clampRows(rowCountInput.value);
+            if (String(rows) !== rowCountInput.value) rowCountInput.value = String(rows);
             const fields = Array.from(fieldGrid.querySelectorAll('input[type="checkbox"]:checked')).map(input => input.value);
             if (!fields.length) throw new Error('Select at least one field.');
             const dataset = buildDataset(rows, fields);
@@ -288,12 +293,6 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
           document.body.removeChild(a);
           URL.revokeObjectURL(url);
         });
-
-        function clampRows(value) {
-          if (value < 10) return 10;
-          if (value > 500) return 500;
-          return value;
-        }
 
         function showError(message) {
           if (!message) {
@@ -337,16 +336,17 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
             const rows = dataset.map(row => fields.map(field => '"' + String(row[field]).replace(/"/g, '""') + '"').join(','));
             return { filename: 'mock-data.csv', content: [header, ...rows].join('\n') };
           }
-          const table = tableNameInput.value.trim() || 'mock_data';
+          const table = mockLogic.sqlIdentifier(tableNameInput.value);
           const columns = fields.map(field => '"' + field + '"');
           const values = dataset.map(row => '(' + fields.map(field => '\'' + String(row[field]).replace(/'/g, "''") + '\'').join(', ') + ')');
           const sql = 'INSERT INTO ' + table + ' (' + columns.join(', ') + ')\nVALUES\n' + values.join(',\n') + ';';
-          return { filename: table + '.sql', content: sql };
+          return { filename: (tableNameInput.value.trim().replace(/[^A-Za-z0-9_.-]+/g, '_') || 'mock_data') + '.sql', content: sql };
         }
 
         function writeOutput() {
           if (!lastDataset) return;
           const payload = renderOutput(lastDataset, lastFields);
+          outputArea.removeAttribute('data-i18n');
           outputArea.textContent = payload.content;
           attachDownload(payload.filename, payload.content);
         }

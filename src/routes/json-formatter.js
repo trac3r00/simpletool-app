@@ -27,6 +27,14 @@ import {
   t,
 } from "../utils/i18n.js";
 import { countKeys } from "../utils/json-stats.js";
+import {
+  preprocessJSONRepairInput,
+  repairJSONInput,
+} from "../utils/json-repair-logic.js";
+import {
+  findImpreciseNumbers,
+  reformatJSON,
+} from "../utils/json-formatter-logic.js";
 
 export async function handleJSONFormatterRoutes(request, url) {
   const { pathname } = url;
@@ -77,6 +85,8 @@ function renderJSONFormatterPage(lang = "en") {
       .filter(Boolean) || [];
 
   const content = `
+    <script src="/vendor/jsonrepair.min.js" integrity="sha384-txNZtQavpmzyVZuGJ+Qefns6TreANP5hTgsyCmMT0m3JLHvhol2i/kZLbG2cx1uI" crossorigin="anonymous"></script>
+
     <main class="tool-page-shell">
       <div class="tool-page-panel">
 
@@ -102,10 +112,13 @@ function renderJSONFormatterPage(lang = "en") {
           <button id="validate-btn" class="btn btn-secondary" data-tooltip="Check JSON syntax without reformatting" data-i18n-tooltip="tools.json-formatter.ui.tip2">
             <span data-i18n="tools.json-formatter.ui.button2">✓ Validate</span>
           </button>
+          <button id="repair-btn" class="btn btn-secondary" data-tooltip="Fix broken JSON such as LLM output, then format it">
+            <span>🔧 Repair</span>
+          </button>
           <button id="clear-btn" class="btn btn-ghost ml-auto" data-tooltip="Clear input and output" data-i18n-tooltip="tools.json-formatter.ui.tip3">
             <span data-i18n="tools.json-formatter.ui.button3">🗑️ Clear</span>
           </button>
-          <button id="copy-btn" class="btn btn-secondary" data-tooltip="Copy formatted output to clipboard" data-i18n-tooltip="tools.json-formatter.ui.tip4">
+          <button id="copy-btn" class="btn btn-secondary" disabled data-tooltip="Copy formatted output to clipboard" data-i18n-tooltip="tools.json-formatter.ui.tip4">
             <span data-i18n="tools.json-formatter.ui.button4">📋 Copy</span>
           </button>
         </div>
@@ -134,6 +147,7 @@ function renderJSONFormatterPage(lang = "en") {
         <div id="status-message" class="hidden mt-4">
            <div id="status-content" class="rounded-lg p-3 text-sm font-medium border"></div>
         </div>
+        <p id="repair-fixes" class="hidden mt-2 text-sm text-surface-600 dark:text-surface-400" aria-live="polite"></p>
 
         <div id="json-stats" class="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4 hidden">
           <div class="p-4 bg-surface-50 dark:bg-surface-950 rounded-lg border border-surface-200 dark:border-surface-800">
@@ -153,6 +167,20 @@ function renderJSONFormatterPage(lang = "en") {
             <div class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.json-formatter.ui.stat10" data-tooltip="Deepest nesting level in the structure" data-i18n-tooltip="tools.json-formatter.ui.tip8">Max Depth</div>
           </div>
         </div>
+
+        <section id="repair-help" class="card mt-6 p-4 sm:p-6" aria-labelledby="repair-help-title">
+          <h2 id="repair-help-title" class="text-lg font-semibold text-surface-900 dark:text-surface-50 mb-2">Repair broken JSON from LLMs</h2>
+          <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">The Repair button first removes a Markdown code fence (<code>\`\`\`json … \`\`\`</code>) and any text before the first <code>{</code> or <code>[</code>, then runs the open-source jsonrepair library in your browser. It fixes:</p>
+          <ul class="list-disc pl-5 text-sm text-surface-600 dark:text-surface-400 space-y-1">
+            <li>Trailing commas: <code>{"a": 1,}</code></li>
+            <li>Single quotes: <code>{'a': 'text'}</code></li>
+            <li>Comments: <code>// line</code> and <code>/* block */</code></li>
+            <li>Unquoted keys: <code>{a: 1}</code></li>
+            <li>Truncated output: <code>{"a": [1, 2</code> is closed as <code>{"a": [1, 2]}</code></li>
+            <li>Python <code>True</code> and <code>None</code>, converted to <code>true</code> and <code>null</code></li>
+          </ul>
+          <p class="text-sm text-surface-600 dark:text-surface-400 mt-2">The result goes to the output panel and your input stays unchanged. Check the repaired data before you use it: a truncated document is closed, but its missing values cannot be recovered. If the text before the JSON itself contains <code>{</code> or <code>[</code>, delete that text first.</p>
+        </section>
 
       </div>
     </main>
@@ -231,6 +259,37 @@ function renderJSONFormatterPage(lang = "en") {
         // The same function powers the unit tests in src/utils/json-stats.test.js.
         ${countKeys.toString()}
 
+        // Inlined from src/utils/json-repair-logic.js (tested in json-repair-logic.test.js).
+        ${preprocessJSONRepairInput.toString()}
+        ${repairJSONInput.toString()}
+
+        // Inlined from src/utils/json-formatter-logic.js (tested in json-formatter-logic.test.js).
+        ${reformatJSON.toString()}
+        ${findImpreciseNumbers.toString()}
+
+        var copyBtn = document.getElementById('copy-btn');
+        function setOutput(text) {
+          outputEl.value = text;
+          outputEditor.setValue(text);
+          document.getElementById('json-empty-state').classList.add('hidden');
+          copyBtn.disabled = !text;
+        }
+
+        // Format/Minify re-indent the original text instead of re-serialising
+        // the parsed value, so numbers beyond 2^53 and duplicate keys survive.
+        function precisionNote(input) {
+          var imprecise = findImpreciseNumbers(input);
+          return imprecise.length
+            ? '. ' + imprecise.length + ' number(s) exceed JavaScript precision and were kept exactly as written (e.g. ' + imprecise[0] + ').'
+            : '';
+        }
+
+        var repairFixesEl = document.getElementById('repair-fixes');
+        function hideRepairFixes() {
+          repairFixesEl.textContent = '';
+          repairFixesEl.classList.add('hidden');
+        }
+
         function updateStats(jsonObj, formatted) {
           var result = countKeys(jsonObj);
           document.getElementById('stat-size').textContent = formatted.length.toLocaleString();
@@ -245,6 +304,7 @@ function renderJSONFormatterPage(lang = "en") {
         function resetOutputPanel() {
           outputEl.value = '';
           outputEditor.clear(true);
+          copyBtn.disabled = true;
           statsEl.classList.add('hidden');
           document.getElementById('json-empty-state').classList.remove('hidden');
         }
@@ -254,12 +314,10 @@ function renderJSONFormatterPage(lang = "en") {
              var input = inputEditor.getValue().trim();
              if (!input) return showStatus(_t('tools.json-formatter.js.status0', 'Please enter JSON'), 'error');
              var parsed = JSON.parse(input);
-             var formatted = JSON.stringify(parsed, null, 2);
-             outputEl.value = formatted;
-             outputEditor.setValue(formatted);
-             document.getElementById('json-empty-state').classList.add('hidden');
+             var formatted = reformatJSON(input, 2);
+             setOutput(formatted);
              updateStats(parsed, formatted);
-             showStatus(_t('tools.json-formatter.js.status1', 'Formatted successfully'), 'success');
+             showStatus(_t('tools.json-formatter.js.status1', 'Formatted successfully') + precisionNote(input), 'success');
            } catch (error) {
              showStatus(error.message, 'error');
              resetOutputPanel();
@@ -271,12 +329,10 @@ function renderJSONFormatterPage(lang = "en") {
              var input = inputEditor.getValue().trim();
              if (!input) return showStatus(_t('tools.json-formatter.js.status0', 'Please enter JSON'), 'error');
              var parsed = JSON.parse(input);
-             var minified = JSON.stringify(parsed);
-             outputEl.value = minified;
-             outputEditor.setValue(minified);
-             document.getElementById('json-empty-state').classList.add('hidden');
+             var minified = reformatJSON(input, 0);
+             setOutput(minified);
              updateStats(parsed, minified);
-             showStatus(_t('tools.json-formatter.js.status2', 'Minified successfully'), 'success');
+             showStatus(_t('tools.json-formatter.js.status2', 'Minified successfully') + precisionNote(input), 'success');
            } catch (error) {
              showStatus(error.message, 'error');
              resetOutputPanel();
@@ -302,11 +358,42 @@ function renderJSONFormatterPage(lang = "en") {
            inputEditor.clear();
            outputEl.value = '';
            outputEditor.clear(true);
+           copyBtn.disabled = true;
            statusEl.classList.add('hidden');
            statsEl.classList.add('hidden');
            statusIndicator.classList.add('hidden');
            document.getElementById('json-empty-state').classList.remove('hidden');
          });
+
+        document.getElementById('repair-btn').addEventListener('click', function() {
+          hideRepairFixes();
+          var raw = inputEditor.getValue();
+          if (!raw.trim()) return showStatus(_t('tools.json-formatter.js.status0', 'Please enter JSON'), 'error');
+          if (typeof JSONRepair === 'undefined' || typeof JSONRepair.jsonrepair !== 'function') {
+            showStatus('The repair library did not load. Reload the page and try again.', 'error');
+            resetOutputPanel();
+            return;
+          }
+          var result = repairJSONInput(raw, JSONRepair.jsonrepair);
+          if (!result.ok) {
+            showStatus('Could not repair JSON: ' + result.error, 'error');
+            resetOutputPanel();
+            return;
+          }
+          var formatted = reformatJSON(result.repaired, 2);
+          setOutput(formatted);
+          updateStats(result.value, formatted);
+          showStatus(result.fixes.length ? 'Repaired and formatted' : 'Already valid JSON; formatted', 'success');
+          repairFixesEl.textContent = result.fixes.length
+            ? 'Fixes applied: ' + result.fixes.join(', ')
+            : 'No fixes needed.';
+          repairFixesEl.classList.remove('hidden');
+        });
+
+        // A stale repair summary must not describe output from another action.
+        ['format-btn', 'minify-btn', 'validate-btn', 'clear-btn'].forEach(function(id) {
+          document.getElementById(id).addEventListener('click', hideRepairFixes);
+        });
 
          document.getElementById('copy-btn').addEventListener('click', function() {
            var text = outputEl.value;

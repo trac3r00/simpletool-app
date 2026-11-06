@@ -16,6 +16,7 @@ import {
   normalizeLanguage,
   resolveRequestLanguage,
 } from "../utils/i18n.js";
+import { TIMESTAMP_CONVERTER_FUNCTIONS } from "../utils/timestamp-converter-logic.js";
 
 export async function handleTimestampConverterRoutes(request, url) {
   const { pathname } = url;
@@ -80,7 +81,7 @@ function renderTimestampConverterPage(lang = DEFAULT_LANGUAGE) {
           <div id="current-unix" class="text-4xl font-mono font-bold text-primary-600 dark:text-primary-400 mb-2">0</div>
           <div id="current-human" class="text-lg text-surface-700 dark:text-surface-300"></div>
           <button id="copy-current" class="mt-4 btn btn-secondary text-sm">
-            <span class="material-symbols-rounded text-sm" aria-hidden="true" data-i18n="tools.timestamp-converter.ui.desc14">content_copy</span> Copy Timestamp
+            <span class="material-symbols-rounded text-sm" aria-hidden="true" data-icon="content_copy"></span> Copy Timestamp
           </button>
         </div>
 
@@ -89,7 +90,7 @@ function renderTimestampConverterPage(lang = DEFAULT_LANGUAGE) {
           <!-- Unix to Human -->
           <div class="space-y-6">
             <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50 flex items-center gap-2">
-              <span class="material-symbols-rounded text-primary-600 dark:text-primary-400">arrow_forward</span>
+              <span class="material-symbols-rounded text-primary-600 dark:text-primary-400" aria-hidden="true" data-icon="arrow_forward"></span>
               Unix to Human
             </h2>
             
@@ -112,24 +113,34 @@ function renderTimestampConverterPage(lang = DEFAULT_LANGUAGE) {
                     <span class="text-sm text-surface-700 dark:text-surface-300" data-i18n="tools.timestamp-converter.ui.desc16" data-tooltip="JavaScript Date.now() format (13 digits)" data-i18n-tooltip="tools.timestamp-converter.ui.tip2">Milliseconds</span>
                   </label>
                 </div>
+                <p id="unix-hint" class="hidden mt-2 text-sm text-warning-700 dark:text-warning-300" aria-live="polite"><span id="unix-hint-text"></span> <button type="button" id="unix-hint-switch" class="inline-block py-1 underline font-semibold"></button></p>
               </div>
 
               <div id="unix-result" class="space-y-3 pt-2">
                 <div class="bg-surface-50 dark:bg-surface-950 p-3 rounded-lg border border-surface-200 dark:border-surface-800">
                   <div class="text-xs text-surface-500 dark:text-surface-400 uppercase mb-1">ISO 8601</div>
-                  <div id="iso-output" class="font-mono text-sm break-all text-surface-900 dark:text-surface-100">-</div>
+                  <div class="flex items-start justify-between gap-2">
+                    <div id="iso-output" class="font-mono text-sm break-all text-surface-900 dark:text-surface-100 min-w-0">-</div>
+                    <button type="button" class="copy-out btn btn-ghost btn-xs shrink-0" data-copy-target="iso-output" aria-label="Copy ISO 8601"><span class="material-symbols-rounded text-sm" aria-hidden="true" data-icon="content_copy"></span></button>
+                  </div>
                 </div>
                 <div class="bg-surface-50 dark:bg-surface-950 p-3 rounded-lg border border-surface-200 dark:border-surface-800">
                   <div class="text-xs text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.timestamp-converter.ui.label0">Local Time</div>
-                  <div id="local-output" class="font-mono text-sm break-all text-surface-900 dark:text-surface-100">-</div>
+                  <div class="flex items-start justify-between gap-2">
+                    <div id="local-output" class="font-mono text-sm break-all text-surface-900 dark:text-surface-100 min-w-0">-</div>
+                    <button type="button" class="copy-out btn btn-ghost btn-xs shrink-0" data-copy-target="local-output" aria-label="Copy local time"><span class="material-symbols-rounded text-sm" aria-hidden="true" data-icon="content_copy"></span></button>
+                  </div>
                 </div>
                 <div class="bg-surface-50 dark:bg-surface-950 p-3 rounded-lg border border-surface-200 dark:border-surface-800">
                   <div class="text-xs text-surface-500 dark:text-surface-400 uppercase mb-1">UTC</div>
-                  <div id="utc-output" class="font-mono text-sm break-all text-surface-900 dark:text-surface-100">-</div>
+                  <div class="flex items-start justify-between gap-2">
+                    <div id="utc-output" class="font-mono text-sm break-all text-surface-900 dark:text-surface-100 min-w-0">-</div>
+                    <button type="button" class="copy-out btn btn-ghost btn-xs shrink-0" data-copy-target="utc-output" aria-label="Copy UTC time"><span class="material-symbols-rounded text-sm" aria-hidden="true" data-icon="content_copy"></span></button>
+                  </div>
                 </div>
                 <div class="bg-surface-50 dark:bg-surface-950 p-3 rounded-lg border border-surface-200 dark:border-surface-800">
-                  <div class="text-xs text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.timestamp-converter.ui.label1">Relative</div>
-                  <div id="relative-output" class="font-mono text-sm break-all text-surface-900 dark:text-surface-100">-</div>
+                  <div class="text-xs text-surface-500 dark:text-surface-400 uppercase mb-1">Relative</div>
+                  <div id="relative-output" class="font-mono text-sm break-all text-surface-900 dark:text-surface-100 min-w-0">-</div>
                 </div>
               </div>
             </div>
@@ -138,7 +149,7 @@ function renderTimestampConverterPage(lang = DEFAULT_LANGUAGE) {
           <!-- Human to Unix -->
           <div class="space-y-6">
             <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50 flex items-center gap-2">
-              <span class="material-symbols-rounded text-primary-600 dark:text-primary-400">arrow_back</span>
+              <span class="material-symbols-rounded text-primary-600 dark:text-primary-400" aria-hidden="true" data-icon="arrow_back"></span>
               Human to Unix
             </h2>
             
@@ -172,11 +183,17 @@ function renderTimestampConverterPage(lang = DEFAULT_LANGUAGE) {
               <div id="human-result" class="grid grid-cols-1 gap-3 pt-2">
                 <div class="bg-surface-50 dark:bg-surface-950 p-3 rounded-lg border border-surface-200 dark:border-surface-800">
                   <div class="text-xs text-surface-500 dark:text-surface-400 uppercase mb-1">Unix (seconds)</div>
-                  <div id="seconds-output" class="font-mono text-lg font-bold text-primary-600 dark:text-primary-400 break-all">-</div>
+                  <div class="flex items-start justify-between gap-2">
+                    <div id="seconds-output" class="font-mono text-lg font-bold text-primary-600 dark:text-primary-400 break-all min-w-0">-</div>
+                    <button type="button" class="copy-out btn btn-ghost btn-xs shrink-0" data-copy-target="seconds-output" aria-label="Copy Unix seconds"><span class="material-symbols-rounded text-sm" aria-hidden="true" data-icon="content_copy"></span></button>
+                  </div>
                 </div>
                 <div class="bg-surface-50 dark:bg-surface-950 p-3 rounded-lg border border-surface-200 dark:border-surface-800">
                   <div class="text-xs text-surface-500 dark:text-surface-400 uppercase mb-1">Unix (milliseconds)</div>
-                  <div id="milliseconds-output" class="font-mono text-sm break-all text-surface-900 dark:text-surface-100">-</div>
+                  <div class="flex items-start justify-between gap-2">
+                    <div id="milliseconds-output" class="font-mono text-sm break-all text-surface-900 dark:text-surface-100 min-w-0">-</div>
+                    <button type="button" class="copy-out btn btn-ghost btn-xs shrink-0" data-copy-target="milliseconds-output" aria-label="Copy Unix milliseconds"><span class="material-symbols-rounded text-sm" aria-hidden="true" data-icon="content_copy"></span></button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -207,7 +224,7 @@ function renderTimestampConverterPage(lang = DEFAULT_LANGUAGE) {
           {
             title: "Pro Tips",
             content:
-              '<ul><li>When working with JavaScript, remember that <code>Date.now()</code> returns milliseconds, while standard Unix timestamps are in seconds. Divide by 1000 to convert.</li><li>Always use the ISO 8601 format (e.g., 2025-01-30T12:00:00Z) for data exchange between systems to ensure maximum compatibility and readability.</li><li>Be aware of the "Year 2038 problem," where 32-bit signed integers will overflow. Modern systems use 64-bit integers, which solves this for the foreseeable future.</li></ul>',
+              '<ul><li>When working with JavaScript, remember that <code>Date.now()</code> returns milliseconds, while standard Unix timestamps are in seconds. Divide by 1000 to convert.</li><li>Always use the ISO 8601 format (e.g., 2025-01-30T12:00:00Z) for data exchange between systems to ensure maximum compatibility and readability.</li><li data-i18n="tools.timestamp-converter.ui.r3_0">Be aware of the "Year 2038 problem," where 32-bit signed integers will overflow. Modern systems use 64-bit integers, which solves this for the foreseeable future.</li></ul>',
           },
         ],
         "timestamp-converter",
@@ -219,6 +236,9 @@ function renderTimestampConverterPage(lang = DEFAULT_LANGUAGE) {
 
   const script = `
     <script>
+      // Inlined from src/utils/timestamp-converter-logic.js (tested in timestamp-converter-logic.test.js).
+      ${TIMESTAMP_CONVERTER_FUNCTIONS.map((fn) => fn.toString()).join("\n")}
+
       const unixInput = document.getElementById('unix-input');
       const dateInput = document.getElementById('date-input');
       const timeInput = document.getElementById('time-input');
@@ -283,93 +303,79 @@ function renderTimestampConverterPage(lang = DEFAULT_LANGUAGE) {
         document.getElementById('relative-output').textContent = '-';
       }
 
+      const unixHint = document.getElementById('unix-hint');
+      function setUnixHint(otherUnit) {
+        if (!otherUnit) { unixHint.classList.add('hidden'); return; }
+        document.getElementById('unix-hint-text').textContent = 'This looks like a timestamp in ' + otherUnit + '.';
+        const sw = document.getElementById('unix-hint-switch');
+        sw.textContent = 'Read it as ' + otherUnit;
+        sw.dataset.unit = otherUnit;
+        unixHint.classList.remove('hidden');
+      }
+      document.getElementById('unix-hint-switch').addEventListener('click', function() {
+        const radio = document.querySelector('input[name="unix-unit"][value="' + this.dataset.unit + '"]');
+        if (radio) { radio.checked = true; convertUnixToHuman(); unixInput.focus(); }
+      });
+
       function convertUnixToHuman() {
-        const input = unixInput.value.trim();
-        if (!input) {
-          clearUnixOutputs('-');
-          return;
-        }
-
         const unit = document.querySelector('input[name="unix-unit"]:checked').value;
-        let timestamp = parseInt(input);
-
-        if (unit === 'seconds') {
-          timestamp *= 1000;
-        }
-
-        const date = new Date(timestamp);
-
-        if (isNaN(date.getTime())) {
-          clearUnixOutputs(_t('tools.timestamp-converter.js.text0', 'Invalid timestamp'));
+        const parsed = parseUnixInput(unixInput.value, unit);
+        if (parsed.empty) {
+          clearUnixOutputs('-');
+          setUnixHint(null);
+          unixInput.removeAttribute('aria-invalid');
           return;
         }
-
+        if (parsed.error) {
+          const msg = _t('tools.timestamp-converter.js.text0', 'Invalid timestamp');
+          clearUnixOutputs(parsed.error === 'range' ? msg + ' (outside the range a date can represent)' : msg + ' (digits only, e.g. 1700000000)');
+          setUnixHint(null);
+          unixInput.setAttribute('aria-invalid', 'true');
+          return;
+        }
+        unixInput.removeAttribute('aria-invalid');
+        setUnixHint(parsed.hint);
+        const date = new Date(parsed.ms);
         document.getElementById('iso-output').textContent = date.toISOString();
         document.getElementById('local-output').textContent = date.toLocaleString();
         document.getElementById('utc-output').textContent = date.toUTCString();
-        document.getElementById('relative-output').textContent = getRelativeTime(timestamp);
+        document.getElementById('relative-output').textContent = getRelativeTime(parsed.ms);
       }
 
-      // Human to Unix conversion with proper timezone support
       function convertHumanToUnix() {
         const dateValue = dateInput.value;
-        const timeValue = timeInput.value || '00:00:00';
-
-        if (!dateValue) return;
-
-        const datetimeString = dateValue + 'T' + timeValue;
-        const timezone = timezoneSelect.value;
-
-        let date;
-        if (timezone === 'local') {
-          date = new Date(datetimeString);
-        } else if (timezone === 'UTC') {
-          date = new Date(datetimeString + 'Z');
-        } else {
-          // For other timezones, interpret as that timezone
-          // Parse the date/time components
-          const [year, month, day] = dateValue.split('-').map(Number);
-          const [hours, minutes, seconds] = timeValue.split(':').map(Number);
-
-          // Create a formatter for the target timezone
-          const formatter = new Intl.DateTimeFormat('en-US', {
-            timeZone: timezone,
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: false
-          });
-
-          // Create a date in UTC that represents the same wall-clock time in the target timezone
-          // We do this by finding the UTC offset for the target timezone at a reference point
-          const testDate = new Date(Date.UTC(year, month - 1, day, hours, minutes, seconds || 0));
-
-          // Get the parts in the target timezone
-          const parts = formatter.formatToParts(testDate);
-          const tzYear = parseInt(parts.find(p => p.type === 'year').value);
-          const tzMonth = parseInt(parts.find(p => p.type === 'month').value);
-          const tzDay = parseInt(parts.find(p => p.type === 'day').value);
-          const tzHour = parseInt(parts.find(p => p.type === 'hour').value);
-          const tzMinute = parseInt(parts.find(p => p.type === 'minute').value);
-          const tzSecond = parseInt(parts.find(p => p.type === 'second').value);
-
-          // Calculate the offset in milliseconds
-          const targetTime = Date.UTC(year, month - 1, day, hours, minutes, seconds || 0);
-          const actualTime = Date.UTC(tzYear, tzMonth - 1, tzDay, tzHour, tzMinute, tzSecond);
-          const offset = actualTime - testDate.getTime();
-
-          // Apply the offset to get the correct UTC time
-          date = new Date(targetTime - offset);
+        const milliseconds = dateValue ? zonedWallTimeToEpoch(dateValue, timeInput.value || '00:00:00', timezoneSelect.value) : NaN;
+        if (isNaN(milliseconds)) {
+          document.getElementById('seconds-output').textContent = '-';
+          document.getElementById('milliseconds-output').textContent = '-';
+          return;
         }
+        // Plain digits: a grouped "1,700,000,000" is not a valid timestamp to paste elsewhere.
+        document.getElementById('seconds-output').textContent = String(Math.floor(milliseconds / 1000));
+        document.getElementById('milliseconds-output').textContent = String(milliseconds);
+      }
 
-        const milliseconds = date.getTime();
-        const seconds = Math.floor(milliseconds / 1000);
+      document.addEventListener('click', function(e) {
+        const btn = e.target.closest('.copy-out');
+        if (!btn) return;
+        const text = document.getElementById(btn.dataset.copyTarget).textContent.trim();
+        if (!text || text === '-') return;
+        copyToClipboard(text, btn);
+      });
 
-        document.getElementById('seconds-output').textContent = seconds.toLocaleString();
-        document.getElementById('milliseconds-output').textContent = milliseconds.toLocaleString();
+      // Offer every IANA zone the browser knows, after the common shortcuts.
+      if (typeof Intl.supportedValuesOf === 'function') {
+        const listed = new Set(Array.from(timezoneSelect.options).map(function(o) { return o.value; }));
+        const group = document.createElement('optgroup');
+        group.label = 'All time zones';
+        Intl.supportedValuesOf('timeZone').forEach(function(zone) {
+          if (listed.has(zone)) return;
+          const opt = document.createElement('option');
+          opt.value = zone;
+          opt.textContent = zone;
+          group.appendChild(opt);
+        });
+        timezoneSelect.appendChild(group);
       }
 
       // Event listeners
@@ -379,6 +385,8 @@ function renderTimestampConverterPage(lang = DEFAULT_LANGUAGE) {
       });
 
       dateInput.addEventListener('change', convertHumanToUnix);
+      dateInput.addEventListener('input', convertHumanToUnix);
+      timeInput.addEventListener('input', convertHumanToUnix);
       timeInput.addEventListener('change', convertHumanToUnix);
       timezoneSelect.addEventListener('change', convertHumanToUnix);
 

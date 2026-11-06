@@ -356,4 +356,36 @@ describe("image converter page", () => {
     );
     expect(formats).toEqual(["png", "jpeg", "webp"]);
   });
+
+  it("drops the previous result when a new file is picked", () => {
+    // Regression: a rejected or replaced file used to leave the old result
+    // downloadable and Convert enabled for the previous image.
+    const page = bootstrap(script);
+    page.selectFile(PNG_FILE);
+    page.byId("convert-btn").click();
+    expect(page.byId("download-btn").disabled).toBe(false);
+
+    page.selectFile({ name: "notes.txt", type: "text/plain", size: 12 });
+
+    expect(page.byId("download-btn").disabled).toBe(true);
+    expect(page.byId("convert-btn").disabled).toBe(true);
+    expect(page.byId("converted-info").classList.contains("hidden")).toBe(true);
+    expect(page.byId("file-info").classList.contains("hidden")).toBe(true);
+    expect(page.byId("file-input").value).toBe("");
+  });
+
+  it("refuses an output larger than a canvas can hold instead of failing to encode", () => {
+    const page = bootstrap(script);
+    page.selectFile(PNG_FILE);
+    page.byId("resize-mode").value = "dimensions";
+    page.byId("maintain-aspect").checked = false;
+    page.byId("custom-width").value = "100000";
+    page.byId("custom-height").value = "80";
+
+    page.byId("convert-btn").click();
+
+    expect(page.encodeCalls).toEqual([]);
+    expect(page.byId("img-error").textContent).toMatch(/100000 x 80px/);
+    expect(page.byId("convert-btn").disabled).toBe(false);
+  });
 });

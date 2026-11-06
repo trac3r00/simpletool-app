@@ -816,13 +816,13 @@ export function renderHTTPStatusReferenceSection(lang = DEFAULT_LANGUAGE) {
             <tr><td><code>2xx</code></td><td>Successful</td><td>The request was received, understood, and accepted.</td></tr>
             <tr><td><code>3xx</code></td><td>Redirection</td><td>The client needs another request or cached representation.</td></tr>
             <tr><td><code>4xx</code></td><td>Client Error</td><td>The request has a client-side problem or cannot be fulfilled.</td></tr>
-            <tr><td><code>5xx</code></td><td>Server Error</td><td>The server failed to fulfill an apparently valid request.</td></tr>
+            <tr><td><code>5xx</code></td><td>Server Error</td><td data-i18n="tools.http-status-reference.ui.r3_0">The server failed to fulfill an apparently valid request.</td></tr>
           </table>`,
         },
         {
           heading: "Safety, idempotency, and caching",
           content: `
-          <p>Status codes do not make a request safe or idempotent by themselves. Safety and idempotency come from the request method and application semantics.</p>
+          <p data-i18n="tools.http-status-reference.ui.r3_1">Status codes do not make a request safe or idempotent by themselves. Safety and idempotency come from the request method and application semantics.</p>
           <p>RFC caching rules allow some responses to be reused by default, including common statuses such as <code>200</code>, <code>203</code>, <code>204</code>, <code>206</code>, <code>300</code>, <code>301</code>, <code>308</code>, <code>404</code>, <code>405</code>, <code>410</code>, <code>414</code>, and <code>501</code>. Other statuses generally need explicit cache headers.</p>`,
         },
       ])}

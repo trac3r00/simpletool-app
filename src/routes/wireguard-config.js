@@ -12,6 +12,12 @@ import {
   infoHint,
 } from "../utils/common-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
+import { expandIPv6, isValidIPv4 } from "../utils/cidr-logic.js";
+import {
+  invalidCidrEntries,
+  isWireGuardKey,
+  parseWireGuardConfig,
+} from "../utils/wireguard-logic.js";
 import { createRelatedToolsSection } from "../utils/content-ui.js";
 import {
   DEFAULT_LANGUAGE,
@@ -19,6 +25,15 @@ import {
   normalizeLanguage,
   resolveRequestLanguage,
 } from "../utils/i18n.js";
+
+// Bundlers may rename module functions (shellQuote -> shellQuote3) and the
+// renamed name is what other injected bodies call, so inject each function
+// under its real name and alias it to the name the page script uses.
+function inlineFunctions(fns) {
+  return Object.entries(fns)
+    .map(([name, fn]) => fn.toString() + (fn.name === name ? "" : "\nvar " + name + " = " + fn.name + ";"))
+    .join("\n");
+}
 
 export async function handleWireguardConfigRoutes(request, url) {
   if (
@@ -99,8 +114,32 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
         return btoa(bin);
       }
 
+      // PublicKey = X25519(PrivateKey, 9): import the private key as PKCS#8 and run
+      // deriveBits against the curve's base point (u = 9), which WebCrypto clamps
+      // exactly as wg pubkey does.
+      var X25519_PKCS8_PREFIX = [0x30, 0x2e, 0x02, 0x01, 0x00, 0x30, 0x05, 0x06, 0x03, 0x2b, 0x65, 0x6e, 0x04, 0x22, 0x04, 0x20];
+      async function deriveWireGuardPublicKey(privateKeyBase64) {
+        var binary;
+        try {
+          binary = atob(String(privateKeyBase64).trim());
+        } catch (e) {
+          throw new Error('PrivateKey is not valid base64.');
+        }
+        if (binary.length !== 32) throw new Error('PrivateKey must decode to 32 bytes (got ' + binary.length + ').');
+        var pkcs8 = new Uint8Array(48);
+        pkcs8.set(X25519_PKCS8_PREFIX);
+        for (var i = 0; i < 32; i++) pkcs8[16 + i] = binary.charCodeAt(i);
+        var basePoint = new Uint8Array(32);
+        basePoint[0] = 9;
+        var priv = await crypto.subtle.importKey('pkcs8', pkcs8, { name: 'X25519' }, false, ['deriveBits']);
+        var pub = await crypto.subtle.importKey('raw', basePoint, { name: 'X25519' }, true, []);
+        var bits = await crypto.subtle.deriveBits({ name: 'X25519', public: pub }, priv, 256);
+        return toBase64(new Uint8Array(bits));
+      }
+
       window.generateWireGuardKeyPair = generateX25519KeyPair;
       window.wireGuardToBase64 = toBase64;
+      window.deriveWireGuardPublicKey = deriveWireGuardPublicKey;
     })();
     </script>
     <script src="/vendor/qrcode.min.js" integrity="sha384-B3w4ObQEXH2D3E8FlVZ+pBTHHTrPFwqbXjfU/95D5ekt8DVTeG+cB6s6nVpsvh3m" crossorigin="anonymous"></script>
@@ -179,7 +218,8 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
               <div class="space-y-4">
                 <div>
                   <label for="iface-private-key" class="label" data-i18n="tools.wireguard-config.ui.label3">PrivateKey</label>
-                  <input type="text" id="iface-private-key" class="input font-mono text-sm" placeholder="Base64-encoded private key..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder2">
+                  <input type="text" id="iface-private-key" class="input font-mono text-sm" placeholder="Base64-encoded private key..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder2" aria-describedby="iface-derived-public">
+                  <p id="iface-derived-public" class="mt-1 text-xs font-mono break-all text-surface-600 dark:text-surface-400" role="status"></p>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
@@ -363,6 +403,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
 
   const script = `
     <script>
+      ${inlineFunctions({ isValidIPv4, expandIPv6, isWireGuardKey, invalidCidrEntries, parseWireGuardConfig })}
       // Peer counter for unique IDs
       let peerCounter = 0;
       const peers = new Map();
@@ -422,11 +463,16 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
       });
 
       function copyToClipboard(text, btn) {
-        if (!text) return;
+        if (!text) {
+          showValidation('error', ['Nothing to copy yet. Generate a key pair or fill in the form first.']);
+          return;
+        }
         navigator.clipboard.writeText(text).then(() => {
           const original = btn.textContent;
           btn.textContent = _t('common.copied', 'Copied!');
           setTimeout(() => btn.textContent = original, 2000);
+        }).catch(() => {
+          showValidation('error', ['Copy failed: the browser blocked clipboard access. Select the text and copy it manually.']);
         });
       }
 
@@ -512,28 +558,28 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
             
             <div class="space-y-4">
               <div>
-                <label class="label" for="peer-public-key-\${peerId}">PublicKey <span class="text-error-500">*</span></label>
-                <input type="text" id="peer-public-key-\${peerId}" class="peer-public-key input font-mono text-sm" placeholder="Base64 public key of peer..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder20" value="\${peerData.publicKey}">
+                <label class="label" for="peer-public-key-\${peerId}">PublicKey <span class="text-error-700 dark:text-error-300">*</span></label>
+                <input type="text" id="peer-public-key-\${peerId}" class="peer-public-key input font-mono text-sm" placeholder="Base64 public key of peer..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder20">
               </div>
 
               <div>
                 <label class="label" for="peer-preshared-key-\${peerId}">PresharedKey <span class="text-xs text-muted-foreground">(optional)</span></label>
-                <input type="text" id="peer-preshared-key-\${peerId}" class="peer-preshared-key input font-mono text-sm" placeholder="Additional symmetric key..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder21" value="\${peerData.presharedKey}">
+                <input type="text" id="peer-preshared-key-\${peerId}" class="peer-preshared-key input font-mono text-sm" placeholder="Additional symmetric key..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder21">
               </div>
 
               <div>
-                <label class="label" for="peer-allowed-ips-\${peerId}">AllowedIPs <span class="text-error-500">*</span></label>
-                <input type="text" id="peer-allowed-ips-\${peerId}" class="peer-allowed-ips input font-mono text-sm" placeholder="0.0.0.0/0 or 10.0.0.1/32..." value="\${peerData.allowedIPs}">
+                <label class="label" for="peer-allowed-ips-\${peerId}">AllowedIPs <span class="text-error-700 dark:text-error-300">*</span></label>
+                <input type="text" id="peer-allowed-ips-\${peerId}" class="peer-allowed-ips input font-mono text-sm" placeholder="0.0.0.0/0 or 10.0.0.1/32...">
               </div>
 
               <div class="grid grid-cols-2 gap-4">
                 <div>
                   <label class="label" for="peer-endpoint-\${peerId}"><span data-i18n="tools.wireguard-config.ui.label10">Endpoint</span></label>
-                  <input type="text" id="peer-endpoint-\${peerId}" class="peer-endpoint input font-mono text-sm" placeholder="host:port..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder22" value="\${peerData.endpoint}">
+                  <input type="text" id="peer-endpoint-\${peerId}" class="peer-endpoint input font-mono text-sm" placeholder="host:port..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder22">
                 </div>
                 <div>
                   <label class="label" for="peer-keepalive-\${peerId}"><span data-i18n="tools.wireguard-config.ui.label11">PersistentKeepalive</span></label>
-                  <input type="number" id="peer-keepalive-\${peerId}" class="peer-keepalive input font-mono text-sm" placeholder="25" min="0" max="65535" value="\${peerData.persistentKeepalive}">
+                  <input type="number" id="peer-keepalive-\${peerId}" class="peer-keepalive input font-mono text-sm" placeholder="25" min="0" max="65535">
                 </div>
               </div>
             </div>
@@ -544,7 +590,16 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
         const range = document.createRange();
         range.selectNode(container);
         const fragment = range.createContextualFragment(peerHTML);
-        container.appendChild(fragment.firstElementChild);
+        const card = fragment.firstElementChild;
+        container.appendChild(card);
+        // Values are assigned as properties, never interpolated into markup:
+        // a parsed .conf is untrusted text.
+        card.querySelector('.peer-public-key').value = peerData.publicKey;
+        card.querySelector('.peer-preshared-key').value = peerData.presharedKey;
+        card.querySelector('.peer-allowed-ips').value = peerData.allowedIPs;
+        card.querySelector('.peer-endpoint').value = peerData.endpoint;
+        card.querySelector('.peer-keepalive').value = peerData.persistentKeepalive;
+        updatePeerNumbers();
 
         // Attach event listeners
         attachPeerListeners(peerId);
@@ -590,10 +645,10 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
       });
 
       // Update config preview
-      function updateConfigPreview() {
+      function updateConfigPreview(extraWarnings) {
         const config = buildConfig();
         document.getElementById('config-preview').textContent = config || '# Configure your interface to see the output...';
-        validateConfig();
+        return validateConfig(extraWarnings);
       }
 
       function buildConfig() {
@@ -640,44 +695,89 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
         input.addEventListener('input', updateConfigPreview);
       });
 
+      const derivedPublicEl = document.getElementById('iface-derived-public');
+      let deriveSeq = 0;
+      async function showDerivedPublicKey() {
+        const value = document.getElementById('iface-private-key').value.trim();
+        const seq = ++deriveSeq;
+        if (!value) {
+          derivedPublicEl.textContent = '';
+          return;
+        }
+        try {
+          const pub = await window.deriveWireGuardPublicKey(value);
+          if (seq !== deriveSeq) return;
+          derivedPublicEl.className = 'mt-1 text-xs font-mono break-all text-surface-700 dark:text-surface-300';
+          derivedPublicEl.textContent = 'PublicKey for this PrivateKey: ' + pub;
+        } catch (err) {
+          if (seq !== deriveSeq) return;
+          derivedPublicEl.className = 'mt-1 text-xs break-all text-error-700 dark:text-error-300';
+          derivedPublicEl.textContent = err && err.name === 'NotSupportedError'
+            ? 'This browser cannot derive X25519 public keys; run wg pubkey instead.'
+            : (err && err.message) || 'Could not derive the public key.';
+        }
+      }
+      document.getElementById('iface-private-key').addEventListener('input', showDerivedPublicKey);
+
       // Config validation
-      function validateConfig() {
+      function validateConfig(extraWarnings) {
         const errors = [];
-        const warnings = [];
+        const warnings = Array.isArray(extraWarnings) ? extraWarnings.slice() : [];
 
         const privateKey = document.getElementById('iface-private-key').value.trim();
         const address = document.getElementById('iface-address').value.trim();
         const listenPort = document.getElementById('iface-listen-port').value.trim();
+        const mtu = document.getElementById('iface-mtu').value.trim();
 
         if (!privateKey) {
           errors.push('PrivateKey is required in [Interface] section');
-        } else if (privateKey.length !== 44) {
-          errors.push('PrivateKey should be 44 characters (Base64 encoded)');
+        } else if (!isWireGuardKey(privateKey)) {
+          errors.push('PrivateKey must be a 32-byte base64 key (44 characters ending in "="), as printed by wg genkey');
         }
 
         if (!address) {
           errors.push('Address is required in [Interface] section');
-        } else if (!address.match(/^(\\d{1,3}\\.){3}\\d{1,3}\\/\\d{1,2}(,\\s*(\\d{1,3}\\.){3}\\d{1,3}\\/\\d{1,2})*$/)) {
-          errors.push('Address should be valid CIDR notation (e.g., 10.0.0.2/24)');
+        } else {
+          const bad = invalidCidrEntries(address);
+          if (bad.length) errors.push('Address has invalid entries: ' + bad.join(', ') + ' (use e.g. 10.0.0.2/24, fd00::2/64)');
         }
 
-        if (listenPort && (listenPort < 1 || listenPort > 65535)) {
+        if (listenPort && !(/^\\d+$/.test(listenPort) && Number(listenPort) >= 1 && Number(listenPort) <= 65535)) {
           errors.push('ListenPort must be between 1 and 65535');
         }
+        if (mtu && !(/^\\d+$/.test(mtu) && Number(mtu) >= 576 && Number(mtu) <= 9000)) {
+          warnings.push('MTU is usually between 1280 and 1500 (default 1420)');
+        }
 
-        peers.forEach((peer, id) => {
+        let index = 0;
+        peers.forEach((peer) => {
+          index++;
+          const label = 'Peer ' + index;
           if (!peer.publicKey) {
-            errors.push(\`Peer \${id}: PublicKey is required\`);
-          } else if (peer.publicKey.length !== 44) {
-            errors.push(\`Peer \${id}: PublicKey should be 44 characters\`);
+            errors.push(label + ': PublicKey is required');
+          } else if (!isWireGuardKey(peer.publicKey)) {
+            errors.push(label + ': PublicKey must be a 32-byte base64 key (44 characters ending in "=")');
+          } else if (peer.publicKey.trim() === document.getElementById('public-key').value.trim()) {
+            warnings.push(label + ": PublicKey is this interface's own public key; use the remote peer's key");
+          }
+          if (peer.presharedKey && !isWireGuardKey(peer.presharedKey)) {
+            errors.push(label + ': PresharedKey must be a 32-byte base64 key, as printed by wg genpsk');
           }
 
           if (!peer.allowedIPs) {
-            errors.push(\`Peer \${id}: AllowedIPs is required\`);
+            errors.push(label + ': AllowedIPs is required');
+          } else {
+            const bad = invalidCidrEntries(peer.allowedIPs);
+            if (bad.length) errors.push(label + ': AllowedIPs has invalid entries: ' + bad.join(', '));
           }
 
-          if (peer.persistentKeepalive && (peer.persistentKeepalive < 0 || peer.persistentKeepalive > 65535)) {
-            errors.push(\`Peer \${id}: PersistentKeepalive must be 0-65535\`);
+          if (peer.endpoint && !/:\\d{1,5}$/.test(peer.endpoint)) {
+            errors.push(label + ': Endpoint needs a port, e.g. vpn.example.com:51820 or [2001:db8::1]:51820');
+          }
+
+          const keepalive = String(peer.persistentKeepalive || '');
+          if (keepalive && !(/^\\d+$/.test(keepalive) && Number(keepalive) <= 65535)) {
+            errors.push(label + ': PersistentKeepalive must be 0-65535');
           }
         });
 
@@ -686,12 +786,13 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
         }
 
         if (errors.length > 0) {
-          showValidation('error', errors);
+          showValidation('error', errors.concat(warnings));
         } else if (warnings.length > 0) {
           showValidation('warning', warnings);
         } else {
           showValidation('success', ['Configuration looks valid!']);
         }
+        return errors;
       }
 
       function showValidation(type, messages) {
@@ -731,20 +832,16 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
 
       // Copy/Download config
       document.getElementById('copy-config-btn').addEventListener('click', () => {
-        const config = buildConfig();
-        if (!config) return;
-        navigator.clipboard.writeText(config).then(() => {
-          const btn = document.getElementById('copy-config-btn');
-          const original = btn.textContent;
-          btn.textContent = _t('common.copied', 'Copied!');
-          setTimeout(() => btn.textContent = original, 2000);
-        });
+        copyToClipboard(buildConfig(), document.getElementById('copy-config-btn'));
       });
 
       document.getElementById('download-config-btn').addEventListener('click', () => {
         const config = buildConfig();
-        if (!config) return;
-        
+        if (!config) {
+          showValidation('error', ['Nothing to download yet. Fill in the [Interface] section first.']);
+          return;
+        }
+
         const blob = new Blob([config], { type: 'text/plain' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -761,8 +858,9 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
       
       document.getElementById('generate-qr-btn').addEventListener('click', async () => {
         const config = buildConfig();
-        if (!config) {
-          if (window.Toast) window.Toast.error(_t('tools.wireguard-config.js.alert0', 'Please generate a configuration first'));
+        const errors = updateConfigPreview();
+        if (!config || errors.length) {
+          showValidation('error', [_t('tools.wireguard-config.js.alert0', 'Please generate a configuration first')].concat(errors));
           return;
         }
 
@@ -795,95 +893,26 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
       // Config Parser
       document.getElementById('parse-config-btn').addEventListener('click', () => {
         const input = document.getElementById('config-parser-input').value.trim();
-        if (!input) return;
-
-        try {
-          parseConfig(input);
-          updateConfigPreview();
-          showValidation('success', ['Configuration parsed successfully!']);
-        } catch (error) {
-          showValidation('error', ['Parse error: ' + error.message]);
+        if (!input) {
+          showValidation('error', ['Paste a .conf file into the parser first.']);
+          return;
         }
-      });
-
-      function parseConfig(configText) {
-        const lines = configText.split('\\n');
-        let currentSection = null;
-        let currentPeer = null;
-        const newPeers = [];
-
-        lines.forEach(line => {
-          const trimmed = line.trim();
-          if (!trimmed || trimmed.startsWith('#')) return;
-
-          if (trimmed === '[Interface]') {
-            currentSection = 'interface';
-            currentPeer = null;
-          } else if (trimmed === '[Peer]') {
-            currentSection = 'peer';
-            currentPeer = { publicKey: '', presharedKey: '', allowedIPs: '', endpoint: '', persistentKeepalive: '' };
-            newPeers.push(currentPeer);
-          } else if (trimmed.includes('=')) {
-            const [key, ...valueParts] = trimmed.split('=');
-            const value = valueParts.join('=').trim();
-            const normalizedKey = key.trim();
-
-            if (currentSection === 'interface') {
-              switch (normalizedKey) {
-                case 'PrivateKey':
-                  document.getElementById('iface-private-key').value = value;
-                  break;
-                case 'Address':
-                  document.getElementById('iface-address').value = value;
-                  break;
-                case 'ListenPort':
-                  document.getElementById('iface-listen-port').value = value;
-                  break;
-                case 'DNS':
-                  document.getElementById('iface-dns').value = value;
-                  break;
-                case 'MTU':
-                  document.getElementById('iface-mtu').value = value;
-                  break;
-                case 'PostUp':
-                  document.getElementById('iface-post-up').value = value;
-                  break;
-                case 'PostDown':
-                  document.getElementById('iface-post-down').value = value;
-                  break;
-              }
-            } else if (currentSection === 'peer' && currentPeer) {
-              switch (normalizedKey) {
-                case 'PublicKey':
-                  currentPeer.publicKey = value;
-                  break;
-                case 'PresharedKey':
-                  currentPeer.presharedKey = value;
-                  break;
-                case 'AllowedIPs':
-                  currentPeer.allowedIPs = value;
-                  break;
-                case 'Endpoint':
-                  currentPeer.endpoint = value;
-                  break;
-                case 'PersistentKeepalive':
-                  currentPeer.persistentKeepalive = value;
-                  break;
-              }
-            }
-          }
+        const parsed = parseWireGuardConfig(input);
+        const hasInterface = Object.values(parsed.iface).some(Boolean);
+        if (!hasInterface && parsed.peers.length === 0) {
+          showValidation('error', ['Parse error: no [Interface] or [Peer] settings found.'].concat(parsed.unknown));
+          return;
+        }
+        const fieldIds = { privateKey: 'iface-private-key', address: 'iface-address', listenPort: 'iface-listen-port', dns: 'iface-dns', mtu: 'iface-mtu', postUp: 'iface-post-up', postDown: 'iface-post-down' };
+        Object.keys(fieldIds).forEach((key) => {
+          document.getElementById(fieldIds[key]).value = parsed.iface[key];
         });
-
-        // Clear and rebuild peers
         peers.clear();
         const peersBox = document.getElementById('peers-container');
         while (peersBox.firstChild) peersBox.removeChild(peersBox.firstChild);
-        newPeers.forEach(peerData => {
-          if (peerData.publicKey || peerData.allowedIPs) {
-            addPeer(peerData);
-          }
-        });
-      }
+        parsed.peers.forEach(peerData => addPeer(peerData));
+        updateConfigPreview(parsed.unknown.map((line) => 'Skipped ' + line));
+      });
 
       // Initialize with one peer
       addPeer();

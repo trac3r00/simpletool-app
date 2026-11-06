@@ -14,6 +14,13 @@ import {
 } from "../utils/content-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
 import {
+  checkSamlTimeWindow,
+  diagnoseSaml,
+  extractSamlPayload,
+  formatSamlKeyFields,
+  prettyPrintSamlXml,
+} from "../utils/saml-logic.js";
+import {
   DEFAULT_LANGUAGE,
   getToolTranslation,
   normalizeLanguage,
@@ -39,7 +46,7 @@ export async function handleSamlDecoderRoutes(request, url) {
 function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
   const currentLang = normalizeLanguage(lang);
   const translation = getToolTranslation("saml-decoder", currentLang);
-  const title = translation?.name || "SAML Inspector";
+  const title = translation?.name || "SAML Decoder";
   const description =
     translation?.desc || "Decode SAML requests and responses.";
 
@@ -91,6 +98,16 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
               <span>Pretty-print XML</span>
             </label>
           </div>
+          <div class="grid gap-3 sm:grid-cols-2">
+            <div>
+              <label for="expected-entity-id" class="label" data-i18n="tools.saml-decoder.ui.r3_6">Expected SP entity ID (optional)</label>
+              <input id="expected-entity-id" type="text" class="input w-full" placeholder="https://sp.example.com" autocomplete="off" spellcheck="false" />
+            </div>
+            <div>
+              <label for="expected-acs-url" class="label" data-i18n="tools.saml-decoder.ui.r3_7">Expected ACS URL (optional)</label>
+              <input id="expected-acs-url" type="text" class="input w-full" placeholder="https://sp.example.com/acs" autocomplete="off" spellcheck="false" />
+            </div>
+          </div>
           <div class="flex flex-wrap gap-3">
              <button id="decode-btn" data-tooltip="Decode and parse the SAML message" data-i18n-tooltip="tools.saml-decoder.ui.tip3" class="btn btn-primary"><span data-i18n="tools.saml-decoder.ui.button7">Decode response</span><span aria-hidden="true">→</span></button>
              <button id="sample-btn" type="button" class="btn btn-secondary"><span data-i18n="tools.saml-decoder.ui.button1">Load sample</span></button>
@@ -122,7 +139,7 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
             <div class="overflow-x-auto">
               <table class="min-w-full text-sm">
                 <tbody id="attribute-body" class="divide-y divide-surface-100 dark:divide-surface-800 text-surface-700 dark:text-surface-200">
-                  <tr><td class="py-2 text-surface-500 dark:text-surface-400">Decoded attributes will appear here.</td></tr>
+                  <tr><td class="py-2 text-surface-500 dark:text-surface-400" data-i18n="tools.saml-decoder.ui.r3_15">Decoded attributes will appear here.</td></tr>
                 </tbody>
               </table>
             </div>
@@ -130,18 +147,30 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
         </div>
       </section>
 
+      <section id="saml-analysis" class="hidden grid gap-6 lg:grid-cols-2">
+        <div class="tool-group p-6">
+          <h2 class="text-lg font-bold text-surface-900 dark:text-white mb-4" data-i18n="tools.saml-decoder.ui.r3_11">Key fields</h2>
+          <dl id="key-fields" class="divide-y divide-surface-100 dark:divide-surface-800 text-sm"></dl>
+        </div>
+        <div class="tool-group p-6">
+          <h2 class="text-lg font-bold text-surface-900 dark:text-white mb-1" data-i18n="tools.saml-decoder.ui.r3_12">Diagnostics</h2>
+          <p class="text-xs text-surface-500 dark:text-surface-400 mb-4" data-i18n="tools.saml-decoder.ui.r3_14">Checked against your clock, plus the expected SP values if you entered them. Signatures are detected, not verified.</p>
+          <ul id="diagnostics-list" class="space-y-3 text-sm"></ul>
+        </div>
+      </section>
+
       <section id="decoded-panel" class="hidden space-y-6">
         <div class="tool-group p-6">
           <div class="tabs-list flex flex-wrap gap-3 border-b border-surface-200 dark:border-surface-800 pb-3 mb-4" role="tablist">
-            <button class="tab-trigger tab-button active" data-panel="xml"><span data-i18n="tools.saml-decoder.ui.button3">Pretty XML</span></button>
-            <button class="tab-trigger tab-button" data-panel="assertion"><span data-i18n="tools.saml-decoder.ui.button4">Assertion details</span></button>
-            <button class="tab-trigger tab-button" data-panel="json"><span data-i18n="tools.saml-decoder.ui.button5">Claims JSON</span></button>
+            <button type="button" role="tab" id="tab-xml" aria-controls="panel-xml" aria-selected="true" class="tab-trigger tab-button active" data-panel="xml"><span data-i18n="tools.saml-decoder.ui.button3">Pretty XML</span></button>
+            <button type="button" role="tab" id="tab-assertion" aria-controls="panel-assertion" aria-selected="false" class="tab-trigger tab-button" data-panel="assertion"><span data-i18n="tools.saml-decoder.ui.button4">Assertion details</span></button>
+            <button type="button" role="tab" id="tab-json" aria-controls="panel-json" aria-selected="false" class="tab-trigger tab-button" data-panel="json"><span data-i18n="tools.saml-decoder.ui.button5">Claims JSON</span></button>
           </div>
-          <div id="panel-xml" class="tab-panel space-y-3">
+          <div id="panel-xml" role="tabpanel" aria-labelledby="tab-xml" class="tab-panel space-y-3">
             <div class="flex justify-end"><button id="copy-xml" class="btn btn-ghost btn-xs"><span data-i18n="tools.saml-decoder.ui.button6">Copy XML</span></button></div>
             <pre id="xml-output" class="bg-surface-900 text-surface-100 p-4 rounded-xl overflow-x-auto text-sm">—</pre>
           </div>
-          <div id="panel-assertion" class="tab-panel hidden space-y-3 text-sm text-surface-700 dark:text-surface-200">
+          <div id="panel-assertion" role="tabpanel" aria-labelledby="tab-assertion" class="tab-panel hidden space-y-3 text-sm text-surface-700 dark:text-surface-200">
             <div class="grid gap-4">
               <div>
                 <p class="font-semibold">Assertion ID</p>
@@ -157,10 +186,29 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
               </div>
             </div>
           </div>
-          <div id="panel-json" class="tab-panel hidden">
+          <div id="panel-json" role="tabpanel" aria-labelledby="tab-json" class="tab-panel hidden">
             <div class="flex justify-end mb-2"><button id="copy-json" class="btn btn-ghost btn-xs"><span data-i18n="tools.saml-decoder.ui.button2">Copy JSON</span></button></div>
             <pre id="json-output" class="bg-surface-900 text-surface-100 p-4 rounded-xl overflow-x-auto text-sm">—</pre>
           </div>
+        </div>
+      </section>
+
+      <section class="tool-group p-6" aria-labelledby="common-saml-errors">
+        <h2 id="common-saml-errors" class="text-lg font-bold text-surface-900 dark:text-white mb-4" data-i18n="tools.saml-decoder.ui.r3_13">Common SAML errors</h2>
+        <div class="overflow-x-auto" tabindex="0" role="region" aria-label="SAML error causes and fixes table">
+          <table class="min-w-full text-sm text-left">
+            <thead class="text-surface-600 dark:text-surface-300">
+              <tr><th scope="col" class="py-2 pr-4" data-i18n="tools.saml-decoder.ui.r3_8">Error</th><th scope="col" class="py-2 pr-4" data-i18n="tools.saml-decoder.ui.r3_9">Cause</th><th scope="col" class="py-2" data-i18n="tools.saml-decoder.ui.r3_10">Fix</th></tr>
+            </thead>
+            <tbody class="divide-y divide-surface-100 dark:divide-surface-800 text-surface-700 dark:text-surface-200 align-top">
+              <tr><td class="py-2 pr-4 font-semibold">Clock skew / NotOnOrAfter</td><td class="py-2 pr-4">The SP's clock is outside the assertion's NotBefore (inclusive) to NotOnOrAfter (exclusive) window, often because the IdP and SP clocks disagree or the response was replayed late.</td><td class="py-2">Sync both servers with NTP, allow a small skew tolerance on the SP, and post the response promptly.</td></tr>
+              <tr><td class="py-2 pr-4 font-semibold">Audience mismatch</td><td class="py-2 pr-4">The Audience in the AudienceRestriction is not the SP's entity ID; the comparison is an exact string match.</td><td class="py-2">Make the IdP's configured audience / SP entity ID identical to the SP metadata, including scheme and trailing slash.</td></tr>
+              <tr><td class="py-2 pr-4 font-semibold">Destination / Recipient mismatch</td><td class="py-2 pr-4">The Response Destination or SubjectConfirmationData Recipient differs from the ACS URL the SP believes it received on, e.g. http vs https behind a proxy.</td><td class="py-2">Register the exact ACS URL at the IdP and configure the SP to know its public URL when behind a load balancer.</td></tr>
+              <tr><td class="py-2 pr-4 font-semibold">InResponseTo mismatch / unsolicited response</td><td class="py-2 pr-4">InResponseTo does not match an AuthnRequest ID the SP issued (lost session, multiple tabs), or is missing because the login was IdP-initiated.</td><td class="py-2">Keep the request ID in a session that survives the cross-site POST (SameSite cookie settings), or enable IdP-initiated login on the SP if intended.</td></tr>
+              <tr><td class="py-2 pr-4 font-semibold">Invalid signature / wrong IdP certificate</td><td class="py-2 pr-4">The SP validates with a different certificate than the IdP signed with (often after certificate rotation), or the XML was modified after signing.</td><td class="py-2">Refresh the IdP metadata or signing certificate on the SP and confirm whether the Response, the Assertion, or both are expected to be signed.</td></tr>
+              <tr><td class="py-2 pr-4 font-semibold">NameID format mismatch</td><td class="py-2 pr-4">The NameID Format sent (e.g. transient) differs from the NameIDPolicy the SP requested or the identifier it maps users by.</td><td class="py-2">Align the NameID format and source attribute on the IdP with what the SP expects (e.g. emailAddress or persistent).</td></tr>
+            </tbody>
+          </table>
         </div>
       </section>
 
@@ -179,7 +227,7 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
             <tr><td><code>Response</code></td><td>IdP → SP with assertions</td></tr>
             <tr><td><code>Assertion</code></td><td>Claims about the user</td></tr>
             <tr><td><code>NameID</code></td><td>User identifier</td></tr>
-            <tr><td><code>Attribute</code></td><td>User properties (email, role)</td></tr>
+            <tr><td><code>Attribute</code></td><td data-i18n="tools.saml-decoder.ui.r3_1">User properties (email, role)</td></tr>
           </table>`,
         },
       ])}
@@ -192,7 +240,7 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
             title: "What is SAML?",
             content: `
             <p>Security Assertion Markup Language (SAML) is an XML-based open standard for exchanging authentication and authorization data between parties, in particular, between an Identity Provider (IdP) and a Service Provider (SP). SAML is the backbone of many Enterprise Single Sign-On (SSO) solutions, allowing users to access multiple applications with a single set of credentials.</p>
-            <p>The most common version is SAML 2.0, which uses security tokens containing "assertions" to pass information about a principal (usually a user) between the IdP and the SP.</p>
+            <p data-i18n="tools.saml-decoder.ui.r3_2">The most common version is SAML 2.0, which uses security tokens containing "assertions" to pass information about a principal (usually a user) between the IdP and the SP.</p>
           `,
           },
           {
@@ -204,7 +252,7 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
               <li><strong>Decode:</strong> Click "Decode response" to parse the message.</li>
               <li><strong>Review Summary:</strong> Check the "Quick summary" for the Issuer, Subject, and validity status.</li>
               <li><strong>Inspect Attributes:</strong> View the decoded user attributes (email, roles, etc.) in the Attributes table.</li>
-              <li><strong>Explore Details:</strong> Use the tabs below to see the Pretty XML, Assertion details, or a JSON representation of the claims.</li>
+              <li><strong data-i18n="tools.saml-decoder.ui.r3_3">Explore Details:</strong> Use the tabs below to see the Pretty XML, Assertion details, or a JSON representation of the claims.</li>
             </ol>
           `,
           },
@@ -215,7 +263,7 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
               <li><strong>SSO Troubleshooting:</strong> Diagnosing why a user cannot log in by checking for expired assertions or audience mismatches.</li>
               <li><strong>Integration Testing:</strong> Verifying that your Identity Provider is sending the correct attributes required by your application.</li>
               <li><strong>Security Auditing:</strong> Inspecting the raw XML to ensure that assertions are properly signed and encrypted where necessary.</li>
-              <li><strong>Development:</strong> Quickly viewing the contents of a SAML message during the development of a Service Provider integration.</li>
+              <li><strong data-i18n="tools.saml-decoder.ui.r3_4">Development:</strong> Quickly viewing the contents of a SAML message during the development of a Service Provider integration.</li>
             </ul>
           `,
           },
@@ -225,7 +273,7 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
             <ul>
               <li><strong>Redirect vs. POST:</strong> SAML messages sent via HTTP-Redirect are usually deflated (compressed) before being Base64 encoded. If your decode fails, try toggling the "Attempt to inflate" checkbox.</li>
               <li><strong>Check the Audience:</strong> Ensure the <code>AudienceRestriction</code> matches your SP's Entity ID. This is a common cause of "Invalid SAML" errors.</li>
-              <li><strong>Clock Skew:</strong> If a response is marked as invalid, check the <code>NotBefore</code> and <code>NotOnOrAfter</code> times. Small differences between the IdP and SP clocks can cause valid assertions to be rejected.</li>
+              <li><strong data-i18n="tools.saml-decoder.ui.r3_5">Clock Skew:</strong> If a response is marked as invalid, check the <code>NotBefore</code> and <code>NotOnOrAfter</code> times. Small differences between the IdP and SP clocks can cause valid assertions to be rejected.</li>
             </ul>
           `,
           },
@@ -257,6 +305,17 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
         var assertionAuthn = document.getElementById('assertion-authn');
         var assertionConditions = document.getElementById('assertion-conditions');
         var jsonOutput = document.getElementById('json-output');
+        var samlAnalysis = document.getElementById('saml-analysis');
+        var keyFieldsEl = document.getElementById('key-fields');
+        var diagnosticsList = document.getElementById('diagnostics-list');
+        var expectedEntityId = document.getElementById('expected-entity-id');
+        var expectedAcsUrl = document.getElementById('expected-acs-url');
+
+        ${checkSamlTimeWindow.toString()}
+        ${formatSamlKeyFields.toString()}
+        ${diagnoseSaml.toString()}
+        ${extractSamlPayload.toString()}
+        ${prettyPrintSamlXml.toString()}
 
         // Minimal sample SAML response (Base64-encoded)
         var SAMPLE_SAML = 'PHNhbWxwOlJlc3BvbnNlIHhtbG5zOnNhbWxwPSJ1cm46b2FzaXM6bmFtZXM6dGM6U0FNTDoyLjA6cHJvdG9jb2wiIHhtbG5zOnNhbWw9InVybjpvYXNpczpuYW1lczp0YzpTQU1MOjIuMDphc3NlcnRpb24iIElEPSJfcmVzcG9uc2UxMjMiIFZlcnNpb249IjIuMCIgSXNzdWVJbnN0YW50PSIyMDI0LTAxLTAxVDEyOjAwOjAwWiIgRGVzdGluYXRpb249Imh0dHBzOi8vc3AuZXhhbXBsZS5jb20vYWNzIj48c2FtbDpJc3N1ZXI+aHR0cHM6Ly9pZHAuZXhhbXBsZS5jb208L3NhbWw6SXNzdWVyPjxzYW1scDpTdGF0dXM+PHNhbWxwOlN0YXR1c0NvZGUgVmFsdWU9InVybjpvYXNpczpuYW1lczp0YzpTQU1MOjIuMDpzdGF0dXM6U3VjY2VzcyIvPjwvc2FtbHA6U3RhdHVzPjxzYW1sOkFzc2VydGlvbiBJRD0iX2Fzc2VydGlvbjQ1NiIgVmVyc2lvbj0iMi4wIiBJc3N1ZUluc3RhbnQ9IjIwMjQtMDEtMDFUMTI6MDA6MDBaIj48c2FtbDpJc3N1ZXI+aHR0cHM6Ly9pZHAuZXhhbXBsZS5jb208L3NhbWw6SXNzdWVyPjxzYW1sOlN1YmplY3Q+PHNhbWw6TmFtZUlEIEZvcm1hdD0idXJuOm9hc2lzOm5hbWVzOnRjOlNBTUw6MS4xOm5hbWVpZC1mb3JtYXQ6ZW1haWxBZGRyZXNzIj51c2VyQGV4YW1wbGUuY29tPC9zYW1sOk5hbWVJRD48L3NhbWw6U3ViamVjdD48c2FtbDpDb25kaXRpb25zIE5vdEJlZm9yZT0iMjAyNC0wMS0wMVQxMTo1NTowMFoiIE5vdE9uT3JBZnRlcj0iMjAyNC0wMS0wMVQxMzowMDowMFoiPjxzYW1sOkF1ZGllbmNlUmVzdHJpY3Rpb24+PHNhbWw6QXVkaWVuY2U+aHR0cHM6Ly9zcC5leGFtcGxlLmNvbTwvc2FtbDpBdWRpZW5jZT48L3NhbWw6QXVkaWVuY2VSZXN0cmljdGlvbj48L3NhbWw6Q29uZGl0aW9ucz48c2FtbDpBdXRoblN0YXRlbWVudCBBdXRobkluc3RhbnQ9IjIwMjQtMDEtMDFUMTI6MDA6MDBaIj48c2FtbDpBdXRobkNvbnRleHQ+PHNhbWw6QXV0aG5Db250ZXh0Q2xhc3NSZWY+dXJuOm9hc2lzOm5hbWVzOnRjOlNBTUw6Mi4wOmFjOmNsYXNzZXM6UGFzc3dvcmQ8L3NhbWw6QXV0aG5Db250ZXh0Q2xhc3NSZWY+PC9zYW1sOkF1dGhuQ29udGV4dD48L3NhbWw6QXV0aG5TdGF0ZW1lbnQ+PHNhbWw6QXR0cmlidXRlU3RhdGVtZW50PjxzYW1sOkF0dHJpYnV0ZSBOYW1lPSJlbWFpbCIgTmFtZUZvcm1hdD0idXJuOm9hc2lzOm5hbWVzOnRjOlNBTUw6Mi4wOmF0dHJuYW1lLWZvcm1hdDpiYXNpYyI+PHNhbWw6QXR0cmlidXRlVmFsdWU+dXNlckBleGFtcGxlLmNvbTwvc2FtbDpBdHRyaWJ1dGVWYWx1ZT48L3NhbWw6QXR0cmlidXRlPjxzYW1sOkF0dHJpYnV0ZSBOYW1lPSJyb2xlcyIgTmFtZUZvcm1hdD0idXJuOm9hc2lzOm5hbWVzOnRjOlNBTUw6Mi4wOmF0dHJuYW1lLWZvcm1hdDpiYXNpYyI+PHNhbWw6QXR0cmlidXRlVmFsdWU+YWRtaW48L3NhbWw6QXR0cmlidXRlVmFsdWU+PHNhbWw6QXR0cmlidXRlVmFsdWU+dXNlcjwvc2FtbDpBdHRyaWJ1dGVWYWx1ZT48L3NhbWw6QXR0cmlidXRlPjwvc2FtbDpBdHRyaWJ1dGVTdGF0ZW1lbnQ+PC9zYW1sOkFzc2VydGlvbj48L3NhbWxwOlJlc3BvbnNlPg==';
@@ -274,6 +333,7 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
           samlError.classList.remove('hidden');
           decodedPanel.classList.add('hidden');
           samlSummaryPane.classList.add('hidden');
+          samlAnalysis.classList.add('hidden');
         }
 
         function hideError() {
@@ -312,12 +372,17 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
         }
 
         function resolveXml(input) {
-          var trimmed = input.trim();
+          var trimmed = extractSamlPayload(input).payload;
 
           // Already raw XML
           if (trimmed.startsWith('<')) return trimmed;
 
-          var bytes = decodeBase64(trimmed);
+          var bytes;
+          try {
+            bytes = decodeBase64(trimmed);
+          } catch (err) {
+            throw new Error('Input is not valid Base64. Paste the SAMLResponse/SAMLRequest value, the whole form field, a redirect URL, or raw XML.');
+          }
           var asString = bytesToString(bytes);
 
           // Decoded bytes might be raw XML already
@@ -335,27 +400,6 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
           if (asString.trimStart().startsWith('<')) return asString;
 
           throw new Error(window._t ? window._t('tools.saml-decoder.js.err0', 'Could not decode input as SAML XML. Try toggling the inflate option.') : 'Could not decode input as SAML XML. Try toggling the inflate option.');
-        }
-
-        function prettyPrintXml(xml) {
-          var indent = 0;
-          var result = '';
-          var lines = xml
-            .replace(/></g, '>\\n<')
-            .split('\\n');
-
-          for (var i = 0; i < lines.length; i++) {
-            var line = lines[i].trim();
-            if (!line) continue;
-            if (line.startsWith('</')) {
-              indent = Math.max(0, indent - 1);
-            }
-            result += '  '.repeat(indent) + line + '\\n';
-            if (!line.startsWith('</') && !line.endsWith('/>') && line.startsWith('<') && !line.includes('</')) {
-              indent++;
-            }
-          }
-          return result.trim();
         }
 
         function getTagText(doc, localName) {
@@ -442,15 +486,14 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
             data.conditionsText = '—';
           }
 
-          // Validity check
-          data.isValid = false;
-          data.isExpired = false;
-          if (data.notOnOrAfter !== '—') {
-            var expiry = new Date(data.notOnOrAfter);
-            var now = new Date();
-            data.isExpired = now > expiry;
-            data.isValid = !data.isExpired;
-          }
+          // Validity check (NotBefore inclusive, NotOnOrAfter exclusive)
+          var windowState = checkSamlTimeWindow(
+            data.notBefore === '—' ? null : data.notBefore,
+            data.notOnOrAfter === '—' ? null : data.notOnOrAfter,
+            Date.now()
+          ).state;
+          data.isExpired = windowState === 'expired';
+          data.isValid = windowState === 'valid';
 
           // Attributes
           data.attributes = [];
@@ -467,6 +510,76 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
           }
 
           return data;
+        }
+
+        function firstText(root, localName) {
+          var els = findElements(root, localName);
+          var text = els.length ? els[0].textContent.trim() : '';
+          return text || null;
+        }
+
+        function firstAttr(root, localName, attrName) {
+          var els = findElements(root, localName);
+          for (var i = 0; i < els.length; i++) {
+            var value = getAttr(els[i], attrName);
+            if (value) return value;
+          }
+          return null;
+        }
+
+        function extractKeyFields(doc) {
+          var root = doc.documentElement;
+          var nameIds = findElements(doc, 'NameID');
+          var audiences = findElements(doc, 'Audience').map(function (el) {
+            return el.textContent.trim();
+          }).filter(Boolean);
+          return {
+            issuer: firstText(doc, 'Issuer'),
+            nameId: nameIds.length ? (nameIds[0].textContent.trim() || null) : null,
+            nameIdFormat: nameIds.length ? getAttr(nameIds[0], 'Format') : null,
+            audiences: audiences,
+            destination: getAttr(root, 'Destination'),
+            recipient: firstAttr(doc, 'SubjectConfirmationData', 'Recipient'),
+            inResponseTo: getAttr(root, 'InResponseTo') || firstAttr(doc, 'SubjectConfirmationData', 'InResponseTo'),
+            issueInstant: getAttr(root, 'IssueInstant') || firstAttr(doc, 'Assertion', 'IssueInstant'),
+            notBefore: firstAttr(doc, 'Conditions', 'NotBefore'),
+            notOnOrAfter: firstAttr(doc, 'Conditions', 'NotOnOrAfter'),
+            statusCode: firstAttr(doc, 'StatusCode', 'Value'),
+            authnContextClassRef: firstText(doc, 'AuthnContextClassRef'),
+            attributeCount: findElements(doc, 'Attribute').length,
+            hasSignature: findElements(doc, 'Signature').length > 0,
+            hasEncryptedAssertion: findElements(doc, 'EncryptedAssertion').length > 0
+          };
+        }
+
+        function renderAnalysis() {
+          if (!window._samlDecoded) return;
+          var fields = window._samlDecoded.fields;
+          keyFieldsEl.innerHTML = formatSamlKeyFields(fields).map(function (row) {
+            var missing = row.value === 'not present';
+            return '<div class="flex flex-wrap justify-between gap-x-4 py-2">' +
+              '<dt class="font-semibold text-surface-700 dark:text-surface-200">' + escapeHtml(row.label) + '</dt>' +
+              '<dd class="font-mono text-xs break-all ' + (missing ? 'text-surface-500 dark:text-surface-400 italic' : 'text-surface-700 dark:text-surface-200') + '">' + escapeHtml(row.value) + '</dd>' +
+              '</div>';
+          }).join('');
+
+          var findings = diagnoseSaml(fields, Date.now(), {
+            entityId: expectedEntityId.value,
+            acsUrl: expectedAcsUrl.value
+          });
+          if (!findings.length) {
+            diagnosticsList.innerHTML = '<li class="rounded-lg border border-success-200 dark:border-success-800 bg-success-50 dark:bg-success-900/30 text-success-700 dark:text-success-200 px-4 py-3">No problems detected by these checks.</li>';
+            return;
+          }
+          diagnosticsList.innerHTML = findings.map(function (f) {
+            var tone = f.severity === 'error'
+              ? 'border-error-200 dark:border-error-800 bg-error-50 dark:bg-error-900/30 text-error-700 dark:text-error-200'
+              : 'border-warning-200 dark:border-warning-800 bg-warning-50 dark:bg-warning-900/30 text-warning-700 dark:text-warning-200';
+            return '<li class="rounded-lg border px-4 py-3 ' + tone + '" data-diagnostic="' + escapeHtml(f.id) + '">' +
+              '<p class="font-semibold">' + escapeHtml(f.title) + '</p>' +
+              '<p class="mt-1 break-words">' + escapeHtml(f.detail) + '</p>' +
+              '</li>';
+          }).join('');
         }
 
         function buildClaimsJson(samlData) {
@@ -527,7 +640,7 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
         }
 
         function renderTabs(xmlString, samlData) {
-          var displayXml = prettyToggle.checked ? prettyPrintXml(xmlString) : xmlString;
+          var displayXml = prettyToggle.checked ? prettyPrintSamlXml(xmlString) : xmlString;
           xmlOutput.textContent = displayXml;
 
           assertionId.textContent = samlData.assertionId;
@@ -540,6 +653,7 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
         function switchTab(panel) {
           document.querySelectorAll('.tab-button').forEach(function (btn) {
             btn.classList.toggle('active', btn.dataset.panel === panel);
+            btn.setAttribute('aria-selected', btn.dataset.panel === panel ? 'true' : 'false');
           });
           document.querySelectorAll('.tab-panel').forEach(function (p) {
             p.classList.toggle('hidden', p.id !== 'panel-' + panel);
@@ -579,8 +693,20 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
           decodedPanel.classList.remove('hidden');
           samlSummaryPane.classList.remove('hidden');
           switchTab('xml');
-          window._samlDecoded = { xml: xmlString, data: samlData };
+          window._samlDecoded = { xml: xmlString, data: samlData, fields: extractKeyFields(doc) };
+          renderAnalysis();
+          samlAnalysis.classList.remove('hidden');
         }
+
+        expectedEntityId.addEventListener('input', renderAnalysis);
+        prettyToggle.addEventListener('change', function () {
+          if (!window._samlDecoded) return;
+          xmlOutput.textContent = prettyToggle.checked ? prettyPrintSamlXml(window._samlDecoded.xml) : window._samlDecoded.xml;
+        });
+        inflateToggle.addEventListener('change', function () {
+          if (samlInput.value.trim()) handleDecode();
+        });
+        expectedAcsUrl.addEventListener('input', renderAnalysis);
 
         // Tab switching
         document.querySelectorAll('.tab-button').forEach(function (btn) {
@@ -626,6 +752,9 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
           hideError();
           decodedPanel.classList.add('hidden');
           samlSummaryPane.classList.add('hidden');
+          samlAnalysis.classList.add('hidden');
+          keyFieldsEl.innerHTML = '';
+          diagnosticsList.innerHTML = '';
           validityBadge.textContent = window._t ? window._t('tools.saml-decoder.ui.desc15', 'Awaiting input') : 'Awaiting input';
           validityBadge.className = 'text-xs font-semibold px-3 py-1 rounded-full bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-300';
           document.getElementById('summary-issuer').textContent = '—';

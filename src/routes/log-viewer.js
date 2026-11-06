@@ -7,6 +7,11 @@ import {
   normalizeLanguage,
   resolveRequestLanguage,
 } from "../utils/i18n.js";
+import { createLogViewerLogic } from "../utils/log-viewer-logic.js";
+import {
+  createRegexWorkerClient,
+  REGEX_TIMEOUT_MESSAGE,
+} from "../utils/regex-worker-client.js";
 
 export async function handleLogViewerRoutes(request, url) {
   if (url.pathname !== "/log-viewer" && url.pathname !== "/log-viewer/")
@@ -50,8 +55,8 @@ export async function handleLogViewerRoutes(request, url) {
           <!-- File Input -->
           <div class="md:col-span-4">
             <label for="file-input" class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1"><span data-i18n="tools.log-viewer.ui.label0">Log File</span></label>
-            <input type="file" id="file-input" accept=".log,.txt,.json"
-              class="block w-full text-sm text-surface-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100 dark:file:bg-primary-900/30 dark:file:text-primary-400 transition-colors cursor-pointer">
+            <input type="file" id="file-input" accept=".log,.txt,.json,.jsonl,.ndjson,.out,.csv,text/plain"
+              class="block w-full text-sm text-surface-700 dark:text-surface-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100 dark:file:bg-primary-900/30 dark:file:text-primary-400 transition-colors cursor-pointer">
           </div>
 
           <!-- Search -->
@@ -64,7 +69,7 @@ export async function handleLogViewerRoutes(request, url) {
                 </svg>
               </div>
               <input type="text" id="search-input" placeholder="Search logs..." data-i18n-placeholder="tools.log-viewer.ui.placeholder2" data-tooltip="Filter logs by text — enable regex toggle for pattern matching" data-i18n-tooltip="tools.log-viewer.ui.tip0" data-i18n-placeholder="tools.log-viewer.ui.placeholder2"
-                class="input pl-10 pr-12">
+                class="input pl-10 pr-12" aria-describedby="filter-error">
               <div class="absolute inset-y-0 right-0 flex items-center">
                 <label for="regex-toggle" class="flex items-center px-2 cursor-pointer" title="Use Regex" data-i18n-title="tools.log-viewer.ui.title3">
                   <input type="checkbox" id="regex-toggle" class="sr-only peer" aria-label="Use Regex" data-i18n-aria="tools.log-viewer.ui.title3" data-tooltip="Enable regex pattern matching in search" data-i18n-tooltip="tools.log-viewer.ui.tip1">
@@ -75,13 +80,15 @@ export async function handleLogViewerRoutes(request, url) {
           </div>
 
           <!-- Level Filters -->
-          <div class="md:col-span-3 flex flex-wrap gap-2 min-w-0">
-             <button id="toggle-info" data-tooltip="Show/hide INFO level messages" data-i18n-tooltip="tools.log-viewer.ui.tip2" class="filter-chip bg-info-100 text-info-800 dark:bg-info-900 dark:text-info-200" data-active="true">INFO</button>
-             <button id="toggle-warn" class="filter-chip bg-warning-100 text-warning-800 dark:bg-warning-900 dark:text-warning-200" data-active="true">WARN</button>
-             <button id="toggle-error" class="filter-chip bg-error-100 text-error-800 dark:bg-error-900 dark:text-error-200" data-active="true">ERR</button>
-            <button id="toggle-other" class="filter-chip bg-surface-100 text-surface-800 dark:bg-surface-800 dark:text-surface-200" data-active="true">OTHER</button>
+          <div class="md:col-span-3 flex flex-wrap gap-2 min-w-0" role="group" aria-label="Show log levels">
+             <button type="button" id="toggle-info" data-tooltip="Show/hide INFO level messages" data-i18n-tooltip="tools.log-viewer.ui.tip2" class="filter-chip bg-info-100 text-info-800 dark:bg-info-900 dark:text-info-200" aria-pressed="true">INFO</button>
+             <button type="button" id="toggle-warn" class="filter-chip bg-warning-100 text-warning-800 dark:bg-warning-900 dark:text-warning-200" aria-pressed="true">WARN</button>
+             <button type="button" id="toggle-error" class="filter-chip bg-error-100 text-error-800 dark:bg-error-900 dark:text-error-200" aria-pressed="true">ERR</button>
+             <button type="button" id="toggle-debug" class="filter-chip bg-surface-100 text-surface-800 dark:bg-surface-800 dark:text-surface-200" aria-pressed="true">DEBUG</button>
+            <button type="button" id="toggle-other" class="filter-chip bg-surface-100 text-surface-800 dark:bg-surface-800 dark:text-surface-200" aria-pressed="true">OTHER</button>
           </div>
         </div>
+        <p id="filter-error" role="alert" class="hidden mt-2 text-sm text-error-700 dark:text-error-300"></p>
         
          <!-- Stats -->
          <div class="mt-4 flex items-center justify-between text-xs text-surface-500 dark:text-surface-400 border-t border-surface-100 dark:border-surface-800 pt-3">
@@ -95,8 +102,8 @@ export async function handleLogViewerRoutes(request, url) {
 
       <!-- Visualization -->
       <div id="viz-container" class="tool-group hidden mb-4 p-4">
-        <h2 class="text-xs font-semibold text-surface-500 uppercase tracking-wider mb-2" data-i18n="tools.log-viewer.ui.stat4">Log Density</h2>
-        <canvas id="density-canvas" class="w-full h-16 cursor-crosshair rounded bg-surface-50 dark:bg-surface-950"></canvas>
+        <h2 class="text-xs font-semibold text-surface-500 dark:text-surface-400 uppercase tracking-wider mb-2" data-i18n="tools.log-viewer.ui.stat4">Log Density</h2>
+        <canvas id="density-canvas" role="img" aria-label="Log density by position in the file; click to jump there" class="w-full h-16 cursor-crosshair rounded bg-surface-50 dark:bg-surface-950"></canvas>
       </div>
 
       <!-- Log Viewer -->
@@ -110,7 +117,7 @@ export async function handleLogViewerRoutes(request, url) {
         </div>
 
         <!-- Virtual Scroll Container -->
-        <div id="log-container" class="flex-1 overflow-y-auto relative custom-scrollbar bg-[#1e1e1e] text-surface-300 font-mono text-sm leading-6">
+        <div id="log-container" tabindex="0" role="region" aria-label="Log lines (drop a file here to open it)" class="flex-1 overflow-y-auto relative custom-scrollbar bg-[#1e1e1e] text-surface-300 font-mono text-sm leading-6">
           <div id="log-phantom" class="absolute top-0 left-0 w-full h-px"></div>
           <div id="log-content" class="absolute top-0 left-0 w-full">
             <!-- Rows injected here -->
@@ -178,96 +185,114 @@ export async function handleLogViewerRoutes(request, url) {
         const btnWarn = document.getElementById('toggle-warn');
         const btnError = document.getElementById('toggle-error');
         const btnOther = document.getElementById('toggle-other');
+        const btnDebug = document.getElementById('toggle-debug');
 
-        // Workers/Parsing
-        const parseLine = (line, index) => {
-          // Simple heuristic parsing
-          let level = 'OTHER';
-          let timestamp = '';
-          
-          // Detect Level
-          const upper = line.toUpperCase();
-          if (upper.includes('ERROR') || upper.includes('FATAL') || upper.includes('CRITICAL')) level = 'ERROR';
-          else if (upper.includes('WARN')) level = 'WARN';
-          else if (upper.includes('INFO')) level = 'INFO';
-          else if (upper.includes('DEBUG') || upper.includes('TRACE')) level = 'DEBUG';
-          
-          // Detect Timestamp (Basic ISO-like or common patterns)
-          // Matches: 2023-01-01 12:00:00, 12:00:00.000, etc.
-          const timeMatch = line.match(/\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{3})?/);
-          if (timeMatch) timestamp = timeMatch[0];
-          
-          return {
-            id: index + 1,
-            raw: line,
-            level,
-            timestamp
+        const logLogic = (${createLogViewerLogic.toString()})();
+        const filterError = document.getElementById('filter-error');
+        const createWorkerClient = ${createRegexWorkerClient.toString()};
+        const filterWorker = createWorkerClient({ timeoutMs: 1500 });
+        const highlightWorker = createWorkerClient({ timeoutMs: 1500 });
+        const REGEX_TIMEOUT_MESSAGE = ${JSON.stringify(REGEX_TIMEOUT_MESSAGE)};
+        let filterToken = 0;
+        let filterStopped = false;
+        let highlightCache = new Map();
+        let highlightBatch = 0;
+        let highlightInFlight = false;
+        let highlightStopped = false;
+        let searchTimer = 0;
+
+        function loadFile(file) {
+          if (!file) return;
+          const logSpinner = document.getElementById('log-spinner');
+          logSpinner.classList.remove('hidden');
+          statusText.textContent = _t('tools.log-viewer.js.text0', 'Reading file...');
+          const reader = new FileReader();
+          reader.onerror = () => {
+            logSpinner.classList.add('hidden');
+            statusText.textContent = 'Could not read ' + file.name + '.';
           };
-        };
+          reader.onload = (event) => {
+            const text = event.target.result;
+            statusText.textContent = _t('tools.log-viewer.js.text1', 'Parsing logs...');
+            // Use setTimeout to allow UI to update
+            setTimeout(() => {
+              allLogs = logLogic.splitLines(text).map((line, i) => logLogic.parseLine(line, i));
+              container.scrollTop = 0;
+              applyFilters();
+              statusText.textContent = String(_t('tools.log-viewer.js.text2', 'Loaded')).trim() + ' ' + allLogs.length.toLocaleString() + ' ' + String(_t('tools.log-viewer.js.text3', 'lines')).trim() + ' (' + file.name + ')';
+              logSpinner.classList.add('hidden');
+              vizContainer.classList.remove('hidden');
+              drawDensity();
+            }, 10);
+          };
+          reader.readAsText(file);
+        }
 
-         // File Handling
-         fileInput.addEventListener('change', (e) => {
-           const file = e.target.files[0];
-           if (!file) return;
-
-           const logSpinner = document.getElementById('log-spinner');
-           logSpinner.classList.remove('hidden');
-           statusText.textContent = _t('tools.log-viewer.js.text0', 'Reading file...');
-           const reader = new FileReader();
-           
-           reader.onload = (event) => {
-             const text = event.target.result;
-             statusText.textContent = _t('tools.log-viewer.js.text1', 'Parsing logs...');
-             
-             // Use setTimeout to allow UI to update
-             setTimeout(() => {
-               const lines = text.split(/\\r?\\n/);
-               allLogs = lines.map((line, i) => parseLine(line, i));
-               applyFilters();
-               statusText.textContent = (window._t ? window._t('tools.log-viewer.js.text2', 'Loaded ') : 'Loaded ') + allLogs.length.toLocaleString() + (window._t ? ' ' + window._t('tools.log-viewer.js.text3', 'lines') : ' lines');
-               logSpinner.classList.add('hidden');
-               vizContainer.classList.remove('hidden');
-             }, 10);
-           };
-           
-           reader.readAsText(file);
-         });
+        fileInput.addEventListener('change', (e) => loadFile(e.target.files[0]));
+        container.addEventListener('dragover', (e) => { e.preventDefault(); });
+        container.addEventListener('drop', (e) => {
+          e.preventDefault();
+          if (e.dataTransfer && e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]);
+        });
 
         // Filtering
+        function setFilterError(message) {
+          filterError.textContent = message || '';
+          filterError.classList.toggle('hidden', !message);
+          searchInput.classList.toggle('border-error-500', !!message);
+          searchInput.setAttribute('aria-invalid', message ? 'true' : 'false');
+        }
+
+        // Regex-mode filtering and highlighting run in /vendor/regex-worker.js under a
+        // deadline, so a catastrophic pattern such as (a+)+$ is terminated instead of
+        // freezing the page. Plain-text searches are escaped literals and stay here.
         function applyFilters() {
-          const query = searchInput.value;
-          let regex = null;
-          
-          if (query) {
-            if (isRegex && query.length > MAX_REGEX_LEN) {
-              searchInput.classList.add('border-error-500', 'focus:border-error-500', 'focus:ring-error-500');
-              return; // Regex too long — ReDoS guard
-            }
-            try {
-               regex = isRegex ? new RegExp(query, 'i') : new RegExp(query.replace(/[.*+?^$\{\}()|[\]\\]/g, '\\$&'), 'i');
-               searchInput.classList.remove('border-error-500', 'focus:border-error-500', 'focus:ring-error-500');
-             } catch (e) {
-               searchInput.classList.add('border-error-500', 'focus:border-error-500', 'focus:ring-error-500');
-               return; // Invalid regex
-            }
+          const token = ++filterToken;
+          filterWorker.cancel();
+          highlightWorker.cancel();
+          highlightBatch++;
+          highlightInFlight = false;
+          highlightCache = new Map();
+          highlightStopped = false;
+          filterStopped = false;
+
+          const built = logLogic.buildSearchRegex(searchInput.value, isRegex, MAX_REGEX_LEN);
+          setFilterError(built.error);
+          if (built.error) return;
+
+          const candidates = allLogs.filter(log => activeLevels[log.level]);
+          if (!built.regex) {
+            finishFilter(candidates);
+            return;
+          }
+          if (!isRegex) {
+            const regex = built.regex;
+            finishFilter(candidates.filter(log => {
+              regex.lastIndex = 0;
+              return regex.test(log.raw);
+            }));
+            return;
           }
 
-          filteredLogs = allLogs.filter(log => {
-            // Level Check
-            if (log.level === 'INFO' && !activeLevels.INFO) return false;
-            if (log.level === 'WARN' && !activeLevels.WARN) return false;
-            if (log.level === 'ERROR' && !activeLevels.ERROR) return false;
-            if (log.level === 'DEBUG' && !activeLevels.DEBUG) return false;
-            if (log.level === 'OTHER' && !activeLevels.OTHER) return false;
-
-            // Text Check
-            if (!query) return true;
-            return regex.test(log.raw);
+          const request = logLogic.buildLineFilterRequest(searchInput.value, true, candidates.map(log => log.raw));
+          filterWorker.run(request).then(outcome => {
+            if (token !== filterToken || outcome.status === 'cancelled') return;
+            if (outcome.status === 'ok') {
+              finishFilter(outcome.result.lineIndexes.map(i => candidates[i]));
+              return;
+            }
+            filterStopped = true;
+            setFilterError(outcome.status === 'timeout' ? REGEX_TIMEOUT_MESSAGE : 'Filter failed: ' + outcome.error);
+            finishFilter([]);
           });
+        }
 
-          matchCount.textContent = filteredLogs.length.toLocaleString() + ' ' + (window._t ? window._t('tools.log-viewer.js.text4', 'matches') : 'matches');
+        function finishFilter(list) {
+          filteredLogs = list;
+          matchCount.textContent = filterStopped
+            ? 'Stopped'
+            : filteredLogs.length.toLocaleString() + ' ' + (window._t ? window._t('tools.log-viewer.js.text4', 'matches') : 'matches');
           matchCount.classList.remove('hidden');
-          
           updateVirtualScroll();
           drawDensity();
         }
@@ -277,6 +302,52 @@ export async function handleLogViewerRoutes(request, url) {
           const totalHeight = filteredLogs.length * ROW_HEIGHT;
           phantom.style.height = totalHeight + 'px';
           renderVisibleRows();
+        }
+
+        function literalRanges(regex, text) {
+          const ranges = [];
+          regex.lastIndex = 0;
+          let match;
+          while ((match = regex.exec(text)) !== null) {
+            if (ranges.length >= MAX_MATCHES_PER_ROW) break;
+            ranges.push([match.index, match.index + match[0].length]);
+            if (match[0].length === 0) regex.lastIndex++;
+          }
+          return ranges;
+        }
+
+        function appendHighlighted(message, text, ranges) {
+          let lastIndex = 0;
+          ranges.forEach(range => {
+            if (range[0] > lastIndex) message.appendChild(document.createTextNode(text.slice(lastIndex, range[0])));
+            const highlight = document.createElement('span');
+            highlight.className = 'highlight';
+            highlight.textContent = text.slice(range[0], range[1]);
+            message.appendChild(highlight);
+            lastIndex = range[1];
+          });
+          if (lastIndex < text.length) message.appendChild(document.createTextNode(text.slice(lastIndex)));
+        }
+
+        function requestHighlights(logs) {
+          if (highlightInFlight) return;
+          highlightInFlight = true;
+          const batchNo = highlightBatch;
+          const requests = logs.map(log => logLogic.buildHighlightRequest(searchInput.value, true, log.raw, MAX_MATCHES_PER_ROW));
+          highlightWorker.runBatch(requests).then(outcome => {
+            if (batchNo !== highlightBatch) return;
+            highlightInFlight = false;
+            if (outcome.status === 'cancelled') return;
+            if (outcome.status !== 'ok') {
+              highlightStopped = true;
+              setFilterError(outcome.status === 'timeout' ? REGEX_TIMEOUT_MESSAGE : 'Highlighting failed: ' + outcome.error);
+              return;
+            }
+            outcome.results.forEach((reply, i) => {
+              highlightCache.set(logs[i].id, reply.ok ? reply.matches.map(m => [m.index, m.index + m.match.length]) : []);
+            });
+            renderVisibleRows();
+          });
         }
 
         function renderVisibleRows() {
@@ -291,17 +362,21 @@ export async function handleLogViewerRoutes(request, url) {
           const offsetY = renderStart * ROW_HEIGHT;
           
           content.style.transform = 'translateY(' + offsetY + 'px)';
-          
-          // Highlight search term — guard against ReDoS
-          const query = searchInput.value;
-          let globalHighlightRegex = null;
-          if (query && query.length <= MAX_REGEX_LEN) {
-             try {
-                const escapedQuery = query.replace(/[.*+?^$\{\}()|[\]\\]/g, '\\$&');
-               globalHighlightRegex = isRegex ? new RegExp('(' + query + ')', 'gi') : new RegExp('(' + escapedQuery + ')', 'gi');
-             } catch(e) {}
+
+          if (filteredLogs.length === 0 && allLogs.length > 0) {
+            const empty = document.createElement('div');
+            empty.className = 'text-center text-surface-400 pt-20';
+            empty.textContent = filterStopped
+              ? 'Filtering stopped. Edit the pattern to try again.'
+              : 'No lines match the current filters.';
+            content.replaceChildren(empty);
+            return;
           }
 
+          const built = logLogic.buildSearchRegex(searchInput.value, isRegex, MAX_REGEX_LEN);
+          const literalRegex = !isRegex ? built.regex : null;
+          const useWorker = isRegex && !!built.regex && !highlightStopped;
+          const missing = [];
           const fragment = document.createDocumentFragment();
 
           visibleLogs.forEach(log => {
@@ -322,40 +397,17 @@ export async function handleLogViewerRoutes(request, url) {
 
             const message = document.createElement('span');
             message.className = 'log-msg';
+            message.title = log.raw;
 
-            if (globalHighlightRegex) {
-              const text = log.raw;
-              let lastIndex = 0;
-              globalHighlightRegex.lastIndex = 0;
-              let match;
-              let matchCount = 0;
-
-              while ((match = globalHighlightRegex.exec(text)) !== null) {
-                if (++matchCount > MAX_MATCHES_PER_ROW) break;
-                const start = match.index;
-                const end = start + match[0].length;
-
-                if (start > lastIndex) {
-                  message.appendChild(document.createTextNode(text.slice(lastIndex, start)));
-                }
-
-                const highlight = document.createElement('span');
-                highlight.className = 'highlight';
-                highlight.textContent = text.slice(start, end);
-                message.appendChild(highlight);
-
-                lastIndex = end;
-                if (match[0].length === 0) {
-                  globalHighlightRegex.lastIndex++;
-                }
-              }
-
-              if (lastIndex < text.length) {
-                message.appendChild(document.createTextNode(text.slice(lastIndex)));
-              }
-            } else {
-              message.textContent = log.raw;
+            let ranges = null;
+            if (literalRegex) {
+              ranges = literalRanges(literalRegex, log.raw);
+            } else if (useWorker) {
+              ranges = highlightCache.get(log.id) || null;
+              if (!ranges) missing.push(log);
             }
+            if (ranges) appendHighlighted(message, log.raw, ranges);
+            else message.textContent = log.raw;
 
             row.appendChild(number);
             row.appendChild(time);
@@ -366,6 +418,7 @@ export async function handleLogViewerRoutes(request, url) {
           });
 
           content.replaceChildren(fragment);
+          if (missing.length) requestHighlights(missing);
         }
 
         container.addEventListener('scroll', () => {
@@ -428,9 +481,8 @@ export async function handleLogViewerRoutes(request, url) {
 
         // Event Listeners for Controls
         searchInput.addEventListener('input', () => {
-            // Debounce slightly
-            clearTimeout(window.searchTimeout);
-            window.searchTimeout = setTimeout(applyFilters, 300);
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(applyFilters, 300);
         });
         
         regexToggle.addEventListener('change', (e) => {
@@ -440,19 +492,16 @@ export async function handleLogViewerRoutes(request, url) {
 
         const toggleLevel = (level, btn) => {
             activeLevels[level] = !activeLevels[level];
-            if (activeLevels[level]) {
-                btn.classList.remove('opacity-50', 'grayscale');
-                btn.classList.add('ring-2');
-            } else {
-                btn.classList.add('opacity-50', 'grayscale');
-                btn.classList.remove('ring-2');
-            }
+            btn.setAttribute('aria-pressed', String(activeLevels[level]));
+            btn.classList.toggle('opacity-50', !activeLevels[level]);
+            btn.classList.toggle('grayscale', !activeLevels[level]);
             applyFilters();
         };
 
         btnInfo.addEventListener('click', () => toggleLevel('INFO', btnInfo));
         btnWarn.addEventListener('click', () => toggleLevel('WARN', btnWarn));
         btnError.addEventListener('click', () => toggleLevel('ERROR', btnError));
+        btnDebug.addEventListener('click', () => toggleLevel('DEBUG', btnDebug));
         btnOther.addEventListener('click', () => toggleLevel('OTHER', btnOther));
         
         // Resize observer for canvas

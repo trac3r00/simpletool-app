@@ -8,10 +8,14 @@ import { bundledStylesHash } from "./bundled-styles.js";
 import { APP_VERSION } from "./version.js";
 import { getKeyboardShortcutsScript } from "./keyboard-shortcuts.js";
 import {
+  CATEGORIES,
   TOOLS,
   getToolsForEnvironment,
   isDevRuntime,
 } from "./tool-registry.js";
+import { SEO_META } from "./seo-meta.js";
+import { matchesToolQuery } from "./tool-search.js";
+import { pageAllowsAds } from "./ads.js";
 import { getPersonalizationScript } from "./personalization.js";
 import {
   getAdSenseAccountMeta,
@@ -491,6 +495,8 @@ export function getSearchScript(options = {}) {
           }, 200);
         }
 
+        var matchesToolQuery = ${matchesToolQuery.toString()};
+
         window.fuzzySearch = function(query, list) {
           if (!query) return list.map(item => ({ ...item, score: 1 }));
           
@@ -535,6 +541,7 @@ export function getSearchScript(options = {}) {
               }
               if (score > maxScore) maxScore = score;
             }
+            if (maxScore === 0 && matchesToolQuery(texts.join(' '), q)) maxScore = 40;
             if (maxScore > 0) results.push({ ...item, score: maxScore });
           }
           return results.sort((a, b) => b.score - a.score);
@@ -634,7 +641,7 @@ export function getSearchScript(options = {}) {
  */
 export function getToastScript() {
   return `
-    <div id="toast-container" class="fixed bottom-4 right-4 z-[200] flex flex-col gap-2 pointer-events-none"></div>
+    <div id="toast-container" role="status" aria-live="polite" class="fixed bottom-4 right-4 z-[200] flex flex-col gap-2 pointer-events-none"></div>
     <script>
       (function() {
         const container = document.getElementById('toast-container');
@@ -642,7 +649,7 @@ export function getToastScript() {
         window.Toast = {
           show: function(msg, type = 'info', duration = 3000) {
             const toast = document.createElement('div');
-            const bgClass = type === 'success' ? 'bg-success-500 dark:bg-success-600' :
+            const bgClass = type === 'success' ? 'bg-success-700 dark:bg-success-600' :
                            type === 'error' ? 'bg-error-500 dark:bg-error-600' :
                            'bg-info-500 dark:bg-info-600';
             const icon = type === 'success' ? '✓' :
@@ -733,6 +740,9 @@ export function getStylesheetLinks() {
         -webkit-font-feature-settings: 'liga';
         -webkit-font-smoothing: antialiased;
       }
+      /* The ligature name lives in data-icon, not in the DOM text, so crawlers and
+         copy/paste never see words like "qr_code_2" (report P0-1). */
+      .material-symbols-rounded[data-icon]::before { content: attr(data-icon); }
       /* i18n overflow protection for longer translations (de, fr, pt) */
       [data-i18n], [data-i18n-html] { overflow-wrap: break-word; word-break: break-word; }
       .btn, [role="menuitem"] { overflow: hidden; text-overflow: ellipsis; }
@@ -777,7 +787,7 @@ export function getFooterHTML(options = {}) {
                <span class="font-bold text-lg text-surface-900 dark:text-surface-50">SimpleTool</span>
              </div>
              <p class="text-sm text-surface-600 dark:text-surface-400 mb-4" data-i18n="footer.tagline">${t("footer.tagline", currentLang)}</p>
-              <p class="text-xs text-surface-500 dark:text-surface-400">© ${new Date().getFullYear()} SimpleTool · <a href="/changelog" class="hover:text-primary-500 transition-colors">v${APP_VERSION}</a></p>
+              <p class="text-xs text-surface-500 dark:text-surface-400">© ${new Date().getFullYear()} SimpleTool · v${APP_VERSION}</p>
            </div>
            
            <!-- Column 2: Top Tools -->
@@ -842,31 +852,117 @@ export function getFooterHTML(options = {}) {
 /**
  * Create a complete base HTML template
  */
-function isRegisteredToolPath(pagePath) {
+function findRegisteredTool(pagePath) {
   const normalized =
     pagePath.length > 1 && pagePath.endsWith("/")
       ? pagePath.slice(0, -1)
       : pagePath;
-  return TOOLS.some((tool) => tool.path === normalized);
+  return TOOLS.find((tool) => tool.path === normalized) || null;
 }
 
-function renderJsonLd(schema, pagePath, title, pageUrl, description) {
+function isRegisteredToolPath(pagePath) {
+  return findRegisteredTool(pagePath) !== null;
+}
+
+// Report P0-4: WebApplication (free offer) + BreadcrumbList. FAQPage is
+// deliberately absent: Google retired FAQ rich results on 2026-05-07.
+function renderJsonLd(schema, pagePath, title, pageUrl, description, lang) {
   if (schema !== undefined) {
     return schema
       ? `<script type="application/ld+json">${JSON.stringify(schema)}</script>`
       : "";
   }
-  if (!isRegisteredToolPath(pagePath)) return "";
+  const tool = findRegisteredTool(pagePath);
+  if (!tool) return "";
+  const homeUrl = `${siteUrl}${withLanguageQuery("/", lang)}`;
+  const category = CATEGORIES[tool.category];
+  const crumbs = [{ name: "SimpleTool", item: homeUrl }];
+  if (category) {
+    crumbs.push({
+      name: category.title,
+      item: `${homeUrl}#category-${tool.category}`,
+    });
+  }
+  crumbs.push({ name: title, item: pageUrl });
   return `<script type="application/ld+json">${JSON.stringify({
     "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    name: title,
-    url: pageUrl,
-    description,
-    applicationCategory: "DeveloperApplication",
-    operatingSystem: "Any",
-    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        name: title,
+        url: pageUrl,
+        description,
+        applicationCategory: "DeveloperApplication",
+        operatingSystem: "Any",
+        browserRequirements: "Requires JavaScript",
+        isAccessibleForFree: true,
+        offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: crumbs.map((crumb, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          name: crumb.name,
+          item: crumb.item,
+        })),
+      },
+    ],
   })}</script>`;
+}
+
+/**
+ * Report P1-8 "verifiable local": a live, honest count of every network
+ * request the page makes after it finished loading, listed by URL so the
+ * visitor can check it against DevTools instead of trusting a slogan.
+ */
+function getLocalProofHTML(pagePath) {
+  const adsLine = pageAllowsAds(pagePath)
+    ? ""
+    : `<li>No ads and no third-party trackers are loaded on this page.</li>`;
+  return `
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6" aria-labelledby="local-proof-heading" data-local-proof>
+    <div class="rounded-lg border border-border bg-card text-card-foreground p-4 text-sm">
+      <h2 id="local-proof-heading" class="font-semibold text-foreground">Runs in your browser</h2>
+      <ul class="mt-2 space-y-1 text-muted-foreground list-disc pl-5">
+        <li>What you type or paste is processed in this tab and is not uploaded.</li>
+        <li>Requests made since this page finished loading: <strong class="text-foreground" data-local-proof-count>0</strong> <span class="text-xs">(live count; check it against your browser's DevTools Network tab)</span></li>
+        ${adsLine}
+      </ul>
+      <details class="mt-2" data-local-proof-details hidden>
+        <summary class="cursor-pointer text-xs text-muted-foreground">Show requests</summary>
+        <ol class="mt-1 text-xs font-mono break-all text-muted-foreground list-decimal pl-5" data-local-proof-list></ol>
+      </details>
+    </div>
+  </section>
+  <script>
+  (function () {
+    if (!('PerformanceObserver' in window)) return;
+    var root = document.querySelector('[data-local-proof]');
+    if (!root) return;
+    var countEl = root.querySelector('[data-local-proof-count]');
+    var details = root.querySelector('[data-local-proof-details]');
+    var list = root.querySelector('[data-local-proof-list]');
+    var count = 0;
+    var loaded = false;
+    function record(entry) {
+      if (!loaded) return;
+      count += 1;
+      countEl.textContent = String(count);
+      var li = document.createElement('li');
+      var u;
+      try { u = new URL(entry.name); } catch (e) { u = null; }
+      li.textContent = u ? (u.origin === location.origin ? u.pathname + ' (this site, static file)' : u.origin + u.pathname) : entry.name;
+      list.appendChild(li);
+      details.hidden = false;
+    }
+    try {
+      new PerformanceObserver(function (l) { l.getEntries().forEach(record); }).observe({ type: 'resource', buffered: false });
+    } catch (e) { return; }
+    if (document.readyState === 'complete') loaded = true;
+    else window.addEventListener('load', function () { loaded = true; });
+  })();
+  </script>`;
 }
 
 export function createPageTemplate(options) {
@@ -891,7 +987,11 @@ export function createPageTemplate(options) {
   const pageUrl = `${siteUrl}${withLanguageQuery(pagePath, currentLang)}`;
   const canonicalHref = canonicalUrl || pageUrl;
   const robotsTag = robots ? `<meta name="robots" content="${robots}">` : "";
-  const fullTitle = `${title}${titleSuffix}`;
+  const isToolPage = isRegisteredToolPath(pagePath);
+  const seo =
+    isToolPage && currentLang === DEFAULT_LANGUAGE ? SEO_META[toolId] : null;
+  const fullTitle = seo ? `${seo.title}${titleSuffix}` : `${title}${titleSuffix}`;
+  const metaDescription = seo ? seo.description : description;
   const keywordsTag = keywords
     ? `<meta name="keywords" content="${keywords}">`
     : "";
@@ -911,7 +1011,7 @@ export function createPageTemplate(options) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   ${getAdSenseAccountMeta()}
   <title>${fullTitle}</title>
-  <meta name="description" content="${description}">
+  <meta name="description" content="${metaDescription}">
   ${robotsTag}
   <link rel="canonical" href="${canonicalHref}">
   ${getAlternateLanguageLinks(pagePath, currentLang)}
@@ -923,11 +1023,11 @@ export function createPageTemplate(options) {
   <meta property="og:locale" content="${currentLang.replace("-", "_")}">
   <meta property="og:url" content="${pageUrl}">
   <meta property="og:title" content="${fullTitle}">
-  <meta property="og:description" content="${description}">
+  <meta property="og:description" content="${metaDescription}">
   <meta property="og:site_name" content="SimpleTool">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${fullTitle}">
-  <meta name="twitter:description" content="${description}">
+  <meta name="twitter:description" content="${metaDescription}">
   <meta property="og:image" content="https://simpletool.app/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -952,11 +1052,12 @@ export function createPageTemplate(options) {
     <div class="flex">
       <div id="main-content" tabindex="-1" class="flex-1 min-w-0 overflow-x-hidden">
         ${content}
+        ${isToolPage ? getLocalProofHTML(pagePath) : ""}
       </div>
     </div>
   </div>
   ${getFooterHTML({ lang: currentLang })}
-  ${renderJsonLd(schema, pagePath, title, pageUrl, description)}
+  ${renderJsonLd(schema, pagePath, title, pageUrl, metaDescription, currentLang)}
    ${getThemeScript()}
    ${getLanguageScript(toolId, currentLang, i18nToolIds)}
    ${getSearchScript({ lang: currentLang })}
@@ -1169,7 +1270,7 @@ export function infoHint(tooltip, ariaLabel, options = {}) {
   // Tooltips are prose containing quotes and apostrophes; interpolating them
   // raw would terminate the attribute and inject stray ones, exactly as the
   // rich-editor placeholder did.
-  return `<button type="button" class="info-hint${sizeClass}" data-tooltip="${escapeAttribute(tooltip)}"${posAttr}${i18nAttr} aria-label="${escapeAttribute(label)}"><span class="material-symbols-rounded" aria-hidden="true">${icon}</span></button>`;
+  return `<button type="button" class="info-hint${sizeClass}" data-tooltip="${escapeAttribute(tooltip)}"${posAttr}${i18nAttr} aria-label="${escapeAttribute(label)}"><span class="material-symbols-rounded" aria-hidden="true" data-icon="${icon}"></span></button>`;
 }
 
 export function createEmptyState(options = {}) {

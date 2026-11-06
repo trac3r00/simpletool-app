@@ -18,7 +18,6 @@ const vendorFiles = [
   { from: "node_modules/marked/lib/marked.umd.js", to: "marked.min.js" },
   { from: "node_modules/dompurify/dist/purify.min.js", to: "purify.min.js" },
   { from: "node_modules/bcryptjs/dist/bcrypt.min.js", to: "bcrypt.min.js" },
-  { from: "node_modules/blueimp-md5/js/md5.min.js", to: "md5.min.js" },
   { from: "node_modules/pako/dist/browser/pako.umd.min.js", to: "pako.min.js" },
   {
     from: "node_modules/js-yaml/dist/browser/js-yaml.umd.min.js",
@@ -51,6 +50,53 @@ async function buildVendor() {
     globalName: "QRCode",
   });
 
+  // Off-main-thread regex runner (regex studio, log viewer): a ReDoS pattern
+  // is terminated by the page instead of freezing the tab.
+  await fs.copyFile(
+    path.resolve(projectRoot, "scripts", "vendor", "regex-worker.js"),
+    path.resolve(vendorDir, "regex-worker.js"),
+  );
+
+  // JSON Schema validation without eval (CSP forbids unsafe-eval, so Ajv's
+  // code generation cannot run in the page).
+  await build({
+    entryPoints: [
+      path.resolve(projectRoot, "node_modules", "@cfworker", "json-schema", "dist", "esm", "index.js"),
+    ],
+    outfile: path.resolve(vendorDir, "json-schema-validator.min.js"),
+    bundle: true,
+    minify: true,
+    format: "iife",
+    globalName: "CfJsonSchema",
+  });
+
+  // LLM-output JSON repair for the JSON formatter (report P2-11).
+  await build({
+    entryPoints: [
+      path.resolve(projectRoot, "node_modules", "jsonrepair", "lib", "esm", "index.js"),
+    ],
+    outfile: path.resolve(vendorDir, "jsonrepair.min.js"),
+    bundle: true,
+    minify: true,
+    format: "iife",
+    globalName: "JSONRepair",
+  });
+
+  // Exact OpenAI tokenizers for the token counter (report P2-11). Large
+  // (o200k ~2.7 MB, cl100k ~1 MB), so the page loads them only on demand.
+  for (const enc of ["o200k_base", "cl100k_base"]) {
+    await build({
+      entryPoints: [
+        path.resolve(projectRoot, "node_modules", "gpt-tokenizer", "esm", "encoding", `${enc}.js`),
+      ],
+      outfile: path.resolve(vendorDir, `gpt-tokenizer-${enc}.min.js`),
+      bundle: true,
+      minify: true,
+      format: "iife",
+      globalName: `GPTTokenizer_${enc}`,
+    });
+  }
+
   await build({
     entryPoints: [
       path.resolve(projectRoot, "node_modules", "toml", "index.js"),
@@ -62,22 +108,6 @@ async function buildVendor() {
     globalName: "toml",
   });
 
-  await build({
-    entryPoints: [
-      path.resolve(
-        projectRoot,
-        "scripts",
-        "vendor",
-        "to-json-schema-entry.cjs",
-      ),
-    ],
-    outfile: path.resolve(vendorDir, "to-json-schema.min.js"),
-    bundle: true,
-    minify: true,
-    format: "iife",
-    globalName: "toJsonSchema",
-    platform: "browser",
-  });
 
   await build({
     entryPoints: [

@@ -17,6 +17,43 @@ import {
   normalizeLanguage,
   resolveRequestLanguage,
 } from "../utils/i18n.js";
+import { analyzeUserAgent, detectUserAgentBot, UA_SAMPLES } from "../utils/ua-logic.js";
+
+function escapeAttr(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+function renderSampleLibrary() {
+  const groups = [];
+  for (const sample of UA_SAMPLES) {
+    let group = groups.find((g) => g.name === sample.group);
+    if (!group) {
+      group = { name: sample.group, samples: [] };
+      groups.push(group);
+    }
+    group.samples.push(sample);
+  }
+  return groups
+    .map(
+      (group) => `
+              <div>
+                <h3 class="text-xs font-semibold text-surface-700 dark:text-surface-300 mb-2">${escapeAttr(group.name)}</h3>
+                <div class="flex flex-wrap gap-2">
+                  ${group.samples
+                    .map(
+                      (s) =>
+                        `<button type="button" class="sample-btn btn btn-ghost btn-xs" data-ua="${escapeAttr(s.ua)}" title="${escapeAttr(s.ua)}">${escapeAttr(s.label)}</button>`,
+                    )
+                    .join("\n                  ")}
+                </div>
+              </div>`,
+    )
+    .join("");
+}
 
 export async function handleUserAgentDecoderRoutes(request, url) {
   const { pathname } = url;
@@ -111,6 +148,13 @@ function renderUserAgentDecoderPage(lang = DEFAULT_LANGUAGE) {
             </div>
           </div>
 
+          <section id="ua-samples" aria-labelledby="ua-samples-heading" class="card p-4">
+            <h2 id="ua-samples-heading" class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400 mb-1" data-i18n="tools.user-agent-decoder.ui.r3_1">Sample library</h2>
+            <p class="text-xs text-surface-500 dark:text-surface-400 mb-3">${UA_SAMPLES.length} User-Agent strings from common browsers, crawlers, and HTTP clients. Click one to load and parse it.</p>
+            <div class="space-y-3">${renderSampleLibrary()}
+            </div>
+          </section>
+
           <div id="results" class="hidden space-y-4">
             <div>
               <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400 mb-3" data-i18n="tools.user-agent-decoder.ui.heading13">Parsed Information</h2>
@@ -125,6 +169,8 @@ function renderUserAgentDecoderPage(lang = DEFAULT_LANGUAGE) {
                 <div><dt class="text-surface-500" data-i18n="tools.user-agent-decoder.ui.desc18">Vendor:</dt><dd id="device-vendor">—</dd></div>
                 <div><dt class="text-surface-500" data-i18n="tools.user-agent-decoder.ui.desc19">Model:</dt><dd id="device-model">—</dd></div>
                 <div><dt class="text-surface-500" data-i18n="tools.user-agent-decoder.ui.desc20">Bot/Crawler:</dt><dd id="is-bot">—</dd></div>
+                <div><dt class="text-surface-500">Bot name</dt><dd id="bot-name">—</dd></div>
+                <div><dt class="text-surface-500">Bot category</dt><dd id="bot-category">—</dd></div>
                 <div><dt class="text-surface-500" data-i18n="tools.user-agent-decoder.ui.desc21">Mobile:</dt><dd id="is-mobile">—</dd></div>
                 <div><dt class="text-surface-500" data-i18n="tools.user-agent-decoder.ui.desc22">Tablet:</dt><dd id="is-tablet">—</dd></div>
               </dl>
@@ -135,6 +181,13 @@ function renderUserAgentDecoderPage(lang = DEFAULT_LANGUAGE) {
                 <button id="copy-analysis" type="button" class="btn btn-ghost btn-xs" data-i18n="tools.user-agent-decoder.ui.button8">Copy</button>
               </div>
               <pre id="raw-output" class="input-mono whitespace-pre-wrap break-all text-xs p-3"></pre>
+            </div>
+            <div>
+              <div class="flex items-center justify-between gap-3 mb-2">
+                <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400" data-i18n="tools.user-agent-decoder.ui.r3_2">JSON Output</h2>
+                <button id="copy-json" type="button" class="btn btn-ghost btn-xs" data-i18n="tools.user-agent-decoder.ui.r3_0">Copy JSON</button>
+              </div>
+              <pre id="json-output" class="input-mono whitespace-pre-wrap break-all text-xs p-3"></pre>
             </div>
           </div>
         </div>
@@ -173,6 +226,9 @@ function renderUserAgentDecoderPage(lang = DEFAULT_LANGUAGE) {
 
   const script = `
     <script>
+      ${detectUserAgentBot.toString()}
+      ${analyzeUserAgent.toString()}
+
       const uaInput = document.getElementById('ua-input');
       const currentUa = document.getElementById('current-ua');
       const resultsEl = document.getElementById('results');
@@ -195,6 +251,28 @@ function renderUserAgentDecoderPage(lang = DEFAULT_LANGUAGE) {
         });
       });
 
+      document.querySelectorAll('.sample-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          if (uaInput) uaInput.value = btn.dataset.ua;
+          parseUserAgent();
+          if (resultsEl) resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
+
+      var copyJsonBtn = document.getElementById('copy-json');
+      if (copyJsonBtn) copyJsonBtn.addEventListener('click', async () => {
+        const jsonOutput = document.getElementById('json-output');
+        if (!copyJsonBtn.dataset.label) copyJsonBtn.dataset.label = copyJsonBtn.textContent;
+        const orig = copyJsonBtn.dataset.label;
+        try {
+          await navigator.clipboard.writeText(jsonOutput ? jsonOutput.textContent : '');
+          copyJsonBtn.textContent = '✓ Copied!';
+        } catch (err) {
+          copyJsonBtn.textContent = 'Copy failed: select the JSON and copy manually';
+        }
+        setTimeout(() => copyJsonBtn.textContent = orig, 2000);
+      });
+
       // Parse button
       var parseBtn = document.getElementById('parse-btn');
       if (parseBtn) parseBtn.addEventListener('click', parseUserAgent);
@@ -211,10 +289,15 @@ function renderUserAgentDecoderPage(lang = DEFAULT_LANGUAGE) {
       if (copyAnalysisBtn) copyAnalysisBtn.addEventListener('click', async () => {
         const rawOutput = document.getElementById('raw-output');
         const text = rawOutput ? rawOutput.textContent : '';
-        await navigator.clipboard.writeText(text);
-        const orig = copyAnalysisBtn.textContent;
-        copyAnalysisBtn.textContent = _t('tools.user-agent-decoder.js.text0', '✓ Copied!');
-        if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
+        if (!copyAnalysisBtn.dataset.label) copyAnalysisBtn.dataset.label = copyAnalysisBtn.textContent;
+        const orig = copyAnalysisBtn.dataset.label;
+        try {
+          await navigator.clipboard.writeText(text);
+          copyAnalysisBtn.textContent = _t('tools.user-agent-decoder.js.text0', '✓ Copied!');
+          if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
+        } catch (err) {
+          copyAnalysisBtn.textContent = 'Copy failed: select the text and copy manually';
+        }
         setTimeout(() => copyAnalysisBtn.textContent = orig, 2000);
       });
 
@@ -239,11 +322,13 @@ function renderUserAgentDecoderPage(lang = DEFAULT_LANGUAGE) {
         document.getElementById('os-version').textContent = parsed.os.version || 'Unknown';
         document.getElementById('os-arch').textContent = parsed.os.architecture || 'Unknown';
 
-        document.getElementById('device-type').textContent = parsed.device.type || 'Desktop';
+        document.getElementById('device-type').textContent = parsed.device.type || 'Unknown';
         document.getElementById('device-vendor').textContent = parsed.device.vendor || 'Unknown';
         document.getElementById('device-model').textContent = parsed.device.model || 'Unknown';
 
         document.getElementById('is-bot').textContent = parsed.isBot ? '✅ Yes' : '❌ No';
+        document.getElementById('bot-name').textContent = parsed.bot.name || '—';
+        document.getElementById('bot-category').textContent = parsed.bot.category || '—';
         document.getElementById('is-mobile').textContent = parsed.isMobile ? '✅ Yes' : '❌ No';
         document.getElementById('is-tablet').textContent = parsed.isTablet ? '✅ Yes' : '❌ No';
 
@@ -260,133 +345,29 @@ function renderUserAgentDecoderPage(lang = DEFAULT_LANGUAGE) {
         rawOutput += 'Version: ' + (parsed.os.version || 'Unknown') + '\\n';
         rawOutput += 'Architecture: ' + (parsed.os.architecture || 'Unknown') + '\\n\\n';
         rawOutput += '--- DEVICE ---\\n';
-        rawOutput += 'Type: ' + (parsed.device.type || 'Desktop') + '\\n';
+        rawOutput += 'Type: ' + (parsed.device.type || 'Unknown') + '\\n';
         rawOutput += 'Vendor: ' + (parsed.device.vendor || 'Unknown') + '\\n';
         rawOutput += 'Model: ' + (parsed.device.model || 'Unknown') + '\\n\\n';
         rawOutput += '--- FLAGS ---\\n';
         rawOutput += 'Is Bot: ' + (parsed.isBot ? 'Yes' : 'No') + '\\n';
+        rawOutput += 'Bot Name: ' + (parsed.bot.name || '-') + '\\n';
+        rawOutput += 'Bot Category: ' + (parsed.bot.category || '-') + '\\n';
         rawOutput += 'Is Mobile: ' + (parsed.isMobile ? 'Yes' : 'No') + '\\n';
         rawOutput += 'Is Tablet: ' + (parsed.isTablet ? 'Yes' : 'No') + '\\n';
 
         document.getElementById('raw-output').textContent = rawOutput;
+        document.getElementById('json-output').textContent = JSON.stringify({
+          userAgent: ua,
+          browser: parsed.browser,
+          os: parsed.os,
+          device: parsed.device,
+          bot: parsed.bot,
+          isMobile: parsed.isMobile,
+          isTablet: parsed.isTablet
+        }, null, 2);
         resultsEl.classList.remove('hidden');
       }
 
-      function analyzeUserAgent(ua) {
-        const result = {
-          browser: { name: null, version: null, engine: null, engineVersion: null },
-          os: { name: null, version: null, architecture: null },
-          device: { type: null, vendor: null, model: null },
-          isBot: false,
-          isMobile: false,
-          isTablet: false
-        };
-
-        // Detect bots
-        const botPatterns = /bot|crawler|spider|scraper|slurp|google|bing|yahoo|duckduckgo|baidu|yandex|curl|wget|python|java|php/i;
-        result.isBot = botPatterns.test(ua);
-
-        // Detect mobile/tablet
-        result.isMobile = /Mobile|Android|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
-        result.isTablet = /iPad|Android(?!.*Mobile)|Tablet/i.test(ua);
-
-        // Browser detection
-        if (ua.includes('Edg/')) {
-          result.browser.name = 'Microsoft Edge';
-          result.browser.version = extractVersion(ua, /Edg\\/(\\d+\\.\\d+)/);
-          result.browser.engine = 'Blink';
-        } else if (ua.includes('Chrome/') && !ua.includes('Chromium')) {
-          result.browser.name = 'Google Chrome';
-          result.browser.version = extractVersion(ua, /Chrome\\/(\\d+\\.\\d+)/);
-          result.browser.engine = 'Blink';
-        } else if (ua.includes('Firefox/')) {
-          result.browser.name = 'Mozilla Firefox';
-          result.browser.version = extractVersion(ua, /Firefox\\/(\\d+\\.\\d+)/);
-          result.browser.engine = 'Gecko';
-        } else if (ua.includes('Safari/') && !ua.includes('Chrome')) {
-          result.browser.name = 'Safari';
-          result.browser.version = extractVersion(ua, /Version\\/(\\d+\\.\\d+)/);
-          result.browser.engine = 'WebKit';
-        } else if (ua.includes('OPR/') || ua.includes('Opera/')) {
-          result.browser.name = 'Opera';
-          result.browser.version = extractVersion(ua, /(?:OPR|Opera)\\/(\\d+\\.\\d+)/);
-          result.browser.engine = 'Blink';
-        }
-
-        // Engine version
-        if (result.browser.engine === 'Blink' || result.browser.engine === 'WebKit') {
-          result.browser.engineVersion = extractVersion(ua, /AppleWebKit\\/(\\d+\\.\\d+)/);
-        } else if (result.browser.engine === 'Gecko') {
-          result.browser.engineVersion = extractVersion(ua, /rv:(\\d+\\.\\d+)/);
-        }
-
-        // OS detection
-        if (ua.includes('Windows NT')) {
-          result.os.name = 'Windows';
-          const version = extractVersion(ua, /Windows NT (\\d+\\.\\d+)/);
-          const winVersions = {
-            '10.0': '10/11',
-            '6.3': '8.1',
-            '6.2': '8',
-            '6.1': '7',
-            '6.0': 'Vista',
-            '5.1': 'XP'
-          };
-          result.os.version = winVersions[version] || version;
-          result.os.architecture = ua.includes('Win64') || ua.includes('x64') ? 'x64' : 'x86';
-        } else if (ua.includes('iPhone') || ua.includes('iPad')) {
-          result.os.name = 'iOS';
-          result.os.version = extractVersion(ua, /OS (\\d+[._]\\d+)/);
-          if (result.os.version) result.os.version = result.os.version.replace(/_/g, '.');
-          result.os.architecture = 'ARM';
-        } else if (ua.includes('Mac OS X')) {
-          result.os.name = 'macOS';
-          result.os.version = extractVersion(ua, /Mac OS X (\\d+[._]\\d+(?:[._]\\d+)?)/);
-          if (result.os.version) result.os.version = result.os.version.replace(/_/g, '.');
-          result.os.architecture = ua.includes('Intel') ? 'Intel' : (ua.includes('ARM') || ua.includes('M1') || ua.includes('M2') ? 'ARM' : 'Unknown');
-        } else if (ua.includes('Linux')) {
-          result.os.name = 'Linux';
-          result.os.architecture = ua.includes('x86_64') ? 'x64' : (ua.includes('aarch64') || ua.includes('arm') ? 'ARM' : 'x86');
-        } else if (ua.includes('Android')) {
-          result.os.name = 'Android';
-          result.os.version = extractVersion(ua, /Android (\\d+(?:\\.\\d+)?)/);
-          result.os.architecture = 'ARM';
-        }
-
-        // Device detection
-        if (ua.includes('iPhone')) {
-          result.device.type = 'Mobile';
-          result.device.vendor = 'Apple';
-          result.device.model = 'iPhone';
-        } else if (ua.includes('iPad')) {
-          result.device.type = 'Tablet';
-          result.device.vendor = 'Apple';
-          result.device.model = 'iPad';
-        } else if (ua.includes('Android')) {
-          result.device.type = result.isTablet ? 'Tablet' : 'Mobile';
-          // Try to extract vendor and model from Android UA
-          const androidMatch = ua.match(/Android.*; ([^)]+)\\)/);
-          if (androidMatch) {
-            const deviceInfo = androidMatch[1];
-            const parts = deviceInfo.split(/\\s+/);
-            result.device.vendor = parts[0] || 'Unknown';
-            result.device.model = parts.slice(1).join(' ') || 'Unknown';
-          }
-        } else if (result.isMobile) {
-          result.device.type = 'Mobile';
-        } else if (result.isTablet) {
-          result.device.type = 'Tablet';
-        } else {
-          result.device.type = 'Desktop';
-        }
-
-        return result;
-      }
-
-      function extractVersion(ua, regex) {
-        const match = ua.match(regex);
-        return match ? match[1] : null;
-      }
     </script>
   `;
 

@@ -16,6 +16,7 @@ import {
   normalizeLanguage,
   resolveRequestLanguage,
 } from "../utils/i18n.js";
+import { CASE_CONVERTER_FUNCTIONS } from "../utils/case-converter-logic.js";
 
 export async function handleCaseConverterRoutes(request, url) {
   const { pathname } = url;
@@ -87,7 +88,7 @@ function renderCaseConverterPage(lang = DEFAULT_LANGUAGE) {
         <!-- Action Buttons -->
         <div class="flex gap-3 mb-6">
           <button id="clear-btn" class="btn btn-ghost" data-tooltip="Clear all input and results" data-i18n-tooltip="tools.case-converter.ui.tip0">
-            <span class="material-symbols-rounded text-sm" aria-hidden="true" data-i18n="tools.case-converter.ui.desc3">delete</span> <span data-i18n="tools.case-converter.ui.button0">Clear</span>
+            <span class="material-symbols-rounded text-sm" aria-hidden="true" data-icon="delete"></span> <span data-i18n="tools.case-converter.ui.button0">Clear</span>
           </button>
         </div>
 
@@ -153,85 +154,69 @@ function renderCaseConverterPage(lang = DEFAULT_LANGUAGE) {
       const charCount = document.getElementById('char-count');
       const wordCount = document.getElementById('word-count');
 
-      // Conversion functions
+      // Inlined from src/utils/case-converter-logic.js (tested in case-converter-logic.test.js).
+      ${CASE_CONVERTER_FUNCTIONS.map((fn) => fn.toString()).join("\n")}
+
       const conversions = {
         uppercase: {
           name: 'UPPERCASE',
           icon: '⬆️',
           color: 'red',
-          convert: (text) => text.toUpperCase()
         },
         lowercase: {
           name: 'lowercase',
           icon: '⬇️',
           color: 'blue',
-          convert: (text) => text.toLowerCase()
         },
         titleCase: {
           name: 'Title Case',
           icon: '📝',
           color: 'green',
-          convert: (text) => text.replace(/\\w\\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase())
         },
         sentenceCase: {
           name: 'Sentence case',
           icon: '📄',
           color: 'purple',
-          convert: (text) => text.toLowerCase().replace(/(^\\w|[.!?]\\s+\\w)/g, (c) => c.toUpperCase())
         },
         camelCase: {
           name: 'camelCase',
           icon: '🐫',
           color: 'orange',
-          convert: (text) => {
-            const words = text.toLowerCase().replace(/[^a-zA-Z0-9\\s]/g, '').split(/\\s+/);
-            return words.map((word, i) => i === 0 ? word : word.charAt(0).toUpperCase() + word.slice(1)).join('');
-          }
         },
         pascalCase: {
           name: 'PascalCase',
           icon: '🅿️',
           color: 'indigo',
-          convert: (text) => {
-            const words = text.toLowerCase().replace(/[^a-zA-Z0-9\\s]/g, '').split(/\\s+/);
-            return words.map(word => word.charAt(0).toUpperCase() + word.slice(1)).join('');
-          }
         },
         snakeCase: {
           name: 'snake_case',
           icon: '🐍',
           color: 'teal',
-          convert: (text) => text.toLowerCase().replace(/[^a-zA-Z0-9]+/g, '_').replace(/^_|_$/g, '')
         },
         kebabCase: {
           name: 'kebab-case',
           icon: '🌭',
           color: 'pink',
-          convert: (text) => text.toLowerCase().replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-|-$/g, '')
         },
         constantCase: {
           name: 'CONSTANT_CASE',
           icon: '🔒',
           color: 'cyan',
-          convert: (text) => text.toUpperCase().replace(/[^A-Z0-9]+/g, '_').replace(/^_|_$/g, '')
         },
         dotCase: {
           name: 'dot.case',
           icon: '⚫',
           color: 'gray',
-          convert: (text) => text.toLowerCase().replace(/[^a-zA-Z0-9]+/g, '.').replace(/^\\.|\\.$/g, '')
         },
         alternating: {
           name: 'aLtErNaTiNg CaSe',
           icon: '🔀',
           color: 'yellow',
-          convert: (text) => text.split('').map((char, i) => i % 2 === 0 ? char.toLowerCase() : char.toUpperCase()).join('')
         },
         inverse: {
           name: 'InVeRsE cAsE',
           icon: '🔃',
           color: 'lime',
-          convert: (text) => text.split('').map(char => char === char.toUpperCase() ? char.toLowerCase() : char.toUpperCase()).join('')
         }
       };
 
@@ -270,11 +255,11 @@ function renderCaseConverterPage(lang = DEFAULT_LANGUAGE) {
                 <h3 class="text-xs font-bold text-surface-500 dark:text-surface-400 uppercase tracking-wide">\${config.name}</h3>
               </div>
               <button data-copy-result="\${encodeURIComponent(result)}" aria-label="Copy \${config.name} result" class="copy-result-btn inline-flex items-center justify-center w-6 h-6 rounded text-surface-500 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-                <span class="material-symbols-rounded text-sm" aria-hidden="true" data-i18n="tools.case-converter.ui.desc4">content_copy</span>
+                <span class="material-symbols-rounded text-sm" aria-hidden="true" data-icon="content_copy"></span>
               </button>
             </div>
             <div class="relative">
-              <code class="block text-sm font-mono text-surface-900 dark:text-surface-100 break-words min-h-[1.5em]">\${safeResult || '<span class="opacity-30">...</span>'}</code>
+              <code class="block text-sm font-mono text-surface-900 dark:text-surface-100 break-words min-h-[1.5em]">\${safeResult || '<span class="text-muted-foreground">...</span>'}</code>
             </div>
           </div>
         \`;
@@ -309,7 +294,7 @@ function renderCaseConverterPage(lang = DEFAULT_LANGUAGE) {
 
         // Generate all conversions
         const results = Object.entries(conversions).map(([key, config]) => {
-          const result = config.convert(text);
+          const result = convertCase(text, key);
           return displayConversion(key, config, result);
         }).join('');
 

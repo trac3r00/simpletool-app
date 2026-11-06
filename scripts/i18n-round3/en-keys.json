@@ -1,0 +1,259 @@
+{
+ "case-converter": {},
+ "cidr-calculator": {
+  "r3_0": "Large network"
+ },
+ "code-minifier": {},
+ "color-converter": {},
+ "cron-builder": {
+  "r3_0": "0–7 (0,7 = Sun)",
+  "r3_1": "Step",
+  "r3_2": "Hourly 9am–5pm weekdays"
+ },
+ "curl-studio": {
+  "r3_0": "No progress",
+  "r3_1": "Client certificate"
+ },
+ "email-analyzer": {
+  "r3_0": "\"Routing Hops\""
+ },
+ "encoding-workbench": {
+  "r3_5": "Paste a hash to compare the result against",
+  "r3_6": "Expected hash (optional)",
+  "r3_7": "SHA-384"
+ },
+ "env-var-manager": {
+  "r3_0": "Remember that environment variables are typically strings; if your app needs a boolean or a number, ensure you parse the value correctly in your code."
+ },
+ "htpasswd-generator": {
+  "r3_0": "Copy or Download:",
+  "r3_1": "API Gateways:",
+  "r3_2": "HTTPS is Mandatory:",
+  "r3_3": "deploy:$2y$12$...",
+  "r3_4": "Generate all entries",
+  "r3_5": "Verify password",
+  "r3_6": "Users and passwords",
+  "r3_7": "htpasswd line",
+  "r3_8": "Candidate password",
+  "r3_9": "Request URL for the curl example",
+  "r3_10": "htpasswd file path on the server",
+  "r3_11": "htpasswd flag",
+  "r3_12": "Verdict",
+  "r3_13": "Why",
+  "r3_14": "Bulk entries",
+  "r3_15": "htpasswd file",
+  "r3_16": "Verify an existing entry",
+  "r3_17": "Authorization header",
+  "r3_18": "Header",
+  "r3_19": "curl",
+  "r3_20": "Server configuration",
+  "r3_21": "Which algorithm should you use?",
+  "r3_22": "nginx error: \"crypt_r() failed (22: Invalid argument)\"",
+  "r3_23": "Snippets use the most recent entries generated on this page (a bulk run replaces a single entry). Until you generate one, the username above is shown with a placeholder hash.",
+  "r3_24": "Enter a username and password above."
+ },
+ "http-status-reference": {
+  "r3_0": "The server failed to fulfill an apparently valid request.",
+  "r3_1": "Status codes do not make a request safe or idempotent by themselves. Safety and idempotency come from the request method and application semantics."
+ },
+ "log-masker": {
+  "r3_0": "Regularly audit your application code to prevent PII from being logged in the first place; \"log at the source\" is the best defense.",
+  "r3_1": "US Social Security Numbers",
+  "r3_2": "Phone Numbers"
+ },
+ "markdown-editor": {
+  "r3_0": "Strikethrough",
+  "r3_1": "Blockquote",
+  "r3_2": "Task list",
+  "r3_3": "Link with tooltip",
+  "r3_4": "Lint as",
+  "r3_5": "Off",
+  "r3_6": "Lint findings"
+ },
+ "mermaid-studio": {
+  "r3_0": "Pie chart",
+  "r3_1": "Thick arrow",
+  "r3_2": "Copy SVG",
+  "r3_3": "Download PNG",
+  "r3_4": "PNG background",
+  "r3_5": "Transparent",
+  "r3_6": "Theme background"
+ },
+ "mock-data-generator": {
+  "r3_0": "Acme Corp"
+ },
+ "oauth-debugger": {
+  "r3_0": "Even for confidential clients (server-side apps with a client secret), PKCE is now recommended by OAuth 2.1 as a defense against authorization code interception attacks.",
+  "r3_1": "Redirect URI exact matching required",
+  "r3_2": "Receive access token"
+ },
+ "password-generator": {
+  "r3_0": "Copy:",
+  "r3_1": "Memorable Security:",
+  "r3_2": "Rotate on Breach:"
+ },
+ "regex-visualizer": {
+  "r3_0": "Not a, b, or c",
+  "r3_1": "Between n and m",
+  "r3_2": "Word boundary",
+  "r3_4": "s (dotAll)",
+  "r3_5": "u (unicode)"
+ },
+ "saml-decoder": {
+  "r3_1": "User properties (email, role)",
+  "r3_2": "The most common version is SAML 2.0, which uses security tokens containing \"assertions\" to pass information about a principal (usually a user) between the IdP and the SP.",
+  "r3_3": "Explore Details:",
+  "r3_4": "Development:",
+  "r3_5": "Clock Skew:",
+  "r3_6": "Expected SP entity ID (optional)",
+  "r3_7": "Expected ACS URL (optional)",
+  "r3_8": "Error",
+  "r3_9": "Cause",
+  "r3_10": "Fix",
+  "r3_11": "Key fields",
+  "r3_12": "Diagnostics",
+  "r3_13": "Common SAML errors",
+  "r3_14": "Checked against your clock, plus the expected SP values if you entered them. Signatures are detected, not verified.",
+  "r3_15": "Decoded attributes will appear here."
+ },
+ "secret-scanner": {
+  "r3_0": "Enable \"Include low severity patterns\" for a more thorough scan, but be prepared for more false positives."
+ },
+ "sql-formatter": {
+  "r3_0": "Use the \"Minify\" button if you need to compress your SQL into a single line for use in configuration files or command-line tools."
+ },
+ "ssh-key-generator": {
+  "r3_0": "Older appliances that reject Ed25519",
+  "r3_1": "Set correct permissions",
+  "r3_2": "Key size",
+  "r3_3": "Public key data (base64 chars)",
+  "r3_4": "OpenSSH support since",
+  "r3_5": "When to use",
+  "r3_6": "Ed25519 vs ECDSA vs RSA",
+  "r3_7": "Add the key to GitHub",
+  "r3_8": "Pin the key in ~/.ssh/config",
+  "r3_9": "Store it safely",
+  "r3_10": "Offline equivalent",
+  "r3_11": "Sources",
+  "r3_12": "To generate the key without a browser, run this on your own machine. It asks for a file path and a passphrase."
+ },
+ "svg-optimizer": {
+  "r3_0": "When creating SVGs in design tools, use the \"Outline Stroke\" and \"Simplify Path\" features to reduce the complexity of the generated code before optimization."
+ },
+ "text-diff": {
+  "r3_0": "Lines",
+  "r3_1": "Words",
+  "r3_2": "Characters",
+  "r3_4": "Compare by",
+  "r3_5": "Unified diff",
+  "r3_6": "How the comparison works",
+  "r3_7": "Comparison modes",
+  "r3_8": "Ignore whitespace and ignore case",
+  "r3_9": "Unified diff format",
+  "r3_10": "Common uses",
+  "r3_11": "Always line-based, with 3 lines of context around each change."
+ },
+ "timestamp-converter": {
+  "r3_0": "Be aware of the \"Year 2038 problem,\" where 32-bit signed integers will overflow. Modern systems use 64-bit integers, which solves this for the foreseeable future."
+ },
+ "token-studio": {
+  "r3_1": "Verify with JWKS",
+  "r3_2": "Use the set from the JWKS tab",
+  "r3_3": "JWKS JSON",
+  "r3_4": "Clock skew (seconds)",
+  "r3_5": "EdDSA (Ed25519)",
+  "r3_6": "Skew is the leeway applied to exp, nbf and iat against this device's clock."
+ },
+ "unit-converter": {
+  "r3_0": "When performing multiple conversions in a sequence, keep as many decimal places as possible until the final result to avoid cumulative rounding errors."
+ },
+ "yaml-toml-converter": {
+  "r3_0": "Indentation",
+  "r3_1": "Simple configs — Cargo.toml, pyproject.toml, Hugo",
+  "r3_2": "Prefer TOML for application-level configuration files to provide a clean and obvious interface for end-users who might need to edit them manually."
+ },
+ "pipe": {
+  "r3_0": "Search tools...",
+  "r3_1": "Paste your data here, or try a recipe below...",
+  "r3_2": "Share pipeline (no data included)",
+  "r3_3": "Save to browser",
+  "r3_4": "Clear pipeline",
+  "r3_5": "Share",
+  "r3_6": "Save",
+  "r3_7": "Clear",
+  "r3_8": "+ Add Step",
+  "r3_9": "Copy",
+  "r3_10": "Download",
+  "r3_11": "Input",
+  "r3_12": "Final Output",
+  "r3_13": "Try a recipe",
+  "r3_14": "Add a step"
+ },
+ "public-repos-not-automation": {
+  "r3_0": "maintainers"
+ },
+ "public-repos-yml-builder": {
+  "r3_0": "example"
+ },
+ "webhook-debugger": {
+  "r3_0": "81 85 37 fa 21 3d 7f 9f 4d 51 58",
+  "r3_1": "Parse events",
+  "r3_2": "LLM stream sample",
+  "r3_3": "Decode frames",
+  "r3_4": "RFC 6455 sample",
+  "r3_5": "text/event-stream body",
+  "r3_6": "WebSocket frame bytes (hex)",
+  "r3_7": "HMAC-SHA256",
+  "r3_8": "HMAC-SHA1",
+  "r3_9": "HMAC-SHA512",
+  "r3_10": "Decode a stream capture",
+  "r3_11": "Paste what you captured from a Server-Sent Events response or a WebSocket. This page opens no connections; it only reads what you paste."
+ },
+ "bandwidth-calculator": {
+  "r3_0": "Typical 4G · 20 Mbps",
+  "r3_1": "Typical 5G · 300 Mbps",
+  "r3_2": "Protocol efficiency",
+  "r3_3": "Link rate",
+  "r3_4": "Ideal data rate",
+  "r3_5": "File size",
+  "r3_6": "1,000 Mbps",
+  "r3_7": "Bandwidth and transfer-time reference",
+  "r3_8": "Mbps vs MB/s",
+  "r3_9": "Example transfer times",
+  "r3_10": "How the calculation works",
+  "r3_11": "Estimated share of the link rate available for file data.",
+  "r3_12": "Segments in flight per RTT (BDP / MSS)",
+  "r3_13": "Mbps measures megabits per second; MB/s measures megabytes per second. Since 8 bits make 1 byte, divide a decimal Mbps rate by 8 to get its ideal MB/s rate.",
+  "r3_14": "Ideal times use decimal file sizes and 100% efficiency, with no protocol or storage bottlenecks.",
+  "r3_15": "Convert the file size to bytes and the bandwidth to bits per second, then divide the file's bits by the usable bit rate.",
+  "r3_16": "time (seconds) = file size (bytes) × 8 ÷ [bandwidth (bits/second) × efficiency (%) ÷ 100]",
+  "r3_17": "Decimal units use powers of 1,000 (MB = 1,000,000 bytes); binary units use powers of 1,024 (MiB = 1,048,576 bytes)."
+ },
+ "changelog": {
+  "r3_0": "Release history and recent changes to SimpleTool."
+ },
+ "dns-reference": {
+  "r3_0": "DKIM/SPF/DMARC use TXT records at specific subdomains."
+ },
+ "prompt-template-builder": {
+  "r3_0": "Custom output format"
+ },
+ "token-counter": {
+  "r3_0": "Model",
+  "r3_1": "Context window (tokens)",
+  "r3_2": "Model token count",
+  "r3_3": "Exact",
+  "r3_4": "Token boundaries",
+  "r3_5": "input tokens",
+  "r3_6": "Enter a context window to see usage.",
+  "r3_7": "Token boundaries are shown for exact (OpenAI) encodings once the tokenizer has loaded."
+ },
+ "user-agent-decoder": {
+  "r3_0": "Copy JSON",
+  "r3_1": "Sample library",
+  "r3_2": "JSON Output"
+ },
+ "wireshark-filter": {
+  "r3_0": "ip6"
+ }
+}

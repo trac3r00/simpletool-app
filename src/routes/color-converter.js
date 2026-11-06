@@ -11,6 +11,12 @@ import {
 } from "../utils/content-ui.js";
 import { TOOLS } from "../utils/tool-registry.js";
 import {
+  formatColor,
+  hsvToRgbExact,
+  parseColor,
+  rgbToHsvExact,
+} from "../utils/color-converter-logic.js";
+import {
   DEFAULT_LANGUAGE,
   getToolTranslation,
   normalizeLanguage,
@@ -78,12 +84,12 @@ function renderColorConverterPage(lang = DEFAULT_LANGUAGE) {
               <div class="flex gap-3 items-start">
                 <!-- Saturation/Brightness square -->
                 <div class="relative flex-1">
-                  <canvas id="sb-canvas" width="280" height="280" class="w-full aspect-square rounded-lg cursor-crosshair border border-surface-200 dark:border-surface-700 shadow-sm" aria-label="Saturation and brightness picker"></canvas>
+                  <canvas id="sb-canvas" width="280" height="280" class="w-full aspect-square rounded-lg cursor-crosshair border border-surface-200 dark:border-surface-700 shadow-sm" tabindex="0" role="slider" aria-valuemin="0" aria-valuemax="100" aria-label="Saturation and brightness picker. Arrow keys adjust; hold Shift for larger steps."></canvas>
                   <div id="sb-cursor" class="absolute w-4 h-4 rounded-full border-2 border-white shadow-md pointer-events-none" style="top:10px;left:268px;box-shadow:0 0 0 1px rgba(0,0,0,.3), 0 2px 4px rgba(0,0,0,.3);"></div>
                 </div>
                 <!-- Hue vertical slider -->
                 <div class="relative" style="width:2rem;">
-                  <canvas id="hue-canvas" width="32" height="280" class="w-full rounded-lg cursor-pointer border border-surface-200 dark:border-surface-700 shadow-sm" style="height:100%;aspect-ratio:32/280;" aria-label="Hue slider"></canvas>
+                  <canvas id="hue-canvas" width="32" height="280" class="w-full rounded-lg cursor-pointer border border-surface-200 dark:border-surface-700 shadow-sm" style="height:100%;aspect-ratio:32/280;" tabindex="0" role="slider" aria-valuemin="0" aria-valuemax="359" aria-orientation="vertical" aria-label="Hue slider"></canvas>
                   <div id="hue-cursor" class="absolute left-0 right-0 h-2 rounded-sm border-2 border-white shadow-md pointer-events-none" style="top:134px;box-shadow:0 0 0 1px rgba(0,0,0,.3), 0 1px 3px rgba(0,0,0,.3);"></div>
                 </div>
               </div>
@@ -97,8 +103,8 @@ function renderColorConverterPage(lang = DEFAULT_LANGUAGE) {
               </div>
               <div class="flex-1 space-y-1">
                 <label for="manual-input" class="label"><span data-i18n="tools.color-converter.ui.label1">Manual Input</span></label>
-                <input type="text" id="manual-input" placeholder="#FF5733 or rgb(255,87,51) or hsl(14,100%,60%)" data-i18n-placeholder="tools.color-converter.ui.placeholder3" class="input font-mono" data-tooltip="Enter any color format: #hex, rgb(), or hsl()" data-i18n-tooltip="tools.color-converter.ui.tip0" aria-describedby="manual-input-error">
-                <p class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.color-converter.ui.desc4">Supports #hex, rgb(r,g,b), hsl(h,s,l)</p>
+                <input type="text" id="manual-input" placeholder="#FF5733, rgb(255 87 51), hsl(14,100%,60%), tomato" data-i18n-placeholder="tools.color-converter.ui.placeholder3" class="input font-mono" data-tooltip="Enter any color format: #hex, rgb(), or hsl()" data-i18n-tooltip="tools.color-converter.ui.tip0" aria-describedby="manual-input-error">
+                <p class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.color-converter.ui.desc4">Supports #hex (3/4/6/8 digits), rgb()/rgba(), hsl()/hsla(), hsv() and CSS color names</p>
                 <div id="manual-input-error" role="alert" class="hidden rounded-lg border border-error-200 dark:border-error-800 bg-error-50 dark:bg-error-900/30 text-sm text-error-700 dark:text-error-200 px-3 py-2" data-i18n="tools.color-converter.ui.error7">Couldn't recognize that color. Try #hex, rgb(), or hsl().</div>
               </div>
             </div>
@@ -118,7 +124,7 @@ function renderColorConverterPage(lang = DEFAULT_LANGUAGE) {
                 <div class="flex justify-between items-center mb-2">
                   <span class="text-xs font-bold text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-tooltip="6-digit hexadecimal color code" data-i18n-tooltip="tools.color-converter.ui.tip1">HEX</span>
                    <button data-copy-target="hex-value" class="copy-btn inline-flex items-center justify-center w-6 h-6 rounded text-surface-500 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" aria-label="Copy HEX color value">
-                     <span class="material-symbols-rounded text-sm" aria-hidden="true" data-i18n="tools.color-converter.ui.desc5">content_copy</span>
+                     <span class="material-symbols-rounded text-sm" aria-hidden="true" data-icon="content_copy"></span>
                    </button>
                 </div>
                 <div id="hex-value" class="text-base font-mono font-bold text-surface-900 dark:text-white break-all">#3b82f6</div>
@@ -128,7 +134,7 @@ function renderColorConverterPage(lang = DEFAULT_LANGUAGE) {
                 <div class="flex justify-between items-center mb-2">
                   <span class="text-xs font-bold text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-tooltip="Red, Green, Blue — 0 to 255 each" data-i18n-tooltip="tools.color-converter.ui.tip2">RGB</span>
                    <button data-copy-target="rgb-value" class="copy-btn inline-flex items-center justify-center w-6 h-6 rounded text-surface-500 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" aria-label="Copy RGB color value">
-                     <span class="material-symbols-rounded text-sm" aria-hidden="true" data-i18n="tools.color-converter.ui.desc5">content_copy</span>
+                     <span class="material-symbols-rounded text-sm" aria-hidden="true" data-icon="content_copy"></span>
                    </button>
                 </div>
                 <div id="rgb-value" class="text-base font-mono font-bold text-surface-900 dark:text-white break-all">rgb(59, 130, 246)</div>
@@ -138,7 +144,7 @@ function renderColorConverterPage(lang = DEFAULT_LANGUAGE) {
                 <div class="flex justify-between items-center mb-2">
                   <span class="text-xs font-bold text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-tooltip="Hue 0-360°, Saturation 0-100%, Lightness 0-100%" data-i18n-tooltip="tools.color-converter.ui.tip3">HSL</span>
                    <button data-copy-target="hsl-value" class="copy-btn inline-flex items-center justify-center w-6 h-6 rounded text-surface-500 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" aria-label="Copy HSL color value">
-                     <span class="material-symbols-rounded text-sm" aria-hidden="true" data-i18n="tools.color-converter.ui.desc5">content_copy</span>
+                     <span class="material-symbols-rounded text-sm" aria-hidden="true" data-icon="content_copy"></span>
                    </button>
                 </div>
                 <div id="hsl-value" class="text-base font-mono font-bold text-surface-900 dark:text-white break-all">hsl(217, 91%, 60%)</div>
@@ -148,7 +154,7 @@ function renderColorConverterPage(lang = DEFAULT_LANGUAGE) {
                 <div class="flex justify-between items-center mb-2">
                   <span class="text-xs font-bold text-surface-500 dark:text-surface-400 uppercase tracking-wide">HSV</span>
                    <button data-copy-target="hsv-value" class="copy-btn inline-flex items-center justify-center w-6 h-6 rounded text-surface-500 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" aria-label="Copy HSV color value">
-                     <span class="material-symbols-rounded text-sm" aria-hidden="true" data-i18n="tools.color-converter.ui.desc5">content_copy</span>
+                     <span class="material-symbols-rounded text-sm" aria-hidden="true" data-icon="content_copy"></span>
                    </button>
                 </div>
                 <div id="hsv-value" class="text-base font-mono font-bold text-surface-900 dark:text-white break-all">hsv(217, 76%, 96%)</div>
@@ -189,7 +195,7 @@ function renderColorConverterPage(lang = DEFAULT_LANGUAGE) {
         currentLang,
       )}
     </div>
-    ${createRelatedToolsSection(relatedToolsData)}
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">${createRelatedToolsSection(relatedToolsData)}</div>
   `;
 
   const script = `
@@ -206,152 +212,28 @@ function renderColorConverterPage(lang = DEFAULT_LANGUAGE) {
       const hueCtx = hueCanvas.getContext('2d');
       const hueCursor = document.getElementById('hue-cursor');
 
-      /* Current HSV state */
+      /* Exact RGB is the source of truth; HSV floats only drive the canvases. */
       let currentH = 217, currentS = 76, currentV = 96;
+      let currentColor = { r: 59, g: 130, b: 246, a: 1 };
 
-      /* ===== Color Conversion Helpers ===== */
-      function hexToRgb(hex) {
-        const result = /^#?([a-f\\d]{2})([a-f\\d]{2})([a-f\\d]{2})$/i.exec(hex);
-        return result ? {
-          r: parseInt(result[1], 16),
-          g: parseInt(result[2], 16),
-          b: parseInt(result[3], 16)
-        } : null;
-      }
+      const parseColor = ${parseColor.toString()};
+      const rgbToHsvExact = ${rgbToHsvExact.toString()};
+      const hsvToRgbExact = ${hsvToRgbExact.toString()};
+      const formatColor = ${formatColor.toString()};
 
-      function rgbToHex(r, g, b) {
-        return '#' + [r, g, b].map(x => {
-          const hex = x.toString(16);
-          return hex.length === 1 ? '0' + hex : hex;
-        }).join('');
-      }
+      function hsvToRgb(h, s, v) { return hsvToRgbExact(h, s, v); }
 
-      function parseRgb(str) {
-        const match = str.match(/rgba?\\s*\\(\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)/i);
-        if (match) {
-          return {
-            r: parseInt(match[1]),
-            g: parseInt(match[2]),
-            b: parseInt(match[3])
-          };
-        }
-        return null;
-      }
-
-      function hslToRgb(h, s, l) {
-        h /= 360;
-        s /= 100;
-        l /= 100;
-
-        let r, g, b;
-        if (s === 0) {
-          r = g = b = l;
-        } else {
-          const hue2rgb = (p, q, t) => {
-            if (t < 0) t += 1;
-            if (t > 1) t -= 1;
-            if (t < 1/6) return p + (q - p) * 6 * t;
-            if (t < 1/2) return q;
-            if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-            return p;
-          };
-
-          const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-          const p = 2 * l - q;
-          r = hue2rgb(p, q, h + 1/3);
-          g = hue2rgb(p, q, h);
-          b = hue2rgb(p, q, h - 1/3);
-        }
-
-        return {
-          r: Math.round(r * 255),
-          g: Math.round(g * 255),
-          b: Math.round(b * 255)
-        };
-      }
-
-      function parseHsl(str) {
-        const match = str.match(/hsla?\\s*\\(\\s*(\\d+)\\s*,\\s*(\\d+)%?\\s*,\\s*(\\d+)%?/i);
-        if (match) {
-          return {
-            h: parseInt(match[1]),
-            s: parseInt(match[2]),
-            l: parseInt(match[3])
-          };
-        }
-        return null;
-      }
-
-      function rgbToHsl(r, g, b) {
-        r /= 255; g /= 255; b /= 255;
-        const max = Math.max(r, g, b), min = Math.min(r, g, b);
-        let h, s, l = (max + min) / 2;
-
-        if (max === min) {
-          h = s = 0;
-        } else {
-          const d = max - min;
-          s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-          switch (max) {
-            case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
-            case g: h = ((b - r) / d + 2) / 6; break;
-            case b: h = ((r - g) / d + 4) / 6; break;
-          }
-        }
-
-        return {
-          h: Math.round(h * 360),
-          s: Math.round(s * 100),
-          l: Math.round(l * 100)
-        };
-      }
-
-      function rgbToHsv(r, g, b) {
-        r /= 255; g /= 255; b /= 255;
-        const max = Math.max(r, g, b), min = Math.min(r, g, b);
-        const d = max - min;
-        const s = max === 0 ? 0 : d / max;
-        const v = max;
-
-        let h;
-        if (max === min) {
-          h = 0;
-        } else {
-          switch (max) {
-            case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
-            case g: h = ((b - r) / d + 2) / 6; break;
-            case b: h = ((r - g) / d + 4) / 6; break;
-          }
-        }
-
-        return {
-          h: Math.round(h * 360),
-          s: Math.round(s * 100),
-          v: Math.round(v * 100)
-        };
-      }
-
-      function hsvToRgb(h, s, v) {
-        h /= 360; s /= 100; v /= 100;
-        let r, g, b;
-        const i = Math.floor(h * 6);
-        const f = h * 6 - i;
-        const p = v * (1 - s);
-        const q = v * (1 - f * s);
-        const t = v * (1 - (1 - f) * s);
-        switch (i % 6) {
-          case 0: r = v; g = t; b = p; break;
-          case 1: r = q; g = v; b = p; break;
-          case 2: r = p; g = v; b = t; break;
-          case 3: r = p; g = q; b = v; break;
-          case 4: r = t; g = p; b = v; break;
-          case 5: r = v; g = p; b = q; break;
-        }
-        return {
-          r: Math.round(r * 255),
-          g: Math.round(g * 255),
-          b: Math.round(b * 255)
-        };
+      /* Named colors and any other syntax the browser understands: let the canvas normalize it. */
+      const normalizeCtx = document.createElement('canvas').getContext('2d');
+      function resolveColor(value) {
+        const direct = parseColor(value);
+        if (direct) return direct;
+        /* Our own grammar already rejected these; CSS would silently clamp e.g. rgb(300,0,0). */
+        if (/^(#|rgba?\\s*\\(|hsla?\\s*\\(|hsva?\\s*\\()/i.test(value)) return null;
+        if (!window.CSS || !CSS.supports('color', value)) return null;
+        normalizeCtx.fillStyle = '#000000';
+        normalizeCtx.fillStyle = value;
+        return parseColor(normalizeCtx.fillStyle);
       }
 
       /* ===== Draw Hue Strip ===== */
@@ -415,10 +297,20 @@ function renderColorConverterPage(lang = DEFAULT_LANGUAGE) {
         updateHueCursor();
 
         const rgb = hsvToRgb(currentH, currentS, currentV);
-        const hex = rgbToHex(rgb.r, rgb.g, rgb.b);
+        currentColor = { r: rgb.r, g: rgb.g, b: rgb.b, a: currentColor.a };
+        renderColor();
+      }
 
-        picker.value = hex;
-        updateColors(hex);
+      /* Set an exact color from text/native input without routing it through rounded HSV. */
+      function setColor(color) {
+        currentColor = color;
+        const hsv = rgbToHsvExact(color.r, color.g, color.b);
+        if (hsv.s > 0) currentH = hsv.h;
+        currentS = hsv.s; currentV = hsv.v;
+        drawSBSquare(currentH);
+        updateSBCursor();
+        updateHueCursor();
+        renderColor();
       }
 
       /* ===== SB Canvas Interaction ===== */
@@ -430,8 +322,8 @@ function renderColorConverterPage(lang = DEFAULT_LANGUAGE) {
         const clientY = e.touches ? e.touches[0].clientY : e.clientY;
         const x = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
         const y = Math.max(0, Math.min(1, (clientY - rect.top) / rect.height));
-        currentS = Math.round(x * 100);
-        currentV = Math.round((1 - y) * 100);
+        currentS = x * 100;
+        currentV = (1 - y) * 100;
         syncFromHSV(true);
       }
 
@@ -449,7 +341,7 @@ function renderColorConverterPage(lang = DEFAULT_LANGUAGE) {
         const rect = hueCanvas.getBoundingClientRect();
         const clientY = e.touches ? e.touches[0].clientY : e.clientY;
         const y = Math.max(0, Math.min(1, (clientY - rect.top) / rect.height));
-        currentH = Math.round(y * 360);
+        currentH = Math.min(359.999, y * 360);
         syncFromHSV(false);
       }
 
@@ -464,32 +356,50 @@ function renderColorConverterPage(lang = DEFAULT_LANGUAGE) {
       const colorLive = document.getElementById('color-live');
       let _colorAnnounce;
 
-      function updateColors(hex) {
-        const rgb = hexToRgb(hex);
-        if (!rgb) return;
-
-        const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
-        const hsv = rgbToHsv(rgb.r, rgb.g, rgb.b);
-
-        preview.style.backgroundColor = hex;
-        document.getElementById('hex-value').textContent = hex.toUpperCase();
-        document.getElementById('rgb-value').textContent = 'rgb(' + rgb.r + ', ' + rgb.g + ', ' + rgb.b + ')';
-        document.getElementById('hsl-value').textContent = 'hsl(' + hsl.h + ', ' + hsl.s + '%, ' + hsl.l + '%)';
-        document.getElementById('hsv-value').textContent = 'hsv(' + hsv.h + ', ' + hsv.s + '%, ' + hsv.v + '%)';
+      function renderColor() {
+        const out = formatColor(currentColor);
+        const opaqueHex = out.hex.slice(0, 7);
+        picker.value = opaqueHex.toLowerCase();
+        preview.style.backgroundColor = out.rgb;
+        document.getElementById('hex-value').textContent = out.hex;
+        document.getElementById('rgb-value').textContent = out.rgb;
+        document.getElementById('hsl-value').textContent = out.hsl;
+        document.getElementById('hsv-value').textContent = out.hsv;
+        sbCanvas.setAttribute('aria-valuetext', 'Saturation ' + Math.round(currentS) + '%, brightness ' + Math.round(currentV) + '%');
+        sbCanvas.setAttribute('aria-valuenow', String(Math.round(currentS)));
+        hueCanvas.setAttribute('aria-valuenow', String(Math.round(currentH)));
 
         clearTimeout(_colorAnnounce);
-        _colorAnnounce = setTimeout(() => { colorLive.textContent = hex.toUpperCase(); }, 400);
+        _colorAnnounce = setTimeout(() => { colorLive.textContent = out.hex; }, 400);
       }
 
       picker.addEventListener('input', (e) => {
-        const hex = e.target.value;
-        const rgb = hexToRgb(hex);
-        if (rgb) {
-          const hsv = rgbToHsv(rgb.r, rgb.g, rgb.b);
-          currentH = hsv.h; currentS = hsv.s; currentV = hsv.v;
-          syncFromHSV(false);
-        }
+        const color = parseColor(e.target.value);
+        if (color) setColor({ r: color.r, g: color.g, b: color.b, a: currentColor.a });
       });
+
+      /* ===== Keyboard control for the canvas pickers ===== */
+      sbCanvas.addEventListener('keydown', (e) => {
+        const step = e.shiftKey ? 10 : 1;
+        if (e.key === 'ArrowRight') currentS = Math.min(100, currentS + step);
+        else if (e.key === 'ArrowLeft') currentS = Math.max(0, currentS - step);
+        else if (e.key === 'ArrowUp') currentV = Math.min(100, currentV + step);
+        else if (e.key === 'ArrowDown') currentV = Math.max(0, currentV - step);
+        else return;
+        e.preventDefault();
+        syncFromHSV(true);
+      });
+      hueCanvas.addEventListener('keydown', (e) => {
+        const step = e.shiftKey ? 10 : 1;
+        if (e.key === 'ArrowDown' || e.key === 'ArrowRight') currentH = (currentH + step) % 360;
+        else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') currentH = (currentH - step + 360) % 360;
+        else if (e.key === 'Home') currentH = 0;
+        else if (e.key === 'End') currentH = 359;
+        else return;
+        e.preventDefault();
+        syncFromHSV(false);
+      });
+      window.addEventListener('resize', () => { updateSBCursor(); updateHueCursor(); });
 
       const manualInputError = document.getElementById('manual-input-error');
 
@@ -505,37 +415,13 @@ function renderColorConverterPage(lang = DEFAULT_LANGUAGE) {
 
       manualInput.addEventListener('input', (e) => {
         const value = e.target.value.trim();
-        let hex = null;
-
-        // Try HEX format
-        if (/^#?[0-9A-Fa-f]{6}$/.test(value)) {
-          hex = value.startsWith('#') ? value : '#' + value;
-        }
-        // Try RGB format
-        else if (value.toLowerCase().includes('rgb')) {
-          const rgb = parseRgb(value);
-          if (rgb) {
-            hex = rgbToHex(rgb.r, rgb.g, rgb.b);
-          }
-        }
-        // Try HSL format
-        else if (value.toLowerCase().includes('hsl')) {
-          const hsl = parseHsl(value);
-          if (hsl) {
-            const rgb = hslToRgb(hsl.h, hsl.s, hsl.l);
-            hex = rgbToHex(rgb.r, rgb.g, rgb.b);
-          }
-        }
-
-        if (hex) {
-          const rgb = hexToRgb(hex);
-          if (rgb) {
-            const hsv = rgbToHsv(rgb.r, rgb.g, rgb.b);
-            currentH = hsv.h; currentS = hsv.s; currentV = hsv.v;
-            syncFromHSV(false);
-          }
+        if (value.length === 0) {
           clearManualInputError();
-        } else if (value.length === 0) {
+          return;
+        }
+        const color = resolveColor(value);
+        if (color) {
+          setColor(color);
           clearManualInputError();
         } else {
           showManualInputError();
@@ -564,7 +450,7 @@ function renderColorConverterPage(lang = DEFAULT_LANGUAGE) {
 
       /* ===== Init ===== */
       drawHueStrip();
-      syncFromHSV(false);
+      setColor(currentColor);
     </script>
   `;
 

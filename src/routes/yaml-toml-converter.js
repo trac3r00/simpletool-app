@@ -16,6 +16,7 @@ import {
   normalizeLanguage,
   resolveRequestLanguage,
 } from "../utils/i18n.js";
+import { CONFIG_CONVERTER_FUNCTIONS } from "../utils/yaml-toml-converter-logic.js";
 
 export async function handleDataConverterRoutes(request, url) {
   const { pathname } = url;
@@ -131,7 +132,7 @@ function renderDataConverterPage(lang = DEFAULT_LANGUAGE) {
             <tr><td>Comments</td><td>❌ None</td><td><code># comment</code></td><td><code># comment</code></td></tr>
             <tr><td>Strings</td><td><code>"double only"</code></td><td><code>bare or "quoted"</code></td><td><code>"basic"</code> or <code>'literal'</code></td></tr>
             <tr><td>Arrays</td><td><code>[1, 2]</code></td><td><code>- 1</code> (newline each)</td><td><code>[1, 2]</code></td></tr>
-            <tr><td>Nesting</td><td><code>{"a":{"b":1}}</code></td><td>Indentation</td><td><code>[a.b]</code> sections</td></tr>
+            <tr><td>Nesting</td><td><code>{"a":{"b":1}}</code></td><td data-i18n="tools.yaml-toml-converter.ui.r3_0">Indentation</td><td><code>[a.b]</code> sections</td></tr>
           </table>`,
         },
         {
@@ -140,7 +141,7 @@ function renderDataConverterPage(lang = DEFAULT_LANGUAGE) {
           <table>
             <tr><td><strong>JSON</strong></td><td>APIs, data exchange, package.json, tsconfig.json</td></tr>
             <tr><td><strong>YAML</strong></td><td>Config files, Kubernetes manifests, CI/CD pipelines, Docker Compose</td></tr>
-            <tr><td><strong>TOML</strong></td><td>Simple configs — Cargo.toml, pyproject.toml, Hugo</td></tr>
+            <tr><td><strong>TOML</strong></td><td data-i18n="tools.yaml-toml-converter.ui.r3_1">Simple configs — Cargo.toml, pyproject.toml, Hugo</td></tr>
           </table>`,
         },
       ])}
@@ -167,7 +168,7 @@ function renderDataConverterPage(lang = DEFAULT_LANGUAGE) {
           {
             title: "Pro Tips",
             content:
-              '<ul><li>Use YAML for CI/CD pipelines where readability of complex, nested structures is essential for maintainability.</li><li>Prefer TOML for application-level configuration files to provide a clean and obvious interface for end-users who might need to edit them manually.</li><li>When converting from YAML to JSON, be aware of YAML\'s "Norway problem" (where <code>NO</code> can be interpreted as <code>false</code>) and ensure your data types are preserved correctly.</li></ul>',
+              '<ul><li>Use YAML for CI/CD pipelines where readability of complex, nested structures is essential for maintainability.</li><li data-i18n="tools.yaml-toml-converter.ui.r3_2">Prefer TOML for application-level configuration files to provide a clean and obvious interface for end-users who might need to edit them manually.</li><li>When converting from YAML to JSON, be aware of YAML\'s "Norway problem" (where <code>NO</code> can be interpreted as <code>false</code>) and ensure your data types are preserved correctly.</li></ul>',
           },
         ],
         "yaml-toml-converter",
@@ -194,22 +195,24 @@ function renderDataConverterPage(lang = DEFAULT_LANGUAGE) {
 
       var SAMPLE = 'name: simpletool\\nversion: 1.0\\ndescription: A useful config file\\ntags:\\n  - web\\n  - api\\ndatabase:\\n  host: localhost\\n  port: 5432';
 
-      function showError(msg) {
+      var ERROR_CLASSES = ['border-error-200', 'dark:border-error-800', 'bg-error-50', 'dark:bg-error-900/30', 'text-error-700', 'dark:text-error-200'];
+      var SUCCESS_CLASSES = ['border-success-200', 'dark:border-success-800', 'bg-success-50', 'dark:bg-success-900/20', 'text-success-700', 'dark:text-success-300'];
+      function showMessage(msg, ok) {
         errorEl.textContent = msg;
+        errorEl.classList.remove.apply(errorEl.classList, ok ? ERROR_CLASSES : SUCCESS_CLASSES);
+        errorEl.classList.add.apply(errorEl.classList, ok ? SUCCESS_CLASSES : ERROR_CLASSES);
+        errorEl.setAttribute('role', ok ? 'status' : 'alert');
         errorEl.classList.remove('hidden');
       }
+      function showError(msg) { showMessage(msg, false); }
       function clearError() {
         errorEl.classList.add('hidden');
         errorEl.textContent = '';
       }
 
-      function detectFormat(src) {
-        var s = src.trim();
-        if (!s) return 'unknown';
-        if (s[0] === '{' || s[0] === '[') return 'json';
-        if (/^[a-zA-Z_][\\w.-]* *= */.test(s) && s.indexOf(':') === -1) return 'toml';
-        return 'yaml';
-      }
+      // Inlined from src/utils/yaml-toml-converter-logic.js (tested in yaml-toml-converter-logic.test.js).
+      ${CONFIG_CONVERTER_FUNCTIONS.map((fn) => fn.toString()).join("\n")}
+      var detectFormat = detectConfigFormat;
 
       function parseInput(src) {
         var fmt = formatSelect.value === 'auto' ? detectFormat(src) : formatSelect.value;
@@ -218,49 +221,20 @@ function renderDataConverterPage(lang = DEFAULT_LANGUAGE) {
           return JSON.parse(src);
         } else if (fmt === 'yaml') {
           if (!window.jsyaml) throw new Error(_t('tools.yaml-toml-converter.js.text3', 'js-yaml not loaded.'));
-          return window.jsyaml.load(src);
+          try {
+            return window.jsyaml.load(src);
+          } catch (e) {
+            // A Kubernetes-style stream ("---" between documents) becomes an array of documents.
+            if (!/single document/.test(e.message)) throw e;
+            var docs = window.jsyaml.loadAll(src);
+            detectedEl.textContent = 'yaml (' + docs.length + ' documents)';
+            return docs;
+          }
         } else if (fmt === 'toml') {
           if (!window.toml) throw new Error('toml library not loaded.');
           return window.toml.parse(src);
         }
         throw new Error('Unknown format');
-      }
-
-      function objToToml(obj, prefix) {
-        prefix = prefix || '';
-        var lines = [];
-        var tables = [];
-        Object.keys(obj).forEach(function(k) {
-          var v = obj[k];
-          var fullKey = prefix ? prefix + '.' + k : k;
-          if (v === null || v === undefined) {
-            return;
-          } else if (typeof v === 'boolean') {
-            lines.push(k + ' = ' + v);
-          } else if (typeof v === 'number') {
-            lines.push(k + ' = ' + v);
-          } else if (typeof v === 'string') {
-            lines.push(k + ' = ' + JSON.stringify(v));
-          } else if (Array.isArray(v)) {
-            var allPrimitive = v.every(function(item) {
-              return typeof item !== 'object' || item === null;
-            });
-            if (allPrimitive) {
-              lines.push(k + ' = [' + v.map(function(item) {
-                return typeof item === 'string' ? JSON.stringify(item) : String(item);
-              }).join(', ') + ']');
-            } else {
-              v.forEach(function(item) {
-                tables.push('[[' + fullKey + ']]');
-                tables.push(objToToml(item, ''));
-              });
-            }
-          } else if (typeof v === 'object') {
-            tables.push('[' + fullKey + ']');
-            tables.push(objToToml(v, fullKey));
-          }
-        });
-        return lines.concat(tables).join('\\n');
       }
 
       function countKeys(obj) {
@@ -283,7 +257,7 @@ function renderDataConverterPage(lang = DEFAULT_LANGUAGE) {
           yamlOut.textContent = _t('tools.yaml-toml-converter.js.text4', '⚠️ YAML conversion failed:') + ' ' + e.message;
         }
         try {
-          tomlOut.textContent = objToToml(data, '');
+          tomlOut.textContent = toToml(data);
           document.querySelector('[data-copy="toml"]').disabled = false;
         } catch(e) {
           tomlOut.textContent = _t('tools.yaml-toml-converter.js.text6', '⚠️ TOML conversion failed:') + ' ' + e.message;
@@ -323,8 +297,7 @@ function renderDataConverterPage(lang = DEFAULT_LANGUAGE) {
         if (!src) { showError('Please enter some configuration data.'); return; }
         try {
           parseInput(src);
-          errorEl.textContent = '\\u2713 Valid ' + (formatSelect.value === 'auto' ? detectFormat(src) : formatSelect.value).toUpperCase();
-          errorEl.classList.remove('hidden');
+          showMessage('\\u2713 Valid ' + (formatSelect.value === 'auto' ? detectFormat(src) : formatSelect.value).toUpperCase(), true);
         } catch(e) {
           showError(e.message);
         }

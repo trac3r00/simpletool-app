@@ -338,7 +338,7 @@ export function renderPublicReposNotAutomationSection(lang = DEFAULT_LANGUAGE) {
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label for="decision-owner" class="label" data-i18n="tools.public-repos-not-automation.ui.label1">Decision owner</label>
-                  <input id="decision-owner" class="input" value="maintainers" placeholder="maintainers" />
+                  <input id="decision-owner" class="input" value="maintainers" placeholder="maintainers" data-i18n-placeholder="tools.public-repos-not-automation.ui.r3_0" />
                 </div>
                 <div>
                   <label for="review-window" class="label" data-i18n="tools.public-repos-not-automation.ui.label2">Review window</label>
@@ -514,24 +514,32 @@ export function renderPublicReposNotAutomationSection(lang = DEFAULT_LANGUAGE) {
               return [];
             }
           }
-          const lines = text.split(/\n+/).map((line) => line.trim()).filter(Boolean);
-          const fields = {};
-          const freeform = [];
+          // Same contract as the exported parsePublicReposNoAutomationInput:
+          // key:value blocks separated by blank lines are one task each;
+          // otherwise every line is its own task (a repo slug/URL or a task).
           const fieldNames = ['repo', 'repository', 'task', 'workflow', 'owner', 'cadence', 'risk', 'review', 'next-review', 'review-window', 'notes', 'description', 'language'];
-          lines.forEach((line) => {
+          const fieldOf = (line) => {
             const match = line.match(/^([A-Za-z][A-Za-z0-9_-]*)\s*:\s*(.+)$/);
-            if (match && fieldNames.includes(match[1].toLowerCase())) {
-              fields[match[1].toLowerCase()] = match[2].trim();
-            } else {
-              freeform.push(line);
-            }
-          });
-          if (!Object.keys(fields).length && freeform.length === 1) {
-            const slug = repoSlugFromToken(freeform[0]);
-            if (slug) return [createTask({ repo: slug })];
+            return match && fieldNames.includes(match[1].toLowerCase()) ? match : null;
+          };
+          const blocks = text.split(/\n\s*\n/).map((block) => block.trim()).filter(Boolean);
+          if (blocks.some((block) => block.split(/\n+/).some((line) => fieldOf(line.trim())))) {
+            return blocks.map((block) => {
+              const fields = {};
+              const freeform = [];
+              block.split(/\n+/).map((line) => line.trim()).filter(Boolean).forEach((line) => {
+                const match = fieldOf(line);
+                if (match) fields[match[1].toLowerCase()] = match[2].trim();
+                else freeform.push(line);
+              });
+              if (!fields.task && freeform.length > 0) fields.task = freeform.join(' ');
+              return createTask(fields);
+            });
           }
-          if (!fields.task && freeform.length > 0) fields.task = freeform.join(' ');
-          return [createTask(fields)];
+          return text.split(/\n+/).map((line) => line.trim()).filter(Boolean).map((line) => {
+            const slug = repoSlugFromToken(line);
+            return slug ? createTask({ repo: slug }) : createTask({ task: line });
+          });
         }
 
         function showError(message) {
@@ -572,7 +580,7 @@ export function renderPublicReposNotAutomationSection(lang = DEFAULT_LANGUAGE) {
             '',
             '## Why this stays manual',
             reasonLines,
-            details ? '\n## Repository details\n' + details : '',
+            ...(details ? ['', '## Repository details', details] : []),
             '',
             '## Manual stewardship',
             '- Keep the task visible in Kanban with a named owner.',
@@ -667,11 +675,19 @@ export function renderPublicReposNotAutomationSection(lang = DEFAULT_LANGUAGE) {
         });
         els.copyDecision.addEventListener('click', () => copyFrom(els.decision, els.copyDecision));
         els.copyChecklist.addEventListener('click', () => copyFrom(els.checklist, els.copyChecklist));
+        // Once a record is on screen, keep it in sync with the controls that
+        // feed it instead of leaving the stats and the record disagreeing.
+        function refresh() {
+          if (els.decision.value) composeDecision();
+          else updateStats(selectedReasons());
+        }
         reasons.forEach((reason) => {
           const input = $('reason-' + reason.id);
-          if (input) input.addEventListener('change', () => updateStats(selectedReasons()));
+          if (input) input.addEventListener('change', refresh);
         });
-        els.review.addEventListener('change', () => updateStats(selectedReasons()));
+        els.review.addEventListener('change', refresh);
+        els.owner.addEventListener('change', refresh);
+        els.threshold.addEventListener('change', refresh);
 
         els.task.value = sample;
         composeDecision();

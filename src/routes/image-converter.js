@@ -323,6 +323,9 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
         var downloadName = 'converted-image.png';
 
         var MIME = { png: 'image/png', jpeg: 'image/jpeg', webp: 'image/webp' };
+        // Chrome/Firefox canvas limits; larger targets make toBlob() return null.
+        var MAX_CANVAS_SIDE = 32767;
+        var MAX_CANVAS_AREA = 268435456;
 
         function T(key, fallback) {
           return window._t ? window._t(key, fallback) : fallback;
@@ -434,11 +437,29 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
 
         fileInput.addEventListener('change', function () {
           if (fileInput.files && fileInput.files.length) handleFile(fileInput.files[0]);
+          // Clearing lets the user pick the same file again after an error.
+          fileInput.value = '';
         });
+
+        // A new pick must never leave the previous image or result usable.
+        function resetResult() {
+          convertedBlob = null;
+          downloadBtn.disabled = true;
+          convertedCanvas.classList.add('hidden');
+          convertedPlaceholder.classList.remove('hidden');
+          convertedInfo.classList.add('hidden');
+        }
 
         function handleFile(file) {
           if (!file) return;
           showError('');
+          resetResult();
+          originalImage = null;
+          originalFile = null;
+          convertBtn.disabled = true;
+          originalPreview.classList.add('hidden');
+          originalPlaceholder.classList.remove('hidden');
+          fileInfo.classList.add('hidden');
 
           if (!file.type || file.type.indexOf('image/') !== 0) {
             showError(T('tools.image-converter.js.alert0', 'Please upload a valid image file.'));
@@ -527,6 +548,12 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
           if (convertSpinner) convertSpinner.classList.remove('hidden');
 
           var size = targetSize();
+          if (size.width > MAX_CANVAS_SIDE || size.height > MAX_CANVAS_SIDE || size.width * size.height > MAX_CANVAS_AREA) {
+            convertBtn.disabled = false;
+            if (convertSpinner) convertSpinner.classList.add('hidden');
+            showError('Output size ' + size.width + ' x ' + size.height + 'px is larger than a browser canvas can hold (max ' + MAX_CANVAS_SIDE + 'px per side, ' + Math.round(MAX_CANVAS_AREA / 1e6) + ' megapixels). Choose smaller dimensions.');
+            return;
+          }
           convertedCanvas.width = size.width;
           convertedCanvas.height = size.height;
 
@@ -551,7 +578,7 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
             if (convertSpinner) convertSpinner.classList.add('hidden');
 
             if (!blob) {
-              showError(T('tools.image-converter.js.text4', 'Your browser could not encode that format. Try PNG instead.'));
+              showError(T('tools.image-converter.js.text4', 'Your browser could not encode that format. Try PNG instead.') + ' (If the output is very large, try smaller dimensions.)');
               return;
             }
 
@@ -630,7 +657,7 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
         currentLang,
       )}
     </div>
-    ${createRelatedToolsSection(relatedToolsData)}
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">${createRelatedToolsSection(relatedToolsData)}</div>
   `;
 
   const customStyles = `

@@ -59,10 +59,10 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
             <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50 mb-4" data-i18n="tools.css-gradient.ui.heading18">🔧 Gradient Type</h2>
 
             <div class="grid grid-cols-2 gap-3">
-               <button id="type-linear" class="gradient-type-btn" data-tooltip="Gradient along a straight line" data-i18n-tooltip="tools.css-gradient-generator.ui.tip0" py-3 px-4 rounded-lg font-semibold transition bg-primary-700 text-white">
+               <button type="button" id="type-linear" class="gradient-type-btn py-3 px-4 rounded-lg font-semibold transition bg-primary-700 text-white" aria-pressed="true" data-tooltip="Gradient along a straight line" data-i18n-tooltip="tools.css-gradient-generator.ui.tip0">
                  <span data-i18n="tools.css-gradient.ui.button0">Linear</span>
                </button>
-              <button id="type-radial" class="gradient-type-btn" data-tooltip="Gradient radiating from a center point" data-i18n-tooltip="tools.css-gradient-generator.ui.tip1" py-3 px-4 rounded-lg font-semibold transition bg-surface-200 dark:bg-surface-800 text-surface-900 dark:text-surface-200">
+              <button type="button" id="type-radial" class="gradient-type-btn py-3 px-4 rounded-lg font-semibold transition bg-surface-200 dark:bg-surface-800 text-surface-900 dark:text-surface-200" aria-pressed="false" data-tooltip="Gradient radiating from a center point" data-i18n-tooltip="tools.css-gradient-generator.ui.tip1">
                 <span data-i18n="tools.css-gradient.ui.button1">Radial</span>
               </button>
             </div>
@@ -125,12 +125,12 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
             <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50 mb-4" data-i18n="tools.css-gradient.ui.heading20">✨ Preset Gradients</h2>
 
             <div class="grid grid-cols-2 gap-3">
-              <div class="preset-card" data-preset="sunset" style="background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);"></div>
-              <div class="preset-card" data-preset="ocean" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
-              <div class="preset-card" data-preset="forest" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);"></div>
-              <div class="preset-card" data-preset="fire" style="background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%);"></div>
-              <div class="preset-card" data-preset="sky" style="background: linear-gradient(135deg, #2196f3 0%, #00bcd4 100%);"></div>
-              <div class="preset-card" data-preset="rose" style="background: linear-gradient(135deg, #f857a6 0%, #ff5858 100%);"></div>
+              <button type="button" class="preset-card" data-preset="sunset" aria-label="Apply Sunset preset" title="Sunset" style="background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);"></button>
+              <button type="button" class="preset-card" data-preset="ocean" aria-label="Apply Ocean preset" title="Ocean" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></button>
+              <button type="button" class="preset-card" data-preset="forest" aria-label="Apply Forest preset" title="Forest" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);"></button>
+              <button type="button" class="preset-card" data-preset="fire" aria-label="Apply Fire preset" title="Fire" style="background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%);"></button>
+              <button type="button" class="preset-card" data-preset="sky" aria-label="Apply Sky preset" title="Sky" style="background: linear-gradient(135deg, #2196f3 0%, #00bcd4 100%);"></button>
+              <button type="button" class="preset-card" data-preset="rose" aria-label="Apply Rose preset" title="Rose" style="background: linear-gradient(135deg, #f857a6 0%, #ff5858 100%);"></button>
             </div>
           </div>
         </div>
@@ -152,7 +152,7 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
               </button>
             </div>
 
-            <pre id="css-output" class="bg-surface-50 dark:bg-surface-950 p-4 rounded-lg overflow-x-auto text-sm font-mono text-surface-900 dark:text-surface-100 border border-surface-200 dark:border-surface-800"></pre>
+            <pre id="css-output" tabindex="0" role="region" aria-label="Generated CSS" class="bg-surface-50 dark:bg-surface-950 p-4 rounded-lg overflow-x-auto text-sm font-mono text-surface-900 dark:text-surface-100 border border-surface-200 dark:border-surface-800"></pre>
           </div>
 
           <!-- Info Cards -->
@@ -210,7 +210,7 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
         currentLang,
       )}
     </div>
-    ${createRelatedToolsSection(relatedToolsData)}
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">${createRelatedToolsSection(relatedToolsData)}</div>
 
     <script>
       // State
@@ -239,6 +239,8 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
          gradientType = 'linear';
          document.getElementById('type-linear').className = 'gradient-type-btn py-3 px-4 rounded-lg font-semibold transition bg-primary-700 text-white';
          document.getElementById('type-radial').className = 'gradient-type-btn py-3 px-4 rounded-lg font-semibold transition bg-surface-200 dark:bg-surface-800 text-surface-900 dark:text-surface-200';
+         document.getElementById('type-linear').setAttribute('aria-pressed', 'true');
+         document.getElementById('type-radial').setAttribute('aria-pressed', 'false');
         linearOptions.classList.remove('hidden');
         radialOptions.classList.add('hidden');
         updateGradient();
@@ -248,6 +250,8 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
          gradientType = 'radial';
          document.getElementById('type-radial').className = 'gradient-type-btn py-3 px-4 rounded-lg font-semibold transition bg-primary-700 text-white';
          document.getElementById('type-linear').className = 'gradient-type-btn py-3 px-4 rounded-lg font-semibold transition bg-surface-200 dark:bg-surface-800 text-surface-900 dark:text-surface-200';
+         document.getElementById('type-radial').setAttribute('aria-pressed', 'true');
+         document.getElementById('type-linear').setAttribute('aria-pressed', 'false');
         linearOptions.classList.add('hidden');
         radialOptions.classList.remove('hidden');
         updateGradient();
@@ -283,9 +287,19 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
 
       // Add Color Stop
       document.getElementById('add-color-stop').addEventListener('click', () => {
-        const lastPosition = colorStops[colorStops.length - 1].position;
-        const newPosition = Math.min(100, lastPosition + 10);
-        colorStops.push({ color: '#ffffff', position: newPosition });
+        // Place the new stop in the middle of the widest gap, blending its
+        // neighbours, instead of piling another stop onto 100%.
+        const sorted = colorStops.slice().sort((a, b) => a.position - b.position);
+        let left = sorted[0];
+        let right = sorted[sorted.length - 1];
+        let widest = -1;
+        for (let i = 0; i < sorted.length - 1; i++) {
+          const gap = sorted[i + 1].position - sorted[i].position;
+          if (gap > widest) { widest = gap; left = sorted[i]; right = sorted[i + 1]; }
+        }
+        const channel = (hex, at) => parseInt(hex.slice(1 + at * 2, 3 + at * 2), 16) || 0;
+        const mix = [0, 1, 2].map((at) => Math.round((channel(left.color, at) + channel(right.color, at)) / 2).toString(16).padStart(2, '0')).join('');
+        colorStops.push({ color: '#' + mix, position: Math.round((left.position + right.position) / 2) });
         renderColorStops();
         updateGradient();
       });
@@ -297,15 +311,16 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
             <div class="flex items-center justify-between mb-2">
               <span class="text-sm font-semibold text-surface-700 dark:text-surface-300">Color \${index + 1}</span>
               \${colorStops.length > 2 ? \`
-                <button class="remove-stop text-error-500 hover:text-error-700 text-sm font-semibold" data-index="\${index}">
+                <button type="button" class="remove-stop text-error-500 hover:text-error-700 text-sm font-semibold" data-index="\${index}" aria-label="Remove color stop \${index + 1}">
                   <span data-i18n="tools.css-gradient.ui.button4">✕ Remove</span>
                 </button>
               \` : ''}
             </div>
             <div class="flex items-center gap-3">
               <input type="color" value="\${stop.color}" aria-label="Color stop \${index + 1}" class="color-picker w-12 h-12 rounded border-2 border-surface-300 dark:border-surface-700 cursor-pointer" data-index="\${index}" />
+              <input type="text" value="\${stop.color}" aria-label="Color stop \${index + 1} hex value" spellcheck="false" maxlength="7" class="color-hex input font-mono w-24" data-index="\${index}" />
               <div class="flex-1">
-                <label class="text-xs text-surface-600 dark:text-surface-400" data-i18n="tools.css-gradient-generator.ui.label0">Position: \${stop.position}%</label>
+                <label class="position-label text-xs text-surface-600 dark:text-surface-400" data-index="\${index}">Position: \${stop.position}%</label>
                 <input type="range" min="0" max="100" value="\${stop.position}" aria-label="Color stop \${index + 1} position" class="position-slider w-full h-2 bg-surface-200 rounded-lg appearance-none cursor-pointer dark:bg-surface-700" data-index="\${index}" />
               </div>
             </div>
@@ -317,6 +332,23 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
           picker.addEventListener('input', (e) => {
             const index = parseInt(e.target.dataset.index);
             colorStops[index].color = e.target.value;
+            const hexField = colorStopsContainer.querySelector('.color-hex[data-index="' + index + '"]');
+            if (hexField) { hexField.value = e.target.value; hexField.removeAttribute('aria-invalid'); }
+            updateGradient();
+          });
+        });
+
+        document.querySelectorAll('.color-hex').forEach(field => {
+          field.addEventListener('input', (e) => {
+            const index = parseInt(e.target.dataset.index);
+            let v = e.target.value.trim();
+            if (v && v[0] !== '#') v = '#' + v;
+            if (/^#[0-9a-f]{3}$/i.test(v)) v = '#' + v[1] + v[1] + v[2] + v[2] + v[3] + v[3];
+            if (!/^#[0-9a-f]{6}$/i.test(v)) { e.target.setAttribute('aria-invalid', 'true'); return; }
+            e.target.removeAttribute('aria-invalid');
+            colorStops[index].color = v.toLowerCase();
+            const picker = colorStopsContainer.querySelector('.color-picker[data-index="' + index + '"]');
+            if (picker) picker.value = v.toLowerCase();
             updateGradient();
           });
         });
@@ -325,14 +357,16 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
           slider.addEventListener('input', (e) => {
             const index = parseInt(e.target.dataset.index);
             colorStops[index].position = parseInt(e.target.value);
-            renderColorStops();
+            // Update in place: re-rendering here would destroy the slider mid-drag.
+            const label = colorStopsContainer.querySelector('.position-label[data-index="' + index + '"]');
+            if (label) label.textContent = 'Position: ' + colorStops[index].position + '%';
             updateGradient();
           });
         });
 
         document.querySelectorAll('.remove-stop').forEach(btn => {
           btn.addEventListener('click', (e) => {
-            const index = parseInt(e.target.dataset.index);
+            const index = parseInt(e.currentTarget.dataset.index);
             colorStops.splice(index, 1);
             renderColorStops();
             updateGradient();
@@ -343,6 +377,7 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
       // Update Gradient
       function updateGradient() {
         const stops = colorStops
+          .slice()
           .sort((a, b) => a.position - b.position)
           .map(stop => \`\${stop.color} \${stop.position}%\`)
           .join(', ');
@@ -457,6 +492,8 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
       }
 
       .preset-card {
+        display: block;
+        width: 100%;
         height: 80px;
         border-radius: 8px;
         cursor: pointer;

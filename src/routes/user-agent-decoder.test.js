@@ -20,4 +20,18 @@ describe("user-agent-decoder route", () => {
     expect(text).toContain("uaInput.value = navigator.userAgent");
     expect(text).toContain('id="browser-name"');
   });
+
+  it("renders the sample library, bot fields, JSON panel, and injected detector", async () => {
+    const url = new URL("http://localhost/user-agent-decoder");
+    const response = await handleUserAgentDecoderRoutes(new Request(url), url);
+    const text = await response.text();
+
+    expect((text.match(/class="sample-btn /g) || []).length).toBeGreaterThanOrEqual(25);
+    expect(text).toContain('data-ua="curl/8.7.1"');
+    expect(text).toContain('id="bot-name"');
+    expect(text).toContain('id="bot-category"');
+    expect(text).toContain('id="json-output"');
+    expect(text).toContain('id="copy-json"');
+    expect(text).toContain("function detectUserAgentBot(");
+  });
 });

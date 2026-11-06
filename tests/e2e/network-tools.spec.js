@@ -428,7 +428,8 @@ test.describe("Wireshark Filter Builder", () => {
 
   test("BPF tab switching works", async ({ page }) => {
     await page.locator("#tab-bpf").click();
-    await expect(page.locator("#tab-bpf")).toHaveClass(/text-primary-600/);
+    await expect(page.locator("#tab-bpf")).toHaveClass(/\bactive\b/);
+    await expect(page.locator("#tab-bpf")).toHaveAttribute("aria-selected", "true");
     await expect(page.locator("#panel-bpf")).toBeVisible();
     await expect(page.locator("#panel-display")).toHaveClass(/hidden/);
   });
