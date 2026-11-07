@@ -27,7 +27,7 @@ This changelog is a snapshot-style record of major changes in this workspace.
 
 ### Translation
 
-- Every visible UI string, the shared page shell, the homepage, and the newest blog post are translated into all nine non-English languages. (#988, #989, this release's i18n PR)
+- Every visible UI string, the shared page shell, the homepage, and the newest blog post are translated into all nine non-English languages. (#988, #989, #990)
 
 ### Maintenance
 
