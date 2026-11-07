@@ -33,6 +33,7 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
     [
       {
         text: translation?.ui?.badge26 || "Client-Side Only",
+        i18nKey: "tools.image-converter.ui.r64_5",
         tooltip:
           "Runs entirely in your browser using Web APIs — your data is processed locally and not sent to our servers.",
       },
@@ -53,7 +54,7 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
 
        <!-- Privacy Notice -->
        <div class="mb-6 p-4 bg-success-50 dark:bg-success-900/20 rounded-xl border-2 border-success-300 dark:border-success-700">
-         <p class="text-sm text-success-800 dark:text-success-300">
+         <p data-i18n-html="tools.image-converter.ui.r6_0" class="text-sm text-success-800 dark:text-success-300">
            🔒 <strong>Privacy-First Design:</strong> Your images stay in your browser and are not sent to our servers. All conversion and resizing happens client-side using Canvas API.
          </p>
        </div>
@@ -65,7 +66,7 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
           <div class="tool-group p-6">
             <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50 mb-4" data-i18n="tools.image-converter.ui.heading11">📤 Upload Image</h2>
 
-            <input type="file" id="file-input" accept="image/*" class="hidden" aria-label="Choose an image file to convert" />
+            <input data-i18n-aria="tools.image-converter.ui.r6_1" type="file" id="file-input" accept="image/*" class="hidden" aria-label="Choose an image file to convert" />
             <div id="drop-zone" class="drop-zone" role="button" tabindex="0" aria-labelledby="drop-zone-label">
               <svg class="w-16 h-16 mx-auto mb-4 text-surface-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
@@ -81,13 +82,13 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
             <div id="file-info" class="mt-4 hidden">
                <div class="p-3 bg-info-50 dark:bg-info-900/20 rounded-lg">
                  <p class="text-sm text-info-800 dark:text-info-300">
-                   <strong>File:</strong> <span id="file-name"></span>
+                   <strong data-i18n="tools.image-converter.ui.r64_0">File:</strong> <span id="file-name"></span>
                  </p>
                  <p class="text-sm text-info-800 dark:text-info-300">
-                   <strong>Size:</strong> <span id="file-size"></span>
+                   <strong data-i18n="tools.image-converter.ui.r64_1">Size:</strong> <span id="file-size"></span>
                  </p>
                  <p class="text-sm text-info-800 dark:text-info-300">
-                   <strong>Dimensions:</strong> <span id="image-dimensions"></span>
+                   <strong data-i18n="tools.image-converter.ui.r64_2">Dimensions:</strong> <span id="image-dimensions"></span>
                  </p>
                </div>
              </div>
@@ -97,7 +98,7 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
           <div class="tool-group p-6">
             <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50 mb-4" data-i18n="tools.image-converter.ui.heading12">🔄 Convert Format</h2>
 
-            <div class="grid grid-cols-3 gap-3" role="group" aria-label="Output format">
+            <div data-i18n-aria="tools.image-converter.ui.r6_2" class="grid grid-cols-3 gap-3" role="group" aria-label="Output format">
               <button type="button" class="format-option selected" data-format="png" aria-pressed="true">
                 <span class="block text-center">
                   <span class="block font-bold text-surface-900 dark:text-surface-50">PNG</span>
@@ -112,7 +113,7 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
               </button>
               <button type="button" class="format-option" data-format="webp" aria-pressed="false">
                 <span class="block text-center">
-                  <span class="block font-bold text-surface-900 dark:text-surface-50">WebP</span>
+                  <span data-i18n="tools.image-converter.ui.r6_3" class="block font-bold text-surface-900 dark:text-surface-50">WebP</span>
                   <span class="block text-xs text-surface-600 dark:text-surface-300" data-i18n="tools.image-converter.ui.desc23">Modern</span>
                 </span>
               </button>
@@ -123,8 +124,8 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
 
             <!-- Quality Slider (for lossy formats) -->
             <div id="quality-control" class="mt-4 hidden">
-              <label for="quality-slider" class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2" data-tooltip="Lower quality = smaller file size, more compression artifacts" data-i18n-tooltip="tools.image-converter.ui.tip0">
-                Quality: <span id="quality-value">90</span>%
+              <label for="quality-slider" class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2" data-tooltip="Lower quality = smaller file size, more compression artifacts" data-i18n-tooltip="tools.image-converter.ui.r64_6">
+                <span data-i18n="tools.image-converter.ui.r64_4">Quality:</span> <span id="quality-value">90</span>%
               </label>
               <input type="range" id="quality-slider" min="1" max="100" value="90"
                 class="w-full h-2 bg-surface-200 rounded-lg appearance-none cursor-pointer dark:bg-surface-700" />
@@ -151,7 +152,7 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
 
             <!-- Percentage Resize -->
             <div id="percentage-resize" class="hidden">
-              <label for="scale-slider" class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
+              <label data-i18n-html="tools.image-converter.ui.r6_4" for="scale-slider" class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
                 Scale: <span id="scale-value">100</span>%
               </label>
               <input type="range" id="scale-slider" min="10" max="200" value="100"
@@ -171,7 +172,7 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
                   class="input" />
               </div>
               <label for="maintain-aspect" class="flex items-center">
-                <input type="checkbox" id="maintain-aspect" checked data-tooltip="Keep original width-to-height ratio when resizing" data-i18n-tooltip="tools.image-converter.ui.tip1" class="mr-2" />
+                <input type="checkbox" id="maintain-aspect" checked data-tooltip="Keep original width-to-height ratio when resizing" data-i18n-tooltip="tools.image-converter.ui.r64_7" class="mr-2" />
                 <span class="text-sm text-surface-700 dark:text-surface-300" data-i18n="tools.image-converter.ui.desc26">Maintain aspect ratio</span>
               </label>
             </div>
@@ -195,7 +196,7 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
            <div id="img-error" role="alert" class="hidden w-full rounded-xl border border-error-200 dark:border-error-800 bg-error-50 dark:bg-error-900/30 text-sm text-error-700 dark:text-error-200 px-4 py-3"></div>
 
            <!-- Convert Button -->
-           <button id="convert-btn" disabled data-tooltip="Convert image to the selected format and size" data-i18n-tooltip="tools.image-converter.ui.tip2"
+           <button id="convert-btn" disabled data-tooltip="Convert image to the selected format and size" data-i18n-tooltip="tools.image-converter.ui.r64_8"
              class="btn btn-primary w-full py-4 px-6 disabled:opacity-50 disabled:cursor-not-allowed">
              <span id="convert-spinner" class="spinner-sm hidden" style="display:inline-block;vertical-align:middle;margin-right:6px;border-color:rgba(255,255,255,0.3);border-top-color:#fff;"></span>
              <span data-i18n="tools.image-converter.ui.button0">🔄 Convert & Resize Image</span>
@@ -235,13 +236,13 @@ function renderImageConverterPage(lang = DEFAULT_LANGUAGE) {
              <div id="converted-info" class="mt-4 hidden">
                <div class="p-3 bg-success-50 dark:bg-success-900/20 rounded-lg space-y-1">
                  <p class="text-sm text-success-800 dark:text-success-300">
-                   <strong>Format:</strong> <span id="converted-format"></span>
+                   <strong data-i18n="tools.image-converter.ui.r64_3">Format:</strong> <span id="converted-format"></span>
                  </p>
                  <p class="text-sm text-success-800 dark:text-success-300">
-                   <strong>Size:</strong> <span id="converted-size"></span>
+                   <strong data-i18n="tools.image-converter.ui.r64_1">Size:</strong> <span id="converted-size"></span>
                  </p>
                  <p class="text-sm text-success-800 dark:text-success-300">
-                   <strong>Dimensions:</strong> <span id="converted-dimensions"></span>
+                   <strong data-i18n="tools.image-converter.ui.r64_2">Dimensions:</strong> <span id="converted-dimensions"></span>
                  </p>
                  <p class="text-sm font-semibold text-success-800 dark:text-success-300">
                    💾 <span id="size-reduction"></span>

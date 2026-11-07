@@ -69,6 +69,7 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
             i18nKey: "tools.saml-decoder.ui.heading11",
             tooltip:
               "Processed in your browser, not sent to our servers.",
+            tooltipI18nKey: "tools.saml-decoder.ui.r65_1",
           },
           {
             text: "Redirect & POST aware",
@@ -84,18 +85,18 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
       <section class="grid gap-6 lg:grid-cols-2">
         <div class="tool-group p-6 space-y-4">
           <div class="flex items-center justify-between">
-            <label for="saml-input" class="text-sm font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide"><span data-i18n="tools.saml-decoder.ui.label7">SAML response</span> ${infoHint("Paste Base64 SAMLResponse or raw XML; toggle inflate for redirect payloads.")}</label>
+            <label for="saml-input" class="text-sm font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide"><span data-i18n="tools.saml-decoder.ui.label7">SAML response</span> ${infoHint("Paste Base64 SAMLResponse or raw XML; toggle inflate for redirect payloads.", undefined, { i18nKey: "tools.saml-decoder.ui.r65_2", ariaI18nKey: "tools.saml-decoder.ui.r65_0" })}</label>
             <button id="clear-btn" type="button" class="btn btn-ghost btn-sm"><span data-i18n="tools.saml-decoder.ui.button0">Clear</span></button>
           </div>
-          <textarea id="saml-input" data-tooltip="Paste Base64-encoded SAML request or response" data-i18n-tooltip="tools.saml-decoder.ui.tip0" class="input-mono w-full min-h-[220px]" placeholder="Paste the Base64 value of SAMLResponse or raw XML here" data-i18n-placeholder="tools.saml-decoder.ui.placeholder8"></textarea>
+          <textarea id="saml-input" data-tooltip="Paste Base64-encoded SAML request or response" data-i18n-tooltip="tools.saml-decoder.ui.r65_3" class="input-mono w-full min-h-[220px]" placeholder="Paste the Base64 value of SAMLResponse or raw XML here" data-i18n-placeholder="tools.saml-decoder.ui.placeholder8"></textarea>
           <div class="flex flex-wrap gap-4 text-sm text-surface-600 dark:text-surface-400">
             <label class="inline-flex items-center gap-2">
-              <input id="inflate-toggle" type="checkbox" data-tooltip="Decompress deflated SAML messages" data-i18n-tooltip="tools.saml-decoder.ui.tip1" class="accent-primary-600" checked />
-              <span>Attempt to inflate (Redirect binding)</span>
+              <input id="inflate-toggle" type="checkbox" data-tooltip="Decompress deflated SAML messages" data-i18n-tooltip="tools.saml-decoder.ui.r65_4" class="accent-primary-600" checked />
+              <span data-i18n="tools.saml-decoder.ui.r6_0">Attempt to inflate (Redirect binding)</span>
             </label>
             <label class="inline-flex items-center gap-2">
-              <input id="pretty-toggle" type="checkbox" data-tooltip="Format XML output with indentation" data-i18n-tooltip="tools.saml-decoder.ui.tip2" class="accent-primary-600" checked />
-              <span>Pretty-print XML</span>
+              <input id="pretty-toggle" type="checkbox" data-tooltip="Format XML output with indentation" data-i18n-tooltip="tools.saml-decoder.ui.r65_5" class="accent-primary-600" checked />
+              <span data-i18n="tools.saml-decoder.ui.r6_1">Pretty-print XML</span>
             </label>
           </div>
           <div class="grid gap-3 sm:grid-cols-2">
@@ -109,7 +110,7 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
             </div>
           </div>
           <div class="flex flex-wrap gap-3">
-             <button id="decode-btn" data-tooltip="Decode and parse the SAML message" data-i18n-tooltip="tools.saml-decoder.ui.tip3" class="btn btn-primary"><span data-i18n="tools.saml-decoder.ui.button7">Decode response</span><span aria-hidden="true">→</span></button>
+             <button id="decode-btn" data-tooltip="Decode and parse the SAML message" data-i18n-tooltip="tools.saml-decoder.ui.r65_6" class="btn btn-primary"><span data-i18n="tools.saml-decoder.ui.button7">Decode response</span><span aria-hidden="true">→</span></button>
              <button id="sample-btn" type="button" class="btn btn-secondary"><span data-i18n="tools.saml-decoder.ui.button1">Load sample</span></button>
           </div>
            <div id="saml-error" role="alert" class="hidden rounded-xl border border-error-200 dark:border-error-800 bg-error-50 dark:bg-error-900/30 text-sm text-error-700 dark:text-error-200 px-4 py-3" data-i18n="tools.saml-decoder.ui.error0">Parsing error</div>
@@ -122,12 +123,12 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
               <span id="validity-badge" class="text-xs font-semibold px-3 py-1 rounded-full bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-300" data-i18n="tools.saml-decoder.ui.desc15">Awaiting input</span>
             </div>
             <div class="space-y-2 text-sm text-surface-600 dark:text-surface-300">
-              <div class="flex justify-between"><span class="font-semibold">Issuer</span><span id="summary-issuer">—</span></div>
-              <div class="flex justify-between"><span class="font-semibold">Subject</span><span id="summary-subject">—</span></div>
-              <div class="flex justify-between"><span class="font-semibold">Destination</span><span id="summary-destination">—</span></div>
-              <div class="flex justify-between"><span class="font-semibold">Audience</span><span id="summary-audience">—</span></div>
-              <div class="flex justify-between"><span class="font-semibold">Signature</span><span id="summary-signature">—</span></div>
-              <div class="flex justify-between"><span class="font-semibold">Status</span><span id="summary-status">—</span></div>
+              <div class="flex justify-between"><span data-i18n="tools.saml-decoder.ui.r6_2" class="font-semibold">Issuer</span><span id="summary-issuer">—</span></div>
+              <div class="flex justify-between"><span data-i18n="tools.saml-decoder.ui.r6_3" class="font-semibold">Subject</span><span id="summary-subject">—</span></div>
+              <div class="flex justify-between"><span data-i18n="tools.saml-decoder.ui.r6_4" class="font-semibold">Destination</span><span id="summary-destination">—</span></div>
+              <div class="flex justify-between"><span data-i18n="tools.saml-decoder.ui.r6_5" class="font-semibold">Audience</span><span id="summary-audience">—</span></div>
+              <div class="flex justify-between"><span data-i18n="tools.saml-decoder.ui.r6_6" class="font-semibold">Signature</span><span id="summary-signature">—</span></div>
+              <div class="flex justify-between"><span data-i18n="tools.saml-decoder.ui.r6_7" class="font-semibold">Status</span><span id="summary-status">—</span></div>
             </div>
           </div>
 
@@ -173,15 +174,15 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
           <div id="panel-assertion" role="tabpanel" aria-labelledby="tab-assertion" class="tab-panel hidden space-y-3 text-sm text-surface-700 dark:text-surface-200">
             <div class="grid gap-4">
               <div>
-                <p class="font-semibold">Assertion ID</p>
+                <p data-i18n="tools.saml-decoder.ui.r6_8" class="font-semibold">Assertion ID</p>
                 <p id="assertion-id" class="text-surface-500 dark:text-surface-400">—</p>
               </div>
               <div>
-                <p class="font-semibold">Authn context</p>
+                <p data-i18n="tools.saml-decoder.ui.r6_9" class="font-semibold">Authn context</p>
                 <p id="assertion-authn" class="text-surface-500 dark:text-surface-400">—</p>
               </div>
               <div>
-                <p class="font-semibold">Conditions</p>
+                <p data-i18n="tools.saml-decoder.ui.r6_10" class="font-semibold">Conditions</p>
                 <p id="assertion-conditions" class="text-surface-500 dark:text-surface-400">—</p>
               </div>
             </div>
@@ -195,18 +196,18 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
 
       <section class="tool-group p-6" aria-labelledby="common-saml-errors">
         <h2 id="common-saml-errors" class="text-lg font-bold text-surface-900 dark:text-white mb-4" data-i18n="tools.saml-decoder.ui.r3_13">Common SAML errors</h2>
-        <div class="overflow-x-auto" tabindex="0" role="region" aria-label="SAML error causes and fixes table">
+        <div data-i18n-aria="tools.saml-decoder.ui.r6_11" class="overflow-x-auto" tabindex="0" role="region" aria-label="SAML error causes and fixes table">
           <table class="min-w-full text-sm text-left">
             <thead class="text-surface-600 dark:text-surface-300">
               <tr><th scope="col" class="py-2 pr-4" data-i18n="tools.saml-decoder.ui.r3_8">Error</th><th scope="col" class="py-2 pr-4" data-i18n="tools.saml-decoder.ui.r3_9">Cause</th><th scope="col" class="py-2" data-i18n="tools.saml-decoder.ui.r3_10">Fix</th></tr>
             </thead>
             <tbody class="divide-y divide-surface-100 dark:divide-surface-800 text-surface-700 dark:text-surface-200 align-top">
-              <tr><td class="py-2 pr-4 font-semibold">Clock skew / NotOnOrAfter</td><td class="py-2 pr-4">The SP's clock is outside the assertion's NotBefore (inclusive) to NotOnOrAfter (exclusive) window, often because the IdP and SP clocks disagree or the response was replayed late.</td><td class="py-2">Sync both servers with NTP, allow a small skew tolerance on the SP, and post the response promptly.</td></tr>
-              <tr><td class="py-2 pr-4 font-semibold">Audience mismatch</td><td class="py-2 pr-4">The Audience in the AudienceRestriction is not the SP's entity ID; the comparison is an exact string match.</td><td class="py-2">Make the IdP's configured audience / SP entity ID identical to the SP metadata, including scheme and trailing slash.</td></tr>
-              <tr><td class="py-2 pr-4 font-semibold">Destination / Recipient mismatch</td><td class="py-2 pr-4">The Response Destination or SubjectConfirmationData Recipient differs from the ACS URL the SP believes it received on, e.g. http vs https behind a proxy.</td><td class="py-2">Register the exact ACS URL at the IdP and configure the SP to know its public URL when behind a load balancer.</td></tr>
-              <tr><td class="py-2 pr-4 font-semibold">InResponseTo mismatch / unsolicited response</td><td class="py-2 pr-4">InResponseTo does not match an AuthnRequest ID the SP issued (lost session, multiple tabs), or is missing because the login was IdP-initiated.</td><td class="py-2">Keep the request ID in a session that survives the cross-site POST (SameSite cookie settings), or enable IdP-initiated login on the SP if intended.</td></tr>
-              <tr><td class="py-2 pr-4 font-semibold">Invalid signature / wrong IdP certificate</td><td class="py-2 pr-4">The SP validates with a different certificate than the IdP signed with (often after certificate rotation), or the XML was modified after signing.</td><td class="py-2">Refresh the IdP metadata or signing certificate on the SP and confirm whether the Response, the Assertion, or both are expected to be signed.</td></tr>
-              <tr><td class="py-2 pr-4 font-semibold">NameID format mismatch</td><td class="py-2 pr-4">The NameID Format sent (e.g. transient) differs from the NameIDPolicy the SP requested or the identifier it maps users by.</td><td class="py-2">Align the NameID format and source attribute on the IdP with what the SP expects (e.g. emailAddress or persistent).</td></tr>
+              <tr><td data-i18n="tools.saml-decoder.ui.r6_12" class="py-2 pr-4 font-semibold">Clock skew / NotOnOrAfter</td><td data-i18n="tools.saml-decoder.ui.r6_13" class="py-2 pr-4">The SP's clock is outside the assertion's NotBefore (inclusive) to NotOnOrAfter (exclusive) window, often because the IdP and SP clocks disagree or the response was replayed late.</td><td data-i18n="tools.saml-decoder.ui.r6_14" class="py-2">Sync both servers with NTP, allow a small skew tolerance on the SP, and post the response promptly.</td></tr>
+              <tr><td data-i18n="tools.saml-decoder.ui.r6_15" class="py-2 pr-4 font-semibold">Audience mismatch</td><td data-i18n="tools.saml-decoder.ui.r6_16" class="py-2 pr-4">The Audience in the AudienceRestriction is not the SP's entity ID; the comparison is an exact string match.</td><td data-i18n="tools.saml-decoder.ui.r6_17" class="py-2">Make the IdP's configured audience / SP entity ID identical to the SP metadata, including scheme and trailing slash.</td></tr>
+              <tr><td data-i18n="tools.saml-decoder.ui.r6_18" class="py-2 pr-4 font-semibold">Destination / Recipient mismatch</td><td data-i18n="tools.saml-decoder.ui.r6_19" class="py-2 pr-4">The Response Destination or SubjectConfirmationData Recipient differs from the ACS URL the SP believes it received on, e.g. http vs https behind a proxy.</td><td data-i18n="tools.saml-decoder.ui.r6_20" class="py-2">Register the exact ACS URL at the IdP and configure the SP to know its public URL when behind a load balancer.</td></tr>
+              <tr><td data-i18n="tools.saml-decoder.ui.r6_21" class="py-2 pr-4 font-semibold">InResponseTo mismatch / unsolicited response</td><td data-i18n="tools.saml-decoder.ui.r6_22" class="py-2 pr-4">InResponseTo does not match an AuthnRequest ID the SP issued (lost session, multiple tabs), or is missing because the login was IdP-initiated.</td><td data-i18n="tools.saml-decoder.ui.r6_23" class="py-2">Keep the request ID in a session that survives the cross-site POST (SameSite cookie settings), or enable IdP-initiated login on the SP if intended.</td></tr>
+              <tr><td data-i18n="tools.saml-decoder.ui.r6_24" class="py-2 pr-4 font-semibold">Invalid signature / wrong IdP certificate</td><td data-i18n="tools.saml-decoder.ui.r6_25" class="py-2 pr-4">The SP validates with a different certificate than the IdP signed with (often after certificate rotation), or the XML was modified after signing.</td><td data-i18n="tools.saml-decoder.ui.r6_26" class="py-2">Refresh the IdP metadata or signing certificate on the SP and confirm whether the Response, the Assertion, or both are expected to be signed.</td></tr>
+              <tr><td data-i18n="tools.saml-decoder.ui.r6_27" class="py-2 pr-4 font-semibold">NameID format mismatch</td><td data-i18n="tools.saml-decoder.ui.r6_28" class="py-2 pr-4">The NameID Format sent (e.g. transient) differs from the NameIDPolicy the SP requested or the identifier it maps users by.</td><td data-i18n="tools.saml-decoder.ui.r6_29" class="py-2">Align the NameID format and source attribute on the IdP with what the SP expects (e.g. emailAddress or persistent).</td></tr>
             </tbody>
           </table>
         </div>
@@ -216,17 +217,17 @@ function renderSamlDecoderPage(lang = DEFAULT_LANGUAGE) {
         {
           heading: "SAML Flow",
           content:
-            "<p>1. User requests resource → 2. SP sends AuthnRequest to IdP → 3. IdP authenticates user → 4. IdP sends Response with Assertion → 5. SP grants access</p>",
+            '<p data-i18n="tools.saml-decoder.ui.r66_c5">1. User requests resource → 2. SP sends AuthnRequest to IdP → 3. IdP authenticates user → 4. IdP sends Response with Assertion → 5. SP grants access</p>',
         },
         {
           heading: "Key Elements",
           content: `
           <table>
             <tr><th data-i18n="tools.saml-decoder.ui.th1">Element</th><th data-i18n="tools.saml-decoder.ui.th2">Purpose</th></tr>
-            <tr><td><code>AuthnRequest</code></td><td>SP → IdP login request</td></tr>
-            <tr><td><code>Response</code></td><td>IdP → SP with assertions</td></tr>
-            <tr><td><code>Assertion</code></td><td>Claims about the user</td></tr>
-            <tr><td><code>NameID</code></td><td>User identifier</td></tr>
+            <tr><td><code>AuthnRequest</code></td><td data-i18n="tools.saml-decoder.ui.r66_c1">SP → IdP login request</td></tr>
+            <tr><td><code>Response</code></td><td data-i18n="tools.saml-decoder.ui.r66_c2">IdP → SP with assertions</td></tr>
+            <tr><td><code>Assertion</code></td><td data-i18n="tools.saml-decoder.ui.r66_c3">Claims about the user</td></tr>
+            <tr><td><code>NameID</code></td><td data-i18n="tools.saml-decoder.ui.r66_c4">User identifier</td></tr>
             <tr><td><code>Attribute</code></td><td data-i18n="tools.saml-decoder.ui.r3_1">User properties (email, role)</td></tr>
           </table>`,
         },

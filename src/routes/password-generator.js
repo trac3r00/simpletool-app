@@ -98,7 +98,7 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
 
         <!-- Tabs -->
         <div class="border-b border-surface-200 dark:border-surface-700 mb-8">
-          <nav class="flex flex-wrap gap-2" aria-label="Password generator modes" role="tablist">
+          <nav data-i18n-aria="tools.password-generator.ui.r6_0" class="flex flex-wrap gap-2" aria-label="Password generator modes" role="tablist">
             <button id="tab-trigger-password" class="tab-trigger tab-button active" data-tab="password" role="tab" aria-controls="tab-password" aria-selected="true" tabindex="0">
               <span class="material-symbols-rounded text-base align-middle" aria-hidden="true" data-icon="lock"></span> <span data-i18n="tools.password-generator.ui.tab0">Password</span>
             </button>
@@ -121,25 +121,25 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
               <label for="password-length" class="label">
                 <span data-i18n="tools.password-generator.ui.label0">Password Length:</span> <span id="length-value" class="font-bold text-primary-600 dark:text-primary-400">16</span>
               </label>
-              <input type="range" id="password-length" min="8" max="128" value="16" class="w-full h-2 bg-surface-200 dark:bg-surface-700 rounded-lg appearance-none cursor-pointer accent-primary-600" data-tooltip="Longer passwords are stronger. 16+ characters recommended" data-i18n-tooltip="tools.password-generator.ui.tip0">
+              <input type="range" id="password-length" min="8" max="128" value="16" class="w-full h-2 bg-surface-200 dark:bg-surface-700 rounded-lg appearance-none cursor-pointer accent-primary-600" data-tooltip="Longer passwords are stronger. 16+ characters recommended" data-i18n-tooltip="tools.password-generator.ui.r64_0">
             </div>
 
             <div class="grid grid-cols-2 gap-4">
               <label class="flex items-center space-x-3 p-3 bg-surface-50 dark:bg-surface-800 rounded-lg cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors border border-surface-200 dark:border-surface-700">
                 <input type="checkbox" id="use-uppercase" checked class="w-5 h-5 text-primary-600 dark:text-primary-400 rounded focus:ring-primary-500">
-                <span class="text-sm font-medium text-surface-900 dark:text-surface-100" data-i18n="tools.password-generator.ui.desc24" data-tooltip="26 uppercase letters increase entropy" data-i18n-tooltip="tools.password-generator.ui.tip1">Uppercase (A-Z)</span>
+                <span class="text-sm font-medium text-surface-900 dark:text-surface-100" data-i18n="tools.password-generator.ui.desc24" data-tooltip="26 uppercase letters increase entropy" data-i18n-tooltip="tools.password-generator.ui.r64_1">Uppercase (A-Z)</span>
               </label>
               <label class="flex items-center space-x-3 p-3 bg-surface-50 dark:bg-surface-800 rounded-lg cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors border border-surface-200 dark:border-surface-700">
                 <input type="checkbox" id="use-lowercase" checked class="w-5 h-5 text-primary-600 dark:text-primary-400 rounded focus:ring-primary-500">
-                <span class="text-sm font-medium text-surface-900 dark:text-surface-100" data-i18n="tools.password-generator.ui.desc25" data-tooltip="26 lowercase letters increase entropy" data-i18n-tooltip="tools.password-generator.ui.tip2">Lowercase (a-z)</span>
+                <span class="text-sm font-medium text-surface-900 dark:text-surface-100" data-i18n="tools.password-generator.ui.desc25" data-tooltip="26 lowercase letters increase entropy" data-i18n-tooltip="tools.password-generator.ui.r64_2">Lowercase (a-z)</span>
               </label>
               <label class="flex items-center space-x-3 p-3 bg-surface-50 dark:bg-surface-800 rounded-lg cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors border border-surface-200 dark:border-surface-700">
                 <input type="checkbox" id="use-numbers" checked class="w-5 h-5 text-primary-600 dark:text-primary-400 rounded focus:ring-primary-500">
-                <span class="text-sm font-medium text-surface-900 dark:text-surface-100" data-i18n="tools.password-generator.ui.desc26" data-tooltip="10 digits add variety to your password" data-i18n-tooltip="tools.password-generator.ui.tip3">Numbers (0-9)</span>
+                <span class="text-sm font-medium text-surface-900 dark:text-surface-100" data-i18n="tools.password-generator.ui.desc26" data-tooltip="10 digits add variety to your password" data-i18n-tooltip="tools.password-generator.ui.r64_3">Numbers (0-9)</span>
               </label>
               <label class="flex items-center space-x-3 p-3 bg-surface-50 dark:bg-surface-800 rounded-lg cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors border border-surface-200 dark:border-surface-700">
                 <input type="checkbox" id="use-symbols" checked class="w-5 h-5 text-primary-600 dark:text-primary-400 rounded focus:ring-primary-500">
-                <span class="text-sm font-medium text-surface-900 dark:text-surface-100" data-i18n="tools.password-generator.ui.desc27" data-tooltip="Special characters greatly increase password strength" data-i18n-tooltip="tools.password-generator.ui.tip4">Symbols (!@#$)</span>
+                <span class="text-sm font-medium text-surface-900 dark:text-surface-100" data-i18n="tools.password-generator.ui.desc27" data-tooltip="Special characters greatly increase password strength" data-i18n-tooltip="tools.password-generator.ui.r64_4">Symbols (!@#$)</span>
               </label>
             </div>
 
@@ -156,14 +156,14 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
                     <p class="text-sm text-surface-600 dark:text-surface-400 mb-2" data-i18n="tools.password-generator.ui.desc28">Your Password:</p>
                     <p id="password-output" class="text-2xl font-mono font-bold text-surface-900 dark:text-white break-all"></p>
                   </div>
-                   <button id="copy-password" class="flex-shrink-0 btn btn-secondary" aria-label="Copy password to clipboard">
+                   <button data-i18n-aria="tools.password-generator.ui.r6_1" id="copy-password" class="flex-shrink-0 btn btn-secondary" aria-label="Copy password to clipboard">
                      <span class="material-symbols-rounded" aria-hidden="true" data-icon="content_copy"></span>
                    </button>
                 </div>
                 <div id="password-strength" class="mt-4">
                   <!-- Segmented strength bar -->
                   <div class="flex items-center gap-3">
-                    <div class="flex gap-1 flex-1" id="strength-segments" role="meter" aria-label="Password strength" aria-valuemin="0" aria-valuemax="4" aria-valuenow="0">
+                    <div data-i18n-aria="tools.password-generator.ui.r6_2" class="flex gap-1 flex-1" id="strength-segments" role="meter" aria-label="Password strength" aria-valuemin="0" aria-valuemax="4" aria-valuenow="0">
                       <div class="strength-seg h-2 flex-1 rounded-full bg-surface-200 dark:bg-surface-700 transition-all duration-300"></div>
                       <div class="strength-seg h-2 flex-1 rounded-full bg-surface-200 dark:bg-surface-700 transition-all duration-300"></div>
                       <div class="strength-seg h-2 flex-1 rounded-full bg-surface-200 dark:bg-surface-700 transition-all duration-300"></div>
@@ -213,7 +213,7 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
                     <p class="text-sm text-surface-600 dark:text-surface-400 mb-2" data-i18n="tools.password-generator.ui.desc30">Your Username:</p>
                     <p id="username-output" class="text-2xl font-mono font-bold text-surface-900 dark:text-white break-all"></p>
                   </div>
-                   <button id="copy-username" class="flex-shrink-0 btn btn-secondary" aria-label="Copy username to clipboard">
+                   <button data-i18n-aria="tools.password-generator.ui.r6_3" id="copy-username" class="flex-shrink-0 btn btn-secondary" aria-label="Copy username to clipboard">
                      <span class="material-symbols-rounded" aria-hidden="true" data-icon="content_copy"></span>
                    </button>
                 </div>
@@ -259,7 +259,7 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
                     <p class="text-sm text-surface-600 dark:text-surface-400 mb-2" data-i18n="tools.password-generator.ui.desc32">Your Passphrase:</p>
                     <p id="passphrase-output" class="text-2xl font-mono font-bold text-surface-900 dark:text-white break-all"></p>
                   </div>
-                   <button id="copy-passphrase" class="flex-shrink-0 btn btn-secondary" aria-label="Copy passphrase to clipboard">
+                   <button data-i18n-aria="tools.password-generator.ui.r6_4" id="copy-passphrase" class="flex-shrink-0 btn btn-secondary" aria-label="Copy passphrase to clipboard">
                      <span class="material-symbols-rounded" aria-hidden="true" data-icon="content_copy"></span>
                    </button>
                 </div>
@@ -283,7 +283,7 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
             </div>
 
             <div>
-              <label for="email-prefix-length" class="label">
+              <label data-i18n-html="tools.password-generator.ui.r6_5" for="email-prefix-length" class="label">
                 Random Prefix Length: <span id="email-prefix-length-value" class="font-bold text-primary-600 dark:text-primary-400">12</span>
               </label>
               <input type="range" id="email-prefix-length" min="6" max="20" value="12" class="w-full h-2 bg-surface-200 dark:bg-surface-700 rounded-lg appearance-none cursor-pointer accent-primary-600">
@@ -310,7 +310,7 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
                      <p class="text-sm text-surface-600 dark:text-surface-400 mb-2" data-i18n="tools.password-generator.ui.desc33">Catch-all Email:</p>
                      <p id="catchall-output" class="text-xl font-mono font-bold text-surface-900 dark:text-white break-all"></p>
                    </div>
-                    <button id="copy-catchall" class="flex-shrink-0 btn btn-secondary" aria-label="Copy catch-all email to clipboard">
+                    <button data-i18n-aria="tools.password-generator.ui.r6_6" id="copy-catchall" class="flex-shrink-0 btn btn-secondary" aria-label="Copy catch-all email to clipboard">
                       <span class="material-symbols-rounded" aria-hidden="true" data-icon="content_copy"></span>
                     </button>
                  </div>
@@ -328,7 +328,7 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
             </div>
 
             <div>
-              <label for="alias-tag-length" class="label">
+              <label data-i18n-html="tools.password-generator.ui.r6_7" for="alias-tag-length" class="label">
                 Tag Length: <span id="alias-tag-length-value" class="font-bold text-primary-600 dark:text-primary-400">6</span>
               </label>
               <input type="range" id="alias-tag-length" min="2" max="16" value="6" class="w-full h-2 bg-surface-200 dark:bg-surface-700 rounded-lg appearance-none cursor-pointer accent-primary-600">
@@ -347,7 +347,7 @@ function renderPasswordGeneratorPage(lang = DEFAULT_LANGUAGE) {
                      <p class="text-sm text-surface-600 dark:text-surface-400 mb-2" data-i18n="tools.password-generator.ui.desc34">Plus Alias:</p>
                      <p id="alias-output" class="text-xl font-mono font-bold text-surface-900 dark:text-white break-all"></p>
                    </div>
-                    <button id="copy-alias" class="flex-shrink-0 btn btn-secondary" aria-label="Copy email alias to clipboard">
+                    <button data-i18n-aria="tools.password-generator.ui.r6_8" id="copy-alias" class="flex-shrink-0 btn btn-secondary" aria-label="Copy email alias to clipboard">
                       <span class="material-symbols-rounded" aria-hidden="true" data-icon="content_copy"></span>
                     </button>
                  </div>

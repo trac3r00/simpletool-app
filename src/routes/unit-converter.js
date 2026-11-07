@@ -57,7 +57,7 @@ function renderUnitConverterPage(lang = DEFAULT_LANGUAGE) {
         <!-- Category Selection -->
         <div class="mb-8">
           <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3"><span data-i18n="tools.unit-converter.ui.label0">Category</span></label>
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="category-grid" role="group" aria-label="Category selection">
+          <div data-i18n-aria="tools.unit-converter.ui.r6_0" class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="category-grid" role="group" aria-label="Category selection">
             <!-- Categories injected by JS -->
           </div>
         </div>
@@ -75,13 +75,13 @@ function renderUnitConverterPage(lang = DEFAULT_LANGUAGE) {
             </div>
             <div>
               <label for="from-value" class="sr-only"><span data-i18n="tools.unit-converter.ui.label0">Input value</span></label>
-              <input type="number" id="from-value" aria-label="Value to convert" step="any" placeholder="0" data-tooltip="Enter the value to convert" data-i18n-tooltip="tools.unit-converter.ui.tip0" class="input-mono text-lg" />
+              <input data-i18n-aria="tools.unit-converter.ui.r6_1" type="number" id="from-value" aria-label="Value to convert" step="any" placeholder="0" data-tooltip="Enter the value to convert" data-i18n-tooltip="tools.unit-converter.ui.r64_0" class="input-mono text-lg" />
             </div>
           </div>
 
           <!-- Swap Button -->
           <div class="flex justify-center md:pt-6">
-            <button id="swap-btn" data-tooltip="Swap input and output units" data-i18n-tooltip="tools.unit-converter.ui.tip1" class="btn-ghost btn-icon rounded-full rounded-full" title="Swap Units" aria-label="Swap units" data-i18n-title="tools.unit-converter.ui.title3">
+            <button data-i18n-aria="tools.unit-converter.ui.r6_2" id="swap-btn" data-tooltip="Swap input and output units" data-i18n-tooltip="tools.unit-converter.ui.r64_1" class="btn-ghost btn-icon rounded-full rounded-full" title="Swap Units" aria-label="Swap units" data-i18n-title="tools.unit-converter.ui.title3">
               <span class="material-symbols-rounded transform rotate-90 md:rotate-0 transition-transform group-hover:scale-110" aria-hidden="true" data-icon="swap_horiz"></span>
             </button>
           </div>
@@ -96,7 +96,7 @@ function renderUnitConverterPage(lang = DEFAULT_LANGUAGE) {
             </div>
             <div>
               <label for="to-value" class="sr-only"><span data-i18n="tools.unit-converter.ui.label1">Converted value</span></label>
-              <input type="number" id="to-value" aria-label="Converted value" step="any" placeholder="0" readonly class="input-mono w-full" />
+              <input data-i18n-aria="tools.unit-converter.ui.r6_3" type="number" id="to-value" aria-label="Converted value" step="any" placeholder="0" readonly class="input-mono w-full" />
               <span id="to-value-live" role="status" class="sr-only"></span>
             </div>
           </div>
@@ -146,16 +146,16 @@ function renderUnitConverterPage(lang = DEFAULT_LANGUAGE) {
     <script>
       /* ===== Unit Data ===== */
       const CATEGORY_LABELS = {
-        length: _t('tools.unit-converter.js.cat_length', 'Length'),
-        weight: _t('tools.unit-converter.js.cat_weight', 'Weight'),
-        temperature: _t('tools.unit-converter.js.cat_temperature', 'Temperature'),
-        volume: _t('tools.unit-converter.js.cat_volume', 'Volume'),
-        area: _t('tools.unit-converter.js.cat_area', 'Area'),
-        speed: _t('tools.unit-converter.js.cat_speed', 'Speed'),
-        time: _t('tools.unit-converter.js.cat_time', 'Time'),
-        data: _t('tools.unit-converter.js.cat_data', 'Data'),
-        pressure: _t('tools.unit-converter.js.cat_pressure', 'Pressure'),
-        energy: _t('tools.unit-converter.js.cat_energy', 'Energy')
+        length: _t('tools.unit-converter.js.r64_2', 'Length'),
+        weight: _t('tools.unit-converter.js.r64_3', 'Weight'),
+        temperature: _t('tools.unit-converter.js.r64_4', 'Temperature'),
+        volume: _t('tools.unit-converter.js.r64_5', 'Volume'),
+        area: _t('tools.unit-converter.js.r64_6', 'Area'),
+        speed: _t('tools.unit-converter.js.r64_7', 'Speed'),
+        time: _t('tools.unit-converter.js.r64_8', 'Time'),
+        data: _t('tools.unit-converter.js.r64_9', 'Data'),
+        pressure: _t('tools.unit-converter.js.r64_10', 'Pressure'),
+        energy: _t('tools.unit-converter.js.r64_11', 'Energy')
       };
       const UNIT_CATEGORIES = ${JSON.stringify(UNIT_CATEGORIES)};
       const convertUnit = ${convertUnit.toString()};

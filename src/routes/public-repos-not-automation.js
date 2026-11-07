@@ -285,6 +285,7 @@ export function renderPublicReposNotAutomationSection(lang = DEFAULT_LANGUAGE) {
       {
         text: '<span data-i18n="tools.public-repos-not-automation.ui.badge0">Client-Side Only</span>',
         tooltip: "All evaluation and record generation runs in your browser.",
+        tooltipI18nKey: "tools.public-repos-not-automation.ui.r63_105",
       },
       {
         text: '<span data-i18n="tools.public-repos-not-automation.ui.badge1">Manual Stewardship</span>',
@@ -315,7 +316,7 @@ export function renderPublicReposNotAutomationSection(lang = DEFAULT_LANGUAGE) {
               <div class="flex items-center justify-between gap-3 mb-3">
                 <label for="repo-task-input" class="label flex items-center gap-2 min-w-0">
                   <span data-i18n="tools.public-repos-not-automation.ui.label0">Repository task</span>
-                  ${infoHint("Use one key:value per line for repo, task, owner, cadence, risk, next-review, and notes. GitHub public repos JSON arrays and plain text are also accepted.", "Help", { i18nKey: "tools.public-repos-not-automation.ui.desc0" })}
+                  ${infoHint("Use one key:value per line for repo, task, owner, cadence, risk, next-review, and notes. GitHub public repos JSON arrays and plain text are also accepted.", "Help", { i18nKey: "tools.public-repos-not-automation.ui.desc0", ariaI18nKey: "tools.public-repos-not-automation.ui.desc0" })}
                 </label>
                 <button id="load-no-automation-sample" class="btn btn-ghost btn-xs flex-shrink-0" type="button" data-i18n="tools.public-repos-not-automation.ui.button0">Sample</button>
               </div>
@@ -326,11 +327,11 @@ export function renderPublicReposNotAutomationSection(lang = DEFAULT_LANGUAGE) {
             <div class="p-5 bg-surface-50 dark:bg-surface-950 rounded-xl border border-surface-200 dark:border-surface-800">
               <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400 mb-4" data-i18n="tools.public-repos-not-automation.ui.heading0">No-automation reasons</h2>
               <div class="space-y-3">
-                ${reasonCheckbox("safety", "Safety or reputation risk", "Automation could affect public users, external contributors, security posture, or project trust.", true)}
-                ${reasonCheckbox("unclear-owner", "Unclear owner or approval path", "No named maintainer can review failures, exceptions, or rollback decisions.", true)}
-                ${reasonCheckbox("low-frequency", "Low frequency or weak demand", "The task is not frequent enough to justify automation maintenance cost.", false)}
-                ${reasonCheckbox("ambiguous-policy", "Ambiguous policy boundary", "The task needs judgment calls that are not yet written as explicit rules.", true)}
-                ${reasonCheckbox("missing-observability", "Missing observability", "There is no reliable signal to confirm that automation worked correctly.", false)}
+                ${reasonCheckbox("safety", "Safety or reputation risk", "Automation could affect public users, external contributors, security posture, or project trust.", true, "tools.public-repos-not-automation.ui.r63_92", "tools.public-repos-not-automation.ui.r63_93")}
+                ${reasonCheckbox("unclear-owner", "Unclear owner or approval path", "No named maintainer can review failures, exceptions, or rollback decisions.", true, "tools.public-repos-not-automation.ui.r63_94", "tools.public-repos-not-automation.ui.r63_95")}
+                ${reasonCheckbox("low-frequency", "Low frequency or weak demand", "The task is not frequent enough to justify automation maintenance cost.", false, "tools.public-repos-not-automation.ui.r63_96", "tools.public-repos-not-automation.ui.r63_97")}
+                ${reasonCheckbox("ambiguous-policy", "Ambiguous policy boundary", "The task needs judgment calls that are not yet written as explicit rules.", true, "tools.public-repos-not-automation.ui.r63_98", "tools.public-repos-not-automation.ui.r63_99")}
+                ${reasonCheckbox("missing-observability", "Missing observability", "There is no reliable signal to confirm that automation worked correctly.", false, "tools.public-repos-not-automation.ui.r63_100", "tools.public-repos-not-automation.ui.r63_101")}
               </div>
             </div>
 
@@ -364,9 +365,9 @@ export function renderPublicReposNotAutomationSection(lang = DEFAULT_LANGUAGE) {
 
           <section class="lg:col-span-3 space-y-5">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3" aria-live="polite">
-              ${statBox("selected-reason-count", "Reasons", "0")}
-              ${statBox("decision-state", "Decision", "Manual")}
-              ${statBox("review-state", "Review", "30 days")}
+              ${statBox("selected-reason-count", "Reasons", "0", "tools.public-repos-not-automation.ui.r63_102")}
+              ${statBox("decision-state", "Decision", "Manual", "tools.public-repos-not-automation.ui.r63_103")}
+              ${statBox("review-state", "Review", "30 days", "tools.public-repos-not-automation.ui.r63_104")}
             </div>
 
             <div id="form-error" class="hidden rounded-lg border border-error-200 dark:border-error-800 bg-error-50 dark:bg-error-900/20 px-4 py-3 text-sm text-error-800 dark:text-error-200" role="alert"></div>
@@ -705,22 +706,22 @@ export function renderPublicReposNotAutomationSection(lang = DEFAULT_LANGUAGE) {
   };
 }
 
-function reasonCheckbox(id, label, help, checked) {
+function reasonCheckbox(id, label, help, checked, labelKey, helpKey) {
   return `
     <label class="tool-group flex items-start gap-3 p-3 cursor-pointer">
       <input id="reason-${id}" type="checkbox" class="mt-1 w-4 h-4 rounded border-surface-300 text-primary-600 dark:text-primary-400 focus:ring-primary-500" ${checked ? "checked" : ""}>
       <span>
-        <span class="block text-sm font-semibold text-surface-900 dark:text-surface-100">${label}</span>
-        <span class="block text-xs text-surface-500 dark:text-surface-400">${help}</span>
+        <span class="block text-sm font-semibold text-surface-900 dark:text-surface-100"${labelKey ? ` data-i18n="${labelKey}"` : ""}>${label}</span>
+        <span class="block text-xs text-surface-500 dark:text-surface-400"${helpKey ? ` data-i18n="${helpKey}"` : ""}>${help}</span>
       </span>
     </label>
   `;
 }
 
-function statBox(id, label, value) {
+function statBox(id, label, value, labelKey) {
   return `
     <div class="p-4 bg-surface-50 dark:bg-surface-950 rounded-xl border border-surface-200 dark:border-surface-800">
-      <div class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400">${label}</div>
+      <div class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400"${labelKey ? ` data-i18n="${labelKey}"` : ""}>${label}</div>
       <div id="${id}" class="mt-1 text-2xl font-bold font-mono text-surface-900 dark:text-surface-50">${value}</div>
     </div>
   `;

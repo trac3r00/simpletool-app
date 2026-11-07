@@ -85,6 +85,7 @@ function renderTokenCounterPage(lang = DEFAULT_LANGUAGE) {
         text: '<span data-i18n="tools.token-counter.ui.badge0">Offline</span>',
         tooltip:
           "Your text never leaves the browser. The exact OpenAI tokenizer file is fetched from this site only when an OpenAI model is selected and text is entered.",
+        tooltipI18nKey: "tools.token-counter.ui.r65_2",
       },
       {
         text: '<span data-i18n="tools.token-counter.ui.badge1">Bring Your Pricing</span>',
@@ -117,7 +118,7 @@ function renderTokenCounterPage(lang = DEFAULT_LANGUAGE) {
 
             <label for="text" class="label flex items-center gap-2">
               <span data-i18n="tools.token-counter.ui.label0">Text</span>
-              ${infoHint("Tokenization differs by model. This tool estimates tokens using byte/character heuristics; use it for planning and budgeting, not exact billing.", "Help", { i18nKey: "tools.token-counter.ui.desc0" })}
+              ${infoHint("Tokenization differs by model. This tool estimates tokens using byte/character heuristics; use it for planning and budgeting, not exact billing.", "Help", { ariaI18nKey: "tools.token-counter.ui.r65_0", i18nKey: "tools.token-counter.ui.desc0" })}
             </label>
             <textarea id="text" rows="16" class="input-mono resize-y" placeholder="Paste your prompt, docs, code, or any text..." data-i18n-placeholder="tools.token-counter.ui.placeholder0"></textarea>
 
@@ -144,7 +145,7 @@ function renderTokenCounterPage(lang = DEFAULT_LANGUAGE) {
               <div class="tool-group p-4">
                 <label for="out-tokens" class="label flex items-center gap-2">
                   <span data-i18n="tools.token-counter.ui.label1">Expected output tokens</span>
-                  ${infoHint("If you don’t have an actual completion, set an expected output budget to estimate total cost.", "Help", { i18nKey: "tools.token-counter.ui.desc6" })}
+                  ${infoHint("If you don’t have an actual completion, set an expected output budget to estimate total cost.", "Help", { ariaI18nKey: "tools.token-counter.ui.r65_1", i18nKey: "tools.token-counter.ui.desc6" })}
                 </label>
                 <input id="out-tokens" type="number" min="0" step="1" value="0" class="input font-mono" />
               </div>
@@ -532,7 +533,7 @@ function renderTokenCounterPage(lang = DEFAULT_LANGUAGE) {
             status: 'Estimate: ' + model.reason, error: '',
           };
         }
-        const exactStatus = 'Exact count for raw text with the ' + model.encoding + ' encoding (gpt-tokenizer 4.1.0). Special tokens such as <|endoftext|> are counted as plain text; chat message formatting adds a few tokens per message.';
+        const exactStatus = (window._t ? window._t('tools.token-counter.js.r65_0', 'Exact count for raw text with the {encoding} encoding (gpt-tokenizer 4.1.0). Special tokens such as <|endoftext|> are counted as plain text; chat message formatting adds a few tokens per message.') : 'Exact count for raw text with the {encoding} encoding (gpt-tokenizer 4.1.0). Special tokens such as <|endoftext|> are counted as plain text; chat message formatting adds a few tokens per message.').replace('{encoding}', model.encoding);
         if (!text) {
           return { model, kind: 'exact', count: 0, tokens: [], api: null, status: exactStatus, error: '' };
         }

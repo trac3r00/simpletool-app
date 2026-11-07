@@ -54,6 +54,7 @@ function renderSecretScannerPage(lang = DEFAULT_LANGUAGE) {
         text: '<span data-i18n="tools.secret-scanner.ui.badge0">Local Only</span>',
         tooltip:
           "Scanning happens in your browser; the text you paste is not sent to our servers.",
+        tooltipI18nKey: "tools.secret-scanner.ui.r65_4",
       },
       {
         text: '<span data-i18n="tools.secret-scanner.ui.badge1">Actionable</span>',
@@ -85,9 +86,9 @@ function renderSecretScannerPage(lang = DEFAULT_LANGUAGE) {
           <div class="space-y-3">
             <label class="label flex items-center gap-2">
               <span data-i18n="tools.secret-scanner.ui.label0">Input</span>
-              ${infoHint("Paste code, logs, configs, CI output, .env, or JSON. This tool uses regex heuristics — false positives are possible.", "Help", { i18nKey: "tools.secret-scanner.ui.desc0" })}
+              ${infoHint("Paste code, logs, configs, CI output, .env, or JSON. This tool uses regex heuristics — false positives are possible.", "Help", { ariaI18nKey: "tools.secret-scanner.ui.r65_0", i18nKey: "tools.secret-scanner.ui.desc0" })}
             </label>
-            <textarea id="input" rows="18" aria-label="Text to scan" class="input-mono resize-y" placeholder="Paste code/config here..." data-i18n-placeholder="tools.secret-scanner.ui.placeholder0"></textarea>
+            <textarea id="input" rows="18" aria-label="Text to scan" data-i18n-aria="tools.secret-scanner.ui.r65_1" class="input-mono resize-y" placeholder="Paste code/config here..." data-i18n-placeholder="tools.secret-scanner.ui.placeholder0"></textarea>
 
             <div class="flex flex-wrap items-center gap-4 text-sm text-surface-700 dark:text-surface-300">
               <label class="inline-flex items-center gap-2 cursor-pointer">
@@ -127,9 +128,9 @@ function renderSecretScannerPage(lang = DEFAULT_LANGUAGE) {
             <div class="tool-group p-5">
               <label class="label flex items-center gap-2">
                 <span data-i18n="tools.secret-scanner.ui.label3">Redacted output (share-safe)</span>
-                ${infoHint("Use this when pasting logs into tickets or chats. Always rotate credentials if a real secret leaked.", "Help", { i18nKey: "tools.secret-scanner.ui.desc2" })}
+                ${infoHint("Use this when pasting logs into tickets or chats. Always rotate credentials if a real secret leaked.", "Help", { ariaI18nKey: "tools.secret-scanner.ui.r65_2", i18nKey: "tools.secret-scanner.ui.desc2" })}
               </label>
-              <textarea id="redacted" rows="18" aria-label="Redacted output" class="input-mono resize-y bg-surface-50 dark:bg-surface-950" readonly placeholder="Redacted text will appear here after scanning..." data-i18n-placeholder="tools.secret-scanner.ui.placeholder1"></textarea>
+              <textarea id="redacted" rows="18" aria-label="Redacted output" data-i18n-aria="tools.secret-scanner.ui.r65_3" class="input-mono resize-y bg-surface-50 dark:bg-surface-950" readonly placeholder="Redacted text will appear here after scanning..." data-i18n-placeholder="tools.secret-scanner.ui.placeholder1"></textarea>
             </div>
           </div>
         </div>

@@ -63,6 +63,7 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
             text: "Zero trust by design",
             i18nKey: "tools.htpasswd-generator.ui.desc24",
             tooltip: "No network calls.",
+            tooltipI18nKey: "tools.htpasswd-generator.ui.r63_47",
           },
           {
             text: "Multiple algorithms",
@@ -79,7 +80,7 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
         <div class="tool-group min-w-0 p-6 space-y-5">
           <div class="space-y-2">
             <label for="username-input" class="text-sm font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide"><span data-i18n="tools.htpasswd-generator.ui.label7">Username</span></label>
-            <input id="username-input" type="text" data-tooltip="Username for the htpasswd entry" data-i18n-tooltip="tools.htpasswd-generator.ui.tip0" class="input w-full" placeholder="deploy" data-i18n-placeholder="tools.htpasswd-generator.ui.placeholder11" autocomplete="off" />
+            <input id="username-input" type="text" data-tooltip="Username for the htpasswd entry" data-i18n-tooltip="tools.htpasswd-generator.ui.r63_48" class="input w-full" placeholder="deploy" data-i18n-placeholder="tools.htpasswd-generator.ui.placeholder11" autocomplete="off" />
           </div>
 
           <div class="space-y-2">
@@ -90,11 +91,11 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
                    <button id="generate-password" type="button" class="btn btn-ghost btn-xs text-primary-600 dark:text-primary-400"><span data-i18n="tools.htpasswd-generator.ui.button1">Generate strong</span></button>
                  </div>
              </div>
-            <input id="password-input" type="password" data-tooltip="Password to hash for the entry" data-i18n-tooltip="tools.htpasswd-generator.ui.tip1" class="input-mono w-full" placeholder="•••••••" autocomplete="new-password" />
+            <input id="password-input" type="password" data-tooltip="Password to hash for the entry" data-i18n-tooltip="tools.htpasswd-generator.ui.r63_49" class="input-mono w-full" placeholder="•••••••" autocomplete="new-password" />
           </div>
 
           <div class="space-y-2">
-            <label for="algorithm-select" class="text-sm font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide"><span data-i18n="tools.htpasswd-generator.ui.label9">Algorithm</span> ${infoHint("Pick bcrypt/apr1/SHA1/plain to match your htpasswd setup; bcrypt is strongest.")}</label>
+            <label for="algorithm-select" class="text-sm font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide"><span data-i18n="tools.htpasswd-generator.ui.label9">Algorithm</span> ${infoHint("Pick bcrypt/apr1/SHA1/plain to match your htpasswd setup; bcrypt is strongest.", undefined, { i18nKey: "tools.htpasswd-generator.ui.r63_51", ariaI18nKey: "tools.htpasswd-generator.ui.r63_51" })}</label>
             <select id="algorithm-select" class="input">
               <option value="bcrypt" data-i18n="tools.htpasswd-generator.ui.option13">Bcrypt (-B)</option>
               <option value="apr1" data-i18n="tools.htpasswd-generator.ui.option14">Apache MD5 (-m)</option>
@@ -106,20 +107,20 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
           <div id="bcrypt-options" class="space-y-2">
             <div class="flex justify-between text-sm text-surface-600 dark:text-surface-400">
               <label for="cost-slider"><span data-i18n="tools.htpasswd-generator.ui.label11">Cost</span></label>
-              <span id="cost-label" data-i18n="tools.htpasswd-generator.ui.label12">12 rounds</span>
+              <span id="cost-label">12 rounds</span>
             </div>
-            <input id="cost-slider" type="range" aria-label="Bcrypt cost factor" data-tooltip="Higher cost = stronger hash but slower generation" data-i18n-tooltip="tools.htpasswd-generator.ui.tip2" min="8" max="15" value="12" class="w-full h-2 accent-primary-600 bg-surface-200 dark:bg-surface-800 rounded-lg" />
+            <input data-i18n-aria="tools.htpasswd-generator.ui.r6_0" id="cost-slider" type="range" aria-label="Bcrypt cost factor" data-tooltip="Higher cost = stronger hash but slower generation" data-i18n-tooltip="tools.htpasswd-generator.ui.r63_50" min="8" max="15" value="12" class="w-full h-2 accent-primary-600 bg-surface-200 dark:bg-surface-800 rounded-lg" />
           </div>
 
           <div id="salt-options" class="space-y-2 hidden">
             <div class="flex justify-between items-center">
-               <label for="salt-input" class="text-sm font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide"><span data-i18n="tools.htpasswd-generator.ui.label10">Salt</span> ${infoHint("Salt is 8 chars (./0-9A-Za-z) for apr1 hashes; randomize for uniqueness.")}</label>
+               <label for="salt-input" class="text-sm font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide"><span data-i18n="tools.htpasswd-generator.ui.label10">Salt</span> ${infoHint("Salt is 8 chars (./0-9A-Za-z) for apr1 hashes; randomize for uniqueness.", undefined, { i18nKey: "tools.htpasswd-generator.ui.r63_52", ariaI18nKey: "tools.htpasswd-generator.ui.r63_52" })}</label>
               <button id="random-salt" type="button" class="btn btn-ghost btn-xs"><span data-i18n="tools.htpasswd-generator.ui.button2">Randomize</span></button>
             </div>
             <input id="salt-input" type="text" maxlength="8" class="input-mono w-full" placeholder="8 chars (./0-9A-Za-z)" data-i18n-placeholder="tools.htpasswd-generator.ui.placeholder12" />
           </div>
 
-           <div id="htpasswd-error" role="alert" class="hidden rounded-xl border border-danger-200 dark:border-danger-800 bg-danger-50 dark:bg-danger-900/30 text-sm text-danger-700 dark:text-danger-200 px-4 py-3">Error</div>
+           <div data-i18n="tools.htpasswd-generator.ui.r6_1" id="htpasswd-error" role="alert" class="hidden rounded-xl border border-danger-200 dark:border-danger-800 bg-danger-50 dark:bg-danger-900/30 text-sm text-danger-700 dark:text-danger-200 px-4 py-3">Error</div>
 
            <button id="generate-btn" class="btn btn-primary w-full"><span data-i18n="tools.htpasswd-generator.ui.button3">Generate entry</span></button>
         </div>
@@ -134,7 +135,7 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
               </div>
             </div>
             <pre id="entry-output" role="status" tabindex="0" class="min-h-[80px] bg-surface-900 text-surface-100 p-4 rounded-xl overflow-x-auto text-sm" data-i18n="tools.htpasswd-generator.ui.desc26">No entry yet.</pre>
-            <p class="mt-2 text-xs text-surface-600 dark:text-surface-400">Downloads are saved as <code>htpasswd</code>: browsers drop a leading dot from downloaded names. Rename it to <code>.htpasswd</code> on your server.</p>
+            <p data-i18n-html="tools.htpasswd-generator.ui.r6_2" class="mt-2 text-xs text-surface-600 dark:text-surface-400">Downloads are saved as <code>htpasswd</code>: browsers drop a leading dot from downloaded names. Rename it to <code>.htpasswd</code> on your server.</p>
           </div>
 
           <div class="tool-group p-6">
@@ -163,18 +164,18 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
       <section class="grid gap-6 lg:grid-cols-2 mt-6">
         <div class="tool-group min-w-0 p-6 space-y-4">
           <h2 class="text-lg font-bold text-surface-900 dark:text-white" data-i18n="tools.htpasswd-generator.ui.r3_14">Bulk entries</h2>
-          <p class="text-sm text-surface-600 dark:text-surface-400">One <code>user:password</code> per line. Only the first colon splits a line, so passwords may contain colons. Every entry uses the algorithm and cost selected above; apr1 entries each get their own random salt.</p>
+          <p data-i18n-html="tools.htpasswd-generator.ui.r6_3" class="text-sm text-surface-600 dark:text-surface-400">One <code>user:password</code> per line. Only the first colon splits a line, so passwords may contain colons. Every entry uses the algorithm and cost selected above; apr1 entries each get their own random salt.</p>
           <div class="space-y-2">
             <label for="bulk-input" class="label" data-i18n="tools.htpasswd-generator.ui.r3_6">Users and passwords</label>
-            <textarea id="bulk-input" rows="6" class="input-mono w-full" placeholder="alice:first-password&#10;bob:second:password" spellcheck="false" autocomplete="off"></textarea>
+            <textarea id="bulk-input" rows="6" class="input-mono w-full" placeholder="alice:first-password&#10;bob:second:password" data-i18n-placeholder="tools.htpasswd-generator.ui.r63_64" spellcheck="false" autocomplete="off"></textarea>
           </div>
           <button id="bulk-generate" type="button" class="btn btn-primary w-full" data-i18n="tools.htpasswd-generator.ui.r3_4">Generate all entries</button>
           <div id="bulk-errors" role="alert" class="hidden whitespace-pre-wrap rounded-xl border border-danger-200 dark:border-danger-800 bg-danger-50 dark:bg-danger-900/30 text-sm text-danger-700 dark:text-danger-200 px-4 py-3"></div>
           <div class="flex items-center justify-between">
             <h3 class="text-sm font-semibold text-surface-700 dark:text-surface-200" data-i18n="tools.htpasswd-generator.ui.r3_15">htpasswd file</h3>
             <div class="flex gap-2">
-              <button id="bulk-copy" type="button" class="btn btn-secondary btn-sm" aria-label="Copy all bulk entries" disabled>Copy</button>
-              <button id="bulk-download" type="button" class="btn btn-secondary btn-sm" aria-label="Download bulk entries as .htpasswd" disabled>Download</button>
+              <button data-i18n="tools.htpasswd-generator.ui.r6_5" data-i18n-aria="tools.htpasswd-generator.ui.r6_4" id="bulk-copy" type="button" class="btn btn-secondary btn-sm" aria-label="Copy all bulk entries" disabled>Copy</button>
+              <button data-i18n="tools.htpasswd-generator.ui.r6_7" data-i18n-aria="tools.htpasswd-generator.ui.r6_6" id="bulk-download" type="button" class="btn btn-secondary btn-sm" aria-label="Download bulk entries as .htpasswd" disabled>Download</button>
             </div>
           </div>
           <pre id="bulk-output" role="status" class="min-h-[80px] bg-surface-900 text-surface-100 p-4 rounded-xl overflow-x-auto text-sm">No bulk entries yet.</pre>
@@ -182,7 +183,7 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
 
         <div class="tool-group min-w-0 p-6 space-y-4">
           <h2 class="text-lg font-bold text-surface-900 dark:text-white" data-i18n="tools.htpasswd-generator.ui.r3_16">Verify an existing entry</h2>
-          <p class="text-sm text-surface-600 dark:text-surface-400">Paste one line from an htpasswd file and a candidate password. bcrypt, Apache MD5 (apr1), {SHA}, and plaintext entries (including nginx's <code>{PLAIN}</code> prefix) are checked in your browser.</p>
+          <p data-i18n-html="tools.htpasswd-generator.ui.r6_8" class="text-sm text-surface-600 dark:text-surface-400">Paste one line from an htpasswd file and a candidate password. bcrypt, Apache MD5 (apr1), {SHA}, and plaintext entries (including nginx's <code>{PLAIN}</code> prefix) are checked in your browser.</p>
           <div class="space-y-2">
             <label for="verify-line" class="label" data-i18n="tools.htpasswd-generator.ui.r3_7">htpasswd line</label>
             <input id="verify-line" type="text" class="input-mono w-full" placeholder="deploy:$2y$12$..." data-i18n-placeholder="tools.htpasswd-generator.ui.r3_3" spellcheck="false" autocomplete="off" />
@@ -199,7 +200,7 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
       <section class="grid gap-6 lg:grid-cols-[2fr,3fr] mt-6">
         <div class="tool-group min-w-0 p-6 space-y-4">
           <h2 class="text-lg font-bold text-surface-900 dark:text-white" data-i18n="tools.htpasswd-generator.ui.r3_17">Authorization header</h2>
-          <p class="text-sm text-surface-600 dark:text-surface-400">Built from the username and password above: <code>user:password</code> is encoded as UTF-8, then Base64 (RFC 7617). Base64 is an encoding, not encryption, so anyone who sees this header can read the password.</p>
+          <p data-i18n-html="tools.htpasswd-generator.ui.r6_9" class="text-sm text-surface-600 dark:text-surface-400">Built from the username and password above: <code>user:password</code> is encoded as UTF-8, then Base64 (RFC 7617). Base64 is an encoding, not encryption, so anyone who sees this header can read the password.</p>
           <div class="space-y-2">
             <label for="auth-url" class="label" data-i18n="tools.htpasswd-generator.ui.r3_9">Request URL for the curl example</label>
             <input id="auth-url" type="url" class="input-mono w-full" value="https://example.com/admin/" spellcheck="false" autocomplete="off" />
@@ -207,12 +208,12 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
           <div id="auth-error" role="alert" class="hidden rounded-xl border border-danger-200 dark:border-danger-800 bg-danger-50 dark:bg-danger-900/30 text-sm text-danger-700 dark:text-danger-200 px-4 py-3"></div>
           <div class="flex items-center justify-between">
             <h3 class="text-sm font-semibold text-surface-700 dark:text-surface-200" data-i18n="tools.htpasswd-generator.ui.r3_18">Header</h3>
-            <button id="copy-header" type="button" class="btn btn-ghost btn-xs" aria-label="Copy Authorization header">Copy</button>
+            <button data-i18n="tools.htpasswd-generator.ui.r6_11" data-i18n-aria="tools.htpasswd-generator.ui.r6_10" id="copy-header" type="button" class="btn btn-ghost btn-xs" aria-label="Copy Authorization header">Copy</button>
           </div>
           <pre id="auth-header-output" tabindex="0" class="bg-surface-900 text-surface-100 p-4 rounded-xl overflow-x-auto text-sm" data-i18n="tools.htpasswd-generator.ui.r3_24">Enter a username and password above.</pre>
           <div class="flex items-center justify-between">
             <h3 class="text-sm font-semibold text-surface-700 dark:text-surface-200" data-i18n="tools.htpasswd-generator.ui.r3_19">curl</h3>
-            <button id="copy-curl" type="button" class="btn btn-ghost btn-xs" aria-label="Copy curl command">Copy</button>
+            <button data-i18n="tools.htpasswd-generator.ui.r6_13" data-i18n-aria="tools.htpasswd-generator.ui.r6_12" id="copy-curl" type="button" class="btn btn-ghost btn-xs" aria-label="Copy curl command">Copy</button>
           </div>
           <pre id="auth-curl-output" tabindex="0" class="bg-surface-900 text-surface-100 p-4 rounded-xl overflow-x-auto text-sm">Enter a username and password above.</pre>
         </div>
@@ -226,21 +227,21 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
           </div>
           <div id="config-error" role="alert" class="hidden rounded-xl border border-danger-200 dark:border-danger-800 bg-danger-50 dark:bg-danger-900/30 text-sm text-danger-700 dark:text-danger-200 px-4 py-3"></div>
           ${[
-            ["apache", "Apache (.htaccess)", "Needs mod_auth_basic and mod_authn_file. In .htaccess, the directory must allow <code>AllowOverride AuthConfig</code>."],
-            ["nginx", "nginx", "nginx checks apr1, {SHA}, {SSHA}, and {PLAIN} entries itself; any other hash, bcrypt included, goes to the system crypt(). See the crypt_r() note below."],
-            ["kubernetes", "Kubernetes (ingress-nginx)", "The secret key must be named <code>auth</code>; <code>--from-file=auth</code> uses the file name as the key. Add the annotations to your Ingress."],
-            ["caddy", "Caddy", "Caddy's <code>basic_auth</code> accepts bcrypt hashes only, so apr1, {SHA}, and plaintext entries will not work. Before Caddy 2.8 the directive was named <code>basicauth</code>."],
-            ["traefik", "Traefik", "Traefik accepts bcrypt, apr1, and SHA-1 hashes. The <code>$$</code> doubling is for docker-compose labels only; in a Traefik file provider or a <code>usersFile</code>, write single <code>$</code>."],
+            ["apache", "Apache (.htaccess)", "Needs mod_auth_basic and mod_authn_file. In .htaccess, the directory must allow <code>AllowOverride AuthConfig</code>.", "tools.htpasswd-generator.ui.r63_54", "tools.htpasswd-generator.ui.r63_55"],
+            ["nginx", "nginx", "nginx checks apr1, {SHA}, {SSHA}, and {PLAIN} entries itself; any other hash, bcrypt included, goes to the system crypt(). See the crypt_r() note below.", "tools.htpasswd-generator.ui.r63_56", "tools.htpasswd-generator.ui.r63_57"],
+            ["kubernetes", "Kubernetes (ingress-nginx)", "The secret key must be named <code>auth</code>; <code>--from-file=auth</code> uses the file name as the key. Add the annotations to your Ingress.", "tools.htpasswd-generator.ui.r63_58", "tools.htpasswd-generator.ui.r63_59"],
+            ["caddy", "Caddy", "Caddy's <code>basic_auth</code> accepts bcrypt hashes only, so apr1, {SHA}, and plaintext entries will not work. Before Caddy 2.8 the directive was named <code>basicauth</code>.", "tools.htpasswd-generator.ui.r63_60", "tools.htpasswd-generator.ui.r63_61"],
+            ["traefik", "Traefik", "Traefik accepts bcrypt, apr1, and SHA-1 hashes. The <code>$$</code> doubling is for docker-compose labels only; in a Traefik file provider or a <code>usersFile</code>, write single <code>$</code>.", "tools.htpasswd-generator.ui.r63_62", "tools.htpasswd-generator.ui.r63_63"],
           ]
             .map(
-              ([id, heading, note]) => `
+              ([id, heading, note, noteKey, ariaKey]) => `
           <div class="space-y-2">
             <div class="flex items-center justify-between">
               <h3 class="text-sm font-semibold text-surface-700 dark:text-surface-200">${heading}</h3>
-              <button type="button" class="btn btn-ghost btn-xs config-copy" data-config="${id}" aria-label="Copy ${heading} config">Copy</button>
+              <button type="button" class="btn btn-ghost btn-xs config-copy" data-config="${id}" aria-label="Copy ${heading} config" data-i18n-aria="${ariaKey}" data-i18n="tools.htpasswd-generator.ui.r63_53">Copy</button>
             </div>
             <pre id="config-${id}" tabindex="0" class="bg-surface-900 text-surface-100 p-4 rounded-xl overflow-x-auto text-sm"></pre>
-            <p class="text-xs text-surface-600 dark:text-surface-400">${note}</p>
+            <p class="text-xs text-surface-600 dark:text-surface-400" data-i18n-html="${noteKey}">${note}</p>
           </div>`,
             )
             .join("")}
@@ -248,14 +249,14 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
       </section>
       </div>
     </main>
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12" role="region" aria-label="Htpasswd guide">
+    <div data-i18n-aria="tools.htpasswd-generator.ui.r6_14" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12" role="region" aria-label="Htpasswd guide">
       <section class="card p-6 sm:p-8 mb-8 space-y-4">
         <h2 class="text-xl font-bold text-surface-900 dark:text-white" data-i18n="tools.htpasswd-generator.ui.r3_21">Which algorithm should you use?</h2>
         <div class="overflow-x-auto" tabindex="0">
           <table class="min-w-full text-sm">
             <thead class="text-left text-surface-700 dark:text-surface-300">
               <tr>
-                <th class="py-2 pr-4">Algorithm</th>
+                <th data-i18n="tools.htpasswd-generator.ui.r6_15" class="py-2 pr-4">Algorithm</th>
                 <th class="py-2 pr-4" data-i18n="tools.htpasswd-generator.ui.r3_11">htpasswd flag</th>
                 <th class="py-2 pr-4" data-i18n="tools.htpasswd-generator.ui.r3_12">Verdict</th>
                 <th class="py-2" data-i18n="tools.htpasswd-generator.ui.r3_13">Why</th>
@@ -263,35 +264,35 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
             </thead>
             <tbody class="divide-y divide-surface-100 dark:divide-surface-800 text-surface-700 dark:text-surface-300">
               <tr>
-                <td class="py-2 pr-4 font-medium">bcrypt</td>
+                <td data-i18n="tools.htpasswd-generator.ui.r6_16" class="py-2 pr-4 font-medium">bcrypt</td>
                 <td class="py-2 pr-4"><code>-B</code></td>
-                <td class="py-2 pr-4 font-semibold">Recommended</td>
-                <td class="py-2">Salted and deliberately slow. Each +1 on the cost factor doubles the work. Only the first 72 bytes of a password are used.</td>
+                <td data-i18n="tools.htpasswd-generator.ui.r6_17" class="py-2 pr-4 font-semibold">Recommended</td>
+                <td data-i18n="tools.htpasswd-generator.ui.r6_18" class="py-2">Salted and deliberately slow. Each +1 on the cost factor doubles the work. Only the first 72 bytes of a password are used.</td>
               </tr>
               <tr>
-                <td class="py-2 pr-4 font-medium">Apache MD5 (apr1)</td>
+                <td data-i18n="tools.htpasswd-generator.ui.r6_19" class="py-2 pr-4 font-medium">Apache MD5 (apr1)</td>
                 <td class="py-2 pr-4"><code>-m</code></td>
-                <td class="py-2 pr-4 font-semibold">Legacy</td>
-                <td class="py-2">Salted, but a fixed 1,000 rounds of MD5 is cheap to brute-force on modern hardware. Use it only when the server cannot verify bcrypt.</td>
+                <td data-i18n="tools.htpasswd-generator.ui.r6_20" class="py-2 pr-4 font-semibold">Legacy</td>
+                <td data-i18n="tools.htpasswd-generator.ui.r6_21" class="py-2">Salted, but a fixed 1,000 rounds of MD5 is cheap to brute-force on modern hardware. Use it only when the server cannot verify bcrypt.</td>
               </tr>
               <tr>
-                <td class="py-2 pr-4 font-medium">SHA-1 ({SHA})</td>
+                <td data-i18n="tools.htpasswd-generator.ui.r6_22" class="py-2 pr-4 font-medium">SHA-1 ({SHA})</td>
                 <td class="py-2 pr-4"><code>-s</code></td>
-                <td class="py-2 pr-4 font-semibold">Weak</td>
-                <td class="py-2">A single unsalted SHA-1: identical passwords produce identical hashes, and each guess costs one fast hash.</td>
+                <td data-i18n="tools.htpasswd-generator.ui.r6_23" class="py-2 pr-4 font-semibold">Weak</td>
+                <td data-i18n="tools.htpasswd-generator.ui.r6_24" class="py-2">A single unsalted SHA-1: identical passwords produce identical hashes, and each guess costs one fast hash.</td>
               </tr>
               <tr>
-                <td class="py-2 pr-4 font-medium">Plaintext</td>
+                <td data-i18n="tools.htpasswd-generator.ui.r6_25" class="py-2 pr-4 font-medium">Plaintext</td>
                 <td class="py-2 pr-4"><code>-p</code></td>
-                <td class="py-2 pr-4 font-semibold">Insecure</td>
-                <td class="py-2">Stored as-is. Apache httpd accepts plaintext only on Windows and NetWare, and nginx needs the <code>{PLAIN}</code> prefix.</td>
+                <td data-i18n="tools.htpasswd-generator.ui.r6_26" class="py-2 pr-4 font-semibold">Insecure</td>
+                <td data-i18n-html="tools.htpasswd-generator.ui.r6_27" class="py-2">Stored as-is. Apache httpd accepts plaintext only on Windows and NetWare, and nginx needs the <code>{PLAIN}</code> prefix.</td>
               </tr>
             </tbody>
           </table>
         </div>
         <h3 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.htpasswd-generator.ui.r3_22">nginx error: "crypt_r() failed (22: Invalid argument)"</h3>
-        <p class="text-surface-700 dark:text-surface-300">nginx verifies apr1, {SHA}, {SSHA}, and {PLAIN} entries with its own code, but passes every other hash, including bcrypt's <code>$2y$</code>, to the operating system's <code>crypt()</code> (<code>crypt_r()</code> on Linux). If that system's libc does not implement bcrypt, the call fails with EINVAL, nginx logs this error, and the request gets a 500 Internal Server Error instead of a login prompt.</p>
-        <p class="text-surface-700 dark:text-surface-300">There are two fixes: regenerate the entries with Apache MD5 (apr1), which nginx always understands, or run nginx on a system whose <code>crypt()</code> supports bcrypt (for example, one using libxcrypt with bcrypt enabled).</p>
+        <p data-i18n-html="tools.htpasswd-generator.ui.r6_28" class="text-surface-700 dark:text-surface-300">nginx verifies apr1, {SHA}, {SSHA}, and {PLAIN} entries with its own code, but passes every other hash, including bcrypt's <code>$2y$</code>, to the operating system's <code>crypt()</code> (<code>crypt_r()</code> on Linux). If that system's libc does not implement bcrypt, the call fails with EINVAL, nginx logs this error, and the request gets a 500 Internal Server Error instead of a login prompt.</p>
+        <p data-i18n-html="tools.htpasswd-generator.ui.r6_29" class="text-surface-700 dark:text-surface-300">There are two fixes: regenerate the entries with Apache MD5 (apr1), which nginx always understands, or run nginx on a system whose <code>crypt()</code> supports bcrypt (for example, one using libxcrypt with bcrypt enabled).</p>
       </section>
       ${createEducationalSection(
         [
@@ -444,7 +445,7 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
       }
 
       function updateCostLabel() {
-        costLabel.textContent = costSlider.value + ' rounds';
+        costLabel.textContent = _t('tools.htpasswd-generator.js.r66_rounds', '{n} rounds').replace('{n}', costSlider.value);
       }
 
       function updateAlgorithmOptions() {

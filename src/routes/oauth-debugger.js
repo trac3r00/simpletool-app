@@ -50,8 +50,10 @@ function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
     [
       {
         text: "Privacy First",
+        i18nKey: "tools.oauth-debugger.ui.r64_8",
         color: "green",
         tooltip: "All operations happen in your browser.",
+        tooltipI18nKey: "tools.oauth-debugger.ui.r64_9",
       },
     ],
     { toolId: "oauth-debugger" },
@@ -81,14 +83,14 @@ function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
                 <div>
                   <label class="block text-xs font-semibold uppercase tracking-wide text-surface-500 dark:text-surface-400 mb-1" data-i18n="tools.oauth-debugger.ui.label0">code_verifier <span class="normal-case font-normal">(43–128 URL-safe chars)</span></label>
                   <div class="flex gap-2">
-                    <input id="pkce-verifier" readonly aria-label="PKCE code verifier" class="input-mono w-full" placeholder="Click Generate..." data-i18n-placeholder="tools.oauth-debugger.ui.placeholder0" />
+                    <input data-i18n-aria="tools.oauth-debugger.ui.r6_0" id="pkce-verifier" readonly aria-label="PKCE code verifier" class="input-mono w-full" placeholder="Click Generate..." data-i18n-placeholder="tools.oauth-debugger.ui.placeholder0" />
                     <button id="copy-pkce-verifier" class="btn btn-secondary flex-shrink-0" data-i18n="tools.oauth-debugger.ui.button1">Copy</button>
                   </div>
                 </div>
                 <div>
                   <label class="block text-xs font-semibold uppercase tracking-wide text-surface-500 dark:text-surface-400 mb-1" data-i18n="tools.oauth-debugger.ui.label1">code_challenge <span class="normal-case font-normal">(SHA-256, base64url)</span></label>
                   <div class="flex gap-2">
-                    <input id="pkce-challenge" readonly aria-label="PKCE code challenge" class="input-mono w-full" placeholder="Derived after generation..." data-i18n-placeholder="tools.oauth-debugger.ui.placeholder1" />
+                    <input data-i18n-aria="tools.oauth-debugger.ui.r6_1" id="pkce-challenge" readonly aria-label="PKCE code challenge" class="input-mono w-full" placeholder="Derived after generation..." data-i18n-placeholder="tools.oauth-debugger.ui.placeholder1" />
                     <button id="copy-pkce-challenge" class="btn btn-secondary flex-shrink-0" data-i18n="tools.oauth-debugger.ui.button2">Copy</button>
                   </div>
                 </div>
@@ -116,18 +118,18 @@ function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
                   tabindex="0"
                   role="region"
                   aria-label="Authorization flow diagram, scroll horizontally to see all steps"
-                  data-i18n-aria="tools.oauth-debugger.ui.aria0"
+                  data-i18n-aria="tools.oauth-debugger.ui.r64_10"
                 >
                   <div class="flex items-start gap-0 min-w-[600px] text-xs">
-                    ${flowStep("1", "Client", "Build authorization URL with code_challenge", "bg-primary-100 dark:bg-primary-900/30 border-primary-300 dark:border-primary-700 text-primary-800 dark:text-primary-200")}
+                    ${flowStep("1", "Client", "Build authorization URL with code_challenge", "bg-primary-100 dark:bg-primary-900/30 border-primary-300 dark:border-primary-700 text-primary-800 dark:text-primary-200", "r64_0", "r64_1")}
                     ${flowArrow("GET /authorize?...")}
-                    ${flowStep("2", "Auth Server", "Authenticate user, display consent screen", "bg-surface-100 dark:bg-surface-800 border-surface-300 dark:border-surface-600 text-surface-700 dark:text-surface-300")}
-                    ${flowArrow("302 redirect + code")}
-                    ${flowStep("3", "Client", "Receive auth code in redirect_uri", "bg-surface-100 dark:bg-surface-800 border-surface-300 dark:border-surface-600 text-surface-700 dark:text-surface-300")}
+                    ${flowStep("2", "Auth Server", "Authenticate user, display consent screen", "bg-surface-100 dark:bg-surface-800 border-surface-300 dark:border-surface-600 text-surface-700 dark:text-surface-300", "r64_2", "r64_3")}
+                    ${flowArrow("302 redirect + code", "r64_7")}
+                    ${flowStep("3", "Client", "Receive auth code in redirect_uri", "bg-surface-100 dark:bg-surface-800 border-surface-300 dark:border-surface-600 text-surface-700 dark:text-surface-300", "r64_0", "r64_4")}
                     ${flowArrow("POST /token + code_verifier")}
-                    ${flowStep("4", "Auth Server", "Verify code_verifier against stored challenge", "bg-surface-100 dark:bg-surface-800 border-surface-300 dark:border-surface-600 text-surface-700 dark:text-surface-300")}
+                    ${flowStep("4", "Auth Server", "Verify code_verifier against stored challenge", "bg-surface-100 dark:bg-surface-800 border-surface-300 dark:border-surface-600 text-surface-700 dark:text-surface-300", "r64_2", "r64_5")}
                     ${flowArrow("access_token")}
-                    ${flowStep("5", "Client", "Use access_token to call APIs", "bg-success-100 dark:bg-success-900/30 border-success-300 dark:border-success-700 text-success-800 dark:text-success-200")}
+                    ${flowStep("5", "Client", "Use access_token to call APIs", "bg-success-100 dark:bg-success-900/30 border-success-300 dark:border-success-700 text-success-800 dark:text-success-200", "r64_0", "r64_6")}
                   </div>
                 </div>
                 <div class="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-r from-transparent to-surface-50 dark:to-surface-950" aria-hidden="true"></div>
@@ -446,22 +448,22 @@ function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
   );
 }
 
-function flowStep(num, actor, desc, colorClasses) {
+function flowStep(num, actor, desc, colorClasses, actorKey, descKey) {
   return `
     <div class="flex flex-col items-center gap-1 w-36">
       <div class="w-8 h-8 rounded-full bg-primary-600 dark:bg-primary-500 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">${num}</div>
       <div class="border rounded-lg p-3 w-full text-center ${colorClasses}">
-        <div class="font-semibold text-xs mb-1">${actor}</div>
-        <div class="text-xs leading-snug">${desc}</div>
+        <div class="font-semibold text-xs mb-1" data-i18n="tools.oauth-debugger.ui.${actorKey}">${actor}</div>
+        <div class="text-xs leading-snug" data-i18n="tools.oauth-debugger.ui.${descKey}">${desc}</div>
       </div>
     </div>
   `;
 }
 
-function flowArrow(label) {
+function flowArrow(label, labelKey) {
   return `
     <div class="flex flex-col items-center justify-center gap-1 px-1 pt-8">
-      <div class="text-xs text-surface-500 dark:text-surface-400 whitespace-nowrap text-center max-w-[80px] leading-snug">${label}</div>
+      <div class="text-xs text-surface-500 dark:text-surface-400 whitespace-nowrap text-center max-w-[80px] leading-snug"${labelKey ? ` data-i18n="tools.oauth-debugger.ui.${labelKey}"` : ""}>${label}</div>
       <div class="text-surface-500 dark:text-surface-400 text-base">→</div>
     </div>
   `;

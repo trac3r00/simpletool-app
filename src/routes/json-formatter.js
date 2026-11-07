@@ -93,32 +93,32 @@ function renderJSONFormatterPage(lang = "en") {
         ${toolHeader}
 
         ${createVisibleArticle({
-          title: "Why this JSON formatter does not upload your document",
+          title: '<span data-i18n="tools.json-formatter.ui.r64_0">Why this JSON formatter does not upload your document</span>',
           paragraphs: [
-            `This page calls the browser's <code>JSON.parse</code> and <code>JSON.stringify</code>. There is no "save" action, no paste history, and no shareable link with a sequential id. That is the product: a formatter you can use on an API envelope that still contains session cookies or internal hostnames.`,
-            `In November 2025, security researchers showed that long-running online formatters which <em>do</em> store pastes had leaked years of JSON through predictable "recent" URLs. The documents included cloud access keys, JWTs, and internal configs. If a site can show you last week's paste, it had to receive it. This tool never gets that chance because the Worker only serves the HTML and static assets.`,
-            `Valid JSON is RFC 8259: double-quoted keys and strings, no trailing commas, no comments, no single quotes. The validator reports the first parse error with a line number. Pretty-print is lossless whitespace; minify is the inverse. Neither step sends a byte of the document off this origin.`,
+            `<span data-i18n-html="tools.json-formatter.ui.r64_1">This page calls the browser's <code>JSON.parse</code> and <code>JSON.stringify</code>. There is no "save" action, no paste history, and no shareable link with a sequential id. That is the product: a formatter you can use on an API envelope that still contains session cookies or internal hostnames.</span>`,
+            `<span data-i18n-html="tools.json-formatter.ui.r64_2">In November 2025, security researchers showed that long-running online formatters which <em>do</em> store pastes had leaked years of JSON through predictable "recent" URLs. The documents included cloud access keys, JWTs, and internal configs. If a site can show you last week's paste, it had to receive it. This tool never gets that chance because the Worker only serves the HTML and static assets.</span>`,
+            `<span data-i18n-html="tools.json-formatter.ui.r64_3">Valid JSON is RFC 8259: double-quoted keys and strings, no trailing commas, no comments, no single quotes. The validator reports the first parse error with a line number. Pretty-print is lossless whitespace; minify is the inverse. Neither step sends a byte of the document off this origin.</span>`,
           ],
         })}
 
         <!-- Controls -->
         <div class="flex flex-wrap gap-3 mb-6 bg-surface-50 dark:bg-surface-950/50 p-2 rounded-lg border border-surface-100 dark:border-surface-800">
-          <button id="format-btn" class="btn btn-primary" data-tooltip="Pretty-print with 2-space indent" data-i18n-tooltip="tools.json-formatter.ui.tip0">
+          <button id="format-btn" class="btn btn-primary" data-tooltip="Pretty-print with 2-space indent" data-i18n-tooltip="tools.json-formatter.ui.r64_6">
             <span data-i18n="tools.json-formatter.ui.button0">🎨 Format</span>
           </button>
-          <button id="minify-btn" class="btn btn-secondary" data-tooltip="Remove all whitespace to reduce size" data-i18n-tooltip="tools.json-formatter.ui.tip1">
+          <button id="minify-btn" class="btn btn-secondary" data-tooltip="Remove all whitespace to reduce size" data-i18n-tooltip="tools.json-formatter.ui.r64_7">
             <span data-i18n="tools.json-formatter.ui.button1">📦 Minify</span>
           </button>
-          <button id="validate-btn" class="btn btn-secondary" data-tooltip="Check JSON syntax without reformatting" data-i18n-tooltip="tools.json-formatter.ui.tip2">
+          <button id="validate-btn" class="btn btn-secondary" data-tooltip="Check JSON syntax without reformatting" data-i18n-tooltip="tools.json-formatter.ui.r64_8">
             <span data-i18n="tools.json-formatter.ui.button2">✓ Validate</span>
           </button>
-          <button id="repair-btn" class="btn btn-secondary" data-tooltip="Fix broken JSON such as LLM output, then format it">
-            <span>🔧 Repair</span>
+          <button data-i18n-tooltip="tools.json-formatter.ui.r6_0" id="repair-btn" class="btn btn-secondary" data-tooltip="Fix broken JSON such as LLM output, then format it">
+            <span data-i18n="tools.json-formatter.ui.r6_1">🔧 Repair</span>
           </button>
-          <button id="clear-btn" class="btn btn-ghost ml-auto" data-tooltip="Clear input and output" data-i18n-tooltip="tools.json-formatter.ui.tip3">
+          <button id="clear-btn" class="btn btn-ghost ml-auto" data-tooltip="Clear input and output" data-i18n-tooltip="tools.json-formatter.ui.r64_9">
             <span data-i18n="tools.json-formatter.ui.button3">🗑️ Clear</span>
           </button>
-          <button id="copy-btn" class="btn btn-secondary" disabled data-tooltip="Copy formatted output to clipboard" data-i18n-tooltip="tools.json-formatter.ui.tip4">
+          <button id="copy-btn" class="btn btn-secondary" disabled data-tooltip="Copy formatted output to clipboard" data-i18n-tooltip="tools.json-formatter.ui.r64_10">
             <span data-i18n="tools.json-formatter.ui.button4">📋 Copy</span>
           </button>
         </div>
@@ -128,7 +128,7 @@ function renderJSONFormatterPage(lang = "en") {
           <!-- Input -->
           <div class="flex flex-col gap-2">
             <label class="label"><span data-i18n="tools.json-formatter.ui.label5">Input JSON</span></label>
-            ${createRichEditorPane({ id: "input", mode: "textarea", ariaLabel: "JSON input", placeholder: '{"name": "SimpleTool", "version": "2.0", "tools": ["JSON Formatter", "Password Generator"]}' })}
+            ${createRichEditorPane({ id: "input", mode: "textarea", ariaLabel: "JSON input", placeholder: '{"name": "SimpleTool", "version": "2.0", "tools": ["JSON Formatter", "Password Generator"]}', ariaI18nKey: "tools.json-formatter.ui.r64_4" })}
           </div>
 
            <!-- Output -->
@@ -138,7 +138,7 @@ function renderJSONFormatterPage(lang = "en") {
                  <span id="status-indicator" class="text-xs font-mono hidden"></span>
               </div>
              ${createEmptyState({ icon: "📋", title: "No output yet", description: "Paste JSON on the left, then click Format or Minify.", id: "json-empty-state", i18nTitle: "tools.json-formatter.ui.desc13", i18nDesc: "tools.json-formatter.ui.desc14" })}
-             ${createRichEditorPane({ id: "output", mode: "pre", ariaLabel: "JSON output", hidden: true })}
+             ${createRichEditorPane({ id: "output", mode: "pre", ariaLabel: "JSON output", hidden: true, ariaI18nKey: "tools.json-formatter.ui.r64_5" })}
              <textarea id="json-output" class="hidden" readonly aria-hidden="true"></textarea>
            </div>
         </div>
@@ -152,34 +152,34 @@ function renderJSONFormatterPage(lang = "en") {
         <div id="json-stats" class="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4 hidden">
           <div class="p-4 bg-surface-50 dark:bg-surface-950 rounded-lg border border-surface-200 dark:border-surface-800">
             <div class="text-2xl font-bold text-primary-600 dark:text-primary-400" id="stat-size">0</div>
-            <div class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.json-formatter.ui.stat7" data-tooltip="Total character count in output" data-i18n-tooltip="tools.json-formatter.ui.tip5">Characters</div>
+            <div class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.json-formatter.ui.stat7" data-tooltip="Total character count in output" data-i18n-tooltip="tools.json-formatter.ui.r64_11">Characters</div>
           </div>
           <div class="p-4 bg-surface-50 dark:bg-surface-950 rounded-lg border border-surface-200 dark:border-surface-800">
             <div class="text-2xl font-bold text-primary-600 dark:text-primary-400" id="stat-lines">0</div>
-            <div class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.json-formatter.ui.stat8" data-tooltip="Number of lines in formatted output" data-i18n-tooltip="tools.json-formatter.ui.tip6">Lines</div>
+            <div class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.json-formatter.ui.stat8" data-tooltip="Number of lines in formatted output" data-i18n-tooltip="tools.json-formatter.ui.r64_12">Lines</div>
           </div>
           <div class="p-4 bg-surface-50 dark:bg-surface-950 rounded-lg border border-surface-200 dark:border-surface-800">
             <div class="text-2xl font-bold text-primary-600 dark:text-primary-400" id="stat-keys">0</div>
-            <div class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.json-formatter.ui.stat9" data-tooltip="Total object keys including nested" data-i18n-tooltip="tools.json-formatter.ui.tip7">Keys</div>
+            <div class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.json-formatter.ui.stat9" data-tooltip="Total object keys including nested" data-i18n-tooltip="tools.json-formatter.ui.r64_13">Keys</div>
           </div>
           <div class="p-4 bg-surface-50 dark:bg-surface-950 rounded-lg border border-surface-200 dark:border-surface-800">
             <div class="text-2xl font-bold text-primary-600 dark:text-primary-400" id="stat-depth">0</div>
-            <div class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.json-formatter.ui.stat10" data-tooltip="Deepest nesting level in the structure" data-i18n-tooltip="tools.json-formatter.ui.tip8">Max Depth</div>
+            <div class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-i18n="tools.json-formatter.ui.stat10" data-tooltip="Deepest nesting level in the structure" data-i18n-tooltip="tools.json-formatter.ui.r64_14">Max Depth</div>
           </div>
         </div>
 
         <section id="repair-help" class="card mt-6 p-4 sm:p-6" aria-labelledby="repair-help-title">
           <h2 id="repair-help-title" class="text-lg font-semibold text-surface-900 dark:text-surface-50 mb-2" data-i18n="tools.json-formatter.ui.r4_0">Repair broken JSON from LLMs</h2>
-          <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">The Repair button first removes a Markdown code fence (<code>\`\`\`json … \`\`\`</code>) and any text before the first <code>{</code> or <code>[</code>, then runs the open-source jsonrepair library in your browser. It fixes:</p>
+          <p data-i18n-html="tools.json-formatter.ui.r6_2" class="text-sm text-surface-600 dark:text-surface-400 mb-2">The Repair button first removes a Markdown code fence (<code>\`\`\`json … \`\`\`</code>) and any text before the first <code>{</code> or <code>[</code>, then runs the open-source jsonrepair library in your browser. It fixes:</p>
           <ul class="list-disc pl-5 text-sm text-surface-600 dark:text-surface-400 space-y-1">
-            <li>Trailing commas: <code>{"a": 1,}</code></li>
-            <li>Single quotes: <code>{'a': 'text'}</code></li>
-            <li>Comments: <code>// line</code> and <code>/* block */</code></li>
-            <li>Unquoted keys: <code>{a: 1}</code></li>
-            <li>Truncated output: <code>{"a": [1, 2</code> is closed as <code>{"a": [1, 2]}</code></li>
-            <li>Python <code>True</code> and <code>None</code>, converted to <code>true</code> and <code>null</code></li>
+            <li data-i18n-html="tools.json-formatter.ui.r6_3">Trailing commas: <code>{"a": 1,}</code></li>
+            <li data-i18n-html="tools.json-formatter.ui.r6_4">Single quotes: <code>{'a': 'text'}</code></li>
+            <li data-i18n-html="tools.json-formatter.ui.r6_5">Comments: <code>// line</code> and <code>/* block */</code></li>
+            <li data-i18n-html="tools.json-formatter.ui.r6_6">Unquoted keys: <code>{a: 1}</code></li>
+            <li data-i18n-html="tools.json-formatter.ui.r6_7">Truncated output: <code>{"a": [1, 2</code> is closed as <code>{"a": [1, 2]}</code></li>
+            <li data-i18n-html="tools.json-formatter.ui.r6_8">Python <code>True</code> and <code>None</code>, converted to <code>true</code> and <code>null</code></li>
           </ul>
-          <p class="text-sm text-surface-600 dark:text-surface-400 mt-2">The result goes to the output panel and your input stays unchanged. Check the repaired data before you use it: a truncated document is closed, but its missing values cannot be recovered. If the text before the JSON itself contains <code>{</code> or <code>[</code>, delete that text first.</p>
+          <p data-i18n-html="tools.json-formatter.ui.r6_9" class="text-sm text-surface-600 dark:text-surface-400 mt-2">The result goes to the output panel and your input stays unchanged. Check the repaired data before you use it: a truncated document is closed, but its missing values cannot be recovered. If the text before the JSON itself contains <code>{</code> or <code>[</code>, delete that text first.</p>
         </section>
 
       </div>

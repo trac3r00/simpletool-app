@@ -44,17 +44,18 @@ export async function handleCronBuilderRoutes(request) {
             color: "blue",
             tooltip:
               "Parse cron expressions and build them visually in either direction without leaving the page.",
+            tooltipI18nKey: "tools.cron-builder.ui.r62_0",
           },
         ],
         { toolId: "cron-builder" },
       )}
 
       ${createVisibleArticle({
-        title: "Five-field crontab, explained in this tab",
+        title: `<span data-i18n="tools.cron-builder.ui.r62_1">Five-field crontab, explained in this tab</span>`,
         paragraphs: [
-          `This builder speaks classic Vixie/crontab syntax: minute, hour, day of month, month, day of week. It does not accept a sixth seconds field, Quartz, or systemd <code>OnCalendar=</code>. If your scheduler wants those, this page will not silently translate them.`,
-          `The next-run list is computed in the browser from the expression and your current timezone. It is a preview, not a job runner. Nothing is stored and no webhook is registered.`,
-          `Day-of-week <code>0</code> and <code>7</code> are both Sunday. Lists, ranges, and steps (<code>1,15</code>, <code>1-5</code>, <code>*/5</code>) work; named months and days are accepted where crontab does, and so are macros like <code>@daily</code>. If the parser cannot read a field, the page names the field and the problem instead of inventing a schedule. Quartz's <code>?</code> is rejected for the same reason.`,
+          `<span data-i18n-html="tools.cron-builder.ui.r62_2">This builder speaks classic Vixie/crontab syntax: minute, hour, day of month, month, day of week. It does not accept a sixth seconds field, Quartz, or systemd <code>OnCalendar=</code>. If your scheduler wants those, this page will not silently translate them.</span>`,
+          `<span data-i18n-html="tools.cron-builder.ui.r62_3">The next-run list is computed in the browser from the expression and your current timezone. It is a preview, not a job runner. Nothing is stored and no webhook is registered.</span>`,
+          `<span data-i18n-html="tools.cron-builder.ui.r62_4">Day-of-week <code>0</code> and <code>7</code> are both Sunday. Lists, ranges, and steps (<code>1,15</code>, <code>1-5</code>, <code>*/5</code>) work; named months and days are accepted where crontab does, and so are macros like <code>@daily</code>. If the parser cannot read a field, the page names the field and the problem instead of inventing a schedule. Quartz's <code>?</code> is rejected for the same reason.</span>`,
         ],
       })}
 
@@ -63,20 +64,20 @@ export async function handleCronBuilderRoutes(request) {
         <!-- Left Column: Visual Builder (Editor) -->
         <div class="tool-group tool-group--flush flex-1 flex flex-col min-h-0 overflow-hidden">
           <div class="border-b border-surface-200 dark:border-surface-800 bg-surface-50/50 dark:bg-surface-950/50">
-            <div class="flex -mb-px" role="tablist" aria-label="Cron field" id="builder-tabs">
-              <button type="button" role="tab" id="tabbtn-minute" aria-controls="tab-minute" aria-selected="true" tabindex="0" class="tab-trigger tab-btn active" data-target="minute" data-tooltip="0-59, which minutes to run">
+            <div data-i18n-aria="tools.cron-builder.ui.r6_0" class="flex -mb-px" role="tablist" aria-label="Cron field" id="builder-tabs">
+              <button data-i18n-tooltip="tools.cron-builder.ui.r6_1" type="button" role="tab" id="tabbtn-minute" aria-controls="tab-minute" aria-selected="true" tabindex="0" class="tab-trigger tab-btn active" data-target="minute" data-tooltip="0-59, which minutes to run">
                 <span data-i18n="tools.cron-builder.ui.button0">Minute</span>
               </button>
-              <button type="button" role="tab" id="tabbtn-hour" aria-controls="tab-hour" aria-selected="false" tabindex="-1" class="tab-trigger tab-btn" data-target="hour" data-tooltip="0-23, which hours to run">
+              <button data-i18n-tooltip="tools.cron-builder.ui.r6_2" type="button" role="tab" id="tabbtn-hour" aria-controls="tab-hour" aria-selected="false" tabindex="-1" class="tab-trigger tab-btn" data-target="hour" data-tooltip="0-23, which hours to run">
                 <span data-i18n="tools.cron-builder.ui.button1">Hour</span>
               </button>
-              <button type="button" role="tab" id="tabbtn-dom" aria-controls="tab-dom" aria-selected="false" tabindex="-1" class="tab-trigger tab-btn" data-target="dom" data-tooltip="1-31, which days of the month">
+              <button data-i18n-tooltip="tools.cron-builder.ui.r6_3" type="button" role="tab" id="tabbtn-dom" aria-controls="tab-dom" aria-selected="false" tabindex="-1" class="tab-trigger tab-btn" data-target="dom" data-tooltip="1-31, which days of the month">
                 <span data-i18n="tools.cron-builder.ui.button2">Day</span>
               </button>
-              <button type="button" role="tab" id="tabbtn-month" aria-controls="tab-month" aria-selected="false" tabindex="-1" class="tab-trigger tab-btn" data-target="month" data-tooltip="1-12, which months">
+              <button data-i18n-tooltip="tools.cron-builder.ui.r6_4" type="button" role="tab" id="tabbtn-month" aria-controls="tab-month" aria-selected="false" tabindex="-1" class="tab-trigger tab-btn" data-target="month" data-tooltip="1-12, which months">
                 <span data-i18n="tools.cron-builder.ui.button3">Month</span>
               </button>
-              <button type="button" role="tab" id="tabbtn-dow" aria-controls="tab-dow" aria-selected="false" tabindex="-1" class="tab-trigger tab-btn" data-target="dow" data-tooltip="0-6 (Sun-Sat), which days of week">
+              <button data-i18n-tooltip="tools.cron-builder.ui.r6_5" type="button" role="tab" id="tabbtn-dow" aria-controls="tab-dow" aria-selected="false" tabindex="-1" class="tab-trigger tab-btn" data-target="dow" data-tooltip="0-6 (Sun-Sat), which days of week">
                 <span data-i18n="tools.cron-builder.ui.button4">Week</span>
               </button>
             </div>
@@ -202,7 +203,7 @@ export async function handleCronBuilderRoutes(request) {
           <!-- Main Output -->
           <div class="tool-group p-6">
             <label for="cron-expression" class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
-              <span data-i18n="tools.cron-builder.ui.label6">Cron Expression</span> ${infoHint("Enter five fields (min hour day month dow); use * or lists/ranges to control scheduling.")}
+              <span data-i18n="tools.cron-builder.ui.label6">Cron Expression</span> ${infoHint("Enter five fields (min hour day month dow); use * or lists/ranges to control scheduling.", undefined, { i18nKey: "tools.cron-builder.ui.r62_5", ariaI18nKey: "tools.cron-builder.ui.r62_5" })}
             </label>
             <div class="flex gap-3 mb-4">
               <div class="relative flex-grow">
@@ -224,7 +225,7 @@ export async function handleCronBuilderRoutes(request) {
                 <svg class="w-6 h-6 text-primary-600 dark:text-primary-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
-                <p id="human-readable" role="status" class="text-lg text-primary-800 dark:text-primary-200 font-medium leading-relaxed">
+                <p data-i18n="tools.cron-builder.ui.r6_6" id="human-readable" role="status" class="text-lg text-primary-800 dark:text-primary-200 font-medium leading-relaxed">
                   Every minute
                 </p>
               </div>
@@ -240,7 +241,7 @@ export async function handleCronBuilderRoutes(request) {
                 <span id="tz-name" class="text-xs text-surface-500 dark:text-surface-400 font-mono"></span>
                 <label class="inline-flex items-center gap-2 min-h-[44px] text-sm text-surface-700 dark:text-surface-300 cursor-pointer">
                   <input type="checkbox" id="use-utc" class="w-5 h-5 accent-primary-600">
-                  Show in UTC
+                  <span data-i18n="tools.cron-builder.ui.r62_6">Show in UTC</span>
                 </label>
               </div>
             </div>
@@ -264,13 +265,13 @@ export async function handleCronBuilderRoutes(request) {
            <div class="bg-info-50 dark:bg-info-900/20 rounded-xl p-6 border border-info-100 dark:border-info-800">
              <h3 class="font-semibold text-info-800 dark:text-info-300 mb-2 flex items-center gap-2">
                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-               Quick Tips
+               <span data-i18n="tools.cron-builder.ui.r62_7">Quick Tips</span>
              </h3>
              <ul class="text-sm text-info-700 dark:text-info-400 space-y-1 list-disc list-inside">
-              <li>Use <code>*</code> for "every"</li>
-              <li>Use <code>*/n</code> for intervals (e.g. */5)</li>
-              <li>Use <code>,</code> for lists (e.g. 1,3,5)</li>
-              <li>Use <code>-</code> for ranges (e.g. 1-5)</li>
+              <li data-i18n-html="tools.cron-builder.ui.r6_7">Use <code>*</code> for "every"</li>
+              <li data-i18n-html="tools.cron-builder.ui.r6_8">Use <code>*/n</code> for intervals (e.g. */5)</li>
+              <li data-i18n-html="tools.cron-builder.ui.r6_9">Use <code>,</code> for lists (e.g. 1,3,5)</li>
+              <li data-i18n-html="tools.cron-builder.ui.r6_10">Use <code>-</code> for ranges (e.g. 1-5)</li>
             </ul>
           </div>
 
@@ -330,16 +331,17 @@ export async function handleCronBuilderRoutes(request) {
         const SELECTED = ['bg-primary-50', 'dark:bg-primary-900/30', 'border-primary-200', 'dark:border-primary-800'];
 
         const RECIPES = [
-          { name: 'Every minute', cron: '* * * * *' },
-          { name: 'Every 5 minutes', cron: '*/5 * * * *' },
-          { name: 'Every hour', cron: '0 * * * *' },
-          { name: 'Every day at midnight', cron: '0 0 * * *' },
-          { name: 'Every day at 8am', cron: '0 8 * * *' },
-          { name: 'Every Monday at 9am', cron: '0 9 * * 1' },
-          { name: 'Every 1st of month', cron: '0 0 1 * *' },
-          { name: 'Weekdays at 9am', cron: '0 9 * * 1-5' },
+          { key: 'r62_0', name: 'Every minute', cron: '* * * * *' },
+          { key: 'r62_1', name: 'Every 5 minutes', cron: '*/5 * * * *' },
+          { key: 'r62_2', name: 'Every hour', cron: '0 * * * *' },
+          { key: 'r62_3', name: 'Every day at midnight', cron: '0 0 * * *' },
+          { key: 'r62_4', name: 'Every day at 8am', cron: '0 8 * * *' },
+          { key: 'r62_5', name: 'Every Monday at 9am', cron: '0 9 * * 1' },
+          { key: 'r62_6', name: 'Every 1st of month', cron: '0 0 1 * *' },
+          { key: 'r62_7', name: 'Weekdays at 9am', cron: '0 9 * * 1-5' },
         ];
 
+        const tr = function(k, f) { return window._t ? window._t('tools.cron-builder.js.' + k, f) : f; };
         const GRID_LABELS = {
           minute: 'Minute selector',
           hour: 'Hour selector',
@@ -347,6 +349,8 @@ export async function handleCronBuilderRoutes(request) {
           month: 'Month selector',
           dow: 'Day of week selector',
         };
+        const GRID_KEYS = { minute: 'r62_8', hour: 'r62_9', dom: 'r62_10', month: 'r62_11', dow: 'r62_12' };
+        const CELL_KEYS = { minute: 'r62_13', hour: 'r62_14', dom: 'r62_15', month: 'r62_16', dow: 'r62_17' };
 
         let state = { minute: '*', hour: '*', dom: '*', month: '*', dow: '*' };
         let parsed = null;
@@ -364,6 +368,8 @@ export async function handleCronBuilderRoutes(request) {
         function init() {
           renderGrids();
           renderRecipes();
+          // init runs before the i18n bootstrap defines window._t; re-render once the page has loaded.
+          if (!window._t) window.addEventListener('load', renderRecipes);
           input.addEventListener('input', handleInput);
           useUtc.addEventListener('change', function() {
             updateZoneLabel();
@@ -493,7 +499,7 @@ export async function handleCronBuilderRoutes(request) {
           const container = document.getElementById(part + '-grid');
           container.innerHTML = '';
           container.setAttribute('role', 'group');
-          container.setAttribute('aria-label', GRID_LABELS[part]);
+          container.setAttribute('aria-label', tr(GRID_KEYS[part], GRID_LABELS[part]));
           for (let i = start; i <= end; i++) {
             const label = document.createElement('label');
             label.className = 'cron-cell relative flex items-center justify-center w-8 h-8 border border-surface-200 dark:border-surface-700 rounded-full cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors select-none text-sm';
@@ -501,7 +507,7 @@ export async function handleCronBuilderRoutes(request) {
             cb.type = 'checkbox';
             cb.value = i;
             cb.className = 'sr-only peer';
-            cb.setAttribute('aria-label', GRID_LABELS[part].replace(' selector', '') + ' ' + labelFn(i));
+            cb.setAttribute('aria-label', tr(CELL_KEYS[part], GRID_LABELS[part].replace(' selector', '') + ' {label}').replace('{label}', labelFn(i)));
             const span = document.createElement('span');
             span.textContent = labelFn(i);
             span.setAttribute('aria-hidden', 'true');
@@ -516,7 +522,7 @@ export async function handleCronBuilderRoutes(request) {
         function renderRecipes() {
           recipesList.innerHTML = RECIPES.map(function(r) {
             return '<button type="button" class="recipe-btn w-full text-left px-4 py-3 rounded-lg hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors flex justify-between items-center group" data-cron="' + r.cron + '">' +
-              '<span class="text-sm font-medium text-surface-700 dark:text-surface-300 group-hover:text-primary-600 dark:group-hover:text-primary-400">' + r.name + '</span>' +
+              '<span class="text-sm font-medium text-surface-700 dark:text-surface-300 group-hover:text-primary-600 dark:group-hover:text-primary-400">' + tr(r.key, r.name) + '</span>' +
               '<code class="text-xs bg-surface-100 dark:bg-surface-950 px-2 py-1 rounded text-surface-600 dark:text-surface-300 font-mono">' + r.cron + '</code></button>';
           }).join('');
           recipesList.querySelectorAll('.recipe-btn').forEach(function(btn) {
@@ -590,7 +596,7 @@ export async function handleCronBuilderRoutes(request) {
         }
 
         function formatDate(date) {
-          return date.toLocaleString('en-US', {
+          return date.toLocaleString(document.documentElement.lang || 'en-US', {
             weekday: 'short', year: 'numeric', month: 'short', day: 'numeric',
             hour: '2-digit', minute: '2-digit', hour12: false,
             timeZone: useUtc.checked ? 'UTC' : undefined,
@@ -601,10 +607,10 @@ export async function handleCronBuilderRoutes(request) {
           const mins = Math.max(0, Math.ceil((date - new Date()) / 60000));
           const hours = Math.floor(mins / 60);
           const days = Math.floor(hours / 24);
-          if (days > 365) return 'in ' + Math.floor(days / 365) + 'y ' + (days % 365) + 'd';
-          if (days > 0) return 'in ' + days + 'd ' + (hours % 24) + 'h';
-          if (hours > 0) return 'in ' + hours + 'h ' + (mins % 60) + 'm';
-          return 'in ' + mins + 'm';
+          if (days > 365) return tr('r62_18', 'in {a}y {b}d').replace('{a}', Math.floor(days / 365)).replace('{b}', days % 365);
+          if (days > 0) return tr('r62_19', 'in {a}d {b}h').replace('{a}', days).replace('{b}', hours % 24);
+          if (hours > 0) return tr('r62_20', 'in {a}h {b}m').replace('{a}', hours).replace('{b}', mins % 60);
+          return tr('r62_21', 'in {a}m').replace('{a}', mins);
         }
 
         init();

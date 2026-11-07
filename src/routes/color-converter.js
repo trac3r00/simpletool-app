@@ -58,6 +58,7 @@ function renderColorConverterPage(lang = DEFAULT_LANGUAGE) {
         color: "pink",
         tooltip:
           "Updates the color preview and conversion values instantly as you edit inputs.",
+        tooltipI18nKey: "tools.color-converter.ui.r65_0",
       },
     ],
     { toolId: "color-converter" },
@@ -84,12 +85,12 @@ function renderColorConverterPage(lang = DEFAULT_LANGUAGE) {
               <div class="flex gap-3 items-start">
                 <!-- Saturation/Brightness square -->
                 <div class="relative flex-1">
-                  <canvas id="sb-canvas" width="280" height="280" class="w-full aspect-square rounded-lg cursor-crosshair border border-surface-200 dark:border-surface-700 shadow-sm" tabindex="0" role="slider" aria-valuemin="0" aria-valuemax="100" aria-label="Saturation and brightness picker. Arrow keys adjust; hold Shift for larger steps."></canvas>
+                  <canvas data-i18n-aria="tools.color-converter.ui.r6_0" id="sb-canvas" width="280" height="280" class="w-full aspect-square rounded-lg cursor-crosshair border border-surface-200 dark:border-surface-700 shadow-sm" tabindex="0" role="slider" aria-valuemin="0" aria-valuemax="100" aria-label="Saturation and brightness picker. Arrow keys adjust; hold Shift for larger steps."></canvas>
                   <div id="sb-cursor" class="absolute w-4 h-4 rounded-full border-2 border-white shadow-md pointer-events-none" style="top:10px;left:268px;box-shadow:0 0 0 1px rgba(0,0,0,.3), 0 2px 4px rgba(0,0,0,.3);"></div>
                 </div>
                 <!-- Hue vertical slider -->
                 <div class="relative" style="width:2rem;">
-                  <canvas id="hue-canvas" width="32" height="280" class="w-full rounded-lg cursor-pointer border border-surface-200 dark:border-surface-700 shadow-sm" style="height:100%;aspect-ratio:32/280;" tabindex="0" role="slider" aria-valuemin="0" aria-valuemax="359" aria-orientation="vertical" aria-label="Hue slider"></canvas>
+                  <canvas data-i18n-aria="tools.color-converter.ui.r6_1" id="hue-canvas" width="32" height="280" class="w-full rounded-lg cursor-pointer border border-surface-200 dark:border-surface-700 shadow-sm" style="height:100%;aspect-ratio:32/280;" tabindex="0" role="slider" aria-valuemin="0" aria-valuemax="359" aria-orientation="vertical" aria-label="Hue slider"></canvas>
                   <div id="hue-cursor" class="absolute left-0 right-0 h-2 rounded-sm border-2 border-white shadow-md pointer-events-none" style="top:134px;box-shadow:0 0 0 1px rgba(0,0,0,.3), 0 1px 3px rgba(0,0,0,.3);"></div>
                 </div>
               </div>
@@ -103,7 +104,7 @@ function renderColorConverterPage(lang = DEFAULT_LANGUAGE) {
               </div>
               <div class="flex-1 space-y-1">
                 <label for="manual-input" class="label"><span data-i18n="tools.color-converter.ui.label1">Manual Input</span></label>
-                <input type="text" id="manual-input" placeholder="#FF5733, rgb(255 87 51), hsl(14,100%,60%), tomato" data-i18n-placeholder="tools.color-converter.ui.placeholder3" class="input font-mono" data-tooltip="Enter any color format: #hex, rgb(), or hsl()" data-i18n-tooltip="tools.color-converter.ui.tip0" aria-describedby="manual-input-error">
+                <input type="text" id="manual-input" placeholder="#FF5733, rgb(255 87 51), hsl(14,100%,60%), tomato" data-i18n-placeholder="tools.color-converter.ui.placeholder3" class="input font-mono" data-tooltip="Enter any color format: #hex, rgb(), or hsl()" data-i18n-tooltip="tools.color-converter.ui.r65_1" aria-describedby="manual-input-error">
                 <p class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.color-converter.ui.desc4">Supports #hex (3/4/6/8 digits), rgb()/rgba(), hsl()/hsla(), hsv() and CSS color names</p>
                 <div id="manual-input-error" role="alert" class="hidden rounded-lg border border-error-200 dark:border-error-800 bg-error-50 dark:bg-error-900/30 text-sm text-error-700 dark:text-error-200 px-3 py-2" data-i18n="tools.color-converter.ui.error7">Couldn't recognize that color. Try #hex, rgb(), or hsl().</div>
               </div>
@@ -122,8 +123,8 @@ function renderColorConverterPage(lang = DEFAULT_LANGUAGE) {
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div class="card p-4">
                 <div class="flex justify-between items-center mb-2">
-                  <span class="text-xs font-bold text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-tooltip="6-digit hexadecimal color code" data-i18n-tooltip="tools.color-converter.ui.tip1">HEX</span>
-                   <button data-copy-target="hex-value" class="copy-btn inline-flex items-center justify-center w-6 h-6 rounded text-surface-500 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" aria-label="Copy HEX color value">
+                  <span class="text-xs font-bold text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-tooltip="6-digit hexadecimal color code" data-i18n-tooltip="tools.color-converter.ui.r65_2">HEX</span>
+                   <button data-i18n-aria="tools.color-converter.ui.r6_2" data-copy-target="hex-value" class="copy-btn inline-flex items-center justify-center w-6 h-6 rounded text-surface-500 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" aria-label="Copy HEX color value">
                      <span class="material-symbols-rounded text-sm" aria-hidden="true" data-icon="content_copy"></span>
                    </button>
                 </div>
@@ -133,31 +134,31 @@ function renderColorConverterPage(lang = DEFAULT_LANGUAGE) {
               <div class="card p-4">
                 <div class="flex justify-between items-center mb-2">
                   <span class="text-xs font-bold text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-tooltip="Red, Green, Blue — 0 to 255 each" data-i18n-tooltip="tools.color-converter.ui.tip2">RGB</span>
-                   <button data-copy-target="rgb-value" class="copy-btn inline-flex items-center justify-center w-6 h-6 rounded text-surface-500 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" aria-label="Copy RGB color value">
+                   <button data-i18n-aria="tools.color-converter.ui.r6_3" data-copy-target="rgb-value" class="copy-btn inline-flex items-center justify-center w-6 h-6 rounded text-surface-500 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" aria-label="Copy RGB color value">
                      <span class="material-symbols-rounded text-sm" aria-hidden="true" data-icon="content_copy"></span>
                    </button>
                 </div>
-                <div id="rgb-value" class="text-base font-mono font-bold text-surface-900 dark:text-white break-all">rgb(59, 130, 246)</div>
+                <div data-i18n="tools.color-converter.ui.r6_4" id="rgb-value" class="text-base font-mono font-bold text-surface-900 dark:text-white break-all">rgb(59, 130, 246)</div>
               </div>
 
               <div class="card p-4">
                 <div class="flex justify-between items-center mb-2">
                   <span class="text-xs font-bold text-surface-500 dark:text-surface-400 uppercase tracking-wide" data-tooltip="Hue 0-360°, Saturation 0-100%, Lightness 0-100%" data-i18n-tooltip="tools.color-converter.ui.tip3">HSL</span>
-                   <button data-copy-target="hsl-value" class="copy-btn inline-flex items-center justify-center w-6 h-6 rounded text-surface-500 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" aria-label="Copy HSL color value">
+                   <button data-i18n-aria="tools.color-converter.ui.r6_5" data-copy-target="hsl-value" class="copy-btn inline-flex items-center justify-center w-6 h-6 rounded text-surface-500 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" aria-label="Copy HSL color value">
                      <span class="material-symbols-rounded text-sm" aria-hidden="true" data-icon="content_copy"></span>
                    </button>
                 </div>
-                <div id="hsl-value" class="text-base font-mono font-bold text-surface-900 dark:text-white break-all">hsl(217, 91%, 60%)</div>
+                <div data-i18n="tools.color-converter.ui.r6_6" id="hsl-value" class="text-base font-mono font-bold text-surface-900 dark:text-white break-all">hsl(217, 91%, 60%)</div>
               </div>
 
               <div class="card p-4">
                 <div class="flex justify-between items-center mb-2">
                   <span class="text-xs font-bold text-surface-500 dark:text-surface-400 uppercase tracking-wide">HSV</span>
-                   <button data-copy-target="hsv-value" class="copy-btn inline-flex items-center justify-center w-6 h-6 rounded text-surface-500 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" aria-label="Copy HSV color value">
+                   <button data-i18n-aria="tools.color-converter.ui.r6_7" data-copy-target="hsv-value" class="copy-btn inline-flex items-center justify-center w-6 h-6 rounded text-surface-500 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" aria-label="Copy HSV color value">
                      <span class="material-symbols-rounded text-sm" aria-hidden="true" data-icon="content_copy"></span>
                    </button>
                 </div>
-                <div id="hsv-value" class="text-base font-mono font-bold text-surface-900 dark:text-white break-all">hsv(217, 76%, 96%)</div>
+                <div data-i18n="tools.color-converter.ui.r6_8" id="hsv-value" class="text-base font-mono font-bold text-surface-900 dark:text-white break-all">hsv(217, 76%, 96%)</div>
               </div>
             </div>
           </div>

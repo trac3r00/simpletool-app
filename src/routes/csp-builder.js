@@ -53,6 +53,7 @@ function renderCSPBuilderPage(lang = DEFAULT_LANGUAGE) {
       {
         text: '<span data-i18n="tools.csp-builder.ui.badge0">Interactive</span>',
         tooltip: "Edit directives and instantly see the full header value.",
+        tooltipI18nKey: "tools.csp-builder.ui.r64_3",
       },
       {
         text: '<span data-i18n="tools.csp-builder.ui.badge1">Security Checks</span>',
@@ -86,9 +87,9 @@ function renderCSPBuilderPage(lang = DEFAULT_LANGUAGE) {
             <div class="tool-group p-5">
               <label class="label flex items-center gap-2">
                 <span data-i18n="tools.csp-builder.ui.label0">Existing CSP (optional)</span>
-                ${infoHint("Paste only the policy value (everything after “Content-Security-Policy:”). Then click Parse.", "Help", { i18nKey: "tools.csp-builder.ui.desc0" })}
+                ${infoHint("Paste only the policy value (everything after “Content-Security-Policy:”). Then click Parse.", "Help", { i18nKey: "tools.csp-builder.ui.desc0", ariaI18nKey: "tools.csp-builder.ui.r64_0" })}
               </label>
-              <textarea id="csp-input" rows="6" aria-label="Existing CSP policy" class="input-mono resize-y" placeholder="default-src 'self'; script-src 'self' 'nonce-{{nonce}}'; object-src 'none'; base-uri 'none';" data-i18n-placeholder="tools.csp-builder.ui.placeholder0"></textarea>
+              <textarea id="csp-input" rows="6" aria-label="Existing CSP policy" data-i18n-aria="tools.csp-builder.ui.r64_2" class="input-mono resize-y" placeholder="default-src 'self'; script-src 'self' 'nonce-{{nonce}}'; object-src 'none'; base-uri 'none';" data-i18n-placeholder="tools.csp-builder.ui.placeholder0"></textarea>
               <p id="parse-error" role="alert" class="hidden mt-2 text-sm text-error-700 dark:text-error-300"></p>
               <div class="mt-3 flex flex-wrap items-center justify-between gap-3">
                 <label class="inline-flex items-center gap-2 cursor-pointer text-sm text-surface-700 dark:text-surface-300 whitespace-nowrap">
@@ -132,7 +133,7 @@ function renderCSPBuilderPage(lang = DEFAULT_LANGUAGE) {
             <div class="tool-group p-5">
               <label for="csp-output" class="label flex items-center gap-2">
                 <span data-i18n="tools.csp-builder.ui.label2">Header output</span>
-                ${infoHint("Copy this into your server response headers. For testing, prefer “Content-Security-Policy-Report-Only”.", "Help", { i18nKey: "tools.csp-builder.ui.desc3" })}
+                ${infoHint("Copy this into your server response headers. For testing, prefer “Content-Security-Policy-Report-Only”.", "Help", { i18nKey: "tools.csp-builder.ui.desc3", ariaI18nKey: "tools.csp-builder.ui.r64_1" })}
               </label>
               <textarea id="csp-output" rows="7" class="input-mono resize-y bg-surface-50 dark:bg-surface-950" readonly></textarea>
               <div class="mt-2 text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.csp-builder.ui.desc4">This tool does not validate your site behavior — always test in a staging environment.</div>

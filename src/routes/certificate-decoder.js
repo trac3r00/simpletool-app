@@ -96,15 +96,15 @@ function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
           ${toolHeader}
 
           <div class="space-y-4">
-            <label for="certificate-input" class="label"><span data-i18n="tools.certificate-decoder.ui.label2">Paste Certificate (PEM Format)</span> ${infoHint("Paste PEM block with BEGIN/END headers so the parser detects it.")}</label>
-            <textarea id="certificate-input" class="input font-mono h-48 resize-y" data-tooltip="Paste PEM certificate starting with -----BEGIN CERTIFICATE-----" data-i18n-tooltip="tools.certificate-decoder.ui.tip0" placeholder="-----BEGIN CERTIFICATE-----&#10;MIIByzCCAXSgAwIBAgIUTQl...
+            <label for="certificate-input" class="label"><span data-i18n="tools.certificate-decoder.ui.label2">Paste Certificate (PEM Format)</span> ${infoHint("Paste PEM block with BEGIN/END headers so the parser detects it.", undefined, { i18nKey: "tools.certificate-decoder.ui.r65_1", ariaI18nKey: "tools.certificate-decoder.ui.r65_0" })}</label>
+            <textarea id="certificate-input" class="input font-mono h-48 resize-y" data-tooltip="Paste PEM certificate starting with -----BEGIN CERTIFICATE-----" data-i18n-tooltip="tools.certificate-decoder.ui.r65_2" placeholder="-----BEGIN CERTIFICATE-----&#10;MIIByzCCAXSgAwIBAgIUTQl...
 -----END CERTIFICATE-----"></textarea>
             
             <div class="flex gap-3">
-              <button id="parse-btn" class="btn btn-primary" data-tooltip="Decode and display certificate details" data-i18n-tooltip="tools.certificate-decoder.ui.tip1">
+              <button id="parse-btn" class="btn btn-primary" data-tooltip="Decode and display certificate details" data-i18n-tooltip="tools.certificate-decoder.ui.r65_3">
                 <span data-i18n="tools.certificate-decoder.ui.button0">Parse Certificate</span>
               </button>
-              <button id="clear-btn" class="btn btn-ghost" data-tooltip="Clear input and results" data-i18n-tooltip="tools.certificate-decoder.ui.tip2">
+              <button id="clear-btn" class="btn btn-ghost" data-tooltip="Clear input and results" data-i18n-tooltip="tools.certificate-decoder.ui.r65_4">
                 <span data-i18n="tools.certificate-decoder.ui.button1">Clear</span>
               </button>
             </div>
@@ -173,7 +173,7 @@ function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
 
             <details class="group p-4" open>
               <summary class="flex items-center justify-between cursor-pointer list-none">
-                <span class="text-lg font-bold text-surface-900 dark:text-surface-100">Issuer</span>
+                <span data-i18n="tools.certificate-decoder.ui.r6_0" class="text-lg font-bold text-surface-900 dark:text-surface-100">Issuer</span>
                 <span class="material-symbols-rounded text-surface-400 transition-transform group-open:rotate-180" aria-hidden="true" data-icon="expand_more"></span>
               </summary>
               <div id="issuer-details" class="mt-4 text-sm text-surface-700 dark:text-surface-300"></div>

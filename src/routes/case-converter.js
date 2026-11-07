@@ -56,6 +56,9 @@ function renderCaseConverterPage(lang = DEFAULT_LANGUAGE) {
       },
     ],
     { toolId: "case-converter" },
+  ).replace(
+    'data-tooltip="Supports over',
+    'data-i18n-tooltip="tools.case-converter.ui.r62_0" data-tooltip="Supports over',
   );
 
   const currentTool = TOOLS.find((t) => t.id === "case-converter");
@@ -87,7 +90,7 @@ function renderCaseConverterPage(lang = DEFAULT_LANGUAGE) {
 
         <!-- Action Buttons -->
         <div class="flex gap-3 mb-6">
-          <button id="clear-btn" class="btn btn-ghost" data-tooltip="Clear all input and results" data-i18n-tooltip="tools.case-converter.ui.tip0">
+          <button id="clear-btn" class="btn btn-ghost" data-tooltip="Clear all input and results" data-i18n-tooltip="tools.case-converter.ui.r62_1">
             <span class="material-symbols-rounded text-sm" aria-hidden="true" data-icon="delete"></span> <span data-i18n="tools.case-converter.ui.button0">Clear</span>
           </button>
         </div>
@@ -100,17 +103,17 @@ function renderCaseConverterPage(lang = DEFAULT_LANGUAGE) {
         <div class="mt-8 p-6 bg-primary-50 dark:bg-primary-900/20 rounded-xl border border-primary-100 dark:border-primary-800">
           <h2 class="text-sm font-bold text-primary-900 dark:text-primary-100 mb-3 uppercase tracking-wide" data-i18n="tools.case-converter.ui.stat2">Supported Case Types</h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs text-surface-600 dark:text-surface-400">
-            <div data-tooltip="All letters capitalized" data-i18n-tooltip="tools.case-converter.ui.tip1"><strong class="text-surface-900 dark:text-surface-200">UPPERCASE:</strong> ALL CAPS</div>
-            <div data-tooltip="All letters lowercased" data-i18n-tooltip="tools.case-converter.ui.tip2"><strong class="text-surface-900 dark:text-surface-200">lowercase:</strong> no caps</div>
-            <div data-tooltip="First letter of each word capitalized" data-i18n-tooltip="tools.case-converter.ui.tip3"><strong class="text-surface-900 dark:text-surface-200">Title Case:</strong> Capitalize Words</div>
-            <div data-tooltip="Only the first letter of first word capitalized" data-i18n-tooltip="tools.case-converter.ui.tip4"><strong class="text-surface-900 dark:text-surface-200">Sentence case:</strong> First letter only</div>
-            <div data-tooltip="Common in JavaScript variables and functions" data-i18n-tooltip="tools.case-converter.ui.tip5"><strong class="text-surface-900 dark:text-surface-200">camelCase:</strong> javaScriptStyle</div>
-            <div data-tooltip="Common for class names in C#, Java, React" data-i18n-tooltip="tools.case-converter.ui.tip6"><strong class="text-surface-900 dark:text-surface-200">PascalCase:</strong> ReactComponentStyle</div>
-            <div data-tooltip="Common in Python, Ruby, and databases" data-i18n-tooltip="tools.case-converter.ui.tip7"><strong class="text-surface-900 dark:text-surface-200">snake_case:</strong> python_style</div>
-            <div data-tooltip="Common in URLs, CSS, and HTML attributes" data-i18n-tooltip="tools.case-converter.ui.tip8"><strong class="text-surface-900 dark:text-surface-200">kebab-case:</strong> url-slug-style</div>
-            <div data-tooltip="Common for constants and environment variables" data-i18n-tooltip="tools.case-converter.ui.tip9"><strong class="text-surface-900 dark:text-surface-200">CONSTANT_CASE:</strong> ENV_VAR_STYLE</div>
-            <div data-tooltip="Common for object property paths" data-i18n-tooltip="tools.case-converter.ui.tip10"><strong class="text-surface-900 dark:text-surface-200">dot.case:</strong> object.property.style</div>
-            <div data-tooltip="Alternating upper and lowercase" data-i18n-tooltip="tools.case-converter.ui.tip11"><strong class="text-surface-900 dark:text-surface-200">aLtErNaTiNg:</strong> mOcKiNg sPoNgEbOb</div>
+            <div data-tooltip="All letters capitalized" data-i18n-tooltip="tools.case-converter.ui.r62_2"><strong class="text-surface-900 dark:text-surface-200">UPPERCASE:</strong> ALL CAPS</div>
+            <div data-tooltip="All letters lowercased" data-i18n-tooltip="tools.case-converter.ui.r62_3"><strong class="text-surface-900 dark:text-surface-200">lowercase:</strong> no caps</div>
+            <div data-tooltip="First letter of each word capitalized" data-i18n-tooltip="tools.case-converter.ui.r62_4"><strong class="text-surface-900 dark:text-surface-200">Title Case:</strong> Capitalize Words</div>
+            <div data-tooltip="Only the first letter of first word capitalized" data-i18n-tooltip="tools.case-converter.ui.r62_5"><strong class="text-surface-900 dark:text-surface-200">Sentence case:</strong> First letter only</div>
+            <div data-tooltip="Common in JavaScript variables and functions" data-i18n-tooltip="tools.case-converter.ui.r62_6"><strong class="text-surface-900 dark:text-surface-200">camelCase:</strong> javaScriptStyle</div>
+            <div data-tooltip="Common for class names in C#, Java, React" data-i18n-tooltip="tools.case-converter.ui.r62_7"><strong class="text-surface-900 dark:text-surface-200">PascalCase:</strong> ReactComponentStyle</div>
+            <div data-tooltip="Common in Python, Ruby, and databases" data-i18n-tooltip="tools.case-converter.ui.r62_8"><strong class="text-surface-900 dark:text-surface-200">snake_case:</strong> python_style</div>
+            <div data-tooltip="Common in URLs, CSS, and HTML attributes" data-i18n-tooltip="tools.case-converter.ui.r62_9"><strong class="text-surface-900 dark:text-surface-200">kebab-case:</strong> url-slug-style</div>
+            <div data-tooltip="Common for constants and environment variables" data-i18n-tooltip="tools.case-converter.ui.r62_10"><strong class="text-surface-900 dark:text-surface-200">CONSTANT_CASE:</strong> ENV_VAR_STYLE</div>
+            <div data-tooltip="Common for object property paths" data-i18n-tooltip="tools.case-converter.ui.r62_11"><strong class="text-surface-900 dark:text-surface-200">dot.case:</strong> object.property.style</div>
+            <div data-tooltip="Alternating upper and lowercase" data-i18n-tooltip="tools.case-converter.ui.r62_12"><strong class="text-surface-900 dark:text-surface-200">aLtErNaTiNg:</strong> mOcKiNg sPoNgEbOb</div>
           </div>
         </div>
 
@@ -254,7 +257,7 @@ function renderCaseConverterPage(lang = DEFAULT_LANGUAGE) {
               <div class="flex items-center gap-2">
                 <h3 class="text-xs font-bold text-surface-500 dark:text-surface-400 uppercase tracking-wide">\${config.name}</h3>
               </div>
-              <button data-copy-result="\${encodeURIComponent(result)}" aria-label="Copy \${config.name} result" class="copy-result-btn inline-flex items-center justify-center w-6 h-6 rounded text-surface-500 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+              <button data-copy-result="\${encodeURIComponent(result)}" aria-label="\${(window._t ? window._t('tools.case-converter.js.r62_0', 'Copy {name} result') : 'Copy {name} result').replace('{name}', config.name)}" class="copy-result-btn btn btn-ghost btn-icon-sm text-surface-500 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
                 <span class="material-symbols-rounded text-sm" aria-hidden="true" data-icon="content_copy"></span>
               </button>
             </div>

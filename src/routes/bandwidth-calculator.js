@@ -102,18 +102,18 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
 
         <!-- Tabs -->
         <div class="border-b border-surface-200 dark:border-surface-700 mb-8">
-          <nav class="flex flex-wrap gap-2" aria-label="Bandwidth calculator modes" role="tablist">
+          <nav data-i18n-aria="tools.bandwidth-calculator.ui.r6_0" class="flex flex-wrap gap-2" aria-label="Bandwidth calculator modes" role="tablist">
             <button id="tab-trigger-transfer" class="tab-trigger tab-button active" data-tab="transfer" role="tab" aria-controls="tab-transfer" aria-selected="true" tabindex="0">
-              <span class="material-symbols-rounded text-base align-middle" aria-hidden="true" data-icon="schedule"></span> <span data-i18n="tools.bandwidth-calculator.ui.label1">Transfer Time</span>
+              <span class="material-symbols-rounded text-base leading-none align-middle" aria-hidden="true" data-icon="schedule"></span> <span data-i18n="tools.bandwidth-calculator.ui.label1">Transfer Time</span>
             </button>
             <button id="tab-trigger-bandwidth" class="tab-trigger tab-button" data-tab="bandwidth" role="tab" aria-controls="tab-bandwidth" aria-selected="false" tabindex="-1">
-              <span class="material-symbols-rounded text-base align-middle" aria-hidden="true" data-icon="network_check"></span> <span data-i18n="tools.bandwidth-calculator.ui.label2">Required Bandwidth</span>
+              <span class="material-symbols-rounded text-base leading-none align-middle" aria-hidden="true" data-icon="network_check"></span> <span data-i18n="tools.bandwidth-calculator.ui.label2">Required Bandwidth</span>
             </button>
             <button id="tab-trigger-capacity" class="tab-trigger tab-button" data-tab="capacity" role="tab" aria-controls="tab-capacity" aria-selected="false" tabindex="-1">
-              <span class="material-symbols-rounded text-base align-middle" aria-hidden="true" data-icon="storage"></span> <span data-i18n="tools.bandwidth-calculator.ui.label3">Data Capacity</span>
+              <span class="material-symbols-rounded text-base leading-none align-middle" aria-hidden="true" data-icon="storage"></span> <span data-i18n="tools.bandwidth-calculator.ui.label3">Data Capacity</span>
             </button>
             <button id="tab-trigger-tcp" class="tab-trigger tab-button" data-tab="tcp" role="tab" aria-controls="tab-tcp" aria-selected="false" tabindex="-1">
-              <span class="material-symbols-rounded text-base align-middle" aria-hidden="true" data-icon="swap_horiz"></span> <span data-i18n="tools.bandwidth-calculator.ui.label4">TCP Overhead</span>
+              <span class="material-symbols-rounded text-base leading-none align-middle" aria-hidden="true" data-icon="swap_horiz"></span> <span data-i18n="tools.bandwidth-calculator.ui.label4">TCP Overhead</span>
             </button>
           </nav>
         </div>
@@ -128,7 +128,7 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
                 <label for="transfer-size" class="label" data-i18n="tools.bandwidth-calculator.ui.label5">File Size</label>
                 <div class="flex gap-2">
                   <input type="number" id="transfer-size" value="1" min="0" step="any" placeholder="1" class="input flex-1" data-i18n-placeholder="tools.bandwidth-calculator.ui.placeholder0">
-                  <select id="transfer-size-unit" class="input w-28" aria-label="Transfer file size unit" data-i18n-aria="tools.bandwidth-calculator.ui.aria0">
+                  <select id="transfer-size-unit" class="input w-28" aria-label="Transfer file size unit" data-i18n-aria="tools.bandwidth-calculator.ui.r61_0">
                     <option value="B">B</option>
                     <option value="KB">KB</option>
                     <option value="MB" selected>MB</option>
@@ -142,7 +142,7 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
                 <label for="transfer-bandwidth" class="label" data-i18n="tools.bandwidth-calculator.ui.label6">Bandwidth</label>
                 <div class="flex gap-2">
                   <input type="number" id="transfer-bandwidth" value="100" min="0" step="any" placeholder="100" class="input flex-1" data-i18n-placeholder="tools.bandwidth-calculator.ui.placeholder1">
-                  <select id="transfer-bandwidth-unit" class="input w-28" aria-label="Transfer bandwidth unit" data-i18n-aria="tools.bandwidth-calculator.ui.aria1">
+                  <select id="transfer-bandwidth-unit" class="input w-28" aria-label="Transfer bandwidth unit" data-i18n-aria="tools.bandwidth-calculator.ui.r61_1">
                     <option value="bps" data-i18n="tools.bandwidth-calculator.ui.option15">bps</option>
                     <option value="Kbps" data-i18n="tools.bandwidth-calculator.ui.option16">Kbps</option>
                     <option value="Mbps" selected data-i18n="tools.bandwidth-calculator.ui.option17">Mbps</option>
@@ -212,7 +212,7 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
                 <label class="label" data-i18n="tools.bandwidth-calculator.ui.label8">File Size</label>
                 <div class="flex gap-2">
                   <input type="number" id="bw-size" value="1" min="0" step="any" placeholder="1" class="input flex-1" data-i18n-placeholder="tools.bandwidth-calculator.ui.placeholder2">
-                  <select id="bw-size-unit" class="input w-28" aria-label="Required bandwidth file size unit" data-i18n-aria="tools.bandwidth-calculator.ui.aria2">
+                  <select id="bw-size-unit" class="input w-28" aria-label="Required bandwidth file size unit" data-i18n-aria="tools.bandwidth-calculator.ui.r61_2">
                     <option value="B">B</option>
                     <option value="KB">KB</option>
                     <option value="MB" selected>MB</option>
@@ -273,7 +273,7 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
                 <label class="label" data-i18n="tools.bandwidth-calculator.ui.label10">Bandwidth</label>
                 <div class="flex gap-2">
                   <input type="number" id="cap-bandwidth" value="100" min="0" step="any" placeholder="100" class="input flex-1" data-i18n-placeholder="tools.bandwidth-calculator.ui.placeholder6">
-                  <select id="cap-bandwidth-unit" class="input w-28" aria-label="Data capacity bandwidth unit" data-i18n-aria="tools.bandwidth-calculator.ui.aria3">
+                  <select id="cap-bandwidth-unit" class="input w-28" aria-label="Data capacity bandwidth unit" data-i18n-aria="tools.bandwidth-calculator.ui.r61_3">
                     <option value="bps" data-i18n="tools.bandwidth-calculator.ui.option15">bps</option>
                     <option value="Kbps" data-i18n="tools.bandwidth-calculator.ui.option16">Kbps</option>
                     <option value="Mbps" selected data-i18n="tools.bandwidth-calculator.ui.option17">Mbps</option>
@@ -333,7 +333,7 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
                 <label class="label" data-i18n="tools.bandwidth-calculator.ui.label12">Bandwidth</label>
                 <div class="flex gap-2">
                   <input type="number" id="tcp-bandwidth" value="1" min="0" step="any" placeholder="1" class="input flex-1" data-i18n-placeholder="tools.bandwidth-calculator.ui.placeholder10">
-                  <select id="tcp-bandwidth-unit" class="input w-28" aria-label="TCP bandwidth unit" data-i18n-aria="tools.bandwidth-calculator.ui.aria4">
+                  <select id="tcp-bandwidth-unit" class="input w-28" aria-label="TCP bandwidth unit" data-i18n-aria="tools.bandwidth-calculator.ui.r61_4">
                     <option value="bps" data-i18n="tools.bandwidth-calculator.ui.option15">bps</option>
                     <option value="Kbps" data-i18n="tools.bandwidth-calculator.ui.option16">Kbps</option>
                     <option value="Mbps" data-i18n="tools.bandwidth-calculator.ui.option17">Mbps</option>
@@ -346,7 +346,7 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
                 <label class="label" data-i18n="tools.bandwidth-calculator.ui.label13">Round Trip Time (RTT)</label>
                 <div class="flex gap-2">
                   <input type="number" id="tcp-rtt" value="50" min="0" step="any" placeholder="50" class="input flex-1" data-i18n-placeholder="tools.bandwidth-calculator.ui.placeholder11">
-                  <select id="tcp-rtt-unit" class="input w-28" aria-label="Round trip time unit" data-i18n-aria="tools.bandwidth-calculator.ui.aria5">
+                  <select id="tcp-rtt-unit" class="input w-28" aria-label="Round trip time unit" data-i18n-aria="tools.bandwidth-calculator.ui.r61_5">
                     <option value="ms" selected data-i18n="tools.bandwidth-calculator.ui.option19">ms</option>
                     <option value="s">s</option>
                   </select>
@@ -357,7 +357,7 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
                 <label for="tcp-mss" class="label" data-i18n="tools.bandwidth-calculator.ui.label14">MSS (Maximum Segment Size)</label>
                 <div class="flex gap-2">
                   <input type="number" id="tcp-mss" value="1460" min="1" step="1" placeholder="1460" class="input flex-1" data-i18n-placeholder="tools.bandwidth-calculator.ui.placeholder12">
-                  <span class="input w-28 flex items-center justify-center bg-surface-100 dark:bg-surface-800">bytes</span>
+                  <span data-i18n="tools.bandwidth-calculator.ui.r6_1" class="input w-28 flex items-center justify-center bg-surface-100 dark:bg-surface-800">bytes</span>
                 </div>
                 <p class="text-xs text-surface-500 dark:text-surface-400 mt-1" data-i18n="tools.bandwidth-calculator.ui.desc15">Typical: 1460 bytes (Ethernet MTU 1500 - 40 byte headers)</p>
               </div>
@@ -401,9 +401,9 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
               <table class="w-full text-sm text-left">
                 <thead><tr><th class="p-2" data-i18n="tools.bandwidth-calculator.ui.r3_3">Link rate</th><th class="p-2" data-i18n="tools.bandwidth-calculator.ui.r3_4">Ideal data rate</th></tr></thead>
                 <tbody>
-                  <tr><td class="p-2">8 Mbps</td><td class="p-2">1 MB/s</td></tr>
-                  <tr><td class="p-2">100 Mbps</td><td class="p-2">12.5 MB/s</td></tr>
-                  <tr><td class="p-2">1 Gbps (1,000 Mbps)</td><td class="p-2">125 MB/s</td></tr>
+                  <tr><td data-i18n="tools.bandwidth-calculator.ui.r6_2" class="p-2">8 Mbps</td><td class="p-2">1 MB/s</td></tr>
+                  <tr><td data-i18n="tools.bandwidth-calculator.ui.r6_3" class="p-2">100 Mbps</td><td class="p-2">12.5 MB/s</td></tr>
+                  <tr><td data-i18n="tools.bandwidth-calculator.ui.r6_4" class="p-2">1 Gbps (1,000 Mbps)</td><td class="p-2">125 MB/s</td></tr>
                 </tbody>
               </table>
             </div>
@@ -413,7 +413,7 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
             <p class="text-sm text-surface-600 dark:text-surface-400 mt-2" data-i18n="tools.bandwidth-calculator.ui.r3_14">Ideal times use decimal file sizes and 100% efficiency, with no protocol or storage bottlenecks.</p>
             <div class="overflow-x-auto mt-3">
               <table class="w-full text-sm text-left">
-                <thead><tr><th class="p-2" data-i18n="tools.bandwidth-calculator.ui.r3_5">File size</th><th class="p-2">10 Mbps</th><th class="p-2">100 Mbps</th><th class="p-2" data-i18n="tools.bandwidth-calculator.ui.r3_6">1,000 Mbps</th></tr></thead>
+                <thead><tr><th class="p-2" data-i18n="tools.bandwidth-calculator.ui.r3_5">File size</th><th data-i18n="tools.bandwidth-calculator.ui.r6_5" class="p-2">10 Mbps</th><th data-i18n="tools.bandwidth-calculator.ui.r6_6" class="p-2">100 Mbps</th><th class="p-2" data-i18n="tools.bandwidth-calculator.ui.r3_6">1,000 Mbps</th></tr></thead>
                 <tbody>${exampleRows}</tbody>
               </table>
             </div>
@@ -435,10 +435,10 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
               content: `
               <table>
                 <tr><th data-i18n="tools.bandwidth-calculator.ui.th20">Connection</th><th data-i18n="tools.bandwidth-calculator.ui.th21">Speed</th><th data-i18n="tools.bandwidth-calculator.ui.th22">Use Case</th></tr>
-                <tr><td>Dial-up</td><td>56 Kbps</td><td>Legacy, text-only</td></tr>
+                <tr><td data-i18n="tools.bandwidth-calculator.ui.r66_0">Dial-up</td><td>56 Kbps</td><td>Legacy, text-only</td></tr>
                 <tr><td>ADSL</td><td>10 Mbps</td><td>Basic home internet</td></tr>
-                <tr><td>Cable/Fiber</td><td>100-1000 Mbps</td><td>Home/Office internet</td></tr>
-                <tr><td>Gigabit Ethernet</td><td>1 Gbps</td><td>LAN, data center</td></tr>
+                <tr><td data-i18n="tools.bandwidth-calculator.ui.r66_1">Cable/Fiber</td><td>100-1000 Mbps</td><td>Home/Office internet</td></tr>
+                <tr><td data-i18n="tools.bandwidth-calculator.ui.r66_2">Gigabit Ethernet</td><td>1 Gbps</td><td>LAN, data center</td></tr>
                 <tr><td>10 GigE</td><td>10 Gbps</td><td>Server interconnect</td></tr>
                 <tr><td>40/100 GigE</td><td>40-100 Gbps</td><td>Core networking</td></tr>
               </table>`,
@@ -709,14 +709,14 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
         const maxThroughput = (standardWindow * 8) / rttSeconds;
 
         document.getElementById('tcp-bdp').textContent = formatBytes(bdpBytes);
-        document.getElementById('tcp-window').textContent = windowNeeded.toLocaleString() + ' bytes';
+        document.getElementById('tcp-window').textContent = _t('tools.bandwidth-calculator.js.r66_bytes', '{n} bytes').replace('{n}', windowNeeded.toLocaleString());
         
         if (maxThroughput >= bitsPerSec) {
-          document.getElementById('tcp-throughput').textContent = formatBitsPerSecond(bitsPerSec) + ' (line rate)';
+          document.getElementById('tcp-throughput').textContent = _t('tools.bandwidth-calculator.js.r66_line', '{rate} (line rate)').replace('{rate}', formatBitsPerSecond(bitsPerSec));
         } else {
-          document.getElementById('tcp-throughput').textContent = formatBitsPerSecond(maxThroughput) + ' (limited by the 64 KiB window without scaling)';
+          document.getElementById('tcp-throughput').textContent = _t('tools.bandwidth-calculator.js.r66_limited', '{rate} (limited by the 64 KiB window without scaling)').replace('{rate}', formatBitsPerSecond(maxThroughput));
         }
-        document.getElementById('tcp-segments').textContent = Math.ceil(bdpBytes / mss).toLocaleString() + ' segments of ' + mss.toLocaleString() + ' bytes';
+        document.getElementById('tcp-segments').textContent = _t('tools.bandwidth-calculator.js.r66_segments', '{n} segments of {size} bytes').replace('{n}', Math.ceil(bdpBytes / mss).toLocaleString()).replace('{size}', mss.toLocaleString());
 
         const scaleNeeded = windowNeeded > standardWindow;
         const scaleEl = document.getElementById('tcp-scale-needed');

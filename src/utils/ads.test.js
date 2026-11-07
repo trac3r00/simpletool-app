@@ -223,8 +223,11 @@ describe("ad rendering", () => {
       const handler = handlersById[id];
       const url = new URL(`https://simpletool.app/${id}`);
       const html = await (await handler(new Request(url), url)).text();
-      expect(html, id).toContain(`<h2>${heading}</h2>`);
-      expect(html.indexOf(`<h2>${heading}</h2>`), id).toBeLessThan(html.indexOf(before));
+      const headingAt = html.indexOf(heading);
+      expect(headingAt, id).toBeGreaterThan(-1);
+      // The heading text sits inside an <h2> (translation keys may wrap it in a span).
+      expect(html.lastIndexOf("<h2", headingAt), id).toBeGreaterThan(html.lastIndexOf("</h2>", headingAt));
+      expect(headingAt, id).toBeLessThan(html.indexOf(before));
     }
   });
 

@@ -54,6 +54,7 @@ function renderPromptTemplateBuilderPage(lang = DEFAULT_LANGUAGE) {
       {
         text: '<span data-i18n="tools.prompt-template-builder.ui.badge0">Reusable</span>',
         tooltip: "Outputs templates with placeholders like {{variable}}.",
+        tooltipI18nKey: "tools.prompt-template-builder.ui.r65_6",
       },
       {
         text: '<span data-i18n="tools.prompt-template-builder.ui.badge1">Injection-Resistant</span>',
@@ -94,7 +95,7 @@ function renderPromptTemplateBuilderPage(lang = DEFAULT_LANGUAGE) {
               <div>
                 <label for="out-format" class="label flex items-center gap-2">
                   <span data-i18n="tools.prompt-template-builder.ui.label1">Output format</span>
-                  ${infoHint("Controls the output section: JSON, Markdown, checklist, etc. Use “Custom” for exact constraints.", "Help", { i18nKey: "tools.prompt-template-builder.ui.desc0" })}
+                  ${infoHint("Controls the output section: JSON, Markdown, checklist, etc. Use “Custom” for exact constraints.", "Help", { ariaI18nKey: "tools.prompt-template-builder.ui.r65_1", i18nKey: "tools.prompt-template-builder.ui.desc0" })}
                 </label>
                 <select id="out-format" class="input">
                   <option value="markdown" data-i18n="tools.prompt-template-builder.ui.option3">Markdown (recommended)</option>
@@ -107,13 +108,13 @@ function renderPromptTemplateBuilderPage(lang = DEFAULT_LANGUAGE) {
 
             <div id="custom-format-wrap" class="hidden">
               <label for="custom-format" class="label" data-i18n="tools.prompt-template-builder.ui.r3_0">Custom output format</label>
-              <textarea id="custom-format" rows="4" class="input-mono resize-y" placeholder="e.g., A table with columns: finding | severity | fix"></textarea>
+              <textarea id="custom-format" rows="4" class="input-mono resize-y" placeholder="e.g., A table with columns: finding | severity | fix" data-i18n-placeholder="tools.prompt-template-builder.ui.r65_0"></textarea>
             </div>
 
             <div>
               <label for="role" class="label flex items-center gap-2">
                 <span data-i18n="tools.prompt-template-builder.ui.label2">Role / persona (system)</span>
-                ${infoHint("A short, capability-oriented role is best (e.g., “senior backend engineer”, “SOC analyst”). Avoid fluff.", "Help", { i18nKey: "tools.prompt-template-builder.ui.desc1" })}
+                ${infoHint("A short, capability-oriented role is best (e.g., “senior backend engineer”, “SOC analyst”). Avoid fluff.", "Help", { ariaI18nKey: "tools.prompt-template-builder.ui.r65_2", i18nKey: "tools.prompt-template-builder.ui.desc1" })}
               </label>
               <input id="role" class="input" placeholder="e.g., You are a senior security engineer." data-i18n-placeholder="tools.prompt-template-builder.ui.placeholder0" />
             </div>
@@ -121,7 +122,7 @@ function renderPromptTemplateBuilderPage(lang = DEFAULT_LANGUAGE) {
             <div>
               <label for="task" class="label flex items-center gap-2">
                 <span data-i18n="tools.prompt-template-builder.ui.label3">Task (what do you want?)</span>
-                ${infoHint("Write the goal in one or two sentences. This is the most important field.", "Help", { i18nKey: "tools.prompt-template-builder.ui.desc2" })}
+                ${infoHint("Write the goal in one or two sentences. This is the most important field.", "Help", { ariaI18nKey: "tools.prompt-template-builder.ui.r65_3", i18nKey: "tools.prompt-template-builder.ui.desc2" })}
               </label>
               <textarea id="task" rows="4" class="input resize-y" placeholder="Describe the task you want the AI to do..." data-i18n-placeholder="tools.prompt-template-builder.ui.placeholder1"></textarea>
             </div>
@@ -135,7 +136,7 @@ function renderPromptTemplateBuilderPage(lang = DEFAULT_LANGUAGE) {
               <div>
                 <label for="vars" class="label flex items-center gap-2">
                   <span data-i18n="tools.prompt-template-builder.ui.label5">Variables</span>
-                  ${infoHint("Comma-separated placeholders. Example: ticket, logs, stacktrace. The template will include {{ticket}}, {{logs}}, ...", "Help", { i18nKey: "tools.prompt-template-builder.ui.desc3" })}
+                  ${infoHint("Comma-separated placeholders. Example: ticket, logs, stacktrace. The template will include {{ticket}}, {{logs}}, ...", "Help", { ariaI18nKey: "tools.prompt-template-builder.ui.r65_4", i18nKey: "tools.prompt-template-builder.ui.desc3" })}
                 </label>
                 <input id="vars" class="input font-mono" placeholder="e.g., incident_summary, logs" data-i18n-placeholder="tools.prompt-template-builder.ui.placeholder3" />
               </div>
@@ -153,7 +154,7 @@ function renderPromptTemplateBuilderPage(lang = DEFAULT_LANGUAGE) {
             <div>
               <label for="constraints" class="label flex items-center gap-2">
                 <span data-i18n="tools.prompt-template-builder.ui.label7">Constraints & do/don’t</span>
-                ${infoHint("Examples: “No guesses”, “Cite assumptions”, “Return only JSON”, “No PII”, “Follow OWASP”.", "Help", { i18nKey: "tools.prompt-template-builder.ui.desc4" })}
+                ${infoHint("Examples: “No guesses”, “Cite assumptions”, “Return only JSON”, “No PII”, “Follow OWASP”.", "Help", { ariaI18nKey: "tools.prompt-template-builder.ui.r65_5", i18nKey: "tools.prompt-template-builder.ui.desc4" })}
               </label>
               <textarea id="constraints" rows="4" class="input resize-y" placeholder="- ..." data-i18n-placeholder="tools.prompt-template-builder.ui.placeholder4"></textarea>
             </div>

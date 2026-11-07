@@ -71,6 +71,7 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
         color: "blue",
         tooltip:
           "No data is uploaded; all subnet math runs locally in your browser.",
+        tooltipI18nKey: "tools.cidr-calculator.ui.r66_0",
       },
       {
         text: translation?.ui?.badge35 || "IPv4 & IPv6",
@@ -94,11 +95,11 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
       ${toolHeader}
 
       ${createVisibleArticle({
-        title: "Subnet math in the browser, not against a live network",
+        title: '<span data-i18n="tools.cidr-calculator.ui.r61_0">Subnet math in the browser, not against a live network</span>',
         paragraphs: [
-          `Enter an IPv4 or IPv6 prefix and this planner derives network, broadcast (IPv4), host range, and reverse-DNS labels with integer arithmetic in the page. It does not ping hosts, query WHOIS, or walk a routing table.`,
-          `IPv4 still reserves network and broadcast addresses in a subnet, so a <code>/24</code> has 254 usable hosts. IPv6 assignments are usually <code>/64</code> on a LAN; compressing zeros is display only and does not change the prefix.`,
-          `Use it to size a VPC, check that two CIDRs overlap, or mint a PTR name before you write the zone file. The result is a calculation, not a guarantee that the addresses are free on the wire.`,
+          `<span data-i18n="tools.cidr-calculator.ui.r61_1">Enter an IPv4 or IPv6 prefix and this planner derives network, broadcast (IPv4), host range, and reverse-DNS labels with integer arithmetic in the page. It does not ping hosts, query WHOIS, or walk a routing table.</span>`,
+          `<span data-i18n-html="tools.cidr-calculator.ui.r61_2">IPv4 still reserves network and broadcast addresses in a subnet, so a <code>/24</code> has 254 usable hosts. IPv6 assignments are usually <code>/64</code> on a LAN; compressing zeros is display only and does not change the prefix.</span>`,
+          `<span data-i18n="tools.cidr-calculator.ui.r61_3">Use it to size a VPC, check that two CIDRs overlap, or mint a PTR name before you write the zone file. The result is a calculation, not a guarantee that the addresses are free on the wire.</span>`,
         ],
       })}
 
@@ -106,9 +107,9 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
         <!-- Input Panel -->
         <div class="tool-card p-6 space-y-6">
           <div>
-            <label for="cidr-input" class="label"><span data-i18n="tools.cidr-calculator.ui.label4">Network or host</span> ${infoHint("Enter IP with /prefix or dotted mask; missing prefix uses the slider value.")}</label>
+            <label for="cidr-input" class="label"><span data-i18n="tools.cidr-calculator.ui.label4">Network or host</span> ${infoHint("Enter IP with /prefix or dotted mask; missing prefix uses the slider value.", undefined, { i18nKey: "tools.cidr-calculator.ui.r61_4", ariaI18nKey: "tools.cidr-calculator.ui.r61_4" })}</label>
             <div class="mt-2 space-y-3">
-              <input id="cidr-input" type="text" data-tooltip="Enter IP address with prefix length, e.g. 192.168.1.0/24" data-i18n-tooltip="tools.cidr-calculator.ui.tip0" spellcheck="false" autocomplete="off" placeholder="Examples: 192.168.1.10/24 · 2001:db8::/48" data-i18n-placeholder="tools.cidr-calculator.ui.placeholder8" class="input font-mono text-base" />
+              <input id="cidr-input" type="text" data-tooltip="Enter IP address with prefix length, e.g. 192.168.1.0/24" data-i18n-tooltip="tools.cidr-calculator.ui.r61_7" spellcheck="false" autocomplete="off" placeholder="Examples: 192.168.1.10/24 · 2001:db8::/48" data-i18n-placeholder="tools.cidr-calculator.ui.placeholder8" class="input font-mono text-base" />
               <div class="flex flex-wrap gap-2 text-sm">
                 <button type="button" class="cidr-chip px-2 py-1 rounded-md text-xs border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 text-surface-600 dark:text-surface-300 hover:border-primary-400 dark:hover:border-primary-600 hover:text-primary-600 dark:hover:text-primary-400 transition" data-cidr-example="10.0.0.0/8">10.0.0.0/8</button>
                 <button type="button" class="cidr-chip px-2 py-1 rounded-md text-xs border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 text-surface-600 dark:text-surface-300 hover:border-primary-400 dark:hover:border-primary-600 hover:text-primary-600 dark:hover:text-primary-400 transition" data-cidr-example="172.16.0.0/12">172.16.0.0/12</button>
@@ -122,11 +123,11 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
           <div>
             <div class="flex items-center justify-between text-sm font-semibold text-surface-600 dark:text-surface-300">
               <span data-i18n="tools.cidr-calculator.ui.label0">Prefix length</span>
-              <span><span id="prefix-display">/24</span> · <span id="host-bits-display">8 host bits</span></span>
+              <span><span id="prefix-display">/24</span> · <span data-i18n="tools.cidr-calculator.ui.r6_0" id="host-bits-display">8 host bits</span></span>
             </div>
             <div class="flex items-center gap-4 mt-3">
-              <input id="prefix-slider" type="range" aria-label="Prefix length slider" data-tooltip="Adjust subnet prefix length (smaller = more hosts)" data-i18n-tooltip="tools.cidr-calculator.ui.tip1" min="0" max="32" value="24" class="flex-1 h-2 bg-surface-200 rounded-lg appearance-none cursor-pointer dark:bg-surface-700 accent-primary-600" />
-              <input id="prefix-number" type="number" aria-label="Prefix length value" min="0" max="32" value="24" class="w-20 input text-center" />
+              <input data-i18n-aria="tools.cidr-calculator.ui.r6_1" id="prefix-slider" type="range" aria-label="Prefix length slider" data-tooltip="Adjust subnet prefix length (smaller = more hosts)" data-i18n-tooltip="tools.cidr-calculator.ui.r61_8" min="0" max="32" value="24" class="flex-1 h-2 bg-surface-200 rounded-lg appearance-none cursor-pointer dark:bg-surface-700 accent-primary-600" />
+              <input data-i18n-aria="tools.cidr-calculator.ui.r6_2" id="prefix-number" type="number" aria-label="Prefix length value" min="0" max="32" value="24" class="w-20 input text-center" />
             </div>
             <p class="mt-2 text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.cidr-calculator.ui.desc21">Specify a prefix if your input omits it.</p>
           </div>
@@ -134,7 +135,7 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
            <div id="cidr-error" class="hidden rounded-lg border border-error-200 dark:border-error-800 bg-error-50 dark:bg-error-900/30 text-sm text-error-700 dark:text-error-200 px-4 py-3" data-i18n="tools.cidr-calculator.ui.error0">Invalid CIDR block.</div>
 
           <div class="flex flex-wrap gap-3">
-            <button id="analyze-btn" class="btn btn-primary" data-tooltip="Calculate subnet details from CIDR notation" data-i18n-tooltip="tools.cidr-calculator.ui.tip2"><span data-i18n="tools.cidr-calculator.ui.button1">Run analysis</span></button>
+            <button id="analyze-btn" class="btn btn-primary" data-tooltip="Calculate subnet details from CIDR notation" data-i18n-tooltip="tools.cidr-calculator.ui.r61_9"><span data-i18n="tools.cidr-calculator.ui.button1">Run analysis</span></button>
             <button id="reset-btn" class="btn btn-ghost"><span data-i18n="tools.cidr-calculator.ui.button2">Reset</span></button>
           </div>
         </div>
@@ -165,7 +166,7 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
                   </div>
               </div>
               <button id="host-plan-btn" class="btn btn-secondary w-full"><span data-i18n="tools.cidr-calculator.ui.button3">Calculate ideal prefix</span></button>
-              <div id="host-plan-result" class="text-sm text-surface-600 dark:text-surface-300 bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-lg px-4 py-3">Ready when you need it.</div>
+              <div data-i18n="tools.cidr-calculator.ui.r6_3" id="host-plan-result" class="text-sm text-surface-600 dark:text-surface-300 bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-lg px-4 py-3">Ready when you need it.</div>
             </div>
           </div>
 
@@ -175,7 +176,7 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
               <h2 class="text-lg font-bold text-surface-900 dark:text-surface-50" data-i18n="tools.cidr-calculator.ui.heading16">Validation</h2>
             </div>
             <ul id="validation-list" class="space-y-2 text-sm text-surface-600 dark:text-surface-300">
-              <li class="validation-item">Enter a CIDR block to begin.</li>
+              <li data-i18n="tools.cidr-calculator.ui.r6_4" class="validation-item">Enter a CIDR block to begin.</li>
             </ul>
           </div>
         </div>
@@ -199,12 +200,12 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
           <div class="tool-card p-6">
             <p class="label text-surface-500 dark:text-surface-400" data-i18n="tools.cidr-calculator.ui.desc26">Capacity</p>
             <p id="summary-capacity" class="text-xl font-bold text-surface-900 dark:text-surface-50 mt-1">—</p>
-            <p id="summary-usable" class="text-xs text-surface-500 dark:text-surface-400 mt-1">Usable hosts</p>
+            <p data-i18n="tools.cidr-calculator.ui.r6_5" id="summary-usable" class="text-xs text-surface-500 dark:text-surface-400 mt-1">Usable hosts</p>
           </div>
           <div class="tool-card p-6">
             <p class="label text-surface-500 dark:text-surface-400" data-i18n="tools.cidr-calculator.ui.desc27">Classification</p>
             <p id="summary-classification" class="text-xl font-bold text-surface-900 dark:text-surface-50 mt-1">—</p>
-            <p id="summary-special" class="text-xs text-surface-500 dark:text-surface-400 mt-1">Notes</p>
+            <p data-i18n="tools.cidr-calculator.ui.r6_6" id="summary-special" class="text-xs text-surface-500 dark:text-surface-400 mt-1">Notes</p>
           </div>
         </div>
 
@@ -265,11 +266,11 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
               <p class="text-sm text-surface-500" data-i18n="tools.cidr-calculator.ui.desc30">Split the analyzed block into smaller CIDRs.</p>
             </div>
             <div class="flex items-center gap-2">
-               <label for="subnet-prefix" class="text-sm text-surface-500 dark:text-surface-400"><span data-i18n="tools.cidr-calculator.ui.label7">Target prefix</span> ${infoHint("Pick a deeper prefix to split the analyzed block into smaller subnets.")}</label>
-              <select id="subnet-prefix" class="input py-1 px-3 w-auto" aria-label="Target prefix for subnet splitting"></select>
+               <label for="subnet-prefix" class="text-sm text-surface-500 dark:text-surface-400"><span data-i18n="tools.cidr-calculator.ui.label7">Target prefix</span> ${infoHint("Pick a deeper prefix to split the analyzed block into smaller subnets.", undefined, { i18nKey: "tools.cidr-calculator.ui.r61_5", ariaI18nKey: "tools.cidr-calculator.ui.r61_5" })}</label>
+              <select id="subnet-prefix" class="input py-1 px-3 w-auto" aria-label="Target prefix for subnet splitting" data-i18n-aria="tools.cidr-calculator.ui.r61_6"></select>
             </div>
           </div>
-           <div id="subnet-warning" class="hidden text-sm text-warning-700 dark:text-warning-300 bg-warning-50 dark:bg-warning-900/20 border border-warning-200 dark:border-warning-800 rounded-lg px-4 py-3">This block cannot be subdivided further.</div>
+           <div data-i18n="tools.cidr-calculator.ui.r6_7" id="subnet-warning" class="hidden text-sm text-warning-700 dark:text-warning-300 bg-warning-50 dark:bg-warning-900/20 border border-warning-200 dark:border-warning-800 rounded-lg px-4 py-3">This block cannot be subdivided further.</div>
           <div class="overflow-x-auto mt-4">
             <table class="min-w-full text-sm text-left">
               <thead class="text-xs uppercase tracking-widest text-surface-500 border-b border-surface-200 dark:border-surface-700">

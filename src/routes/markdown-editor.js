@@ -62,15 +62,15 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
         <div class="sticky top-16 z-20 flex flex-wrap items-center justify-between gap-3 bg-white/95 dark:bg-surface-900/90 backdrop-blur p-3 sm:p-4 rounded-xl border border-surface-200 dark:border-surface-800 shadow-sm">
           <div class="flex flex-wrap items-center gap-3">
             <div class="inline-flex items-center rounded-md border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-950 overflow-hidden">
-              <button type="button" class="view-btn px-3 py-1.5 text-sm font-medium text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-900 transition-colors" data-view-mode="split" aria-pressed="true" data-tooltip="Side-by-side editor and preview"><span data-i18n="tools.markdown-editor.ui.button0">Split</span></button>
-              <button type="button" class="view-btn px-3 py-1.5 text-sm font-medium text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-900 transition-colors" data-view-mode="edit" aria-pressed="false" data-tooltip="Full-width editor only"><span data-i18n="tools.markdown-editor.ui.button1">Editor</span></button>
-              <button type="button" class="view-btn px-3 py-1.5 text-sm font-medium text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-900 transition-colors" data-view-mode="preview" aria-pressed="false" data-tooltip="Full-width rendered preview only"><span data-i18n="tools.markdown-editor.ui.button2">Preview</span></button>
+              <button data-i18n-tooltip="tools.markdown-editor.ui.r6_0" type="button" class="view-btn px-3 py-1.5 text-sm font-medium text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-900 transition-colors" data-view-mode="split" aria-pressed="true" data-tooltip="Side-by-side editor and preview"><span data-i18n="tools.markdown-editor.ui.button0">Split</span></button>
+              <button data-i18n-tooltip="tools.markdown-editor.ui.r6_1" type="button" class="view-btn px-3 py-1.5 text-sm font-medium text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-900 transition-colors" data-view-mode="edit" aria-pressed="false" data-tooltip="Full-width editor only"><span data-i18n="tools.markdown-editor.ui.button1">Editor</span></button>
+              <button data-i18n-tooltip="tools.markdown-editor.ui.r6_2" type="button" class="view-btn px-3 py-1.5 text-sm font-medium text-surface-700 dark:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-900 transition-colors" data-view-mode="preview" aria-pressed="false" data-tooltip="Full-width rendered preview only"><span data-i18n="tools.markdown-editor.ui.button2">Preview</span></button>
             </div>
 
             <div class="hidden sm:flex items-center gap-2 text-sm text-surface-600 dark:text-surface-400">
-              <span id="word-count" role="status">0 words</span>
+              <span data-i18n="tools.markdown-editor.ui.r6_3" id="word-count" role="status">0 words</span>
               <span class="text-surface-500 dark:text-surface-400">|</span>
-              <span id="char-count">0 chars</span>
+              <span data-i18n="tools.markdown-editor.ui.r6_4" id="char-count">0 chars</span>
             </div>
 
             <div class="hidden md:block">
@@ -96,7 +96,7 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
 
             <button id="open-md-btn" class="btn-ghost btn-sm flex items-center gap-2">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"></path></svg>
-              Open
+              <span data-i18n="tools.markdown-editor.ui.r65_1">Open</span>
             </button>
 
             <button id="clear-md-btn" class="btn-ghost btn-sm flex items-center gap-2">
@@ -150,6 +150,7 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
                 dir="auto"
                 class="input-mono flex-grow p-4 resize-none"
                 placeholder="# Start typing Markdown here...\n\nTip: Mermaid diagrams are supported via code fences:\n\n\`\`\`mermaid\nflowchart TD\n  A[Start] --> B{Works?}\n  B -->|Yes| C[Ship]\n  B -->|No| D[Fix]\n\`\`\`"
+                data-i18n-placeholder="tools.markdown-editor.ui.r65_0"
                 spellcheck="false"
               ></textarea>
               <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
@@ -181,7 +182,7 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
             <h2 id="lint-panel-title" class="text-sm font-semibold text-foreground" data-i18n="tools.markdown-editor.ui.r3_6">Lint findings</h2>
             <p id="lint-summary" class="text-xs text-muted-foreground" role="status" aria-live="polite"></p>
           </div>
-          <ol id="lint-findings" class="overflow-y-auto p-1 divide-y divide-border" tabindex="0" aria-label="Lint findings list"></ol>
+          <ol data-i18n-aria="tools.markdown-editor.ui.r6_5" id="lint-findings" class="overflow-y-auto p-1 divide-y divide-border" tabindex="0" aria-label="Lint findings list"></ol>
         </section>
       </div>
 
@@ -324,7 +325,7 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
         }
       </style>
 
-      ${createCheatsheet("markdown-preview", "Markdown Quick Reference", [
+      ${createCheatsheet("markdown-editor", "Markdown Quick Reference", [
         {
           heading: "Formatting",
           content: `
@@ -667,8 +668,8 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
           } catch (e) {}
 
           const words = rawMarkdown.trim() ? rawMarkdown.trim().split(/\\s+/).length : 0;
-          wordCount.textContent = words + ' word' + (words !== 1 ? 's' : '');
-          charCount.textContent = rawMarkdown.length + ' char' + (rawMarkdown.length !== 1 ? 's' : '');
+          wordCount.textContent = words === 1 ? _t('tools.markdown-editor.js.r66_word1', '1 word') : _t('tools.markdown-editor.js.r66_words', '{n} words').replace('{n}', words);
+          charCount.textContent = rawMarkdown.length === 1 ? _t('tools.markdown-editor.js.r66_char1', '1 char') : _t('tools.markdown-editor.js.r66_chars', '{n} chars').replace('{n}', rawMarkdown.length);
 
           try {
             const html = marked.parse(rawMarkdown);

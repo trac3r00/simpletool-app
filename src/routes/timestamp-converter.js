@@ -58,6 +58,7 @@ function renderTimestampConverterPage(lang = DEFAULT_LANGUAGE) {
         color: "orange",
         tooltip:
           "Outputs converted timestamps in ISO 8601 format (e.g. 2025-01-30T12:00:00Z).",
+        tooltipI18nKey: "tools.timestamp-converter.ui.r65_0",
       },
     ],
     { toolId: "timestamp-converter" },
@@ -80,7 +81,7 @@ function renderTimestampConverterPage(lang = DEFAULT_LANGUAGE) {
           <div class="text-sm font-semibold text-primary-900 dark:text-primary-300 mb-2 uppercase tracking-wide" data-i18n="tools.timestamp-converter.ui.stat13">Current Time</div>
           <div id="current-unix" class="text-4xl font-mono font-bold text-primary-600 dark:text-primary-400 mb-2">0</div>
           <div id="current-human" class="text-lg text-surface-700 dark:text-surface-300"></div>
-          <button id="copy-current" class="mt-4 btn btn-secondary text-sm">
+          <button data-i18n-html="tools.timestamp-converter.ui.r6_0" id="copy-current" class="mt-4 btn btn-secondary text-sm">
             <span class="material-symbols-rounded text-sm" aria-hidden="true" data-icon="content_copy"></span> Copy Timestamp
           </button>
         </div>
@@ -89,7 +90,7 @@ function renderTimestampConverterPage(lang = DEFAULT_LANGUAGE) {
           
           <!-- Unix to Human -->
           <div class="space-y-6">
-            <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50 flex items-center gap-2">
+            <h2 data-i18n-html="tools.timestamp-converter.ui.r6_1" class="text-xl font-bold text-surface-900 dark:text-surface-50 flex items-center gap-2">
               <span class="material-symbols-rounded text-primary-600 dark:text-primary-400" aria-hidden="true" data-icon="arrow_forward"></span>
               Unix to Human
             </h2>
@@ -98,7 +99,7 @@ function renderTimestampConverterPage(lang = DEFAULT_LANGUAGE) {
               <div>
                 <label for="unix-input" class="label"><span data-i18n="tools.timestamp-converter.ui.label1">Unix Timestamp</span></label>
                 <div class="flex gap-2">
-                  <input type="text" id="unix-input" placeholder="e.g. 1700000000" class="input font-mono" data-tooltip="Seconds since Jan 1, 1970 00:00:00 UTC" data-i18n-tooltip="tools.timestamp-converter.ui.tip0">
+                  <input type="text" id="unix-input" placeholder="e.g. 1700000000" class="input font-mono" data-tooltip="Seconds since Jan 1, 1970 00:00:00 UTC" data-i18n-tooltip="tools.timestamp-converter.ui.r65_1">
                   <button id="now-btn" class="btn btn-primary whitespace-nowrap">
                     <span data-i18n="tools.timestamp-converter.ui.button0">Now</span>
                   </button>
@@ -106,11 +107,11 @@ function renderTimestampConverterPage(lang = DEFAULT_LANGUAGE) {
                 <div class="flex gap-4 mt-3">
                   <label class="flex items-center space-x-2 cursor-pointer">
                     <input type="radio" name="unix-unit" value="seconds" checked class="w-4 h-4 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
-                    <span class="text-sm text-surface-700 dark:text-surface-300" data-i18n="tools.timestamp-converter.ui.desc15" data-tooltip="Standard Unix epoch (10 digits)" data-i18n-tooltip="tools.timestamp-converter.ui.tip1">Seconds</span>
+                    <span class="text-sm text-surface-700 dark:text-surface-300" data-i18n="tools.timestamp-converter.ui.desc15" data-tooltip="Standard Unix epoch (10 digits)" data-i18n-tooltip="tools.timestamp-converter.ui.r65_2">Seconds</span>
                   </label>
                   <label class="flex items-center space-x-2 cursor-pointer">
                     <input type="radio" name="unix-unit" value="milliseconds" class="w-4 h-4 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
-                    <span class="text-sm text-surface-700 dark:text-surface-300" data-i18n="tools.timestamp-converter.ui.desc16" data-tooltip="JavaScript Date.now() format (13 digits)" data-i18n-tooltip="tools.timestamp-converter.ui.tip2">Milliseconds</span>
+                    <span class="text-sm text-surface-700 dark:text-surface-300" data-i18n="tools.timestamp-converter.ui.desc16" data-tooltip="JavaScript Date.now() format (13 digits)" data-i18n-tooltip="tools.timestamp-converter.ui.r65_3">Milliseconds</span>
                   </label>
                 </div>
                 <p id="unix-hint" class="hidden mt-2 text-sm text-warning-700 dark:text-warning-300" aria-live="polite"><span id="unix-hint-text"></span> <button type="button" id="unix-hint-switch" class="inline-block py-1 underline font-semibold"></button></p>
@@ -118,28 +119,28 @@ function renderTimestampConverterPage(lang = DEFAULT_LANGUAGE) {
 
               <div id="unix-result" class="space-y-3 pt-2">
                 <div class="bg-surface-50 dark:bg-surface-950 p-3 rounded-lg border border-surface-200 dark:border-surface-800">
-                  <div class="text-xs text-surface-500 dark:text-surface-400 uppercase mb-1">ISO 8601</div>
+                  <div data-i18n="tools.timestamp-converter.ui.r6_2" class="text-xs text-surface-500 dark:text-surface-400 uppercase mb-1">ISO 8601</div>
                   <div class="flex items-start justify-between gap-2">
                     <div id="iso-output" class="font-mono text-sm break-all text-surface-900 dark:text-surface-100 min-w-0">-</div>
-                    <button type="button" class="copy-out btn btn-ghost btn-xs shrink-0" data-copy-target="iso-output" aria-label="Copy ISO 8601"><span class="material-symbols-rounded text-sm" aria-hidden="true" data-icon="content_copy"></span></button>
+                    <button data-i18n-aria="tools.timestamp-converter.ui.r6_3" type="button" class="copy-out btn btn-ghost btn-xs shrink-0" data-copy-target="iso-output" aria-label="Copy ISO 8601"><span class="material-symbols-rounded text-sm" aria-hidden="true" data-icon="content_copy"></span></button>
                   </div>
                 </div>
                 <div class="bg-surface-50 dark:bg-surface-950 p-3 rounded-lg border border-surface-200 dark:border-surface-800">
                   <div class="text-xs text-surface-500 dark:text-surface-400 uppercase mb-1" data-i18n="tools.timestamp-converter.ui.label0">Local Time</div>
                   <div class="flex items-start justify-between gap-2">
                     <div id="local-output" class="font-mono text-sm break-all text-surface-900 dark:text-surface-100 min-w-0">-</div>
-                    <button type="button" class="copy-out btn btn-ghost btn-xs shrink-0" data-copy-target="local-output" aria-label="Copy local time"><span class="material-symbols-rounded text-sm" aria-hidden="true" data-icon="content_copy"></span></button>
+                    <button data-i18n-aria="tools.timestamp-converter.ui.r6_4" type="button" class="copy-out btn btn-ghost btn-xs shrink-0" data-copy-target="local-output" aria-label="Copy local time"><span class="material-symbols-rounded text-sm" aria-hidden="true" data-icon="content_copy"></span></button>
                   </div>
                 </div>
                 <div class="bg-surface-50 dark:bg-surface-950 p-3 rounded-lg border border-surface-200 dark:border-surface-800">
                   <div class="text-xs text-surface-500 dark:text-surface-400 uppercase mb-1">UTC</div>
                   <div class="flex items-start justify-between gap-2">
                     <div id="utc-output" class="font-mono text-sm break-all text-surface-900 dark:text-surface-100 min-w-0">-</div>
-                    <button type="button" class="copy-out btn btn-ghost btn-xs shrink-0" data-copy-target="utc-output" aria-label="Copy UTC time"><span class="material-symbols-rounded text-sm" aria-hidden="true" data-icon="content_copy"></span></button>
+                    <button data-i18n-aria="tools.timestamp-converter.ui.r6_5" type="button" class="copy-out btn btn-ghost btn-xs shrink-0" data-copy-target="utc-output" aria-label="Copy UTC time"><span class="material-symbols-rounded text-sm" aria-hidden="true" data-icon="content_copy"></span></button>
                   </div>
                 </div>
                 <div class="bg-surface-50 dark:bg-surface-950 p-3 rounded-lg border border-surface-200 dark:border-surface-800">
-                  <div class="text-xs text-surface-500 dark:text-surface-400 uppercase mb-1">Relative</div>
+                  <div data-i18n="tools.timestamp-converter.ui.r6_6" class="text-xs text-surface-500 dark:text-surface-400 uppercase mb-1">Relative</div>
                   <div id="relative-output" class="font-mono text-sm break-all text-surface-900 dark:text-surface-100 min-w-0">-</div>
                 </div>
               </div>
@@ -148,7 +149,7 @@ function renderTimestampConverterPage(lang = DEFAULT_LANGUAGE) {
 
           <!-- Human to Unix -->
           <div class="space-y-6">
-            <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50 flex items-center gap-2">
+            <h2 data-i18n-html="tools.timestamp-converter.ui.r6_7" class="text-xl font-bold text-surface-900 dark:text-surface-50 flex items-center gap-2">
               <span class="material-symbols-rounded text-primary-600 dark:text-primary-400" aria-hidden="true" data-icon="arrow_back"></span>
               Human to Unix
             </h2>
@@ -182,17 +183,17 @@ function renderTimestampConverterPage(lang = DEFAULT_LANGUAGE) {
 
               <div id="human-result" class="grid grid-cols-1 gap-3 pt-2">
                 <div class="bg-surface-50 dark:bg-surface-950 p-3 rounded-lg border border-surface-200 dark:border-surface-800">
-                  <div class="text-xs text-surface-500 dark:text-surface-400 uppercase mb-1">Unix (seconds)</div>
+                  <div data-i18n="tools.timestamp-converter.ui.r6_8" class="text-xs text-surface-500 dark:text-surface-400 uppercase mb-1">Unix (seconds)</div>
                   <div class="flex items-start justify-between gap-2">
                     <div id="seconds-output" class="font-mono text-lg font-bold text-primary-600 dark:text-primary-400 break-all min-w-0">-</div>
-                    <button type="button" class="copy-out btn btn-ghost btn-xs shrink-0" data-copy-target="seconds-output" aria-label="Copy Unix seconds"><span class="material-symbols-rounded text-sm" aria-hidden="true" data-icon="content_copy"></span></button>
+                    <button data-i18n-aria="tools.timestamp-converter.ui.r6_9" type="button" class="copy-out btn btn-ghost btn-xs shrink-0" data-copy-target="seconds-output" aria-label="Copy Unix seconds"><span class="material-symbols-rounded text-sm" aria-hidden="true" data-icon="content_copy"></span></button>
                   </div>
                 </div>
                 <div class="bg-surface-50 dark:bg-surface-950 p-3 rounded-lg border border-surface-200 dark:border-surface-800">
-                  <div class="text-xs text-surface-500 dark:text-surface-400 uppercase mb-1">Unix (milliseconds)</div>
+                  <div data-i18n="tools.timestamp-converter.ui.r6_10" class="text-xs text-surface-500 dark:text-surface-400 uppercase mb-1">Unix (milliseconds)</div>
                   <div class="flex items-start justify-between gap-2">
                     <div id="milliseconds-output" class="font-mono text-sm break-all text-surface-900 dark:text-surface-100 min-w-0">-</div>
-                    <button type="button" class="copy-out btn btn-ghost btn-xs shrink-0" data-copy-target="milliseconds-output" aria-label="Copy Unix milliseconds"><span class="material-symbols-rounded text-sm" aria-hidden="true" data-icon="content_copy"></span></button>
+                    <button data-i18n-aria="tools.timestamp-converter.ui.r6_11" type="button" class="copy-out btn btn-ghost btn-xs shrink-0" data-copy-target="milliseconds-output" aria-label="Copy Unix milliseconds"><span class="material-symbols-rounded text-sm" aria-hidden="true" data-icon="content_copy"></span></button>
                   </div>
                 </div>
               </div>

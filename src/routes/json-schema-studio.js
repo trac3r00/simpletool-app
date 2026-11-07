@@ -60,7 +60,7 @@ function renderJsonSchemaStudioPage(lang = DEFAULT_LANGUAGE) {
       <div class="tool-page-panel">
         ${header}
 
-      <div class="tabs-list max-w-full flex-wrap h-auto mb-6" role="tablist" aria-label="JSON Schema Studio modes">
+      <div data-i18n-aria="tools.json-schema-studio.ui.r6_0" class="tabs-list max-w-full flex-wrap h-auto mb-6" role="tablist" aria-label="JSON Schema Studio modes">
         <button id="tab-generate" type="button" role="tab" class="tab-trigger min-h-[44px]" aria-selected="true" aria-controls="panel-generate" tabindex="0" data-i18n="tools.json-schema-studio.ui.r4_0">Generate</button>
         <button id="tab-validate" type="button" role="tab" class="tab-trigger min-h-[44px]" aria-selected="false" aria-controls="panel-validate" tabindex="-1" data-i18n="tools.json-schema-studio.ui.r4_1">Validate</button>
         <button id="tab-mcp" type="button" role="tab" class="tab-trigger min-h-[44px]" aria-selected="false" aria-controls="panel-mcp" tabindex="-1" data-i18n="tools.json-schema-studio.ui.r4_2">MCP tools/list</button>
@@ -77,36 +77,36 @@ function renderJsonSchemaStudioPage(lang = DEFAULT_LANGUAGE) {
               <button id="sample-btn" type="button" class="btn btn-secondary btn-xs"><span data-i18n="tools.json-schema-studio.ui.button1">Sample</span></button>
             </div>
           </div>
-          <textarea id="json-input" rows="20" aria-label="JSON input" data-tooltip="Paste JSON to auto-generate its JSON Schema" data-i18n-tooltip="tools.json-schema-studio.ui.tip0"
+          <textarea id="json-input" rows="20" aria-label="JSON input" data-i18n-aria="tools.json-schema-studio.ui.r64_3" data-tooltip="Paste JSON to auto-generate its JSON Schema" data-i18n-tooltip="tools.json-schema-studio.ui.r64_5"
             class="input-mono w-full resize-none"
             placeholder='{ "name": "John", "age": 30 }' aria-describedby="schema-status"></textarea>
           <fieldset class="mt-4 flex flex-wrap gap-x-6 gap-y-2">
-            <legend class="sr-only">Schema options</legend>
+            <legend data-i18n="tools.json-schema-studio.ui.r6_1" class="sr-only">Schema options</legend>
             <label class="inline-flex items-center gap-2 min-h-[44px] text-sm text-surface-700 dark:text-surface-300 cursor-pointer">
               <input type="checkbox" id="opt-required" class="w-5 h-5 accent-primary-600" checked>
-              Mark every key as required
+              <span data-i18n="tools.json-schema-studio.ui.r64_0">Mark every key as required</span>
             </label>
             <label class="inline-flex items-center gap-2 min-h-[44px] text-sm text-surface-700 dark:text-surface-300 cursor-pointer">
               <input type="checkbox" id="opt-formats" class="w-5 h-5 accent-primary-600" checked>
-              Detect string formats (date-time, email, uuid, uri)
+              <span data-i18n="tools.json-schema-studio.ui.r64_1">Detect string formats (date-time, email, uuid, uri)</span>
             </label>
             <label class="inline-flex items-center gap-2 min-h-[44px] text-sm text-surface-700 dark:text-surface-300 cursor-pointer">
               <input type="checkbox" id="opt-closed" class="w-5 h-5 accent-primary-600">
-              Reject unknown keys (additionalProperties: false)
+              <span data-i18n="tools.json-schema-studio.ui.r64_2">Reject unknown keys (additionalProperties: false)</span>
             </label>
           </fieldset>
-          <p class="text-xs text-muted-foreground mt-2">Output targets JSON Schema 2020-12. In an array, a key is required only if every element has it, and mixed element types become a type list or <code>anyOf</code>. Press Ctrl+Enter (Cmd+Enter on Mac) to generate.</p>
-          <button id="generate-btn" type="button" data-tooltip="Analyze JSON structure and generate a matching schema" data-i18n-tooltip="tools.json-schema-studio.ui.tip1" class="btn btn-primary w-full mt-4"><span data-i18n="tools.json-schema-studio.ui.button2">Generate JSON Schema</span></button>
+          <p data-i18n-html="tools.json-schema-studio.ui.r6_2" class="text-xs text-muted-foreground mt-2">Output targets JSON Schema 2020-12. In an array, a key is required only if every element has it, and mixed element types become a type list or <code>anyOf</code>. Press Ctrl+Enter (Cmd+Enter on Mac) to generate.</p>
+          <button id="generate-btn" type="button" data-tooltip="Analyze JSON structure and generate a matching schema" data-i18n-tooltip="tools.json-schema-studio.ui.r64_6" class="btn btn-primary w-full mt-4"><span data-i18n="tools.json-schema-studio.ui.button2">Generate JSON Schema</span></button>
         </div>
 
         <!-- Output -->
         <div class="tool-group p-5 flex flex-col">
           <div class="flex justify-between items-center mb-4">
             <h2 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.json-schema-studio.ui.heading5">JSON Schema Result</h2>
-            <button id="copy-btn" type="button" data-tooltip="Copy generated schema to clipboard" data-i18n-tooltip="tools.json-schema-studio.ui.tip2" class="btn btn-secondary btn-xs"><span data-i18n="tools.json-schema-studio.ui.button3">Copy Schema</span></button>
+            <button id="copy-btn" type="button" data-tooltip="Copy generated schema to clipboard" data-i18n-tooltip="tools.json-schema-studio.ui.r64_7" class="btn btn-secondary btn-xs"><span data-i18n="tools.json-schema-studio.ui.button3">Copy Schema</span></button>
           </div>
           <p id="schema-status" class="text-sm mb-3 text-muted-foreground" role="status" aria-live="polite"></p>
-          <pre tabindex="0" aria-label="Generated JSON Schema" class="flex-1 bg-surface-900 text-surface-50 p-4 rounded-lg text-sm font-mono overflow-auto min-h-[400px]" id="schema-output" data-i18n="tools.json-schema-studio.ui.desc4">Schema will appear here...</pre>
+          <pre tabindex="0" aria-label="Generated JSON Schema" data-i18n-aria="tools.json-schema-studio.ui.r64_4" class="flex-1 bg-surface-900 text-surface-50 p-4 rounded-lg text-sm font-mono overflow-auto min-h-[400px]" id="schema-output" data-i18n="tools.json-schema-studio.ui.desc4">Schema will appear here...</pre>
         </div>
       </div>
       </div>
@@ -116,12 +116,12 @@ function renderJsonSchemaStudioPage(lang = DEFAULT_LANGUAGE) {
         <div class="tool-group p-5">
           <div class="flex justify-between items-center mb-4 gap-2">
             <h2 class="text-lg font-semibold text-foreground" data-i18n="tools.json-schema-studio.ui.r4_12">Document and schema</h2>
-            <button id="val-sample" type="button" class="btn btn-secondary btn-xs">Sample</button>
+            <button data-i18n="tools.json-schema-studio.ui.r6_3" id="val-sample" type="button" class="btn btn-secondary btn-xs">Sample</button>
           </div>
           <label for="val-doc" class="label block mb-1" data-i18n="tools.json-schema-studio.ui.r4_5">JSON document</label>
           <textarea id="val-doc" rows="9" class="input-mono w-full resize-y" placeholder='{ "id": 1, "name": "Ada" }' aria-describedby="val-status"></textarea>
           <div class="flex justify-between items-center mt-4 mb-1 gap-2 flex-wrap">
-            <label for="val-schema" class="label">JSON Schema</label>
+            <label data-i18n="tools.json-schema-studio.ui.r6_4" for="val-schema" class="label">JSON Schema</label>
             <button id="val-use-generated" type="button" class="btn btn-secondary btn-xs" disabled data-i18n="tools.json-schema-studio.ui.r4_3">Use generated schema</button>
           </div>
           <textarea id="val-schema" rows="9" class="input-mono w-full resize-y" placeholder='{ "type": "object", "required": ["id"] }' aria-describedby="val-status"></textarea>
@@ -132,13 +132,13 @@ function renderJsonSchemaStudioPage(lang = DEFAULT_LANGUAGE) {
             <option value="2019-09" data-i18n="tools.json-schema-studio.ui.r4_10">Draft 2019-09</option>
             <option value="7" data-i18n="tools.json-schema-studio.ui.r4_11">Draft-07</option>
           </select>
-          <p class="text-xs text-muted-foreground mt-2">Validation runs in your browser with @cfworker/json-schema. <code>format</code> is asserted. Press Ctrl+Enter (Cmd+Enter on Mac) in either box to validate.</p>
-          <button id="val-run" type="button" class="btn btn-primary w-full mt-4">Validate</button>
+          <p data-i18n-html="tools.json-schema-studio.ui.r6_5" class="text-xs text-muted-foreground mt-2">Validation runs in your browser with @cfworker/json-schema. <code>format</code> is asserted. Press Ctrl+Enter (Cmd+Enter on Mac) in either box to validate.</p>
+          <button data-i18n="tools.json-schema-studio.ui.r6_6" id="val-run" type="button" class="btn btn-primary w-full mt-4">Validate</button>
         </div>
         <div class="tool-group p-5 flex flex-col">
           <h2 class="text-lg font-semibold text-foreground mb-4" data-i18n="tools.json-schema-studio.ui.r4_13">Validation result</h2>
           <p id="val-status" class="text-sm mb-3 text-muted-foreground" role="status" aria-live="polite" data-i18n="tools.json-schema-studio.ui.r4_16">Paste a document and a schema, then press Validate.</p>
-          <div id="val-results" tabindex="0" aria-label="Validation errors" class="flex-1 overflow-auto max-h-96 rounded-lg border border-border"></div>
+          <div data-i18n-aria="tools.json-schema-studio.ui.r6_7" id="val-results" tabindex="0" aria-label="Validation errors" class="flex-1 overflow-auto max-h-96 rounded-lg border border-border"></div>
         </div>
       </div>
       </div>
@@ -148,24 +148,24 @@ function renderJsonSchemaStudioPage(lang = DEFAULT_LANGUAGE) {
         <div class="tool-group p-5">
           <div class="flex justify-between items-center mb-4 gap-2">
             <h2 class="text-lg font-semibold text-foreground" data-i18n="tools.json-schema-studio.ui.r4_14">tools/list result</h2>
-            <button id="mcp-sample" type="button" class="btn btn-secondary btn-xs">Sample</button>
+            <button data-i18n="tools.json-schema-studio.ui.r6_8" id="mcp-sample" type="button" class="btn btn-secondary btn-xs">Sample</button>
           </div>
           <label for="mcp-input" class="label block mb-1" data-i18n="tools.json-schema-studio.ui.r4_7">JSON-RPC response, result object, or tools array</label>
           <textarea id="mcp-input" rows="18" class="input-mono w-full resize-y" placeholder='{ "jsonrpc": "2.0", "id": 1, "result": { "tools": [] } }' aria-describedby="mcp-status"></textarea>
-          <p class="text-xs text-muted-foreground mt-2">Checked against the Tool shape in the MCP specification 2025-11-25. Each inputSchema is checked as a JSON Schema too. Risk notes are heuristics based on wording and annotations, so treat them as prompts to review, not verdicts.</p>
+          <p data-i18n="tools.json-schema-studio.ui.r6_9" class="text-xs text-muted-foreground mt-2">Checked against the Tool shape in the MCP specification 2025-11-25. Each inputSchema is checked as a JSON Schema too. Risk notes are heuristics based on wording and annotations, so treat them as prompts to review, not verdicts.</p>
           <button id="mcp-run" type="button" class="btn btn-primary w-full mt-4" data-i18n="tools.json-schema-studio.ui.r4_4">Check tools</button>
         </div>
         <div class="tool-group p-5 flex flex-col">
           <h2 class="text-lg font-semibold text-foreground mb-4" data-i18n="tools.json-schema-studio.ui.r4_15">Tool report</h2>
           <p id="mcp-status" class="text-sm mb-3 text-muted-foreground" role="status" aria-live="polite" data-i18n="tools.json-schema-studio.ui.r4_17">Paste a tools/list result, then press Check tools.</p>
           <dl id="mcp-summary" class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4 hidden">
-            <div class="rounded-lg bg-muted p-3"><dt class="text-xs text-muted-foreground">Tools</dt><dd id="mcp-count" class="text-xl font-semibold text-foreground">0</dd></div>
-            <div class="rounded-lg bg-muted p-3"><dt class="text-xs text-muted-foreground">Errors</dt><dd id="mcp-errors" class="text-xl font-semibold text-foreground">0</dd></div>
-            <div class="rounded-lg bg-muted p-3"><dt class="text-xs text-muted-foreground">Warnings</dt><dd id="mcp-warnings" class="text-xl font-semibold text-foreground">0</dd></div>
-            <div class="rounded-lg bg-muted p-3"><dt class="text-xs text-muted-foreground">Tokens (estimate)</dt><dd id="mcp-tokens" class="text-xl font-semibold text-foreground">0</dd></div>
+            <div class="rounded-lg bg-muted p-3"><dt data-i18n="tools.json-schema-studio.ui.r6_10" class="text-xs text-muted-foreground">Tools</dt><dd id="mcp-count" class="text-xl font-semibold text-foreground">0</dd></div>
+            <div class="rounded-lg bg-muted p-3"><dt data-i18n="tools.json-schema-studio.ui.r6_11" class="text-xs text-muted-foreground">Errors</dt><dd id="mcp-errors" class="text-xl font-semibold text-foreground">0</dd></div>
+            <div class="rounded-lg bg-muted p-3"><dt data-i18n="tools.json-schema-studio.ui.r6_12" class="text-xs text-muted-foreground">Warnings</dt><dd id="mcp-warnings" class="text-xl font-semibold text-foreground">0</dd></div>
+            <div class="rounded-lg bg-muted p-3"><dt data-i18n="tools.json-schema-studio.ui.r6_13" class="text-xs text-muted-foreground">Tokens (estimate)</dt><dd id="mcp-tokens" class="text-xl font-semibold text-foreground">0</dd></div>
           </dl>
           <p id="mcp-token-note" class="text-xs text-muted-foreground mb-3 hidden" data-i18n="tools.json-schema-studio.ui.r4_18">Estimate: characters of every description plus its serialised inputSchema, divided by 4. Real tokenizers and client framing differ.</p>
-          <div id="mcp-results" tabindex="0" aria-label="Tool check results" class="flex-1 overflow-auto max-h-96 space-y-3"></div>
+          <div data-i18n-aria="tools.json-schema-studio.ui.r6_14" id="mcp-results" tabindex="0" aria-label="Tool check results" class="flex-1 overflow-auto max-h-96 space-y-3"></div>
         </div>
       </div>
       </div>

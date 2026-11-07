@@ -371,7 +371,7 @@ function renderChangelogPage(lang = DEFAULT_LANGUAGE) {
   const content = `
     <main class="content-page-shell">
       <div class="mb-8">
-        <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-surface-900 dark:text-surface-50 mb-2">Changelog</h1>
+        <h1 data-i18n="tools.changelog.ui.r6_0" class="text-3xl sm:text-4xl font-bold tracking-tight text-surface-900 dark:text-surface-50 mb-2">Changelog</h1>
         <p class="text-surface-600 dark:text-surface-400" data-i18n="tools.changelog.ui.r3_0">Release history and recent changes to SimpleTool.</p>
       </div>
       ${releasesHTML}

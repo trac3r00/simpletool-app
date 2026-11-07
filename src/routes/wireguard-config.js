@@ -63,6 +63,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
         text: translation?.ui?.badge41 || "Client-Side Keys",
         tooltip:
           "Private keys are generated in the browser with the Web Crypto X25519 API. Keys stay in your browser and are not sent to our servers.",
+        tooltipI18nKey: "tools.wireguard-config.ui.r63_0",
       },
     ],
     { toolId: "wireguard-config" },
@@ -173,7 +174,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
               </div>
               <input type="password" id="private-key" readonly 
                 class="input-mono w-full"
-                placeholder="Click Generate to create..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder0">
+                placeholder="Click Generate to create..." data-i18n-placeholder="tools.wireguard-config.ui.r63_6">
               <p class="mt-1 text-xs text-error-600 dark:text-error-400" data-i18n="tools.wireguard-config.ui.warning0">⚠️ Never share your private key!</p>
             </div>
 
@@ -185,7 +186,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
               </div>
               <input type="text" id="public-key" readonly 
                 class="input-mono w-full"
-                placeholder="Generated from private key..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder1">
+                placeholder="Generated from private key..." data-i18n-placeholder="tools.wireguard-config.ui.r63_7">
             </div>
           </div>
         </div>
@@ -218,7 +219,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
               <div class="space-y-4">
                 <div>
                   <label for="iface-private-key" class="label" data-i18n="tools.wireguard-config.ui.label3">PrivateKey</label>
-                  <input type="text" id="iface-private-key" class="input font-mono text-sm" placeholder="Base64-encoded private key..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder2" aria-describedby="iface-derived-public">
+                  <input type="text" id="iface-private-key" class="input font-mono text-sm" placeholder="Base64-encoded private key..." data-i18n-placeholder="tools.wireguard-config.ui.r63_8" aria-describedby="iface-derived-public">
                   <p id="iface-derived-public" class="mt-1 text-xs font-mono break-all text-surface-600 dark:text-surface-400" role="status"></p>
                 </div>
 
@@ -226,7 +227,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
                   <div>
                     <label for="iface-address" class="label">
                       <span data-i18n="tools.wireguard-config.ui.label4">Address</span>
-                      ${infoHint("IP address with CIDR, e.g., 10.0.0.2/24")}
+                      ${infoHint("IP address with CIDR, e.g., 10.0.0.2/24", undefined, { i18nKey: "tools.wireguard-config.ui.r63_1", ariaI18nKey: "tools.wireguard-config.ui.r63_1" })}
                     </label>
                     <input type="text" id="iface-address" class="input font-mono text-sm" placeholder="10.0.0.2/24" data-i18n-placeholder="tools.wireguard-config.ui.placeholder3">
                   </div>
@@ -240,14 +241,14 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
                   <div>
                     <label for="iface-dns" class="label">
                       <span data-i18n="tools.wireguard-config.ui.label6">DNS</span>
-                      ${infoHint("Optional. Comma-separated DNS servers.")}
+                      ${infoHint("Optional. Comma-separated DNS servers.", undefined, { i18nKey: "tools.wireguard-config.ui.r63_2", ariaI18nKey: "tools.wireguard-config.ui.r63_2" })}
                     </label>
                     <input type="text" id="iface-dns" class="input font-mono text-sm" placeholder="1.1.1.1, 8.8.8.8" data-i18n-placeholder="tools.wireguard-config.ui.placeholder5">
                   </div>
                   <div>
                     <label for="iface-mtu" class="label">
                       <span data-i18n="tools.wireguard-config.ui.label7">MTU</span>
-                      ${infoHint("Default: 1420 for IPv4, 1400 for IPv6")}
+                      ${infoHint("Default: 1420 for IPv4, 1400 for IPv6", undefined, { i18nKey: "tools.wireguard-config.ui.r63_3", ariaI18nKey: "tools.wireguard-config.ui.r63_3" })}
                     </label>
                     <input type="number" id="iface-mtu" class="input font-mono text-sm" placeholder="1420" min="576" max="9000" data-i18n-placeholder="tools.wireguard-config.ui.placeholder6">
                   </div>
@@ -256,7 +257,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
                 <div>
                   <label for="iface-post-up" class="label">
                     <span data-i18n="tools.wireguard-config.ui.label8">PostUp</span>
-                    ${infoHint("Command to run after interface is brought up.")}
+                    ${infoHint("Command to run after interface is brought up.", undefined, { i18nKey: "tools.wireguard-config.ui.r63_4", ariaI18nKey: "tools.wireguard-config.ui.r63_4" })}
                   </label>
                   <input type="text" id="iface-post-up" class="input font-mono text-sm" placeholder="iptables -A FORWARD -i %i -j ACCEPT..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder7">
                 </div>
@@ -264,7 +265,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
                 <div>
                   <label for="iface-post-down" class="label">
                     <span data-i18n="tools.wireguard-config.ui.label9">PostDown</span>
-                    ${infoHint("Command to run after interface is brought down.")}
+                    ${infoHint("Command to run after interface is brought down.", undefined, { i18nKey: "tools.wireguard-config.ui.r63_5", ariaI18nKey: "tools.wireguard-config.ui.r63_5" })}
                   </label>
                   <input type="text" id="iface-post-down" class="input font-mono text-sm" placeholder="iptables -D FORWARD -i %i -j ACCEPT..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder8">
                 </div>
@@ -294,7 +295,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
               <p class="text-xs text-surface-500 dark:text-surface-400 mb-3" data-i18n="tools.wireguard-config.ui.desc1">Paste an existing .conf file to populate the form.</p>
               <textarea id="config-parser-input" rows="6" class="input font-mono text-sm resize-vertical"
                 placeholder="[Interface]\nPrivateKey = ...\nAddress = ..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder9"
-                aria-label="WireGuard config to parse" data-i18n-aria="tools.wireguard-config.ui.aria0"></textarea>
+                aria-label="WireGuard config to parse" data-i18n-aria="tools.wireguard-config.ui.r63_9"></textarea>
               <button id="parse-config-btn" class="btn btn-primary w-full mt-3" data-i18n="tools.wireguard-config.ui.button4">Parse Configuration</button>
             </div>
           </div>
@@ -350,13 +351,13 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
             content: `
             <table>
               <tr><th data-i18n="tools.wireguard-config.ui.th29">Field</th><th data-i18n="tools.wireguard-config.ui.th30">Required</th><th data-i18n="tools.wireguard-config.ui.th31">Description</th></tr>
-              <tr><td><code>PrivateKey</code></td><td>Yes</td><td>Base64 private key for this peer</td></tr>
-              <tr><td><code>Address</code></td><td>Yes</td><td>CIDR IP address(es), comma-separated</td></tr>
-              <tr><td><code>ListenPort</code></td><td>No</td><td>UDP port to listen on (server only)</td></tr>
-              <tr><td><code>DNS</code></td><td>No</td><td>DNS servers to use</td></tr>
-              <tr><td><code>MTU</code></td><td>No</td><td>Maximum transmission unit (default: 1420)</td></tr>
-              <tr><td><code>PostUp</code></td><td>No</td><td>Command after interface up</td></tr>
-              <tr><td><code>PostDown</code></td><td>No</td><td>Command after interface down</td></tr>
+              <tr><td><code>PrivateKey</code></td><td data-i18n="tools.wireguard-config.ui.r66_c1">Yes</td><td data-i18n="tools.wireguard-config.ui.r66_c2">Base64 private key for this peer</td></tr>
+              <tr><td><code>Address</code></td><td data-i18n="tools.wireguard-config.ui.r66_c1">Yes</td><td data-i18n="tools.wireguard-config.ui.r66_c3">CIDR IP address(es), comma-separated</td></tr>
+              <tr><td><code>ListenPort</code></td><td data-i18n="tools.wireguard-config.ui.r66_c4">No</td><td data-i18n="tools.wireguard-config.ui.r66_c5">UDP port to listen on (server only)</td></tr>
+              <tr><td><code>DNS</code></td><td data-i18n="tools.wireguard-config.ui.r66_c4">No</td><td data-i18n="tools.wireguard-config.ui.r66_c6">DNS servers to use</td></tr>
+              <tr><td><code>MTU</code></td><td data-i18n="tools.wireguard-config.ui.r66_c4">No</td><td data-i18n="tools.wireguard-config.ui.r66_c7">Maximum transmission unit (default: 1420)</td></tr>
+              <tr><td><code>PostUp</code></td><td data-i18n="tools.wireguard-config.ui.r66_c4">No</td><td data-i18n="tools.wireguard-config.ui.r66_c8">Command after interface up</td></tr>
+              <tr><td><code>PostDown</code></td><td data-i18n="tools.wireguard-config.ui.r66_c4">No</td><td data-i18n="tools.wireguard-config.ui.r66_c9">Command after interface down</td></tr>
             </table>`,
           },
           {
@@ -364,11 +365,11 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
             content: `
             <table>
               <tr><th data-i18n="tools.wireguard-config.ui.th29">Field</th><th data-i18n="tools.wireguard-config.ui.th30">Required</th><th data-i18n="tools.wireguard-config.ui.th31">Description</th></tr>
-              <tr><td><code>PublicKey</code></td><td>Yes</td><td>Base64 public key of remote peer</td></tr>
-              <tr><td><code>PresharedKey</code></td><td>No</td><td>Additional symmetric key for quantum resistance</td></tr>
-              <tr><td><code>AllowedIPs</code></td><td>Yes</td><td>CIDRs this peer can route (0.0.0.0/0 for all)</td></tr>
-              <tr><td><code>Endpoint</code></td><td>No</td><td>host:port of remote peer (client only)</td></tr>
-              <tr><td><code>PersistentKeepalive</code></td><td>No</td><td>Seconds between keepalive packets (NAT)</td></tr>
+              <tr><td><code>PublicKey</code></td><td data-i18n="tools.wireguard-config.ui.r66_c1">Yes</td><td data-i18n="tools.wireguard-config.ui.r66_c10">Base64 public key of remote peer</td></tr>
+              <tr><td><code>PresharedKey</code></td><td data-i18n="tools.wireguard-config.ui.r66_c4">No</td><td data-i18n="tools.wireguard-config.ui.r66_c11">Additional symmetric key for quantum resistance</td></tr>
+              <tr><td><code>AllowedIPs</code></td><td data-i18n="tools.wireguard-config.ui.r66_c1">Yes</td><td data-i18n="tools.wireguard-config.ui.r66_c12">CIDRs this peer can route (0.0.0.0/0 for all)</td></tr>
+              <tr><td><code>Endpoint</code></td><td data-i18n="tools.wireguard-config.ui.r66_c4">No</td><td data-i18n="tools.wireguard-config.ui.r66_c13">host:port of remote peer (client only)</td></tr>
+              <tr><td><code>PersistentKeepalive</code></td><td data-i18n="tools.wireguard-config.ui.r66_c4">No</td><td data-i18n="tools.wireguard-config.ui.r66_c14">Seconds between keepalive packets (NAT)</td></tr>
             </table>`,
           },
           {
@@ -376,11 +377,11 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
             content: `
             <table>
               <tr><th data-i18n="tools.wireguard-config.ui.th32">Command</th><th data-i18n="tools.wireguard-config.ui.th31">Description</th></tr>
-              <tr><td><code>wg genkey | tee private.key | wg pubkey > public.key</code></td><td>Generate key pair</td></tr>
-              <tr><td><code>wg-quick up wg0</code></td><td>Start interface</td></tr>
-              <tr><td><code>wg-quick down wg0</code></td><td>Stop interface</td></tr>
-              <tr><td><code>wg show</code></td><td>Show interface status</td></tr>
-              <tr><td><code>wg showconf wg0</code></td><td>Dump current config</td></tr>
+              <tr><td><code>wg genkey | tee private.key | wg pubkey > public.key</code></td><td data-i18n="tools.wireguard-config.ui.r66_c15">Generate key pair</td></tr>
+              <tr><td><code>wg-quick up wg0</code></td><td data-i18n="tools.wireguard-config.ui.r66_c16">Start interface</td></tr>
+              <tr><td><code>wg-quick down wg0</code></td><td data-i18n="tools.wireguard-config.ui.r66_c17">Stop interface</td></tr>
+              <tr><td><code>wg show</code></td><td data-i18n="tools.wireguard-config.ui.r66_c18">Show interface status</td></tr>
+              <tr><td><code>wg showconf wg0</code></td><td data-i18n="tools.wireguard-config.ui.r66_c19">Dump current config</td></tr>
             </table>`,
           },
           {
@@ -388,10 +389,10 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
             content: `
             <table>
               <tr><th data-i18n="tools.wireguard-config.ui.th33">Topology</th><th data-i18n="tools.wireguard-config.ui.th34">Use Case</th></tr>
-              <tr><td><code>Point-to-Point</code></td><td>Direct connection between two peers</td></tr>
-              <tr><td><code>Hub-and-Spoke</code></td><td>Central server with multiple clients</td></tr>
-              <tr><td><code>Site-to-Site</code></td><td>Connect two networks</td></tr>
-              <tr><td><code>Road Warrior</code></td><td>Remote client with split tunneling</td></tr>
+              <tr><td><code>Point-to-Point</code></td><td data-i18n="tools.wireguard-config.ui.r66_c20">Direct connection between two peers</td></tr>
+              <tr><td><code>Hub-and-Spoke</code></td><td data-i18n="tools.wireguard-config.ui.r66_c21">Central server with multiple clients</td></tr>
+              <tr><td><code>Site-to-Site</code></td><td data-i18n="tools.wireguard-config.ui.r66_c22">Connect two networks</td></tr>
+              <tr><td><code>Road Warrior</code></td><td data-i18n="tools.wireguard-config.ui.r66_c23">Remote client with split tunneling</td></tr>
             </table>`,
           },
         ])}
@@ -547,7 +548,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
             <div class="flex items-center justify-between mb-4">
               <h4 class="text-sm font-semibold text-surface-900 dark:text-white flex items-center gap-2">
                 <span class="px-2 py-1 bg-secondary-100 dark:bg-secondary-900/30 text-secondary-700 dark:text-secondary-300 rounded text-xs font-mono">[Peer]</span>
-                <span class="peer-number">Peer \${peerId}</span>
+                <span class="peer-number">\${_t('tools.wireguard-config.js.r63_10', 'Peer')} \${peerId}</span>
               </h4>
               <button class="remove-peer-btn btn btn-ghost btn-xs text-error-600 dark:text-error-400" data-peer-id="\${peerId}" aria-label="\${_t('tools.wireguard-config.js.removePeer', 'Remove peer')}" data-i18n-aria="tools.wireguard-config.js.removePeer">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -563,7 +564,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
               </div>
 
               <div>
-                <label class="label" for="peer-preshared-key-\${peerId}">PresharedKey <span class="text-xs text-muted-foreground">(optional)</span></label>
+                <label class="label" for="peer-preshared-key-\${peerId}">PresharedKey <span class="text-xs text-muted-foreground" data-i18n="tools.wireguard-config.js.r63_11">\${_t('tools.wireguard-config.js.r63_11', '(optional)')}</span></label>
                 <input type="text" id="peer-preshared-key-\${peerId}" class="peer-preshared-key input font-mono text-sm" placeholder="Additional symmetric key..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder21">
               </div>
 
@@ -635,7 +636,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
 
       function updatePeerNumbers() {
         document.querySelectorAll('.peer-card').forEach((card, index) => {
-          card.querySelector('.peer-number').textContent = \`Peer \${index + 1}\`;
+          card.querySelector('.peer-number').textContent = \`\${_t('tools.wireguard-config.js.r63_10', 'Peer')} \${index + 1}\`;
         });
       }
 
@@ -730,13 +731,13 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
         const mtu = document.getElementById('iface-mtu').value.trim();
 
         if (!privateKey) {
-          errors.push('PrivateKey is required in [Interface] section');
+          errors.push(_t('tools.wireguard-config.js.r63_12', 'PrivateKey is required in [Interface] section'));
         } else if (!isWireGuardKey(privateKey)) {
           errors.push('PrivateKey must be a 32-byte base64 key (44 characters ending in "="), as printed by wg genkey');
         }
 
         if (!address) {
-          errors.push('Address is required in [Interface] section');
+          errors.push(_t('tools.wireguard-config.js.r63_13', 'Address is required in [Interface] section'));
         } else {
           const bad = invalidCidrEntries(address);
           if (bad.length) errors.push('Address has invalid entries: ' + bad.join(', ') + ' (use e.g. 10.0.0.2/24, fd00::2/64)');
@@ -752,9 +753,9 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
         let index = 0;
         peers.forEach((peer) => {
           index++;
-          const label = 'Peer ' + index;
+          const label = _t('tools.wireguard-config.js.r63_10', 'Peer') + ' ' + index;
           if (!peer.publicKey) {
-            errors.push(label + ': PublicKey is required');
+            errors.push(label + ': ' + _t('tools.wireguard-config.js.r63_14', 'PublicKey is required'));
           } else if (!isWireGuardKey(peer.publicKey)) {
             errors.push(label + ': PublicKey must be a 32-byte base64 key (44 characters ending in "=")');
           } else if (peer.publicKey.trim() === document.getElementById('public-key').value.trim()) {
@@ -765,7 +766,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
           }
 
           if (!peer.allowedIPs) {
-            errors.push(label + ': AllowedIPs is required');
+            errors.push(label + ': ' + _t('tools.wireguard-config.js.r63_15', 'AllowedIPs is required'));
           } else {
             const bad = invalidCidrEntries(peer.allowedIPs);
             if (bad.length) errors.push(label + ': AllowedIPs has invalid entries: ' + bad.join(', '));

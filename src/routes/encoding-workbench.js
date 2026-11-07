@@ -83,13 +83,13 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
         <!-- Tab Navigation -->
         <div class="mb-8">
           <div class="tabs-list flex bg-surface-100 dark:bg-surface-800 p-1 rounded-xl border border-surface-200 dark:border-surface-700 w-fit max-w-full" role="tablist">
-            <button id="tab-encode" class="tab-trigger tab-btn active" role="tab" aria-controls="panel-encode" aria-selected="true" data-tooltip="Encode and decode text between formats" data-i18n-tooltip="tools.encoding-workbench.ui.tip0">
+            <button id="tab-encode" class="tab-trigger tab-btn active" role="tab" aria-controls="panel-encode" aria-selected="true" data-tooltip="Encode and decode text between formats" data-i18n-tooltip="tools.encoding-workbench.ui.r65_0">
               <span data-i18n="tools.encoding-workbench.ui.tab0">🔄 Encode / Decode</span>
             </button>
-            <button id="tab-hash" class="tab-trigger tab-btn" role="tab" aria-controls="panel-hash" aria-selected="false" data-tooltip="Generate cryptographic hashes" data-i18n-tooltip="tools.encoding-workbench.ui.tip1">
+            <button id="tab-hash" class="tab-trigger tab-btn" role="tab" aria-controls="panel-hash" aria-selected="false" data-tooltip="Generate cryptographic hashes" data-i18n-tooltip="tools.encoding-workbench.ui.r65_1">
               <span data-i18n="tools.encoding-workbench.ui.tab1"># Hash</span>
             </button>
-            <button id="tab-identify" class="tab-trigger tab-btn" role="tab" aria-controls="panel-identify" aria-selected="false" data-tooltip="Identify unknown hashes or encoded strings" data-i18n-tooltip="tools.encoding-workbench.ui.tip2">
+            <button id="tab-identify" class="tab-trigger tab-btn" role="tab" aria-controls="panel-identify" aria-selected="false" data-tooltip="Identify unknown hashes or encoded strings" data-i18n-tooltip="tools.encoding-workbench.ui.r65_2">
               <span data-i18n="tools.encoding-workbench.ui.tab2">🔍 Identify</span>
             </button>
           </div>

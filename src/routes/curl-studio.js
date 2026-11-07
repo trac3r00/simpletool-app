@@ -57,11 +57,11 @@ function renderCurlStudioPage(lang = DEFAULT_LANGUAGE) {
         ${header}
 
         ${createVisibleArticle({
-          title: "This curl parser never fires the request",
+          title: '<span data-i18n="tools.curl-studio.ui.r64_0">This curl parser never fires the request</span>',
           paragraphs: [
-            `Paste a command and this page tokenizes it the way a shell does: flags keep their arguments, <code>-X POST</code> does not steal the URL, and a JSON body inside single quotes keeps its double quotes. The previous regex parser on this page failed both of those cases.`,
-            `Nothing here is sent to an origin. There is no "Run" button. Authorization headers, cookies, and <code>-d</code> bodies stay in the tab. Use it to inspect a copied command before you paste it into a ticket or a shared doc.`,
-            `The generator is the inverse: method, URL, headers, and body in; a copyable curl command out. Every value is wrapped in single quotes, so a <code>$</code>, backtick, or quote in a token or body reaches the server as typed instead of being expanded by your shell, and the body goes through <code>--data-raw</code> so a leading <code>@</code> is not read as a file name. It does not add <code>-k</code> for you. Skipping TLS is a choice you make on purpose.`,
+            `<span data-i18n-html="tools.curl-studio.ui.r64_1">Paste a command and this page tokenizes it the way a shell does: flags keep their arguments, <code>-X POST</code> does not steal the URL, and a JSON body inside single quotes keeps its double quotes. The previous regex parser on this page failed both of those cases.</span>`,
+            `<span data-i18n-html="tools.curl-studio.ui.r64_2">Nothing here is sent to an origin. There is no "Run" button. Authorization headers, cookies, and <code>-d</code> bodies stay in the tab. Use it to inspect a copied command before you paste it into a ticket or a shared doc.</span>`,
+            `<span data-i18n-html="tools.curl-studio.ui.r64_3">The generator is the inverse: method, URL, headers, and body in; a copyable curl command out. Every value is wrapped in single quotes, so a <code>$</code>, backtick, or quote in a token or body reaches the server as typed instead of being expanded by your shell, and the body goes through <code>--data-raw</code> so a leading <code>@</code> is not read as a file name. It does not add <code>-k</code> for you. Skipping TLS is a choice you make on purpose.</span>`,
           ],
         })}
 
@@ -71,12 +71,12 @@ function renderCurlStudioPage(lang = DEFAULT_LANGUAGE) {
           <div class="tool-group p-5">
             <div class="flex justify-between items-center mb-2">
               <label for="curl-input" class="block text-sm font-medium text-surface-700 dark:text-surface-300"><span data-i18n="tools.curl-studio.ui.label4">Curl Command</span></label>
-              <button id="parse-btn" data-tooltip="Parse a curl command into structured components" data-i18n-tooltip="tools.curl-studio.ui.tip0" class="btn btn-primary btn-xs"><span data-i18n="tools.curl-studio.ui.button0">Parse Command</span></button>
+              <button id="parse-btn" data-tooltip="Parse a curl command into structured components" data-i18n-tooltip="tools.curl-studio.ui.r64_8" class="btn btn-primary btn-xs"><span data-i18n="tools.curl-studio.ui.button0">Parse Command</span></button>
             </div>
             <textarea id="curl-input" rows="8" aria-describedby="curl-hint parse-status"
               class="input-mono"
               placeholder="Paste your curl command here (e.g., curl -X POST https://api.example.com -H 'Content-Type: application/json' -d '{\\"key\\":\\"value\\"}')" data-i18n-placeholder="tools.curl-studio.ui.placeholder8"></textarea>
-            <p id="curl-hint" class="text-xs text-muted-foreground mt-2">Handles single, double and <code>$'...'</code> quoting, so a command from your browser's "Copy as cURL" parses as is. Press Ctrl+Enter (Cmd+Enter on Mac) to parse.</p>
+            <p data-i18n-html="tools.curl-studio.ui.r6_0" id="curl-hint" class="text-xs text-muted-foreground mt-2">Handles single, double and <code>$'...'</code> quoting, so a command from your browser's "Copy as cURL" parses as is. Press Ctrl+Enter (Cmd+Enter on Mac) to parse.</p>
             <p id="parse-status" class="text-sm mt-2" role="status" aria-live="polite"></p>
           </div>
 
@@ -86,7 +86,7 @@ function renderCurlStudioPage(lang = DEFAULT_LANGUAGE) {
               <div>
                 <label class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1"><span data-i18n="tools.curl-studio.ui.label5">Method & URL</span></label>
                 <div class="flex gap-2">
-                  <select id="gen-method" aria-label="HTTP method" data-tooltip="HTTP method: GET retrieves, POST submits, PUT replaces, DELETE removes" data-i18n-tooltip="tools.curl-studio.ui.tip1" class="input">
+                  <select id="gen-method" aria-label="HTTP method" data-i18n-aria="tools.curl-studio.ui.r64_5" data-tooltip="HTTP method: GET retrieves, POST submits, PUT replaces, DELETE removes" data-i18n-tooltip="tools.curl-studio.ui.r64_9" class="input">
                     <option>GET</option>
                     <option>POST</option>
                     <option>PUT</option>
@@ -95,19 +95,19 @@ function renderCurlStudioPage(lang = DEFAULT_LANGUAGE) {
                     <option>HEAD</option>
                     <option>OPTIONS</option>
                   </select>
-                  <input type="text" id="gen-url" aria-label="Target URL" data-tooltip="Target URL for the request" data-i18n-tooltip="tools.curl-studio.ui.tip2" placeholder="https://api.example.com/v1"
+                  <input data-i18n-aria="tools.curl-studio.ui.r6_1" type="text" id="gen-url" aria-label="Target URL" data-tooltip="Target URL for the request" data-i18n-tooltip="tools.curl-studio.ui.r64_10" placeholder="https://api.example.com/v1"
                     class="input flex-1">
                 </div>
               </div>
               <div>
                 <label for="gen-headers" class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1"><span data-i18n="tools.curl-studio.ui.label6">Headers (JSON)</span></label>
-                <textarea id="gen-headers" rows="3" class="input-mono" aria-describedby="gen-status" placeholder='{"Content-Type": "application/json"}  or one "Name: value" per line'></textarea>
+                <textarea id="gen-headers" rows="3" class="input-mono" aria-describedby="gen-status" placeholder='{"Content-Type": "application/json"}  or one "Name: value" per line' data-i18n-placeholder="tools.curl-studio.ui.r64_4"></textarea>
               </div>
               <div>
                 <label for="gen-body" class="block text-xs font-medium text-surface-500 dark:text-surface-400 uppercase mb-1"><span data-i18n="tools.curl-studio.ui.label7">Body</span></label>
                 <textarea id="gen-body" rows="3" class="input-mono w-full" placeholder='{"foo": "bar"}'></textarea>
               </div>
-              <button id="generate-btn" data-tooltip="Build a curl command from the fields above" data-i18n-tooltip="tools.curl-studio.ui.tip3" class="btn btn-primary w-full"><span data-i18n="tools.curl-studio.ui.button1">Generate Curl Command</span></button>
+              <button id="generate-btn" data-tooltip="Build a curl command from the fields above" data-i18n-tooltip="tools.curl-studio.ui.r64_11" class="btn btn-primary w-full"><span data-i18n="tools.curl-studio.ui.button1">Generate Curl Command</span></button>
               <p id="gen-status" class="text-sm" role="status" aria-live="polite"></p>
             </div>
           </div>
@@ -120,7 +120,7 @@ function renderCurlStudioPage(lang = DEFAULT_LANGUAGE) {
                <h2 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.curl-studio.ui.heading10">Structured Output</h2>
                 <button id="copy-struct-btn" type="button" class="btn btn-ghost btn-xs"><span data-i18n="tools.curl-studio.ui.button2">Copy JSON</span></button>
              </div>
-            <pre tabindex="0" aria-label="Structured output" class="bg-surface-900 text-surface-50 p-4 rounded-lg text-xs font-mono overflow-x-auto min-h-[200px]"><code id="struct-output">{}</code></pre>
+            <pre tabindex="0" aria-label="Structured output" data-i18n-aria="tools.curl-studio.ui.r64_6" class="bg-surface-900 text-surface-50 p-4 rounded-lg text-xs font-mono overflow-x-auto min-h-[200px]"><code id="struct-output">{}</code></pre>
           </div>
 
           <div class="tool-group p-5">
@@ -128,7 +128,7 @@ function renderCurlStudioPage(lang = DEFAULT_LANGUAGE) {
                <h2 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.curl-studio.ui.heading11">Generated Command</h2>
                 <button id="copy-gen-btn" type="button" class="btn btn-ghost btn-xs"><span data-i18n="tools.curl-studio.ui.button3">Copy Command</span></button>
              </div>
-            <pre tabindex="0" aria-label="Generated curl command" class="bg-surface-900 text-surface-50 p-4 rounded-lg text-xs font-mono break-all whitespace-pre-wrap min-h-[100px]" id="gen-output">curl ...</pre>
+            <pre tabindex="0" aria-label="Generated curl command" data-i18n-aria="tools.curl-studio.ui.r64_7" class="bg-surface-900 text-surface-50 p-4 rounded-lg text-xs font-mono break-all whitespace-pre-wrap min-h-[100px]" id="gen-output">curl ...</pre>
           </div>
         </div>
       </div>
@@ -246,9 +246,10 @@ function renderCurlStudioPage(lang = DEFAULT_LANGUAGE) {
           headers: headerResult.headers,
           body: body,
         });
-        let note = url ? '' : 'No URL entered, so the command uses https://api.example.com as a placeholder.';
+        const tr = (k, fb) => (window._t ? window._t('tools.curl-studio.js.' + k, fb) : fb);
+        let note = url ? '' : tr('r64_12', 'No URL entered, so the command uses https://api.example.com as a placeholder.');
         if (body && (method === 'GET' || method === 'HEAD')) {
-          note = (note ? note + ' ' : '') + 'A ' + method + ' request with a body is unusual, and many servers and proxies drop it.';
+          note = (note ? note + ' ' : '') + tr('r64_13', 'A {method} request with a body is unusual, and many servers and proxies drop it.').replace('{method}', method);
         }
         setStatus(genStatus, note, false);
       }

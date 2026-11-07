@@ -37,6 +37,7 @@ function renderLogMaskerPage(lang = DEFAULT_LANGUAGE) {
         text: translation?.ui?.badge13 || "PII Redaction",
         tooltip:
           "Redact emails, IPs, credit cards, and other sensitive strings in place.",
+        tooltipI18nKey: "tools.log-masker.ui.r65_0",
       },
     ],
     { toolId: "log-masker" },
@@ -59,7 +60,7 @@ function renderLogMaskerPage(lang = DEFAULT_LANGUAGE) {
           <div class="tool-group p-5">
             <div class="flex justify-between items-center mb-2">
               <label for="log-input" class="block text-sm font-medium text-surface-700 dark:text-surface-300"><span data-i18n="tools.log-masker.ui.label2">Raw Logs</span></label>
-              <button id="mask-btn" data-tooltip="Redact all selected PII patterns from the input" data-i18n-tooltip="tools.log-masker.ui.tip0" class="btn btn-primary btn-sm"><span data-i18n="tools.log-masker.ui.button0">Mask Logs</span></button>
+              <button id="mask-btn" data-tooltip="Redact all selected PII patterns from the input" data-i18n-tooltip="tools.log-masker.ui.r65_1" class="btn btn-primary btn-sm"><span data-i18n="tools.log-masker.ui.button0">Mask Logs</span></button>
             </div>
             <textarea id="log-input" rows="15" 
               class="input-mono w-full resize-y"
@@ -70,15 +71,15 @@ function renderLogMaskerPage(lang = DEFAULT_LANGUAGE) {
             <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4" data-i18n="tools.log-masker.ui.heading6">Redaction Settings</h2>
             <div class="space-y-3">
               <label class="flex items-center gap-3 cursor-pointer">
-                <input type="checkbox" id="mask-email" checked data-tooltip="Matches email addresses like user@domain.com" data-i18n-tooltip="tools.log-masker.ui.tip1" class="w-4 h-4 rounded border-surface-300 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
+                <input type="checkbox" id="mask-email" checked data-tooltip="Matches email addresses like user@domain.com" data-i18n-tooltip="tools.log-masker.ui.r65_2" class="w-4 h-4 rounded border-surface-300 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
                 <span class="text-sm text-surface-700 dark:text-surface-300" data-i18n="tools.log-masker.ui.desc8">Email Addresses</span>
               </label>
               <label class="flex items-center gap-3 cursor-pointer">
-                <input type="checkbox" id="mask-ip" checked data-tooltip="Matches IPv4 addresses like 192.168.1.1" data-i18n-tooltip="tools.log-masker.ui.tip2" class="w-4 h-4 rounded border-surface-300 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
+                <input type="checkbox" id="mask-ip" checked data-tooltip="Matches IPv4 addresses like 192.168.1.1" data-i18n-tooltip="tools.log-masker.ui.r65_3" class="w-4 h-4 rounded border-surface-300 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
                 <span class="text-sm text-surface-700 dark:text-surface-300" data-i18n="tools.log-masker.ui.desc9">IP Addresses</span>
               </label>
               <label class="flex items-center gap-3 cursor-pointer">
-                <input type="checkbox" id="mask-credit-card" checked data-tooltip="Matches 13-19 digit card numbers that pass the Luhn check" data-i18n-tooltip="tools.log-masker.ui.tip3" class="w-4 h-4 rounded border-surface-300 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
+                <input type="checkbox" id="mask-credit-card" checked data-tooltip="Matches 13-19 digit card numbers that pass the Luhn check" data-i18n-tooltip="tools.log-masker.ui.r65_4" class="w-4 h-4 rounded border-surface-300 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
                 <span class="text-sm text-surface-700 dark:text-surface-300" data-i18n="tools.log-masker.ui.desc10">Credit Card Numbers</span>
               </label>
               <label class="flex items-center gap-3 cursor-pointer">
@@ -104,7 +105,7 @@ function renderLogMaskerPage(lang = DEFAULT_LANGUAGE) {
              <h2 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.log-masker.ui.heading7">Masked Logs</h2>
               <button id="copy-result-btn" type="button" class="btn btn-ghost btn-xs"><span data-i18n="tools.log-masker.ui.button1">Copy Result</span></button>
            </div>
-          <div id="log-output" role="region" aria-label="Masked logs" tabindex="0" class="flex-1 bg-surface-900 text-surface-50 p-4 rounded-lg text-sm font-mono whitespace-pre-wrap overflow-y-auto min-h-[400px]" data-i18n="tools.log-masker.ui.desc11">Logs will appear here after masking...</div>
+          <div data-i18n-aria="tools.log-masker.ui.r6_0" id="log-output" role="region" aria-label="Masked logs" tabindex="0" class="flex-1 bg-surface-900 text-surface-50 p-4 rounded-lg text-sm font-mono whitespace-pre-wrap overflow-y-auto min-h-[400px]" data-i18n="tools.log-masker.ui.desc11">Logs will appear here after masking...</div>
         </div>
       </div>
       </div>

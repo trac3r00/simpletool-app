@@ -63,11 +63,11 @@ export function renderProtocolHeadersSection(lang = DEFAULT_LANGUAGE) {
           <div class="tool-card">
             <div class="flex justify-between items-center mb-3">
               <label class="block text-sm font-medium text-surface-700 dark:text-surface-300" data-i18n="tools.protocol-headers.ui.label1">Hex Dump Parser</label>
-              ${infoHint("Paste a hex dump to parse and visualize the packet structure.", "Hex dump parser help")}
+              ${infoHint("Paste a hex dump to parse and visualize the packet structure.", "Hex dump parser help", { i18nKey: "tools.protocol-headers.ui.r61_3", ariaI18nKey: "tools.protocol-headers.ui.r61_4" })}
             </div>
             <textarea id="hex-input" rows="8"
               class="input-mono w-full resize-y"
-              placeholder="Paste hex dump here...&#10;e.g.&#10;00 1a 2b 3c 4d 5e 00 50&#10;56 c0 00 08 08 00 45 00&#10;00 3c 1c 46 40 00 40 06&#10;b1 e6 c0 a8 01 0a c0 a8&#10;01 01" data-i18n-placeholder="tools.protocol-headers.ui.placeholder8"
+              placeholder="Paste hex dump here...&#10;e.g.&#10;00 1a 2b 3c 4d 5e 00 50&#10;56 c0 00 08 08 00 45 00&#10;00 3c 1c 46 40 00 40 06&#10;b1 e6 c0 a8 01 0a c0 a8&#10;01 01" data-i18n-placeholder="tools.protocol-headers.ui.r61_2"
               spellcheck="false"></textarea>
             <div class="flex gap-2 mt-3">
               <button id="parse-hex-btn" class="btn btn-primary flex-1 text-sm" data-i18n="tools.protocol-headers.ui.button7">Parse Hex</button>
@@ -158,8 +158,8 @@ export function renderProtocolHeadersSection(lang = DEFAULT_LANGUAGE) {
           content: `
           <table>
             <tr><th data-i18n="tools.protocol-headers.ui.th9">Field</th><th data-i18n="tools.protocol-headers.ui.th10">Size</th><th data-i18n="tools.protocol-headers.ui.th11">Description</th></tr>
-            <tr><td>Destination MAC</td><td>6 bytes</td><td>Target hardware address</td></tr>
-            <tr><td>Source MAC</td><td>6 bytes</td><td>Sender hardware address</td></tr>
+            <tr><td data-i18n="tools.protocol-headers.ui.r61_0">Destination MAC</td><td>6 bytes</td><td>Target hardware address</td></tr>
+            <tr><td data-i18n="tools.protocol-headers.ui.r61_1">Source MAC</td><td>6 bytes</td><td>Sender hardware address</td></tr>
             <tr><td>EtherType</td><td>2 bytes</td><td>Protocol type (0x0800=IPv4, 0x86DD=IPv6)</td></tr>
           </table>`,
         },
@@ -168,13 +168,13 @@ export function renderProtocolHeadersSection(lang = DEFAULT_LANGUAGE) {
           content: `
           <table>
             <tr><th data-i18n="tools.protocol-headers.ui.th9">Field</th><th data-i18n="tools.protocol-headers.ui.th10">Size</th><th data-i18n="tools.protocol-headers.ui.th11">Description</th></tr>
-            <tr><td>Version</td><td>4 bits</td><td>IP version (4)</td></tr>
+            <tr><td data-i18n="tools.protocol-headers.ui.r66_0">Version</td><td>4 bits</td><td>IP version (4)</td></tr>
             <tr><td>IHL</td><td>4 bits</td><td>Header length in 32-bit words</td></tr>
             <tr><td>TOS</td><td>1 byte</td><td>Type of Service / DSCP</td></tr>
-            <tr><td>Total Length</td><td>2 bytes</td><td>Total packet size</td></tr>
+            <tr><td data-i18n="tools.protocol-headers.ui.r66_1">Total Length</td><td>2 bytes</td><td>Total packet size</td></tr>
             <tr><td>TTL</td><td>1 byte</td><td>Time to Live (hop limit)</td></tr>
-            <tr><td>Protocol</td><td>1 byte</td><td>Next protocol (6=TCP, 17=UDP)</td></tr>
-            <tr><td>Checksum</td><td>2 bytes</td><td>Header checksum</td></tr>
+            <tr><td data-i18n="tools.protocol-headers.ui.r66_2">Protocol</td><td>1 byte</td><td>Next protocol (6=TCP, 17=UDP)</td></tr>
+            <tr><td data-i18n="tools.protocol-headers.ui.r66_3">Checksum</td><td>2 bytes</td><td>Header checksum</td></tr>
           </table>`,
         },
         {
@@ -182,13 +182,13 @@ export function renderProtocolHeadersSection(lang = DEFAULT_LANGUAGE) {
           content: `
           <table>
             <tr><th data-i18n="tools.protocol-headers.ui.th9">Field</th><th data-i18n="tools.protocol-headers.ui.th10">Size</th><th data-i18n="tools.protocol-headers.ui.th11">Description</th></tr>
-            <tr><td>Source Port</td><td>2 bytes</td><td>Sender port number</td></tr>
-            <tr><td>Dest Port</td><td>2 bytes</td><td>Receiver port number</td></tr>
-            <tr><td>Seq Number</td><td>4 bytes</td><td>Sequence number</td></tr>
-            <tr><td>Ack Number</td><td>4 bytes</td><td>Acknowledgment number</td></tr>
-            <tr><td>Data Offset</td><td>4 bits</td><td>Header length / 4</td></tr>
-            <tr><td>Flags</td><td>9 bits</td><td>NS,CWR,ECE,URG,ACK,PSH,RST,SYN,FIN</td></tr>
-            <tr><td>Window</td><td>2 bytes</td><td>Receive window size</td></tr>
+            <tr><td data-i18n="tools.protocol-headers.ui.r66_4">Source Port</td><td>2 bytes</td><td>Sender port number</td></tr>
+            <tr><td data-i18n="tools.protocol-headers.ui.r66_5">Dest Port</td><td>2 bytes</td><td>Receiver port number</td></tr>
+            <tr><td data-i18n="tools.protocol-headers.ui.r66_6">Seq Number</td><td>4 bytes</td><td>Sequence number</td></tr>
+            <tr><td data-i18n="tools.protocol-headers.ui.r66_7">Ack Number</td><td>4 bytes</td><td>Acknowledgment number</td></tr>
+            <tr><td data-i18n="tools.protocol-headers.ui.r66_8">Data Offset</td><td>4 bits</td><td>Header length / 4</td></tr>
+            <tr><td data-i18n="tools.protocol-headers.ui.r66_9">Flags</td><td>9 bits</td><td>NS,CWR,ECE,URG,ACK,PSH,RST,SYN,FIN</td></tr>
+            <tr><td data-i18n="tools.protocol-headers.ui.r66_10">Window</td><td>2 bytes</td><td>Receive window size</td></tr>
           </table>`,
         },
         {
@@ -358,6 +358,10 @@ export function renderProtocolHeadersSection(lang = DEFAULT_LANGUAGE) {
         sky: { bg: 'bg-sky-100 dark:bg-sky-900/30', border: 'border-sky-300 dark:border-sky-700', text: 'text-sky-800 dark:text-sky-200' }
       };
 
+      const phT = (k, f) => (window._t ? window._t('tools.protocol-headers.js.' + k, f) : f);
+      const FIELD_KEYS = { 'Destination MAC': 'r66_f0', 'Source MAC': 'r66_f1', 'Reserved': 'r66_f2', 'Total Length': 'r66_f3', 'Source Port': 'r66_f4', 'Data Offset': 'r66_f5' };
+      const fieldLabel = (name) => (FIELD_KEYS[name] ? phT(FIELD_KEYS[name], name) : name);
+
       let currentProtocol = 'ethernet';
       let selectedField = null;
 
@@ -423,13 +427,13 @@ export function renderProtocolHeadersSection(lang = DEFAULT_LANGUAGE) {
                    data-field-name="\${segment.field.name}"
                    data-offset="\${segment.field.offset}"
                    data-bits="\${segment.field.bits}">
-                <span class="truncate">\${segment.field.name}</span>
+                <span class="truncate">\${fieldLabel(segment.field.name)}</span>
                 <span class="text-[10px] opacity-70">\${bitsText}</span>
               </div>
             \`;
           }).join('');
 
-          const offsetText = 'Offset: ' + (rowStartBit / 8) + ' bytes';
+          const offsetText = phT('r66_offset', 'Offset: {n} bytes').replace('{n}', rowStartBit / 8);
           return \`
             <div class="flex gap-1 mb-1">
               \${rowHtml}
@@ -460,7 +464,7 @@ export function renderProtocolHeadersSection(lang = DEFAULT_LANGUAGE) {
           <div class="\${colors.bg} \${colors.border} border rounded-lg p-4">
             <div class="flex items-center gap-2 mb-2">
               <span class="w-3 h-3 rounded-full \${colors.bg.replace('bg-', 'bg-').replace('/30', '')}"></span>
-              <h4 class="font-semibold text-surface-900 dark:text-white">\${field.name}</h4>
+              <h4 class="font-semibold text-surface-900 dark:text-white">\${fieldLabel(field.name)}</h4>
             </div>
             <dl class="space-y-2 text-sm">
               <div class="flex justify-between">
