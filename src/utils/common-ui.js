@@ -4,7 +4,7 @@
  * Used across all tool pages for consistency
  */
 
-import { bundledStylesHash } from "./bundled-styles.js";
+import { bundledStylesHash, iconFontHash } from "./bundled-styles.js";
 import { APP_VERSION } from "./version.js";
 import { getKeyboardShortcutsScript } from "./keyboard-shortcuts.js";
 import {
@@ -723,7 +723,7 @@ export function getStylesheetLinks() {
         font-style: normal;
         font-weight: 100 700;
          font-display: swap;
-        src: url(/fonts/material-symbols.woff2) format('woff2');
+        src: url(/fonts/material-symbols.woff2?v=${iconFontHash || "dev"}) format('woff2');
       }
       .material-symbols-rounded {
         font-family: 'Material Symbols Rounded';

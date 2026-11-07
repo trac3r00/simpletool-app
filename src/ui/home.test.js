@@ -39,7 +39,8 @@ describe("renderHomePage", () => {
     expect(html).toContain('data-i18n="home.trustClient"');
     expect(html).toContain('href="/json-formatter"');
     expect(html).toContain("material-symbols-rounded");
-    expect(html).toContain("url(/fonts/material-symbols.woff2)");
+    // Versioned so a cache-first service worker cannot pin an old icon subset.
+    expect(html).toMatch(/url\(\/fonts\/material-symbols\.woff2\?v=[0-9a-f]{16}\)/);
     expect(html).not.toContain('rel="prefetch" as="font"');
     expect(html).not.toContain("🔄 Formatters");
     expect(html.indexOf('id="tools-categories-container"')).toBeLessThan(
