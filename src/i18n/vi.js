@@ -50,12 +50,12 @@ export default {
       keywords: "công cụ trực tuyến, công cụ phát triển, định dạng JSON, tạo mật khẩu, tính băm, tạo UUID, kiểm tra regex, giải mã base64, tạo mã QR, công cụ miễn phí, quyền riêng tư",
     },
     cat: {
-      formatters: "🔄 Định dạng & Chuyển đổi",
-      security: "🛡️ Bảo mật & Mã hóa",
-      network: "🌐 Mạng & Web",
-      generators: "⚡ Trình tạo",
-      game: "🎮 Trò chơi & Giải trí",
-      utils: "🛠️ Tiện ích",
+      formatters: "Định dạng & Chuyển đổi",
+      security: "Bảo mật & Mã hóa",
+      network: "Mạng & Web",
+      generators: "Trình tạo",
+      game: "Trò chơi & Giải trí",
+      utils: "Tiện ích",
     },
   },
   tools: {

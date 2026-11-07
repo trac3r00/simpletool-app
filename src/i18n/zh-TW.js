@@ -50,12 +50,12 @@ export default {
       keywords: "線上工具, 開發者工具, JSON格式化, 密碼產生器, 雜湊計算器, UUID產生器, 正規表示式測試, base64解碼器, QR碼產生器, 免費工具, 隱私工具",
     },
     cat: {
-      formatters: "🔄 格式化與轉換",
-      security: "🛡️ 安全與加密",
-      network: "🌐 網路與Web",
-      generators: "⚡ 產生器",
-      game: "🎮 遊戲與趣味",
-      utils: "🛠️ 實用工具",
+      formatters: "格式化與轉換",
+      security: "安全與加密",
+      network: "網路與Web",
+      generators: "產生器",
+      game: "遊戲與趣味",
+      utils: "實用工具",
     },
   },
   tools: {

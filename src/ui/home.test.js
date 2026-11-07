@@ -43,6 +43,10 @@ describe("renderHomePage", () => {
     expect(html).toMatch(/url\(\/fonts\/material-symbols\.woff2\?v=[0-9a-f]{16}\)/);
     expect(html).not.toContain('rel="prefetch" as="font"');
     expect(html).not.toContain("🔄 Formatters");
+    // The section heading draws its own icon; a locale emoji doubled it.
+    for (const lang of ["ko", "ja", "es", "zh-CN", "zh-TW", "fr", "de", "pt", "vi"]) {
+      expect(t("home.cat.formatters", lang)).toMatch(/^[\p{L}\p{N}]/u);
+    }
     expect(html.indexOf('id="tools-categories-container"')).toBeLessThan(
       html.indexOf('data-i18n="home.editorialTitle"'),
     );
