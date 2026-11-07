@@ -50,12 +50,12 @@ export default {
       keywords: "온라인 도구, 개발자 도구, JSON 정리기, 비밀번호 생성기, 해시 계산기, UUID 생성기, 정규식 테스터, base64 디코더, QR 코드 생성기, 무료 도구, 개인정보 보호",
     },
     cat: {
-      formatters: "🔄 정리 & 변환",
-      security: "🛡️ 보안 & 암호화",
-      network: "🌐 네트워크 & 웹",
-      generators: "⚡ 생성 도구",
-      game: "🎮 게임 & 재미",
-      utils: "🛠️ 편의 도구",
+      formatters: "정리 & 변환",
+      security: "보안 & 암호화",
+      network: "네트워크 & 웹",
+      generators: "생성 도구",
+      game: "게임 & 재미",
+      utils: "편의 도구",
     },
   },
   tools: {

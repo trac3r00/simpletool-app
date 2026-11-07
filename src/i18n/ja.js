@@ -50,12 +50,12 @@ export default {
       keywords: "オンラインツール, 開発者ツール, JSON整形, パスワード生成, ハッシュ計算, UUID生成, 正規表現テスター, base64デコーダー, QRコード生成, 無料ツール, プライバシー",
     },
     cat: {
-      formatters: "🔄 整形＆変換ツール",
-      security: "🛡️ セキュリティ＆暗号化",
-      network: "🌐 ネットワーク＆Web",
-      generators: "⚡ 生成ツール",
-      game: "🎮 ゲーム＆エンタメ",
-      utils: "🛠️ 便利ツール",
+      formatters: "整形＆変換ツール",
+      security: "セキュリティ＆暗号化",
+      network: "ネットワーク＆Web",
+      generators: "生成ツール",
+      game: "ゲーム＆エンタメ",
+      utils: "便利ツール",
     },
   },
   tools: {

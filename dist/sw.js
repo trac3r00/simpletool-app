@@ -6,7 +6,9 @@
  * - Never cache: sitemap, robots.txt, ad scripts, analytics
  */
 
-var CACHE_NAME = "simpletool-v4";
+// v5: purge caches holding the unversioned icon font; pages now request
+// /fonts/material-symbols.woff2?v=<hash>, so a new subset is a new cache key.
+var CACHE_NAME = "simpletool-v5";
 
 var STATIC_ASSETS = [
   // NOTE: /styles.css is intentionally NOT pre-cached. Pages reference the
@@ -14,8 +16,6 @@ var STATIC_ASSETS = [
   // matched anything; the versioned URL is cached at runtime on first fetch.
   "/favicon.ico",
   "/manifest.json",
-  "/fonts/material-symbols.css",
-  "/fonts/material-symbols.woff2",
 ];
 
 var NEVER_CACHE = [

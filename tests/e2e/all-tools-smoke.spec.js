@@ -32,7 +32,7 @@ test.describe("All tools smoke", () => {
           // The current app references a generated Material Symbols font that is
           // absent in local wrangler dev. Ignore only that known asset 404 so
           // route-level JS errors and other console errors still fail the smoke.
-          if (url.endsWith("/fonts/material-symbols.woff2")) {
+          if (url.split("?")[0].endsWith("/fonts/material-symbols.woff2")) {
             return;
           }
           consoleErrors.push(msg.text());

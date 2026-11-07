@@ -50,12 +50,12 @@ export default {
       keywords: "在线工具, 开发者工具, JSON格式化, 密码生成器, 哈希计算器, UUID生成器, 正则表达式测试, base64解码器, QR码生成器, 免费工具, 隐私工具",
     },
     cat: {
-      formatters: "🔄 格式化与转换",
-      security: "🛡️ 安全与加密",
-      network: "🌐 网络与Web",
-      generators: "⚡ 生成器",
-      game: "🎮 游戏与趣味",
-      utils: "🛠️ 实用工具",
+      formatters: "格式化与转换",
+      security: "安全与加密",
+      network: "网络与Web",
+      generators: "生成器",
+      game: "游戏与趣味",
+      utils: "实用工具",
     },
   },
   tools: {

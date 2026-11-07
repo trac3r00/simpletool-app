@@ -50,12 +50,12 @@ export default {
       keywords: "Online-Tools, Entwicklertools, JSON-Formatter, Passwortgenerator, Hash-Rechner, UUID-Generator, Regex-Tester, Base64-Decoder, QR-Code-Generator, kostenlose Tools, Datenschutz",
     },
     cat: {
-      formatters: "🔄 Formatierer & Konverter",
-      security: "🛡️ Sicherheit & Kryptografie",
-      network: "🌐 Netzwerk & Web",
-      generators: "⚡ Generatoren",
-      game: "🎮 Spiele & Spaß",
-      utils: "🛠️ Werkzeuge",
+      formatters: "Formatierer & Konverter",
+      security: "Sicherheit & Kryptografie",
+      network: "Netzwerk & Web",
+      generators: "Generatoren",
+      game: "Spiele & Spaß",
+      utils: "Werkzeuge",
     },
   },
   tools: {
