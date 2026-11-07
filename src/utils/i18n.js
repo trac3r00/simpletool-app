@@ -21,6 +21,7 @@ import pt from "../i18n/pt.js";
 import vi from "../i18n/vi.js";
 import ROUND3 from "../i18n/supplements/round3.js";
 import ROUND4 from "../i18n/supplements/round4.js";
+import ROUND6 from "../i18n/supplements/round6.js";
 
 export const SUPPORTED_LANGUAGES = {
   en: { name: "English", flag: "🇺🇸" },
@@ -38,12 +39,24 @@ export const SUPPORTED_LANGUAGES = {
 export const DEFAULT_LANGUAGE = "en";
 export const LANGUAGE_QUERY_KEY = "lang";
 
-// Generated supplements add ui/js keys under tools; a key the catalog already
+// Generated supplements add keys the catalog lacks: ui/js keys under tools
+// and any other namespace (shell, home, ...). A key the catalog already
 // defines always wins.
+function fillMissing(base, extra) {
+  if (typeof extra !== "object" || extra === null) return base === undefined ? extra : base;
+  if (typeof base !== "object" || base === null) return base === undefined ? extra : base;
+  const merged = { ...base };
+  for (const [key, value] of Object.entries(extra)) merged[key] = fillMissing(base[key], value);
+  return merged;
+}
+
 function withSupplement(catalog, supplement) {
-  if (!supplement?.tools) return catalog;
+  if (!supplement) return catalog;
+  const { tools: extraTools, ...extraNamespaces } = supplement;
+  const merged = fillMissing(catalog, extraNamespaces);
+  if (!extraTools) return merged;
   const tools = { ...catalog.tools };
-  for (const [toolId, extra] of Object.entries(supplement.tools)) {
+  for (const [toolId, extra] of Object.entries(extraTools)) {
     const base = tools[toolId] || {};
     tools[toolId] = {
       ...base,
@@ -51,20 +64,20 @@ function withSupplement(catalog, supplement) {
       ...(extra.js || base.js ? { js: { ...extra.js, ...base.js } } : {}),
     };
   }
-  return { ...catalog, tools };
+  return { ...merged, tools };
 }
 
 const TRANSLATIONS = {
-  en: withSupplement(withSupplement(en, ROUND3.en), ROUND4.en),
-  ko: withSupplement(withSupplement(ko, ROUND3.ko), ROUND4.ko),
-  ja: withSupplement(withSupplement(ja, ROUND3.ja), ROUND4.ja),
-  es: withSupplement(withSupplement(es, ROUND3.es), ROUND4.es),
-  "zh-CN": withSupplement(withSupplement(zhCN, ROUND3["zh-CN"]), ROUND4["zh-CN"]),
-  "zh-TW": withSupplement(withSupplement(zhTW, ROUND3["zh-TW"]), ROUND4["zh-TW"]),
-  fr: withSupplement(withSupplement(fr, ROUND3.fr), ROUND4.fr),
-  de: withSupplement(withSupplement(de, ROUND3.de), ROUND4.de),
-  pt: withSupplement(withSupplement(pt, ROUND3.pt), ROUND4.pt),
-  vi: withSupplement(withSupplement(vi, ROUND3.vi), ROUND4.vi),
+  en: withSupplement(withSupplement(withSupplement(en, ROUND3.en), ROUND4.en), ROUND6.en),
+  ko: withSupplement(withSupplement(withSupplement(ko, ROUND3.ko), ROUND4.ko), ROUND6.ko),
+  ja: withSupplement(withSupplement(withSupplement(ja, ROUND3.ja), ROUND4.ja), ROUND6.ja),
+  es: withSupplement(withSupplement(withSupplement(es, ROUND3.es), ROUND4.es), ROUND6.es),
+  "zh-CN": withSupplement(withSupplement(withSupplement(zhCN, ROUND3["zh-CN"]), ROUND4["zh-CN"]), ROUND6["zh-CN"]),
+  "zh-TW": withSupplement(withSupplement(withSupplement(zhTW, ROUND3["zh-TW"]), ROUND4["zh-TW"]), ROUND6["zh-TW"]),
+  fr: withSupplement(withSupplement(withSupplement(fr, ROUND3.fr), ROUND4.fr), ROUND6.fr),
+  de: withSupplement(withSupplement(withSupplement(de, ROUND3.de), ROUND4.de), ROUND6.de),
+  pt: withSupplement(withSupplement(withSupplement(pt, ROUND3.pt), ROUND4.pt), ROUND6.pt),
+  vi: withSupplement(withSupplement(withSupplement(vi, ROUND3.vi), ROUND4.vi), ROUND6.vi),
 };
 
 function getLanguageCatalog(lang) {

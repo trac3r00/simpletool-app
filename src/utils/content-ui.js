@@ -55,7 +55,7 @@ export function createEducationalSection(
     .join("");
 
   return `
-    <div data-section="educational" class="space-y-3 mt-8" role="region" aria-label="Educational content">
+    <div data-section="educational" class="space-y-3 mt-8" role="region" aria-label="Educational content" data-i18n-aria="shell.educationalContent">
       ${items}
     </div>
   `;
@@ -160,8 +160,8 @@ export function createRelatedToolsSection(tools, lang = DEFAULT_LANGUAGE) {
     <a href="${tool.path}" class="card p-4 hover:border-primary-400 dark:hover:border-primary-600 transition-colors duration-200 group flex items-start gap-3">
       <span class="text-2xl flex-shrink-0" aria-hidden="true">${tool.icon}</span>
       <div class="min-w-0">
-        <h3 class="text-sm font-semibold text-surface-900 dark:text-surface-50 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">${tool.name}</h3>
-        <p class="text-xs text-surface-500 dark:text-surface-400 mt-0.5 line-clamp-2">${tool.description}</p>
+        <h3 class="text-sm font-semibold text-surface-900 dark:text-surface-50 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"${tool.id ? ` data-i18n="tools.${tool.id}.name"` : ""}>${tool.name}</h3>
+        <p class="text-xs text-surface-500 dark:text-surface-400 mt-0.5 line-clamp-2"${tool.id ? ` data-i18n="tools.${tool.id}.desc"` : ""}>${tool.description}</p>
       </div>
     </a>
   `,
@@ -169,7 +169,7 @@ export function createRelatedToolsSection(tools, lang = DEFAULT_LANGUAGE) {
     .join("");
 
   return `
-    <section class="mt-10" aria-label="Related tools">
+    <section class="mt-10" aria-label="Related tools" data-i18n-aria="content.relatedTools">
       <h2 class="text-lg font-semibold text-surface-900 dark:text-surface-50 mb-4" data-i18n="content.relatedTools">${t("content.relatedTools", lang)}</h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         ${cards}

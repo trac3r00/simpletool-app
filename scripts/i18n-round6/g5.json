@@ -1,0 +1,2416 @@
+{
+  "uuid-generator": {
+    "ui": {
+      "r65_0": {
+        "en": "Generate multiple UUIDs or GUIDs at once without any network requests.",
+        "ko": "네트워크 요청 없이 여러 UUID 또는 GUID를 한 번에 생성합니다.",
+        "ja": "ネットワーク通信なしで複数の UUID/GUID を一度に生成します。",
+        "es": "Genera varios UUID o GUID a la vez sin ninguna solicitud de red.",
+        "zh-CN": "无需任何网络请求，一次生成多个 UUID 或 GUID。",
+        "zh-TW": "無需任何網路請求，一次產生多個 UUID 或 GUID。",
+        "fr": "Générez plusieurs UUID ou GUID à la fois, sans aucune requête réseau.",
+        "de": "Mehrere UUIDs oder GUIDs auf einmal erzeugen – ganz ohne Netzwerkanfragen.",
+        "pt": "Gere vários UUIDs ou GUIDs de uma vez, sem nenhuma requisição de rede.",
+        "vi": "Tạo nhiều UUID hoặc GUID cùng lúc mà không cần yêu cầu mạng nào."
+      },
+      "r65_1": {
+        "en": "v4 is random. v7 is time-sortable. v1 is legacy time-based.",
+        "ko": "v4는 무작위, v7은 시간순 정렬 가능, v1은 레거시 시간 기반입니다.",
+        "ja": "v4 はランダム、v7 は時刻順にソート可能、v1 は従来の時刻ベースです。",
+        "es": "v4 es aleatorio. v7 se ordena por tiempo. v1 es el formato heredado basado en tiempo.",
+        "zh-CN": "v4 为随机；v7 可按时间排序；v1 为旧式基于时间。",
+        "zh-TW": "v4 為隨機；v7 可依時間排序；v1 為舊式時間型。",
+        "fr": "v4 est aléatoire. v7 est triable par date. v1 est l'ancien format basé sur l'heure.",
+        "de": "v4 ist zufällig. v7 ist zeitlich sortierbar. v1 ist das ältere zeitbasierte Format.",
+        "pt": "v4 é aleatório. v7 é ordenável por tempo. v1 é o formato legado baseado em tempo.",
+        "vi": "v4 là ngẫu nhiên. v7 sắp xếp được theo thời gian. v1 là kiểu cũ dựa trên thời gian."
+      },
+      "r65_2": {
+        "en": "Generate multiple UUIDs at once (up to 100)",
+        "ko": "여러 UUID를 한 번에 생성 (최대 100개)",
+        "ja": "複数の UUID を一度に生成（最大 100 件）",
+        "es": "Genera varios UUID a la vez (hasta 100)",
+        "zh-CN": "一次生成多个 UUID（最多 100 个）",
+        "zh-TW": "一次產生多個 UUID（最多 100 個）",
+        "fr": "Générer plusieurs UUID à la fois (jusqu'à 100)",
+        "de": "Mehrere UUIDs auf einmal erzeugen (bis zu 100)",
+        "pt": "Gere vários UUIDs de uma vez (até 100)",
+        "vi": "Tạo nhiều UUID cùng lúc (tối đa 100)"
+      },
+      "r6_0": {
+        "en": "Quantity: <span id=\"quantity-value\" class=\"font-bold text-primary-600 dark:text-primary-400\">1</span>",
+        "ko": "개수: <span id=\"quantity-value\" class=\"font-bold text-primary-600 dark:text-primary-400\">1</span>",
+        "ja": "数量: <span id=\"quantity-value\" class=\"font-bold text-primary-600 dark:text-primary-400\">1</span>",
+        "es": "Cantidad: <span id=\"quantity-value\" class=\"font-bold text-primary-600 dark:text-primary-400\">1</span>",
+        "zh-CN": "数量：<span id=\"quantity-value\" class=\"font-bold text-primary-600 dark:text-primary-400\">1</span>",
+        "zh-TW": "數量：<span id=\"quantity-value\" class=\"font-bold text-primary-600 dark:text-primary-400\">1</span>",
+        "fr": "Quantité : <span id=\"quantity-value\" class=\"font-bold text-primary-600 dark:text-primary-400\">1</span>",
+        "de": "Anzahl: <span id=\"quantity-value\" class=\"font-bold text-primary-600 dark:text-primary-400\">1</span>",
+        "pt": "Quantidade: <span id=\"quantity-value\" class=\"font-bold text-primary-600 dark:text-primary-400\">1</span>",
+        "vi": "Số lượng: <span id=\"quantity-value\" class=\"font-bold text-primary-600 dark:text-primary-400\">1</span>"
+      },
+      "r6_1": {
+        "en": "Tip: A Microsoft GUID is a UUID v4 with <code>{}</code> braces — select UUID v4 + 'With braces {}' format.",
+        "ko": "팁: Microsoft GUID는 <code>{}</code> 중괄호로 감싼 UUID v4입니다 — UUID v4와 'With braces {}' 형식을 선택하세요.",
+        "ja": "ヒント: Microsoft GUID は <code>{}</code> の波括弧で囲んだ UUID v4 です — UUID v4 と 'With braces {}' 形式を選んでください。",
+        "es": "Consejo: un GUID de Microsoft es un UUID v4 con llaves <code>{}</code>; elige UUID v4 y el formato 'With braces {}'.",
+        "zh-CN": "提示：Microsoft GUID 就是带 <code>{}</code> 花括号的 UUID v4 — 选择 UUID v4 + 'With braces {}' 格式。",
+        "zh-TW": "提示：Microsoft GUID 就是帶 <code>{}</code> 大括號的 UUID v4 — 選擇 UUID v4 + 'With braces {}' 格式。",
+        "fr": "Astuce : un GUID Microsoft est un UUID v4 entre accolades <code>{}</code> — choisissez UUID v4 + le format 'With braces {}'.",
+        "de": "Tipp: Eine Microsoft-GUID ist eine UUID v4 mit <code>{}</code>-Klammern – wählen Sie UUID v4 + Format 'With braces {}'.",
+        "pt": "Dica: um GUID da Microsoft é um UUID v4 com chaves <code>{}</code> — escolha UUID v4 + o formato 'With braces {}'.",
+        "vi": "Mẹo: GUID của Microsoft là UUID v4 có dấu ngoặc <code>{}</code> — chọn UUID v4 + định dạng 'With braces {}'."
+      }
+    }
+  },
+  "webhook-debugger": {
+    "ui": {
+      "r65_0": {
+        "en": "Request headers",
+        "ko": "요청 헤더",
+        "ja": "リクエストヘッダー",
+        "es": "Encabezados de la solicitud",
+        "zh-CN": "请求头",
+        "zh-TW": "請求標頭",
+        "fr": "En-têtes de la requête",
+        "de": "Anfrage-Header",
+        "pt": "Cabeçalhos da requisição",
+        "vi": "Tiêu đề yêu cầu"
+      },
+      "r65_1": {
+        "en": "Request body",
+        "ko": "요청 본문",
+        "ja": "リクエストボディ",
+        "es": "Cuerpo de la solicitud",
+        "zh-CN": "请求体",
+        "zh-TW": "請求本文",
+        "fr": "Corps de la requête",
+        "de": "Anfrage-Body",
+        "pt": "Corpo da requisição",
+        "vi": "Nội dung yêu cầu"
+      },
+      "r65_2": {
+        "en": "Parsing and signature verification happen in your browser; the request you paste is not sent to our servers.",
+        "ko": "파싱과 서명 검증은 브라우저에서 이루어지며, 붙여넣은 요청은 서버로 전송되지 않습니다.",
+        "ja": "解析と署名検証はブラウザ内で行われ、貼り付けたリクエストはサーバーに送信されません。",
+        "es": "El análisis y la verificación de la firma se hacen en tu navegador; la solicitud que pegas no se envía a nuestros servidores.",
+        "zh-CN": "解析和签名验证在浏览器中完成；你粘贴的请求不会发送到我们的服务器。",
+        "zh-TW": "解析與簽章驗證在瀏覽器中完成；你貼上的請求不會傳送到我們的伺服器。",
+        "fr": "L'analyse et la vérification de signature se font dans votre navigateur ; la requête collée n'est pas envoyée à nos serveurs.",
+        "de": "Parsing und Signaturprüfung laufen in Ihrem Browser; die eingefügte Anfrage wird nicht an unsere Server gesendet.",
+        "pt": "A análise e a verificação de assinatura acontecem no seu navegador; a requisição colada não é enviada aos nossos servidores.",
+        "vi": "Việc phân tích và xác minh chữ ký diễn ra trong trình duyệt; yêu cầu bạn dán không được gửi đến máy chủ của chúng tôi."
+      }
+    }
+  },
+  "certificate-decoder": {
+    "ui": {
+      "r65_0": {
+        "en": "Paste PEM block with BEGIN/END headers so the parser detects it.",
+        "ko": "파서가 인식할 수 있도록 BEGIN/END 헤더가 포함된 PEM 블록을 붙여넣으세요.",
+        "ja": "パーサーが認識できるよう、BEGIN/END ヘッダー付きの PEM ブロックを貼り付けてください。",
+        "es": "Pega el bloque PEM con los encabezados BEGIN/END para que el analizador lo detecte.",
+        "zh-CN": "请粘贴带有 BEGIN/END 标头的 PEM 块，以便解析器识别。",
+        "zh-TW": "請貼上含 BEGIN/END 標頭的 PEM 區塊，以便解析器辨識。",
+        "fr": "Collez le bloc PEM avec ses en-têtes BEGIN/END pour que l'analyseur le détecte.",
+        "de": "Fügen Sie den PEM-Block mit BEGIN/END-Kopfzeilen ein, damit der Parser ihn erkennt.",
+        "pt": "Cole o bloco PEM com os cabeçalhos BEGIN/END para que o analisador o detecte.",
+        "vi": "Dán khối PEM có tiêu đề BEGIN/END để trình phân tích nhận diện."
+      },
+      "r65_1": {
+        "en": "Paste PEM block with BEGIN/END headers so the parser detects it.",
+        "ko": "파서가 인식할 수 있도록 BEGIN/END 헤더가 포함된 PEM 블록을 붙여넣으세요.",
+        "ja": "パーサーが認識できるよう、BEGIN/END ヘッダー付きの PEM ブロックを貼り付けてください。",
+        "es": "Pega el bloque PEM con los encabezados BEGIN/END para que el analizador lo detecte.",
+        "zh-CN": "请粘贴带有 BEGIN/END 标头的 PEM 块，以便解析器识别。",
+        "zh-TW": "請貼上含 BEGIN/END 標頭的 PEM 區塊，以便解析器辨識。",
+        "fr": "Collez le bloc PEM avec ses en-têtes BEGIN/END pour que l'analyseur le détecte.",
+        "de": "Fügen Sie den PEM-Block mit BEGIN/END-Kopfzeilen ein, damit der Parser ihn erkennt.",
+        "pt": "Cole o bloco PEM com os cabeçalhos BEGIN/END para que o analisador o detecte.",
+        "vi": "Dán khối PEM có tiêu đề BEGIN/END để trình phân tích nhận diện."
+      },
+      "r65_2": {
+        "en": "Paste PEM certificate starting with -----BEGIN CERTIFICATE-----",
+        "ko": "-----BEGIN CERTIFICATE-----로 시작하는 PEM 인증서를 붙여넣으세요",
+        "ja": "-----BEGIN CERTIFICATE----- で始まる PEM 証明書を貼り付けてください",
+        "es": "Pega el certificado PEM que empieza por -----BEGIN CERTIFICATE-----",
+        "zh-CN": "粘贴以 -----BEGIN CERTIFICATE----- 开头的 PEM 证书",
+        "zh-TW": "貼上以 -----BEGIN CERTIFICATE----- 開頭的 PEM 憑證",
+        "fr": "Collez le certificat PEM commençant par -----BEGIN CERTIFICATE-----",
+        "de": "PEM-Zertifikat einfügen, das mit -----BEGIN CERTIFICATE----- beginnt",
+        "pt": "Cole o certificado PEM que começa com -----BEGIN CERTIFICATE-----",
+        "vi": "Dán chứng chỉ PEM bắt đầu bằng -----BEGIN CERTIFICATE-----"
+      },
+      "r65_3": {
+        "en": "Decode and display certificate details",
+        "ko": "인증서 세부 정보를 디코딩해 표시",
+        "ja": "証明書の詳細をデコードして表示",
+        "es": "Decodifica y muestra los detalles del certificado",
+        "zh-CN": "解码并显示证书详情",
+        "zh-TW": "解碼並顯示憑證詳細資料",
+        "fr": "Décoder et afficher les détails du certificat",
+        "de": "Zertifikatdetails dekodieren und anzeigen",
+        "pt": "Decodifica e exibe os detalhes do certificado",
+        "vi": "Giải mã và hiển thị chi tiết chứng chỉ"
+      },
+      "r65_4": {
+        "en": "Clear input and results",
+        "ko": "입력과 결과 지우기",
+        "ja": "入力と結果をクリア",
+        "es": "Borra la entrada y los resultados",
+        "zh-CN": "清除输入和结果",
+        "zh-TW": "清除輸入與結果",
+        "fr": "Effacer la saisie et les résultats",
+        "de": "Eingabe und Ergebnisse löschen",
+        "pt": "Limpa a entrada e os resultados",
+        "vi": "Xóa dữ liệu nhập và kết quả"
+      },
+      "r6_0": {
+        "en": "Issuer",
+        "ko": "발급자",
+        "ja": "発行者",
+        "es": "Emisor",
+        "zh-CN": "颁发者",
+        "zh-TW": "簽發者",
+        "fr": "Émetteur",
+        "de": "Aussteller",
+        "pt": "Emissor",
+        "vi": "Bên phát hành"
+      }
+    }
+  },
+  "token-studio": {
+    "ui": {
+      "r65_0": {
+        "en": "JWT token input",
+        "ko": "JWT 토큰 입력",
+        "ja": "JWT トークン入力",
+        "es": "Entrada del token JWT",
+        "zh-CN": "JWT 令牌输入",
+        "zh-TW": "JWT 權杖輸入",
+        "fr": "Saisie du jeton JWT",
+        "de": "JWT-Token-Eingabe",
+        "pt": "Entrada do token JWT",
+        "vi": "Nhập token JWT"
+      },
+      "r65_1": {
+        "en": "JWKS JSON output",
+        "ko": "JWKS JSON 출력",
+        "ja": "JWKS JSON 出力",
+        "es": "Salida JSON de JWKS",
+        "zh-CN": "JWKS JSON 输出",
+        "zh-TW": "JWKS JSON 輸出",
+        "fr": "Sortie JSON JWKS",
+        "de": "JWKS-JSON-Ausgabe",
+        "pt": "Saída JSON do JWKS",
+        "vi": "Kết quả JSON JWKS"
+      },
+      "r65_2": {
+        "en": "All cryptographic operations happen in your browser.",
+        "ko": "모든 암호화 작업은 브라우저에서 이루어집니다.",
+        "ja": "すべての暗号処理はブラウザ内で行われます。",
+        "es": "Todas las operaciones criptográficas se realizan en tu navegador.",
+        "zh-CN": "所有加密操作都在浏览器中完成。",
+        "zh-TW": "所有加密運算都在瀏覽器中完成。",
+        "fr": "Toutes les opérations cryptographiques ont lieu dans votre navigateur.",
+        "de": "Alle kryptografischen Vorgänge laufen in Ihrem Browser.",
+        "pt": "Todas as operações criptográficas acontecem no seu navegador.",
+        "vi": "Mọi thao tác mật mã đều diễn ra trong trình duyệt của bạn."
+      },
+      "r65_3": {
+        "en": "{\"kty\":\"RSA\",...} or shared secret string",
+        "ko": "{\"kty\":\"RSA\",...} 또는 공유 비밀 문자열",
+        "ja": "{\"kty\":\"RSA\",...} または共有シークレット文字列",
+        "es": "{\"kty\":\"RSA\",...} o cadena de secreto compartido",
+        "zh-CN": "{\"kty\":\"RSA\",...} 或共享密钥字符串",
+        "zh-TW": "{\"kty\":\"RSA\",...} 或共用密鑰字串",
+        "fr": "{\"kty\":\"RSA\",...} ou chaîne de secret partagé",
+        "de": "{\"kty\":\"RSA\",...} oder gemeinsamer geheimer Schlüssel",
+        "pt": "{\"kty\":\"RSA\",...} ou string de segredo compartilhado",
+        "vi": "{\"kty\":\"RSA\",...} hoặc chuỗi khóa bí mật dùng chung"
+      },
+      "r65_4": {
+        "en": "Privacy First",
+        "ko": "개인정보 우선",
+        "ja": "プライバシー優先",
+        "es": "Privacidad primero",
+        "zh-CN": "隐私优先",
+        "zh-TW": "隱私優先",
+        "fr": "Confidentialité d'abord",
+        "de": "Datenschutz zuerst",
+        "pt": "Privacidade em primeiro lugar",
+        "vi": "Ưu tiên quyền riêng tư"
+      },
+      "r6_0": {
+        "en": "Token studio modes",
+        "ko": "토큰 스튜디오 모드",
+        "ja": "トークンスタジオのモード",
+        "es": "Modos de Token Studio",
+        "zh-CN": "令牌工作室模式",
+        "zh-TW": "權杖工作室模式",
+        "fr": "Modes du studio de jetons",
+        "de": "Token-Studio-Modi",
+        "pt": "Modos do Token Studio",
+        "vi": "Chế độ Token Studio"
+      },
+      "r6_1": {
+        "en": "Paste the issuer's JWK Set (the JSON served at its jwks_uri). Nothing is fetched; the set stays in this tab. The key is chosen by the token's <code class=\"font-mono\">kid</code>; without a kid, every key whose type and alg fit is tried.",
+        "ko": "발급자의 JWK Set(jwks_uri에서 제공되는 JSON)을 붙여넣으세요. 아무것도 가져오지 않으며 이 탭에만 남습니다. 키는 토큰의 <code class=\"font-mono\">kid</code>로 선택하고, kid가 없으면 type과 alg가 맞는 모든 키를 시도합니다.",
+        "ja": "発行者の JWK Set（jwks_uri で提供される JSON）を貼り付けてください。何も取得せず、このタブ内にのみ保持されます。鍵はトークンの <code class=\"font-mono\">kid</code> で選ばれ、kid がなければ type と alg が合うすべての鍵を試します。",
+        "es": "Pega el JWK Set del emisor (el JSON servido en su jwks_uri). No se descarga nada; el conjunto se queda en esta pestaña. La clave se elige por el <code class=\"font-mono\">kid</code> del token; sin kid, se prueban todas las claves cuyo tipo y alg encajen.",
+        "zh-CN": "粘贴签发方的 JWK Set（其 jwks_uri 提供的 JSON）。不会获取任何内容，数据只留在此标签页。按令牌的 <code class=\"font-mono\">kid</code> 选择密钥；没有 kid 时，会尝试所有类型和 alg 匹配的密钥。",
+        "zh-TW": "貼上簽發者的 JWK Set（其 jwks_uri 提供的 JSON）。不會擷取任何內容，資料只留在此分頁。依權杖的 <code class=\"font-mono\">kid</code> 選擇金鑰；沒有 kid 時，會嘗試所有類型與 alg 相符的金鑰。",
+        "fr": "Collez le JWK Set de l'émetteur (le JSON servi à son jwks_uri). Rien n'est récupéré ; le jeu reste dans cet onglet. La clé est choisie selon le <code class=\"font-mono\">kid</code> du jeton ; sans kid, toutes les clés dont le type et l'alg conviennent sont essayées.",
+        "de": "Fügen Sie das JWK Set des Ausstellers ein (das JSON unter seiner jwks_uri). Es wird nichts abgerufen; das Set bleibt in diesem Tab. Der Schlüssel wird über die <code class=\"font-mono\">kid</code> des Tokens gewählt; ohne kid wird jeder Schlüssel mit passendem Typ und alg probiert.",
+        "pt": "Cole o JWK Set do emissor (o JSON servido em seu jwks_uri). Nada é buscado; o conjunto fica nesta aba. A chave é escolhida pelo <code class=\"font-mono\">kid</code> do token; sem kid, todas as chaves com tipo e alg compatíveis são testadas.",
+        "vi": "Dán JWK Set của bên phát hành (JSON được cung cấp tại jwks_uri). Không có gì được tải về; bộ khóa chỉ ở trong tab này. Khóa được chọn theo <code class=\"font-mono\">kid</code> của token; nếu không có kid, mọi khóa có type và alg phù hợp đều được thử."
+      },
+      "r6_2": {
+        "en": "Verify with JWKS",
+        "ko": "JWKS로 검증",
+        "ja": "JWKS で検証",
+        "es": "Verificar con JWKS",
+        "zh-CN": "使用 JWKS 验证",
+        "zh-TW": "使用 JWKS 驗證",
+        "fr": "Vérifier avec JWKS",
+        "de": "Mit JWKS prüfen",
+        "pt": "Verificar com JWKS",
+        "vi": "Xác minh bằng JWKS"
+      }
+    }
+  },
+  "encoding-workbench": {
+    "ui": {
+      "r65_0": {
+        "en": "Encode and decode text between formats",
+        "ko": "텍스트를 여러 형식으로 인코딩·디코딩",
+        "ja": "テキストを各形式でエンコード／デコード",
+        "es": "Codifica y decodifica texto entre formatos",
+        "zh-CN": "在不同格式之间编码和解码文本",
+        "zh-TW": "在不同格式之間編碼與解碼文字",
+        "fr": "Encoder et décoder du texte entre formats",
+        "de": "Text zwischen Formaten kodieren und dekodieren",
+        "pt": "Codifica e decodifica texto entre formatos",
+        "vi": "Mã hóa và giải mã văn bản giữa các định dạng"
+      },
+      "r65_1": {
+        "en": "Generate cryptographic hashes",
+        "ko": "암호화 해시 생성",
+        "ja": "暗号学的ハッシュを生成",
+        "es": "Genera hashes criptográficos",
+        "zh-CN": "生成加密哈希",
+        "zh-TW": "產生加密雜湊",
+        "fr": "Générer des empreintes cryptographiques",
+        "de": "Kryptografische Hashes erzeugen",
+        "pt": "Gera hashes criptográficos",
+        "vi": "Tạo hàm băm mật mã"
+      },
+      "r65_2": {
+        "en": "Identify unknown hashes or encoded strings",
+        "ko": "알 수 없는 해시나 인코딩된 문자열 식별",
+        "ja": "不明なハッシュやエンコード文字列を識別",
+        "es": "Identifica hashes o cadenas codificadas desconocidas",
+        "zh-CN": "识别未知的哈希或编码字符串",
+        "zh-TW": "辨識未知的雜湊或編碼字串",
+        "fr": "Identifier des empreintes ou chaînes encodées inconnues",
+        "de": "Unbekannte Hashes oder kodierte Zeichenfolgen erkennen",
+        "pt": "Identifica hashes ou strings codificadas desconhecidas",
+        "vi": "Nhận diện hàm băm hoặc chuỗi mã hóa không rõ"
+      }
+    }
+  },
+  "saml-decoder": {
+    "ui": {
+      "r65_0": {
+        "en": "Paste Base64 SAMLResponse or raw XML; toggle inflate for redirect payloads.",
+        "ko": "Base64 SAMLResponse 또는 원본 XML을 붙여넣으세요. Redirect 페이로드는 inflate를 켜세요.",
+        "ja": "Base64 の SAMLResponse か生の XML を貼り付けてください。Redirect ペイロードは inflate をオンにします。",
+        "es": "Pega un SAMLResponse en Base64 o XML sin procesar; activa inflate para cargas de tipo Redirect.",
+        "zh-CN": "粘贴 Base64 SAMLResponse 或原始 XML；Redirect 载荷请开启 inflate。",
+        "zh-TW": "貼上 Base64 SAMLResponse 或原始 XML；Redirect 承載請開啟 inflate。",
+        "fr": "Collez une SAMLResponse en Base64 ou du XML brut ; activez inflate pour les charges Redirect.",
+        "de": "Base64-SAMLResponse oder rohes XML einfügen; für Redirect-Payloads Inflate aktivieren.",
+        "pt": "Cole um SAMLResponse em Base64 ou XML bruto; ative inflate para payloads de Redirect.",
+        "vi": "Dán SAMLResponse Base64 hoặc XML thô; bật inflate cho payload Redirect."
+      },
+      "r65_1": {
+        "en": "Processed in your browser, not sent to our servers.",
+        "ko": "브라우저에서 처리되며 서버로 전송되지 않습니다.",
+        "ja": "ブラウザ内で処理され、サーバーには送信されません。",
+        "es": "Se procesa en tu navegador y no se envía a nuestros servidores.",
+        "zh-CN": "在浏览器中处理，不会发送到我们的服务器。",
+        "zh-TW": "在瀏覽器中處理，不會傳送到我們的伺服器。",
+        "fr": "Traité dans votre navigateur, jamais envoyé à nos serveurs.",
+        "de": "Wird in Ihrem Browser verarbeitet und nicht an unsere Server gesendet.",
+        "pt": "Processado no seu navegador, sem envio aos nossos servidores.",
+        "vi": "Được xử lý trong trình duyệt, không gửi đến máy chủ của chúng tôi."
+      },
+      "r65_2": {
+        "en": "Paste Base64 SAMLResponse or raw XML; toggle inflate for redirect payloads.",
+        "ko": "Base64 SAMLResponse 또는 원본 XML을 붙여넣으세요. Redirect 페이로드는 inflate를 켜세요.",
+        "ja": "Base64 の SAMLResponse か生の XML を貼り付けてください。Redirect ペイロードは inflate をオンにします。",
+        "es": "Pega un SAMLResponse en Base64 o XML sin procesar; activa inflate para cargas de tipo Redirect.",
+        "zh-CN": "粘贴 Base64 SAMLResponse 或原始 XML；Redirect 载荷请开启 inflate。",
+        "zh-TW": "貼上 Base64 SAMLResponse 或原始 XML；Redirect 承載請開啟 inflate。",
+        "fr": "Collez une SAMLResponse en Base64 ou du XML brut ; activez inflate pour les charges Redirect.",
+        "de": "Base64-SAMLResponse oder rohes XML einfügen; für Redirect-Payloads Inflate aktivieren.",
+        "pt": "Cole um SAMLResponse em Base64 ou XML bruto; ative inflate para payloads de Redirect.",
+        "vi": "Dán SAMLResponse Base64 hoặc XML thô; bật inflate cho payload Redirect."
+      },
+      "r65_3": {
+        "en": "Paste Base64-encoded SAML request or response",
+        "ko": "Base64로 인코딩된 SAML 요청 또는 응답을 붙여넣으세요",
+        "ja": "Base64 エンコードされた SAML リクエストまたはレスポンスを貼り付け",
+        "es": "Pega una solicitud o respuesta SAML codificada en Base64",
+        "zh-CN": "粘贴 Base64 编码的 SAML 请求或响应",
+        "zh-TW": "貼上 Base64 編碼的 SAML 請求或回應",
+        "fr": "Collez une requête ou réponse SAML encodée en Base64",
+        "de": "Base64-kodierte SAML-Anfrage oder -Antwort einfügen",
+        "pt": "Cole uma requisição ou resposta SAML codificada em Base64",
+        "vi": "Dán yêu cầu hoặc phản hồi SAML mã hóa Base64"
+      },
+      "r65_4": {
+        "en": "Decompress deflated SAML messages",
+        "ko": "deflate로 압축된 SAML 메시지 압축 해제",
+        "ja": "deflate 圧縮された SAML メッセージを展開",
+        "es": "Descomprime mensajes SAML comprimidos con deflate",
+        "zh-CN": "解压经 deflate 压缩的 SAML 消息",
+        "zh-TW": "解壓縮經 deflate 壓縮的 SAML 訊息",
+        "fr": "Décompresser les messages SAML compressés (deflate)",
+        "de": "Mit Deflate komprimierte SAML-Nachrichten entpacken",
+        "pt": "Descompacta mensagens SAML comprimidas com deflate",
+        "vi": "Giải nén thông điệp SAML đã nén deflate"
+      },
+      "r65_5": {
+        "en": "Format XML output with indentation",
+        "ko": "XML 출력을 들여쓰기로 정리",
+        "ja": "XML 出力をインデントして整形",
+        "es": "Da formato al XML de salida con sangría",
+        "zh-CN": "以缩进格式化 XML 输出",
+        "zh-TW": "以縮排格式化 XML 輸出",
+        "fr": "Mettre en forme le XML de sortie avec indentation",
+        "de": "XML-Ausgabe mit Einrückung formatieren",
+        "pt": "Formata o XML de saída com recuo",
+        "vi": "Định dạng XML đầu ra có thụt lề"
+      },
+      "r65_6": {
+        "en": "Decode and parse the SAML message",
+        "ko": "SAML 메시지 디코딩 및 파싱",
+        "ja": "SAML メッセージをデコードして解析",
+        "es": "Decodifica y analiza el mensaje SAML",
+        "zh-CN": "解码并解析 SAML 消息",
+        "zh-TW": "解碼並解析 SAML 訊息",
+        "fr": "Décoder et analyser le message SAML",
+        "de": "SAML-Nachricht dekodieren und parsen",
+        "pt": "Decodifica e analisa a mensagem SAML",
+        "vi": "Giải mã và phân tích thông điệp SAML"
+      },
+      "r6_0": {
+        "en": "Attempt to inflate (Redirect binding)",
+        "ko": "inflate 시도 (Redirect 바인딩)",
+        "ja": "inflate を試行（Redirect バインディング）",
+        "es": "Intentar inflate (binding Redirect)",
+        "zh-CN": "尝试 inflate（Redirect 绑定）",
+        "zh-TW": "嘗試 inflate（Redirect 繫結）",
+        "fr": "Tenter inflate (binding Redirect)",
+        "de": "Inflate versuchen (Redirect-Binding)",
+        "pt": "Tentar inflate (binding Redirect)",
+        "vi": "Thử inflate (Redirect binding)"
+      },
+      "r6_1": {
+        "en": "Pretty-print XML",
+        "ko": "XML 보기 좋게 정렬",
+        "ja": "XML を整形表示",
+        "es": "Formatear XML",
+        "zh-CN": "美化 XML",
+        "zh-TW": "美化 XML",
+        "fr": "Indenter le XML",
+        "de": "XML schön formatieren",
+        "pt": "Formatar XML",
+        "vi": "Định dạng đẹp XML"
+      },
+      "r6_2": {
+        "en": "Issuer",
+        "ko": "발급자",
+        "ja": "発行者",
+        "es": "Emisor",
+        "zh-CN": "颁发者",
+        "zh-TW": "簽發者",
+        "fr": "Émetteur",
+        "de": "Aussteller",
+        "pt": "Emissor",
+        "vi": "Bên phát hành"
+      },
+      "r6_3": {
+        "en": "Subject",
+        "ko": "주체",
+        "ja": "サブジェクト",
+        "es": "Sujeto",
+        "zh-CN": "主体",
+        "zh-TW": "主體",
+        "fr": "Sujet",
+        "de": "Subjekt",
+        "pt": "Sujeito",
+        "vi": "Chủ thể"
+      },
+      "r6_4": {
+        "en": "Destination",
+        "ko": "대상",
+        "ja": "宛先",
+        "es": "Destino",
+        "zh-CN": "目标地址",
+        "zh-TW": "目的地",
+        "fr": "Destination",
+        "de": "Ziel",
+        "pt": "Destino",
+        "vi": "Đích"
+      },
+      "r6_5": {
+        "en": "Audience",
+        "ko": "대상자(Audience)",
+        "ja": "オーディエンス",
+        "es": "Audiencia",
+        "zh-CN": "受众",
+        "zh-TW": "受眾",
+        "fr": "Audience",
+        "de": "Zielgruppe (Audience)",
+        "pt": "Audiência",
+        "vi": "Đối tượng (Audience)"
+      },
+      "r6_6": {
+        "en": "Signature",
+        "ko": "서명",
+        "ja": "署名",
+        "es": "Firma",
+        "zh-CN": "签名",
+        "zh-TW": "簽章",
+        "fr": "Signature",
+        "de": "Signatur",
+        "pt": "Assinatura",
+        "vi": "Chữ ký"
+      },
+      "r6_7": {
+        "en": "Status",
+        "ko": "상태",
+        "ja": "ステータス",
+        "es": "Estado",
+        "zh-CN": "状态",
+        "zh-TW": "狀態",
+        "fr": "Statut",
+        "de": "Status",
+        "pt": "Status",
+        "vi": "Trạng thái"
+      },
+      "r6_8": {
+        "en": "Assertion ID",
+        "ko": "Assertion ID",
+        "ja": "アサーション ID",
+        "es": "ID de aserción",
+        "zh-CN": "断言 ID",
+        "zh-TW": "斷言 ID",
+        "fr": "ID d'assertion",
+        "de": "Assertion-ID",
+        "pt": "ID da asserção",
+        "vi": "ID Assertion"
+      },
+      "r6_9": {
+        "en": "Authn context",
+        "ko": "인증 컨텍스트",
+        "ja": "認証コンテキスト",
+        "es": "Contexto de autenticación",
+        "zh-CN": "认证上下文",
+        "zh-TW": "驗證內容",
+        "fr": "Contexte d'authentification",
+        "de": "Authentifizierungskontext",
+        "pt": "Contexto de autenticação",
+        "vi": "Ngữ cảnh xác thực"
+      },
+      "r6_10": {
+        "en": "Conditions",
+        "ko": "조건",
+        "ja": "条件",
+        "es": "Condiciones",
+        "zh-CN": "条件",
+        "zh-TW": "條件",
+        "fr": "Conditions",
+        "de": "Bedingungen",
+        "pt": "Condições",
+        "vi": "Điều kiện"
+      },
+      "r6_11": {
+        "en": "SAML error causes and fixes table",
+        "ko": "SAML 오류 원인과 해결 방법 표",
+        "ja": "SAML エラーの原因と対処の表",
+        "es": "Tabla de causas y soluciones de errores SAML",
+        "zh-CN": "SAML 错误原因与修复表",
+        "zh-TW": "SAML 錯誤原因與修正表",
+        "fr": "Tableau des causes et correctifs d'erreurs SAML",
+        "de": "Tabelle mit Ursachen und Lösungen für SAML-Fehler",
+        "pt": "Tabela de causas e correções de erros SAML",
+        "vi": "Bảng nguyên nhân và cách khắc phục lỗi SAML"
+      },
+      "r6_12": {
+        "en": "Clock skew / NotOnOrAfter",
+        "ko": "시계 오차 / NotOnOrAfter",
+        "ja": "時刻のずれ / NotOnOrAfter",
+        "es": "Desfase de reloj / NotOnOrAfter",
+        "zh-CN": "时钟偏差 / NotOnOrAfter",
+        "zh-TW": "時鐘偏差 / NotOnOrAfter",
+        "fr": "Décalage d'horloge / NotOnOrAfter",
+        "de": "Uhrabweichung / NotOnOrAfter",
+        "pt": "Desvio de relógio / NotOnOrAfter",
+        "vi": "Lệch đồng hồ / NotOnOrAfter"
+      },
+      "r6_13": {
+        "en": "The SP's clock is outside the assertion's NotBefore (inclusive) to NotOnOrAfter (exclusive) window, often because the IdP and SP clocks disagree or the response was replayed late.",
+        "ko": "SP의 시계가 assertion의 NotBefore(포함)~NotOnOrAfter(제외) 범위를 벗어났습니다. 대개 IdP와 SP의 시계가 다르거나 응답이 늦게 재전송된 경우입니다.",
+        "ja": "SP の時刻がアサーションの NotBefore（含む）〜NotOnOrAfter（含まない）の範囲外です。多くは IdP と SP の時刻のずれや、応答の遅い再送が原因です。",
+        "es": "El reloj del SP está fuera de la ventana NotBefore (inclusive) a NotOnOrAfter (exclusive) de la aserción, a menudo porque los relojes del IdP y del SP no coinciden o la respuesta se reenvió tarde.",
+        "zh-CN": "SP 的时钟超出了断言的 NotBefore（含）到 NotOnOrAfter（不含）时间窗口，通常是因为 IdP 与 SP 时钟不一致，或响应被延迟重放。",
+        "zh-TW": "SP 的時鐘超出斷言的 NotBefore（含）到 NotOnOrAfter（不含）時間範圍，通常是 IdP 與 SP 時鐘不一致，或回應被延遲重送。",
+        "fr": "L'horloge du SP est hors de la fenêtre NotBefore (incluse) à NotOnOrAfter (exclue) de l'assertion, souvent parce que les horloges de l'IdP et du SP divergent ou que la réponse a été rejouée tardivement.",
+        "de": "Die Uhr des SP liegt außerhalb des Fensters NotBefore (inklusive) bis NotOnOrAfter (exklusive) der Assertion – oft, weil die Uhren von IdP und SP abweichen oder die Antwort verspätet erneut gesendet wurde.",
+        "pt": "O relógio do SP está fora da janela NotBefore (inclusive) a NotOnOrAfter (exclusive) da asserção, geralmente porque os relógios do IdP e do SP divergem ou a resposta foi reenviada tarde.",
+        "vi": "Đồng hồ của SP nằm ngoài khoảng NotBefore (bao gồm) đến NotOnOrAfter (không bao gồm) của assertion, thường do đồng hồ IdP và SP lệch nhau hoặc phản hồi được gửi lại muộn."
+      },
+      "r6_14": {
+        "en": "Sync both servers with NTP, allow a small skew tolerance on the SP, and post the response promptly.",
+        "ko": "두 서버를 NTP로 동기화하고, SP에 약간의 오차 허용치를 두며, 응답을 지체 없이 전송하세요.",
+        "ja": "両サーバーを NTP で同期し、SP に小さな許容誤差を設定し、応答を速やかに送信してください。",
+        "es": "Sincroniza ambos servidores con NTP, permite una pequeña tolerancia de desfase en el SP y envía la respuesta sin demora.",
+        "zh-CN": "用 NTP 同步两台服务器，在 SP 上允许少量偏差容忍，并及时提交响应。",
+        "zh-TW": "用 NTP 同步兩台伺服器，在 SP 上允許少量偏差容忍，並及時送出回應。",
+        "fr": "Synchronisez les deux serveurs via NTP, autorisez une petite tolérance de décalage côté SP et envoyez la réponse sans délai.",
+        "de": "Synchronisieren Sie beide Server per NTP, erlauben Sie auf dem SP eine kleine Toleranz und senden Sie die Antwort zügig.",
+        "pt": "Sincronize os dois servidores com NTP, permita uma pequena tolerância de desvio no SP e envie a resposta sem demora.",
+        "vi": "Đồng bộ cả hai máy chủ bằng NTP, cho phép SP dung sai lệch nhỏ và gửi phản hồi kịp thời."
+      },
+      "r6_15": {
+        "en": "Audience mismatch",
+        "ko": "Audience 불일치",
+        "ja": "Audience の不一致",
+        "es": "Audience no coincide",
+        "zh-CN": "Audience 不匹配",
+        "zh-TW": "Audience 不相符",
+        "fr": "Audience non concordante",
+        "de": "Audience stimmt nicht überein",
+        "pt": "Audience não corresponde",
+        "vi": "Audience không khớp"
+      },
+      "r6_16": {
+        "en": "The Audience in the AudienceRestriction is not the SP's entity ID; the comparison is an exact string match.",
+        "ko": "AudienceRestriction의 Audience가 SP의 entity ID와 다릅니다. 비교는 정확한 문자열 일치로 이루어집니다.",
+        "ja": "AudienceRestriction 内の Audience が SP のエンティティ ID と一致しません。比較は文字列の完全一致です。",
+        "es": "El Audience de AudienceRestriction no es el entity ID del SP; la comparación exige una coincidencia exacta de cadenas.",
+        "zh-CN": "AudienceRestriction 中的 Audience 不是 SP 的 entity ID；比较采用字符串精确匹配。",
+        "zh-TW": "AudienceRestriction 中的 Audience 不是 SP 的 entity ID；比對採用字串完全相符。",
+        "fr": "L'Audience de l'AudienceRestriction n'est pas l'entity ID du SP ; la comparaison exige une correspondance exacte.",
+        "de": "Die Audience in der AudienceRestriction ist nicht die Entity-ID des SP; verglichen wird exakt als Zeichenfolge.",
+        "pt": "O Audience no AudienceRestriction não é o entity ID do SP; a comparação exige correspondência exata de string.",
+        "vi": "Audience trong AudienceRestriction không phải entity ID của SP; phép so sánh yêu cầu khớp chuỗi chính xác."
+      },
+      "r6_17": {
+        "en": "Make the IdP's configured audience / SP entity ID identical to the SP metadata, including scheme and trailing slash.",
+        "ko": "IdP에 설정한 audience / SP entity ID를 스킴과 끝 슬래시까지 SP 메타데이터와 똑같이 맞추세요.",
+        "ja": "IdP に設定した audience / SP エンティティ ID を、スキームや末尾のスラッシュまで SP メタデータと一致させてください。",
+        "es": "Haz que el audience / entity ID del SP configurado en el IdP sea idéntico a los metadatos del SP, incluidos el esquema y la barra final.",
+        "zh-CN": "让 IdP 中配置的 audience / SP entity ID 与 SP 元数据完全一致，包括协议和末尾斜杠。",
+        "zh-TW": "讓 IdP 設定的 audience / SP entity ID 與 SP 中繼資料完全一致，包括協定與結尾斜線。",
+        "fr": "Rendez l'audience / l'entity ID du SP configuré sur l'IdP identique aux métadonnées du SP, schéma et barre finale compris.",
+        "de": "Gleichen Sie die auf dem IdP konfigurierte Audience / SP-Entity-ID exakt an die SP-Metadaten an, inklusive Schema und abschließendem Schrägstrich.",
+        "pt": "Deixe o audience / entity ID do SP configurado no IdP idêntico aos metadados do SP, incluindo esquema e barra final.",
+        "vi": "Đặt audience / entity ID của SP trên IdP giống hệt metadata của SP, kể cả scheme và dấu gạch chéo cuối."
+      },
+      "r6_18": {
+        "en": "Destination / Recipient mismatch",
+        "ko": "Destination / Recipient 불일치",
+        "ja": "Destination / Recipient の不一致",
+        "es": "Destination / Recipient no coinciden",
+        "zh-CN": "Destination / Recipient 不匹配",
+        "zh-TW": "Destination / Recipient 不相符",
+        "fr": "Destination / Recipient non concordants",
+        "de": "Destination / Recipient stimmen nicht überein",
+        "pt": "Destination / Recipient não correspondem",
+        "vi": "Destination / Recipient không khớp"
+      },
+      "r6_19": {
+        "en": "The Response Destination or SubjectConfirmationData Recipient differs from the ACS URL the SP believes it received on, e.g. http vs https behind a proxy.",
+        "ko": "Response의 Destination이나 SubjectConfirmationData의 Recipient가 SP가 수신했다고 보는 ACS URL과 다릅니다. 예: 프록시 뒤에서 http와 https가 다른 경우.",
+        "ja": "Response の Destination または SubjectConfirmationData の Recipient が、SP が受信したと認識している ACS URL と異なります（例: プロキシ背後での http と https）。",
+        "es": "El Destination de la Response o el Recipient de SubjectConfirmationData difiere de la URL ACS en la que el SP cree haberla recibido, p. ej. http frente a https detrás de un proxy.",
+        "zh-CN": "Response 的 Destination 或 SubjectConfirmationData 的 Recipient 与 SP 认为自己接收的 ACS URL 不同，例如代理后面的 http 与 https。",
+        "zh-TW": "Response 的 Destination 或 SubjectConfirmationData 的 Recipient 與 SP 認為自己接收的 ACS URL 不同，例如代理後方的 http 與 https。",
+        "fr": "Le Destination de la Response ou le Recipient de SubjectConfirmationData diffère de l'URL ACS sur laquelle le SP pense l'avoir reçue, ex. http vs https derrière un proxy.",
+        "de": "Destination der Response oder Recipient in SubjectConfirmationData weicht von der ACS-URL ab, auf der der SP sie zu empfangen glaubt, z. B. http vs. https hinter einem Proxy.",
+        "pt": "O Destination da Response ou o Recipient do SubjectConfirmationData difere da URL ACS em que o SP acredita tê-la recebido, ex.: http vs https atrás de um proxy.",
+        "vi": "Destination của Response hoặc Recipient của SubjectConfirmationData khác với URL ACS mà SP cho là đã nhận, vd: http và https sau proxy."
+      },
+      "r6_20": {
+        "en": "Register the exact ACS URL at the IdP and configure the SP to know its public URL when behind a load balancer.",
+        "ko": "IdP에 정확한 ACS URL을 등록하고, 로드 밸런서 뒤에 있을 때는 SP가 자신의 공개 URL을 알도록 설정하세요.",
+        "ja": "IdP に正確な ACS URL を登録し、ロードバランサー配下では SP が自身の公開 URL を把握するよう設定してください。",
+        "es": "Registra la URL ACS exacta en el IdP y configura el SP para que conozca su URL pública cuando esté detrás de un balanceador de carga.",
+        "zh-CN": "在 IdP 注册准确的 ACS URL，并在负载均衡器后配置 SP 知道自己的公网 URL。",
+        "zh-TW": "在 IdP 註冊精確的 ACS URL，並在負載平衡器後方設定 SP 知道自己的公開 URL。",
+        "fr": "Enregistrez l'URL ACS exacte sur l'IdP et configurez le SP pour qu'il connaisse son URL publique derrière un répartiteur de charge.",
+        "de": "Registrieren Sie die exakte ACS-URL beim IdP und konfigurieren Sie den SP hinter einem Load Balancer mit seiner öffentlichen URL.",
+        "pt": "Registre a URL ACS exata no IdP e configure o SP para conhecer sua URL pública quando estiver atrás de um balanceador de carga.",
+        "vi": "Đăng ký đúng URL ACS tại IdP và cấu hình SP biết URL công khai của mình khi đứng sau bộ cân bằng tải."
+      },
+      "r6_21": {
+        "en": "InResponseTo mismatch / unsolicited response",
+        "ko": "InResponseTo 불일치 / 요청하지 않은 응답",
+        "ja": "InResponseTo の不一致 / 要求されていない応答",
+        "es": "InResponseTo no coincide / respuesta no solicitada",
+        "zh-CN": "InResponseTo 不匹配 / 未经请求的响应",
+        "zh-TW": "InResponseTo 不相符 / 未經請求的回應",
+        "fr": "InResponseTo non concordant / réponse non sollicitée",
+        "de": "InResponseTo stimmt nicht / unaufgeforderte Antwort",
+        "pt": "InResponseTo não corresponde / resposta não solicitada",
+        "vi": "InResponseTo không khớp / phản hồi không được yêu cầu"
+      },
+      "r6_22": {
+        "en": "InResponseTo does not match an AuthnRequest ID the SP issued (lost session, multiple tabs), or is missing because the login was IdP-initiated.",
+        "ko": "InResponseTo가 SP가 발급한 AuthnRequest ID와 맞지 않거나(세션 유실, 여러 탭), IdP 시작 로그인이라 값이 없습니다.",
+        "ja": "InResponseTo が SP の発行した AuthnRequest ID と一致しない（セッション消失、複数タブ）か、IdP 起点のログインのため存在しません。",
+        "es": "InResponseTo no coincide con un ID de AuthnRequest emitido por el SP (sesión perdida, varias pestañas) o falta porque el inicio de sesión lo inició el IdP.",
+        "zh-CN": "InResponseTo 与 SP 签发的 AuthnRequest ID 不匹配（会话丢失、多个标签页），或因登录由 IdP 发起而缺失。",
+        "zh-TW": "InResponseTo 與 SP 發出的 AuthnRequest ID 不符（工作階段遺失、多個分頁），或因登入由 IdP 發起而缺少。",
+        "fr": "InResponseTo ne correspond à aucun ID d'AuthnRequest émis par le SP (session perdue, plusieurs onglets), ou est absent car la connexion a été initiée par l'IdP.",
+        "de": "InResponseTo passt zu keiner vom SP ausgestellten AuthnRequest-ID (Sitzung verloren, mehrere Tabs) oder fehlt, weil der Login vom IdP initiiert wurde.",
+        "pt": "InResponseTo não corresponde a um ID de AuthnRequest emitido pelo SP (sessão perdida, várias abas) ou está ausente porque o login foi iniciado pelo IdP.",
+        "vi": "InResponseTo không khớp ID AuthnRequest mà SP đã phát (mất phiên, nhiều tab), hoặc bị thiếu vì đăng nhập do IdP khởi tạo."
+      },
+      "r6_23": {
+        "en": "Keep the request ID in a session that survives the cross-site POST (SameSite cookie settings), or enable IdP-initiated login on the SP if intended.",
+        "ko": "요청 ID를 크로스 사이트 POST 후에도 유지되는 세션에 보관하거나(SameSite 쿠키 설정), 의도한 경우 SP에서 IdP 시작 로그인을 허용하세요.",
+        "ja": "リクエスト ID をクロスサイト POST 後も残るセッションに保持する（SameSite Cookie 設定）か、意図的なら SP で IdP 起点ログインを有効にしてください。",
+        "es": "Guarda el ID de la solicitud en una sesión que sobreviva al POST entre sitios (ajustes de cookies SameSite) o habilita en el SP el inicio de sesión iniciado por el IdP si es intencionado.",
+        "zh-CN": "将请求 ID 保存在能经受跨站 POST 的会话中（SameSite Cookie 设置），如属预期，则在 SP 上启用 IdP 发起的登录。",
+        "zh-TW": "將請求 ID 保存在能撐過跨站 POST 的工作階段中（SameSite Cookie 設定），若屬預期，則在 SP 上啟用 IdP 發起的登入。",
+        "fr": "Conservez l'ID de requête dans une session qui survit au POST intersite (réglages SameSite des cookies), ou activez la connexion initiée par l'IdP sur le SP si c'est voulu.",
+        "de": "Speichern Sie die Request-ID in einer Sitzung, die den Cross-Site-POST übersteht (SameSite-Cookie-Einstellungen), oder aktivieren Sie bei Bedarf IdP-initiierten Login auf dem SP.",
+        "pt": "Mantenha o ID da requisição em uma sessão que sobreviva ao POST entre sites (configurações de cookie SameSite) ou habilite no SP o login iniciado pelo IdP, se for o caso.",
+        "vi": "Lưu ID yêu cầu trong phiên vẫn tồn tại sau POST liên trang (cài đặt cookie SameSite), hoặc bật đăng nhập do IdP khởi tạo trên SP nếu có chủ ý."
+      },
+      "r6_24": {
+        "en": "Invalid signature / wrong IdP certificate",
+        "ko": "잘못된 서명 / 틀린 IdP 인증서",
+        "ja": "署名が無効 / IdP 証明書の誤り",
+        "es": "Firma no válida / certificado del IdP incorrecto",
+        "zh-CN": "签名无效 / IdP 证书错误",
+        "zh-TW": "簽章無效 / IdP 憑證錯誤",
+        "fr": "Signature invalide / mauvais certificat IdP",
+        "de": "Ungültige Signatur / falsches IdP-Zertifikat",
+        "pt": "Assinatura inválida / certificado do IdP errado",
+        "vi": "Chữ ký không hợp lệ / sai chứng chỉ IdP"
+      },
+      "r6_25": {
+        "en": "The SP validates with a different certificate than the IdP signed with (often after certificate rotation), or the XML was modified after signing.",
+        "ko": "SP가 IdP의 서명 인증서와 다른 인증서로 검증하고 있거나(주로 인증서 교체 후), 서명 후 XML이 수정되었습니다.",
+        "ja": "SP が IdP の署名とは別の証明書で検証している（証明書ローテーション後に多い）か、署名後に XML が変更されています。",
+        "es": "El SP valida con un certificado distinto del que usó el IdP para firmar (a menudo tras rotar certificados), o el XML se modificó después de firmarse.",
+        "zh-CN": "SP 使用的验证证书与 IdP 签名所用的不同（常见于证书轮换后），或 XML 在签名后被修改。",
+        "zh-TW": "SP 使用的驗證憑證與 IdP 簽章所用的不同（常見於憑證輪替後），或 XML 在簽章後遭修改。",
+        "fr": "Le SP valide avec un autre certificat que celui utilisé par l'IdP pour signer (souvent après une rotation), ou le XML a été modifié après signature.",
+        "de": "Der SP prüft mit einem anderen Zertifikat als dem, mit dem der IdP signiert hat (oft nach Zertifikatsrotation), oder das XML wurde nach dem Signieren geändert.",
+        "pt": "O SP valida com um certificado diferente do usado pelo IdP para assinar (geralmente após rotação), ou o XML foi alterado após a assinatura.",
+        "vi": "SP xác thực bằng chứng chỉ khác với chứng chỉ IdP dùng để ký (thường sau khi xoay vòng chứng chỉ), hoặc XML đã bị sửa sau khi ký."
+      },
+      "r6_26": {
+        "en": "Refresh the IdP metadata or signing certificate on the SP and confirm whether the Response, the Assertion, or both are expected to be signed.",
+        "ko": "SP에서 IdP 메타데이터나 서명 인증서를 갱신하고, Response와 Assertion 중 무엇(또는 둘 다)이 서명되어야 하는지 확인하세요.",
+        "ja": "SP 側の IdP メタデータまたは署名証明書を更新し、Response と Assertion のどちら（または両方）に署名が必要か確認してください。",
+        "es": "Actualiza en el SP los metadatos del IdP o el certificado de firma y confirma si se espera que estén firmados la Response, la Assertion o ambas.",
+        "zh-CN": "在 SP 上刷新 IdP 元数据或签名证书，并确认应签名的是 Response、Assertion 还是两者。",
+        "zh-TW": "在 SP 上更新 IdP 中繼資料或簽章憑證，並確認應簽章的是 Response、Assertion 還是兩者。",
+        "fr": "Actualisez sur le SP les métadonnées ou le certificat de signature de l'IdP, et vérifiez si la Response, l'Assertion ou les deux doivent être signées.",
+        "de": "Aktualisieren Sie IdP-Metadaten oder Signaturzertifikat auf dem SP und klären Sie, ob Response, Assertion oder beide signiert sein müssen.",
+        "pt": "Atualize no SP os metadados ou o certificado de assinatura do IdP e confirme se a Response, a Assertion ou ambas devem ser assinadas.",
+        "vi": "Làm mới metadata hoặc chứng chỉ ký của IdP trên SP và xác nhận Response, Assertion hay cả hai cần được ký."
+      },
+      "r6_27": {
+        "en": "NameID format mismatch",
+        "ko": "NameID 형식 불일치",
+        "ja": "NameID 形式の不一致",
+        "es": "Formato de NameID no coincide",
+        "zh-CN": "NameID 格式不匹配",
+        "zh-TW": "NameID 格式不相符",
+        "fr": "Format NameID non concordant",
+        "de": "NameID-Format stimmt nicht überein",
+        "pt": "Formato de NameID não corresponde",
+        "vi": "Định dạng NameID không khớp"
+      },
+      "r6_28": {
+        "en": "The NameID Format sent (e.g. transient) differs from the NameIDPolicy the SP requested or the identifier it maps users by.",
+        "ko": "전송된 NameID Format(예: transient)이 SP가 요청한 NameIDPolicy나 사용자 매핑에 쓰는 식별자와 다릅니다.",
+        "ja": "送信された NameID Format（例: transient）が、SP の要求した NameIDPolicy やユーザーの対応付けに使う識別子と異なります。",
+        "es": "El NameID Format enviado (p. ej., transient) difiere de la NameIDPolicy que pidió el SP o del identificador con el que asocia a los usuarios.",
+        "zh-CN": "发送的 NameID Format（如 transient）与 SP 请求的 NameIDPolicy 或其映射用户所用的标识符不同。",
+        "zh-TW": "傳送的 NameID Format（如 transient）與 SP 要求的 NameIDPolicy 或其對應使用者的識別碼不同。",
+        "fr": "Le NameID Format envoyé (ex. transient) diffère de la NameIDPolicy demandée par le SP ou de l'identifiant qui sert à associer les utilisateurs.",
+        "de": "Das gesendete NameID-Format (z. B. transient) weicht von der angeforderten NameIDPolicy des SP oder dem Bezeichner ab, über den er Benutzer zuordnet.",
+        "pt": "O NameID Format enviado (ex.: transient) difere da NameIDPolicy solicitada pelo SP ou do identificador usado para mapear usuários.",
+        "vi": "NameID Format được gửi (vd: transient) khác với NameIDPolicy mà SP yêu cầu hoặc định danh dùng để ánh xạ người dùng."
+      },
+      "r6_29": {
+        "en": "Align the NameID format and source attribute on the IdP with what the SP expects (e.g. emailAddress or persistent).",
+        "ko": "IdP의 NameID 형식과 원본 속성을 SP가 기대하는 값(예: emailAddress 또는 persistent)에 맞추세요.",
+        "ja": "IdP の NameID 形式と元属性を SP が想定するもの（例: emailAddress や persistent）に合わせてください。",
+        "es": "Ajusta en el IdP el formato de NameID y el atributo de origen a lo que espera el SP (p. ej., emailAddress o persistent).",
+        "zh-CN": "将 IdP 上的 NameID 格式和来源属性与 SP 的预期对齐（如 emailAddress 或 persistent）。",
+        "zh-TW": "將 IdP 上的 NameID 格式與來源屬性調整為 SP 預期的值（如 emailAddress 或 persistent）。",
+        "fr": "Alignez le format NameID et l'attribut source de l'IdP sur ce qu'attend le SP (ex. emailAddress ou persistent).",
+        "de": "Passen Sie NameID-Format und Quellattribut auf dem IdP an die Erwartung des SP an (z. B. emailAddress oder persistent).",
+        "pt": "Alinhe o formato de NameID e o atributo de origem no IdP ao que o SP espera (ex.: emailAddress ou persistent).",
+        "vi": "Căn chỉnh định dạng NameID và thuộc tính nguồn trên IdP theo yêu cầu của SP (vd: emailAddress hoặc persistent)."
+      }
+    }
+  },
+  "qr-code": {
+    "ui": {
+      "r65_0": {
+        "en": "Text or URL to encode as QR code",
+        "ko": "QR 코드로 인코딩할 텍스트 또는 URL",
+        "ja": "QR コードにするテキストまたは URL",
+        "es": "Texto o URL que se codificará como código QR",
+        "zh-CN": "要编码为二维码的文本或 URL",
+        "zh-TW": "要編碼為 QR 碼的文字或 URL",
+        "fr": "Texte ou URL à encoder en QR code",
+        "de": "Text oder URL, die als QR-Code kodiert wird",
+        "pt": "Texto ou URL a ser codificado como QR code",
+        "vi": "Văn bản hoặc URL để mã hóa thành mã QR"
+      },
+      "r65_1": {
+        "en": "Output image size in pixels",
+        "ko": "출력 이미지 크기(픽셀)",
+        "ja": "出力画像のサイズ（ピクセル）",
+        "es": "Tamaño de la imagen de salida en píxeles",
+        "zh-CN": "输出图片尺寸（像素）",
+        "zh-TW": "輸出圖片尺寸（像素）",
+        "fr": "Taille de l'image en pixels",
+        "de": "Größe des Ausgabebilds in Pixeln",
+        "pt": "Tamanho da imagem de saída em pixels",
+        "vi": "Kích thước ảnh đầu ra (pixel)"
+      },
+      "r65_2": {
+        "en": "Higher correction = more damage resistance but larger QR code",
+        "ko": "보정 수준이 높을수록 손상에 강하지만 QR 코드가 커집니다",
+        "ja": "訂正レベルが高いほど破損に強くなりますが、QR コードは大きくなります",
+        "es": "Más corrección = más resistencia a daños, pero un código QR más grande",
+        "zh-CN": "纠错等级越高，抗损能力越强，但二维码越大",
+        "zh-TW": "糾錯等級越高越耐損，但 QR 碼也越大",
+        "fr": "Correction plus élevée = meilleure résistance aux dommages, mais QR code plus grand",
+        "de": "Höhere Korrektur = robuster gegen Beschädigung, aber größerer QR-Code",
+        "pt": "Mais correção = mais resistência a danos, mas QR code maior",
+        "vi": "Mức sửa lỗi cao hơn = chống hư hỏng tốt hơn nhưng mã QR lớn hơn"
+      },
+      "r6_0": {
+        "en": "QR code tool modes",
+        "ko": "QR 코드 도구 모드",
+        "ja": "QR コードツールのモード",
+        "es": "Modos de la herramienta de código QR",
+        "zh-CN": "二维码工具模式",
+        "zh-TW": "QR 碼工具模式",
+        "fr": "Modes de l'outil QR code",
+        "de": "Modi des QR-Code-Tools",
+        "pt": "Modos da ferramenta de QR code",
+        "vi": "Chế độ công cụ mã QR"
+      },
+      "r6_1": {
+        "en": "Size: <span id=\"size-value\" class=\"font-bold text-primary-600 dark:text-primary-400\">256</span>px",
+        "ko": "크기: <span id=\"size-value\" class=\"font-bold text-primary-600 dark:text-primary-400\">256</span>px",
+        "ja": "サイズ: <span id=\"size-value\" class=\"font-bold text-primary-600 dark:text-primary-400\">256</span>px",
+        "es": "Tamaño: <span id=\"size-value\" class=\"font-bold text-primary-600 dark:text-primary-400\">256</span>px",
+        "zh-CN": "尺寸：<span id=\"size-value\" class=\"font-bold text-primary-600 dark:text-primary-400\">256</span>px",
+        "zh-TW": "尺寸：<span id=\"size-value\" class=\"font-bold text-primary-600 dark:text-primary-400\">256</span>px",
+        "fr": "Taille : <span id=\"size-value\" class=\"font-bold text-primary-600 dark:text-primary-400\">256</span>px",
+        "de": "Größe: <span id=\"size-value\" class=\"font-bold text-primary-600 dark:text-primary-400\">256</span>px",
+        "pt": "Tamanho: <span id=\"size-value\" class=\"font-bold text-primary-600 dark:text-primary-400\">256</span>px",
+        "vi": "Kích thước: <span id=\"size-value\" class=\"font-bold text-primary-600 dark:text-primary-400\">256</span>px"
+      },
+      "r6_2": {
+        "en": "Foreground color hex value",
+        "ko": "전경색 HEX 값",
+        "ja": "前景色の HEX 値",
+        "es": "Valor HEX del color de primer plano",
+        "zh-CN": "前景色 HEX 值",
+        "zh-TW": "前景色 HEX 值",
+        "fr": "Valeur HEX de la couleur de premier plan",
+        "de": "HEX-Wert der Vordergrundfarbe",
+        "pt": "Valor HEX da cor de primeiro plano",
+        "vi": "Giá trị HEX màu tiền cảnh"
+      },
+      "r6_3": {
+        "en": "Background color hex value",
+        "ko": "배경색 HEX 값",
+        "ja": "背景色の HEX 値",
+        "es": "Valor HEX del color de fondo",
+        "zh-CN": "背景色 HEX 值",
+        "zh-TW": "背景色 HEX 值",
+        "fr": "Valeur HEX de la couleur d'arrière-plan",
+        "de": "HEX-Wert der Hintergrundfarbe",
+        "pt": "Valor HEX da cor de fundo",
+        "vi": "Giá trị HEX màu nền"
+      },
+      "r6_4": {
+        "en": "QR code preview (awaiting input)",
+        "ko": "QR 코드 미리보기 (입력 대기 중)",
+        "ja": "QR コードのプレビュー（入力待ち）",
+        "es": "Vista previa del código QR (esperando entrada)",
+        "zh-CN": "二维码预览（等待输入）",
+        "zh-TW": "QR 碼預覽（等待輸入）",
+        "fr": "Aperçu du QR code (en attente de saisie)",
+        "de": "QR-Code-Vorschau (wartet auf Eingabe)",
+        "pt": "Prévia do QR code (aguardando entrada)",
+        "vi": "Xem trước mã QR (đang chờ nhập)"
+      },
+      "r6_5": {
+        "en": "QR code preview",
+        "ko": "QR 코드 미리보기",
+        "ja": "QR コードのプレビュー",
+        "es": "Vista previa del código QR",
+        "zh-CN": "二维码预览",
+        "zh-TW": "QR 碼預覽",
+        "fr": "Aperçu du QR code",
+        "de": "QR-Code-Vorschau",
+        "pt": "Prévia do QR code",
+        "vi": "Xem trước mã QR"
+      }
+    }
+  },
+  "timestamp-converter": {
+    "ui": {
+      "r65_0": {
+        "en": "Outputs converted timestamps in ISO 8601 format (e.g. 2025-01-30T12:00:00Z).",
+        "ko": "변환된 타임스탬프를 ISO 8601 형식으로 출력합니다(예: 2025-01-30T12:00:00Z).",
+        "ja": "変換したタイムスタンプを ISO 8601 形式で出力します（例: 2025-01-30T12:00:00Z）。",
+        "es": "Muestra las marcas de tiempo convertidas en formato ISO 8601 (p. ej., 2025-01-30T12:00:00Z).",
+        "zh-CN": "以 ISO 8601 格式输出转换后的时间戳（例如 2025-01-30T12:00:00Z）。",
+        "zh-TW": "以 ISO 8601 格式輸出轉換後的時間戳記（例如 2025-01-30T12:00:00Z）。",
+        "fr": "Affiche les horodatages convertis au format ISO 8601 (ex. 2025-01-30T12:00:00Z).",
+        "de": "Gibt umgerechnete Zeitstempel im ISO-8601-Format aus (z. B. 2025-01-30T12:00:00Z).",
+        "pt": "Exibe os timestamps convertidos no formato ISO 8601 (ex.: 2025-01-30T12:00:00Z).",
+        "vi": "Xuất dấu thời gian đã chuyển đổi theo định dạng ISO 8601 (vd: 2025-01-30T12:00:00Z)."
+      },
+      "r65_1": {
+        "en": "Seconds since Jan 1, 1970 00:00:00 UTC",
+        "ko": "1970년 1월 1일 00:00:00 UTC 이후 경과한 초",
+        "ja": "1970年1月1日 00:00:00 UTC からの経過秒数",
+        "es": "Segundos desde el 1 de enero de 1970 00:00:00 UTC",
+        "zh-CN": "自 1970 年 1 月 1 日 00:00:00 UTC 起的秒数",
+        "zh-TW": "自 1970 年 1 月 1 日 00:00:00 UTC 起的秒數",
+        "fr": "Secondes écoulées depuis le 1er janvier 1970 00:00:00 UTC",
+        "de": "Sekunden seit dem 1. Januar 1970, 00:00:00 UTC",
+        "pt": "Segundos desde 1º de janeiro de 1970 00:00:00 UTC",
+        "vi": "Số giây kể từ 00:00:00 UTC ngày 1/1/1970"
+      },
+      "r65_2": {
+        "en": "Standard Unix epoch (10 digits)",
+        "ko": "표준 Unix epoch (10자리)",
+        "ja": "標準の Unix エポック（10 桁）",
+        "es": "Época Unix estándar (10 dígitos)",
+        "zh-CN": "标准 Unix 纪元时间（10 位）",
+        "zh-TW": "標準 Unix 紀元時間（10 位數）",
+        "fr": "Epoch Unix standard (10 chiffres)",
+        "de": "Standard-Unix-Epoch (10 Ziffern)",
+        "pt": "Epoch Unix padrão (10 dígitos)",
+        "vi": "Unix epoch chuẩn (10 chữ số)"
+      },
+      "r65_3": {
+        "en": "JavaScript Date.now() format (13 digits)",
+        "ko": "JavaScript Date.now() 형식 (13자리)",
+        "ja": "JavaScript Date.now() 形式（13 桁）",
+        "es": "Formato Date.now() de JavaScript (13 dígitos)",
+        "zh-CN": "JavaScript Date.now() 格式（13 位）",
+        "zh-TW": "JavaScript Date.now() 格式（13 位數）",
+        "fr": "Format Date.now() de JavaScript (13 chiffres)",
+        "de": "JavaScript-Date.now()-Format (13 Ziffern)",
+        "pt": "Formato Date.now() do JavaScript (13 dígitos)",
+        "vi": "Định dạng Date.now() của JavaScript (13 chữ số)"
+      },
+      "r6_0": {
+        "en": "<span class=\"material-symbols-rounded text-sm\" aria-hidden=\"true\" data-icon=\"content_copy\"></span> Copy Timestamp",
+        "ko": "<span class=\"material-symbols-rounded text-sm\" aria-hidden=\"true\" data-icon=\"content_copy\"></span> 타임스탬프 복사",
+        "ja": "<span class=\"material-symbols-rounded text-sm\" aria-hidden=\"true\" data-icon=\"content_copy\"></span> タイムスタンプをコピー",
+        "es": "<span class=\"material-symbols-rounded text-sm\" aria-hidden=\"true\" data-icon=\"content_copy\"></span> Copiar marca de tiempo",
+        "zh-CN": "<span class=\"material-symbols-rounded text-sm\" aria-hidden=\"true\" data-icon=\"content_copy\"></span> 复制时间戳",
+        "zh-TW": "<span class=\"material-symbols-rounded text-sm\" aria-hidden=\"true\" data-icon=\"content_copy\"></span> 複製時間戳記",
+        "fr": "<span class=\"material-symbols-rounded text-sm\" aria-hidden=\"true\" data-icon=\"content_copy\"></span> Copier l'horodatage",
+        "de": "<span class=\"material-symbols-rounded text-sm\" aria-hidden=\"true\" data-icon=\"content_copy\"></span> Zeitstempel kopieren",
+        "pt": "<span class=\"material-symbols-rounded text-sm\" aria-hidden=\"true\" data-icon=\"content_copy\"></span> Copiar timestamp",
+        "vi": "<span class=\"material-symbols-rounded text-sm\" aria-hidden=\"true\" data-icon=\"content_copy\"></span> Sao chép dấu thời gian"
+      },
+      "r6_1": {
+        "en": "<span class=\"material-symbols-rounded text-primary-600 dark:text-primary-400\" aria-hidden=\"true\" data-icon=\"arrow_forward\"></span> Unix to Human",
+        "ko": "<span class=\"material-symbols-rounded text-primary-600 dark:text-primary-400\" aria-hidden=\"true\" data-icon=\"arrow_forward\"></span> Unix → 사람이 읽는 시간",
+        "ja": "<span class=\"material-symbols-rounded text-primary-600 dark:text-primary-400\" aria-hidden=\"true\" data-icon=\"arrow_forward\"></span> Unix → 人が読める日時",
+        "es": "<span class=\"material-symbols-rounded text-primary-600 dark:text-primary-400\" aria-hidden=\"true\" data-icon=\"arrow_forward\"></span> Unix a fecha legible",
+        "zh-CN": "<span class=\"material-symbols-rounded text-primary-600 dark:text-primary-400\" aria-hidden=\"true\" data-icon=\"arrow_forward\"></span> Unix 转可读时间",
+        "zh-TW": "<span class=\"material-symbols-rounded text-primary-600 dark:text-primary-400\" aria-hidden=\"true\" data-icon=\"arrow_forward\"></span> Unix 轉可讀時間",
+        "fr": "<span class=\"material-symbols-rounded text-primary-600 dark:text-primary-400\" aria-hidden=\"true\" data-icon=\"arrow_forward\"></span> Unix vers date lisible",
+        "de": "<span class=\"material-symbols-rounded text-primary-600 dark:text-primary-400\" aria-hidden=\"true\" data-icon=\"arrow_forward\"></span> Unix in lesbares Datum",
+        "pt": "<span class=\"material-symbols-rounded text-primary-600 dark:text-primary-400\" aria-hidden=\"true\" data-icon=\"arrow_forward\"></span> Unix para data legível",
+        "vi": "<span class=\"material-symbols-rounded text-primary-600 dark:text-primary-400\" aria-hidden=\"true\" data-icon=\"arrow_forward\"></span> Unix sang thời gian dễ đọc"
+      },
+      "r6_2": {
+        "en": "ISO 8601",
+        "ko": "ISO 8601",
+        "ja": "ISO 8601",
+        "es": "ISO 8601",
+        "zh-CN": "ISO 8601",
+        "zh-TW": "ISO 8601",
+        "fr": "ISO 8601",
+        "de": "ISO 8601",
+        "pt": "ISO 8601",
+        "vi": "ISO 8601"
+      },
+      "r6_3": {
+        "en": "Copy ISO 8601",
+        "ko": "ISO 8601 복사",
+        "ja": "ISO 8601 をコピー",
+        "es": "Copiar ISO 8601",
+        "zh-CN": "复制 ISO 8601",
+        "zh-TW": "複製 ISO 8601",
+        "fr": "Copier ISO 8601",
+        "de": "ISO 8601 kopieren",
+        "pt": "Copiar ISO 8601",
+        "vi": "Sao chép ISO 8601"
+      },
+      "r6_4": {
+        "en": "Copy local time",
+        "ko": "현지 시간 복사",
+        "ja": "現地時刻をコピー",
+        "es": "Copiar hora local",
+        "zh-CN": "复制本地时间",
+        "zh-TW": "複製本地時間",
+        "fr": "Copier l'heure locale",
+        "de": "Ortszeit kopieren",
+        "pt": "Copiar hora local",
+        "vi": "Sao chép giờ địa phương"
+      },
+      "r6_5": {
+        "en": "Copy UTC time",
+        "ko": "UTC 시간 복사",
+        "ja": "UTC 時刻をコピー",
+        "es": "Copiar hora UTC",
+        "zh-CN": "复制 UTC 时间",
+        "zh-TW": "複製 UTC 時間",
+        "fr": "Copier l'heure UTC",
+        "de": "UTC-Zeit kopieren",
+        "pt": "Copiar hora UTC",
+        "vi": "Sao chép giờ UTC"
+      },
+      "r6_6": {
+        "en": "Relative",
+        "ko": "상대 시간",
+        "ja": "相対時間",
+        "es": "Relativo",
+        "zh-CN": "相对时间",
+        "zh-TW": "相對時間",
+        "fr": "Relatif",
+        "de": "Relativ",
+        "pt": "Relativo",
+        "vi": "Tương đối"
+      },
+      "r6_7": {
+        "en": "<span class=\"material-symbols-rounded text-primary-600 dark:text-primary-400\" aria-hidden=\"true\" data-icon=\"arrow_back\"></span> Human to Unix",
+        "ko": "<span class=\"material-symbols-rounded text-primary-600 dark:text-primary-400\" aria-hidden=\"true\" data-icon=\"arrow_back\"></span> 사람이 읽는 시간 → Unix",
+        "ja": "<span class=\"material-symbols-rounded text-primary-600 dark:text-primary-400\" aria-hidden=\"true\" data-icon=\"arrow_back\"></span> 人が読める日時 → Unix",
+        "es": "<span class=\"material-symbols-rounded text-primary-600 dark:text-primary-400\" aria-hidden=\"true\" data-icon=\"arrow_back\"></span> Fecha legible a Unix",
+        "zh-CN": "<span class=\"material-symbols-rounded text-primary-600 dark:text-primary-400\" aria-hidden=\"true\" data-icon=\"arrow_back\"></span> 可读时间转 Unix",
+        "zh-TW": "<span class=\"material-symbols-rounded text-primary-600 dark:text-primary-400\" aria-hidden=\"true\" data-icon=\"arrow_back\"></span> 可讀時間轉 Unix",
+        "fr": "<span class=\"material-symbols-rounded text-primary-600 dark:text-primary-400\" aria-hidden=\"true\" data-icon=\"arrow_back\"></span> Date lisible vers Unix",
+        "de": "<span class=\"material-symbols-rounded text-primary-600 dark:text-primary-400\" aria-hidden=\"true\" data-icon=\"arrow_back\"></span> Lesbares Datum in Unix",
+        "pt": "<span class=\"material-symbols-rounded text-primary-600 dark:text-primary-400\" aria-hidden=\"true\" data-icon=\"arrow_back\"></span> Data legível para Unix",
+        "vi": "<span class=\"material-symbols-rounded text-primary-600 dark:text-primary-400\" aria-hidden=\"true\" data-icon=\"arrow_back\"></span> Thời gian dễ đọc sang Unix"
+      },
+      "r6_8": {
+        "en": "Unix (seconds)",
+        "ko": "Unix (초)",
+        "ja": "Unix（秒）",
+        "es": "Unix (segundos)",
+        "zh-CN": "Unix（秒）",
+        "zh-TW": "Unix（秒）",
+        "fr": "Unix (secondes)",
+        "de": "Unix (Sekunden)",
+        "pt": "Unix (segundos)",
+        "vi": "Unix (giây)"
+      },
+      "r6_9": {
+        "en": "Copy Unix seconds",
+        "ko": "Unix 초 복사",
+        "ja": "Unix 秒をコピー",
+        "es": "Copiar segundos Unix",
+        "zh-CN": "复制 Unix 秒",
+        "zh-TW": "複製 Unix 秒",
+        "fr": "Copier les secondes Unix",
+        "de": "Unix-Sekunden kopieren",
+        "pt": "Copiar segundos Unix",
+        "vi": "Sao chép giây Unix"
+      },
+      "r6_10": {
+        "en": "Unix (milliseconds)",
+        "ko": "Unix (밀리초)",
+        "ja": "Unix（ミリ秒）",
+        "es": "Unix (milisegundos)",
+        "zh-CN": "Unix（毫秒）",
+        "zh-TW": "Unix（毫秒）",
+        "fr": "Unix (millisecondes)",
+        "de": "Unix (Millisekunden)",
+        "pt": "Unix (milissegundos)",
+        "vi": "Unix (mili giây)"
+      },
+      "r6_11": {
+        "en": "Copy Unix milliseconds",
+        "ko": "Unix 밀리초 복사",
+        "ja": "Unix ミリ秒をコピー",
+        "es": "Copiar milisegundos Unix",
+        "zh-CN": "复制 Unix 毫秒",
+        "zh-TW": "複製 Unix 毫秒",
+        "fr": "Copier les millisecondes Unix",
+        "de": "Unix-Millisekunden kopieren",
+        "pt": "Copiar milissegundos Unix",
+        "vi": "Sao chép mili giây Unix"
+      }
+    }
+  },
+  "color-converter": {
+    "ui": {
+      "r65_0": {
+        "en": "Updates the color preview and conversion values instantly as you edit inputs.",
+        "ko": "입력을 수정하는 즉시 색상 미리보기와 변환 값이 업데이트됩니다.",
+        "ja": "入力を編集するとすぐに色のプレビューと変換値が更新されます。",
+        "es": "Actualiza al instante la vista previa del color y los valores convertidos mientras editas.",
+        "zh-CN": "编辑输入时即时更新颜色预览和转换值。",
+        "zh-TW": "編輯輸入時即時更新顏色預覽與轉換值。",
+        "fr": "Met à jour instantanément l'aperçu et les valeurs converties pendant la saisie.",
+        "de": "Aktualisiert Farbvorschau und Umrechnungswerte sofort während der Eingabe.",
+        "pt": "Atualiza na hora a prévia da cor e os valores convertidos enquanto você edita.",
+        "vi": "Cập nhật ngay bản xem trước màu và giá trị chuyển đổi khi bạn chỉnh sửa."
+      },
+      "r65_1": {
+        "en": "Enter any color format: #hex, rgb(), or hsl()",
+        "ko": "#hex, rgb(), hsl() 등 어떤 색상 형식이든 입력하세요",
+        "ja": "#hex、rgb()、hsl() など任意の色形式を入力",
+        "es": "Introduce cualquier formato de color: #hex, rgb() o hsl()",
+        "zh-CN": "输入任意颜色格式：#hex、rgb() 或 hsl()",
+        "zh-TW": "輸入任意顏色格式：#hex、rgb() 或 hsl()",
+        "fr": "Saisissez n'importe quel format : #hex, rgb() ou hsl()",
+        "de": "Beliebiges Farbformat eingeben: #hex, rgb() oder hsl()",
+        "pt": "Digite qualquer formato de cor: #hex, rgb() ou hsl()",
+        "vi": "Nhập bất kỳ định dạng màu nào: #hex, rgb() hoặc hsl()"
+      },
+      "r65_2": {
+        "en": "6-digit hexadecimal color code",
+        "ko": "6자리 16진수 색상 코드",
+        "ja": "6 桁の 16 進カラーコード",
+        "es": "Código de color hexadecimal de 6 dígitos",
+        "zh-CN": "6 位十六进制颜色代码",
+        "zh-TW": "6 位十六進位顏色代碼",
+        "fr": "Code couleur hexadécimal à 6 chiffres",
+        "de": "6-stelliger hexadezimaler Farbcode",
+        "pt": "Código de cor hexadecimal de 6 dígitos",
+        "vi": "Mã màu thập lục phân 6 chữ số"
+      },
+      "r6_0": {
+        "en": "Saturation and brightness picker. Arrow keys adjust; hold Shift for larger steps.",
+        "ko": "채도·밝기 선택기. 화살표 키로 조정하고, Shift를 누르면 더 크게 이동합니다.",
+        "ja": "彩度と明度のピッカー。矢印キーで調整、Shift を押すと大きく動きます。",
+        "es": "Selector de saturación y brillo. Ajusta con las flechas; mantén Shift para pasos mayores.",
+        "zh-CN": "饱和度与亮度选择器。用方向键调整；按住 Shift 步长更大。",
+        "zh-TW": "飽和度與亮度選擇器。用方向鍵調整；按住 Shift 可加大幅度。",
+        "fr": "Sélecteur de saturation et luminosité. Réglez avec les flèches ; maintenez Maj pour de plus grands pas.",
+        "de": "Auswahl für Sättigung und Helligkeit. Mit Pfeiltasten anpassen; Umschalt für größere Schritte.",
+        "pt": "Seletor de saturação e brilho. Ajuste com as setas; segure Shift para passos maiores.",
+        "vi": "Bộ chọn độ bão hòa và độ sáng. Dùng phím mũi tên để chỉnh; giữ Shift để bước lớn hơn."
+      },
+      "r6_1": {
+        "en": "Hue slider",
+        "ko": "색상 슬라이더",
+        "ja": "色相スライダー",
+        "es": "Control de tono",
+        "zh-CN": "色相滑块",
+        "zh-TW": "色相滑桿",
+        "fr": "Curseur de teinte",
+        "de": "Farbton-Regler",
+        "pt": "Controle de matiz",
+        "vi": "Thanh trượt sắc độ"
+      },
+      "r6_2": {
+        "en": "Copy HEX color value",
+        "ko": "HEX 색상 값 복사",
+        "ja": "HEX カラー値をコピー",
+        "es": "Copiar valor de color HEX",
+        "zh-CN": "复制 HEX 颜色值",
+        "zh-TW": "複製 HEX 顏色值",
+        "fr": "Copier la valeur HEX",
+        "de": "HEX-Farbwert kopieren",
+        "pt": "Copiar valor de cor HEX",
+        "vi": "Sao chép giá trị màu HEX"
+      },
+      "r6_3": {
+        "en": "Copy RGB color value",
+        "ko": "RGB 색상 값 복사",
+        "ja": "RGB カラー値をコピー",
+        "es": "Copiar valor de color RGB",
+        "zh-CN": "复制 RGB 颜色值",
+        "zh-TW": "複製 RGB 顏色值",
+        "fr": "Copier la valeur RGB",
+        "de": "RGB-Farbwert kopieren",
+        "pt": "Copiar valor de cor RGB",
+        "vi": "Sao chép giá trị màu RGB"
+      },
+      "r6_4": {
+        "en": "rgb(59, 130, 246)",
+        "ko": "rgb(59, 130, 246)",
+        "ja": "rgb(59, 130, 246)",
+        "es": "rgb(59, 130, 246)",
+        "zh-CN": "rgb(59, 130, 246)",
+        "zh-TW": "rgb(59, 130, 246)",
+        "fr": "rgb(59, 130, 246)",
+        "de": "rgb(59, 130, 246)",
+        "pt": "rgb(59, 130, 246)",
+        "vi": "rgb(59, 130, 246)"
+      },
+      "r6_5": {
+        "en": "Copy HSL color value",
+        "ko": "HSL 색상 값 복사",
+        "ja": "HSL カラー値をコピー",
+        "es": "Copiar valor de color HSL",
+        "zh-CN": "复制 HSL 颜色值",
+        "zh-TW": "複製 HSL 顏色值",
+        "fr": "Copier la valeur HSL",
+        "de": "HSL-Farbwert kopieren",
+        "pt": "Copiar valor de cor HSL",
+        "vi": "Sao chép giá trị màu HSL"
+      },
+      "r6_6": {
+        "en": "hsl(217, 91%, 60%)",
+        "ko": "hsl(217, 91%, 60%)",
+        "ja": "hsl(217, 91%, 60%)",
+        "es": "hsl(217, 91%, 60%)",
+        "zh-CN": "hsl(217, 91%, 60%)",
+        "zh-TW": "hsl(217, 91%, 60%)",
+        "fr": "hsl(217, 91%, 60%)",
+        "de": "hsl(217, 91%, 60%)",
+        "pt": "hsl(217, 91%, 60%)",
+        "vi": "hsl(217, 91%, 60%)"
+      },
+      "r6_7": {
+        "en": "Copy HSV color value",
+        "ko": "HSV 색상 값 복사",
+        "ja": "HSV カラー値をコピー",
+        "es": "Copiar valor de color HSV",
+        "zh-CN": "复制 HSV 颜色值",
+        "zh-TW": "複製 HSV 顏色值",
+        "fr": "Copier la valeur HSV",
+        "de": "HSV-Farbwert kopieren",
+        "pt": "Copiar valor de cor HSV",
+        "vi": "Sao chép giá trị màu HSV"
+      },
+      "r6_8": {
+        "en": "hsv(217, 76%, 96%)",
+        "ko": "hsv(217, 76%, 96%)",
+        "ja": "hsv(217, 76%, 96%)",
+        "es": "hsv(217, 76%, 96%)",
+        "zh-CN": "hsv(217, 76%, 96%)",
+        "zh-TW": "hsv(217, 76%, 96%)",
+        "fr": "hsv(217, 76%, 96%)",
+        "de": "hsv(217, 76%, 96%)",
+        "pt": "hsv(217, 76%, 96%)",
+        "vi": "hsv(217, 76%, 96%)"
+      }
+    }
+  },
+  "yaml-toml-converter": {
+    "ui": {
+      "r65_0": {
+        "en": "Instant parse feedback.",
+        "ko": "즉시 파싱 결과를 보여줍니다.",
+        "ja": "即座に解析結果を表示します。",
+        "es": "Resultado del análisis al instante.",
+        "zh-CN": "即时解析反馈。",
+        "zh-TW": "即時解析回饋。",
+        "fr": "Retour d'analyse instantané.",
+        "de": "Sofortiges Parse-Feedback.",
+        "pt": "Retorno imediato da análise.",
+        "vi": "Phản hồi phân tích tức thì."
+      },
+      "r6_0": {
+        "en": "Check syntax without converting",
+        "ko": "변환 없이 문법만 검사",
+        "ja": "変換せずに構文をチェック",
+        "es": "Comprueba la sintaxis sin convertir",
+        "zh-CN": "仅检查语法，不转换",
+        "zh-TW": "僅檢查語法，不轉換",
+        "fr": "Vérifier la syntaxe sans convertir",
+        "de": "Syntax prüfen, ohne zu konvertieren",
+        "pt": "Verifica a sintaxe sem converter",
+        "vi": "Kiểm tra cú pháp mà không chuyển đổi"
+      },
+      "r6_1": {
+        "en": "Convert to JSON format",
+        "ko": "JSON 형식으로 변환",
+        "ja": "JSON 形式に変換",
+        "es": "Convertir a formato JSON",
+        "zh-CN": "转换为 JSON 格式",
+        "zh-TW": "轉換為 JSON 格式",
+        "fr": "Convertir au format JSON",
+        "de": "In JSON-Format konvertieren",
+        "pt": "Converter para o formato JSON",
+        "vi": "Chuyển sang định dạng JSON"
+      },
+      "r6_2": {
+        "en": "Convert to YAML format",
+        "ko": "YAML 형식으로 변환",
+        "ja": "YAML 形式に変換",
+        "es": "Convertir a formato YAML",
+        "zh-CN": "转换为 YAML 格式",
+        "zh-TW": "轉換為 YAML 格式",
+        "fr": "Convertir au format YAML",
+        "de": "In YAML-Format konvertieren",
+        "pt": "Converter para o formato YAML",
+        "vi": "Chuyển sang định dạng YAML"
+      },
+      "r6_3": {
+        "en": "Convert to TOML format",
+        "ko": "TOML 형식으로 변환",
+        "ja": "TOML 形式に変換",
+        "es": "Convertir a formato TOML",
+        "zh-CN": "转换为 TOML 格式",
+        "zh-TW": "轉換為 TOML 格式",
+        "fr": "Convertir au format TOML",
+        "de": "In TOML-Format konvertieren",
+        "pt": "Converter para o formato TOML",
+        "vi": "Chuyển sang định dạng TOML"
+      },
+      "r6_4": {
+        "en": "Parser error",
+        "ko": "파서 오류",
+        "ja": "パーサーエラー",
+        "es": "Error del analizador",
+        "zh-CN": "解析器错误",
+        "zh-TW": "解析器錯誤",
+        "fr": "Erreur d'analyse",
+        "de": "Parser-Fehler",
+        "pt": "Erro do analisador",
+        "vi": "Lỗi trình phân tích"
+      },
+      "r6_5": {
+        "en": "Detected: <span id=\"detected-format\" class=\"font-semibold\">—</span> · Root type: <span id=\"root-type\">—</span> · Keys: <span id=\"key-count\">—</span>",
+        "ko": "감지됨: <span id=\"detected-format\" class=\"font-semibold\">—</span> · 루트 타입: <span id=\"root-type\">—</span> · 키: <span id=\"key-count\">—</span>",
+        "ja": "検出: <span id=\"detected-format\" class=\"font-semibold\">—</span> · ルート型: <span id=\"root-type\">—</span> · キー: <span id=\"key-count\">—</span>",
+        "es": "Detectado: <span id=\"detected-format\" class=\"font-semibold\">—</span> · Tipo raíz: <span id=\"root-type\">—</span> · Claves: <span id=\"key-count\">—</span>",
+        "zh-CN": "检测到：<span id=\"detected-format\" class=\"font-semibold\">—</span> · 根类型：<span id=\"root-type\">—</span> · 键：<span id=\"key-count\">—</span>",
+        "zh-TW": "偵測到：<span id=\"detected-format\" class=\"font-semibold\">—</span> · 根類型：<span id=\"root-type\">—</span> · 鍵：<span id=\"key-count\">—</span>",
+        "fr": "Détecté : <span id=\"detected-format\" class=\"font-semibold\">—</span> · Type racine : <span id=\"root-type\">—</span> · Clés : <span id=\"key-count\">—</span>",
+        "de": "Erkannt: <span id=\"detected-format\" class=\"font-semibold\">—</span> · Wurzeltyp: <span id=\"root-type\">—</span> · Schlüssel: <span id=\"key-count\">—</span>",
+        "pt": "Detectado: <span id=\"detected-format\" class=\"font-semibold\">—</span> · Tipo raiz: <span id=\"root-type\">—</span> · Chaves: <span id=\"key-count\">—</span>",
+        "vi": "Phát hiện: <span id=\"detected-format\" class=\"font-semibold\">—</span> · Kiểu gốc: <span id=\"root-type\">—</span> · Khóa: <span id=\"key-count\">—</span>"
+      }
+    }
+  },
+  "markdown-editor": {
+    "ui": {
+      "r65_0": {
+        "en": "# Start typing Markdown here...\n\nTip: Mermaid diagrams are supported via code fences:\n\n```mermaid\nflowchart TD\n  A[Start] --> B{Works?}\n  B -->|Yes| C[Ship]\n  B -->|No| D[Fix]\n```",
+        "ko": "# 여기에 Markdown을 입력하세요...\n\n팁: 코드 펜스로 Mermaid 다이어그램을 사용할 수 있습니다:\n\n```mermaid\nflowchart TD\n  A[시작] --> B{동작하나요?}\n  B -->|예| C[배포]\n  B -->|아니요| D[수정]\n```",
+        "ja": "# ここに Markdown を入力...\n\nヒント: コードフェンスで Mermaid 図を使えます:\n\n```mermaid\nflowchart TD\n  A[開始] --> B{動く？}\n  B -->|はい| C[リリース]\n  B -->|いいえ| D[修正]\n```",
+        "es": "# Empieza a escribir Markdown aquí...\n\nConsejo: los diagramas Mermaid se admiten mediante bloques de código:\n\n```mermaid\nflowchart TD\n  A[Inicio] --> B{¿Funciona?}\n  B -->|Sí| C[Publicar]\n  B -->|No| D[Corregir]\n```",
+        "zh-CN": "# 在此输入 Markdown...\n\n提示：可通过代码围栏使用 Mermaid 图表：\n\n```mermaid\nflowchart TD\n  A[开始] --> B{可行？}\n  B -->|是| C[发布]\n  B -->|否| D[修复]\n```",
+        "zh-TW": "# 在此輸入 Markdown...\n\n提示：可透過程式碼區塊使用 Mermaid 圖表：\n\n```mermaid\nflowchart TD\n  A[開始] --> B{可行？}\n  B -->|是| C[發布]\n  B -->|否| D[修正]\n```",
+        "fr": "# Commencez à écrire du Markdown ici...\n\nAstuce : les diagrammes Mermaid sont pris en charge via des blocs de code :\n\n```mermaid\nflowchart TD\n  A[Début] --> B{Ça marche ?}\n  B -->|Oui| C[Livrer]\n  B -->|Non| D[Corriger]\n```",
+        "de": "# Hier Markdown eingeben...\n\nTipp: Mermaid-Diagramme werden über Code-Fences unterstützt:\n\n```mermaid\nflowchart TD\n  A[Start] --> B{Klappt's?}\n  B -->|Ja| C[Ausliefern]\n  B -->|Nein| D[Beheben]\n```",
+        "pt": "# Comece a digitar Markdown aqui...\n\nDica: diagramas Mermaid são suportados por blocos de código:\n\n```mermaid\nflowchart TD\n  A[Início] --> B{Funciona?}\n  B -->|Sim| C[Publicar]\n  B -->|Não| D[Corrigir]\n```",
+        "vi": "# Bắt đầu gõ Markdown tại đây...\n\nMẹo: hỗ trợ sơ đồ Mermaid qua khối mã:\n\n```mermaid\nflowchart TD\n  A[Bắt đầu] --> B{Chạy được?}\n  B -->|Có| C[Phát hành]\n  B -->|Không| D[Sửa]\n```"
+      },
+      "r65_1": {
+        "en": "Open",
+        "ko": "열기",
+        "ja": "開く",
+        "es": "Abrir",
+        "zh-CN": "打开",
+        "zh-TW": "開啟",
+        "fr": "Ouvrir",
+        "de": "Öffnen",
+        "pt": "Abrir",
+        "vi": "Mở"
+      },
+      "r6_0": {
+        "en": "Side-by-side editor and preview",
+        "ko": "편집기와 미리보기를 나란히",
+        "ja": "エディターとプレビューを並べて表示",
+        "es": "Editor y vista previa lado a lado",
+        "zh-CN": "编辑器与预览并排",
+        "zh-TW": "編輯器與預覽並排",
+        "fr": "Éditeur et aperçu côte à côte",
+        "de": "Editor und Vorschau nebeneinander",
+        "pt": "Editor e prévia lado a lado",
+        "vi": "Trình soạn thảo và xem trước song song"
+      },
+      "r6_1": {
+        "en": "Full-width editor only",
+        "ko": "편집기만 전체 너비로",
+        "ja": "エディターのみ全幅表示",
+        "es": "Solo editor a ancho completo",
+        "zh-CN": "仅全宽编辑器",
+        "zh-TW": "僅全寬編輯器",
+        "fr": "Éditeur seul en pleine largeur",
+        "de": "Nur Editor in voller Breite",
+        "pt": "Somente editor em largura total",
+        "vi": "Chỉ trình soạn thảo toàn chiều rộng"
+      },
+      "r6_2": {
+        "en": "Full-width rendered preview only",
+        "ko": "렌더링 미리보기만 전체 너비로",
+        "ja": "レンダリングプレビューのみ全幅表示",
+        "es": "Solo vista previa a ancho completo",
+        "zh-CN": "仅全宽渲染预览",
+        "zh-TW": "僅全寬繪製預覽",
+        "fr": "Aperçu rendu seul en pleine largeur",
+        "de": "Nur gerenderte Vorschau in voller Breite",
+        "pt": "Somente prévia renderizada em largura total",
+        "vi": "Chỉ bản xem trước toàn chiều rộng"
+      },
+      "r6_3": {
+        "en": "0 words",
+        "ko": "0단어",
+        "ja": "0 語",
+        "es": "0 palabras",
+        "zh-CN": "0 个词",
+        "zh-TW": "0 個字詞",
+        "fr": "0 mot",
+        "de": "0 Wörter",
+        "pt": "0 palavras",
+        "vi": "0 từ"
+      },
+      "r6_4": {
+        "en": "0 chars",
+        "ko": "0자",
+        "ja": "0 文字",
+        "es": "0 caracteres",
+        "zh-CN": "0 个字符",
+        "zh-TW": "0 個字元",
+        "fr": "0 caractère",
+        "de": "0 Zeichen",
+        "pt": "0 caracteres",
+        "vi": "0 ký tự"
+      },
+      "r6_5": {
+        "en": "Lint findings list",
+        "ko": "린트 결과 목록",
+        "ja": "Lint 指摘の一覧",
+        "es": "Lista de avisos de lint",
+        "zh-CN": "Lint 问题列表",
+        "zh-TW": "Lint 問題清單",
+        "fr": "Liste des alertes de lint",
+        "de": "Liste der Lint-Befunde",
+        "pt": "Lista de apontamentos do lint",
+        "vi": "Danh sách lỗi lint"
+      }
+    }
+  },
+  "log-viewer": {
+    "ui": {
+      "r65_0": {
+        "en": "Filter logs by text — enable regex toggle for pattern matching",
+        "ko": "텍스트로 로그 필터링 — 패턴 일치는 정규식 토글을 켜세요",
+        "ja": "テキストでログを絞り込み — パターン一致には正規表現をオン",
+        "es": "Filtra los registros por texto; activa regex para buscar patrones",
+        "zh-CN": "按文本筛选日志 — 开启正则开关以进行模式匹配",
+        "zh-TW": "依文字篩選日誌 — 開啟正規表示式切換以比對模式",
+        "fr": "Filtrer les journaux par texte — activez regex pour les motifs",
+        "de": "Logs nach Text filtern – für Muster den Regex-Schalter aktivieren",
+        "pt": "Filtre os logs por texto — ative regex para correspondência de padrões",
+        "vi": "Lọc nhật ký theo văn bản — bật regex để khớp mẫu"
+      },
+      "r65_1": {
+        "en": "Enable regex pattern matching in search",
+        "ko": "검색에서 정규식 패턴 일치 사용",
+        "ja": "検索で正規表現パターン一致を有効化",
+        "es": "Activa la coincidencia con expresiones regulares en la búsqueda",
+        "zh-CN": "在搜索中启用正则表达式匹配",
+        "zh-TW": "在搜尋中啟用正規表示式比對",
+        "fr": "Activer les expressions régulières dans la recherche",
+        "de": "Regex-Mustersuche aktivieren",
+        "pt": "Ativa correspondência por regex na busca",
+        "vi": "Bật khớp mẫu regex khi tìm kiếm"
+      },
+      "r65_2": {
+        "en": "Show/hide INFO level messages",
+        "ko": "INFO 레벨 메시지 표시/숨기기",
+        "ja": "INFO レベルのメッセージを表示／非表示",
+        "es": "Mostrar u ocultar mensajes de nivel INFO",
+        "zh-CN": "显示/隐藏 INFO 级别消息",
+        "zh-TW": "顯示／隱藏 INFO 等級訊息",
+        "fr": "Afficher/masquer les messages de niveau INFO",
+        "de": "Meldungen der Stufe INFO ein-/ausblenden",
+        "pt": "Mostrar/ocultar mensagens de nível INFO",
+        "vi": "Hiện/ẩn thông điệp mức INFO"
+      },
+      "r65_3": {
+        "en": "Client-Side Only",
+        "ko": "브라우저 전용",
+        "ja": "クライアント側のみ",
+        "es": "Solo en el cliente",
+        "zh-CN": "仅客户端",
+        "zh-TW": "僅用戶端",
+        "fr": "Côté client uniquement",
+        "de": "Nur clientseitig",
+        "pt": "Somente no cliente",
+        "vi": "Chỉ phía máy khách"
+      },
+      "r65_4": {
+        "en": "100k+ Lines",
+        "ko": "10만 줄 이상",
+        "ja": "10 万行以上",
+        "es": "Más de 100k líneas",
+        "zh-CN": "10 万+ 行",
+        "zh-TW": "10 萬+ 行",
+        "fr": "Plus de 100k lignes",
+        "de": "100k+ Zeilen",
+        "pt": "Mais de 100 mil linhas",
+        "vi": "Hơn 100k dòng"
+      },
+      "r6_0": {
+        "en": "Show log levels",
+        "ko": "표시할 로그 레벨",
+        "ja": "表示するログレベル",
+        "es": "Niveles de log visibles",
+        "zh-CN": "显示的日志级别",
+        "zh-TW": "顯示的日誌等級",
+        "fr": "Niveaux de log affichés",
+        "de": "Angezeigte Log-Level",
+        "pt": "Níveis de log exibidos",
+        "vi": "Mức nhật ký hiển thị"
+      },
+      "r6_1": {
+        "en": "Log density by position in the file; click to jump there",
+        "ko": "파일 위치별 로그 밀도. 클릭하면 해당 위치로 이동합니다",
+        "ja": "ファイル内の位置ごとのログ密度。クリックでその位置へ移動",
+        "es": "Densidad de logs según la posición en el archivo; haz clic para ir allí",
+        "zh-CN": "按文件位置显示的日志密度；点击即可跳转",
+        "zh-TW": "依檔案位置顯示的日誌密度；點擊即可跳轉",
+        "fr": "Densité des logs selon la position dans le fichier ; cliquez pour y aller",
+        "de": "Log-Dichte nach Position in der Datei; klicken, um dorthin zu springen",
+        "pt": "Densidade de logs por posição no arquivo; clique para ir até lá",
+        "vi": "Mật độ nhật ký theo vị trí trong tệp; nhấp để chuyển đến đó"
+      },
+      "r6_2": {
+        "en": "Log lines (drop a file here to open it)",
+        "ko": "로그 줄 (파일을 여기에 놓으면 열립니다)",
+        "ja": "ログ行（ここにファイルをドロップして開く）",
+        "es": "Líneas de log (suelta un archivo aquí para abrirlo)",
+        "zh-CN": "日志行（将文件拖到此处打开）",
+        "zh-TW": "日誌行（將檔案拖曳到此處開啟）",
+        "fr": "Lignes de log (déposez un fichier ici pour l'ouvrir)",
+        "de": "Log-Zeilen (Datei hier ablegen, um sie zu öffnen)",
+        "pt": "Linhas de log (solte um arquivo aqui para abri-lo)",
+        "vi": "Dòng nhật ký (thả tệp vào đây để mở)"
+      }
+    }
+  },
+  "code-minifier": {
+    "ui": {
+      "r65_0": {
+        "en": "Code input",
+        "ko": "코드 입력",
+        "ja": "コード入力",
+        "es": "Entrada de código",
+        "zh-CN": "代码输入",
+        "zh-TW": "程式碼輸入",
+        "fr": "Code source",
+        "de": "Code-Eingabe",
+        "pt": "Entrada de código",
+        "vi": "Mã đầu vào"
+      },
+      "r65_1": {
+        "en": "Minified output",
+        "ko": "압축된 출력",
+        "ja": "圧縮結果",
+        "es": "Salida minificada",
+        "zh-CN": "压缩后的输出",
+        "zh-TW": "壓縮後的輸出",
+        "fr": "Sortie minifiée",
+        "de": "Minifizierte Ausgabe",
+        "pt": "Saída minificada",
+        "vi": "Kết quả đã rút gọn"
+      },
+      "r65_2": {
+        "en": "Runs entirely in your browser using Web APIs — your code is processed locally and not sent to our servers.",
+        "ko": "Web API를 사용해 브라우저에서만 실행됩니다 — 코드는 로컬에서 처리되며 서버로 전송되지 않습니다.",
+        "ja": "Web API を使いブラウザ内だけで動作します — コードはローカルで処理され、サーバーに送信されません。",
+        "es": "Funciona por completo en tu navegador con Web APIs: tu código se procesa localmente y no se envía a nuestros servidores.",
+        "zh-CN": "完全在浏览器中使用 Web API 运行 — 代码在本地处理，不会发送到我们的服务器。",
+        "zh-TW": "完全在瀏覽器中使用 Web API 執行 — 程式碼在本機處理，不會傳送到我們的伺服器。",
+        "fr": "Fonctionne entièrement dans votre navigateur via les Web APIs — votre code est traité localement, sans envoi à nos serveurs.",
+        "de": "Läuft vollständig im Browser über Web-APIs – Ihr Code wird lokal verarbeitet und nicht an unsere Server gesendet.",
+        "pt": "Roda inteiramente no seu navegador com Web APIs — seu código é processado localmente e não é enviado aos nossos servidores.",
+        "vi": "Chạy hoàn toàn trong trình duyệt bằng Web API — mã được xử lý cục bộ, không gửi đến máy chủ của chúng tôi."
+      },
+      "r65_3": {
+        "en": "Minify JavaScript code",
+        "ko": "JavaScript 코드 압축",
+        "ja": "JavaScript コードを圧縮",
+        "es": "Minifica código JavaScript",
+        "zh-CN": "压缩 JavaScript 代码",
+        "zh-TW": "壓縮 JavaScript 程式碼",
+        "fr": "Minifier du code JavaScript",
+        "de": "JavaScript-Code minifizieren",
+        "pt": "Minifica código JavaScript",
+        "vi": "Rút gọn mã JavaScript"
+      },
+      "r65_4": {
+        "en": "Minify CSS stylesheets",
+        "ko": "CSS 스타일시트 압축",
+        "ja": "CSS スタイルシートを圧縮",
+        "es": "Minifica hojas de estilo CSS",
+        "zh-CN": "压缩 CSS 样式表",
+        "zh-TW": "壓縮 CSS 樣式表",
+        "fr": "Minifier des feuilles de style CSS",
+        "de": "CSS-Stylesheets minifizieren",
+        "pt": "Minifica folhas de estilo CSS",
+        "vi": "Rút gọn stylesheet CSS"
+      },
+      "r65_5": {
+        "en": "Minify HTML markup",
+        "ko": "HTML 마크업 압축",
+        "ja": "HTML マークアップを圧縮",
+        "es": "Minifica marcado HTML",
+        "zh-CN": "压缩 HTML 标记",
+        "zh-TW": "壓縮 HTML 標記",
+        "fr": "Minifier du balisage HTML",
+        "de": "HTML-Markup minifizieren",
+        "pt": "Minifica marcação HTML",
+        "vi": "Rút gọn mã HTML"
+      },
+      "r65_6": {
+        "en": "Remove whitespace and shorten code for production",
+        "ko": "프로덕션용으로 공백을 제거하고 코드를 줄입니다",
+        "ja": "本番用に空白を除去しコードを短縮",
+        "es": "Elimina espacios y acorta el código para producción",
+        "zh-CN": "删除空白并缩短代码以用于生产环境",
+        "zh-TW": "移除空白並縮短程式碼以供正式環境使用",
+        "fr": "Supprimer les espaces et raccourcir le code pour la production",
+        "de": "Leerraum entfernen und Code für die Produktion kürzen",
+        "pt": "Remove espaços e encurta o código para produção",
+        "vi": "Xóa khoảng trắng và rút gọn mã cho môi trường production"
+      },
+      "r65_7": {
+        "en": "Add indentation and formatting for readability",
+        "ko": "가독성을 위해 들여쓰기와 서식 추가",
+        "ja": "読みやすいようにインデントと整形を追加",
+        "es": "Añade sangría y formato para mejorar la legibilidad",
+        "zh-CN": "添加缩进和格式以提高可读性",
+        "zh-TW": "加入縮排與格式以提升可讀性",
+        "fr": "Ajouter indentation et mise en forme pour la lisibilité",
+        "de": "Einrückung und Formatierung für bessere Lesbarkeit hinzufügen",
+        "pt": "Adiciona recuo e formatação para facilitar a leitura",
+        "vi": "Thêm thụt lề và định dạng để dễ đọc"
+      },
+      "r6_0": {
+        "en": "Size: 0 bytes",
+        "ko": "크기: 0바이트",
+        "ja": "サイズ: 0 バイト",
+        "es": "Tamaño: 0 bytes",
+        "zh-CN": "大小：0 字节",
+        "zh-TW": "大小：0 位元組",
+        "fr": "Taille : 0 octet",
+        "de": "Größe: 0 Bytes",
+        "pt": "Tamanho: 0 bytes",
+        "vi": "Kích thước: 0 byte"
+      }
+    }
+  },
+  "log-masker": {
+    "ui": {
+      "r65_0": {
+        "en": "Redact emails, IPs, credit cards, and other sensitive strings in place.",
+        "ko": "이메일, IP, 신용카드 번호 등 민감한 문자열을 그 자리에서 가립니다.",
+        "ja": "メール、IP、クレジットカード番号などの機密文字列をその場で伏せ字にします。",
+        "es": "Oculta en el mismo lugar correos, IP, tarjetas de crédito y otros datos sensibles.",
+        "zh-CN": "就地脱敏电子邮件、IP、信用卡号等敏感字符串。",
+        "zh-TW": "就地遮蔽電子郵件、IP、信用卡號等敏感字串。",
+        "fr": "Masque sur place e-mails, IP, cartes bancaires et autres chaînes sensibles.",
+        "de": "Schwärzt E-Mails, IPs, Kreditkarten und andere sensible Zeichenfolgen direkt im Text.",
+        "pt": "Oculta no próprio texto e-mails, IPs, cartões de crédito e outros dados sensíveis.",
+        "vi": "Che tại chỗ email, IP, thẻ tín dụng và các chuỗi nhạy cảm khác."
+      },
+      "r65_1": {
+        "en": "Redact all selected PII patterns from the input",
+        "ko": "입력에서 선택한 모든 PII 패턴을 가립니다",
+        "ja": "入力から選択したすべての PII パターンを伏せ字にします",
+        "es": "Oculta todos los patrones de PII seleccionados en la entrada",
+        "zh-CN": "从输入中脱敏所有选定的 PII 模式",
+        "zh-TW": "從輸入中遮蔽所有選取的 PII 模式",
+        "fr": "Masquer tous les motifs de données personnelles sélectionnés",
+        "de": "Alle ausgewählten PII-Muster in der Eingabe schwärzen",
+        "pt": "Oculta todos os padrões de PII selecionados na entrada",
+        "vi": "Che mọi mẫu PII đã chọn trong dữ liệu nhập"
+      },
+      "r65_2": {
+        "en": "Matches email addresses like user@domain.com",
+        "ko": "user@domain.com 같은 이메일 주소와 일치",
+        "ja": "user@domain.com のようなメールアドレスに一致",
+        "es": "Coincide con correos como user@domain.com",
+        "zh-CN": "匹配 user@domain.com 这样的邮箱地址",
+        "zh-TW": "比對 user@domain.com 這類電子郵件地址",
+        "fr": "Repère les adresses e-mail comme user@domain.com",
+        "de": "Erkennt E-Mail-Adressen wie user@domain.com",
+        "pt": "Corresponde a e-mails como user@domain.com",
+        "vi": "Khớp địa chỉ email như user@domain.com"
+      },
+      "r65_3": {
+        "en": "Matches IPv4 addresses like 192.168.1.1",
+        "ko": "192.168.1.1 같은 IPv4 주소와 일치",
+        "ja": "192.168.1.1 のような IPv4 アドレスに一致",
+        "es": "Coincide con direcciones IPv4 como 192.168.1.1",
+        "zh-CN": "匹配 192.168.1.1 这样的 IPv4 地址",
+        "zh-TW": "比對 192.168.1.1 這類 IPv4 位址",
+        "fr": "Repère les adresses IPv4 comme 192.168.1.1",
+        "de": "Erkennt IPv4-Adressen wie 192.168.1.1",
+        "pt": "Corresponde a endereços IPv4 como 192.168.1.1",
+        "vi": "Khớp địa chỉ IPv4 như 192.168.1.1"
+      },
+      "r65_4": {
+        "en": "Matches 13-19 digit card numbers that pass the Luhn check",
+        "ko": "Luhn 검사를 통과하는 13~19자리 카드 번호와 일치",
+        "ja": "Luhn チェックに合格する 13〜19 桁のカード番号に一致",
+        "es": "Coincide con números de tarjeta de 13 a 19 dígitos que pasan la comprobación de Luhn",
+        "zh-CN": "匹配通过 Luhn 校验的 13–19 位卡号",
+        "zh-TW": "比對通過 Luhn 檢查的 13–19 位卡號",
+        "fr": "Repère les numéros de carte de 13 à 19 chiffres valides selon Luhn",
+        "de": "Erkennt 13- bis 19-stellige Kartennummern, die die Luhn-Prüfung bestehen",
+        "pt": "Corresponde a números de cartão de 13 a 19 dígitos que passam na verificação de Luhn",
+        "vi": "Khớp số thẻ 13–19 chữ số vượt qua kiểm tra Luhn"
+      },
+      "r6_0": {
+        "en": "Masked logs",
+        "ko": "마스킹된 로그",
+        "ja": "マスク済みログ",
+        "es": "Logs enmascarados",
+        "zh-CN": "已脱敏日志",
+        "zh-TW": "已遮蔽日誌",
+        "fr": "Logs masqués",
+        "de": "Maskierte Logs",
+        "pt": "Logs mascarados",
+        "vi": "Nhật ký đã che"
+      }
+    }
+  },
+  "mermaid-studio": {
+    "ui": {
+      "r65_0": {
+        "en": "Mermaid diagram code",
+        "ko": "Mermaid 다이어그램 코드",
+        "ja": "Mermaid 図のコード",
+        "es": "Código del diagrama Mermaid",
+        "zh-CN": "Mermaid 图表代码",
+        "zh-TW": "Mermaid 圖表程式碼",
+        "fr": "Code du diagramme Mermaid",
+        "de": "Mermaid-Diagrammcode",
+        "pt": "Código do diagrama Mermaid",
+        "vi": "Mã sơ đồ Mermaid"
+      },
+      "r65_1": {
+        "en": "Diagrams render entirely in your browser using Mermaid.js.",
+        "ko": "다이어그램은 Mermaid.js로 브라우저에서만 렌더링됩니다.",
+        "ja": "図は Mermaid.js によりブラウザ内だけで描画されます。",
+        "es": "Los diagramas se generan por completo en tu navegador con Mermaid.js.",
+        "zh-CN": "图表完全在浏览器中通过 Mermaid.js 渲染。",
+        "zh-TW": "圖表完全在瀏覽器中以 Mermaid.js 繪製。",
+        "fr": "Les diagrammes sont rendus entièrement dans votre navigateur avec Mermaid.js.",
+        "de": "Diagramme werden vollständig im Browser mit Mermaid.js gerendert.",
+        "pt": "Os diagramas são renderizados inteiramente no seu navegador com Mermaid.js.",
+        "vi": "Sơ đồ được hiển thị hoàn toàn trong trình duyệt bằng Mermaid.js."
+      },
+      "r65_2": {
+        "en": "Background for the PNG export",
+        "ko": "PNG 내보내기 배경",
+        "ja": "PNG 書き出しの背景",
+        "es": "Fondo para la exportación PNG",
+        "zh-CN": "PNG 导出的背景",
+        "zh-TW": "PNG 匯出的背景",
+        "fr": "Arrière-plan de l'export PNG",
+        "de": "Hintergrund für den PNG-Export",
+        "pt": "Fundo da exportação em PNG",
+        "vi": "Nền khi xuất PNG"
+      },
+      "r6_0": {
+        "en": "Editor or preview",
+        "ko": "편집기 또는 미리보기",
+        "ja": "エディターまたはプレビュー",
+        "es": "Editor o vista previa",
+        "zh-CN": "编辑器或预览",
+        "zh-TW": "編輯器或預覽",
+        "fr": "Éditeur ou aperçu",
+        "de": "Editor oder Vorschau",
+        "pt": "Editor ou prévia",
+        "vi": "Trình soạn thảo hoặc xem trước"
+      },
+      "r6_1": {
+        "en": "Load a sample diagram to get started",
+        "ko": "예제 다이어그램을 불러와 시작하세요",
+        "ja": "サンプル図を読み込んで始めましょう",
+        "es": "Carga un diagrama de ejemplo para empezar",
+        "zh-CN": "加载示例图表开始使用",
+        "zh-TW": "載入範例圖表開始使用",
+        "fr": "Chargez un diagramme d'exemple pour commencer",
+        "de": "Beispieldiagramm laden, um loszulegen",
+        "pt": "Carregue um diagrama de exemplo para começar",
+        "vi": "Tải sơ đồ mẫu để bắt đầu"
+      },
+      "r6_2": {
+        "en": "Copy the rendered diagram's SVG markup",
+        "ko": "렌더링된 다이어그램의 SVG 마크업 복사",
+        "ja": "描画された図の SVG マークアップをコピー",
+        "es": "Copia el marcado SVG del diagrama generado",
+        "zh-CN": "复制已渲染图表的 SVG 标记",
+        "zh-TW": "複製已繪製圖表的 SVG 標記",
+        "fr": "Copier le balisage SVG du diagramme rendu",
+        "de": "SVG-Markup des gerenderten Diagramms kopieren",
+        "pt": "Copia a marcação SVG do diagrama renderizado",
+        "vi": "Sao chép mã SVG của sơ đồ đã hiển thị"
+      },
+      "r6_3": {
+        "en": "Download the rendered diagram as SVG",
+        "ko": "렌더링된 다이어그램을 SVG로 다운로드",
+        "ja": "描画された図を SVG でダウンロード",
+        "es": "Descarga el diagrama generado como SVG",
+        "zh-CN": "将已渲染图表下载为 SVG",
+        "zh-TW": "將已繪製圖表下載為 SVG",
+        "fr": "Télécharger le diagramme rendu en SVG",
+        "de": "Gerendertes Diagramm als SVG herunterladen",
+        "pt": "Baixa o diagrama renderizado como SVG",
+        "vi": "Tải sơ đồ đã hiển thị dưới dạng SVG"
+      },
+      "r6_4": {
+        "en": "Download the rendered diagram as a 2x PNG",
+        "ko": "렌더링된 다이어그램을 2배 PNG로 다운로드",
+        "ja": "描画された図を 2 倍の PNG でダウンロード",
+        "es": "Descarga el diagrama generado como PNG a 2x",
+        "zh-CN": "将已渲染图表下载为 2 倍 PNG",
+        "zh-TW": "將已繪製圖表下載為 2 倍 PNG",
+        "fr": "Télécharger le diagramme rendu en PNG 2x",
+        "de": "Gerendertes Diagramm als 2x-PNG herunterladen",
+        "pt": "Baixa o diagrama renderizado como PNG 2x",
+        "vi": "Tải sơ đồ đã hiển thị dưới dạng PNG 2x"
+      }
+    }
+  },
+  "email-analyzer": {
+    "ui": {
+      "r65_0": {
+        "en": "Help: Paste a raw email source (RFC 5322). Many clients have “View original / Show raw source”.",
+        "ko": "도움말: 원본 이메일 소스(RFC 5322)를 붙여넣으세요. 대부분의 메일 앱에 ‘원본 보기’ 메뉴가 있습니다.",
+        "ja": "ヘルプ: 生のメールソース（RFC 5322）を貼り付けてください。多くのメールアプリに「メッセージのソースを表示」があります。",
+        "es": "Ayuda: Pega el código fuente del correo (RFC 5322). Muchos clientes tienen “Ver original / Mostrar código fuente”.",
+        "zh-CN": "帮助：粘贴原始邮件源码（RFC 5322）。多数邮件客户端都有“查看原始邮件”功能。",
+        "zh-TW": "說明：貼上原始郵件原始碼（RFC 5322）。多數郵件軟體都有「檢視原始郵件」功能。",
+        "fr": "Aide : Collez la source brute de l'e-mail (RFC 5322). La plupart des clients proposent « Afficher l'original ».",
+        "de": "Hilfe: Fügen Sie den Rohquelltext der E-Mail ein (RFC 5322). Viele Clients bieten „Original anzeigen“.",
+        "pt": "Ajuda: Cole o código-fonte bruto do e-mail (RFC 5322). Muitos clientes têm “Mostrar original”.",
+        "vi": "Trợ giúp: Dán mã nguồn email thô (RFC 5322). Nhiều ứng dụng có mục “Xem bản gốc”."
+      },
+      "r65_1": {
+        "en": "Raw email source",
+        "ko": "원본 이메일 소스",
+        "ja": "メールの生ソース",
+        "es": "Código fuente del correo",
+        "zh-CN": "原始邮件源码",
+        "zh-TW": "原始郵件原始碼",
+        "fr": "Source brute de l'e-mail",
+        "de": "E-Mail-Rohquelltext",
+        "pt": "Código-fonte bruto do e-mail",
+        "vi": "Mã nguồn email thô"
+      },
+      "r65_2": {
+        "en": "Parsing and analysis happen in your browser; the message you paste is not sent to our servers.",
+        "ko": "파싱과 분석은 브라우저에서 이루어지며, 붙여넣은 메시지는 서버로 전송되지 않습니다.",
+        "ja": "解析と分析はブラウザ内で行われ、貼り付けたメッセージはサーバーに送信されません。",
+        "es": "El análisis se realiza en tu navegador; el mensaje que pegas no se envía a nuestros servidores.",
+        "zh-CN": "解析与分析在浏览器中完成；你粘贴的邮件不会发送到我们的服务器。",
+        "zh-TW": "解析與分析在瀏覽器中完成；你貼上的郵件不會傳送到我們的伺服器。",
+        "fr": "L'analyse se fait dans votre navigateur ; le message collé n'est pas envoyé à nos serveurs.",
+        "de": "Parsing und Analyse laufen in Ihrem Browser; die eingefügte Nachricht wird nicht an unsere Server gesendet.",
+        "pt": "A análise acontece no seu navegador; a mensagem colada não é enviada aos nossos servidores.",
+        "vi": "Việc phân tích diễn ra trong trình duyệt; thư bạn dán không được gửi đến máy chủ của chúng tôi."
+      }
+    }
+  },
+  "token-counter": {
+    "ui": {
+      "r65_0": {
+        "en": "Help: Tokenization differs by model. This tool estimates tokens using byte/character heuristics; use it for planning and budgeting, not exact billing.",
+        "ko": "도움말: 토큰화 방식은 모델마다 다릅니다. 이 도구는 바이트/문자 휴리스틱으로 토큰을 추정하므로 정확한 과금이 아니라 계획과 예산 수립용으로 사용하세요.",
+        "ja": "ヘルプ: トークン化はモデルごとに異なります。このツールはバイト／文字のヒューリスティックで推定するため、正確な課金ではなく計画や予算づくりに使ってください。",
+        "es": "Ayuda: La tokenización varía según el modelo. Esta herramienta estima tokens con heurísticas de bytes/caracteres; úsala para planificar y presupuestar, no para facturación exacta.",
+        "zh-CN": "帮助：不同模型的分词方式不同。本工具用字节/字符启发式估算 token，适合规划和预算，不适合精确计费。",
+        "zh-TW": "說明：不同模型的斷詞方式不同。本工具以位元組／字元啟發式估算 token，適合規劃與預算，不適合精確計費。",
+        "fr": "Aide : La tokenisation varie selon le modèle. Cet outil estime les tokens par heuristiques octets/caractères ; utilisez-le pour planifier et budgéter, pas pour une facturation exacte.",
+        "de": "Hilfe: Die Tokenisierung unterscheidet sich je Modell. Dieses Tool schätzt Tokens per Byte-/Zeichen-Heuristik; nutzen Sie es zur Planung und Budgetierung, nicht für exakte Abrechnung.",
+        "pt": "Ajuda: A tokenização varia por modelo. Esta ferramenta estima tokens com heurísticas de bytes/caracteres; use-a para planejar e orçar, não para cobrança exata.",
+        "vi": "Trợ giúp: Cách tách token khác nhau theo mô hình. Công cụ này ước tính token bằng heuristic byte/ký tự; hãy dùng để lập kế hoạch và ngân sách, không phải tính phí chính xác."
+      },
+      "r65_1": {
+        "en": "Help: If you don’t have an actual completion, set an expected output budget to estimate total cost.",
+        "ko": "도움말: 실제 응답이 없다면 예상 출력 예산을 설정해 총비용을 추정하세요.",
+        "ja": "ヘルプ: 実際の出力がない場合は、想定出力量を設定して総コストを見積もってください。",
+        "es": "Ayuda: Si no tienes una respuesta real, define un presupuesto de salida esperado para estimar el costo total.",
+        "zh-CN": "帮助：如果没有实际输出，可设置预期输出预算来估算总成本。",
+        "zh-TW": "說明：若沒有實際輸出，可設定預期輸出預算來估算總成本。",
+        "fr": "Aide : Sans réponse réelle, définissez un budget de sortie prévu pour estimer le coût total.",
+        "de": "Hilfe: Ohne tatsächliche Antwort legen Sie ein erwartetes Ausgabebudget fest, um die Gesamtkosten zu schätzen.",
+        "pt": "Ajuda: Se não tiver uma resposta real, defina um orçamento de saída esperado para estimar o custo total.",
+        "vi": "Trợ giúp: Nếu chưa có phản hồi thực tế, hãy đặt ngân sách đầu ra dự kiến để ước tính tổng chi phí."
+      },
+      "r65_2": {
+        "en": "Your text never leaves the browser. The exact OpenAI tokenizer file is fetched from this site only when an OpenAI model is selected and text is entered.",
+        "ko": "텍스트는 브라우저 밖으로 나가지 않습니다. 정확한 OpenAI 토크나이저 파일은 OpenAI 모델을 선택하고 텍스트를 입력했을 때만 이 사이트에서 받아옵니다.",
+        "ja": "テキストはブラウザの外に出ません。正確な OpenAI トークナイザーファイルは、OpenAI モデルを選んでテキストを入力したときだけこのサイトから取得します。",
+        "es": "Tu texto nunca sale del navegador. El archivo exacto del tokenizador de OpenAI se descarga de este sitio solo cuando eliges un modelo de OpenAI e introduces texto.",
+        "zh-CN": "你的文本不会离开浏览器。只有在选择 OpenAI 模型并输入文本时，才会从本站获取精确的 OpenAI 分词器文件。",
+        "zh-TW": "你的文字不會離開瀏覽器。只有在選擇 OpenAI 模型並輸入文字時，才會從本站取得精確的 OpenAI 斷詞器檔案。",
+        "fr": "Votre texte ne quitte jamais le navigateur. Le fichier exact du tokenizer OpenAI n'est récupéré depuis ce site que si un modèle OpenAI est choisi et du texte saisi.",
+        "de": "Ihr Text verlässt nie den Browser. Die exakte OpenAI-Tokenizer-Datei wird nur von dieser Website geladen, wenn ein OpenAI-Modell gewählt und Text eingegeben ist.",
+        "pt": "Seu texto nunca sai do navegador. O arquivo exato do tokenizador da OpenAI é baixado deste site só quando um modelo OpenAI é escolhido e há texto.",
+        "vi": "Văn bản của bạn không rời khỏi trình duyệt. Tệp tokenizer chính xác của OpenAI chỉ được tải từ trang này khi bạn chọn mô hình OpenAI và nhập văn bản."
+      }
+    },
+    "js": {
+      "r65_0": {
+        "en": "Exact count for raw text with the {encoding} encoding (gpt-tokenizer 4.1.0). Special tokens such as <|endoftext|> are counted as plain text; chat message formatting adds a few tokens per message.",
+        "ko": "{encoding} 인코딩으로 원본 텍스트를 정확히 센 값입니다(gpt-tokenizer 4.1.0). <|endoftext|> 같은 특수 토큰은 일반 텍스트로 세며, 채팅 메시지 형식은 메시지마다 토큰을 몇 개 더합니다.",
+        "ja": "{encoding} エンコーディングによる生テキストの正確なカウントです（gpt-tokenizer 4.1.0）。<|endoftext|> などの特殊トークンは通常テキストとして数え、チャット形式ではメッセージごとに数トークン増えます。",
+        "es": "Recuento exacto del texto sin formato con la codificación {encoding} (gpt-tokenizer 4.1.0). Los tokens especiales como <|endoftext|> se cuentan como texto normal; el formato de mensajes de chat añade algunos tokens por mensaje.",
+        "zh-CN": "使用 {encoding} 编码对原始文本的精确计数（gpt-tokenizer 4.1.0）。<|endoftext|> 等特殊 token 按普通文本计算；聊天消息格式每条会多出几个 token。",
+        "zh-TW": "使用 {encoding} 編碼對原始文字的精確計數（gpt-tokenizer 4.1.0）。<|endoftext|> 等特殊 token 以一般文字計算；聊天訊息格式每則會多出幾個 token。",
+        "fr": "Décompte exact du texte brut avec l'encodage {encoding} (gpt-tokenizer 4.1.0). Les tokens spéciaux comme <|endoftext|> sont comptés comme du texte ; le format des messages de chat ajoute quelques tokens par message.",
+        "de": "Exakte Zählung für Rohtext mit der Kodierung {encoding} (gpt-tokenizer 4.1.0). Sondertokens wie <|endoftext|> zählen als normaler Text; das Chat-Nachrichtenformat fügt pro Nachricht einige Tokens hinzu.",
+        "pt": "Contagem exata do texto bruto com a codificação {encoding} (gpt-tokenizer 4.1.0). Tokens especiais como <|endoftext|> contam como texto comum; a formatação de mensagens de chat adiciona alguns tokens por mensagem.",
+        "vi": "Số đếm chính xác cho văn bản thô với mã hóa {encoding} (gpt-tokenizer 4.1.0). Token đặc biệt như <|endoftext|> được đếm như văn bản thường; định dạng tin nhắn chat thêm vài token mỗi tin."
+      }
+    }
+  },
+  "prompt-template-builder": {
+    "ui": {
+      "r65_0": {
+        "en": "e.g., A table with columns: finding | severity | fix",
+        "ko": "예: 열이 finding | severity | fix인 표",
+        "ja": "例: 列が finding | severity | fix の表",
+        "es": "p. ej., una tabla con columnas: finding | severity | fix",
+        "zh-CN": "例如：包含 finding | severity | fix 列的表格",
+        "zh-TW": "例如：含 finding | severity | fix 欄位的表格",
+        "fr": "ex. : un tableau avec les colonnes finding | severity | fix",
+        "de": "z. B. eine Tabelle mit den Spalten finding | severity | fix",
+        "pt": "ex.: uma tabela com as colunas finding | severity | fix",
+        "vi": "vd: một bảng có các cột finding | severity | fix"
+      },
+      "r65_1": {
+        "en": "Help: Controls the output section: JSON, Markdown, checklist, etc. Use “Custom” for exact constraints.",
+        "ko": "도움말: 출력 섹션을 정합니다: JSON, Markdown, 체크리스트 등. 정확한 제약이 필요하면 “Custom”을 쓰세요.",
+        "ja": "ヘルプ: 出力セクションを指定します: JSON、Markdown、チェックリストなど。厳密な制約には「Custom」を使います。",
+        "es": "Ayuda: Controla la sección de salida: JSON, Markdown, lista de verificación, etc. Usa “Custom” para restricciones exactas.",
+        "zh-CN": "帮助：控制输出部分：JSON、Markdown、清单等。需要精确约束时使用“Custom”。",
+        "zh-TW": "說明：控制輸出區段：JSON、Markdown、檢查清單等。需要精確限制時使用「Custom」。",
+        "fr": "Aide : Définit la section de sortie : JSON, Markdown, checklist, etc. Utilisez « Custom » pour des contraintes précises.",
+        "de": "Hilfe: Steuert den Ausgabeabschnitt: JSON, Markdown, Checkliste usw. Für exakte Vorgaben „Custom“ wählen.",
+        "pt": "Ajuda: Controla a seção de saída: JSON, Markdown, checklist etc. Use “Custom” para restrições exatas.",
+        "vi": "Trợ giúp: Điều khiển phần đầu ra: JSON, Markdown, checklist, v.v. Dùng “Custom” cho ràng buộc chính xác."
+      },
+      "r65_2": {
+        "en": "Help: A short, capability-oriented role is best (e.g., “senior backend engineer”, “SOC analyst”). Avoid fluff.",
+        "ko": "도움말: 짧고 역량 중심의 역할이 가장 좋습니다(예: “시니어 백엔드 엔지니어”, “SOC 분석가”). 군더더기는 피하세요.",
+        "ja": "ヘルプ: 短く能力を示す役割が最適です（例:「シニアバックエンドエンジニア」「SOC アナリスト」）。飾り言葉は避けましょう。",
+        "es": "Ayuda: Lo mejor es un rol breve y centrado en capacidades (p. ej., “ingeniero backend sénior”, “analista SOC”). Evita el relleno.",
+        "zh-CN": "帮助：最好使用简短、以能力为导向的角色（如“资深后端工程师”“SOC 分析师”）。避免空话。",
+        "zh-TW": "說明：最好使用簡短、以能力為導向的角色（如「資深後端工程師」「SOC 分析師」）。避免贅詞。",
+        "fr": "Aide : Un rôle court et axé sur les compétences est idéal (ex. « ingénieur backend senior », « analyste SOC »). Évitez le superflu.",
+        "de": "Hilfe: Am besten eine kurze, fähigkeitsbezogene Rolle (z. B. „Senior Backend Engineer“, „SOC-Analyst“). Kein Füllmaterial.",
+        "pt": "Ajuda: O ideal é um papel curto e focado em capacidade (ex.: “engenheiro backend sênior”, “analista de SOC”). Evite enrolação.",
+        "vi": "Trợ giúp: Vai trò ngắn gọn, nêu rõ năng lực là tốt nhất (vd: “kỹ sư backend cấp cao”, “chuyên viên SOC”). Tránh lời thừa."
+      },
+      "r65_3": {
+        "en": "Help: Write the goal in one or two sentences. This is the most important field.",
+        "ko": "도움말: 목표를 한두 문장으로 쓰세요. 가장 중요한 항목입니다.",
+        "ja": "ヘルプ: 目標を 1〜2 文で書いてください。最も重要な項目です。",
+        "es": "Ayuda: Escribe el objetivo en una o dos frases. Es el campo más importante.",
+        "zh-CN": "帮助：用一两句话写出目标。这是最重要的字段。",
+        "zh-TW": "說明：用一兩句話寫出目標。這是最重要的欄位。",
+        "fr": "Aide : Décrivez l'objectif en une ou deux phrases. C'est le champ le plus important.",
+        "de": "Hilfe: Formulieren Sie das Ziel in ein bis zwei Sätzen. Das ist das wichtigste Feld.",
+        "pt": "Ajuda: Escreva o objetivo em uma ou duas frases. Este é o campo mais importante.",
+        "vi": "Trợ giúp: Viết mục tiêu trong một hoặc hai câu. Đây là trường quan trọng nhất."
+      },
+      "r65_4": {
+        "en": "Help: Comma-separated placeholders. Example: ticket, logs, stacktrace. The template will include {{ticket}}, {{logs}}, ...",
+        "ko": "도움말: 쉼표로 구분한 자리표시자입니다. 예: ticket, logs, stacktrace. 템플릿에 {{ticket}}, {{logs}}, ...가 포함됩니다.",
+        "ja": "ヘルプ: カンマ区切りのプレースホルダーです。例: ticket, logs, stacktrace。テンプレートに {{ticket}}, {{logs}}, ... が入ります。",
+        "es": "Ayuda: Marcadores separados por comas. Ejemplo: ticket, logs, stacktrace. La plantilla incluirá {{ticket}}, {{logs}}, ...",
+        "zh-CN": "帮助：逗号分隔的占位符。例如：ticket, logs, stacktrace。模板将包含 {{ticket}}、{{logs}} 等。",
+        "zh-TW": "說明：以逗號分隔的預留位置。例如：ticket, logs, stacktrace。範本將包含 {{ticket}}、{{logs}} 等。",
+        "fr": "Aide : Espaces réservés séparés par des virgules. Exemple : ticket, logs, stacktrace. Le modèle contiendra {{ticket}}, {{logs}}, ...",
+        "de": "Hilfe: Kommagetrennte Platzhalter. Beispiel: ticket, logs, stacktrace. Die Vorlage enthält dann {{ticket}}, {{logs}}, ...",
+        "pt": "Ajuda: Placeholders separados por vírgula. Exemplo: ticket, logs, stacktrace. O template incluirá {{ticket}}, {{logs}}, ...",
+        "vi": "Trợ giúp: Các placeholder phân tách bằng dấu phẩy. Ví dụ: ticket, logs, stacktrace. Mẫu sẽ có {{ticket}}, {{logs}}, ..."
+      },
+      "r65_5": {
+        "en": "Help: Examples: “No guesses”, “Cite assumptions”, “Return only JSON”, “No PII”, “Follow OWASP”.",
+        "ko": "도움말: 예: “추측 금지”, “가정 명시”, “JSON만 반환”, “PII 금지”, “OWASP 준수”.",
+        "ja": "ヘルプ: 例:「推測しない」「前提を明記」「JSON のみ返す」「PII 禁止」「OWASP に従う」。",
+        "es": "Ayuda: Ejemplos: “Sin suposiciones”, “Cita las hipótesis”, “Devuelve solo JSON”, “Sin PII”, “Sigue OWASP”.",
+        "zh-CN": "帮助：示例：“不要猜测”“注明假设”“只返回 JSON”“不含 PII”“遵循 OWASP”。",
+        "zh-TW": "說明：範例：「不要猜測」「註明假設」「只回傳 JSON」「不含 PII」「遵循 OWASP」。",
+        "fr": "Aide : Exemples : « Pas de suppositions », « Citer les hypothèses », « Renvoyer uniquement du JSON », « Pas de PII », « Suivre l'OWASP ».",
+        "de": "Hilfe: Beispiele: „Nicht raten“, „Annahmen nennen“, „Nur JSON zurückgeben“, „Keine PII“, „OWASP befolgen“.",
+        "pt": "Ajuda: Exemplos: “Sem palpites”, “Cite suposições”, “Retorne só JSON”, “Sem PII”, “Siga a OWASP”.",
+        "vi": "Trợ giúp: Ví dụ: “Không đoán”, “Nêu giả định”, “Chỉ trả về JSON”, “Không có PII”, “Tuân thủ OWASP”."
+      },
+      "r65_6": {
+        "en": "Outputs templates with placeholders like {{variable}}.",
+        "ko": "{{variable}} 같은 자리표시자가 있는 템플릿을 출력합니다.",
+        "ja": "{{variable}} のようなプレースホルダー付きテンプレートを出力します。",
+        "es": "Genera plantillas con marcadores como {{variable}}.",
+        "zh-CN": "输出带有 {{variable}} 等占位符的模板。",
+        "zh-TW": "輸出含 {{variable}} 等預留位置的範本。",
+        "fr": "Produit des modèles avec des espaces réservés comme {{variable}}.",
+        "de": "Erzeugt Vorlagen mit Platzhaltern wie {{variable}}.",
+        "pt": "Gera templates com placeholders como {{variable}}.",
+        "vi": "Xuất mẫu có placeholder như {{variable}}."
+      }
+    }
+  },
+  "sql-formatter": {
+    "ui": {
+      "r65_0": {
+        "en": "Help: This tool does not execute SQL. Validation is heuristic (not a full parser).",
+        "ko": "도움말: 이 도구는 SQL을 실행하지 않습니다. 검증은 휴리스틱 방식입니다(완전한 파서가 아님).",
+        "ja": "ヘルプ: このツールは SQL を実行しません。検証はヒューリスティックです（完全なパーサーではありません）。",
+        "es": "Ayuda: Esta herramienta no ejecuta SQL. La validación es heurística (no es un analizador completo).",
+        "zh-CN": "帮助：本工具不会执行 SQL。验证为启发式（并非完整解析器）。",
+        "zh-TW": "說明：本工具不會執行 SQL。驗證為啟發式（並非完整解析器）。",
+        "fr": "Aide : Cet outil n'exécute pas de SQL. La validation est heuristique (pas un analyseur complet).",
+        "de": "Hilfe: Dieses Tool führt kein SQL aus. Die Prüfung ist heuristisch (kein vollständiger Parser).",
+        "pt": "Ajuda: Esta ferramenta não executa SQL. A validação é heurística (não é um parser completo).",
+        "vi": "Trợ giúp: Công cụ này không thực thi SQL. Việc kiểm tra mang tính heuristic (không phải trình phân tích đầy đủ)."
+      },
+      "r65_1": {
+        "en": "SQL input",
+        "ko": "SQL 입력",
+        "ja": "SQL 入力",
+        "es": "Entrada SQL",
+        "zh-CN": "SQL 输入",
+        "zh-TW": "SQL 輸入",
+        "fr": "Saisie SQL",
+        "de": "SQL-Eingabe",
+        "pt": "Entrada SQL",
+        "vi": "SQL đầu vào"
+      },
+      "r65_2": {
+        "en": "Formatted SQL output",
+        "ko": "포맷된 SQL 출력",
+        "ja": "整形済み SQL 出力",
+        "es": "Salida SQL formateada",
+        "zh-CN": "格式化后的 SQL 输出",
+        "zh-TW": "格式化後的 SQL 輸出",
+        "fr": "Sortie SQL formatée",
+        "de": "Formatierte SQL-Ausgabe",
+        "pt": "Saída SQL formatada",
+        "vi": "SQL đã định dạng"
+      }
+    }
+  },
+  "env-var-manager": {
+    "ui": {
+      "r65_0": {
+        "en": "Help: Paste dotenv-style KEY=VALUE lines. Comments (#) are supported. Your input is processed locally and not sent to our servers.",
+        "ko": "도움말: dotenv 형식의 KEY=VALUE 줄을 붙여넣으세요. 주석(#)을 지원합니다. 입력은 로컬에서 처리되며 서버로 전송되지 않습니다.",
+        "ja": "ヘルプ: dotenv 形式の KEY=VALUE 行を貼り付けてください。コメント（#）に対応しています。入力はローカルで処理され、サーバーに送信されません。",
+        "es": "Ayuda: Pega líneas KEY=VALUE estilo dotenv. Se admiten comentarios (#). Tu entrada se procesa localmente y no se envía a nuestros servidores.",
+        "zh-CN": "帮助：粘贴 dotenv 风格的 KEY=VALUE 行。支持注释（#）。输入在本地处理，不会发送到我们的服务器。",
+        "zh-TW": "說明：貼上 dotenv 格式的 KEY=VALUE 行。支援註解（#）。輸入在本機處理，不會傳送到我們的伺服器。",
+        "fr": "Aide : Collez des lignes KEY=VALUE au format dotenv. Les commentaires (#) sont pris en charge. Votre saisie est traitée localement, sans envoi à nos serveurs.",
+        "de": "Hilfe: Fügen Sie KEY=VALUE-Zeilen im dotenv-Stil ein. Kommentare (#) werden unterstützt. Ihre Eingabe wird lokal verarbeitet und nicht an unsere Server gesendet.",
+        "pt": "Ajuda: Cole linhas KEY=VALUE no estilo dotenv. Comentários (#) são suportados. Sua entrada é processada localmente e não é enviada aos nossos servidores.",
+        "vi": "Trợ giúp: Dán các dòng KEY=VALUE kiểu dotenv. Hỗ trợ chú thích (#). Dữ liệu được xử lý cục bộ, không gửi đến máy chủ của chúng tôi."
+      },
+      "r65_1": {
+        "en": "Shareable comparison output",
+        "ko": "공유 가능한 비교 결과",
+        "ja": "共有用の比較結果",
+        "es": "Resultado de comparación para compartir",
+        "zh-CN": "可分享的对比结果",
+        "zh-TW": "可分享的比較結果",
+        "fr": "Résultat de comparaison partageable",
+        "de": "Teilbares Vergleichsergebnis",
+        "pt": "Resultado de comparação compartilhável",
+        "vi": "Kết quả so sánh có thể chia sẻ"
+      },
+      "r65_2": {
+        "en": "Find missing keys and value drift between environments.",
+        "ko": "환경 간 누락된 키와 값 차이를 찾습니다.",
+        "ja": "環境間で欠けているキーや値のずれを見つけます。",
+        "es": "Encuentra claves faltantes y diferencias de valores entre entornos.",
+        "zh-CN": "找出不同环境间缺失的键和值差异。",
+        "zh-TW": "找出不同環境間缺少的鍵與值差異。",
+        "fr": "Repérez les clés manquantes et les écarts de valeurs entre environnements.",
+        "de": "Fehlende Schlüssel und Wertabweichungen zwischen Umgebungen finden.",
+        "pt": "Encontre chaves ausentes e divergências de valores entre ambientes.",
+        "vi": "Tìm khóa bị thiếu và giá trị lệch giữa các môi trường."
+      },
+      "r6_0": {
+        "en": "Filter variables",
+        "ko": "변수 필터",
+        "ja": "変数を絞り込み",
+        "es": "Filtrar variables",
+        "zh-CN": "筛选变量",
+        "zh-TW": "篩選變數",
+        "fr": "Filtrer les variables",
+        "de": "Variablen filtern",
+        "pt": "Filtrar variáveis",
+        "vi": "Lọc biến"
+      }
+    }
+  },
+  "svg-optimizer": {
+    "ui": {
+      "r65_0": {
+        "en": "Help: Paste an SVG. This tool sanitizes it for safe preview using DOMPurify (client-side).",
+        "ko": "도움말: SVG를 붙여넣으세요. 이 도구는 DOMPurify로 SVG를 정화해 안전하게 미리 봅니다(클라이언트 측).",
+        "ja": "ヘルプ: SVG を貼り付けてください。このツールは DOMPurify でサニタイズして安全にプレビューします（クライアント側）。",
+        "es": "Ayuda: Pega un SVG. Esta herramienta lo sanea con DOMPurify para una vista previa segura (en el cliente).",
+        "zh-CN": "帮助：粘贴 SVG。本工具使用 DOMPurify 进行净化以便安全预览（客户端）。",
+        "zh-TW": "說明：貼上 SVG。本工具使用 DOMPurify 進行淨化以便安全預覽（用戶端）。",
+        "fr": "Aide : Collez un SVG. Cet outil le nettoie avec DOMPurify pour un aperçu sûr (côté client).",
+        "de": "Hilfe: Fügen Sie ein SVG ein. Das Tool bereinigt es mit DOMPurify für eine sichere Vorschau (clientseitig).",
+        "pt": "Ajuda: Cole um SVG. Esta ferramenta o sanitiza com DOMPurify para uma prévia segura (no cliente).",
+        "vi": "Trợ giúp: Dán một SVG. Công cụ làm sạch bằng DOMPurify để xem trước an toàn (phía máy khách)."
+      },
+      "r65_1": {
+        "en": "SVG input",
+        "ko": "SVG 입력",
+        "ja": "SVG 入力",
+        "es": "Entrada SVG",
+        "zh-CN": "SVG 输入",
+        "zh-TW": "SVG 輸入",
+        "fr": "Saisie SVG",
+        "de": "SVG-Eingabe",
+        "pt": "Entrada SVG",
+        "vi": "SVG đầu vào"
+      },
+      "r65_2": {
+        "en": "Optimized SVG output",
+        "ko": "최적화된 SVG 출력",
+        "ja": "最適化済み SVG 出力",
+        "es": "Salida SVG optimizada",
+        "zh-CN": "优化后的 SVG 输出",
+        "zh-TW": "最佳化後的 SVG 輸出",
+        "fr": "Sortie SVG optimisée",
+        "de": "Optimierte SVG-Ausgabe",
+        "pt": "Saída SVG otimizada",
+        "vi": "SVG đã tối ưu"
+      },
+      "r65_3": {
+        "en": "Removes scripts/foreignObject/event handlers for safe preview.",
+        "ko": "안전한 미리보기를 위해 script/foreignObject/이벤트 핸들러를 제거합니다.",
+        "ja": "安全なプレビューのため script／foreignObject／イベントハンドラーを除去します。",
+        "es": "Elimina scripts, foreignObject y manejadores de eventos para una vista previa segura.",
+        "zh-CN": "移除 script/foreignObject/事件处理器以安全预览。",
+        "zh-TW": "移除 script／foreignObject／事件處理器以安全預覽。",
+        "fr": "Supprime scripts, foreignObject et gestionnaires d'événements pour un aperçu sûr.",
+        "de": "Entfernt Scripts, foreignObject und Event-Handler für eine sichere Vorschau.",
+        "pt": "Remove scripts, foreignObject e manipuladores de eventos para uma prévia segura.",
+        "vi": "Loại bỏ script/foreignObject/trình xử lý sự kiện để xem trước an toàn."
+      }
+    }
+  },
+  "secret-scanner": {
+    "ui": {
+      "r65_0": {
+        "en": "Help: Paste code, logs, configs, CI output, .env, or JSON. This tool uses regex heuristics — false positives are possible.",
+        "ko": "도움말: 코드, 로그, 설정, CI 출력, .env, JSON을 붙여넣으세요. 정규식 휴리스틱을 쓰므로 오탐이 있을 수 있습니다.",
+        "ja": "ヘルプ: コード、ログ、設定、CI 出力、.env、JSON を貼り付けてください。正規表現ヒューリスティックのため誤検知がありえます。",
+        "es": "Ayuda: Pega código, logs, configuraciones, salida de CI, .env o JSON. Usa heurísticas con regex, así que puede haber falsos positivos.",
+        "zh-CN": "帮助：粘贴代码、日志、配置、CI 输出、.env 或 JSON。本工具使用正则启发式，可能存在误报。",
+        "zh-TW": "說明：貼上程式碼、日誌、設定、CI 輸出、.env 或 JSON。本工具使用正規表示式啟發式，可能有誤判。",
+        "fr": "Aide : Collez du code, des logs, des configs, une sortie CI, un .env ou du JSON. L'outil utilise des heuristiques regex : des faux positifs sont possibles.",
+        "de": "Hilfe: Fügen Sie Code, Logs, Konfigurationen, CI-Ausgaben, .env oder JSON ein. Das Tool nutzt Regex-Heuristiken – Fehlalarme sind möglich.",
+        "pt": "Ajuda: Cole código, logs, configs, saída de CI, .env ou JSON. A ferramenta usa heurísticas de regex — falsos positivos são possíveis.",
+        "vi": "Trợ giúp: Dán mã, nhật ký, cấu hình, đầu ra CI, .env hoặc JSON. Công cụ dùng heuristic regex — có thể có cảnh báo sai."
+      },
+      "r65_1": {
+        "en": "Text to scan",
+        "ko": "검사할 텍스트",
+        "ja": "スキャンするテキスト",
+        "es": "Texto para analizar",
+        "zh-CN": "要扫描的文本",
+        "zh-TW": "要掃描的文字",
+        "fr": "Texte à analyser",
+        "de": "Zu prüfender Text",
+        "pt": "Texto a verificar",
+        "vi": "Văn bản cần quét"
+      },
+      "r65_2": {
+        "en": "Help: Use this when pasting logs into tickets or chats. Always rotate credentials if a real secret leaked.",
+        "ko": "도움말: 티켓이나 채팅에 로그를 붙여넣을 때 사용하세요. 실제 비밀이 유출됐다면 반드시 자격 증명을 교체하세요.",
+        "ja": "ヘルプ: チケットやチャットにログを貼る前に使ってください。本物のシークレットが漏れた場合は必ず認証情報をローテーションしてください。",
+        "es": "Ayuda: Úsalo al pegar logs en tickets o chats. Rota siempre las credenciales si se filtró un secreto real.",
+        "zh-CN": "帮助：在把日志粘贴到工单或聊天中时使用。若真实密钥已泄露，务必轮换凭据。",
+        "zh-TW": "說明：在把日誌貼到工單或聊天時使用。若真實密鑰已外洩，務必輪替憑證。",
+        "fr": "Aide : À utiliser avant de coller des logs dans des tickets ou des chats. Renouvelez toujours les identifiants si un vrai secret a fuité.",
+        "de": "Hilfe: Nutzen Sie dies, bevor Sie Logs in Tickets oder Chats einfügen. Rotieren Sie immer die Zugangsdaten, wenn ein echtes Secret geleakt ist.",
+        "pt": "Ajuda: Use ao colar logs em tickets ou chats. Sempre troque as credenciais se um segredo real vazou.",
+        "vi": "Trợ giúp: Dùng khi dán nhật ký vào ticket hoặc chat. Luôn xoay vòng thông tin xác thực nếu bí mật thật bị lộ."
+      },
+      "r65_3": {
+        "en": "Redacted output",
+        "ko": "가려진 출력",
+        "ja": "伏せ字済み出力",
+        "es": "Salida ocultada",
+        "zh-CN": "脱敏后的输出",
+        "zh-TW": "遮蔽後的輸出",
+        "fr": "Sortie masquée",
+        "de": "Geschwärzte Ausgabe",
+        "pt": "Saída ocultada",
+        "vi": "Kết quả đã che"
+      },
+      "r65_4": {
+        "en": "Scanning happens in your browser; the text you paste is not sent to our servers.",
+        "ko": "검사는 브라우저에서 이루어지며, 붙여넣은 텍스트는 서버로 전송되지 않습니다.",
+        "ja": "スキャンはブラウザ内で行われ、貼り付けたテキストはサーバーに送信されません。",
+        "es": "El análisis se hace en tu navegador; el texto que pegas no se envía a nuestros servidores.",
+        "zh-CN": "扫描在浏览器中完成；你粘贴的文本不会发送到我们的服务器。",
+        "zh-TW": "掃描在瀏覽器中完成；你貼上的文字不會傳送到我們的伺服器。",
+        "fr": "L'analyse se fait dans votre navigateur ; le texte collé n'est pas envoyé à nos serveurs.",
+        "de": "Der Scan läuft in Ihrem Browser; der eingefügte Text wird nicht an unsere Server gesendet.",
+        "pt": "A verificação acontece no seu navegador; o texto colado não é enviado aos nossos servidores.",
+        "vi": "Việc quét diễn ra trong trình duyệt; văn bản bạn dán không được gửi đến máy chủ của chúng tôi."
+      }
+    }
+  },
+  "caffeinate": {
+    "ui": {
+      "r6_0": {
+        "en": "Uses the Wake Lock API to prevent your screen from sleeping",
+        "ko": "Wake Lock API로 화면이 꺼지지 않게 합니다",
+        "ja": "Wake Lock API で画面のスリープを防ぎます",
+        "es": "Usa la API Wake Lock para evitar que la pantalla se suspenda",
+        "zh-CN": "使用 Wake Lock API 防止屏幕休眠",
+        "zh-TW": "使用 Wake Lock API 防止螢幕休眠",
+        "fr": "Utilise l'API Wake Lock pour empêcher la mise en veille de l'écran",
+        "de": "Verhindert per Wake Lock API, dass der Bildschirm in den Ruhezustand geht",
+        "pt": "Usa a API Wake Lock para impedir que a tela entre em repouso",
+        "vi": "Dùng Wake Lock API để giữ màn hình không ngủ"
+      }
+    }
+  },
+  "ladder-game": {
+    "ui": {
+      "r6_0": {
+        "en": "Ladder game",
+        "ko": "사다리 게임",
+        "ja": "あみだくじ",
+        "es": "Juego de la escalera",
+        "zh-CN": "爬梯子游戏",
+        "zh-TW": "爬樓梯遊戲",
+        "fr": "Jeu de l'échelle",
+        "de": "Leiterspiel",
+        "pt": "Jogo da escada",
+        "vi": "Trò chơi bậc thang"
+      },
+      "r6_1": {
+        "en": "Game mode",
+        "ko": "게임 모드",
+        "ja": "ゲームモード",
+        "es": "Modo de juego",
+        "zh-CN": "游戏模式",
+        "zh-TW": "遊戲模式",
+        "fr": "Mode de jeu",
+        "de": "Spielmodus",
+        "pt": "Modo de jogo",
+        "vi": "Chế độ chơi"
+      },
+      "r6_2": {
+        "en": "Visual theme",
+        "ko": "시각 테마",
+        "ja": "ビジュアルテーマ",
+        "es": "Tema visual",
+        "zh-CN": "视觉主题",
+        "zh-TW": "視覺主題",
+        "fr": "Thème visuel",
+        "de": "Visuelles Thema",
+        "pt": "Tema visual",
+        "vi": "Giao diện"
+      },
+      "r6_3": {
+        "en": "Avatar selection",
+        "ko": "아바타 선택",
+        "ja": "アバター選択",
+        "es": "Selección de avatar",
+        "zh-CN": "头像选择",
+        "zh-TW": "頭像選擇",
+        "fr": "Choix de l'avatar",
+        "de": "Avatar-Auswahl",
+        "pt": "Seleção de avatar",
+        "vi": "Chọn ảnh đại diện"
+      },
+      "r6_4": {
+        "en": "Ladder canvas",
+        "ko": "사다리 캔버스",
+        "ja": "あみだくじのキャンバス",
+        "es": "Lienzo de la escalera",
+        "zh-CN": "梯子画布",
+        "zh-TW": "梯子畫布",
+        "fr": "Canevas de l'échelle",
+        "de": "Leiter-Zeichenfläche",
+        "pt": "Tela da escada",
+        "vi": "Khung vẽ bậc thang"
+      }
+    }
+  },
+  "roulette-wheel": {
+    "ui": {
+      "r6_0": {
+        "en": "Roulette wheel",
+        "ko": "룰렛 휠",
+        "ja": "ルーレット",
+        "es": "Ruleta",
+        "zh-CN": "轮盘",
+        "zh-TW": "輪盤",
+        "fr": "Roue de la fortune",
+        "de": "Glücksrad",
+        "pt": "Roleta",
+        "vi": "Vòng quay"
+      },
+      "r6_1": {
+        "en": "New segment name",
+        "ko": "새 항목 이름",
+        "ja": "新しい項目名",
+        "es": "Nombre del nuevo segmento",
+        "zh-CN": "新分区名称",
+        "zh-TW": "新區塊名稱",
+        "fr": "Nom du nouveau segment",
+        "de": "Name des neuen Segments",
+        "pt": "Nome do novo segmento",
+        "vi": "Tên ô mới"
+      },
+      "r6_2": {
+        "en": "Preset name",
+        "ko": "프리셋 이름",
+        "ja": "プリセット名",
+        "es": "Nombre del preajuste",
+        "zh-CN": "预设名称",
+        "zh-TW": "預設名稱",
+        "fr": "Nom du préréglage",
+        "de": "Name der Vorlage",
+        "pt": "Nome da predefinição",
+        "vi": "Tên mẫu đặt sẵn"
+      }
+    }
+  },
+  "marble-roulette": {
+    "ui": {
+      "r6_0": {
+        "en": "Marble board",
+        "ko": "구슬 보드",
+        "ja": "マーブルボード",
+        "es": "Tablero de canicas",
+        "zh-CN": "弹珠板",
+        "zh-TW": "彈珠板",
+        "fr": "Plateau de billes",
+        "de": "Murmelbrett",
+        "pt": "Tabuleiro de bolinhas",
+        "vi": "Bảng bi"
+      },
+      "r6_1": {
+        "en": "Marble simulation canvas",
+        "ko": "구슬 시뮬레이션 캔버스",
+        "ja": "マーブルシミュレーションのキャンバス",
+        "es": "Lienzo de simulación de canicas",
+        "zh-CN": "弹珠模拟画布",
+        "zh-TW": "彈珠模擬畫布",
+        "fr": "Canevas de simulation des billes",
+        "de": "Zeichenfläche der Murmelsimulation",
+        "pt": "Tela de simulação de bolinhas",
+        "vi": "Khung mô phỏng bi"
+      },
+      "r6_2": {
+        "en": "Ordinal target",
+        "ko": "목표 순위",
+        "ja": "目標の順位",
+        "es": "Posición objetivo",
+        "zh-CN": "目标名次",
+        "zh-TW": "目標名次",
+        "fr": "Rang cible",
+        "de": "Zielplatzierung",
+        "pt": "Posição-alvo",
+        "vi": "Thứ hạng mục tiêu"
+      },
+      "r6_3": {
+        "en": "Speed controls",
+        "ko": "속도 조절",
+        "ja": "速度コントロール",
+        "es": "Controles de velocidad",
+        "zh-CN": "速度控制",
+        "zh-TW": "速度控制",
+        "fr": "Contrôles de vitesse",
+        "de": "Geschwindigkeitsregler",
+        "pt": "Controles de velocidade",
+        "vi": "Điều khiển tốc độ"
+      },
+      "r6_4": {
+        "en": "Shuffle entries",
+        "ko": "항목 섞기",
+        "ja": "項目をシャッフル",
+        "es": "Mezclar entradas",
+        "zh-CN": "打乱条目",
+        "zh-TW": "打亂項目",
+        "fr": "Mélanger les entrées",
+        "de": "Einträge mischen",
+        "pt": "Embaralhar itens",
+        "vi": "Xáo trộn mục"
+      },
+      "r6_5": {
+        "en": "Start drop",
+        "ko": "떨어뜨리기 시작",
+        "ja": "ドロップ開始",
+        "es": "Iniciar caída",
+        "zh-CN": "开始投放",
+        "zh-TW": "開始投放",
+        "fr": "Lancer la chute",
+        "de": "Fallen lassen",
+        "pt": "Iniciar queda",
+        "vi": "Bắt đầu thả"
+      },
+      "r6_6": {
+        "en": "Clear stats",
+        "ko": "통계 지우기",
+        "ja": "統計をクリア",
+        "es": "Borrar estadísticas",
+        "zh-CN": "清除统计",
+        "zh-TW": "清除統計",
+        "fr": "Effacer les statistiques",
+        "de": "Statistik löschen",
+        "pt": "Limpar estatísticas",
+        "vi": "Xóa thống kê"
+      }
+    }
+  },
+  "changelog": {
+    "ui": {
+      "r6_0": {
+        "en": "Changelog",
+        "ko": "변경 기록",
+        "ja": "変更履歴",
+        "es": "Registro de cambios",
+        "zh-CN": "更新日志",
+        "zh-TW": "更新日誌",
+        "fr": "Journal des modifications",
+        "de": "Änderungsprotokoll",
+        "pt": "Registro de alterações",
+        "vi": "Nhật ký thay đổi"
+      }
+    }
+  }
+}
