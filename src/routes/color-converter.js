@@ -99,7 +99,7 @@ function renderColorConverterPage(lang = DEFAULT_LANGUAGE) {
             <!-- Fallback native picker + Manual Input -->
             <div class="flex gap-4 items-end">
               <div class="flex-shrink-0">
-                <label for="color-picker" class="label mb-1 text-xs"><span data-i18n="tools.color-converter.ui.label0">Native</span></label>
+                <label for="color-picker" class="label mb-1 text-xs"><span>Native</span></label>
                 <input type="color" id="color-picker" value="#3b82f6" class="w-10 h-10 rounded-lg cursor-pointer border border-surface-200 dark:border-surface-700 shadow-sm">
               </div>
               <div class="flex-1 space-y-1">

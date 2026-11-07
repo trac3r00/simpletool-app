@@ -81,8 +81,8 @@ export function renderPortReferenceSection(lang = DEFAULT_LANGUAGE) {
               <label class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2" data-i18n="tools.port-reference.ui.label1">Protocol</label>
               <div class="flex flex-wrap gap-2">
                 <button type="button" class="protocol-filter btn btn-primary btn-sm active" data-protocol="all" data-i18n="tools.port-reference.ui.button0">All</button>
-                <button type="button" class="protocol-filter btn btn-secondary btn-sm" data-protocol="tcp" data-i18n="tools.port-reference.ui.button1">TCP</button>
-                <button type="button" class="protocol-filter btn btn-secondary btn-sm" data-protocol="udp" data-i18n="tools.port-reference.ui.button2">UDP</button>
+                <button type="button" class="protocol-filter btn btn-secondary btn-sm" data-protocol="tcp">TCP</button>
+                <button type="button" class="protocol-filter btn btn-secondary btn-sm" data-protocol="udp">UDP</button>
               </div>
             </div>
 
@@ -90,10 +90,10 @@ export function renderPortReferenceSection(lang = DEFAULT_LANGUAGE) {
             <div>
               <label class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2" data-i18n="tools.port-reference.ui.label2">Port Category</label>
               <div class="flex flex-wrap gap-2">
-                <button type="button" class="category-filter btn btn-primary btn-sm active" data-category="all" data-i18n="tools.port-reference.ui.button3">All</button>
-                <button type="button" class="category-filter btn btn-secondary btn-sm" data-category="well-known" data-i18n="tools.port-reference.ui.button4">Well-Known (0-1023)</button>
-                <button type="button" class="category-filter btn btn-secondary btn-sm" data-category="registered" data-i18n="tools.port-reference.ui.button5">Registered (1024-49151)</button>
-                <button type="button" class="category-filter btn btn-secondary btn-sm" data-category="dynamic" data-i18n="tools.port-reference.ui.button6">Dynamic (49152-65535)</button>
+                <button type="button" class="category-filter btn btn-primary btn-sm active" data-category="all" data-i18n="tools.port-reference.ui.button0">All</button>
+                <button type="button" class="category-filter btn btn-secondary btn-sm" data-category="well-known" data-i18n="tools.port-reference.ui.button1">Well-Known (0-1023)</button>
+                <button type="button" class="category-filter btn btn-secondary btn-sm" data-category="registered" data-i18n="tools.port-reference.ui.button2">Registered (1024-49151)</button>
+                <button type="button" class="category-filter btn btn-secondary btn-sm" data-category="dynamic" data-i18n="tools.port-reference.ui.button3">Dynamic (49152-65535)</button>
               </div>
             </div>
           </div>
