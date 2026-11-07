@@ -2,6 +2,39 @@
 
 This changelog is a snapshot-style record of major changes in this workspace.
 
+## 2026-11-07 — v2.5.0 In-tool features, safer regex, full translation
+
+### Features
+
+- **JSON Schema Studio**: Validate tab (draft 2020-12, 2019-09, 07) and an MCP `tools/list` inspector that flags risky tool declarations. (#988)
+- **Token Studio**: verify a JWT against a pasted JWKS, with key selection by `kid` and clock-skew checks. (#988)
+- **Markdown Editor**: lint as AGENTS.md, SKILL.md, or llms.txt, with line-numbered findings. (#988)
+- **Webhook Debugger**: decode captured Server-Sent Events and WebSocket frames (RFC 6455). (#988)
+- **Certificate Decoder**: ECDSA (P-256/384/521) and Ed25519 chain signatures are verified. (#988)
+- **Mermaid Studio**: Copy SVG and Download PNG, including in Safari. (#988)
+- **Encoding Workbench**: Identify → Verify hash prefills the expected hash; bcrypt warns past 72 bytes. (#988)
+- **WireGuard**: derives the public key from a pasted private key. (#988)
+- **Homepage**: product catalog with flagship tools and search. (#967)
+
+### Fixes
+
+- Regex Studio and Log Viewer run patterns in a worker with a deadline, so catastrophic backtracking no longer freezes the page. (#988)
+- Long URLs, hashes, and tokens wrap instead of pushing pages sideways on phones; prose keeps a readable line length. (#988)
+- Table headers no longer stack one letter per line on phones; contrast fixes across editors, badges, and labels. (#988, #989)
+- SPF softfail/neutral/none/permerror/temperror are reported separately; htpasswd downloads keep their name; SQL subqueries are indented; binary units read KiB/MiB. (#988)
+- The worker answers an unparseable request URL with 400 instead of throwing. (#988)
+- Material Symbols 503 and the AdSense frame CSP on the homepage. (#968)
+
+### Translation
+
+- Every visible UI string, the shared page shell, the homepage, and the newest blog post are translated into all nine non-English languages. (#988, #989, #990)
+
+### Maintenance
+
+- Removed unused md5 and to-json-schema bundles; vendored `@cfworker/json-schema`. (#988)
+- Host-independent tcpdump test oracles; CI moved to a self-hosted runner. (#988, #957)
+- Version: footer, `/health`, changelog, and package.json share `2.5.0`. Release tags now follow this version.
+
 ## 2026-09-09 — Homepage as a product catalog
 
 - Homepage is catalog-first: search and the tool grid sit above the article.

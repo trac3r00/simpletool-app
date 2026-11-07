@@ -62,6 +62,7 @@ function renderDataConverterPage(lang = DEFAULT_LANGUAGE) {
             text: "Schema-less validation",
             i18nKey: "tools.yaml-toml-converter.ui.feat0",
             tooltip: "Instant parse feedback.",
+            tooltipI18nKey: "tools.yaml-toml-converter.ui.r65_0",
           },
           {
             text: "Offline friendly",
@@ -89,13 +90,13 @@ function renderDataConverterPage(lang = DEFAULT_LANGUAGE) {
           <label for="format-input" class="sr-only"><span data-i18n="tools.yaml-toml-converter.ui.label0">Input configuration data</span></label>
           <textarea id="format-input" class="input-mono w-full min-h-[280px]" placeholder="Paste JSON, YAML, or TOML..." data-i18n-placeholder="tools.yaml-toml-converter.ui.placeholder7"></textarea>
           <div class="flex flex-wrap gap-3">
-             <button id="validate-btn" class="btn btn-secondary" data-tooltip="Check syntax without converting"><span data-i18n="tools.yaml-toml-converter.ui.button1">Validate only</span></button>
-             <button data-convert="json" class="convert-btn btn btn-secondary" data-tooltip="Convert to JSON format"><span data-i18n="tools.yaml-toml-converter.ui.button2">→ JSON</span></button>
-             <button data-convert="yaml" class="convert-btn btn btn-secondary" data-tooltip="Convert to YAML format"><span data-i18n="tools.yaml-toml-converter.ui.button3">→ YAML</span></button>
-             <button data-convert="toml" class="convert-btn btn btn-secondary" data-tooltip="Convert to TOML format"><span data-i18n="tools.yaml-toml-converter.ui.button4">→ TOML</span></button>
+             <button data-i18n-tooltip="tools.yaml-toml-converter.ui.r6_0" id="validate-btn" class="btn btn-secondary" data-tooltip="Check syntax without converting"><span data-i18n="tools.yaml-toml-converter.ui.button1">Validate only</span></button>
+             <button data-i18n-tooltip="tools.yaml-toml-converter.ui.r6_1" data-convert="json" class="convert-btn btn btn-secondary" data-tooltip="Convert to JSON format"><span data-i18n="tools.yaml-toml-converter.ui.button2">→ JSON</span></button>
+             <button data-i18n-tooltip="tools.yaml-toml-converter.ui.r6_2" data-convert="yaml" class="convert-btn btn btn-secondary" data-tooltip="Convert to YAML format"><span data-i18n="tools.yaml-toml-converter.ui.button3">→ YAML</span></button>
+             <button data-i18n-tooltip="tools.yaml-toml-converter.ui.r6_3" data-convert="toml" class="convert-btn btn btn-secondary" data-tooltip="Convert to TOML format"><span data-i18n="tools.yaml-toml-converter.ui.button4">→ TOML</span></button>
           </div>
-           <div id="format-error" class="hidden rounded-xl border border-error-200 dark:border-error-800 bg-error-50 dark:bg-error-900/30 text-sm text-error-700 dark:text-error-200 px-4 py-3">Parser error</div>
-          <div class="text-sm text-surface-500 dark:text-surface-400">Detected: <span id="detected-format" class="font-semibold">—</span> · Root type: <span id="root-type">—</span> · Keys: <span id="key-count">—</span></div>
+           <div data-i18n="tools.yaml-toml-converter.ui.r6_4" id="format-error" class="hidden rounded-xl border border-error-200 dark:border-error-800 bg-error-50 dark:bg-error-900/30 text-sm text-error-700 dark:text-error-200 px-4 py-3">Parser error</div>
+          <div data-i18n-html="tools.yaml-toml-converter.ui.r6_5" class="text-sm text-surface-500 dark:text-surface-400">Detected: <span id="detected-format" class="font-semibold">—</span> · Root type: <span id="root-type">—</span> · Keys: <span id="key-count">—</span></div>
         </div>
 
         <div class="space-y-6">
@@ -129,18 +130,18 @@ function renderDataConverterPage(lang = DEFAULT_LANGUAGE) {
           content: `
           <table>
             <tr><th data-i18n="tools.yaml-toml-converter.ui.th3">Feature</th><th>JSON</th><th>YAML</th><th>TOML</th></tr>
-            <tr><td>Comments</td><td>❌ None</td><td><code># comment</code></td><td><code># comment</code></td></tr>
-            <tr><td>Strings</td><td><code>"double only"</code></td><td><code>bare or "quoted"</code></td><td><code>"basic"</code> or <code>'literal'</code></td></tr>
-            <tr><td>Arrays</td><td><code>[1, 2]</code></td><td><code>- 1</code> (newline each)</td><td><code>[1, 2]</code></td></tr>
-            <tr><td>Nesting</td><td><code>{"a":{"b":1}}</code></td><td data-i18n="tools.yaml-toml-converter.ui.r3_0">Indentation</td><td><code>[a.b]</code> sections</td></tr>
+            <tr><td data-i18n="tools.yaml-toml-converter.ui.r66_c1">Comments</td><td data-i18n="tools.yaml-toml-converter.ui.r66_c2">❌ None</td><td><code># comment</code></td><td><code># comment</code></td></tr>
+            <tr><td data-i18n="tools.yaml-toml-converter.ui.r66_c3">Strings</td><td><code>"double only"</code></td><td><code>bare or "quoted"</code></td><td><code>"basic"</code> or <code>'literal'</code></td></tr>
+            <tr><td data-i18n="tools.yaml-toml-converter.ui.r66_c4">Arrays</td><td><code>[1, 2]</code></td><td><code>- 1</code> <span data-i18n="tools.yaml-toml-converter.ui.r66_c8">(newline each)</span></td><td><code>[1, 2]</code></td></tr>
+            <tr><td data-i18n="tools.yaml-toml-converter.ui.r66_c5">Nesting</td><td><code>{"a":{"b":1}}</code></td><td data-i18n="tools.yaml-toml-converter.ui.r3_0">Indentation</td><td><code>[a.b]</code> <span data-i18n="tools.yaml-toml-converter.ui.r66_c9">sections</span></td></tr>
           </table>`,
         },
         {
           heading: "When to Use",
           content: `
           <table>
-            <tr><td><strong>JSON</strong></td><td>APIs, data exchange, package.json, tsconfig.json</td></tr>
-            <tr><td><strong>YAML</strong></td><td>Config files, Kubernetes manifests, CI/CD pipelines, Docker Compose</td></tr>
+            <tr><td><strong>JSON</strong></td><td data-i18n="tools.yaml-toml-converter.ui.r66_c6">APIs, data exchange, package.json, tsconfig.json</td></tr>
+            <tr><td><strong>YAML</strong></td><td data-i18n="tools.yaml-toml-converter.ui.r66_c7">Config files, Kubernetes manifests, CI/CD pipelines, Docker Compose</td></tr>
             <tr><td><strong>TOML</strong></td><td data-i18n="tools.yaml-toml-converter.ui.r3_1">Simple configs — Cargo.toml, pyproject.toml, Hugo</td></tr>
           </table>`,
         },

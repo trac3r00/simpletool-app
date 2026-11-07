@@ -39,6 +39,7 @@ function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
         text: translation?.ui?.badge16 || "Client-Side Only",
         tooltip:
           "Runs entirely in your browser using Web APIs — your code is processed locally and not sent to our servers.",
+        tooltipI18nKey: "tools.code-minifier.ui.r65_2",
       },
     ],
     { toolId: "code-minifier" },
@@ -57,20 +58,20 @@ function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
 
       <!-- Language Tabs -->
       <div class="flex justify-center mb-6 border-b-2 border-surface-200 dark:border-surface-700">
-        <div class="flex gap-2" role="tablist" aria-label="Language">
-          <button role="tab" aria-selected="true" class="tab-trigger language-tab active" data-lang="javascript" data-tooltip="Minify JavaScript code" data-i18n-tooltip="tools.code-minifier.ui.tip0"><span data-i18n="tools.code-minifier.ui.button0">JavaScript</span></button>
-          <button role="tab" aria-selected="false" class="tab-trigger language-tab" data-lang="css" data-tooltip="Minify CSS stylesheets" data-i18n-tooltip="tools.code-minifier.ui.tip1"><span data-i18n="tools.code-minifier.ui.button6">CSS</span></button>
-          <button role="tab" aria-selected="false" class="tab-trigger language-tab" data-lang="html" data-tooltip="Minify HTML markup" data-i18n-tooltip="tools.code-minifier.ui.tip2"><span data-i18n="tools.code-minifier.ui.button7">HTML</span></button>
+        <div class="tabs-list" role="tablist" aria-label="Language">
+          <button role="tab" aria-selected="true" class="tab-trigger language-tab active" data-lang="javascript" data-tooltip="Minify JavaScript code" data-i18n-tooltip="tools.code-minifier.ui.r65_3"><span data-i18n="tools.code-minifier.ui.button0">JavaScript</span></button>
+          <button role="tab" aria-selected="false" class="tab-trigger language-tab" data-lang="css" data-tooltip="Minify CSS stylesheets" data-i18n-tooltip="tools.code-minifier.ui.r65_4"><span data-i18n="tools.code-minifier.ui.button6">CSS</span></button>
+          <button role="tab" aria-selected="false" class="tab-trigger language-tab" data-lang="html" data-tooltip="Minify HTML markup" data-i18n-tooltip="tools.code-minifier.ui.r65_5"><span data-i18n="tools.code-minifier.ui.button7">HTML</span></button>
         </div>
       </div>
 
       <!-- Mode Selection -->
       <div class="mb-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <button id="minify-btn" aria-pressed="true" class="mode-btn btn btn-primary active" data-tooltip="Remove whitespace and shorten code for production" data-i18n-tooltip="tools.code-minifier.ui.tip4">
+          <button id="minify-btn" aria-pressed="true" class="mode-btn btn btn-primary active" data-tooltip="Remove whitespace and shorten code for production" data-i18n-tooltip="tools.code-minifier.ui.r65_6">
             <span data-i18n="tools.code-minifier.ui.button1">🗜️ Minify Code</span>
           </button>
-          <button id="beautify-btn" aria-pressed="false" class="mode-btn btn btn-secondary" data-tooltip="Add indentation and formatting for readability" data-i18n-tooltip="tools.code-minifier.ui.tip5">
+          <button id="beautify-btn" aria-pressed="false" class="mode-btn btn btn-secondary" data-tooltip="Add indentation and formatting for readability" data-i18n-tooltip="tools.code-minifier.ui.r65_7">
             <span data-i18n="tools.code-minifier.ui.button2">✨ Beautify Code</span>
           </button>
         </div>
@@ -86,10 +87,10 @@ function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
             </button>
           </div>
 
-          <textarea id="input-code" aria-label="Code input" class="input w-full resize-vertical" placeholder="Paste your code here..." data-i18n-placeholder="tools.code-minifier.ui.placeholder6"></textarea>
+          <textarea id="input-code" aria-label="Code input" data-i18n-aria="tools.code-minifier.ui.r65_0" class="input w-full resize-vertical" placeholder="Paste your code here..." data-i18n-placeholder="tools.code-minifier.ui.placeholder6"></textarea>
 
           <div class="mt-3 text-sm text-surface-600 dark:text-surface-400">
-            <span id="input-size">Size: 0 bytes</span>
+            <span data-i18n="tools.code-minifier.ui.r6_0" id="input-size">Size: 0 bytes</span>
           </div>
         </div>
 
@@ -107,7 +108,7 @@ function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
             </div>
           </div>
 
-          <textarea id="output-code" aria-label="Minified output" class="input w-full resize-vertical" readonly placeholder="Output will appear here..." data-i18n-placeholder="tools.code-minifier.ui.placeholder7"></textarea>
+          <textarea id="output-code" aria-label="Minified output" data-i18n-aria="tools.code-minifier.ui.r65_1" class="input w-full resize-vertical" readonly placeholder="Output will appear here..." data-i18n-placeholder="tools.code-minifier.ui.placeholder7"></textarea>
 
           <div id="output-stats" class="mt-3 text-sm text-surface-600 dark:text-surface-400 hidden">
             <span id="output-size"></span>
@@ -181,39 +182,7 @@ function renderCodeMinifierPage(lang = DEFAULT_LANGUAGE) {
         min-height: 400px;
       }
 
-      .language-tab {
-        padding: 0.75rem 1.5rem;
-        border: 1px solid transparent;
-        border-bottom: none;
-        border-radius: 8px 8px 0 0;
-        font-weight: 600;
-        transition: all 0.2s;
-        cursor: pointer;
-        background: #f4f4f5;
-        color: #52525b;
-      }
-
-      .dark .language-tab {
-        background: #27272a;
-        color: #a1a1aa;
-      }
-
-      .language-tab.active {
-        background: white;
-        color: #6d28d9;
-        border-color: #e4e4e7;
-        border-bottom-color: white;
-      }
-
-      .dark .language-tab.active {
-        background: #18181b;
-        color: #a78bfa;
-        border-color: #3f3f46;
-        border-bottom-color: #18181b;
-      }
-
       .mode-btn {
-        padding: 1rem 2rem;
         font-weight: 600;
         transition: all 0.2s;
       }

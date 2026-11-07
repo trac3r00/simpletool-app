@@ -56,6 +56,7 @@ function renderEmailAnalyzerPage(lang = DEFAULT_LANGUAGE) {
           '<span data-i18n="tools.email-analyzer.ui.badge0">Client-Side Only</span>',
         tooltip:
           "Parsing and analysis happen in your browser; the message you paste is not sent to our servers.",
+        tooltipI18nKey: "tools.email-analyzer.ui.r65_2",
       },
       {
         text:
@@ -95,9 +96,9 @@ function renderEmailAnalyzerPage(lang = DEFAULT_LANGUAGE) {
 
             <label class="label flex items-center gap-2">
               <span data-i18n="tools.email-analyzer.ui.label0">Raw Email (Headers + Body)</span>
-              ${infoHint("Paste a raw email source (RFC 5322). Many clients have “View original / Show raw source”.", "Help", { i18nKey: "tools.email-analyzer.ui.desc0" })}
+              ${infoHint("Paste a raw email source (RFC 5322). Many clients have “View original / Show raw source”.", "Help", { ariaI18nKey: "tools.email-analyzer.ui.r65_0", i18nKey: "tools.email-analyzer.ui.desc0" })}
             </label>
-            <textarea id="email-input" rows="18" aria-label="Raw email source" class="input-mono resize-y" placeholder="Paste the full email source here..." data-i18n-placeholder="tools.email-analyzer.ui.placeholder0"></textarea>
+            <textarea id="email-input" rows="18" aria-label="Raw email source" data-i18n-aria="tools.email-analyzer.ui.r65_1" class="input-mono resize-y" placeholder="Paste the full email source here..." data-i18n-placeholder="tools.email-analyzer.ui.placeholder0"></textarea>
 
             <div class="flex flex-wrap items-center gap-4 text-sm text-surface-600 dark:text-surface-400">
               <label class="inline-flex items-center gap-2 cursor-pointer">
@@ -136,7 +137,7 @@ function renderEmailAnalyzerPage(lang = DEFAULT_LANGUAGE) {
               <div class="tool-group p-5">
                 <div class="flex items-center justify-between gap-3 mb-3">
                   <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400" data-i18n="tools.email-analyzer.ui.heading0">Identity</h2>
-                  <button id="copy-summary-btn" class="btn btn-secondary text-xs py-1 px-2" disabled>
+                  <button id="copy-summary-btn" class="btn btn-secondary btn-sm" disabled>
                     <span data-i18n="tools.email-analyzer.ui.button3">Copy Summary</span>
                   </button>
                 </div>

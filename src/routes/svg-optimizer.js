@@ -55,6 +55,7 @@ function renderSVGOptimizerPage(lang = DEFAULT_LANGUAGE) {
           '<span data-i18n="tools.svg-optimizer.ui.badge0">Sanitized</span>',
         tooltip:
           "Removes scripts/foreignObject/event handlers for safe preview.",
+        tooltipI18nKey: "tools.svg-optimizer.ui.r65_3",
       },
       {
         text:
@@ -91,9 +92,9 @@ function renderSVGOptimizerPage(lang = DEFAULT_LANGUAGE) {
           <div class="space-y-3">
             <label class="label flex items-center gap-2">
               <span data-i18n="tools.svg-optimizer.ui.label0">SVG Input</span>
-              ${infoHint("Paste an SVG. This tool sanitizes it for safe preview using DOMPurify (client-side).", "Help", { i18nKey: "tools.svg-optimizer.ui.desc0" })}
+              ${infoHint("Paste an SVG. This tool sanitizes it for safe preview using DOMPurify (client-side).", "Help", { ariaI18nKey: "tools.svg-optimizer.ui.r65_0", i18nKey: "tools.svg-optimizer.ui.desc0" })}
             </label>
-            <textarea id="svg-input" rows="18" aria-label="SVG input" class="input-mono resize-y" placeholder="&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 24 24&quot;&gt;...&lt;/svg&gt;" data-i18n-placeholder="tools.svg-optimizer.ui.placeholder0"></textarea>
+            <textarea id="svg-input" rows="18" aria-label="SVG input" data-i18n-aria="tools.svg-optimizer.ui.r65_1" class="input-mono resize-y" placeholder="&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 24 24&quot;&gt;...&lt;/svg&gt;" data-i18n-placeholder="tools.svg-optimizer.ui.placeholder0"></textarea>
 
             <div class="grid grid-cols-2 gap-3">
               <label class="inline-flex items-center gap-2 cursor-pointer text-sm text-surface-700 dark:text-surface-300">
@@ -151,7 +152,7 @@ function renderSVGOptimizerPage(lang = DEFAULT_LANGUAGE) {
               <div class="flex items-center justify-between mb-3">
                 <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400" data-i18n="tools.svg-optimizer.ui.heading2">Output SVG</h2>
               </div>
-              <textarea id="svg-output" rows="12" aria-label="Optimized SVG output" class="input-mono resize-y bg-surface-50 dark:bg-surface-950" readonly placeholder="Optimized SVG will appear here..." data-i18n-placeholder="tools.svg-optimizer.ui.placeholder1"></textarea>
+              <textarea id="svg-output" rows="12" aria-label="Optimized SVG output" data-i18n-aria="tools.svg-optimizer.ui.r65_2" class="input-mono resize-y bg-surface-50 dark:bg-surface-950" readonly placeholder="Optimized SVG will appear here..." data-i18n-placeholder="tools.svg-optimizer.ui.placeholder1"></textarea>
             </div>
           </div>
         </div>

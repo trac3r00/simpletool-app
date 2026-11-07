@@ -56,6 +56,7 @@ function renderWebhookDebuggerPage(lang = DEFAULT_LANGUAGE) {
           '<span data-i18n="tools.webhook-debugger.ui.badge0">Client-Side Only</span>',
         tooltip:
           "Parsing and signature verification happen in your browser; the request you paste is not sent to our servers.",
+        tooltipI18nKey: "tools.webhook-debugger.ui.r65_2",
       },
     ],
     { toolId: "webhook-debugger" },
@@ -110,7 +111,7 @@ function renderWebhookDebuggerPage(lang = DEFAULT_LANGUAGE) {
               <svg id="headers-chevron" class="w-4 h-4 text-surface-400 ml-auto transition-transform rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
             </button>
             <div id="headers-panel" class="px-5 pb-4">
-              <pre id="headers-content" tabindex="0" aria-label="Request headers" class="font-mono text-xs text-surface-700 dark:text-surface-300 whitespace-pre-wrap break-all max-h-48 overflow-y-auto"></pre>
+              <pre id="headers-content" tabindex="0" aria-label="Request headers" data-i18n-aria="tools.webhook-debugger.ui.r65_0" class="font-mono text-xs text-surface-700 dark:text-surface-300 whitespace-pre-wrap break-all max-h-48 overflow-y-auto"></pre>
             </div>
           </div>
 
@@ -129,7 +130,7 @@ function renderWebhookDebuggerPage(lang = DEFAULT_LANGUAGE) {
                 </div>
                 <button id="copy-body-btn" class="btn btn-ghost btn-xs" data-tooltip="Copy body" data-i18n-tooltip="tools.webhook-debugger.ui.tip2"><span data-i18n="tools.webhook-debugger.ui.button6">Copy Body</span></button>
               </div>
-              <pre id="body-content" tabindex="0" aria-label="Request body" class="font-mono text-xs text-surface-700 dark:text-surface-300 whitespace-pre-wrap break-all max-h-80 overflow-y-auto"></pre>
+              <pre id="body-content" tabindex="0" aria-label="Request body" data-i18n-aria="tools.webhook-debugger.ui.r65_1" class="font-mono text-xs text-surface-700 dark:text-surface-300 whitespace-pre-wrap break-all max-h-80 overflow-y-auto"></pre>
             </div>
           </div>
 

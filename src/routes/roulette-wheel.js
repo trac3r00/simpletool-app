@@ -171,7 +171,7 @@ function renderRouletteWheelPage(lang = "en") {
         ${toolHeader}
         <div class="rw-container">
           <div class="rw-wheel-wrapper">
-            <div class="rw-wheel-stage" id="wheel-stage" role="img" aria-label="Roulette wheel">
+            <div data-i18n-aria="tools.roulette-wheel.ui.r6_0" class="rw-wheel-stage" id="wheel-stage" role="img" aria-label="Roulette wheel">
               <canvas id="wheel-canvas" class="rw-canvas"></canvas>
               <canvas id="confetti-canvas" class="rw-confetti-canvas"></canvas>
               <div class="rw-pointer">
@@ -212,7 +212,7 @@ function renderRouletteWheelPage(lang = "en") {
                 <div class="rw-section-inner">
                   <div id="segments-list" class="rw-segments-list"></div>
                   <div class="rw-add-segment">
-                    <input type="text" id="new-segment-input" aria-label="New segment name" class="rw-add-input" data-i18n-placeholder="tools.roulette-wheel.ui.add-placeholder" placeholder="Add new segment...">
+                    <input data-i18n-aria="tools.roulette-wheel.ui.r6_1" type="text" id="new-segment-input" aria-label="New segment name" class="rw-add-input" data-i18n-placeholder="tools.roulette-wheel.ui.add-placeholder" placeholder="Add new segment...">
                     <button id="add-segment-btn" class="btn btn-secondary btn-sm" data-i18n="tools.roulette-wheel.ui.add-button">${t("tools.roulette-wheel.ui.add-button", lang)}</button>
                   </div>
                   <div class="rw-import-export">
@@ -278,7 +278,7 @@ function renderRouletteWheelPage(lang = "en") {
               <div class="rw-section-content">
                 <div class="rw-section-inner">
                   <div class="rw-preset-row">
-                    <input type="text" id="preset-name-input" aria-label="Preset name" class="rw-add-input" data-i18n-placeholder="tools.roulette-wheel.ui.preset-name-placeholder" placeholder="Preset name...">
+                    <input data-i18n-aria="tools.roulette-wheel.ui.r6_2" type="text" id="preset-name-input" aria-label="Preset name" class="rw-add-input" data-i18n-placeholder="tools.roulette-wheel.ui.preset-name-placeholder" placeholder="Preset name...">
                     <button id="save-preset-btn" class="btn btn-secondary btn-sm" data-i18n="tools.roulette-wheel.ui.save-preset">${t("tools.roulette-wheel.ui.save-preset", lang)}</button>
                   </div>
                   <div class="rw-preset-row">

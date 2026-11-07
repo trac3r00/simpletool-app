@@ -79,9 +79,9 @@ function renderSQLFormatterPage(lang = DEFAULT_LANGUAGE) {
           <div class="space-y-2 min-w-0">
             <label class="label flex items-center gap-2">
               <span data-i18n="tools.sql-formatter.ui.label0">Input SQL</span>
-              ${infoHint("This tool does not execute SQL. Validation is heuristic (not a full parser).", "Help", { i18nKey: "tools.sql-formatter.ui.desc0" })}
+              ${infoHint("This tool does not execute SQL. Validation is heuristic (not a full parser).", "Help", { ariaI18nKey: "tools.sql-formatter.ui.r65_0", i18nKey: "tools.sql-formatter.ui.desc0" })}
             </label>
-            ${createRichEditorPane({ id: "sql-in", mode: "textarea", rows: 18, ariaLabel: "SQL input", placeholder: "SELECT id, email FROM users WHERE created_at > NOW() - INTERVAL '7 days' ORDER BY created_at DESC;" })}
+            ${createRichEditorPane({ id: "sql-in", mode: "textarea", rows: 18, ariaLabel: "SQL input", ariaI18nKey: "tools.sql-formatter.ui.r65_1", placeholder: "SELECT id, email FROM users WHERE created_at > NOW() - INTERVAL '7 days' ORDER BY created_at DESC;" })}
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
@@ -118,7 +118,7 @@ function renderSQLFormatterPage(lang = DEFAULT_LANGUAGE) {
           <div class="space-y-2 min-w-0">
             <label class="label" data-i18n="tools.sql-formatter.ui.label4">Output</label>
             ${createEmptyState({ icon: "🗄️", title: "No output yet", description: "Paste SQL on the left, then click Format or Validate.", id: "sql-empty-state", i18nTitle: "tools.sql-formatter.ui.desc9", i18nDesc: "tools.sql-formatter.ui.desc10" })}
-            ${createRichEditorPane({ id: "sql-out", mode: "pre", ariaLabel: "Formatted SQL output", hidden: true })}
+            ${createRichEditorPane({ id: "sql-out", mode: "pre", ariaLabel: "Formatted SQL output", ariaI18nKey: "tools.sql-formatter.ui.r65_2", hidden: true })}
           </div>
         </div>
 

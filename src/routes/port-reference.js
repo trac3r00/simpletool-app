@@ -29,6 +29,7 @@ export function renderPortReferenceSection(lang = DEFAULT_LANGUAGE) {
       {
         text: translation?.ui?.badge23 || "IANA Official",
         tooltip: "Official port assignments from IANA registry.",
+        tooltipI18nKey: "tools.port-reference.ui.r66_0",
       },
       {
         text: translation?.ui?.badge24 || "Security Flags",
@@ -47,6 +48,10 @@ export function renderPortReferenceSection(lang = DEFAULT_LANGUAGE) {
     currentTool?.relatedTools
       ?.map((id) => TOOLS.find((t) => t.id === id))
       .filter(Boolean) || [];
+
+  // English description -> catalog key for the descriptions that carry prose;
+  // product and protocol names stay as they are.
+  const portDescKeys = JSON.stringify({"Reserved port":"r66_d0","Echo protocol":"r66_d1","Discard protocol":"r66_d2","Active Users":"r66_d3","Daytime protocol":"r66_d4","Network status":"r66_d5","Quote of the Day":"r66_d6","Character Generator":"r66_d7","File Transfer [Default Data]":"r66_d8","File Transfer Protocol [Control]":"r66_d9","Telnet protocol":"r66_d10","Host Name Server":"r66_d11","Who Is service":"r66_d12","Gopher protocol":"r66_d13","Finger protocol":"r66_d14","Kerberos authentication":"r66_d15","Authentication Service":"r66_d16","Kerberos Admin":"r66_d17","SMTP over SSL (deprecated)":"r66_d18","Unix System Logging":"r66_d19","Line Printer Daemon":"r66_d20","Kerberos Login":"r66_d21","Kerberos Remote Shell":"r66_d22","Remote Monitor":"r66_d23","Mail Submission Agent":"r66_d24","MacOS Server Admin":"r66_d25","Microsoft Exchange Routing":"r66_d26","Kerberos Admin Server":"r66_d27","rsync file synchronization":"r66_d28","VMware Server Console":"r66_d29","VMware Remote Console":"r66_d30","Microsoft SQL Monitor":"r66_d31","Oracle database default listener":"r66_d32","RADIUS Authentication":"r66_d33","Microsoft RDP for VMs":"r66_d34","DirectAdmin Web Panel":"r66_d35","Half-Life Server":"r66_d36","Docker REST API (unencrypted)":"r66_d37","CVS Version Control":"r66_d38","Oracle Database":"r66_d39","SMTP Alternate":"r66_d40","Zebra routing":"r66_d41","OSPF Daemon":"r66_d42","BGP Daemon":"r66_d43","System Monitor":"r66_d44","GPS Daemon":"r66_d45","Firebird Database":"r66_d46","Command Port":"r66_d47","MySQL Database":"r66_d48","Database Server":"r66_d49","RDP Alternate":"r66_d50","Environmental Monitor":"r66_d51","Splunk Web Interface":"r66_d52","Subversion Version Control":"r66_d53","NFS Lock Daemon":"r66_d54","Remote Who":"r66_d55","Erlang Port Mapper":"r66_d56","Peer-to-Peer Networking":"r66_d57","Gearman Job Server":"r66_d58","Application Server":"r66_d59","Radmin Remote Admin":"r66_d60","XMPP Client Connection":"r66_d61","XMPP Server-to-Server":"r66_d62","PostgreSQL Database":"r66_d63","Kibana Dashboard":"r66_d64","pcAnywhere Status":"r66_d65","Nagios Remote Plugin":"r66_d66","Remote Replication":"r66_d67","Music Player Daemon":"r66_d68","X11 Server":"r66_d69","DameWare Remote Control":"r66_d70","MySQL Proxy":"r66_d71","NetOp Remote Control":"r66_d72","IRC File Transfer":"r66_d73","Camera Control":"r66_d74","FTP Proxy":"r66_d75","HTTP Proxy / Alternate HTTP":"r66_d76","HTTP Proxy Alternate":"r66_d77","HTTPS Alternate":"r66_d78","Sun Web Server Admin":"r66_d79","Database Admin":"r66_d80","ETL Service Manager":"r66_d81","Tor Control Port":"r66_d82","Git Version Control":"r66_d83","LANDesk Remote Control":"r66_d84","Amanda Backup":"r66_d85","PGP Key Server":"r66_d86","Source Engine Games":"r66_d87","MongoDB Config Server":"r66_d88","Steam In-Home Streaming":"r66_d89","Rust Game Server":"r66_d90","MongoDB Web Status":"r66_d91","HTTP Proxy":"r66_d92","Dynamic/Private Port":"r66_d93","Development/Various (React, Grafana, etc)":"r66_d94","Windows Remote Management (HTTP)":"r66_d95","Windows Remote Management (HTTPS)":"r66_d96","Windows Remote Management":"r66_d97"});
 
   const content = `
     <div class="net-ref-section">
@@ -199,6 +204,12 @@ export function renderPortReferenceSection(lang = DEFAULT_LANGUAGE) {
 
     <script>
       (function() {
+        const tr = (key, fallback) => (window._t ? window._t('tools.port-reference.js.' + key, fallback) : fallback);
+        const PORT_DESC_KEYS = ${portDescKeys};
+        const portDesc = (d) => (PORT_DESC_KEYS[d] ? tr(PORT_DESC_KEYS[d], d) : d);
+        const RISK_KEYS = { high: 'r66_risk_high', medium: 'r66_risk_medium', low: 'r66_risk_low', none: 'r66_risk_none' };
+        const riskLabel = (risk) => (RISK_KEYS[risk] ? tr(RISK_KEYS[risk], risk.toUpperCase()) : risk.toUpperCase());
+
         // Comprehensive IANA Port Database
         const PORT_DATABASE = [
           // Well-Known Ports (0-1023)
@@ -838,6 +849,7 @@ export function renderPortReferenceSection(lang = DEFAULT_LANGUAGE) {
               port.port.toString().includes(searchQuery) ||
               port.service.toLowerCase().includes(searchQuery.toLowerCase()) ||
               port.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              portDesc(port.description).toLowerCase().includes(searchQuery.toLowerCase()) ||
               (port.tags && port.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())));
 
             // Protocol filter
@@ -871,7 +883,7 @@ export function renderPortReferenceSection(lang = DEFAULT_LANGUAGE) {
         // Render results table
         function renderResults() {
           if (filteredPorts.length === 0) {
-            resultsBody.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-surface-500 dark:text-surface-400">No ports found matching your search.</td></tr>';
+            resultsBody.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-surface-500 dark:text-surface-400">' + tr('tpl4', 'No ports found matching your search.') + '</td></tr>';
             paginationEl.classList.add('hidden');
             return;
           }
@@ -883,14 +895,14 @@ export function renderPortReferenceSection(lang = DEFAULT_LANGUAGE) {
           resultsBody.innerHTML = pagePorts.map(port => \`
             <tr class="hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors">
               <td class="py-2 pr-4 font-mono text-surface-900 dark:text-white">\${port.port}</td>
-              <td class="py-2 pr-4 font-medium text-surface-900 dark:text-white">\${port.service}</td>
+              <td class="py-2 pr-4 font-medium text-surface-900 dark:text-white">\${port.service === 'Reserved' ? tr('r66_reserved', 'Reserved') : port.service}</td>
               <td class="py-2 pr-4 \${getProtocolColor(port.protocol)}">\${port.protocol}</td>
               <td class="py-2 pr-4 text-surface-600 dark:text-surface-400">
-                \${port.description}
+                \${portDesc(port.description)}
                 \${port.tags ? '<span class="ml-2 text-xs text-surface-400">[' + port.tags.join(', ') + ']</span>' : ''}
               </td>
               <td class="py-2">
-                <span class="px-2 py-1 rounded text-xs font-medium \${getRiskColor(port.risk)}">\${port.risk.toUpperCase()}</span>
+                <span class="px-2 py-1 rounded text-xs font-medium \${getRiskColor(port.risk)}">\${riskLabel(port.risk)}</span>
               </td>
             </tr>
           \`).join('');
@@ -899,7 +911,7 @@ export function renderPortReferenceSection(lang = DEFAULT_LANGUAGE) {
           const totalPages = Math.ceil(filteredPorts.length / itemsPerPage);
           if (totalPages > 1) {
             paginationEl.classList.remove('hidden');
-            pageInfoEl.textContent = \`Page \${currentPage} of \${totalPages}\`;
+            pageInfoEl.textContent = tr('r66_page', 'Page {current} of {total}').replace('{current}', currentPage).replace('{total}', totalPages);
             prevPageBtn.disabled = currentPage === 1;
             nextPageBtn.disabled = currentPage === totalPages;
           } else {
@@ -915,7 +927,7 @@ export function renderPortReferenceSection(lang = DEFAULT_LANGUAGE) {
               <button class="top-port-btn p-2 bg-surface-50 dark:bg-surface-800 rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900 transition-colors text-left"
                       data-port="\${port}">
                 <span class="font-mono font-bold text-surface-900 dark:text-white">\${port}</span>
-                <span class="block text-xs text-surface-500 dark:text-surface-400 truncate">\${portData ? portData.service : 'Unknown'}</span>
+                <span class="block text-xs text-surface-500 dark:text-surface-400 truncate">\${portData ? portData.service : tr('r66_unknown', 'Unknown')}</span>
               </button>
             \`;
           }).join('');
@@ -983,10 +995,11 @@ export function renderPortReferenceSection(lang = DEFAULT_LANGUAGE) {
           }
         });
 
-        // Initialize
-        updateStats();
-        renderResults();
-        renderTopPorts();
+        // Initialize once the i18n bootstrap has defined window._t, so the
+        // first render already uses the page language.
+        const init = () => { updateStats(); renderResults(); renderTopPorts(); };
+        if (window._t || document.readyState !== 'loading') init();
+        else document.addEventListener('DOMContentLoaded', init);
       })();
     </script>
   `;

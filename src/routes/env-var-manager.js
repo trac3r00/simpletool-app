@@ -54,6 +54,7 @@ function renderEnvVarManagerPage(lang = DEFAULT_LANGUAGE) {
       {
         text: '<span data-i18n="tools.env-var-manager.ui.badge0">Diff</span>',
         tooltip: "Find missing keys and value drift between environments.",
+        tooltipI18nKey: "tools.env-var-manager.ui.r65_2",
       },
       {
         text: '<span data-i18n="tools.env-var-manager.ui.badge1">Mask Secrets</span>',
@@ -88,7 +89,7 @@ function renderEnvVarManagerPage(lang = DEFAULT_LANGUAGE) {
             <div class="flex items-center justify-between gap-3">
               <label class="label flex items-center gap-2">
                 <span data-i18n="tools.env-var-manager.ui.label0">Environment A</span>
-                ${infoHint("Paste dotenv-style KEY=VALUE lines. Comments (#) are supported. Your input is processed locally and not sent to our servers.", "Help", { i18nKey: "tools.env-var-manager.ui.desc0" })}
+                ${infoHint("Paste dotenv-style KEY=VALUE lines. Comments (#) are supported. Your input is processed locally and not sent to our servers.", "Help", { ariaI18nKey: "tools.env-var-manager.ui.r65_0", i18nKey: "tools.env-var-manager.ui.desc0" })}
               </label>
               <input id="name-a" class="input w-40" value="Dev" aria-label="Name A" data-i18n-aria="tools.env-var-manager.ui.aria0" />
             </div>
@@ -116,7 +117,7 @@ function renderEnvVarManagerPage(lang = DEFAULT_LANGUAGE) {
               </label>
               <div class="mt-3">
                 <label class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" data-i18n="tools.env-var-manager.ui.label3">Filter keys</label>
-                <input id="filter" aria-label="Filter variables" class="input font-mono" placeholder="e.g., AWS_, SECRET, DB_" data-i18n-placeholder="tools.env-var-manager.ui.placeholder2" />
+                <input data-i18n-aria="tools.env-var-manager.ui.r6_0" id="filter" aria-label="Filter variables" class="input font-mono" placeholder="e.g., AWS_, SECRET, DB_" data-i18n-placeholder="tools.env-var-manager.ui.placeholder2" />
               </div>
             </div>
 
@@ -144,7 +145,7 @@ function renderEnvVarManagerPage(lang = DEFAULT_LANGUAGE) {
 
             <div class="tool-group p-5">
               <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400 mb-3" data-i18n="tools.env-var-manager.ui.heading2">Share-safe report</h2>
-              <textarea id="share" rows="10" aria-label="Shareable comparison output" class="input-mono resize-y bg-surface-50 dark:bg-surface-950" readonly placeholder="Click Compare to generate..." data-i18n-placeholder="tools.env-var-manager.ui.placeholder3"></textarea>
+              <textarea id="share" rows="10" aria-label="Shareable comparison output" data-i18n-aria="tools.env-var-manager.ui.r65_1" class="input-mono resize-y bg-surface-50 dark:bg-surface-950" readonly placeholder="Click Compare to generate..." data-i18n-placeholder="tools.env-var-manager.ui.placeholder3"></textarea>
             </div>
           </div>
 

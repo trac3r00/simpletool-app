@@ -110,6 +110,8 @@ export function renderReviewDescriptionGeneratorSection(
     </main>
 
     <script>
+      // This script builds the form before the i18n bootstrap defines window._t.
+      const _t = (key, fallback) => (typeof window._t === 'function' ? window._t(key, fallback) : fallback);
     (function() {
       'use strict';
 
@@ -257,12 +259,14 @@ export function renderReviewDescriptionGeneratorSection(
         const tpl = TEMPLATES[templateId];
         if (!tpl) return;
         formContainer.innerHTML = '';
+        var LABEL_KEYS = { 'Package Name': 'r66_0', 'Previous Version': 'r66_1', 'New Version': 'r66_2', 'Change Scope': 'r66_3', 'Changelog / Release URL': 'r66_4', 'Breaking Changes': 'r66_5', 'Additional Notes': 'r66_6' };
         tpl.fields.forEach(function(field) {
           var wrapper = document.createElement('div');
           var label = document.createElement('label');
           label.className = 'label';
           label.setAttribute('for', 'field-' + field.id);
-          label.textContent = field.label;
+          label.textContent = LABEL_KEYS[field.label] ? _t('tools.review-description-generator.js.' + LABEL_KEYS[field.label], field.label) : field.label;
+          if (LABEL_KEYS[field.label]) label.setAttribute('data-i18n', 'tools.review-description-generator.js.' + LABEL_KEYS[field.label]);
           wrapper.appendChild(label);
 
           var input;

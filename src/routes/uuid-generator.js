@@ -53,6 +53,7 @@ function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
         color: "purple",
         tooltip:
           "Generate multiple UUIDs or GUIDs at once without any network requests.",
+        tooltipI18nKey: "tools.uuid-generator.ui.r65_0",
       },
     ],
     { toolId: "uuid-generator" },
@@ -76,7 +77,7 @@ function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
             <!-- UUID Type Selection -->
             <div>
               <label for="uuid-version" class="label"><span data-i18n="tools.uuid-generator.ui.label1">UUID Version</span></label>
-              <select id="uuid-version" class="input" data-tooltip="v4 is random. v7 is time-sortable. v1 is legacy time-based." data-i18n-tooltip="tools.uuid-generator.ui.tip0">
+              <select id="uuid-version" class="input" data-tooltip="v4 is random. v7 is time-sortable. v1 is legacy time-based." data-i18n-tooltip="tools.uuid-generator.ui.r65_1">
                 <option value="v4" selected data-i18n="tools.uuid-generator.ui.option5">UUID v4 (Random)</option>
                 <option value="v7" data-i18n="tools.uuid-generator.ui.optionV7">UUID v7 (Unix time, RFC 9562)</option>
                 <option value="v1" data-i18n="tools.uuid-generator.ui.option6">UUID v1 (Timestamp)</option>
@@ -89,10 +90,10 @@ function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
 
             <!-- Quantity -->
             <div>
-              <label for="quantity" class="label">
+              <label data-i18n-html="tools.uuid-generator.ui.r6_0" for="quantity" class="label">
                 Quantity: <span id="quantity-value" class="font-bold text-primary-600 dark:text-primary-400">1</span>
               </label>
-              <input type="range" id="quantity" min="1" data-tooltip="Generate multiple UUIDs at once (up to 100)" data-i18n-tooltip="tools.uuid-generator.ui.tip1" max="100" value="1" class="w-full h-2 bg-surface-200 dark:bg-surface-700 rounded-lg appearance-none cursor-pointer accent-primary-600">
+              <input type="range" id="quantity" min="1" data-tooltip="Generate multiple UUIDs at once (up to 100)" data-i18n-tooltip="tools.uuid-generator.ui.r65_2" max="100" value="1" class="w-full h-2 bg-surface-200 dark:bg-surface-700 rounded-lg appearance-none cursor-pointer accent-primary-600">
             </div>
 
             <!-- Format Options -->
@@ -116,7 +117,7 @@ function renderUUIDGeneratorPage(lang = DEFAULT_LANGUAGE) {
                   <span class="text-sm font-medium text-surface-900 dark:text-surface-100" data-i18n="tools.uuid-generator.ui.desc14">With braces {}</span>
                 </label>
               </div>
-              <p class="text-xs text-surface-500 dark:text-surface-400 mt-2">Tip: A Microsoft GUID is a UUID v4 with <code>{}</code> braces — select UUID v4 + 'With braces {}' format.</p>
+              <p data-i18n-html="tools.uuid-generator.ui.r6_1" class="text-xs text-surface-500 dark:text-surface-400 mt-2">Tip: A Microsoft GUID is a UUID v4 with <code>{}</code> braces — select UUID v4 + 'With braces {}' format.</p>
             </div>
 
             <!-- Generate Button -->

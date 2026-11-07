@@ -56,6 +56,8 @@ export function createRichEditorPane(opts = {}) {
     placeholder = "",
     rows = 20,
     ariaLabel = "",
+    ariaI18nKey = "",
+    placeholderI18nKey = "",
     hidden = false,
     wrapClass = "",
   } = opts;
@@ -65,7 +67,9 @@ export function createRichEditorPane(opts = {}) {
   const hiddenClass = hidden ? " hidden" : "";
   const extraWrap = wrapClass ? ` ${wrapClass}` : "";
 
-  const ariaAttr = ariaLabel ? ` aria-label="${escapeAttribute(ariaLabel)}"` : "";
+  const ariaAttr =
+    (ariaLabel ? ` aria-label="${escapeAttribute(ariaLabel)}"` : "") +
+    (ariaI18nKey ? ` data-i18n-aria="${ariaI18nKey}"` : "");
 
   if (mode === "textarea") {
     // Placeholders here are code samples that legitimately contain quotes and
@@ -75,7 +79,8 @@ export function createRichEditorPane(opts = {}) {
     // ariaAttr applies here too — this branch used to drop it, which left
     // every editor textarea without an accessible name.
     const phAttr = placeholder
-      ? ` placeholder="${escapeAttribute(placeholder)}"`
+      ? ` placeholder="${escapeAttribute(placeholder)}"` +
+        (placeholderI18nKey ? ` data-i18n-placeholder="${placeholderI18nKey}"` : "")
       : "";
     return (
       `<div id="${wrapId}" class="re-wrap${extraWrap}${hiddenClass}">` +

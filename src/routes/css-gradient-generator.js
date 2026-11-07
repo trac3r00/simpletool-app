@@ -33,6 +33,7 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
     [
       {
         text: translation?.ui?.badge32 || "Client-Side Only",
+        i18nKey: "tools.css-gradient.ui.r63_65",
         tooltip:
           "Runs entirely in your browser using Web APIs — your data is processed locally and not sent to our servers.",
       },
@@ -59,27 +60,27 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
             <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50 mb-4" data-i18n="tools.css-gradient.ui.heading18">🔧 Gradient Type</h2>
 
             <div class="grid grid-cols-2 gap-3">
-               <button type="button" id="type-linear" class="gradient-type-btn py-3 px-4 rounded-lg font-semibold transition bg-primary-700 text-white" aria-pressed="true" data-tooltip="Gradient along a straight line" data-i18n-tooltip="tools.css-gradient-generator.ui.tip0">
+               <button type="button" id="type-linear" class="gradient-type-btn btn border border-transparent bg-primary-700 text-white" aria-pressed="true" data-tooltip="Gradient along a straight line" data-i18n-tooltip="tools.css-gradient.ui.r63_66">
                  <span data-i18n="tools.css-gradient.ui.button0">Linear</span>
                </button>
-              <button type="button" id="type-radial" class="gradient-type-btn py-3 px-4 rounded-lg font-semibold transition bg-surface-200 dark:bg-surface-800 text-surface-900 dark:text-surface-200" aria-pressed="false" data-tooltip="Gradient radiating from a center point" data-i18n-tooltip="tools.css-gradient-generator.ui.tip1">
+              <button type="button" id="type-radial" class="gradient-type-btn btn border border-transparent bg-surface-200 dark:bg-surface-800 text-surface-900 dark:text-surface-200" aria-pressed="false" data-tooltip="Gradient radiating from a center point" data-i18n-tooltip="tools.css-gradient.ui.r63_67">
                 <span data-i18n="tools.css-gradient.ui.button1">Radial</span>
               </button>
             </div>
 
             <!-- Linear Options -->
             <div id="linear-options" class="mt-4">
-              <label for="angle-slider" class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2" data-tooltip="Direction angle for linear gradient (0-360°)" data-i18n-tooltip="tools.css-gradient-generator.ui.tip2">
-                Direction: <span id="angle-value">90</span>°
+              <label for="angle-slider" class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2" data-tooltip="Direction angle for linear gradient (0-360°)" data-i18n-tooltip="tools.css-gradient.ui.r63_68">
+                <span data-i18n="tools.css-gradient.ui.r63_70">Direction:</span> <span id="angle-value">90</span>°
               </label>
               <input type="range" id="angle-slider" min="0" max="360" value="90"
                 class="w-full h-2 bg-surface-200 rounded-lg appearance-none cursor-pointer dark:bg-surface-700" />
 
               <div class="grid grid-cols-4 gap-2 mt-3">
-                 <button class="direction-btn py-2 px-3 text-xs rounded bg-surface-100 dark:bg-surface-800 hover:bg-primary-700 hover:text-white transition" data-angle="0" aria-label="Set gradient direction to 0 degrees (upward)">↑</button>
-                 <button class="direction-btn py-2 px-3 text-xs rounded bg-surface-100 dark:bg-surface-800 hover:bg-primary-700 hover:text-white transition" data-angle="90" aria-label="Set gradient direction to 90 degrees (right)">→</button>
-                 <button class="direction-btn py-2 px-3 text-xs rounded bg-surface-100 dark:bg-surface-800 hover:bg-primary-700 hover:text-white transition" data-angle="180" aria-label="Set gradient direction to 180 degrees (downward)">↓</button>
-                 <button class="direction-btn py-2 px-3 text-xs rounded bg-surface-100 dark:bg-surface-800 hover:bg-primary-700 hover:text-white transition" data-angle="270" aria-label="Set gradient direction to 270 degrees (left)">←</button>
+                 <button data-i18n-aria="tools.css-gradient.ui.r6_0" class="direction-btn py-2 px-3 text-xs rounded bg-surface-100 dark:bg-surface-800 hover:bg-primary-700 hover:text-white transition" data-angle="0" aria-label="Set gradient direction to 0 degrees (upward)">↑</button>
+                 <button data-i18n-aria="tools.css-gradient.ui.r6_1" class="direction-btn py-2 px-3 text-xs rounded bg-surface-100 dark:bg-surface-800 hover:bg-primary-700 hover:text-white transition" data-angle="90" aria-label="Set gradient direction to 90 degrees (right)">→</button>
+                 <button data-i18n-aria="tools.css-gradient.ui.r6_2" class="direction-btn py-2 px-3 text-xs rounded bg-surface-100 dark:bg-surface-800 hover:bg-primary-700 hover:text-white transition" data-angle="180" aria-label="Set gradient direction to 180 degrees (downward)">↓</button>
+                 <button data-i18n-aria="tools.css-gradient.ui.r6_3" class="direction-btn py-2 px-3 text-xs rounded bg-surface-100 dark:bg-surface-800 hover:bg-primary-700 hover:text-white transition" data-angle="270" aria-label="Set gradient direction to 270 degrees (left)">←</button>
               </div>
             </div>
 
@@ -110,7 +111,7 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
           <div class="tool-group p-6">
             <div class="flex justify-between items-center mb-4">
               <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50" data-i18n="tools.css-gradient.ui.heading19">🎨 Color Stops</h2>
-                <button id="add-color-stop" data-tooltip="Add another color to the gradient" data-i18n-tooltip="tools.css-gradient-generator.ui.tip3" class="btn-primary">
+                <button id="add-color-stop" data-tooltip="Add another color to the gradient" data-i18n-tooltip="tools.css-gradient.ui.r63_69" class="btn-primary">
                 <span data-i18n="tools.css-gradient.ui.button2">+ Add Color</span>
               </button>
             </div>
@@ -125,12 +126,12 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
             <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50 mb-4" data-i18n="tools.css-gradient.ui.heading20">✨ Preset Gradients</h2>
 
             <div class="grid grid-cols-2 gap-3">
-              <button type="button" class="preset-card" data-preset="sunset" aria-label="Apply Sunset preset" title="Sunset" style="background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);"></button>
-              <button type="button" class="preset-card" data-preset="ocean" aria-label="Apply Ocean preset" title="Ocean" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></button>
-              <button type="button" class="preset-card" data-preset="forest" aria-label="Apply Forest preset" title="Forest" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);"></button>
-              <button type="button" class="preset-card" data-preset="fire" aria-label="Apply Fire preset" title="Fire" style="background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%);"></button>
-              <button type="button" class="preset-card" data-preset="sky" aria-label="Apply Sky preset" title="Sky" style="background: linear-gradient(135deg, #2196f3 0%, #00bcd4 100%);"></button>
-              <button type="button" class="preset-card" data-preset="rose" aria-label="Apply Rose preset" title="Rose" style="background: linear-gradient(135deg, #f857a6 0%, #ff5858 100%);"></button>
+              <button data-i18n-aria="tools.css-gradient.ui.r6_4" type="button" class="preset-card" data-preset="sunset" aria-label="Apply Sunset preset" title="Sunset" style="background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);"></button>
+              <button data-i18n-aria="tools.css-gradient.ui.r6_5" type="button" class="preset-card" data-preset="ocean" aria-label="Apply Ocean preset" title="Ocean" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></button>
+              <button data-i18n-aria="tools.css-gradient.ui.r6_6" type="button" class="preset-card" data-preset="forest" aria-label="Apply Forest preset" title="Forest" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);"></button>
+              <button data-i18n-aria="tools.css-gradient.ui.r6_7" type="button" class="preset-card" data-preset="fire" aria-label="Apply Fire preset" title="Fire" style="background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%);"></button>
+              <button data-i18n-aria="tools.css-gradient.ui.r6_8" type="button" class="preset-card" data-preset="sky" aria-label="Apply Sky preset" title="Sky" style="background: linear-gradient(135deg, #2196f3 0%, #00bcd4 100%);"></button>
+              <button data-i18n-aria="tools.css-gradient.ui.r6_9" type="button" class="preset-card" data-preset="rose" aria-label="Apply Rose preset" title="Rose" style="background: linear-gradient(135deg, #f857a6 0%, #ff5858 100%);"></button>
             </div>
           </div>
         </div>
@@ -152,7 +153,7 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
               </button>
             </div>
 
-            <pre id="css-output" tabindex="0" role="region" aria-label="Generated CSS" class="bg-surface-50 dark:bg-surface-950 p-4 rounded-lg overflow-x-auto text-sm font-mono text-surface-900 dark:text-surface-100 border border-surface-200 dark:border-surface-800"></pre>
+            <pre id="css-output" tabindex="0" role="region" aria-label="Generated CSS" data-i18n-aria="tools.css-gradient.ui.r63_71" class="bg-surface-50 dark:bg-surface-950 p-4 rounded-lg overflow-x-auto text-sm font-mono text-surface-900 dark:text-surface-100 border border-surface-200 dark:border-surface-800"></pre>
           </div>
 
           <!-- Info Cards -->
@@ -160,20 +161,20 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
               <div class="bg-info-50 dark:bg-info-900/20 rounded-xl p-4 border-2 border-info-200 dark:border-info-700">
                <h3 class="font-bold text-info-900 dark:text-info-200 mb-2" data-i18n="tools.css-gradient.ui.heading23">💡 Quick Tips</h3>
                <ul class="text-sm text-info-800 dark:text-info-300 space-y-1 list-disc list-inside">
-                <li>Use 2-3 colors for smooth gradients</li>
-                <li>Add more color stops for complex effects</li>
-                <li>Try preset gradients for inspiration</li>
-                <li>Radial gradients work great for backgrounds</li>
+                <li data-i18n="tools.css-gradient.ui.r6_10">Use 2-3 colors for smooth gradients</li>
+                <li data-i18n="tools.css-gradient.ui.r6_11">Add more color stops for complex effects</li>
+                <li data-i18n="tools.css-gradient.ui.r6_12">Try preset gradients for inspiration</li>
+                <li data-i18n="tools.css-gradient.ui.r6_13">Radial gradients work great for backgrounds</li>
               </ul>
             </div>
 
               <div class="bg-success-50 dark:bg-success-900/20 rounded-xl p-4 border-2 border-success-200 dark:border-success-700">
                <h3 class="font-bold text-success-900 dark:text-success-200 mb-2" data-i18n="tools.css-gradient.ui.heading24">🎯 Use Cases</h3>
                <ul class="text-sm text-success-800 dark:text-success-300 space-y-1 list-disc list-inside">
-                <li>Website backgrounds and hero sections</li>
-                <li>Button and card designs</li>
-                <li>Text gradients with background-clip</li>
-                <li>Loading screens and overlays</li>
+                <li data-i18n="tools.css-gradient.ui.r6_14">Website backgrounds and hero sections</li>
+                <li data-i18n="tools.css-gradient.ui.r6_15">Button and card designs</li>
+                <li data-i18n="tools.css-gradient.ui.r6_16">Text gradients with background-clip</li>
+                <li data-i18n="tools.css-gradient.ui.r6_17">Loading screens and overlays</li>
               </ul>
             </div>
           </div>
@@ -206,7 +207,7 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
               '<ul><li><strong>Avoid "Gray Dead Zones"</strong>: When transitioning between two distant colors, the midpoint can sometimes look muddy or gray. Adding a vibrant intermediate color stop can keep the gradient looking fresh.</li><li><strong>Use Subtle Transitions</strong>: Often, the best gradients are the ones you barely notice. Using colors that are close to each other on the color wheel creates a sophisticated, professional look.</li><li><strong>Layering</strong>: You can stack multiple gradients on top of each other using the <code>background-image</code> property, allowing for incredibly complex and artistic effects.</li><li><strong>Accessibility</strong>: Ensure that any text placed over a gradient has sufficient contrast. Use tools to check WCAG compliance for all color combinations.</li></ul>',
           },
         ],
-        "css-gradient-generator",
+        "css-gradient",
         currentLang,
       )}
     </div>
@@ -237,8 +238,8 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
       // Gradient Type Toggle
        document.getElementById('type-linear').addEventListener('click', () => {
          gradientType = 'linear';
-         document.getElementById('type-linear').className = 'gradient-type-btn py-3 px-4 rounded-lg font-semibold transition bg-primary-700 text-white';
-         document.getElementById('type-radial').className = 'gradient-type-btn py-3 px-4 rounded-lg font-semibold transition bg-surface-200 dark:bg-surface-800 text-surface-900 dark:text-surface-200';
+         document.getElementById('type-linear').className = 'gradient-type-btn btn border border-transparent bg-primary-700 text-white';
+         document.getElementById('type-radial').className = 'gradient-type-btn btn border border-transparent bg-surface-200 dark:bg-surface-800 text-surface-900 dark:text-surface-200';
          document.getElementById('type-linear').setAttribute('aria-pressed', 'true');
          document.getElementById('type-radial').setAttribute('aria-pressed', 'false');
         linearOptions.classList.remove('hidden');
@@ -248,8 +249,8 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
 
        document.getElementById('type-radial').addEventListener('click', () => {
          gradientType = 'radial';
-         document.getElementById('type-radial').className = 'gradient-type-btn py-3 px-4 rounded-lg font-semibold transition bg-primary-700 text-white';
-         document.getElementById('type-linear').className = 'gradient-type-btn py-3 px-4 rounded-lg font-semibold transition bg-surface-200 dark:bg-surface-800 text-surface-900 dark:text-surface-200';
+         document.getElementById('type-radial').className = 'gradient-type-btn btn border border-transparent bg-primary-700 text-white';
+         document.getElementById('type-linear').className = 'gradient-type-btn btn border border-transparent bg-surface-200 dark:bg-surface-800 text-surface-900 dark:text-surface-200';
          document.getElementById('type-radial').setAttribute('aria-pressed', 'true');
          document.getElementById('type-linear').setAttribute('aria-pressed', 'false');
         linearOptions.classList.add('hidden');
@@ -309,7 +310,7 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
         colorStopsContainer.innerHTML = colorStops.map((stop, index) => \`
           <div class="color-stop">
             <div class="flex items-center justify-between mb-2">
-              <span class="text-sm font-semibold text-surface-700 dark:text-surface-300">Color \${index + 1}</span>
+              <span class="text-sm font-semibold text-surface-700 dark:text-surface-300">\${(window._t ? window._t('tools.css-gradient.js.r63_72', 'Color {n}') : 'Color {n}').replace('{n}', index + 1)}</span>
               \${colorStops.length > 2 ? \`
                 <button type="button" class="remove-stop text-error-500 hover:text-error-700 text-sm font-semibold" data-index="\${index}" aria-label="Remove color stop \${index + 1}">
                   <span data-i18n="tools.css-gradient.ui.button4">✕ Remove</span>
@@ -317,11 +318,11 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
               \` : ''}
             </div>
             <div class="flex items-center gap-3">
-              <input type="color" value="\${stop.color}" aria-label="Color stop \${index + 1}" class="color-picker w-12 h-12 rounded border-2 border-surface-300 dark:border-surface-700 cursor-pointer" data-index="\${index}" />
-              <input type="text" value="\${stop.color}" aria-label="Color stop \${index + 1} hex value" spellcheck="false" maxlength="7" class="color-hex input font-mono w-24" data-index="\${index}" />
+              <input type="color" value="\${stop.color}" aria-label="\${(window._t ? window._t('tools.css-gradient.js.r63_74', 'Color stop {n}') : 'Color stop {n}').replace('{n}', index + 1)}" class="color-picker w-12 h-12 rounded border-2 border-surface-300 dark:border-surface-700 cursor-pointer" data-index="\${index}" />
+              <input type="text" value="\${stop.color}" aria-label="\${(window._t ? window._t('tools.css-gradient.js.r63_75', 'Color stop {n} hex value') : 'Color stop {n} hex value').replace('{n}', index + 1)}" spellcheck="false" maxlength="7" class="color-hex input font-mono w-24" data-index="\${index}" />
               <div class="flex-1">
-                <label class="position-label text-xs text-surface-600 dark:text-surface-400" data-index="\${index}">Position: \${stop.position}%</label>
-                <input type="range" min="0" max="100" value="\${stop.position}" aria-label="Color stop \${index + 1} position" class="position-slider w-full h-2 bg-surface-200 rounded-lg appearance-none cursor-pointer dark:bg-surface-700" data-index="\${index}" />
+                <label class="position-label text-xs text-surface-600 dark:text-surface-400" data-index="\${index}">\${(window._t ? window._t('tools.css-gradient.js.r63_73', 'Position: {n}%') : 'Position: {n}%').replace('{n}', stop.position)}</label>
+                <input type="range" min="0" max="100" value="\${stop.position}" aria-label="\${(window._t ? window._t('tools.css-gradient.js.r63_76', 'Color stop {n} position') : 'Color stop {n} position').replace('{n}', index + 1)}" class="position-slider w-full h-2 bg-surface-200 rounded-lg appearance-none cursor-pointer dark:bg-surface-700" data-index="\${index}" />
               </div>
             </div>
           </div>
@@ -359,7 +360,7 @@ function renderCSSGradientPage(lang = DEFAULT_LANGUAGE) {
             colorStops[index].position = parseInt(e.target.value);
             // Update in place: re-rendering here would destroy the slider mid-drag.
             const label = colorStopsContainer.querySelector('.position-label[data-index="' + index + '"]');
-            if (label) label.textContent = 'Position: ' + colorStops[index].position + '%';
+            if (label) label.textContent = (window._t ? window._t('tools.css-gradient.js.r63_73', 'Position: {n}%') : 'Position: {n}%').replace('{n}', colorStops[index].position);
             updateGradient();
           });
         });

@@ -75,13 +75,13 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
           <div class="tool-group p-6 md:p-8 space-y-8">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="space-y-2">
-              <label for="row-count" class="text-xs font-semibold text-surface-500 dark:text-surface-400 uppercase tracking-[0.2em]"><span data-i18n="tools.mock-data-generator.ui.label2">Rows</span> ${infoHint("Generate 10-500 rows; higher counts run longer but stay inside the browser.")}</label>
-              <input id="row-count" type="number" data-tooltip="Number of data rows to generate (10-500)" data-i18n-tooltip="tools.mock-data-generator.ui.tip0" min="10" max="500" value="25" class="input w-full" />
+              <label for="row-count" class="text-xs font-semibold text-surface-500 dark:text-surface-400 uppercase tracking-[0.2em]"><span data-i18n="tools.mock-data-generator.ui.label2">Rows</span> ${infoHint("Generate 10-500 rows; higher counts run longer but stay inside the browser.", undefined, { i18nKey: "tools.mock-data-generator.ui.r64_0", ariaI18nKey: "tools.mock-data-generator.ui.r64_0" })}</label>
+              <input id="row-count" type="number" data-tooltip="Number of data rows to generate (10-500)" data-i18n-tooltip="tools.mock-data-generator.ui.r64_2" min="10" max="500" value="25" class="input w-full" />
               <p class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.mock-data-generator.ui.desc8">Generate between 10 and 500 records.</p>
             </div>
             <div class="space-y-2">
               <label for="output-format" class="text-xs font-semibold text-surface-500 dark:text-surface-400 uppercase tracking-[0.2em]"><span data-i18n="tools.mock-data-generator.ui.label3">Format</span></label>
-              <select id="output-format" data-tooltip="Choose output format for generated data" data-i18n-tooltip="tools.mock-data-generator.ui.tip1" class="input" aria-label="Output format">
+              <select id="output-format" data-tooltip="Choose output format for generated data" data-i18n-tooltip="tools.mock-data-generator.ui.r64_3" class="input" aria-label="Output format" data-i18n-aria="tools.mock-data-generator.ui.r64_5">
                 <option value="json">JSON</option>
                 <option value="csv">CSV</option>
                 <option value="sql" data-i18n="tools.mock-data-generator.ui.option5">SQL INSERT</option>
@@ -89,7 +89,7 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
               <p class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.mock-data-generator.ui.desc9">Switch formats instantly.</p>
             </div>
             <div id="sql-options" class="hidden space-y-2">
-              <label for="table-name" class="text-xs font-semibold text-surface-500 dark:text-surface-400 uppercase tracking-[0.2em]"><span data-i18n="tools.mock-data-generator.ui.label4">Table Name</span> ${infoHint("Used by SQL output; keep it alphanumeric and lowercase if you plan to import it.")}</label>
+              <label for="table-name" class="text-xs font-semibold text-surface-500 dark:text-surface-400 uppercase tracking-[0.2em]"><span data-i18n="tools.mock-data-generator.ui.label4">Table Name</span> ${infoHint("Used by SQL output; keep it alphanumeric and lowercase if you plan to import it.", undefined, { i18nKey: "tools.mock-data-generator.ui.r64_1", ariaI18nKey: "tools.mock-data-generator.ui.r64_1" })}</label>
               <input id="table-name" type="text" value="mock_data" class="input w-full" />
               <p class="text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.mock-data-generator.ui.desc10">For INSERT statements.</p>
             </div>
@@ -104,11 +104,11 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
           </div>
 
           <div class="pt-4 border-t border-surface-100 dark:border-surface-800">
-            <button id="generate-data" data-tooltip="Generate random mock data with selected fields" data-i18n-tooltip="tools.mock-data-generator.ui.tip2" class="btn btn-primary w-full md:w-auto md:min-w-[200px]">
+            <button id="generate-data" data-tooltip="Generate random mock data with selected fields" data-i18n-tooltip="tools.mock-data-generator.ui.r64_4" class="btn btn-primary w-full md:w-auto md:min-w-[200px]">
               <span data-i18n="tools.mock-data-generator.ui.button2">Generate Data</span>
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" /></svg>
             </button>
-             <div id="data-error" class="mt-4 hidden rounded-lg border border-error-200 dark:border-error-800 bg-error-50 dark:bg-error-900/30 text-sm text-error-700 dark:text-error-200 px-4 py-3">Error</div>
+             <div data-i18n="tools.mock-data-generator.ui.r6_0" id="data-error" class="mt-4 hidden rounded-lg border border-error-200 dark:border-error-800 bg-error-50 dark:bg-error-900/30 text-sm text-error-700 dark:text-error-200 px-4 py-3">Error</div>
           </div>
         </div>
 
@@ -127,7 +127,7 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
                 </div>
               </div>
               <div class="relative flex-1 min-h-0 bg-surface-900 rounded-lg overflow-hidden group">
-                  <pre id="output-area" tabindex="0" aria-label="Generated output" class="absolute inset-0 p-4 overflow-auto text-sm text-primary-300 font-mono leading-relaxed selection:bg-primary-500/30" data-i18n="tools.mock-data-generator.ui.desc14">Click "Generate Data" to begin.</pre>
+                  <pre id="output-area" tabindex="0" aria-label="Generated output" data-i18n-aria="tools.mock-data-generator.ui.r64_6" class="absolute inset-0 p-4 overflow-auto text-sm text-primary-300 font-mono leading-relaxed selection:bg-primary-500/30" data-i18n="tools.mock-data-generator.ui.desc14">Click "Generate Data" to begin.</pre>
               </div>
             </div>
 
@@ -139,7 +139,7 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
                   <span data-i18n="tools.mock-data-generator.ui.heading3">Preview</span> <span class="text-xs font-normal text-surface-500 ml-1" data-i18n="tools.mock-data-generator.ui.desc13">(First 5 rows)</span>
                 </h2>
               </div>
-              <div class="flex-1 min-h-0 overflow-auto border border-surface-100 dark:border-surface-800 rounded-lg" tabindex="0" aria-label="Preview of the first 5 rows">
+              <div data-i18n-aria="tools.mock-data-generator.ui.r6_1" class="flex-1 min-h-0 overflow-auto border border-surface-100 dark:border-surface-800 rounded-lg" tabindex="0" aria-label="Preview of the first 5 rows">
                 <table class="w-full text-sm text-left border-collapse">
                   <thead class="sticky top-0 bg-surface-50 dark:bg-surface-800/80 backdrop-blur z-10">
                     <tr id="preview-head">
@@ -212,19 +212,19 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
       (function() {
         const mockLogic = (${createMockDataLogic.toString()})();
         const FIELDS = [
-          { id: 'fullName', label: 'Full Name' },
-          { id: 'email', label: 'Email' },
-          { id: 'username', label: 'Username' },
-          { id: 'jobTitle', label: 'Job Title' },
-          { id: 'company', label: 'Company' },
-          { id: 'phone', label: 'Phone' },
-          { id: 'uuid', label: 'UUID' },
-          { id: 'address', label: 'Street Address' },
-          { id: 'city', label: 'City' },
-          { id: 'country', label: 'Country' },
-          { id: 'postalCode', label: 'Postal Code' },
-          { id: 'ip', label: 'IP Address' },
-          { id: 'createdAt', label: 'Created Timestamp' }
+          { id: 'fullName', label: 'Full Name', key: 'tools.mock-data-generator.ui.r64_7' },
+          { id: 'email', label: 'Email', key: 'tools.mock-data-generator.ui.r64_8' },
+          { id: 'username', label: 'Username', key: 'tools.mock-data-generator.ui.r64_9' },
+          { id: 'jobTitle', label: 'Job Title', key: 'tools.mock-data-generator.ui.r64_10' },
+          { id: 'company', label: 'Company', key: 'tools.mock-data-generator.ui.r64_11' },
+          { id: 'phone', label: 'Phone', key: 'tools.mock-data-generator.ui.r64_12' },
+          { id: 'uuid', label: 'UUID', key: 'tools.mock-data-generator.ui.r64_13' },
+          { id: 'address', label: 'Street Address', key: 'tools.mock-data-generator.ui.r64_14' },
+          { id: 'city', label: 'City', key: 'tools.mock-data-generator.ui.r64_15' },
+          { id: 'country', label: 'Country', key: 'tools.mock-data-generator.ui.r64_16' },
+          { id: 'postalCode', label: 'Postal Code', key: 'tools.mock-data-generator.ui.r64_17' },
+          { id: 'ip', label: 'IP Address', key: 'tools.mock-data-generator.ui.r64_18' },
+          { id: 'createdAt', label: 'Created Timestamp', key: 'tools.mock-data-generator.ui.r64_19' }
         ];
 
         const rowCountInput = document.getElementById('row-count');
@@ -240,7 +240,7 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
         const sqlOptions = document.getElementById('sql-options');
         const tableNameInput = document.getElementById('table-name');
 
-        fieldGrid.innerHTML = FIELDS.map(field => '<label class="flex items-center gap-3 px-3 py-2 rounded-lg border border-surface-200 dark:border-surface-700 text-sm font-medium text-surface-700 dark:text-surface-200 bg-surface-50 dark:bg-surface-900/50"><input type="checkbox" value="' + field.id + '" class="accent-primary-600" checked><span>' + field.label + '</span></label>').join('');
+        fieldGrid.innerHTML = FIELDS.map(field => '<label class="flex items-center gap-3 px-3 py-2 rounded-lg border border-surface-200 dark:border-surface-700 text-sm font-medium text-surface-700 dark:text-surface-200 bg-surface-50 dark:bg-surface-900/50"><input type="checkbox" value="' + field.id + '" class="accent-primary-600" checked><span data-i18n="' + field.key + '">' + field.label + '</span></label>').join('');
 
         let lastDataset = null;
         let lastFields = [];
@@ -322,7 +322,7 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
             previewBody.innerHTML = '<tr><td class="py-3 text-surface-500">' + (window._t ? window._t('tools.mock-data-generator.js.text2', 'No rows to preview.') : 'No rows to preview.') + '</td></tr>';
             return;
           }
-          previewHead.innerHTML = '<tr>' + fields.map(field => '<th class="py-2 pr-4 text-left">' + labelFor(field) + '</th>').join('') + '</tr>';
+          previewHead.innerHTML = '<tr>' + fields.map(field => '<th class="py-2 pr-4 text-left">' + escapeHtml(displayLabelFor(field)) + '</th>').join('') + '</tr>';
           previewBody.innerHTML = rows.map(row => '<tr>' + fields.map(field => '<td class="py-2 pr-4">' + escapeHtml(row[field]) + '</td>').join('') + '</tr>').join('');
         }
 
@@ -354,6 +354,13 @@ function renderMockDataPage(lang = DEFAULT_LANGUAGE) {
         function attachDownload(filename, content) {
           downloadBtn.setAttribute('data-filename', filename);
           copyBtn.disabled = downloadBtn.disabled = false;
+        }
+
+        // Preview headers follow the page language; CSV headers keep labelFor's English.
+        function displayLabelFor(fieldId) {
+          const field = FIELDS.find(item => item.id === fieldId);
+          if (!field) return fieldId;
+          return window._t ? window._t(field.key, field.label) : field.label;
         }
 
         function labelFor(fieldId) {

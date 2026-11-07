@@ -2,6 +2,26 @@ import { DEFAULT_LANGUAGE, normalizeLanguage } from "../utils/i18n.js";
 
 const BLOG_LOCALE_OVERRIDES = {
   ko: {
+    "inspect-jwt-in-the-browser": {
+      title: "JWT는 남의 서버가 아니라 브라우저에서 확인하세요",
+      description:
+        "JSON Web Token의 구조, 클라이언트 측 검사기가 증명할 수 있는 것과 없는 것, 그리고 운영 토큰을 아무 디코더에나 붙여넣는 습관이 왜 나쁜지 설명합니다.",
+      readingTime: "8분 읽기",
+      content: `
+        <p>JSON Web Token은 헤더, 페이로드, 서명이라는 세 개의 Base64URL 조각으로 이루어집니다. 토큰을 읽을 수 있는 사람이라면 누구나 클레임도 읽을 수 있습니다. 위조하기 어려워야 하는 부분은 서명뿐이고, 서명을 검증하려면 짝이 맞는 비밀 키나 공개 키가 필요합니다.</p>
+        <p>토큰을 <em>업로드</em>하는 온라인 JWT 디코더는 붙여넣은 내용의 사본을 하나 더 만듭니다. 세션 식별자, 사내 이메일, 테넌트 ID, 때로는 커스텀 클레임에 넣어 둔 서명 비밀 키까지 포함됩니다. 탭 안에서 <code>atob</code>를 실행하는 디코더는 그런 사본을 받을 일이 없습니다. SimpleTool의 <a href="/token-studio">Token Studio</a>가 바로 그런 디코더입니다. 키 생성과 JWKS 검사도 로컬에서 처리하고, 검증 API를 호출하지 않습니다.</p>
+        <h2>로컬 검사기가 유용한 경우</h2>
+        <ul>
+          <li>토큰을 티켓에 붙이기 전에 <code>alg</code>, <code>kid</code>, 만료 시간, audience를 확인할 때.</li>
+          <li>토큰이 정말 JWT인지, 아니면 점으로 이어진 덩어리 세 개일 뿐인지 확인할 때.</li>
+          <li>직접 서명할 테스트 토큰을 브라우저 안에서 만들 때.</li>
+        </ul>
+        <h2>할 수 없는 것</h2>
+        <p>키가 없으면 클라이언트 측 도구는 운영 토큰이 유효하다고 정직하게 말할 수 없습니다. 서명되지 않았거나 검증되지 않은 페이로드는 신뢰할 수 없는 JSON으로 다루세요. 서버가 토큰을 받아들여야 한다면, 실제 JWKS로 서버에서 검증하세요.</p>
+        <p>브라우저의 나머지 부분도 잊지 마세요. 확장 프로그램, 스크린샷, 클립보드가 있습니다. 로컬이라고 해서 망 분리된 것은 아닙니다. 그래도 순차 URL을 쓰는 붙여넣기 사이트보다는 이쪽이 올바른 기본값입니다.</p>
+        <p>관련 글: 이 사이트의 <a href="/json-formatter">JSON Formatter</a>도 API 본문에 같은 원칙을 적용합니다. 탭 안에서 포맷하세요. 문서를 제3자의 기록 페이지로 보내지 마세요.</p>
+      `,
+    },
     "what-is-json": {
       title: "JSON이란 무엇인가? 개발자를 위한 완전 가이드",
       description:
@@ -116,6 +136,26 @@ const BLOG_LOCALE_OVERRIDES = {
     },
   },
   ja: {
+    "inspect-jwt-in-the-browser": {
+      title: "JWTは他人のサーバーではなくブラウザで確認する",
+      description:
+        "JSON Web Tokenの構造、クライアントサイドの検査ツールで証明できることとできないこと、そして本番トークンを適当なデコーダーに貼り付ける習慣がなぜ危ないのかを解説します。",
+      readingTime: "8分",
+      content: `
+        <p>JSON Web Tokenは、ヘッダー、ペイロード、署名という3つのBase64URLセグメントでできています。トークンを読める人なら誰でもクレームを読めます。偽造が難しいはずの部分は署名だけで、その検証には対応するシークレットか公開鍵が必要です。</p>
+        <p>トークンを<em>アップロード</em>するオンラインのJWTデコーダーは、貼り付けた内容のコピーをもう一つ作ります。セッション識別子、社内のメールアドレス、テナントID、カスタムクレームに入れてあれば署名用シークレットまで含まれます。タブ内で<code>atob</code>を実行するデコーダーなら、そのコピーを受け取ることはありません。SimpleToolの<a href="/token-studio">Token Studio</a>はそういうデコーダーです。鍵の生成やJWKSの検査もローカルで行い、検証APIを呼び出すことはありません。</p>
+        <h2>ローカル検査ツールが役立つ場面</h2>
+        <ul>
+          <li>トークンをチケットに貼る前に、<code>alg</code>、<code>kid</code>、有効期限、audienceを確認する。</li>
+          <li>そもそもJWTなのか、ドットでつながった3つの塊にすぎないのかを確かめる。</li>
+          <li>自分で署名するテスト用トークンを、ブラウザの中で作る。</li>
+        </ul>
+        <h2>できないこと</h2>
+        <p>鍵がなければ、クライアントサイドのツールは本番トークンが有効だと正直に言えません。署名されていない、または検証されていないペイロードは信頼できないJSONとして扱ってください。サーバーにトークンを受け入れさせたいなら、本物のJWKSを使ってサーバー側で検証しましょう。</p>
+        <p>ブラウザのほかの部分も忘れないでください。拡張機能、スクリーンショット、クリップボードがあります。ローカルだからといって、ネットワークから隔離されているわけではありません。それでも、連番URLのペーストサイトよりはこちらが正しいデフォルトです。</p>
+        <p>関連：このサイトの<a href="/json-formatter">JSON Formatter</a>も、APIのボディに同じルールを適用しています。整形はタブの中で。ドキュメントを第三者の履歴ページに送らないでください。</p>
+      `,
+    },
     "what-is-json": {
       title: "JSONとは何か: 開発者のための完全ガイド",
       description:
@@ -230,8 +270,48 @@ const BLOG_LOCALE_OVERRIDES = {
     },
   },
   es: {
+    "inspect-jwt-in-the-browser": {
+      title: "Inspecciona un JWT en el navegador, no en el servidor de otro",
+      description:
+        "Cómo se estructuran los JSON Web Tokens, qué puede y qué no puede demostrar un inspector del lado del cliente, y por qué pegar un token de producción en cualquier decodificador es un mal hábito.",
+      readingTime: "8 min de lectura",
+      content: `
+        <p>Un JSON Web Token son tres segmentos Base64URL: un encabezado, un payload y una firma. Cualquiera que pueda leer el token puede leer los claims. La firma es la única parte que debería ser difícil de falsificar, y verificarla requiere el secreto o la clave pública correspondiente.</p>
+        <p>Los decodificadores de JWT en línea que <em>suben</em> el token crean una segunda copia de lo que pegaste: identificadores de sesión, correos internos, ids de tenant y, a veces, el secreto de firma si alguien lo metió en un claim personalizado. Un decodificador que ejecuta <code>atob</code> en tu pestaña nunca recibe esa copia. <a href="/token-studio">Token Studio</a> de SimpleTool es ese tipo de decodificador. También genera claves e inspecciona JWKS de forma local. No llama a ninguna API de verificación.</p>
+        <h2>Para qué sirve un inspector local</h2>
+        <ul>
+          <li>Confirmar <code>alg</code>, <code>kid</code>, la expiración y la audiencia antes de pegar un token en un ticket.</li>
+          <li>Ver si un token es realmente un JWT o solo tres bloques separados por puntos.</li>
+          <li>Crear un token de prueba que firmarás tú mismo, sin salir del navegador.</li>
+        </ul>
+        <h2>Lo que no puede hacer</h2>
+        <p>Sin la clave, una herramienta del lado del cliente no puede afirmar con honestidad que un token de producción es válido. Trata un payload sin firmar o sin verificar como JSON no confiable. Si necesitas que un servidor acepte el token, verifícalo en el servidor con el JWKS real.</p>
+        <p>Recuerda también el resto del navegador: extensiones, capturas de pantalla y el portapapeles. Local no es lo mismo que aislado de la red. Aun así, es la opción por defecto correcta frente a un pastebin con URL secuenciales.</p>
+        <p>Relacionado: el <a href="/json-formatter">JSON Formatter</a> de este sitio aplica la misma regla a los cuerpos de las API. Formatea en la pestaña. No envíes el documento a la página de historial de un tercero.</p>
+      `,
+    },
   },
   "zh-CN": {
+    "inspect-jwt-in-the-browser": {
+      title: "在浏览器里检查 JWT，而不是在别人的服务器上",
+      description:
+        "JSON Web Token 的结构是怎样的，客户端检查器能证明什么、不能证明什么，以及为什么把生产环境的令牌粘贴到随便一个解码器里是个坏习惯。",
+      readingTime: "8 分钟阅读",
+      content: `
+        <p>JSON Web Token 由三段 Base64URL 组成：头部、载荷和签名。任何能读到令牌的人都能读到其中的声明。签名是唯一应该难以伪造的部分，而验证签名需要对应的密钥或公钥。</p>
+        <p>会<em>上传</em>令牌的在线 JWT 解码器，会把你粘贴的内容再复制一份：会话标识、内部邮箱、租户 ID，如果签名密钥被塞进了自定义声明，有时连它也在里面。在你的标签页里运行 <code>atob</code> 的解码器永远拿不到这份副本。SimpleTool 的 <a href="/token-studio">Token Studio</a> 就是这样的解码器。它还能在本地生成密钥、检查 JWKS，不会调用任何验证 API。</p>
+        <h2>本地检查器适合做什么</h2>
+        <ul>
+          <li>在把令牌贴进工单之前，确认 <code>alg</code>、<code>kid</code>、过期时间和 audience。</li>
+          <li>看看一个令牌到底是不是 JWT，还是只是三段用点连起来的数据。</li>
+          <li>在浏览器里构造一个由你自己签名的测试令牌。</li>
+        </ul>
+        <h2>它做不到什么</h2>
+        <p>没有密钥，客户端工具无法如实地说生产令牌是有效的。请把未签名或未验证的载荷当作不可信的 JSON。如果需要服务器接受这个令牌，就在服务器上用真实的 JWKS 进行验证。</p>
+        <p>也别忘了浏览器的其他部分：扩展程序、截图和剪贴板。本地不等于物理隔离。但相比使用顺序 URL 的粘贴站点，它仍然是正确的默认选择。</p>
+        <p>相关：本站的 <a href="/json-formatter">JSON Formatter</a> 对 API 请求体也遵循同样的原则。在标签页里格式化，不要把文档发到第三方的历史记录页面。</p>
+      `,
+    },
     "what-is-json": {
       title: "JSON 是什么？开发者完全指南",
       description:
@@ -345,6 +425,26 @@ const BLOG_LOCALE_OVERRIDES = {
     },
   },
   "zh-TW": {
+    "inspect-jwt-in-the-browser": {
+      title: "在瀏覽器裡檢查 JWT，而不是在別人的伺服器上",
+      description:
+        "JSON Web Token 的結構是什麼樣子，用戶端檢查器能證明什麼、不能證明什麼，以及為什麼把正式環境的權杖貼到隨便一個解碼器裡是個壞習慣。",
+      readingTime: "8 分鐘閱讀",
+      content: `
+        <p>JSON Web Token 由三段 Base64URL 組成：標頭、酬載和簽章。任何能讀到權杖的人都能讀到其中的宣告。簽章是唯一應該難以偽造的部分，而驗證簽章需要對應的密鑰或公鑰。</p>
+        <p>會<em>上傳</em>權杖的線上 JWT 解碼器，會把你貼上的內容再複製一份：工作階段識別碼、內部電子郵件、租戶 ID，如果簽署密鑰被塞進了自訂宣告，有時連它也在裡面。在你的分頁裡執行 <code>atob</code> 的解碼器永遠拿不到這份副本。SimpleTool 的 <a href="/token-studio">Token Studio</a> 就是這樣的解碼器。它也能在本機產生金鑰、檢查 JWKS，不會呼叫任何驗證 API。</p>
+        <h2>本機檢查器適合做什麼</h2>
+        <ul>
+          <li>在把權杖貼進工單之前，確認 <code>alg</code>、<code>kid</code>、到期時間和 audience。</li>
+          <li>看看一個權杖到底是不是 JWT，還是只是三段用點串起來的資料。</li>
+          <li>在瀏覽器裡建立一個由你自己簽署的測試權杖。</li>
+        </ul>
+        <h2>它做不到什麼</h2>
+        <p>沒有金鑰，用戶端工具無法誠實地說正式環境的權杖是有效的。請把未簽署或未驗證的酬載當作不可信的 JSON。如果需要伺服器接受這個權杖，就在伺服器上用真正的 JWKS 驗證。</p>
+        <p>也別忘了瀏覽器的其他部分：擴充功能、螢幕截圖和剪貼簿。本機不等於實體隔離。但相較於使用連號 URL 的貼文網站，它仍然是正確的預設選擇。</p>
+        <p>相關：本站的 <a href="/json-formatter">JSON Formatter</a> 對 API 內容也遵循同樣的原則。在分頁裡格式化，不要把文件送到第三方的歷史紀錄頁面。</p>
+      `,
+    },
     "what-is-json": {
       title: "JSON 是什麼？開發者完全指南",
       description:
@@ -458,6 +558,26 @@ const BLOG_LOCALE_OVERRIDES = {
     },
   },
   fr: {
+    "inspect-jwt-in-the-browser": {
+      title: "Inspectez un JWT dans le navigateur, pas sur le serveur d'un autre",
+      description:
+        "Comment les JSON Web Tokens sont structurés, ce qu'un inspecteur côté client peut prouver ou non, et pourquoi coller un token de production dans un décodeur quelconque est une mauvaise habitude.",
+      readingTime: "8 min de lecture",
+      content: `
+        <p>Un JSON Web Token se compose de trois segments Base64URL : un en-tête, un payload et une signature. Quiconque peut lire le token peut lire les claims. La signature est la seule partie censée être difficile à falsifier, et sa vérification exige le secret ou la clé publique correspondante.</p>
+        <p>Les décodeurs JWT en ligne qui <em>envoient</em> le token créent une deuxième copie de ce que vous avez collé : identifiants de session, e-mails internes, ids de tenant, parfois même le secret de signature s'il a été glissé dans un claim personnalisé. Un décodeur qui exécute <code>atob</code> dans votre onglet ne reçoit jamais cette copie. <a href="/token-studio">Token Studio</a> de SimpleTool est ce genre de décodeur. Il génère aussi des clés et inspecte les JWKS en local. Il n'appelle aucune API de vérification.</p>
+        <h2>À quoi sert un inspecteur local</h2>
+        <ul>
+          <li>Vérifier <code>alg</code>, <code>kid</code>, l'expiration et l'audience avant de coller un token dans un ticket.</li>
+          <li>Voir si un token est vraiment un JWT, ou juste trois blocs séparés par des points.</li>
+          <li>Construire un token de test que vous signerez vous-même, toujours dans le navigateur.</li>
+        </ul>
+        <h2>Ce qu'il ne peut pas faire</h2>
+        <p>Sans la clé, un outil côté client ne peut pas affirmer honnêtement qu'un token de production est valide. Traitez un payload non signé ou non vérifié comme du JSON non fiable. Si un serveur doit accepter le token, vérifiez-le sur le serveur avec le vrai JWKS.</p>
+        <p>Pensez aussi au reste du navigateur : extensions, captures d'écran et presse-papiers. Local ne veut pas dire isolé du réseau. C'est tout de même le bon choix par défaut face à un pastebin aux URL séquentielles.</p>
+        <p>À lire aussi : le <a href="/json-formatter">JSON Formatter</a> de ce site applique la même règle aux corps d'API. Formatez dans l'onglet. N'envoyez pas le document vers la page d'historique d'un tiers.</p>
+      `,
+    },
     "what-is-json": {
       title: "Qu'est-ce que JSON ? Le guide complet du développeur",
       description:
@@ -572,6 +692,26 @@ const BLOG_LOCALE_OVERRIDES = {
     },
   },
   de: {
+    "inspect-jwt-in-the-browser": {
+      title: "JWTs im Browser prüfen, nicht auf fremden Servern",
+      description:
+        "Wie JSON Web Tokens aufgebaut sind, was ein clientseitiger Inspektor beweisen kann und was nicht, und warum es eine schlechte Angewohnheit ist, ein Produktions-Token in irgendeinen Decoder einzufügen.",
+      readingTime: "8 Min. Lesezeit",
+      content: `
+        <p>Ein JSON Web Token besteht aus drei Base64URL-Segmenten: Header, Payload und Signatur. Wer das Token lesen kann, kann auch die Claims lesen. Nur die Signatur soll schwer zu fälschen sein, und zu ihrer Prüfung braucht man das passende Secret oder den passenden Public Key.</p>
+        <p>Online-JWT-Decoder, die das Token <em>hochladen</em>, erzeugen eine zweite Kopie von allem, was Sie eingefügt haben: Session-IDs, interne E-Mail-Adressen, Tenant-IDs, manchmal sogar das Signatur-Secret, falls es in einem eigenen Claim steckt. Ein Decoder, der <code>atob</code> in Ihrem Tab ausführt, bekommt diese Kopie nie. <a href="/token-studio">Token Studio</a> von SimpleTool ist so ein Decoder. Es erzeugt außerdem Schlüssel und prüft JWKS lokal. Eine Verifizierungs-API ruft es nicht auf.</p>
+        <h2>Wofür ein lokaler Inspektor gut ist</h2>
+        <ul>
+          <li><code>alg</code>, <code>kid</code>, Ablaufzeit und Audience prüfen, bevor Sie ein Token in ein Ticket kopieren.</li>
+          <li>Feststellen, ob ein Token überhaupt ein JWT ist oder nur drei durch Punkte getrennte Blöcke.</li>
+          <li>Ein Test-Token bauen, das Sie selbst signieren, ohne den Browser zu verlassen.</li>
+        </ul>
+        <h2>Was er nicht kann</h2>
+        <p>Ohne den Schlüssel kann ein clientseitiges Tool nicht ehrlich behaupten, dass ein Produktions-Token gültig ist. Behandeln Sie einen unsignierten oder ungeprüften Payload als nicht vertrauenswürdiges JSON. Wenn ein Server das Token akzeptieren soll, prüfen Sie es auf dem Server mit dem echten JWKS.</p>
+        <p>Denken Sie auch an den Rest des Browsers: Erweiterungen, Screenshots und die Zwischenablage. Lokal ist nicht dasselbe wie vom Netz getrennt. Gegenüber einem Pastebin mit fortlaufenden URLs ist es trotzdem die richtige Voreinstellung.</p>
+        <p>Siehe auch: Der <a href="/json-formatter">JSON Formatter</a> auf dieser Seite folgt derselben Regel für API-Bodies. Formatieren Sie im Tab. Schicken Sie das Dokument nicht auf die Verlaufsseite eines Drittanbieters.</p>
+      `,
+    },
     "what-is-json": {
       title: "Was ist JSON? Der vollständige Leitfaden für Entwickler",
       description:
@@ -687,6 +827,26 @@ const BLOG_LOCALE_OVERRIDES = {
     },
   },
   pt: {
+    "inspect-jwt-in-the-browser": {
+      title: "Inspecione um JWT no navegador, não no servidor de outra pessoa",
+      description:
+        "Como os JSON Web Tokens são estruturados, o que um inspetor do lado do cliente pode ou não provar, e por que colar um token de produção em qualquer decodificador é um mau hábito.",
+      readingTime: "8 min de leitura",
+      content: `
+        <p>Um JSON Web Token são três segmentos Base64URL: um cabeçalho, um payload e uma assinatura. Qualquer pessoa que consiga ler o token consegue ler os claims. A assinatura é a única parte que deveria ser difícil de forjar, e verificá-la exige o segredo ou a chave pública correspondente.</p>
+        <p>Decodificadores de JWT online que <em>enviam</em> o token criam uma segunda cópia do que você colou: identificadores de sessão, e-mails internos, ids de tenant e, às vezes, o segredo de assinatura, se ele foi enfiado num claim personalizado. Um decodificador que roda <code>atob</code> na sua aba nunca recebe essa cópia. O <a href="/token-studio">Token Studio</a> do SimpleTool é esse tipo de decodificador. Ele também gera chaves e inspeciona JWKS localmente. Não chama nenhuma API de verificação.</p>
+        <h2>Para que serve um inspetor local</h2>
+        <ul>
+          <li>Conferir <code>alg</code>, <code>kid</code>, expiração e audiência antes de colar um token num ticket.</li>
+          <li>Ver se um token é mesmo um JWT ou só três blocos separados por pontos.</li>
+          <li>Montar um token de teste que você mesmo vai assinar, ainda no navegador.</li>
+        </ul>
+        <h2>O que ele não consegue fazer</h2>
+        <p>Sem a chave, uma ferramenta do lado do cliente não pode dizer com honestidade que um token de produção é válido. Trate um payload não assinado ou não verificado como JSON não confiável. Se um servidor precisa aceitar o token, verifique-o no servidor com o JWKS real.</p>
+        <p>Lembre-se também do resto do navegador: extensões, capturas de tela e a área de transferência. Local não é o mesmo que isolado da rede. Ainda assim, é o padrão certo em vez de um pastebin com URLs sequenciais.</p>
+        <p>Relacionado: o <a href="/json-formatter">JSON Formatter</a> deste site segue a mesma regra para corpos de API. Formate na aba. Não envie o documento para a página de histórico de terceiros.</p>
+      `,
+    },
     "what-is-json": {
       title: "O que é JSON? O guia completo para desenvolvedores",
       description:
@@ -801,6 +961,26 @@ const BLOG_LOCALE_OVERRIDES = {
     },
   },
   vi: {
+    "inspect-jwt-in-the-browser": {
+      title: "Kiểm tra JWT ngay trong trình duyệt, đừng gửi lên máy chủ của người khác",
+      description:
+        "Cấu trúc của JSON Web Token, những gì một công cụ kiểm tra phía client có thể và không thể chứng minh, và vì sao dán token production vào một trình giải mã bất kỳ là thói quen xấu.",
+      readingTime: "8 phút đọc",
+      content: `
+        <p>Một JSON Web Token gồm ba đoạn Base64URL: header, payload và chữ ký. Ai đọc được token thì cũng đọc được các claim. Chữ ký là phần duy nhất được kỳ vọng là khó giả mạo, và muốn xác minh nó thì cần secret hoặc khóa công khai tương ứng.</p>
+        <p>Các trình giải mã JWT trực tuyến <em>tải</em> token lên sẽ tạo thêm một bản sao của mọi thứ bạn dán vào: mã định danh phiên, email nội bộ, id tenant, đôi khi cả secret ký nếu nó bị nhét vào một claim tùy chỉnh. Một trình giải mã chạy <code>atob</code> ngay trong tab của bạn sẽ không bao giờ nhận bản sao đó. <a href="/token-studio">Token Studio</a> của SimpleTool là kiểu trình giải mã như vậy. Nó cũng tạo khóa và kiểm tra JWKS ngay trên máy, không gọi đến API xác minh nào.</p>
+        <h2>Công cụ kiểm tra cục bộ hữu ích ở đâu</h2>
+        <ul>
+          <li>Xác nhận <code>alg</code>, <code>kid</code>, thời hạn và audience trước khi dán token vào một ticket.</li>
+          <li>Xem token có thật sự là JWT không, hay chỉ là ba khối nối với nhau bằng dấu chấm.</li>
+          <li>Tạo một token thử nghiệm mà bạn sẽ tự ký, vẫn ngay trong trình duyệt.</li>
+        </ul>
+        <h2>Những gì nó không làm được</h2>
+        <p>Không có khóa, công cụ phía client không thể nói một cách trung thực rằng token production là hợp lệ. Hãy coi payload chưa ký hoặc chưa xác minh là JSON không đáng tin. Nếu cần máy chủ chấp nhận token, hãy xác minh nó trên máy chủ bằng JWKS thật.</p>
+        <p>Cũng đừng quên phần còn lại của trình duyệt: tiện ích mở rộng, ảnh chụp màn hình và clipboard. Cục bộ không có nghĩa là cách ly hoàn toàn. Dù vậy, nó vẫn là lựa chọn mặc định đúng đắn so với một trang pastebin dùng URL tuần tự.</p>
+        <p>Liên quan: <a href="/json-formatter">JSON Formatter</a> trên trang này áp dụng cùng nguyên tắc cho phần thân API. Hãy định dạng ngay trong tab. Đừng gửi tài liệu sang trang lịch sử của bên thứ ba.</p>
+      `,
+    },
     "what-is-json": {
       title: "JSON là gì? Hướng dẫn toàn diện dành cho lập trình viên",
       description:

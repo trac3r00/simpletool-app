@@ -75,7 +75,7 @@ function renderQRCodePage(lang = DEFAULT_LANGUAGE) {
 
         <!-- Tabs -->
         <div class="border-b border-surface-200 dark:border-surface-700 mb-8">
-          <nav class="flex flex-wrap gap-2" aria-label="QR code tool modes" role="tablist">
+          <nav data-i18n-aria="tools.qr-code.ui.r6_0" class="flex flex-wrap gap-2" aria-label="QR code tool modes" role="tablist">
             <button id="tab-trigger-generate" class="tab-trigger tab-button active" data-tab="generate" role="tab" aria-controls="tab-generate" aria-selected="true" tabindex="0">
               <span class="material-symbols-rounded text-base align-middle" aria-hidden="true" data-icon="qr_code_2"></span> <span data-i18n="tools.qr-code.ui.tab0">Generate</span>
             </button>
@@ -92,20 +92,20 @@ function renderQRCodePage(lang = DEFAULT_LANGUAGE) {
             <div class="space-y-6">
               <div>
                 <label for="qr-data" class="label"><span data-i18n="tools.qr-code.ui.label4">Text or URL to Encode</span></label>
-                <textarea id="qr-data" rows="4" data-tooltip="Text or URL to encode as QR code" data-i18n-tooltip="tools.qr-code.ui.tip0" placeholder="Enter URL, text, or any content..." data-i18n-placeholder="tools.qr-code.ui.placeholder12" class="input resize-vertical font-mono" aria-describedby="qr-error-msg"></textarea>
+                <textarea id="qr-data" rows="4" data-tooltip="Text or URL to encode as QR code" data-i18n-tooltip="tools.qr-code.ui.r65_0" placeholder="Enter URL, text, or any content..." data-i18n-placeholder="tools.qr-code.ui.placeholder12" class="input resize-vertical font-mono" aria-describedby="qr-error-msg"></textarea>
               </div>
 
               <div class="grid grid-cols-2 gap-4">
                 <div>
-                  <label for="qr-size" class="label">
+                  <label data-i18n-html="tools.qr-code.ui.r6_1" for="qr-size" class="label">
                     Size: <span id="size-value" class="font-bold text-primary-600 dark:text-primary-400">256</span>px
                   </label>
-                  <input type="range" id="qr-size" min="128" data-tooltip="Output image size in pixels" data-i18n-tooltip="tools.qr-code.ui.tip1" max="512" value="256" step="64" class="w-full h-2 bg-surface-200 dark:bg-surface-700 rounded-lg appearance-none cursor-pointer accent-primary-600">
+                  <input type="range" id="qr-size" min="128" data-tooltip="Output image size in pixels" data-i18n-tooltip="tools.qr-code.ui.r65_1" max="512" value="256" step="64" class="w-full h-2 bg-surface-200 dark:bg-surface-700 rounded-lg appearance-none cursor-pointer accent-primary-600">
                 </div>
 
                 <div>
                   <label for="qr-error-correction" class="label"><span data-i18n="tools.qr-code.ui.label5">Error Correction</span></label>
-                  <select id="qr-error-correction" class="input" data-tooltip="Higher correction = more damage resistance but larger QR code" data-i18n-tooltip="tools.qr-code.ui.tip2">
+                  <select id="qr-error-correction" class="input" data-tooltip="Higher correction = more damage resistance but larger QR code" data-i18n-tooltip="tools.qr-code.ui.r65_2">
                     <option value="L" data-i18n="tools.qr-code.ui.option13">Low (7%)</option>
                     <option value="M" selected data-i18n="tools.qr-code.ui.option14">Medium (15%)</option>
                     <option value="Q" data-i18n="tools.qr-code.ui.option15">Quartile (25%)</option>
@@ -120,14 +120,14 @@ function renderQRCodePage(lang = DEFAULT_LANGUAGE) {
                   <label for="qr-fg-color" class="label"><span data-i18n="tools.qr-code.ui.label6">Foreground Color</span></label>
                   <div class="flex gap-2 items-center">
                     <input type="color" id="qr-fg-color" value="#000000" class="h-9 w-12 cursor-pointer rounded border border-input bg-background p-1">
-                    <input type="text" id="qr-fg-text" value="#000000" maxlength="7" spellcheck="false" class="input flex-1 font-mono text-sm" aria-label="Foreground color hex value">
+                    <input data-i18n-aria="tools.qr-code.ui.r6_2" type="text" id="qr-fg-text" value="#000000" maxlength="7" spellcheck="false" class="input flex-1 font-mono text-sm" aria-label="Foreground color hex value">
                   </div>
                 </div>
                 <div>
                   <label for="qr-bg-color" class="label"><span data-i18n="tools.qr-code.ui.label7">Background Color</span></label>
                   <div class="flex gap-2 items-center">
                     <input type="color" id="qr-bg-color" value="#ffffff" class="h-9 w-12 cursor-pointer rounded border border-input bg-background p-1">
-                    <input type="text" id="qr-bg-text" value="#ffffff" maxlength="7" spellcheck="false" class="input flex-1 font-mono text-sm" aria-label="Background color hex value">
+                    <input data-i18n-aria="tools.qr-code.ui.r6_3" type="text" id="qr-bg-text" value="#ffffff" maxlength="7" spellcheck="false" class="input flex-1 font-mono text-sm" aria-label="Background color hex value">
                   </div>
                 </div>
               </div>
@@ -145,12 +145,12 @@ function renderQRCodePage(lang = DEFAULT_LANGUAGE) {
 
             <!-- Right: Preview & Download -->
             <div class="space-y-4">
-              <div id="qr-preview" class="flex items-center justify-center min-h-[256px] rounded-xl border-2 border-dashed border-surface-300 dark:border-surface-600 bg-surface-50 dark:bg-surface-950" aria-label="QR code preview (awaiting input)">
+              <div data-i18n-aria="tools.qr-code.ui.r6_4" id="qr-preview" class="flex items-center justify-center min-h-[256px] rounded-xl border-2 border-dashed border-surface-300 dark:border-surface-600 bg-surface-50 dark:bg-surface-950" aria-label="QR code preview (awaiting input)">
                 <div class="text-center text-surface-500 dark:text-surface-400">
                   <span class="material-symbols-rounded text-5xl" aria-hidden="true" data-icon="qr_code_2"></span>
                   <p class="mt-2 text-sm" data-i18n="tools.qr-code.ui.previewPlaceholder">Your QR code will appear here</p>
                 </div>
-                <canvas id="qr-canvas" class="hidden rounded-lg max-w-full" aria-label="QR code preview"></canvas>
+                <canvas data-i18n-aria="tools.qr-code.ui.r6_5" id="qr-canvas" class="hidden rounded-lg max-w-full" aria-label="QR code preview"></canvas>
               </div>
 
               <!-- Download Buttons -->

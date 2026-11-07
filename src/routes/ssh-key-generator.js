@@ -63,6 +63,7 @@ function renderSSHKeyGeneratorPage(lang = DEFAULT_LANGUAGE) {
         color: "green",
         tooltip:
           "Keys are generated in the browser via the Web Crypto API and the private key stays in your browser and is not sent to our servers.",
+        tooltipI18nKey: "tools.ssh-key-generator.ui.r63_16",
       },
     ],
     { toolId: "ssh-key-generator" },
@@ -87,9 +88,9 @@ function renderSSHKeyGeneratorPage(lang = DEFAULT_LANGUAGE) {
              <div>
                <h2 class="text-sm font-bold text-success-900 dark:text-success-300 mb-1" data-i18n="tools.ssh-key-generator.ui.heading11">Keys Generated in Your Browser</h2>
                <ul class="text-xs text-success-800 dark:text-success-200 space-y-1 list-disc list-inside">
-                <li>All keys generated in your browser using Web Crypto API</li>
-                <li>Private keys stay in your browser and are not sent to our servers</li>
-                <li>Page assets load over the network, but the keys this tool generates are not transmitted</li>
+                <li data-i18n="tools.ssh-key-generator.ui.r6_0">All keys generated in your browser using Web Crypto API</li>
+                <li data-i18n="tools.ssh-key-generator.ui.r6_1">Private keys stay in your browser and are not sent to our servers</li>
+                <li data-i18n="tools.ssh-key-generator.ui.r6_2">Page assets load over the network, but the keys this tool generates are not transmitted</li>
               </ul>
             </div>
           </div>
@@ -101,27 +102,27 @@ function renderSSHKeyGeneratorPage(lang = DEFAULT_LANGUAGE) {
           <div class="space-y-6">
             <!-- Key Type Selection -->
             <div>
-              <label class="label mb-3"><span data-i18n="tools.ssh-key-generator.ui.label2">Key Type</span> ${infoHint("Ed25519 is the default for new servers. ECDSA P-256 and RSA remain for older systems.")}</label>
+              <label class="label mb-3"><span data-i18n="tools.ssh-key-generator.ui.label2">Key Type</span> ${infoHint("Ed25519 is the default for new servers. ECDSA P-256 and RSA remain for older systems.", undefined, { i18nKey: "tools.ssh-key-generator.ui.r63_17", ariaI18nKey: "tools.ssh-key-generator.ui.r63_17" })}</label>
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <label class="relative flex items-start p-4 bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-800 rounded-lg cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-900 transition-all has-[:checked]:border-primary-500 has-[:checked]:bg-primary-50 dark:has-[:checked]:bg-primary-900/20">
-                  <input type="radio" name="keyType" value="ed25519" data-tooltip="Recommended for new deployments" checked class="mt-1 w-4 h-4 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
+                  <input data-i18n-tooltip="tools.ssh-key-generator.ui.r6_3" type="radio" name="keyType" value="ed25519" data-tooltip="Recommended for new deployments" checked class="mt-1 w-4 h-4 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
                   <div class="ml-3">
                     <div class="text-sm font-bold text-surface-900 dark:text-surface-50">Ed25519</div>
-                    <div class="text-xs text-surface-600 dark:text-surface-400 mt-1">Recommended. Fast, small, modern default.</div>
+                    <div data-i18n="tools.ssh-key-generator.ui.r6_4" class="text-xs text-surface-600 dark:text-surface-400 mt-1">Recommended. Fast, small, modern default.</div>
                   </div>
                 </label>
                 <label class="relative flex items-start p-4 bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-800 rounded-lg cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-900 transition-all has-[:checked]:border-primary-500 has-[:checked]:bg-primary-50 dark:has-[:checked]:bg-primary-900/20">
-                  <input type="radio" name="keyType" value="ecdsa" data-tooltip="Modern, smaller keys, faster operations" data-i18n-tooltip="tools.ssh-key-generator.ui.tip0" class="mt-1 w-4 h-4 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
+                  <input type="radio" name="keyType" value="ecdsa" data-tooltip="Modern, smaller keys, faster operations" data-i18n-tooltip="tools.ssh-key-generator.ui.r63_21" class="mt-1 w-4 h-4 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
                   <div class="ml-3">
-                    <div class="text-sm font-bold text-surface-900 dark:text-surface-50">ECDSA (P-256)</div>
-                    <div class="text-xs text-surface-600 dark:text-surface-400 mt-1">Compact keys. Broad current-system support.</div>
+                    <div data-i18n="tools.ssh-key-generator.ui.r6_5" class="text-sm font-bold text-surface-900 dark:text-surface-50">ECDSA (P-256)</div>
+                    <div data-i18n="tools.ssh-key-generator.ui.r6_6" class="text-xs text-surface-600 dark:text-surface-400 mt-1">Compact keys. Broad current-system support.</div>
                   </div>
                 </label>
                 <label class="relative flex items-start p-4 bg-surface-50 dark:bg-surface-950 border border-surface-200 dark:border-surface-800 rounded-lg cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-900 transition-all has-[:checked]:border-primary-500 has-[:checked]:bg-primary-50 dark:has-[:checked]:bg-primary-900/20">
-                  <input type="radio" name="keyType" value="rsa" data-tooltip="Traditional, widely compatible with older systems" data-i18n-tooltip="tools.ssh-key-generator.ui.tip1" class="mt-1 w-4 h-4 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
+                  <input type="radio" name="keyType" value="rsa" data-tooltip="Traditional, widely compatible with older systems" data-i18n-tooltip="tools.ssh-key-generator.ui.r63_22" class="mt-1 w-4 h-4 text-primary-600 dark:text-primary-400 focus:ring-primary-500">
                   <div class="ml-3">
                     <div class="text-sm font-bold text-surface-900 dark:text-surface-50">RSA</div>
-                    <div class="text-xs text-surface-600 dark:text-surface-400 mt-1">Legacy compatibility. Larger key size.</div>
+                    <div data-i18n="tools.ssh-key-generator.ui.r6_7" class="text-xs text-surface-600 dark:text-surface-400 mt-1">Legacy compatibility. Larger key size.</div>
                   </div>
                 </label>
               </div>
@@ -129,7 +130,7 @@ function renderSSHKeyGeneratorPage(lang = DEFAULT_LANGUAGE) {
 
             <!-- RSA Key Size (only shown for RSA) -->
             <div id="rsa-options" class="hidden">
-            <label for="rsa-size" class="label"><span data-i18n="tools.ssh-key-generator.ui.label3">RSA Key Size</span> ${infoHint("Larger bit sizes (2048/3072/4096) increase security but slow generation.")}</label>
+            <label for="rsa-size" class="label"><span data-i18n="tools.ssh-key-generator.ui.label3">RSA Key Size</span> ${infoHint("Larger bit sizes (2048/3072/4096) increase security but slow generation.", undefined, { i18nKey: "tools.ssh-key-generator.ui.r63_18", ariaI18nKey: "tools.ssh-key-generator.ui.r63_18" })}</label>
               <select id="rsa-size" class="input">
                 <option value="2048" data-i18n="tools.ssh-key-generator.ui.option6">2048 bits (Minimum, faster)</option>
                 <option value="3072" data-i18n="tools.ssh-key-generator.ui.option7">3072 bits (Balanced)</option>
@@ -145,11 +146,11 @@ function renderSSHKeyGeneratorPage(lang = DEFAULT_LANGUAGE) {
             </div>
 
             <!-- Generate Button -->
-            <button id="generate-btn" class="btn btn-primary w-full py-3 text-lg" data-tooltip="Generate a new SSH key pair in your browser" data-i18n-tooltip="tools.ssh-key-generator.ui.tip2">
-              <span id="btn-text">Generate Key Pair</span>
+            <button id="generate-btn" class="btn btn-primary w-full py-3 text-lg" data-tooltip="Generate a new SSH key pair in your browser" data-i18n-tooltip="tools.ssh-key-generator.ui.r63_23">
+              <span id="btn-text" data-i18n="tools.ssh-key-generator.ui.r63_19">Generate Key Pair</span>
               <span id="btn-loading" class="hidden flex items-center gap-2">
                 <span class="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
-                Generating...
+                <span data-i18n="tools.ssh-key-generator.ui.r63_20">Generating...</span>
               </span>
              </button>
           </div>
@@ -194,7 +195,7 @@ function renderSSHKeyGeneratorPage(lang = DEFAULT_LANGUAGE) {
 
             <!-- Setup Instructions -->
             <details class="group">
-              <summary class="cursor-pointer text-sm font-semibold text-primary-600 dark:text-primary-400 hover:underline">Show Setup Instructions</summary>
+              <summary data-i18n="tools.ssh-key-generator.ui.r6_8" class="cursor-pointer text-sm font-semibold text-primary-600 dark:text-primary-400 hover:underline">Show Setup Instructions</summary>
               <div class="mt-3 text-xs text-surface-600 dark:text-surface-400 space-y-2 p-3 bg-surface-50 dark:bg-surface-950 rounded-lg border border-surface-200 dark:border-surface-800">
                 <p class="font-semibold text-surface-900 dark:text-surface-200" data-i18n="tools.ssh-key-generator.ui.desc16">Local Machine:</p>
                 <pre class="bg-surface-200 dark:bg-surface-900 p-2 rounded overflow-x-auto">chmod 600 ~/.ssh/id_key
@@ -219,9 +220,9 @@ chmod 600 ~/.ssh/authorized_keys</pre>
           content: `
           <table>
             <tr><th data-i18n="tools.ssh-key-generator.ui.th7">Algorithm</th><th data-i18n="tools.ssh-key-generator.ui.th8">Key Size</th><th data-i18n="tools.ssh-key-generator.ui.th9">Security</th><th data-i18n="tools.ssh-key-generator.ui.th10">Use Case</th></tr>
-            <tr><td><code>Ed25519</code></td><td>256-bit</td><td>✅ Recommended</td><td>New deployments, OpenSSH default</td></tr>
-            <tr><td><code>ECDSA</code></td><td>P-256</td><td>✅ Secure</td><td>Modern systems, compact keys</td></tr>
-            <tr><td><code>RSA</code></td><td>2048/4096-bit</td><td>✅ Compatible</td><td data-i18n="tools.ssh-key-generator.ui.r3_0">Older appliances that reject Ed25519</td></tr>
+            <tr><td><code>Ed25519</code></td><td>256-bit</td><td data-i18n="tools.ssh-key-generator.ui.r66_c1">✅ Recommended</td><td data-i18n="tools.ssh-key-generator.ui.r66_c2">New deployments, OpenSSH default</td></tr>
+            <tr><td><code>ECDSA</code></td><td>P-256</td><td data-i18n="tools.ssh-key-generator.ui.r66_c3">✅ Secure</td><td data-i18n="tools.ssh-key-generator.ui.r66_c4">Modern systems, compact keys</td></tr>
+            <tr><td><code>RSA</code></td><td>2048/4096-bit</td><td data-i18n="tools.ssh-key-generator.ui.r66_c5">✅ Compatible</td><td data-i18n="tools.ssh-key-generator.ui.r3_0">Older appliances that reject Ed25519</td></tr>
           </table>`,
         },
         {
@@ -229,10 +230,10 @@ chmod 600 ~/.ssh/authorized_keys</pre>
           content: `
           <table>
             <tr><th data-i18n="tools.ssh-key-generator.ui.th11">Command</th><th data-i18n="tools.ssh-key-generator.ui.th12">Description</th></tr>
-            <tr><td><code>ssh-keygen -t ed25519</code></td><td>Generate Ed25519 key (recommended)</td></tr>
-            <tr><td><code>ssh-keygen -t ecdsa -b 256</code></td><td>Generate ECDSA key (P-256)</td></tr>
-            <tr><td><code>ssh-keygen -t rsa -b 4096</code></td><td>Generate RSA key (4096-bit)</td></tr>
-            <tr><td><code>ssh-copy-id user@host</code></td><td>Copy public key to server</td></tr>
+            <tr><td><code>ssh-keygen -t ed25519</code></td><td data-i18n="tools.ssh-key-generator.ui.r66_c6">Generate Ed25519 key (recommended)</td></tr>
+            <tr><td><code>ssh-keygen -t ecdsa -b 256</code></td><td data-i18n="tools.ssh-key-generator.ui.r66_c7">Generate ECDSA key (P-256)</td></tr>
+            <tr><td><code>ssh-keygen -t rsa -b 4096</code></td><td data-i18n="tools.ssh-key-generator.ui.r66_c8">Generate RSA key (4096-bit)</td></tr>
+            <tr><td><code>ssh-copy-id user@host</code></td><td data-i18n="tools.ssh-key-generator.ui.r66_c9">Copy public key to server</td></tr>
             <tr><td><code>chmod 600 ~/.ssh/id_*</code></td><td data-i18n="tools.ssh-key-generator.ui.r3_1">Set correct permissions</td></tr>
           </table>`,
         },
@@ -240,11 +241,11 @@ chmod 600 ~/.ssh/authorized_keys</pre>
 
       <section class="card p-6 mt-8" aria-labelledby="ssh-compare-heading">
         <h2 id="ssh-compare-heading" class="text-lg font-semibold text-surface-900 dark:text-surface-50 mb-3" data-i18n="tools.ssh-key-generator.ui.r3_6">Ed25519 vs ECDSA vs RSA</h2>
-        <div class="overflow-x-auto" tabindex="0" role="region" aria-label="Key type comparison table">
+        <div data-i18n-aria="tools.ssh-key-generator.ui.r6_9" class="overflow-x-auto" tabindex="0" role="region" aria-label="Key type comparison table">
           <table class="w-full text-sm text-left text-surface-700 dark:text-surface-300">
             <thead>
               <tr class="border-b border-surface-200 dark:border-surface-800 text-surface-900 dark:text-surface-50">
-                <th scope="col" class="py-2 pr-4">Algorithm</th>
+                <th data-i18n="tools.ssh-key-generator.ui.r6_10" scope="col" class="py-2 pr-4">Algorithm</th>
                 <th scope="col" class="py-2 pr-4" data-i18n="tools.ssh-key-generator.ui.r3_2">Key size</th>
                 <th scope="col" class="py-2 pr-4" data-i18n="tools.ssh-key-generator.ui.r3_3">Public key data (base64 chars)</th>
                 <th scope="col" class="py-2 pr-4" data-i18n="tools.ssh-key-generator.ui.r3_4">OpenSSH support since</th>
@@ -254,45 +255,45 @@ chmod 600 ~/.ssh/authorized_keys</pre>
             <tbody>
               <tr class="border-b border-surface-200 dark:border-surface-800">
                 <th scope="row" class="py-2 pr-4 font-semibold"><code>ssh-ed25519</code></th>
-                <td class="py-2 pr-4">256-bit (fixed)</td>
+                <td data-i18n="tools.ssh-key-generator.ui.r6_11" class="py-2 pr-4">256-bit (fixed)</td>
                 <td class="py-2 pr-4">68</td>
                 <td class="py-2 pr-4">6.5 (2014)</td>
-                <td class="py-2">Default choice for new keys</td>
+                <td data-i18n="tools.ssh-key-generator.ui.r6_12" class="py-2">Default choice for new keys</td>
               </tr>
               <tr class="border-b border-surface-200 dark:border-surface-800">
                 <th scope="row" class="py-2 pr-4 font-semibold"><code>ecdsa-sha2-nistp256</code></th>
-                <td class="py-2 pr-4">256-bit (P-256)</td>
+                <td data-i18n="tools.ssh-key-generator.ui.r6_13" class="py-2 pr-4">256-bit (P-256)</td>
                 <td class="py-2 pr-4">140</td>
                 <td class="py-2 pr-4">5.7 (2011)</td>
-                <td class="py-2">Systems that require NIST curves</td>
+                <td data-i18n="tools.ssh-key-generator.ui.r6_14" class="py-2">Systems that require NIST curves</td>
               </tr>
               <tr>
                 <th scope="row" class="py-2 pr-4 font-semibold"><code>ssh-rsa</code></th>
-                <td class="py-2 pr-4">3072 or 4096-bit</td>
-                <td class="py-2 pr-4">544 (3072-bit), 716 (4096-bit)</td>
-                <td class="py-2 pr-4">All SSH-2 versions</td>
-                <td class="py-2">Legacy systems that reject Ed25519</td>
+                <td data-i18n="tools.ssh-key-generator.ui.r6_15" class="py-2 pr-4">3072 or 4096-bit</td>
+                <td data-i18n="tools.ssh-key-generator.ui.r6_16" class="py-2 pr-4">544 (3072-bit), 716 (4096-bit)</td>
+                <td data-i18n="tools.ssh-key-generator.ui.r6_17" class="py-2 pr-4">All SSH-2 versions</td>
+                <td data-i18n="tools.ssh-key-generator.ui.r6_18" class="py-2">Legacy systems that reject Ed25519</td>
               </tr>
             </tbody>
           </table>
         </div>
         <ul class="mt-4 text-sm text-surface-700 dark:text-surface-300 space-y-1 list-disc list-inside">
-          <li>Use Ed25519 unless something on the other end cannot accept it. Since OpenSSH 9.5, <code>ssh-keygen</code> creates Ed25519 keys by default.</li>
-          <li>Use RSA only for legacy systems, and then at 3072 bits or more (the <code>ssh-keygen</code> default RSA size since OpenSSH 8.0).</li>
-          <li>GitHub accepts Ed25519, ECDSA, and RSA public keys.</li>
+          <li data-i18n-html="tools.ssh-key-generator.ui.r6_19">Use Ed25519 unless something on the other end cannot accept it. Since OpenSSH 9.5, <code>ssh-keygen</code> creates Ed25519 keys by default.</li>
+          <li data-i18n-html="tools.ssh-key-generator.ui.r6_20">Use RSA only for legacy systems, and then at 3072 bits or more (the <code>ssh-keygen</code> default RSA size since OpenSSH 8.0).</li>
+          <li data-i18n="tools.ssh-key-generator.ui.r6_21">GitHub accepts Ed25519, ECDSA, and RSA public keys.</li>
         </ul>
       </section>
 
       <section class="card p-6 mt-8" aria-labelledby="ssh-github-heading">
         <h2 id="ssh-github-heading" class="text-lg font-semibold text-surface-900 dark:text-surface-50 mb-3" data-i18n="tools.ssh-key-generator.ui.r3_7">Add the key to GitHub</h2>
         <ol class="text-sm text-surface-700 dark:text-surface-300 space-y-2 list-decimal list-inside">
-          <li>Save the private key as <code>~/.ssh/id_ed25519_github</code> and the public key as <code>~/.ssh/id_ed25519_github.pub</code>.</li>
-          <li>On GitHub, open <strong>Settings &gt; SSH and GPG keys &gt; New SSH key</strong>.</li>
-          <li>Give it a title, keep the key type as <strong>Authentication Key</strong>, and paste the full contents of the <code>.pub</code> file (one line starting with <code>ssh-ed25519</code>).</li>
-          <li>Test the connection: <code>ssh -T git@github.com</code>. On success GitHub greets you by username and says it does not provide shell access.</li>
+          <li data-i18n-html="tools.ssh-key-generator.ui.r6_22">Save the private key as <code>~/.ssh/id_ed25519_github</code> and the public key as <code>~/.ssh/id_ed25519_github.pub</code>.</li>
+          <li data-i18n-html="tools.ssh-key-generator.ui.r6_23">On GitHub, open <strong>Settings &gt; SSH and GPG keys &gt; New SSH key</strong>.</li>
+          <li data-i18n-html="tools.ssh-key-generator.ui.r6_24">Give it a title, keep the key type as <strong>Authentication Key</strong>, and paste the full contents of the <code>.pub</code> file (one line starting with <code>ssh-ed25519</code>).</li>
+          <li data-i18n-html="tools.ssh-key-generator.ui.r6_25">Test the connection: <code>ssh -T git@github.com</code>. On success GitHub greets you by username and says it does not provide shell access.</li>
         </ol>
         <h3 class="text-base font-semibold text-surface-900 dark:text-surface-50 mt-5 mb-2" data-i18n="tools.ssh-key-generator.ui.r3_8">Pin the key in ~/.ssh/config</h3>
-        <p class="text-sm text-surface-700 dark:text-surface-300 mb-2">With several keys loaded, ssh may offer the wrong one first. <code>IdentitiesOnly yes</code> makes ssh use only the <code>IdentityFile</code> listed for that host.</p>
+        <p data-i18n-html="tools.ssh-key-generator.ui.r6_26" class="text-sm text-surface-700 dark:text-surface-300 mb-2">With several keys loaded, ssh may offer the wrong one first. <code>IdentitiesOnly yes</code> makes ssh use only the <code>IdentityFile</code> listed for that host.</p>
         <pre tabindex="0" class="bg-surface-100 dark:bg-surface-950 border border-surface-200 dark:border-surface-800 p-3 rounded-lg overflow-x-auto text-xs text-surface-800 dark:text-surface-200"><code>Host github.com
   HostName github.com
   User git
@@ -306,9 +307,9 @@ chmod 600 ~/.ssh/authorized_keys</pre>
 chmod 600 ~/.ssh/id_ed25519_github
 chmod 644 ~/.ssh/id_ed25519_github.pub</code></pre>
         <ul class="mt-4 text-sm text-surface-700 dark:text-surface-300 space-y-2 list-disc list-inside">
-          <li>OpenSSH refuses a private key that other users can read. It prints <code>WARNING: UNPROTECTED PRIVATE KEY FILE!</code> and <code>Permissions 0644 ... are too open</code>, then ignores the key. A key readable by others could be copied, so <code>chmod 600</code> is required, not optional.</li>
-          <li>Protect the private key with a passphrase: <code>ssh-keygen -p -f ~/.ssh/id_ed25519_github</code> adds or changes one.</li>
-          <li>Avoid retyping the passphrase with ssh-agent: <code>eval "$(ssh-agent -s)"</code>, then <code>ssh-add ~/.ssh/id_ed25519_github</code>.</li>
+          <li data-i18n-html="tools.ssh-key-generator.ui.r6_27">OpenSSH refuses a private key that other users can read. It prints <code>WARNING: UNPROTECTED PRIVATE KEY FILE!</code> and <code>Permissions 0644 ... are too open</code>, then ignores the key. A key readable by others could be copied, so <code>chmod 600</code> is required, not optional.</li>
+          <li data-i18n-html="tools.ssh-key-generator.ui.r6_28">Protect the private key with a passphrase: <code>ssh-keygen -p -f ~/.ssh/id_ed25519_github</code> adds or changes one.</li>
+          <li data-i18n-html="tools.ssh-key-generator.ui.r6_29">Avoid retyping the passphrase with ssh-agent: <code>eval "$(ssh-agent -s)"</code>, then <code>ssh-add ~/.ssh/id_ed25519_github</code>.</li>
         </ul>
         <h3 class="text-base font-semibold text-surface-900 dark:text-surface-50 mt-5 mb-2" data-i18n="tools.ssh-key-generator.ui.r3_10">Offline equivalent</h3>
         <p class="text-sm text-surface-700 dark:text-surface-300 mb-2" data-i18n="tools.ssh-key-generator.ui.r3_12">To generate the key without a browser, run this on your own machine. It asks for a file path and a passphrase.</p>
@@ -317,11 +318,11 @@ chmod 644 ~/.ssh/id_ed25519_github.pub</code></pre>
 
       <section class="mt-8 text-sm text-surface-600 dark:text-surface-400" aria-labelledby="ssh-sources-heading">
         <h2 id="ssh-sources-heading" class="text-base font-semibold text-surface-900 dark:text-surface-50 mb-2" data-i18n="tools.ssh-key-generator.ui.r3_11">Sources</h2>
-        <p class="mb-2">Last reviewed: <time datetime="2026-11-06">2026-11-06</time></p>
+        <p data-i18n-html="tools.ssh-key-generator.ui.r6_30" class="mb-2">Last reviewed: <time datetime="2026-11-06">2026-11-06</time></p>
         <ul class="space-y-1 list-disc list-inside">
-          <li><a class="text-primary-600 dark:text-primary-400 hover:underline" href="https://man.openbsd.org/ssh-keygen" rel="noopener">ssh-keygen(1) manual</a></li>
-          <li><a class="text-primary-600 dark:text-primary-400 hover:underline" href="https://man.openbsd.org/ssh_config" rel="noopener">ssh_config(5) manual</a></li>
-          <li><a class="text-primary-600 dark:text-primary-400 hover:underline" href="https://docs.github.com/en/authentication/connecting-to-github-with-ssh" rel="noopener">GitHub Docs: Connecting to GitHub with SSH</a></li>
+          <li><a data-i18n="tools.ssh-key-generator.ui.r6_31" class="text-primary-600 dark:text-primary-400 hover:underline" href="https://man.openbsd.org/ssh-keygen" rel="noopener">ssh-keygen(1) manual</a></li>
+          <li><a data-i18n="tools.ssh-key-generator.ui.r6_32" class="text-primary-600 dark:text-primary-400 hover:underline" href="https://man.openbsd.org/ssh_config" rel="noopener">ssh_config(5) manual</a></li>
+          <li><a data-i18n="tools.ssh-key-generator.ui.r6_33" class="text-primary-600 dark:text-primary-400 hover:underline" href="https://docs.github.com/en/authentication/connecting-to-github-with-ssh" rel="noopener">GitHub Docs: Connecting to GitHub with SSH</a></li>
         </ul>
       </section>
     ${createRelatedToolsSection(relatedToolsData)}

@@ -69,7 +69,7 @@ function renderCaffeinatePage(lang = DEFAULT_LANGUAGE) {
 
         <!-- Action Button -->
         <div class="mt-6 flex justify-center">
-          <button id="toggle-btn" type="button" data-tooltip="Uses the Wake Lock API to prevent your screen from sleeping" class="btn btn-primary px-8 py-3 text-base font-semibold" data-i18n="tools.caffeinate.ui.button0">
+          <button data-i18n-tooltip="tools.caffeinate.ui.r6_0" id="toggle-btn" type="button" data-tooltip="Uses the Wake Lock API to prevent your screen from sleeping" class="btn btn-primary px-8 py-3 text-base font-semibold" data-i18n="tools.caffeinate.ui.button0">
             ${t("tools.caffeinate.ui.button0")}
           </button>
         </div>

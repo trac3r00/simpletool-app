@@ -209,7 +209,7 @@ function renderLadderGamePage(lang = "en") {
       <div class="tool-page-panel">
         ${toolHeader}
 
-        <section aria-label="Ladder game" class="space-y-6">
+        <section data-i18n-aria="tools.ladder-game.ui.r6_0" aria-label="Ladder game" class="space-y-6">
 
           <!-- Step 1: Player Count + Mode Selection -->
           <div id="step-1" data-step="1" class="step-panel">
@@ -229,7 +229,7 @@ function renderLadderGamePage(lang = "en") {
               <!-- Gameplay Mode Selection -->
               <div class="mb-8">
                 <p class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-3" data-i18n="tools.ladder-game.ui.modeLabel">${tr("tools.ladder-game.ui.modeLabel", "Game Mode")}</p>
-                <div class="flex flex-wrap justify-center gap-2" role="group" aria-label="Game mode">
+                <div data-i18n-aria="tools.ladder-game.ui.r6_1" class="flex flex-wrap justify-center gap-2" role="group" aria-label="Game mode">
                   <button type="button" class="tab-trigger mode-tab active" data-mode="classic" data-i18n="tools.ladder-game.ui.modeClassic">${tr("tools.ladder-game.ui.modeClassic", "Classic")}</button>
                   <button type="button" class="tab-trigger mode-tab" data-mode="speed" data-i18n="tools.ladder-game.ui.modeSpeed">${tr("tools.ladder-game.ui.modeSpeed", "Speed Race")}</button>
                   <button type="button" class="tab-trigger mode-tab" data-mode="mystery" data-i18n="tools.ladder-game.ui.modeMystery">${tr("tools.ladder-game.ui.modeMystery", "Mystery")}</button>
@@ -242,7 +242,7 @@ function renderLadderGamePage(lang = "en") {
               <!-- Theme Selection -->
               <div class="mb-8">
                 <p class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-3" data-i18n="tools.ladder-game.ui.themeLabel">${tr("tools.ladder-game.ui.themeLabel", "Visual Theme")}</p>
-                <div class="flex flex-wrap justify-center gap-2" role="group" aria-label="Visual theme">
+                <div data-i18n-aria="tools.ladder-game.ui.r6_2" class="flex flex-wrap justify-center gap-2" role="group" aria-label="Visual theme">
                   <button type="button" class="tab-trigger mode-tab active" data-theme-pick="neon" data-i18n="tools.ladder-game.ui.themeNeon">${tr("tools.ladder-game.ui.themeNeon", "Neon")}</button>
                   <button type="button" class="tab-trigger mode-tab" data-theme-pick="pastel" data-i18n="tools.ladder-game.ui.themePastel">${tr("tools.ladder-game.ui.themePastel", "Pastel")}</button>
                   <button type="button" class="tab-trigger mode-tab" data-theme-pick="corporate" data-i18n="tools.ladder-game.ui.themeCorporate">${tr("tools.ladder-game.ui.themeCorporate", "Corporate")}</button>
@@ -315,7 +315,7 @@ function renderLadderGamePage(lang = "en") {
             <!-- Avatar Selector -->
             <div class="mb-4">
               <p class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-2" data-i18n="tools.ladder-game.ui.avatarLabel">${tr("tools.ladder-game.ui.avatarLabel", "Player Avatar")}</p>
-              <div id="avatar-selector" class="flex flex-wrap gap-1" role="group" aria-label="Avatar selection">
+              <div data-i18n-aria="tools.ladder-game.ui.r6_3" id="avatar-selector" class="flex flex-wrap gap-1" role="group" aria-label="Avatar selection">
                 <!-- Populated by JS -->
               </div>
             </div>
@@ -374,7 +374,7 @@ function renderLadderGamePage(lang = "en") {
 
             <!-- Canvas Container -->
             <div id="ladder-canvas-wrap" class="relative rounded-xl border border-surface-200 dark:border-surface-800 bg-surface-50 dark:bg-surface-900/40 overflow-hidden transition-colors duration-300">
-              <canvas id="ladder-canvas" class="block w-full" aria-label="Ladder canvas"></canvas>
+              <canvas data-i18n-aria="tools.ladder-game.ui.r6_4" id="ladder-canvas" class="block w-full" aria-label="Ladder canvas"></canvas>
               <!-- Loading overlay -->
               <div id="ladder-loading" class="absolute inset-0 flex items-center justify-center bg-surface-50/80 dark:bg-surface-900/80 hidden">
                 <div class="spinner"></div>

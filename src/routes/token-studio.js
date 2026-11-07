@@ -48,8 +48,10 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
     [
       {
         text: "Privacy First",
+        i18nKey: "tools.token-studio.ui.r65_4",
         color: "green",
         tooltip: "All cryptographic operations happen in your browser.",
+        tooltipI18nKey: "tools.token-studio.ui.r65_2",
       },
     ],
     { toolId: "token-studio" },
@@ -69,7 +71,7 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
 
         <!-- Tabs -->
         <div class="border-b border-surface-200 dark:border-surface-700 mb-8">
-          <nav class="flex flex-wrap gap-2" aria-label="Token studio modes" role="tablist">
+          <nav data-i18n-aria="tools.token-studio.ui.r6_0" class="flex flex-wrap gap-2" aria-label="Token studio modes" role="tablist">
             <button id="tab-trigger-inspect" class="tab-trigger tab-button active" data-tab="inspect" role="tab" aria-controls="tab-inspect" aria-selected="true" tabindex="0">
               <span data-i18n="tools.token-studio.ui.tabInspect">🔍 Inspect Token</span>
             </button>
@@ -98,7 +100,7 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
                 class="input-mono w-full resize-y"
                 placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0...."
                 data-i18n-placeholder="tools.token-studio.ui.placeholderJwt"
-                aria-label="JWT token input"
+                aria-label="JWT token input" data-i18n-aria="tools.token-studio.ui.r65_0"
               ></textarea>
               <div class="flex gap-3 mt-2">
                 <button id="inspect-decode-btn" class="btn btn-primary">
@@ -152,6 +154,7 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
                       rows="3"
                       class="input-mono w-full resize-y"
                       placeholder='{"kty":"RSA",...} or shared secret string'
+                      data-i18n-placeholder="tools.token-studio.ui.r65_3"
                     ></textarea>
                     <button id="inspect-verify-btn" class="btn btn-secondary mt-2">
                       <span data-i18n="tools.token-studio.ui.btnVerify">Verify Signature</span>
@@ -162,7 +165,7 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
                   <section aria-labelledby="inspect-jwks-heading" class="rounded-lg border border-border bg-card p-4 space-y-3">
                     <div>
                       <h3 id="inspect-jwks-heading" class="text-sm font-semibold text-foreground" data-i18n="tools.token-studio.ui.r3_1">Verify with JWKS</h3>
-                      <p class="text-xs text-muted-foreground mt-1">
+                      <p data-i18n-html="tools.token-studio.ui.r6_1" class="text-xs text-muted-foreground mt-1">
                         Paste the issuer's JWK Set (the JSON served at its jwks_uri). Nothing is fetched; the set stays in this tab.
                         The key is chosen by the token's <code class="font-mono">kid</code>; without a kid, every key whose type and alg fit is tried.
                       </p>
@@ -182,7 +185,7 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
                         <label for="inspect-jwks-skew" class="label text-xs" data-i18n="tools.token-studio.ui.r3_4">Clock skew (seconds)</label>
                         <input id="inspect-jwks-skew" type="number" min="0" max="86400" step="1" value="60" inputmode="numeric" class="input w-28 min-h-[44px]" aria-describedby="inspect-jwks-skew-hint">
                       </div>
-                      <button id="inspect-jwks-btn" type="button" class="btn btn-secondary min-h-[44px]">Verify with JWKS</button>
+                      <button data-i18n="tools.token-studio.ui.r6_2" id="inspect-jwks-btn" type="button" class="btn btn-secondary min-h-[44px]">Verify with JWKS</button>
                       <button id="inspect-jwks-from-tab" type="button" class="btn btn-ghost min-h-[44px]" data-i18n="tools.token-studio.ui.r3_2">Use the set from the JWKS tab</button>
                     </div>
                     <p id="inspect-jwks-skew-hint" class="text-xs text-muted-foreground" data-i18n="tools.token-studio.ui.r3_6">Skew is the leeway applied to exp, nbf and iat against this device's clock.</p>
@@ -448,7 +451,7 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
                   rows="14"
                   class="input-mono w-full resize-y"
                   readonly
-                  aria-label="JWKS JSON output"
+                  aria-label="JWKS JSON output" data-i18n-aria="tools.token-studio.ui.r65_1"
                 >{"keys": []}</textarea>
 
                 <!-- Simulated endpoint info -->

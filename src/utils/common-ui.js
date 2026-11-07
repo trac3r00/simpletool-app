@@ -922,18 +922,18 @@ function renderJsonLd(schema, pagePath, title, pageUrl, description, lang) {
 function getLocalProofHTML(pagePath) {
   const adsLine = pageAllowsAds(pagePath)
     ? ""
-    : `<li>No ads and no third-party trackers are loaded on this page.</li>`;
+    : `<li data-i18n="shell.localProofNoAds">No ads and no third-party trackers are loaded on this page.</li>`;
   return `
   <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6" aria-labelledby="local-proof-heading" data-local-proof>
     <div class="rounded-lg border border-border bg-card text-card-foreground p-4 text-sm">
-      <h2 id="local-proof-heading" class="font-semibold text-foreground">Runs in your browser</h2>
+      <h2 id="local-proof-heading" class="font-semibold text-foreground" data-i18n="shell.localProofHeading">Runs in your browser</h2>
       <ul class="mt-2 space-y-1 text-muted-foreground list-disc pl-5">
-        <li>What you type or paste is processed in this tab and is not uploaded.</li>
-        <li>Requests made since this page finished loading: <strong class="text-foreground" data-local-proof-count>0</strong> <span class="text-xs">(live count; check it against your browser's DevTools Network tab)</span></li>
+        <li data-i18n="shell.localProofProcessed">What you type or paste is processed in this tab and is not uploaded.</li>
+        <li><span data-i18n="shell.localProofRequests">Requests made since this page finished loading:</span> <strong class="text-foreground" data-local-proof-count>0</strong> <span class="text-xs" data-i18n="shell.localProofLiveCount">(live count; check it against your browser's DevTools Network tab)</span></li>
         ${adsLine}
       </ul>
       <details class="mt-2" data-local-proof-details hidden>
-        <summary class="cursor-pointer text-xs text-muted-foreground">Show requests</summary>
+        <summary class="cursor-pointer text-xs text-muted-foreground" data-i18n="shell.localProofShow">Show requests</summary>
         <ol class="mt-1 text-xs font-mono text-muted-foreground list-decimal pl-5" data-local-proof-list></ol>
       </details>
     </div>
@@ -955,7 +955,7 @@ function getLocalProofHTML(pagePath) {
       var li = document.createElement('li');
       var u;
       try { u = new URL(entry.name); } catch (e) { u = null; }
-      li.textContent = u ? (u.origin === location.origin ? u.pathname + ' (this site, static file)' : u.origin + u.pathname) : entry.name;
+      li.textContent = u ? (u.origin === location.origin ? u.pathname + ' ' + (window._t ? window._t('shell.localProofStaticFile', '(this site, static file)') : '(this site, static file)') : u.origin + u.pathname) : entry.name;
       list.appendChild(li);
       details.hidden = false;
     }
@@ -1046,7 +1046,7 @@ export function createPageTemplate(options) {
   ${getStylesheetLinks()}
 </head>
 <body class="bg-surface-50 text-surface-900 dark:bg-surface-950 dark:text-surface-50 transition-colors duration-200 flex flex-col min-h-screen" data-tool-page-id="${toolId}">
-  <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary-600 focus:text-white focus:rounded">Skip to main content</a>
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary-600 focus:text-white focus:rounded" data-i18n="shell.skipToContent">Skip to main content</a>
   ${getNavigationHTML({
     lang: currentLang,
     hideDesktopSearch: pagePath === "/",
@@ -1174,6 +1174,16 @@ export function createFeatureList(items = []) {
  * Create a tool header section.
  * Enforces single-pill policy: max 1 trust pill, rest demoted to feature list.
  */
+// Trust-badge tooltips that many tools share verbatim; keyed so they translate.
+const SHARED_TRUST_TIPS = {
+  "Runs entirely in your browser using Web APIs — your data is processed locally and not sent to our servers.": "shell.trustTipWebApis",
+  "All processing happens in your browser — your data is not sent to our servers.": "shell.trustTipLocal",
+};
+const trustTipI18n = (tip, key) => {
+  const resolved = key || SHARED_TRUST_TIPS[tip];
+  return resolved ? ` data-i18n-tooltip="${resolved}"` : "";
+};
+
 export function createToolHeader(
   icon,
   title,
@@ -1202,7 +1212,7 @@ export function createToolHeader(
     // Single pill: render as trust pill
     const badge = badges[0];
     const tipAttr = badge.tooltip
-      ? ` data-tooltip="${badge.tooltip}" cursor-help`
+      ? ` data-tooltip="${badge.tooltip}"${trustTipI18n(badge.tooltip, badge.tooltipI18nKey)} cursor-help`
       : "";
     const tipClass = badge.tooltip ? " cursor-help" : "";
     trustPillHTML = `<span class="tool-header-trust inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300${tipClass}" data-trust-pill${tipAttr}${badge.i18nKey ? ` data-i18n="${badge.i18nKey}"` : ""}>
@@ -1212,7 +1222,7 @@ export function createToolHeader(
     // Multiple pills: first is trust pill, rest are demoted features
     const trustBadge = badges[0];
     const tipAttr = trustBadge.tooltip
-      ? ` data-tooltip="${trustBadge.tooltip}" cursor-help`
+      ? ` data-tooltip="${trustBadge.tooltip}"${trustTipI18n(trustBadge.tooltip, trustBadge.tooltipI18nKey)} cursor-help`
       : "";
     const tipClass = trustBadge.tooltip ? " cursor-help" : "";
     trustPillHTML = `<span class="tool-header-trust inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300${tipClass}" data-trust-pill${tipAttr}${trustBadge.i18nKey ? ` data-i18n="${trustBadge.i18nKey}"` : ""}>
@@ -1257,7 +1267,7 @@ function escapeAttribute(value) {
 }
 
 export function infoHint(tooltip, ariaLabel, options = {}) {
-  const { large = false, position, i18nKey, icon = "help" } = options;
+  const { large = false, position, i18nKey, ariaI18nKey, icon = "help" } = options;
   const sizeClass = large ? " info-hint-lg" : "";
   const posAttr = position ? ` data-tooltip-pos="${position}"` : "";
   const i18nAttr = i18nKey ? ` data-i18n-tooltip="${i18nKey}"` : "";
@@ -1273,7 +1283,7 @@ export function infoHint(tooltip, ariaLabel, options = {}) {
   // Tooltips are prose containing quotes and apostrophes; interpolating them
   // raw would terminate the attribute and inject stray ones, exactly as the
   // rich-editor placeholder did.
-  return `<button type="button" class="info-hint${sizeClass}" data-tooltip="${escapeAttribute(tooltip)}"${posAttr}${i18nAttr} aria-label="${escapeAttribute(label)}"><span class="material-symbols-rounded" aria-hidden="true" data-icon="${icon}"></span></button>`;
+  return `<button type="button" class="info-hint${sizeClass}" data-tooltip="${escapeAttribute(tooltip)}"${posAttr}${i18nAttr} aria-label="${escapeAttribute(label)}"${ariaI18nKey ? ` data-i18n-aria="${ariaI18nKey}"` : ""}><span class="material-symbols-rounded" aria-hidden="true" data-icon="${icon}"></span></button>`;
 }
 
 export function createEmptyState(options = {}) {

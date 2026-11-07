@@ -44,7 +44,7 @@ function renderMarbleRoulettePage(lang = "en") {
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <!-- Canvas / Board -->
-          <section class="lg:col-span-7" aria-label="Marble board">
+          <section data-i18n-aria="tools.marble-roulette.ui.r6_0" class="lg:col-span-7" aria-label="Marble board">
             <div class="bg-surface-50 dark:bg-surface-950/40 border border-surface-200 dark:border-surface-800 rounded-xl p-4">
               <div class="flex items-center justify-between gap-3 mb-3">
                 <h2 class="text-sm font-semibold text-surface-900 dark:text-surface-50" data-i18n="tools.marble-roulette.ui.heading0">${tr("tools.marble-roulette.ui.heading0", "Board")}</h2>
@@ -52,7 +52,7 @@ function renderMarbleRoulettePage(lang = "en") {
               </div>
 
               <div id="mr-canvas-wrap" class="relative w-full max-w-full overflow-hidden rounded-lg border border-surface-200 dark:border-surface-800 bg-white/60 dark:bg-surface-950/60" style="aspect-ratio: 3 / 2.5; max-height: 60vh;">
-                <canvas id="mr-canvas" class="absolute inset-0 w-full h-full max-w-full" aria-label="Marble simulation canvas" role="img"></canvas>
+                <canvas data-i18n-aria="tools.marble-roulette.ui.r6_1" id="mr-canvas" class="absolute inset-0 w-full h-full max-w-full" aria-label="Marble simulation canvas" role="img"></canvas>
                 <div class="pointer-events-none absolute inset-x-0 top-0 p-3">
                   <div class="flex flex-wrap items-center justify-between gap-2">
                     <div class="inline-flex items-center gap-2 text-xs text-surface-700 dark:text-surface-300 bg-white/80 dark:bg-surface-950/70 border border-surface-200/60 dark:border-surface-800/60 rounded-full px-3 py-1">
@@ -123,7 +123,7 @@ function renderMarbleRoulettePage(lang = "en") {
                       <select id="mr-winner-mode" class="input">
                         ${marbleBootConfig.winnerModes.map((mode) => `<option value="${mode.id}" data-i18n="${mode.labelKey}">${tr(mode.labelKey, mode.fallbackLabel)}</option>`).join("")}
                       </select>
-                      <input id="mr-target-ordinal" type="number" min="2" max="10" value="${marbleBootConfig.defaultOrdinalTarget}" class="input w-20 text-center hidden" aria-label="Ordinal target">
+                      <input data-i18n-aria="tools.marble-roulette.ui.r6_2" id="mr-target-ordinal" type="number" min="2" max="10" value="${marbleBootConfig.defaultOrdinalTarget}" class="input w-20 text-center hidden" aria-label="Ordinal target">
                     </div>
                     <p class="mt-2 text-xs text-surface-600 dark:text-surface-400" data-i18n="tools.marble-roulette.ui.descWinnerMode">${tr("tools.marble-roulette.ui.descWinnerMode", "Pick the first finisher, last finisher, or a specific place in the ranking.")}</p>
                   </div>
@@ -131,7 +131,7 @@ function renderMarbleRoulettePage(lang = "en") {
 
                 <div class="tool-group p-3">
                   <div class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" data-i18n="tools.marble-roulette.ui.label2">${tr("tools.marble-roulette.ui.label2", "Speed")}</div>
-                  <div class="mt-2 flex flex-wrap gap-2" aria-label="Speed controls">
+                  <div data-i18n-aria="tools.marble-roulette.ui.r6_3" class="mt-2 flex flex-wrap gap-2" aria-label="Speed controls">
                     <button type="button" class="btn btn-secondary" id="mr-speed-1" aria-pressed="true"><span data-i18n="tools.marble-roulette.ui.button0">${tr("tools.marble-roulette.ui.button0", "1x")}</span></button>
                     <button type="button" class="btn btn-secondary" id="mr-speed-2" aria-pressed="false"><span data-i18n="tools.marble-roulette.ui.button1">${tr("tools.marble-roulette.ui.button1", "2x")}</span></button>
                     <button type="button" class="btn btn-secondary" id="mr-speed-3" aria-pressed="false"><span data-i18n="tools.marble-roulette.ui.button2">${tr("tools.marble-roulette.ui.button2", "3x")}</span></button>
@@ -140,10 +140,10 @@ function renderMarbleRoulettePage(lang = "en") {
                 </div>
 
                 <div class="flex flex-wrap gap-2">
-                  <button type="button" id="mr-shuffle" class="btn btn-secondary" aria-label="Shuffle entries">
+                  <button data-i18n-aria="tools.marble-roulette.ui.r6_4" type="button" id="mr-shuffle" class="btn btn-secondary" aria-label="Shuffle entries">
                     <span data-i18n="tools.marble-roulette.ui.buttonShuffle">${tr("tools.marble-roulette.ui.buttonShuffle", "Shuffle")}</span>
                   </button>
-                  <button type="button" id="mr-start" class="btn btn-primary" aria-label="Start drop">
+                  <button data-i18n-aria="tools.marble-roulette.ui.r6_5" type="button" id="mr-start" class="btn btn-primary" aria-label="Start drop">
                     <span data-i18n="tools.marble-roulette.ui.button3">${tr("tools.marble-roulette.ui.button3", "Start")}</span>
                   </button>
                   <button type="button" id="mr-reset" class="btn btn-ghost" aria-label="Reset">
@@ -179,7 +179,7 @@ function renderMarbleRoulettePage(lang = "en") {
                 <div class="tool-group p-4">
                   <div class="flex items-center justify-between gap-3">
                     <div class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400" data-i18n="tools.marble-roulette.ui.heading5">${tr("tools.marble-roulette.ui.heading5", "Statistics")}</div>
-                    <button type="button" class="btn btn-ghost" id="mr-clear-stats" aria-label="Clear stats">
+                    <button data-i18n-aria="tools.marble-roulette.ui.r6_6" type="button" class="btn btn-ghost" id="mr-clear-stats" aria-label="Clear stats">
                       <span data-i18n="tools.marble-roulette.ui.button8">${tr("tools.marble-roulette.ui.button8", "Clear Stats")}</span>
                     </button>
                   </div>

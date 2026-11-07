@@ -31,15 +31,18 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
       <div class="tool-page-panel">
       ${createToolHeader(
         { emoji: "⛓️" },
-        "Pipe Mode",
+        '<span data-i18n="tools.pipe.ui.r64_0">Pipe Mode</span>',
         "Chain tools together. Your data is processed in your browser, not sent to our servers.",
         [
           {
             text: "Beta",
+            i18nKey: "tools.pipe.ui.r64_2",
             tooltip:
               "Pipe Mode is new — pipelines and recipes may still change.",
+            tooltipI18nKey: "tools.pipe.ui.r64_3",
           },
         ],
+        { subtitleI18nKey: "tools.pipe.ui.r64_1" },
       )}
       <div class="flex flex-wrap justify-end gap-2 -mt-6 mb-3">
         <button id="share-btn" class="btn btn-ghost text-xs" title="Share pipeline (no data included)" data-i18n-title="tools.pipe.ui.r3_2" data-i18n="tools.pipe.ui.r3_5">Share</button>
@@ -52,7 +55,7 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
         <!-- Sidebar: Tool Palette (desktop) -->
         <aside id="tool-palette" class="w-56 shrink-0 hidden lg:block">
           <div class="sticky top-20 tool-group p-3">
-            <input type="search" id="palette-search" placeholder="Search tools..." data-i18n-placeholder="tools.pipe.ui.r3_0"
+            <input data-i18n-aria="tools.pipe.ui.r6_0" type="search" id="palette-search" placeholder="Search tools..." data-i18n-placeholder="tools.pipe.ui.r3_0"
               class="input text-xs mb-3"
               aria-label="Search tools">
             <div id="palette-list" class="space-y-0.5 text-sm max-h-[60vh] overflow-y-auto"></div>
@@ -103,7 +106,7 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
               id="recipe-list"
               role="region"
               aria-label="Recipe gallery"
-              data-i18n-aria="tools.pipe.ui.ariaRecipeList"
+              data-i18n-aria="tools.pipe.ui.r64_16"
             ></div>
           </div>
         </div>
@@ -115,9 +118,9 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
         <div class="absolute bottom-0 left-0 right-0 bg-popover text-popover-foreground rounded-t-xl p-4 max-h-[70vh] overflow-y-auto">
           <div class="flex justify-between items-center mb-3">
             <h2 id="mobile-palette-title" class="font-semibold text-sm" data-i18n="tools.pipe.ui.r3_14">Add a step</h2>
-            <button id="close-mobile-palette" class="btn btn-ghost btn-icon-sm text-lg" aria-label="Close palette">&times;</button>
+            <button data-i18n-aria="tools.pipe.ui.r6_1" id="close-mobile-palette" class="btn btn-ghost btn-icon-sm text-lg" aria-label="Close palette">&times;</button>
           </div>
-          <input type="search" id="mobile-palette-search" placeholder="Search tools..."
+          <input data-i18n-aria="tools.pipe.ui.r6_3" data-i18n-placeholder="tools.pipe.ui.r6_2" type="search" id="mobile-palette-search" placeholder="Search tools..."
             class="input w-full mb-3" aria-label="Search tools">
           <div id="mobile-palette-list" class="space-y-1"></div>
         </div>
@@ -139,17 +142,17 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
       // fullTool: the standalone page that does the same job, or null.
       const CONTRACTS = {
         'case-converter': {
-          id: 'case-converter', name: 'Text Case Converter', fullTool: '/case-converter',
+          id: 'case-converter', name: 'Text Case Converter', nameKey: 'tools.pipe.ui.r64_4', fullTool: '/case-converter',
           options: [{ id: 'style', type: 'select', values: ['camel','snake','kebab','pascal','upper','lower','constant','dot','title','sentence'], default: 'camel' }],
           transform(input, opts) { return input ? pipeCaseConvert(input, opts.style) : ''; }
         },
         'base64': {
-          id: 'base64', name: 'Base64 Encode/Decode', fullTool: '/encoding-workbench',
+          id: 'base64', name: 'Base64 Encode/Decode', nameKey: 'tools.pipe.ui.r64_5', fullTool: '/encoding-workbench',
           options: [{ id: 'mode', type: 'select', values: ['encode','decode'], default: 'encode' }],
           transform(input, opts) { return input ? (opts.mode === 'decode' ? pipeBase64Decode(input) : pipeBase64Encode(input)) : ''; }
         },
         'url-encode': {
-          id: 'url-encode', name: 'URL Encode/Decode', fullTool: '/encoding-workbench',
+          id: 'url-encode', name: 'URL Encode/Decode', nameKey: 'tools.pipe.ui.r64_6', fullTool: '/encoding-workbench',
           options: [{ id: 'mode', type: 'select', values: ['encode','decode','decode-form'], default: 'encode' }],
           transform(input, opts) {
             if (!input) return '';
@@ -159,12 +162,12 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
           }
         },
         'json-format': {
-          id: 'json-format', name: 'JSON Format/Minify', fullTool: '/json-formatter',
+          id: 'json-format', name: 'JSON Format/Minify', nameKey: 'tools.pipe.ui.r64_7', fullTool: '/json-formatter',
           options: [{ id: 'mode', type: 'select', values: ['format','minify'], default: 'format' }],
           transform(input, opts) { return input ? pipeJsonFormat(input, opts.mode) : ''; }
         },
         'line-sort': {
-          id: 'line-sort', name: 'Line Sort & Dedupe', fullTool: null,
+          id: 'line-sort', name: 'Line Sort & Dedupe', nameKey: 'tools.pipe.ui.r64_8', fullTool: null,
           options: [{ id: 'mode', type: 'select', values: ['sort','reverse','dedupe','sort-dedupe'], default: 'sort' }],
           transform(input, opts) { return input ? pipeLineSort(input, opts.mode) : ''; }
         }
@@ -177,10 +180,12 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
         'Format': ['json-format']
       };
 
+      const CATEGORY_KEYS = { 'Text': 'tools.pipe.ui.r64_9', 'Encoding': 'tools.pipe.ui.r64_10', 'Format': 'tools.pipe.ui.r64_11' };
+
       const RECIPES = [
-        { name: 'Decode JWT payload', sample: 'eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9', steps: [{ id: 'base64', options: { mode: 'decode' } }, { id: 'json-format', options: { mode: 'format' } }] },
-        { name: 'Sort & dedupe lines', sample: 'banana\\ncherry\\napple\\nbanana\\napple', steps: [{ id: 'line-sort', options: { mode: 'sort-dedupe' } }] },
-        { name: 'Base64 for a URL parameter', sample: 'hello world & friends=true', steps: [{ id: 'base64', options: { mode: 'encode' } }, { id: 'url-encode', options: { mode: 'encode' } }] },
+        { name: 'Decode JWT payload', nameKey: 'tools.pipe.ui.r64_12', sample: 'eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9', steps: [{ id: 'base64', options: { mode: 'decode' } }, { id: 'json-format', options: { mode: 'format' } }] },
+        { name: 'Sort & dedupe lines', nameKey: 'tools.pipe.ui.r64_13', sample: 'banana\\ncherry\\napple\\nbanana\\napple', steps: [{ id: 'line-sort', options: { mode: 'sort-dedupe' } }] },
+        { name: 'Base64 for a URL parameter', nameKey: 'tools.pipe.ui.r64_14', sample: 'hello world & friends=true', steps: [{ id: 'base64', options: { mode: 'encode' } }, { id: 'url-encode', options: { mode: 'encode' } }] },
       ];
 
       // ── State ──────────────────────────────────────────────
@@ -211,12 +216,14 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
           if (matching.length === 0) continue;
           const catEl = document.createElement('div');
           catEl.className = 'text-[11px] font-semibold text-surface-500 dark:text-surface-400 uppercase tracking-wider mt-3 mb-1 first:mt-0';
-          catEl.textContent = cat;
+          catEl.textContent = _t(CATEGORY_KEYS[cat], cat);
+          catEl.setAttribute('data-i18n', CATEGORY_KEYS[cat]);
           container.appendChild(catEl);
           for (const id of matching) {
             const btn = document.createElement('button');
             btn.className = 'menu-item';
-            btn.textContent = CONTRACTS[id].name;
+            btn.textContent = _t(CONTRACTS[id].nameKey, CONTRACTS[id].name);
+            btn.setAttribute('data-i18n', CONTRACTS[id].nameKey);
             btn.onclick = () => { addStep(id); closeMobilePalette(); };
             container.appendChild(btn);
           }
@@ -402,9 +409,9 @@ function renderPipePage(lang = DEFAULT_LANGUAGE) {
           const card = document.createElement('button');
           card.className = 'tool-card tool-card-link p-4 text-left min-w-0';
           card.innerHTML = \`
-            <div class="font-medium text-sm text-surface-800 dark:text-surface-200 mb-1">\${recipe.name}</div>
-            <div class="text-xs text-surface-500 dark:text-surface-400">\${recipe.steps.map(s => CONTRACTS[s.id]?.name || s.id).join(' → ')}</div>
-            <div class="text-xs text-info-700 dark:text-info-300 mt-2">\${_t('tools.pipe.js.r4_10', 'Try it →')}</div>
+            <div class="font-medium text-sm text-surface-800 dark:text-surface-200 mb-1" data-i18n="\${recipe.nameKey}">\${_t(recipe.nameKey, recipe.name)}</div>
+            <div class="text-xs text-surface-500 dark:text-surface-400">\${recipe.steps.map(s => CONTRACTS[s.id] ? '<span data-i18n="' + CONTRACTS[s.id].nameKey + '">' + _t(CONTRACTS[s.id].nameKey, CONTRACTS[s.id].name) + '</span>' : s.id).join(' → ')}</div>
+            <div class="text-xs text-info-700 dark:text-info-300 mt-2" data-i18n="tools.pipe.ui.r64_15">\${_t('tools.pipe.js.r4_10', 'Try it →')}</div>
           \`;
           card.onclick = () => {
             pipeSteps = recipe.steps.map(s => ({ contractId: s.id, options: { ...s.options } }));

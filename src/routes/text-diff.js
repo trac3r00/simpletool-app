@@ -73,12 +73,12 @@ function renderTextDiffPage(lang = DEFAULT_LANGUAGE) {
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           <div class="card p-4">
             <h2 class="text-lg font-semibold mb-2 text-surface-900 dark:text-surface-50" data-i18n="tools.text-diff.ui.heading3">Original Text</h2>
-            <textarea id="text1" rows="15" aria-label="Original text" data-tooltip="Paste the original text here" data-i18n-tooltip="tools.text-diff.ui.tip0" class="input-mono w-full resize-none" placeholder="Enter original text..." data-i18n-placeholder="tools.text-diff.ui.placeholder1"></textarea>
+            <textarea id="text1" rows="15" aria-label="Original text" data-i18n-aria="tools.text-diff.ui.r62_3" data-tooltip="Paste the original text here" data-i18n-tooltip="tools.text-diff.ui.r62_0" class="input-mono w-full resize-none" placeholder="Enter original text..." data-i18n-placeholder="tools.text-diff.ui.placeholder1"></textarea>
           </div>
 
           <div class="card p-4">
             <h2 class="text-lg font-semibold mb-2 text-surface-900 dark:text-surface-50" data-i18n="tools.text-diff.ui.heading4">Modified Text</h2>
-            <textarea id="text2" rows="15" aria-label="Modified text" data-tooltip="Paste the modified text here" data-i18n-tooltip="tools.text-diff.ui.tip2" class="input-mono w-full resize-none" placeholder="Enter modified text..." data-i18n-placeholder="tools.text-diff.ui.placeholder2"></textarea>
+            <textarea id="text2" rows="15" aria-label="Modified text" data-i18n-aria="tools.text-diff.ui.r62_4" data-tooltip="Paste the modified text here" data-i18n-tooltip="tools.text-diff.ui.r62_1" class="input-mono w-full resize-none" placeholder="Enter modified text..." data-i18n-placeholder="tools.text-diff.ui.placeholder2"></textarea>
           </div>
         </div>
 
@@ -87,21 +87,21 @@ function renderTextDiffPage(lang = DEFAULT_LANGUAGE) {
             <label for="diff-mode" class="label mb-0" data-i18n="tools.text-diff.ui.r3_4">Compare by</label>
             <select id="diff-mode" class="input w-auto min-h-[44px]">
               <option value="line" selected data-i18n="tools.text-diff.ui.r3_0">Lines</option>
-              <option value="word">Words</option>
-              <option value="char">Characters</option>
+              <option value="word" data-i18n="tools.text-diff.ui.r3_1">Words</option>
+              <option value="char" data-i18n="tools.text-diff.ui.r3_2">Characters</option>
             </select>
           </div>
           <label class="flex items-center gap-2 min-h-[44px] cursor-pointer text-sm text-surface-700 dark:text-surface-300">
             <input type="checkbox" id="ignore-whitespace" class="w-5 h-5 accent-primary-600">
-            Ignore whitespace
+            <span data-i18n="tools.text-diff.ui.r62_6">Ignore whitespace</span>
           </label>
           <label class="flex items-center gap-2 min-h-[44px] cursor-pointer text-sm text-surface-700 dark:text-surface-300">
             <input type="checkbox" id="ignore-case" class="w-5 h-5 accent-primary-600">
-            Ignore case
+            <span data-i18n="tools.text-diff.ui.r62_7">Ignore case</span>
           </label>
         </div>
 
-        <button id="compare-btn" class="btn btn-primary w-full py-4 text-lg mb-6" data-tooltip="Compare the two texts and highlight differences" data-i18n-tooltip="tools.text-diff.ui.tip1">
+        <button id="compare-btn" class="btn btn-primary w-full py-4 text-lg mb-6" data-tooltip="Compare the two texts and highlight differences" data-i18n-tooltip="tools.text-diff.ui.r62_2">
           <span data-i18n="tools.text-diff.ui.button0">Compare Texts</span>
         </button>
 
@@ -109,21 +109,21 @@ function renderTextDiffPage(lang = DEFAULT_LANGUAGE) {
            <div class="flex items-center justify-between mb-4">
              <h2 class="text-xl font-bold text-surface-900 dark:text-surface-50" data-i18n="tools.text-diff.ui.heading5">Differences</h2>
              <div class="flex gap-4 text-xs">
-               <span class="flex items-center gap-1"><span class="w-3 h-3 bg-success-100 border border-success-300 rounded-sm"></span> Added</span>
-               <span class="flex items-center gap-1"><span class="w-3 h-3 bg-error-100 border border-error-300 rounded-sm"></span> Removed</span>
+               <span data-i18n-html="tools.text-diff.ui.r6_0" class="flex items-center gap-1"><span class="w-3 h-3 bg-success-100 border border-success-300 rounded-sm"></span> Added</span>
+               <span data-i18n-html="tools.text-diff.ui.r6_1" class="flex items-center gap-1"><span class="w-3 h-3 bg-error-100 border border-error-300 rounded-sm"></span> Removed</span>
              </div>
            </div>
           <dl id="diff-stats" class="grid grid-cols-3 gap-3 mb-4 text-center">
             <div class="rounded-lg border border-border bg-success-50 dark:bg-success-900/20 p-3">
-              <dt class="text-xs text-muted-foreground">Added</dt>
+              <dt data-i18n="tools.text-diff.ui.r6_2" class="text-xs text-muted-foreground">Added</dt>
               <dd id="stat-added" class="text-xl font-semibold text-success-700 dark:text-success-300">0</dd>
             </div>
             <div class="rounded-lg border border-border bg-error-50 dark:bg-error-900/20 p-3">
-              <dt class="text-xs text-muted-foreground">Removed</dt>
+              <dt data-i18n="tools.text-diff.ui.r6_3" class="text-xs text-muted-foreground">Removed</dt>
               <dd id="stat-removed" class="text-xl font-semibold text-error-700 dark:text-error-300">0</dd>
             </div>
             <div class="rounded-lg border border-border bg-surface-50 dark:bg-surface-900 p-3">
-              <dt class="text-xs text-muted-foreground">Unchanged</dt>
+              <dt data-i18n="tools.text-diff.ui.r6_4" class="text-xs text-muted-foreground">Unchanged</dt>
               <dd id="stat-unchanged" class="text-xl font-semibold text-surface-800 dark:text-surface-100">0</dd>
             </div>
           </dl>
@@ -135,18 +135,18 @@ function renderTextDiffPage(lang = DEFAULT_LANGUAGE) {
             <div class="flex flex-wrap items-center justify-between gap-3 mb-2">
               <h3 class="text-base font-semibold text-surface-900 dark:text-surface-50" data-i18n="tools.text-diff.ui.r3_5">Unified diff</h3>
               <div class="flex gap-2">
-                <button type="button" id="copy-unified" class="btn btn-secondary">
+                <button data-i18n-html="tools.text-diff.ui.r6_5" type="button" id="copy-unified" class="btn btn-secondary">
                   <span class="material-symbols-rounded" aria-hidden="true" data-icon="content_copy"></span>
                   Copy diff
                 </button>
-                <button type="button" id="download-unified" class="btn btn-secondary">
+                <button data-i18n-html="tools.text-diff.ui.r6_6" type="button" id="download-unified" class="btn btn-secondary">
                   <span class="material-symbols-rounded" aria-hidden="true" data-icon="download"></span>
                   Download .diff
                 </button>
               </div>
             </div>
             <p class="text-xs text-muted-foreground mb-2" data-i18n="tools.text-diff.ui.r3_11">Always line-based, with 3 lines of context around each change.</p>
-            <pre id="unified-output" class="font-mono text-xs whitespace-pre overflow-auto max-h-96 bg-surface-50 dark:bg-surface-950 p-4 rounded-lg border border-surface-200 dark:border-surface-800 text-surface-800 dark:text-surface-200" tabindex="0" aria-label="Unified diff output"></pre>
+            <pre id="unified-output" class="font-mono text-xs whitespace-pre overflow-auto max-h-96 bg-surface-50 dark:bg-surface-950 p-4 rounded-lg border border-surface-200 dark:border-surface-800 text-surface-800 dark:text-surface-200" tabindex="0" aria-label="Unified diff output" data-i18n-aria="tools.text-diff.ui.r62_5"></pre>
             <p id="unified-status" class="text-sm mt-2 text-muted-foreground" role="status" aria-live="polite"></p>
           </div>
         </div>
@@ -155,21 +155,21 @@ function renderTextDiffPage(lang = DEFAULT_LANGUAGE) {
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
       <section class="card p-6 sm:p-8 mt-8 text-sm text-surface-700 dark:text-surface-300 leading-relaxed" aria-labelledby="diff-guide-heading">
         <h2 id="diff-guide-heading" class="text-xl font-bold text-surface-900 dark:text-surface-50 mb-4" data-i18n="tools.text-diff.ui.r3_6">How the comparison works</h2>
-        <p class="mb-4">The diff uses Myers' algorithm, which finds a shortest edit script: the fewest insertions and deletions that turn the original into the modified text. Everything else is shown as unchanged. All of it runs in your browser. For very large inputs that share little text, the search is capped to keep the page responsive; the page tells you when that happens, and the diff it shows is still correct but may not be the smallest one.</p>
+        <p data-i18n="tools.text-diff.ui.r6_7" class="mb-4">The diff uses Myers' algorithm, which finds a shortest edit script: the fewest insertions and deletions that turn the original into the modified text. Everything else is shown as unchanged. All of it runs in your browser. For very large inputs that share little text, the search is capped to keep the page responsive; the page tells you when that happens, and the diff it shows is still correct but may not be the smallest one.</p>
 
         <h3 class="text-base font-semibold text-surface-900 dark:text-surface-50 mt-6 mb-2" data-i18n="tools.text-diff.ui.r3_7">Comparison modes</h3>
         <ul class="list-disc pl-5 space-y-1">
-          <li><strong>Lines</strong> compares whole lines, like <code>diff</code> and <code>git diff</code>. Best for code, config files, and logs.</li>
-          <li><strong data-i18n="tools.text-diff.ui.r3_1">Words</strong> compares words and the whitespace between them, so a one-word edit in a long paragraph shows as one word instead of a whole changed line. Best for prose and prompts.</li>
-          <li><strong data-i18n="tools.text-diff.ui.r3_2">Characters</strong> compares single characters (Unicode code points, so emoji and accented letters count as one). Best for short strings such as IDs, hashes, or URLs.</li>
+          <li data-i18n-html="tools.text-diff.ui.r6_8"><strong>Lines</strong> compares whole lines, like <code>diff</code> and <code>git diff</code>. Best for code, config files, and logs.</li>
+          <li><strong data-i18n="tools.text-diff.ui.r3_1">Words</strong> <span data-i18n="tools.text-diff.ui.r62_8">compares words and the whitespace between them, so a one-word edit in a long paragraph shows as one word instead of a whole changed line. Best for prose and prompts.</span></li>
+          <li><strong data-i18n="tools.text-diff.ui.r3_2">Characters</strong> <span data-i18n="tools.text-diff.ui.r62_9">compares single characters (Unicode code points, so emoji and accented letters count as one). Best for short strings such as IDs, hashes, or URLs.</span></li>
         </ul>
 
         <h3 class="text-base font-semibold text-surface-900 dark:text-surface-50 mt-6 mb-2" data-i18n="tools.text-diff.ui.r3_8">Ignore whitespace and ignore case</h3>
-        <p class="mb-2"><strong>Ignore case</strong> treats upper- and lower-case letters as equal.</p>
-        <p><strong>Ignore whitespace</strong> in line mode removes all spaces, tabs, and other whitespace before comparing two lines, like <code>git diff -w</code>, so re-indented lines count as unchanged. In word and character modes, any run of whitespace matches any other run, so <code>a&nbsp;&nbsp;b</code> matches <code>a b</code>, but whitespace added where there was none still counts as a change.</p>
+        <p data-i18n-html="tools.text-diff.ui.r6_9" class="mb-2"><strong>Ignore case</strong> treats upper- and lower-case letters as equal.</p>
+        <p data-i18n-html="tools.text-diff.ui.r6_10"><strong>Ignore whitespace</strong> in line mode removes all spaces, tabs, and other whitespace before comparing two lines, like <code>git diff -w</code>, so re-indented lines count as unchanged. In word and character modes, any run of whitespace matches any other run, so <code>a&nbsp;&nbsp;b</code> matches <code>a b</code>, but whitespace added where there was none still counts as a change.</p>
 
         <h3 class="text-base font-semibold text-surface-900 dark:text-surface-50 mt-6 mb-2" data-i18n="tools.text-diff.ui.r3_9">Unified diff format</h3>
-        <p class="mb-2">The export uses the unified format that <code>diff -u</code> produces and <code>patch</code> reads:</p>
+        <p data-i18n-html="tools.text-diff.ui.r6_11" class="mb-2">The export uses the unified format that <code>diff -u</code> produces and <code>patch</code> reads:</p>
         <pre class="font-mono text-xs bg-surface-50 dark:bg-surface-950 p-4 rounded-lg border border-surface-200 dark:border-surface-800 overflow-x-auto mb-2">--- original.txt
 +++ modified.txt
 @@ -1,3 +1,3 @@
@@ -178,19 +178,19 @@ function renderTextDiffPage(lang = DEFAULT_LANGUAGE) {
 +port = 9090
  debug = false</pre>
         <ul class="list-disc pl-5 space-y-1">
-          <li><code>---</code> and <code>+++</code> name the original and modified files.</li>
-          <li>Each hunk starts with <code>@@ -start,count +start,count @@</code>: the first line number and the number of lines the hunk covers in each file. A count of 1 is left out.</li>
-          <li>Lines starting with a space are context, <code>-</code> lines are removed, and <code>+</code> lines are added. Each hunk has up to 3 lines of context, and changes that close together share a hunk.</li>
-          <li><code>\\ No newline at end of file</code> marks a last line that has no trailing newline.</li>
-          <li>To apply the downloaded file: <code>patch original.txt text-diff.diff</code>.</li>
+          <li data-i18n-html="tools.text-diff.ui.r6_12"><code>---</code> and <code>+++</code> name the original and modified files.</li>
+          <li data-i18n-html="tools.text-diff.ui.r6_13">Each hunk starts with <code>@@ -start,count +start,count @@</code>: the first line number and the number of lines the hunk covers in each file. A count of 1 is left out.</li>
+          <li data-i18n-html="tools.text-diff.ui.r6_14">Lines starting with a space are context, <code>-</code> lines are removed, and <code>+</code> lines are added. Each hunk has up to 3 lines of context, and changes that close together share a hunk.</li>
+          <li data-i18n-html="tools.text-diff.ui.r6_15"><code>\\ No newline at end of file</code> marks a last line that has no trailing newline.</li>
+          <li data-i18n-html="tools.text-diff.ui.r6_16">To apply the downloaded file: <code>patch original.txt text-diff.diff</code>.</li>
         </ul>
-        <p class="mt-2">With an ignore option on, lines that count as equal are written as context from the original text. Applying that patch does not reproduce the ignored differences.</p>
+        <p data-i18n="tools.text-diff.ui.r6_17" class="mt-2">With an ignore option on, lines that count as equal are written as context from the original text. Applying that patch does not reproduce the ignored differences.</p>
 
         <h3 class="text-base font-semibold text-surface-900 dark:text-surface-50 mt-6 mb-2" data-i18n="tools.text-diff.ui.r3_10">Common uses</h3>
         <ul class="list-disc pl-5 space-y-1">
-          <li><strong>Config files:</strong> compare a deployed <code>.env</code>, YAML, or nginx config with the version you expect, and turn on ignore whitespace to hide indentation noise.</li>
-          <li><strong>LLM prompt versions:</strong> use word mode to see exactly which instructions changed between two prompt drafts before you compare model outputs.</li>
-          <li><strong>Code review:</strong> paste two versions of a function to read the change outside your editor, or export a <code>.diff</code> to attach to an issue or a message.</li>
+          <li data-i18n-html="tools.text-diff.ui.r6_18"><strong>Config files:</strong> compare a deployed <code>.env</code>, YAML, or nginx config with the version you expect, and turn on ignore whitespace to hide indentation noise.</li>
+          <li data-i18n-html="tools.text-diff.ui.r6_19"><strong>LLM prompt versions:</strong> use word mode to see exactly which instructions changed between two prompt drafts before you compare model outputs.</li>
+          <li data-i18n-html="tools.text-diff.ui.r6_20"><strong>Code review:</strong> paste two versions of a function to read the change outside your editor, or export a <code>.diff</code> to attach to an issue or a message.</li>
         </ul>
       </section>
       ${createEducationalSection(

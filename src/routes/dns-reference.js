@@ -33,6 +33,7 @@ export function renderDnsReferenceSection(lang = DEFAULT_LANGUAGE) {
           '<span data-i18n="tools.dns-reference.ui.badge0">Interactive</span>',
         tooltip:
           "Click any record type to see detailed information and examples.",
+        tooltipI18nKey: "tools.dns-reference.ui.r66_0",
       },
       {
         text:
@@ -58,7 +59,7 @@ export function renderDnsReferenceSection(lang = DEFAULT_LANGUAGE) {
         <!-- Search Bar -->
         <div class="mb-6">
           <div class="relative">
-            <input type="text" id="search-input" aria-label="Search record types" class="input w-full pl-10" placeholder="Search record types..." data-i18n-placeholder="tools.dns-reference.ui.placeholder0">
+            <input data-i18n-aria="tools.dns-reference.ui.r6_0" type="text" id="search-input" aria-label="Search record types" class="input w-full pl-10" placeholder="Search record types..." data-i18n-placeholder="tools.dns-reference.ui.placeholder0">
             <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-surface-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
             </svg>
@@ -81,7 +82,7 @@ export function renderDnsReferenceSection(lang = DEFAULT_LANGUAGE) {
                   <p id="detail-category" class="text-sm text-surface-500 dark:text-surface-400"></p>
                 </div>
               </div>
-              <button id="close-detail" class="btn btn-ghost btn-sm" aria-label="Close details">
+              <button data-i18n-aria="tools.dns-reference.ui.r6_1" id="close-detail" class="btn btn-ghost btn-sm" aria-label="Close details">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
@@ -102,7 +103,7 @@ export function renderDnsReferenceSection(lang = DEFAULT_LANGUAGE) {
 
                 <div>
                   <h3 class="text-sm font-semibold uppercase tracking-wide text-surface-600 dark:text-surface-400 mb-2" data-i18n="tools.dns-reference.ui.heading2">Example</h3>
-                  <pre class="bg-surface-900 text-surface-50 p-3 rounded-lg text-xs font-mono overflow-x-auto" tabindex="0" aria-label="Record example"><code id="detail-example"></code></pre>
+                  <pre class="bg-surface-900 text-surface-50 p-3 rounded-lg text-xs font-mono overflow-x-auto" tabindex="0" aria-label="Record example" data-i18n-aria="tools.dns-reference.ui.r61_0"><code id="detail-example"></code></pre>
                 </div>
               </div>
 
@@ -171,14 +172,14 @@ export function renderDnsReferenceSection(lang = DEFAULT_LANGUAGE) {
                 <label class="text-sm font-medium text-surface-700 dark:text-surface-300" data-i18n="tools.dns-reference.ui.label3">dig Command</label>
                 <button id="copy-dig" class="btn btn-ghost btn-xs" data-i18n="tools.dns-reference.ui.button0">Copy</button>
               </div>
-              <pre class="bg-surface-900 text-surface-50 p-3 rounded-lg text-xs font-mono overflow-x-auto" tabindex="0" aria-label="dig command"><code id="dig-output">dig example.com A</code></pre>
+              <pre class="bg-surface-900 text-surface-50 p-3 rounded-lg text-xs font-mono overflow-x-auto" tabindex="0" aria-label="dig command" data-i18n-aria="tools.dns-reference.ui.r61_1"><code id="dig-output">dig example.com A</code></pre>
             </div>
             <div>
               <div class="flex items-center justify-between mb-2">
                 <label class="text-sm font-medium text-surface-700 dark:text-surface-300" data-i18n="tools.dns-reference.ui.label4">nslookup Command</label>
                 <button id="copy-nslookup" class="btn btn-ghost btn-xs" data-i18n="tools.dns-reference.ui.button1">Copy</button>
               </div>
-              <pre class="bg-surface-900 text-surface-50 p-3 rounded-lg text-xs font-mono overflow-x-auto" tabindex="0" aria-label="nslookup command"><code id="nslookup-output">nslookup -type=A example.com</code></pre>
+              <pre class="bg-surface-900 text-surface-50 p-3 rounded-lg text-xs font-mono overflow-x-auto" tabindex="0" aria-label="nslookup command" data-i18n-aria="tools.dns-reference.ui.r61_2"><code id="nslookup-output">nslookup -type=A example.com</code></pre>
             </div>
           </div>
         </div>

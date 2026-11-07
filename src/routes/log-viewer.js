@@ -37,11 +37,13 @@ export async function handleLogViewerRoutes(request, url) {
         [
           {
             text: translation?.ui?.badge10 || "Client-Side Only",
+            i18nKey: "tools.log-viewer.ui.r65_3",
             tooltip:
               "Runs entirely in your browser using Web APIs — your data is processed locally and not sent to our servers.",
           },
           {
             text: translation?.ui?.badge11 || "100k+ Lines",
+            i18nKey: "tools.log-viewer.ui.r65_4",
             tooltip:
               "Designed to handle and visualize very large log files without server streaming.",
           },
@@ -68,11 +70,11 @@ export async function handleLogViewerRoutes(request, url) {
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
-              <input type="text" id="search-input" placeholder="Search logs..." data-i18n-placeholder="tools.log-viewer.ui.placeholder2" data-tooltip="Filter logs by text — enable regex toggle for pattern matching" data-i18n-tooltip="tools.log-viewer.ui.tip0" data-i18n-placeholder="tools.log-viewer.ui.placeholder2"
+              <input type="text" id="search-input" placeholder="Search logs..." data-i18n-placeholder="tools.log-viewer.ui.placeholder2" data-tooltip="Filter logs by text — enable regex toggle for pattern matching" data-i18n-tooltip="tools.log-viewer.ui.r65_0" data-i18n-placeholder="tools.log-viewer.ui.placeholder2"
                 class="input pl-10 pr-12" aria-describedby="filter-error">
               <div class="absolute inset-y-0 right-0 flex items-center">
                 <label for="regex-toggle" class="flex items-center px-2 cursor-pointer" title="Use Regex" data-i18n-title="tools.log-viewer.ui.title3">
-                  <input type="checkbox" id="regex-toggle" class="sr-only peer" aria-label="Use Regex" data-i18n-aria="tools.log-viewer.ui.title3" data-tooltip="Enable regex pattern matching in search" data-i18n-tooltip="tools.log-viewer.ui.tip1">
+                  <input type="checkbox" id="regex-toggle" class="sr-only peer" aria-label="Use Regex" data-i18n-aria="tools.log-viewer.ui.title3" data-tooltip="Enable regex pattern matching in search" data-i18n-tooltip="tools.log-viewer.ui.r65_1">
                   <span class="inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-muted-foreground peer-checked:text-primary-600 dark:peer-checked:text-primary-400 select-none">.*</span>
                 </label>
               </div>
@@ -80,8 +82,8 @@ export async function handleLogViewerRoutes(request, url) {
           </div>
 
           <!-- Level Filters -->
-          <div class="md:col-span-3 flex flex-wrap gap-2 min-w-0" role="group" aria-label="Show log levels">
-             <button type="button" id="toggle-info" data-tooltip="Show/hide INFO level messages" data-i18n-tooltip="tools.log-viewer.ui.tip2" class="filter-chip bg-info-100 text-info-800 dark:bg-info-900 dark:text-info-200" aria-pressed="true">INFO</button>
+          <div data-i18n-aria="tools.log-viewer.ui.r6_0" class="md:col-span-3 flex flex-wrap gap-2 min-w-0" role="group" aria-label="Show log levels">
+             <button type="button" id="toggle-info" data-tooltip="Show/hide INFO level messages" data-i18n-tooltip="tools.log-viewer.ui.r65_2" class="filter-chip bg-info-100 text-info-800 dark:bg-info-900 dark:text-info-200" aria-pressed="true">INFO</button>
              <button type="button" id="toggle-warn" class="filter-chip bg-warning-100 text-warning-800 dark:bg-warning-900 dark:text-warning-200" aria-pressed="true">WARN</button>
              <button type="button" id="toggle-error" class="filter-chip bg-error-100 text-error-800 dark:bg-error-900 dark:text-error-200" aria-pressed="true">ERR</button>
              <button type="button" id="toggle-debug" class="filter-chip bg-surface-100 text-surface-800 dark:bg-surface-800 dark:text-surface-200" aria-pressed="true">DEBUG</button>
@@ -103,7 +105,7 @@ export async function handleLogViewerRoutes(request, url) {
       <!-- Visualization -->
       <div id="viz-container" class="tool-group hidden mb-4 p-4">
         <h2 class="text-xs font-semibold text-surface-500 dark:text-surface-400 uppercase tracking-wider mb-2" data-i18n="tools.log-viewer.ui.stat4">Log Density</h2>
-        <canvas id="density-canvas" role="img" aria-label="Log density by position in the file; click to jump there" class="w-full h-16 cursor-crosshair rounded bg-surface-50 dark:bg-surface-950"></canvas>
+        <canvas data-i18n-aria="tools.log-viewer.ui.r6_1" id="density-canvas" role="img" aria-label="Log density by position in the file; click to jump there" class="w-full h-16 cursor-crosshair rounded bg-surface-50 dark:bg-surface-950"></canvas>
       </div>
 
       <!-- Log Viewer -->
@@ -117,7 +119,7 @@ export async function handleLogViewerRoutes(request, url) {
         </div>
 
         <!-- Virtual Scroll Container -->
-        <div id="log-container" tabindex="0" role="region" aria-label="Log lines (drop a file here to open it)" class="flex-1 overflow-y-auto relative custom-scrollbar bg-[#1e1e1e] text-surface-300 font-mono text-sm leading-6">
+        <div data-i18n-aria="tools.log-viewer.ui.r6_2" id="log-container" tabindex="0" role="region" aria-label="Log lines (drop a file here to open it)" class="flex-1 overflow-y-auto relative custom-scrollbar bg-[#1e1e1e] text-surface-300 font-mono text-sm leading-6">
           <div id="log-phantom" class="absolute top-0 left-0 w-full h-px"></div>
           <div id="log-content" class="absolute top-0 left-0 w-full">
             <!-- Rows injected here -->

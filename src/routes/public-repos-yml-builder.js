@@ -343,6 +343,7 @@ export function renderPublicReposYmlBuilderSection(lang = DEFAULT_LANGUAGE) {
       {
         text: '<span data-i18n="tools.public-repos-yml-builder.ui.badge0">Client-Side Only</span>',
         tooltip: "All parsing and YAML generation runs in your browser.",
+        tooltipI18nKey: "tools.public-repos-yml-builder.ui.r63_91",
       },
     ],
     { toolId: "public-repos-yml-builder" },
@@ -364,7 +365,7 @@ export function renderPublicReposYmlBuilderSection(lang = DEFAULT_LANGUAGE) {
               <div class="flex items-center justify-between gap-3 mb-3">
                 <label for="repo-input" class="label flex items-center gap-2 min-w-0">
                   <span data-i18n="tools.public-repos-yml-builder.ui.label0">Repository slugs or URLs</span>
-                  ${infoHint("Use one repository per line. Add metadata as key=value pairs after the slug, for example team=platform cadence=weekly sha=ok.", "Help", { i18nKey: "tools.public-repos-yml-builder.ui.desc0" })}
+                  ${infoHint("Use one repository per line. Add metadata as key=value pairs after the slug, for example team=platform cadence=weekly sha=ok.", "Help", { i18nKey: "tools.public-repos-yml-builder.ui.desc0", ariaI18nKey: "tools.public-repos-yml-builder.ui.desc0" })}
                 </label>
                 <button id="load-sample" class="btn btn-ghost btn-xs flex-shrink-0" type="button" data-i18n="tools.public-repos-yml-builder.ui.button0">Sample</button>
               </div>
@@ -390,10 +391,10 @@ export function renderPublicReposYmlBuilderSection(lang = DEFAULT_LANGUAGE) {
                 </div>
               </div>
               <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                ${policyCheckbox("sha-pinning", "SHA pinning", "Require GitHub Actions and external references to use immutable SHAs.", true)}
-                ${policyCheckbox("branch-protection", "branch protection", "Require protected default branches and review gates.", true)}
-                ${policyCheckbox("secrets-posture", "secrets posture", "Require secret scanning and no public repo secrets.", true)}
-                ${policyCheckbox("monetization-readiness", "monetization readiness", "Track README, license, support, and sponsor readiness.", false)}
+                ${policyCheckbox("sha-pinning", "SHA pinning", "Require GitHub Actions and external references to use immutable SHAs.", true, "tools.public-repos-yml-builder.ui.r63_77", "tools.public-repos-yml-builder.ui.r63_78")}
+                ${policyCheckbox("branch-protection", "branch protection", "Require protected default branches and review gates.", true, "tools.public-repos-yml-builder.ui.r63_79", "tools.public-repos-yml-builder.ui.r63_80")}
+                ${policyCheckbox("secrets-posture", "secrets posture", "Require secret scanning and no public repo secrets.", true, "tools.public-repos-yml-builder.ui.r63_81", "tools.public-repos-yml-builder.ui.r63_82")}
+                ${policyCheckbox("monetization-readiness", "monetization readiness", "Track README, license, support, and sponsor readiness.", false, "tools.public-repos-yml-builder.ui.r63_83", "tools.public-repos-yml-builder.ui.r63_84")}
               </div>
             </div>
 
@@ -405,10 +406,10 @@ export function renderPublicReposYmlBuilderSection(lang = DEFAULT_LANGUAGE) {
 
           <section class="lg:col-span-3 space-y-5">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3" aria-live="polite">
-              ${statBox("repo-count", "Repos", "0")}
-              ${statBox("finding-count", "Findings", "0")}
-              ${statBox("ready-count", "Ready", "0")}
-              ${statBox("policy-count", "Policies", "3")}
+              ${statBox("repo-count", "Repos", "0", "tools.public-repos-yml-builder.ui.r63_85")}
+              ${statBox("finding-count", "Findings", "0", "tools.public-repos-yml-builder.ui.r63_86")}
+              ${statBox("ready-count", "Ready", "0", "tools.public-repos-yml-builder.ui.r63_87")}
+              ${statBox("policy-count", "Policies", "3", "tools.public-repos-yml-builder.ui.r63_88")}
             </div>
 
             <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
@@ -417,7 +418,7 @@ export function renderPublicReposYmlBuilderSection(lang = DEFAULT_LANGUAGE) {
                   <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400" data-i18n="tools.public-repos-yml-builder.ui.heading1">repos.yml</h2>
                   <button id="copy-yaml" class="btn btn-secondary btn-xs flex-shrink-0" type="button" disabled data-i18n="tools.public-repos-yml-builder.ui.button3">Copy</button>
                 </div>
-                <textarea id="repos-yaml-output" rows="18" aria-label="Generated repositories YAML" class="input-mono resize-y bg-surface-50 dark:bg-surface-950" readonly placeholder="repositories: []" data-i18n-placeholder="tools.public-repos-yml-builder.ui.placeholder1"></textarea>
+                <textarea id="repos-yaml-output" rows="18" aria-label="Generated repositories YAML" data-i18n-aria="tools.public-repos-yml-builder.ui.r63_89" class="input-mono resize-y bg-surface-50 dark:bg-surface-950" readonly placeholder="repositories: []" data-i18n-placeholder="tools.public-repos-yml-builder.ui.placeholder1"></textarea>
               </div>
 
               <div class="tool-group p-5">
@@ -425,7 +426,7 @@ export function renderPublicReposYmlBuilderSection(lang = DEFAULT_LANGUAGE) {
                   <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400" data-i18n="tools.public-repos-yml-builder.ui.heading2">GitHub Actions audit</h2>
                   <button id="copy-actions" class="btn btn-secondary btn-xs flex-shrink-0" type="button" disabled data-i18n="tools.public-repos-yml-builder.ui.button3">Copy</button>
                 </div>
-                <textarea id="actions-output" rows="18" aria-label="Generated GitHub Actions workflow" class="input-mono resize-y bg-surface-50 dark:bg-surface-950" readonly placeholder="name: Public repos audit" data-i18n-placeholder="tools.public-repos-yml-builder.ui.placeholder2"></textarea>
+                <textarea id="actions-output" rows="18" aria-label="Generated GitHub Actions workflow" data-i18n-aria="tools.public-repos-yml-builder.ui.r63_90" class="input-mono resize-y bg-surface-50 dark:bg-surface-950" readonly placeholder="name: Public repos audit" data-i18n-placeholder="tools.public-repos-yml-builder.ui.placeholder2"></textarea>
               </div>
             </div>
 
@@ -711,22 +712,22 @@ ${publicReposParserScript}
   };
 }
 
-function policyCheckbox(id, label, help, checked) {
+function policyCheckbox(id, label, help, checked, labelKey, helpKey) {
   return `
     <label class="tool-group flex items-start gap-3 p-3 cursor-pointer">
       <input id="policy-${id}" type="checkbox" class="mt-1 w-4 h-4 rounded border-surface-300 text-primary-600 dark:text-primary-400 focus:ring-primary-500" ${checked ? "checked" : ""}>
       <span>
-        <span class="block text-sm font-semibold text-surface-900 dark:text-surface-100">${label}</span>
-        <span class="block text-xs text-surface-500 dark:text-surface-400">${help}</span>
+        <span class="block text-sm font-semibold text-surface-900 dark:text-surface-100"${labelKey ? ` data-i18n="${labelKey}"` : ""}>${label}</span>
+        <span class="block text-xs text-surface-500 dark:text-surface-400"${helpKey ? ` data-i18n="${helpKey}"` : ""}>${help}</span>
       </span>
     </label>
   `;
 }
 
-function statBox(id, label, value) {
+function statBox(id, label, value, labelKey) {
   return `
     <div class="p-4 bg-surface-50 dark:bg-surface-950 rounded-xl border border-surface-200 dark:border-surface-800">
-      <div class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400">${label}</div>
+      <div class="text-xs uppercase tracking-wide text-surface-500 dark:text-surface-400"${labelKey ? ` data-i18n="${labelKey}"` : ""}>${label}</div>
       <div id="${id}" class="mt-1 text-2xl font-bold font-mono text-surface-900 dark:text-surface-50">${value}</div>
     </div>
   `;

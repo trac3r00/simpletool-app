@@ -27,6 +27,31 @@ function escapeAttr(value) {
     .replace(/>/g, "&gt;");
 }
 
+const SAMPLE_I18N_KEYS = {
+  "Desktop": "tools.user-agent-decoder.ui.r63_27",
+  "Mobile": "tools.user-agent-decoder.ui.r63_28",
+  "Tablet": "tools.user-agent-decoder.ui.r63_29",
+  "Bots & clients": "tools.user-agent-decoder.ui.r63_30",
+  "Chrome on Windows": "tools.user-agent-decoder.ui.r63_31",
+  "Edge on Windows": "tools.user-agent-decoder.ui.r63_32",
+  "Firefox on Windows": "tools.user-agent-decoder.ui.r63_33",
+  "Opera on Windows": "tools.user-agent-decoder.ui.r63_34",
+  "Chrome on macOS": "tools.user-agent-decoder.ui.r63_35",
+  "Safari on macOS": "tools.user-agent-decoder.ui.r63_36",
+  "Firefox on Linux": "tools.user-agent-decoder.ui.r63_37",
+  "Safari on iPhone": "tools.user-agent-decoder.ui.r63_38",
+  "Chrome on iPhone": "tools.user-agent-decoder.ui.r63_39",
+  "Chrome on Pixel": "tools.user-agent-decoder.ui.r63_40",
+  "Firefox on Android": "tools.user-agent-decoder.ui.r63_41",
+  "Safari on iPad": "tools.user-agent-decoder.ui.r63_42",
+  "Chrome on Galaxy Tab": "tools.user-agent-decoder.ui.r63_43",
+  "Chrome on Pixel Tablet": "tools.user-agent-decoder.ui.r63_44",
+  "Googlebot (desktop)": "tools.user-agent-decoder.ui.r63_45",
+  "Googlebot (smartphone)": "tools.user-agent-decoder.ui.r63_46"
+};
+const sampleI18nAttr = (text) =>
+  SAMPLE_I18N_KEYS[text] ? ` data-i18n="${SAMPLE_I18N_KEYS[text]}"` : "";
+
 function renderSampleLibrary() {
   const groups = [];
   for (const sample of UA_SAMPLES) {
@@ -41,12 +66,12 @@ function renderSampleLibrary() {
     .map(
       (group) => `
               <div>
-                <h3 class="text-xs font-semibold text-surface-700 dark:text-surface-300 mb-2">${escapeAttr(group.name)}</h3>
+                <h3 class="text-xs font-semibold text-surface-700 dark:text-surface-300 mb-2"${sampleI18nAttr(group.name)}>${escapeAttr(group.name)}</h3>
                 <div class="flex flex-wrap gap-2">
                   ${group.samples
                     .map(
                       (s) =>
-                        `<button type="button" class="sample-btn btn btn-ghost btn-xs" data-ua="${escapeAttr(s.ua)}" title="${escapeAttr(s.ua)}">${escapeAttr(s.label)}</button>`,
+                        `<button type="button" class="sample-btn btn btn-ghost btn-xs" data-ua="${escapeAttr(s.ua)}" title="${escapeAttr(s.ua)}"${sampleI18nAttr(s.label)}>${escapeAttr(s.label)}</button>`,
                     )
                     .join("\n                  ")}
                 </div>
@@ -96,6 +121,7 @@ function renderUserAgentDecoderPage(lang = DEFAULT_LANGUAGE) {
         color: "cyan",
         tooltip:
           "Analyze User-Agent strings and related logs entirely in your browser.",
+        tooltipI18nKey: "tools.user-agent-decoder.ui.r63_24",
       },
     ],
     { toolId: "user-agent-decoder" },
@@ -120,7 +146,7 @@ function renderUserAgentDecoderPage(lang = DEFAULT_LANGUAGE) {
               <h2 class="text-sm font-bold text-primary-900 dark:text-primary-300 mb-2" data-i18n="tools.user-agent-decoder.ui.heading12">🌐 Your Current Browser</h2>
               <div id="current-ua" class="text-xs font-mono text-surface-700 dark:text-surface-300 bg-background p-3 rounded border border-primary-200 dark:border-primary-700 break-all"></div>
             </div>
-            <button id="use-current" type="button" class="btn btn-secondary whitespace-nowrap text-sm py-2" data-tooltip="Use your current browser User-Agent string" data-i18n-tooltip="tools.user-agent-decoder.ui.tip0">
+            <button id="use-current" type="button" class="btn btn-secondary whitespace-nowrap text-sm py-2" data-tooltip="Use your current browser User-Agent string" data-i18n-tooltip="tools.user-agent-decoder.ui.r63_25">
               <span data-i18n="tools.user-agent-decoder.ui.button0">Use This</span>
             </button>
         </div>
@@ -150,7 +176,7 @@ function renderUserAgentDecoderPage(lang = DEFAULT_LANGUAGE) {
 
           <section id="ua-samples" aria-labelledby="ua-samples-heading" class="card p-4">
             <h2 id="ua-samples-heading" class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400 mb-1" data-i18n="tools.user-agent-decoder.ui.r3_1">Sample library</h2>
-            <p class="text-xs text-surface-500 dark:text-surface-400 mb-3">${UA_SAMPLES.length} User-Agent strings from common browsers, crawlers, and HTTP clients. Click one to load and parse it.</p>
+            <p class="text-xs text-surface-500 dark:text-surface-400 mb-3">${UA_SAMPLES.length} <span data-i18n="tools.user-agent-decoder.ui.r63_26">User-Agent strings from common browsers, crawlers, and HTTP clients. Click one to load and parse it.</span></p>
             <div class="space-y-3">${renderSampleLibrary()}
             </div>
           </section>
@@ -159,18 +185,18 @@ function renderUserAgentDecoderPage(lang = DEFAULT_LANGUAGE) {
             <div>
               <h2 class="text-sm font-bold uppercase tracking-wide text-surface-600 dark:text-surface-400 mb-3" data-i18n="tools.user-agent-decoder.ui.heading13">Parsed Information</h2>
               <dl class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                <div><dt class="text-surface-500">Browser</dt><dd id="browser-name">—</dd></div>
+                <div><dt data-i18n="tools.user-agent-decoder.ui.r6_0" class="text-surface-500">Browser</dt><dd id="browser-name">—</dd></div>
                 <div><dt class="text-surface-500" data-i18n="tools.user-agent-decoder.ui.desc15">Version:</dt><dd id="browser-version">—</dd></div>
                 <div><dt class="text-surface-500" data-i18n="tools.user-agent-decoder.ui.desc16">Engine:</dt><dd id="browser-engine">—</dd></div>
                 <div><dt class="text-surface-500">OS</dt><dd id="os-name">—</dd></div>
-                <div><dt class="text-surface-500">OS version</dt><dd id="os-version">—</dd></div>
+                <div><dt data-i18n="tools.user-agent-decoder.ui.r6_1" class="text-surface-500">OS version</dt><dd id="os-version">—</dd></div>
                 <div><dt class="text-surface-500" data-i18n="tools.user-agent-decoder.ui.desc17">Architecture:</dt><dd id="os-arch">—</dd></div>
-                <div><dt class="text-surface-500">Device</dt><dd id="device-type">—</dd></div>
+                <div><dt data-i18n="tools.user-agent-decoder.ui.r6_2" class="text-surface-500">Device</dt><dd id="device-type">—</dd></div>
                 <div><dt class="text-surface-500" data-i18n="tools.user-agent-decoder.ui.desc18">Vendor:</dt><dd id="device-vendor">—</dd></div>
                 <div><dt class="text-surface-500" data-i18n="tools.user-agent-decoder.ui.desc19">Model:</dt><dd id="device-model">—</dd></div>
                 <div><dt class="text-surface-500" data-i18n="tools.user-agent-decoder.ui.desc20">Bot/Crawler:</dt><dd id="is-bot">—</dd></div>
-                <div><dt class="text-surface-500">Bot name</dt><dd id="bot-name">—</dd></div>
-                <div><dt class="text-surface-500">Bot category</dt><dd id="bot-category">—</dd></div>
+                <div><dt data-i18n="tools.user-agent-decoder.ui.r6_3" class="text-surface-500">Bot name</dt><dd id="bot-name">—</dd></div>
+                <div><dt data-i18n="tools.user-agent-decoder.ui.r6_4" class="text-surface-500">Bot category</dt><dd id="bot-category">—</dd></div>
                 <div><dt class="text-surface-500" data-i18n="tools.user-agent-decoder.ui.desc21">Mobile:</dt><dd id="is-mobile">—</dd></div>
                 <div><dt class="text-surface-500" data-i18n="tools.user-agent-decoder.ui.desc22">Tablet:</dt><dd id="is-tablet">—</dd></div>
               </dl>

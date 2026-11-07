@@ -39,6 +39,7 @@ export async function handleMermaidStudioRoutes(request, url) {
       {
         text: translation?.ui?.badge9 || "Client-Side Only",
         tooltip: "Diagrams render entirely in your browser using Mermaid.js.",
+        tooltipI18nKey: "tools.mermaid-studio.ui.r65_1",
       },
     ],
     { toolId: "mermaid-studio" },
@@ -55,7 +56,7 @@ export async function handleMermaidStudioRoutes(request, url) {
       <div class="tool-page-panel tool-page-panel--fill">
       ${header}
 
-      <div class="mobile-tabs-bar flex lg:hidden items-center gap-1 rounded-lg bg-muted p-1 mb-4 text-muted-foreground" role="tablist" aria-label="Editor or preview">
+      <div data-i18n-aria="tools.mermaid-studio.ui.r6_0" class="mobile-tabs-bar flex lg:hidden items-center gap-1 rounded-lg bg-muted p-1 mb-4 text-muted-foreground" role="tablist" aria-label="Editor or preview">
         <button type="button" id="mobile-tab-editor" class="tab-trigger flex-1" role="tab" aria-selected="true" aria-controls="editor-pane" data-tab="left" tabindex="0"><span data-i18n="tools.mermaid-studio.ui.stat3">Mermaid Code</span></button>
         <button type="button" id="mobile-tab-preview" class="tab-trigger flex-1" role="tab" aria-selected="false" aria-controls="preview-pane" data-tab="right" tabindex="-1"><span data-i18n="tools.mermaid-studio.ui.stat4">Preview</span></button>
       </div>
@@ -66,10 +67,10 @@ export async function handleMermaidStudioRoutes(request, url) {
           <div class="px-4 py-3 border-b border-surface-200 dark:border-surface-800 flex justify-between items-center bg-surface-50 dark:bg-surface-950">
             <span class="text-sm font-semibold text-surface-900 dark:text-white uppercase tracking-wider" data-i18n="tools.mermaid-studio.ui.stat3">Mermaid Code</span>
             <div class="flex gap-2">
-              <button id="sample-btn" type="button" data-tooltip="Load a sample diagram to get started" class="btn btn-secondary btn-xs"><span data-i18n="tools.mermaid-studio.ui.button0">Load Sample</span></button>
+              <button data-i18n-tooltip="tools.mermaid-studio.ui.r6_1" id="sample-btn" type="button" data-tooltip="Load a sample diagram to get started" class="btn btn-secondary btn-xs"><span data-i18n="tools.mermaid-studio.ui.button0">Load Sample</span></button>
             </div>
           </div>
-          ${createRichEditorPane({ id: "mermaid-input", mode: "textarea", rows: 22, ariaLabel: "Mermaid diagram code", placeholder: "graph TD\\nA[Start] --> B{Is it working?}\\nB -- Yes --> C[Great!]\\nB -- No --> D[Debug]", wrapClass: "flex-1" })}
+          ${createRichEditorPane({ id: "mermaid-input", mode: "textarea", rows: 22, ariaLabel: "Mermaid diagram code", ariaI18nKey: "tools.mermaid-studio.ui.r65_0", placeholder: "graph TD\\nA[Start] --> B{Is it working?}\\nB -- Yes --> C[Great!]\\nB -- No --> D[Debug]", wrapClass: "flex-1" })}
         </div>
 
         <!-- Preview -->
@@ -77,14 +78,14 @@ export async function handleMermaidStudioRoutes(request, url) {
           <div class="px-4 py-3 border-b border-surface-200 dark:border-surface-800 flex flex-wrap gap-2 justify-between items-center bg-surface-50 dark:bg-surface-950">
             <span class="text-sm font-semibold text-surface-900 dark:text-white uppercase tracking-wider" data-i18n="tools.mermaid-studio.ui.stat4">Preview</span>
             <div class="flex flex-wrap items-center justify-end gap-2">
-              <button id="copy-svg" type="button" data-tooltip="Copy the rendered diagram's SVG markup" class="btn btn-secondary btn-xs min-h-[28px]" data-i18n="tools.mermaid-studio.ui.r3_2">Copy SVG</button>
-              <button id="download-svg" type="button" data-tooltip="Download the rendered diagram as SVG" class="btn btn-secondary btn-xs min-h-[28px]"><span data-i18n="tools.mermaid-studio.ui.button1">Download SVG</span></button>
+              <button data-i18n-tooltip="tools.mermaid-studio.ui.r6_2" id="copy-svg" type="button" data-tooltip="Copy the rendered diagram's SVG markup" class="btn btn-secondary btn-xs min-h-[28px]" data-i18n="tools.mermaid-studio.ui.r3_2">Copy SVG</button>
+              <button data-i18n-tooltip="tools.mermaid-studio.ui.r6_3" id="download-svg" type="button" data-tooltip="Download the rendered diagram as SVG" class="btn btn-secondary btn-xs min-h-[28px]"><span data-i18n="tools.mermaid-studio.ui.button1">Download SVG</span></button>
               <label for="png-background" class="sr-only" data-i18n="tools.mermaid-studio.ui.r3_4">PNG background</label>
-              <select id="png-background" class="input w-auto min-h-[28px] py-0.5 text-xs" data-tooltip="Background for the PNG export">
+              <select id="png-background" class="input w-auto min-h-[28px] py-0.5 text-xs" data-tooltip="Background for the PNG export" data-i18n-tooltip="tools.mermaid-studio.ui.r65_2">
                 <option value="transparent" data-i18n="tools.mermaid-studio.ui.r3_5">Transparent</option>
                 <option value="theme" data-i18n="tools.mermaid-studio.ui.r3_6">Theme background</option>
               </select>
-              <button id="download-png" type="button" data-tooltip="Download the rendered diagram as a 2x PNG" class="btn btn-secondary btn-xs min-h-[28px]" data-i18n="tools.mermaid-studio.ui.r3_3">Download PNG</button>
+              <button data-i18n-tooltip="tools.mermaid-studio.ui.r6_4" id="download-png" type="button" data-tooltip="Download the rendered diagram as a 2x PNG" class="btn btn-secondary btn-xs min-h-[28px]" data-i18n="tools.mermaid-studio.ui.r3_3">Download PNG</button>
             </div>
             <span id="download-status" class="basis-full text-right text-xs text-muted-foreground empty:hidden" role="status" aria-live="polite"></span>
           </div>
