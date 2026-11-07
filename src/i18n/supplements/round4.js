@@ -198,6 +198,15 @@ export default {
           "r4_1": "Copy failed: your browser blocked clipboard access. Select the code and copy it manually."
         }
       },
+      "webhook-debugger": {
+        "js": {
+          "r5_0": "Events",
+          "r5_1": "Comment lines",
+          "r5_2": "The last event has no blank line after it, so a browser would discard it",
+          "r5_3": "Frames",
+          "r5_4": "Bytes"
+        }
+      },
       "color-converter": {
         "ui": {
           "label0": "Native",
@@ -429,6 +438,15 @@ export default {
         "js": {
           "r4_0": "중단됨",
           "r4_1": "복사 실패: 브라우저가 클립보드 접근을 막았습니다. 코드를 선택해 직접 복사하세요."
+        }
+      },
+      "webhook-debugger": {
+        "js": {
+          "r5_0": "이벤트",
+          "r5_1": "주석 줄",
+          "r5_2": "마지막 이벤트 뒤에 빈 줄이 없어서 브라우저는 이 이벤트를 버립니다",
+          "r5_3": "프레임",
+          "r5_4": "바이트"
         }
       },
       "color-converter": {
@@ -664,6 +682,15 @@ export default {
           "r4_1": "コピー失敗: ブラウザがクリップボードへのアクセスをブロックしました。コードを選択して手動でコピーしてください。"
         }
       },
+      "webhook-debugger": {
+        "js": {
+          "r5_0": "イベント",
+          "r5_1": "コメント行",
+          "r5_2": "最後のイベントの後に空行がないため、ブラウザはこのイベントを破棄します",
+          "r5_3": "フレーム",
+          "r5_4": "バイト"
+        }
+      },
       "color-converter": {
         "ui": {
           "label0": "ネイティブ",
@@ -895,6 +922,15 @@ export default {
         "js": {
           "r4_0": "Detenido",
           "r4_1": "Error al copiar: tu navegador bloqueó el acceso al portapapeles. Selecciona el código y cópialo a mano."
+        }
+      },
+      "webhook-debugger": {
+        "js": {
+          "r5_0": "Eventos",
+          "r5_1": "Líneas de comentario",
+          "r5_2": "El último evento no tiene una línea en blanco detrás, así que un navegador lo descartaría",
+          "r5_3": "Tramas",
+          "r5_4": "Bytes"
         }
       },
       "color-converter": {
@@ -1130,6 +1166,15 @@ export default {
           "r4_1": "复制失败:浏览器阻止了剪贴板访问。请选中代码手动复制。"
         }
       },
+      "webhook-debugger": {
+        "js": {
+          "r5_0": "事件",
+          "r5_1": "注释行",
+          "r5_2": "最后一个事件后面没有空行,浏览器会丢弃它",
+          "r5_3": "帧",
+          "r5_4": "字节"
+        }
+      },
       "color-converter": {
         "ui": {
           "label0": "原生",
@@ -1361,6 +1406,15 @@ export default {
         "js": {
           "r4_0": "已停止",
           "r4_1": "複製失敗:瀏覽器封鎖了剪貼簿存取。請選取程式碼手動複製。"
+        }
+      },
+      "webhook-debugger": {
+        "js": {
+          "r5_0": "事件",
+          "r5_1": "註解行",
+          "r5_2": "最後一個事件後面沒有空行,瀏覽器會捨棄它",
+          "r5_3": "訊框",
+          "r5_4": "位元組"
         }
       },
       "color-converter": {
@@ -1596,6 +1650,15 @@ export default {
           "r4_1": "Échec de la copie : votre navigateur a bloqué l'accès au presse-papiers. Sélectionnez le code et copiez-le manuellement."
         }
       },
+      "webhook-debugger": {
+        "js": {
+          "r5_0": "Événements",
+          "r5_1": "Lignes de commentaire",
+          "r5_2": "Le dernier événement n'est suivi d'aucune ligne vide : un navigateur l'ignorerait",
+          "r5_3": "Trames",
+          "r5_4": "Octets"
+        }
+      },
       "color-converter": {
         "ui": {
           "label0": "Natif",
@@ -1827,6 +1890,15 @@ export default {
         "js": {
           "r4_0": "Abgebrochen",
           "r4_1": "Kopieren fehlgeschlagen: Ihr Browser hat den Zugriff auf die Zwischenablage blockiert. Code markieren und manuell kopieren."
+        }
+      },
+      "webhook-debugger": {
+        "js": {
+          "r5_0": "Ereignisse",
+          "r5_1": "Kommentarzeilen",
+          "r5_2": "Nach dem letzten Ereignis folgt keine Leerzeile, daher würde ein Browser es verwerfen",
+          "r5_3": "Frames",
+          "r5_4": "Bytes"
         }
       },
       "color-converter": {
@@ -2062,6 +2134,15 @@ export default {
           "r4_1": "Falha ao copiar: seu navegador bloqueou o acesso à área de transferência. Selecione o código e copie manualmente."
         }
       },
+      "webhook-debugger": {
+        "js": {
+          "r5_0": "Eventos",
+          "r5_1": "Linhas de comentário",
+          "r5_2": "O último evento não tem uma linha em branco depois dele, então um navegador o descartaria",
+          "r5_3": "Frames",
+          "r5_4": "Bytes"
+        }
+      },
       "color-converter": {
         "ui": {
           "label0": "Nativo",
@@ -2293,6 +2374,15 @@ export default {
         "js": {
           "r4_0": "Đã dừng",
           "r4_1": "Sao chép thất bại: trình duyệt của bạn đã chặn quyền truy cập bộ nhớ tạm. Hãy chọn mã và sao chép thủ công."
+        }
+      },
+      "webhook-debugger": {
+        "js": {
+          "r5_0": "Sự kiện",
+          "r5_1": "Dòng chú thích",
+          "r5_2": "Sự kiện cuối không có dòng trống phía sau nên trình duyệt sẽ bỏ qua nó",
+          "r5_3": "Frame",
+          "r5_4": "Byte"
         }
       },
       "color-converter": {

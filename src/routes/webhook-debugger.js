@@ -247,11 +247,11 @@ function renderWebhookDebuggerPage(lang = DEFAULT_LANGUAGE) {
         function renderSse() {
           sseOut.textContent = '';
           var r = logic.parseEventStream(sseInput.value);
-          var parts = [r.events.length + (r.events.length === 1 ? ' event' : ' events')];
-          if (r.comments.length) parts.push(r.comments.length + ' comment line(s)');
+          var parts = [_t('tools.webhook-debugger.js.r5_0', 'Events') + ': ' + r.events.length];
+          if (r.comments.length) parts.push(_t('tools.webhook-debugger.js.r5_1', 'Comment lines') + ': ' + r.comments.length);
           if (r.retry !== null) parts.push('retry ' + r.retry + ' ms');
           if (r.lastEventId) parts.push('Last-Event-ID ' + r.lastEventId);
-          if (r.discardedTail) parts.push('the last event has no blank line after it, so a browser would discard it');
+          if (r.discardedTail) parts.push(_t('tools.webhook-debugger.js.r5_2', 'The last event has no blank line after it, so a browser would discard it'));
           sseSummary.textContent = parts.join(' \u00b7 ');
           r.events.forEach(function(ev, i) {
             var c = card();
@@ -286,7 +286,7 @@ function renderWebhookDebuggerPage(lang = DEFAULT_LANGUAGE) {
             return;
           }
           var r = logic.decodeWebSocketFrames(hex.bytes);
-          wsSummary.textContent = r.frames.length + (r.frames.length === 1 ? ' frame' : ' frames') + ' from ' + r.bytesTotal + ' bytes' + (r.error ? '. ' + r.error : '');
+          wsSummary.textContent = _t('tools.webhook-debugger.js.r5_3', 'Frames') + ': ' + r.frames.length + ' \u00b7 ' + _t('tools.webhook-debugger.js.r5_4', 'Bytes') + ': ' + r.bytesTotal + (r.error ? '. ' + r.error : '');
           r.frames.forEach(function(f) {
             var c = card();
             c.appendChild(row('#' + f.index, f.opcodeName + ' (opcode ' + f.opcode + ')' + (f.fin ? ', FIN' : ', not final')));

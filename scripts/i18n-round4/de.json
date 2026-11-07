@@ -106,5 +106,10 @@
 "Hier erscheint Ihr QR-Code",
 "Ihr Browser hat das Druckfenster blockiert. Erlauben Sie Pop-ups für diese Seite oder nutzen Sie den Download als .html.",
 "bcrypt liest nur die ersten 72 Bytes der Eingabe. Diese Eingabe hat",
-"tools/list-Ergebnis"
+"tools/list-Ergebnis",
+"Ereignisse",
+"Kommentarzeilen",
+"Nach dem letzten Ereignis folgt keine Leerzeile, daher würde ein Browser es verwerfen",
+"Frames",
+"Bytes"
 ]

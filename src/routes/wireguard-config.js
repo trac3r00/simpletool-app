@@ -303,9 +303,9 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
           <div class="space-y-6">
             <!-- Live Config Preview -->
             <div class="p-5 bg-surface-900 dark:bg-black border border-surface-800 rounded-xl">
-              <div class="flex items-center justify-between mb-4">
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
                 <h3 class="text-base font-semibold text-white flex items-center gap-2">
-                  <span>📝</span>
+                  <span aria-hidden="true">📝</span>
                   <span data-i18n="tools.wireguard-config.ui.heading3">Configuration Preview</span>
                 </h3>
                 <div class="flex gap-2">
@@ -325,7 +325,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
                 </h3>
                 <button id="generate-qr-btn" class="btn btn-primary btn-sm" data-i18n="tools.wireguard-config.ui.button7">Generate QR</button>
               </div>
-              <div id="qr-container" class="flex items-center justify-center p-8 bg-white rounded-lg">
+              <div id="qr-container" class="flex items-center justify-center p-8 bg-white dark:bg-muted rounded-lg">
                 <p class="text-surface-600 text-sm" data-i18n="tools.wireguard-config.ui.desc2">Generate a config to create QR code</p>
               </div>
               <p class="mt-3 text-xs text-surface-500 dark:text-surface-400" data-i18n="tools.wireguard-config.ui.desc3">Scan with the WireGuard mobile app to import configuration.</p>
@@ -572,7 +572,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
                 <input type="text" id="peer-allowed-ips-\${peerId}" class="peer-allowed-ips input font-mono text-sm" placeholder="0.0.0.0/0 or 10.0.0.1/32...">
               </div>
 
-              <div class="grid grid-cols-2 gap-4">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label class="label" for="peer-endpoint-\${peerId}"><span data-i18n="tools.wireguard-config.ui.label10">Endpoint</span></label>
                   <input type="text" id="peer-endpoint-\${peerId}" class="peer-endpoint input font-mono text-sm" placeholder="host:port..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder22">

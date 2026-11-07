@@ -106,5 +106,10 @@
 "Votre QR code apparaîtra ici",
 "Votre navigateur a bloqué la fenêtre d'impression. Autorisez les fenêtres pop-up pour ce site ou utilisez Télécharger en .html.",
 "bcrypt ne lit que les 72 premiers octets de l'entrée. Cette entrée fait",
-"Résultat tools/list"
+"Résultat tools/list",
+"Événements",
+"Lignes de commentaire",
+"Le dernier événement n'est suivi d'aucune ligne vide : un navigateur l'ignorerait",
+"Trames",
+"Octets"
 ]

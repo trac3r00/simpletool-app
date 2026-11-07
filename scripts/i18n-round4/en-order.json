@@ -106,5 +106,10 @@
  "Your QR code will appear here",
  "Your browser blocked the print window. Allow pop-ups for this site, or use Download .html.",
  "bcrypt only reads the first 72 bytes of its input. This input is",
- "tools/list result"
+ "tools/list result",
+ "Events",
+ "Comment lines",
+ "The last event has no blank line after it, so a browser would discard it",
+ "Frames",
+ "Bytes"
 ]

@@ -106,5 +106,10 @@
 "Tu código QR aparecerá aquí",
 "Tu navegador bloqueó la ventana de impresión. Permite ventanas emergentes para este sitio o usa Descargar .html.",
 "bcrypt solo lee los primeros 72 bytes de la entrada. Esta entrada tiene",
-"Resultado de tools/list"
+"Resultado de tools/list",
+"Eventos",
+"Líneas de comentario",
+"El último evento no tiene una línea en blanco detrás, así que un navegador lo descartaría",
+"Tramas",
+"Bytes"
 ]

@@ -106,5 +106,10 @@
 "Seu QR code aparecerá aqui",
 "Seu navegador bloqueou a janela de impressão. Permita pop-ups para este site ou use Baixar .html.",
 "O bcrypt lê apenas os primeiros 72 bytes da entrada. Esta entrada tem",
-"Resultado de tools/list"
+"Resultado de tools/list",
+"Eventos",
+"Linhas de comentário",
+"O último evento não tem uma linha em branco depois dele, então um navegador o descartaria",
+"Frames",
+"Bytes"
 ]

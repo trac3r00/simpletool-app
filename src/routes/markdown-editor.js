@@ -153,7 +153,7 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
                 spellcheck="false"
               ></textarea>
               <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                <span class="text-xs text-surface-400 bg-surface-100 dark:bg-surface-800 px-2 py-1 rounded" data-i18n="tools.markdown-editor.ui.desc10">Markdown</span>
+                <span class="text-xs text-surface-600 dark:text-surface-300 bg-surface-100 dark:bg-surface-800 px-2 py-1 rounded" data-i18n="tools.markdown-editor.ui.desc10">Markdown</span>
               </div>
             </div>
 
@@ -170,7 +170,7 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
                 class="flex-grow w-full p-6 overflow-y-auto prose dark:prose-invert max-w-none prose-sm sm:prose-base prose-pre:bg-surface-100 dark:prose-pre:bg-surface-950 prose-pre:border prose-pre:border-surface-200 dark:prose-pre:border-surface-800"
               ></div>
               <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                <span class="text-xs text-surface-400 bg-surface-100 dark:bg-surface-800 px-2 py-1 rounded" data-i18n="tools.markdown-editor.ui.desc7">Preview</span>
+                <span class="text-xs text-surface-600 dark:text-surface-300 bg-surface-100 dark:bg-surface-800 px-2 py-1 rounded" data-i18n="tools.markdown-editor.ui.desc7">Preview</span>
               </div>
             </div>
           </div>

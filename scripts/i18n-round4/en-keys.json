@@ -97,6 +97,13 @@
   "regex-visualizer": {
    "r4_0": "Stopped",
    "r4_1": "Copy failed: your browser blocked clipboard access. Select the code and copy it manually."
+  },
+  "webhook-debugger": {
+   "r5_0": "Events",
+   "r5_1": "Comment lines",
+   "r5_2": "The last event has no blank line after it, so a browser would discard it",
+   "r5_3": "Frames",
+   "r5_4": "Bytes"
   }
  },
  "ui": {

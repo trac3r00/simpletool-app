@@ -106,5 +106,10 @@
 "Mã QR của bạn sẽ hiện ở đây",
 "Trình duyệt đã chặn cửa sổ in. Hãy cho phép cửa sổ bật lên cho trang này hoặc dùng Tải .html.",
 "bcrypt chỉ đọc 72 byte đầu tiên của đầu vào. Đầu vào này dài",
-"Kết quả tools/list"
+"Kết quả tools/list",
+"Sự kiện",
+"Dòng chú thích",
+"Sự kiện cuối không có dòng trống phía sau nên trình duyệt sẽ bỏ qua nó",
+"Frame",
+"Byte"
 ]

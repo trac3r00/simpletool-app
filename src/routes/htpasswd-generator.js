@@ -108,7 +108,7 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
               <label for="cost-slider"><span data-i18n="tools.htpasswd-generator.ui.label11">Cost</span></label>
               <span id="cost-label" data-i18n="tools.htpasswd-generator.ui.label12">12 rounds</span>
             </div>
-            <input id="cost-slider" type="range" aria-label="Bcrypt cost factor" data-tooltip="Higher cost = stronger hash but slower generation" data-i18n-tooltip="tools.htpasswd-generator.ui.tip2" min="8" max="15" value="12" class="w-full h-2 bg-surface-200 dark:bg-surface-800 rounded-lg" />
+            <input id="cost-slider" type="range" aria-label="Bcrypt cost factor" data-tooltip="Higher cost = stronger hash but slower generation" data-i18n-tooltip="tools.htpasswd-generator.ui.tip2" min="8" max="15" value="12" class="w-full h-2 accent-primary-600 bg-surface-200 dark:bg-surface-800 rounded-lg" />
           </div>
 
           <div id="salt-options" class="space-y-2 hidden">

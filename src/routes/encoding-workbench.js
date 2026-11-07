@@ -82,7 +82,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
 
         <!-- Tab Navigation -->
         <div class="mb-8">
-          <div class="tabs-list flex bg-surface-100 dark:bg-surface-800 p-1 rounded-xl border border-surface-200 dark:border-surface-700 w-fit max-w-full overflow-x-auto" role="tablist">
+          <div class="tabs-list flex bg-surface-100 dark:bg-surface-800 p-1 rounded-xl border border-surface-200 dark:border-surface-700 w-fit max-w-full" role="tablist">
             <button id="tab-encode" class="tab-trigger tab-btn active" role="tab" aria-controls="panel-encode" aria-selected="true" data-tooltip="Encode and decode text between formats" data-i18n-tooltip="tools.encoding-workbench.ui.tip0">
               <span data-i18n="tools.encoding-workbench.ui.tab0">🔄 Encode / Decode</span>
             </button>
@@ -442,11 +442,11 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
         text-transform: uppercase;
         letter-spacing: 0.05em;
       }
-      .badge-high { background: #dcfce7; color: #16a34a; }
+      .badge-high { background: #dcfce7; color: #15803d; }
       .dark .badge-high { background: rgba(22,163,74,0.15); color: #4ade80; }
-      .badge-medium { background: #fef3c7; color: #d97706; }
+      .badge-medium { background: #fef3c7; color: #b45309; }
       .dark .badge-medium { background: rgba(217,119,6,0.15); color: #fbbf24; }
-      .badge-low { background: #fee2e2; color: #dc2626; }
+      .badge-low { background: #fee2e2; color: #b91c1c; }
       .dark .badge-low { background: rgba(220,38,38,0.15); color: #f87171; }
     </style>
     <script>

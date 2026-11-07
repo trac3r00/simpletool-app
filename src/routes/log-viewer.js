@@ -94,7 +94,7 @@ export async function handleLogViewerRoutes(request, url) {
          <div class="mt-4 flex items-center justify-between text-xs text-surface-500 dark:text-surface-400 border-t border-surface-100 dark:border-surface-800 pt-3">
            <div class="flex items-center gap-2">
              <div id="status-text" data-i18n="tools.log-viewer.ui.desc6">Ready to load file</div>
-             <span id="log-spinner" class="spinner-sm hidden" style="display:inline-block;vertical-align:middle;border-color:rgba(107,114,128,0.3);border-top-color:rgb(107,114,128);"></span>
+             <span id="log-spinner" class="spinner-sm inline-block hidden rounded-full border-2 animate-spin" style="vertical-align:middle;width:14px;height:14px;border-color:rgba(107,114,128,0.3);border-top-color:rgb(107,114,128);"></span>
            </div>
            <div id="match-count" class="font-mono hidden" data-i18n="tools.log-viewer.ui.desc7">0 matches</div>
          </div>
@@ -113,7 +113,7 @@ export async function handleLogViewerRoutes(request, url) {
           <div class="w-16 text-right mr-4">#</div>
           <div class="w-24" data-i18n="tools.log-viewer.ui.col0">TIMESTAMP</div>
           <div class="w-16" data-i18n="tools.log-viewer.ui.col1">LEVEL</div>
-          <div class="flex-1" data-i18n="tools.log-viewer.ui.col2">MESSAGE</div>
+          <div class="flex-1 min-w-0 [word-break:normal]" data-i18n="tools.log-viewer.ui.col2">MESSAGE</div>
         </div>
 
         <!-- Virtual Scroll Container -->

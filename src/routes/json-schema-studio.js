@@ -379,8 +379,8 @@ function renderJsonSchemaStudioPage(lang = DEFAULT_LANGUAGE) {
         rows.forEach(function(r) {
           const tr = el('tr', 'border-t border-border align-top');
           const pathCell = el('td', 'px-3 py-2');
-          pathCell.appendChild(el('code', 'block font-mono text-xs break-all text-foreground', r.path || '(root)'));
-          if (withKeyword) pathCell.appendChild(el('code', 'block font-mono text-xs break-all text-muted-foreground mt-0.5', r.keyword));
+          pathCell.appendChild(el('code', 'block font-mono text-xs [overflow-wrap:anywhere] text-foreground', r.path || '(root)'));
+          if (withKeyword) pathCell.appendChild(el('code', 'block font-mono text-xs text-muted-foreground mt-0.5', r.keyword));
           tr.appendChild(pathCell);
           tr.appendChild(el('td', 'px-3 py-2 text-foreground', r.message));
           body.appendChild(tr);
