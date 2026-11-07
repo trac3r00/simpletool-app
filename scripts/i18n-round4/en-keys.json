@@ -1,0 +1,198 @@
+{
+ "js": {
+  "review-description-generator": {
+   "r4_0": "Copied!",
+   "r4_1": "Copy failed: the browser blocked clipboard access. Select the text and copy it manually."
+  },
+  "markdown-editor": {
+   "r4_0": "Mermaid:",
+   "r4_1": "Line",
+   "r4_2": "No findings. The text follows the",
+   "r4_3": "Your browser blocked the print window. Allow pop-ups for this site, or use Download .html."
+  },
+  "prompt-template-builder": {
+   "r4_0": "Copy failed: the browser blocked clipboard access. Select the text and copy it manually."
+  },
+  "token-studio": {
+   "r4_0": "Verified by",
+   "r4_1": "Verification error:"
+  },
+  "mermaid-studio": {
+   "r4_0": "Downloaded diagram.svg.",
+   "r4_1": "Copied SVG markup to the clipboard.",
+   "r4_2": "Could not copy: the browser blocked clipboard access.",
+   "r4_3": "Preparing PNG…",
+   "r4_4": "Downloaded diagram.png (",
+   "r4_5": "Could not export PNG:"
+  },
+  "secret-scanner": {
+   "r4_0": "Copy failed: select the redacted text and copy it manually."
+  },
+  "log-viewer": {
+   "r4_0": "Could not read"
+  },
+  "env-var-manager": {
+   "r4_0": "Copy failed: select the report and copy it manually."
+  },
+  "certificate-decoder": {
+   "r4_0": "Signature check failed:",
+   "r4_1": "Checking signatures..."
+  },
+  "htpasswd-generator": {
+   "r4_1": "Generating…",
+   "r4_0": "Cannot verify:"
+  },
+  "token-counter": {
+   "r4_0": "Copy failed: the browser blocked clipboard access."
+  },
+  "uuid-generator": {
+   "r4_0": "Click to copy"
+  },
+  "public-repos-yml-builder": {
+   "r4_0": "Copy failed: the browser blocked clipboard access."
+  },
+  "json-formatter": {
+   "r4_0": "The repair library did not load. Reload the page and try again.",
+   "r4_1": "Could not repair JSON:"
+  },
+  "roulette-wheel": {
+   "r4_0": "Pick color"
+  },
+  "protocol-headers": {
+   "r4_0": ": too few bytes for an Ethernet frame (14) or IPv4 header (20)."
+  },
+  "text-diff": {
+   "r4_0": "Counts are in",
+   "r4_1": "Unified diff copied to clipboard.",
+   "r4_2": "Copy failed: your browser blocked clipboard access. Select the diff above and copy it manually.",
+   "r4_3": "Downloaded text-diff.diff."
+  },
+  "wireguard-config": {
+   "r4_0": "PublicKey for this PrivateKey:"
+  },
+  "pipe": {
+   "r4_9": "No tools match",
+   "r4_0": "Move up (Alt+Up)",
+   "r4_1": "Move down (Alt+Down)",
+   "r4_2": "Waiting...",
+   "r4_3": "Skipped",
+   "r4_4": "Error in step",
+   "r4_10": "Try it →",
+   "r4_5": "Copied!",
+   "r4_6": "Link copied!",
+   "r4_7": "Saved!",
+   "r4_8": "Someone shared this pipeline with you. Paste your data above to run it."
+  },
+  "timestamp-converter": {
+   "r4_0": "This looks like a timestamp in",
+   "r4_1": "Read it as"
+  },
+  "encoding-workbench": {
+   "r4_0": "bcrypt only reads the first 72 bytes of its input. This input is"
+  },
+  "user-agent-decoder": {
+   "r4_0": "Copy failed: select the JSON and copy manually",
+   "r4_1": "Copy failed: select the text and copy manually"
+  },
+  "regex-visualizer": {
+   "r4_0": "Stopped",
+   "r4_1": "Copy failed: your browser blocked clipboard access. Select the code and copy it manually."
+  },
+  "webhook-debugger": {
+   "r5_0": "Events",
+   "r5_1": "Comment lines",
+   "r5_2": "The last event has no blank line after it, so a browser would discard it",
+   "r5_3": "Frames",
+   "r5_4": "Bytes"
+  }
+ },
+ "ui": {
+  "certificate-decoder": {
+   "r4_0": "Show details for",
+   "r4_1": "Warnings",
+   "r4_2": "Certificate Chain",
+   "r4_3": "Checks order and signatures between the certificates you pasted only. Trust stores and revocation are not checked.",
+   "r4_4": "Allowed operations",
+   "r4_5": "Financial / legal",
+   "r4_6": "An X.509 certificate contains the public key, the identity of the certificate holder, and the digital signature of the Certificate Authority (CA) that issued the certificate, proving its authenticity.",
+   "r4_7": "Check Status:",
+   "r4_8": "Infrastructure Management:",
+   "r4_9": "Fingerprints for Pinning:"
+  },
+  "encoding-workbench": {
+   "r4_0": "Paste a hash or encoded string…"
+  },
+  "json-formatter": {
+   "r4_0": "Repair broken JSON from LLMs",
+   "r4_1": "Always use double quotes for keys and string values, as single quotes are invalid in standard JSON."
+  },
+  "json-schema-studio": {
+   "r4_0": "Generate",
+   "r4_1": "Validate",
+   "r4_2": "MCP tools/list",
+   "r4_3": "Use generated schema",
+   "r4_4": "Check tools",
+   "r4_5": "JSON document",
+   "r4_6": "Dialect",
+   "r4_7": "JSON-RPC response, result object, or tools array",
+   "r4_8": "Auto (from $schema, else 2020-12)",
+   "r4_9": "Draft 2020-12",
+   "r4_10": "Draft 2019-09",
+   "r4_11": "Draft-07",
+   "r4_12": "Document and schema",
+   "r4_13": "Validation result",
+   "r4_14": "tools/list result",
+   "r4_15": "Tool report",
+   "r4_16": "Paste a document and a schema, then press Validate.",
+   "r4_17": "Paste a tools/list result, then press Check tools.",
+   "r4_18": "Estimate: characters of every description plus its serialised inputSchema, divided by 4. Real tokenizers and client framing differ.",
+   "r4_19": "Reference another schema",
+   "r4_20": "Array"
+  },
+  "token-counter": {
+   "r4_0": "Enter the model's context window"
+  }
+ },
+ "existing": {
+  "color-converter": {
+   "ui": {
+    "label0": "Native",
+    "desc4": "Supports #hex (3/4/6/8 digits), rgb()/rgba(), hsl()/hsla(), hsv() and CSS color names"
+   }
+  },
+  "image-converter": {
+   "ui": {
+    "desc34": "Reads PNG, JPG, WebP, GIF, BMP (GIFs are read as a single frame)",
+    "desc36": "A browser canvas cannot encode GIF, so GIF is not offered as an output format.",
+    "desc35": "Convert to PNG, JPG, or WebP with quality control. GIF and BMP files are accepted as input."
+   }
+  },
+  "qr-code": {
+   "ui": {
+    "label6": "Foreground Color",
+    "label7": "Background Color",
+    "label8": "Upload QR Code Image",
+    "label9": "Decoded Content",
+    "previewPlaceholder": "Your QR code will appear here",
+    "btnCopyDecoded": "Copy Decoded Text"
+   }
+  },
+  "uuid-generator": {
+   "ui": {
+    "heading0": "Generated UUIDs",
+    "text0": "Click Generate to create UUIDs",
+    "button1": "Copy All"
+   }
+  },
+  "case-converter": {
+   "ui": {
+    "placeholder1": "Type or paste text to convert between cases..."
+   }
+  },
+  "log-masker": {
+   "ui": {
+    "placeholder4": "Paste log content with PII to redact..."
+   }
+  }
+ }
+}

@@ -800,7 +800,7 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
               var v = r.verifiedBy;
               var detail = document.createElement('p');
               detail.className = 'mt-1 break-words';
-              detail.textContent = 'Verified by ' + keyName(v.index, v.kid) + ': ' + v.kty + (v.crv ? ' ' + v.crv : '') +
+              detail.textContent = (_t('tools.token-studio.js.r4_0', 'Verified by') + ' ') + keyName(v.index, v.kid) + ': ' + v.kty + (v.crv ? ' ' + v.crv : '') +
                 (v.alg ? ', alg ' + v.alg : '') + ', token alg ' + r.header.alg + '.';
               jwksResultEl.appendChild(detail);
             }
@@ -864,7 +864,7 @@ function renderTokenStudioPage(lang = DEFAULT_LANGUAGE) {
                 : 'bg-error-50 dark:bg-error-900/20 text-error-700 dark:text-error-300 border-error-200 dark:border-error-800');
             verifyResultEl.classList.remove('hidden');
           } catch(e) {
-            verifyResultEl.textContent = 'Verification error: ' + e.message;
+            verifyResultEl.textContent = (_t('tools.token-studio.js.r4_1', 'Verification error:') + ' ') + e.message;
             verifyResultEl.className = 'rounded-lg p-3 text-sm font-medium border bg-error-50 dark:bg-error-900/20 text-error-700 dark:text-error-300 border-error-200 dark:border-error-800';
             verifyResultEl.classList.remove('hidden');
           }

@@ -706,7 +706,7 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
              const highlight = prefix === details.prefix ? 'bg-info-50 dark:bg-info-900/20' : '';
              const capacity = details.family === 'IPv6' ? '2^' + (128 - prefix) : formatNumber(Math.pow(2, 32 - prefix));
              const mask = details.family === 'IPv6' ? '—' : intToIPv4(prefixToMask(prefix));
-             rows.push('<tr class="' + highlight + '"><td class="py-2 pr-4 font-mono font-semibold">/' + prefix + '</td><td class="py-2 pr-4 text-xs sm:text-sm">' + (mask ? mask + ' · ' : '') + capacity + '</td><td class="py-2 text-xs italic text-surface-400">' + (prefix === details.prefix ? 'Current' : '') + '</td></tr>');
+             rows.push('<tr class="' + highlight + '"><td class="py-2 pr-4 font-mono font-semibold">/' + prefix + '</td><td class="py-2 pr-4 text-xs sm:text-sm">' + (mask ? mask + ' · ' : '') + capacity + '</td><td class="py-2 text-xs italic text-surface-600 dark:text-surface-300">' + (prefix === details.prefix ? 'Current' : '') + '</td></tr>');
            }
            return rows.join('');
          }
@@ -720,7 +720,7 @@ function renderCIDRCalculatorPage(lang = DEFAULT_LANGUAGE) {
         }
 
         function successItem(id, text) {
-          return '<li class="flex items-center gap-2"><span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-success-500 text-white text-xs">✓</span><span>' + escapeHTML(text) + '</span></li>';
+          return '<li class="flex items-center gap-2"><span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-success-700 text-white text-xs" aria-hidden="true">✓</span><span>' + escapeHTML(text) + '</span></li>';
         }
 
         function updateSubnetExplorer(details) {

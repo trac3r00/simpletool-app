@@ -672,7 +672,7 @@ ${publicReposParserScript}
             button.textContent = tr('copied', 'Copied');
             setTimeout(() => { button.textContent = old; }, 1200);
           } catch {
-            els.status.textContent = 'Copy failed: the browser blocked clipboard access.';
+            els.status.textContent = _t('tools.public-repos-yml-builder.js.r4_0', 'Copy failed: the browser blocked clipboard access.');
           }
         }
 

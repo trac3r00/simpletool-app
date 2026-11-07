@@ -345,7 +345,7 @@ export async function handleMermaidStudioRoutes(request, url) {
         if (!svg) return;
         const svgData = new XMLSerializer().serializeToString(svg);
         saveBlob(new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' }), 'diagram.svg');
-        downloadStatus.textContent = 'Downloaded diagram.svg.';
+        downloadStatus.textContent = _t('tools.mermaid-studio.js.r4_0', 'Downloaded diagram.svg.');
       });
 
       copyBtn.addEventListener('click', async () => {
@@ -353,9 +353,9 @@ export async function handleMermaidStudioRoutes(request, url) {
         if (!svg) return;
         try {
           await navigator.clipboard.writeText(new XMLSerializer().serializeToString(svg));
-          downloadStatus.textContent = 'Copied SVG markup to the clipboard.';
+          downloadStatus.textContent = _t('tools.mermaid-studio.js.r4_1', 'Copied SVG markup to the clipboard.');
         } catch (e) {
-          downloadStatus.textContent = 'Could not copy: the browser blocked clipboard access.';
+          downloadStatus.textContent = _t('tools.mermaid-studio.js.r4_2', 'Could not copy: the browser blocked clipboard access.');
         }
       });
 
@@ -434,13 +434,13 @@ export async function handleMermaidStudioRoutes(request, url) {
           ? getComputedStyle(renderArea).backgroundColor
           : '';
         pngBtn.disabled = true;
-        downloadStatus.textContent = 'Preparing PNG…';
+        downloadStatus.textContent = _t('tools.mermaid-studio.js.r4_3', 'Preparing PNG…');
         try {
           const { blob, size } = await buildPngBlob(editor.getValue().trim(), background);
           saveBlob(blob, 'diagram.png');
-          downloadStatus.textContent = 'Downloaded diagram.png (' + size.width + ' × ' + size.height + ' px).';
+          downloadStatus.textContent = _t('tools.mermaid-studio.js.r4_4', 'Downloaded diagram.png (') + size.width + ' × ' + size.height + ' px).';
         } catch (e) {
-          downloadStatus.textContent = 'Could not export PNG: ' + (e && e.message ? e.message : String(e));
+          downloadStatus.textContent = (_t('tools.mermaid-studio.js.r4_5', 'Could not export PNG:') + ' ') + (e && e.message ? e.message : String(e));
         } finally {
           pngBtn.disabled = false;
         }

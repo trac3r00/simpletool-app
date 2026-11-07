@@ -108,7 +108,7 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
               <label for="cost-slider"><span data-i18n="tools.htpasswd-generator.ui.label11">Cost</span></label>
               <span id="cost-label" data-i18n="tools.htpasswd-generator.ui.label12">12 rounds</span>
             </div>
-            <input id="cost-slider" type="range" aria-label="Bcrypt cost factor" data-tooltip="Higher cost = stronger hash but slower generation" data-i18n-tooltip="tools.htpasswd-generator.ui.tip2" min="8" max="15" value="12" class="w-full h-2 bg-surface-200 dark:bg-surface-800 rounded-lg" />
+            <input id="cost-slider" type="range" aria-label="Bcrypt cost factor" data-tooltip="Higher cost = stronger hash but slower generation" data-i18n-tooltip="tools.htpasswd-generator.ui.tip2" min="8" max="15" value="12" class="w-full h-2 accent-primary-600 bg-surface-200 dark:bg-surface-800 rounded-lg" />
           </div>
 
           <div id="salt-options" class="space-y-2 hidden">
@@ -616,7 +616,7 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
           return;
         }
 
-        setButtonBusy(generateBtn, true, '<span>Generating…</span>');
+        setButtonBusy(generateBtn, true, '<span>' + _t('tools.htpasswd-generator.js.r4_1', 'Generating…') + '</span>');
 
         try {
           const hash = await buildHash(password, suppliedSalt);
@@ -704,7 +704,7 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
           setAlert(bulkErrors, 'Enter at least one user:password line.');
           return;
         }
-        setButtonBusy(bulkGenerateBtn, true, '<span>Generating…</span>');
+        setButtonBusy(bulkGenerateBtn, true, '<span>' + _t('tools.htpasswd-generator.js.r4_1', 'Generating…') + '</span>');
         try {
           const generated = [];
           for (const item of parsed.entries) {
@@ -739,7 +739,7 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
           ? ['border-primary-300', 'bg-primary-50', 'text-primary-800', 'dark:border-primary-700', 'dark:bg-primary-900/30', 'dark:text-primary-100']
           : ['border-danger-200', 'bg-danger-50', 'text-danger-700', 'dark:border-danger-800', 'dark:bg-danger-900/30', 'dark:text-danger-200']);
         if (!result.ok) {
-          verifyResult.textContent = 'Cannot verify: ' + result.error;
+          verifyResult.textContent = (_t('tools.htpasswd-generator.js.r4_0', 'Cannot verify:') + ' ') + result.error;
           return;
         }
         let message = (result.match ? 'Match' : 'No match') + ': the password ' + (result.match ? 'matches' : 'does not match') +

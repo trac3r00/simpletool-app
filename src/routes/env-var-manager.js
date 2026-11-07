@@ -477,7 +477,7 @@ function renderEnvVarManagerPage(lang = DEFAULT_LANGUAGE) {
           if (window.Toast) window.Toast.success(_t('common.copied', 'Copied!'));
           setTimeout(() => (els.copyReport.innerHTML = old), 1200);
         } catch (e) {
-          els.copyReport.textContent = 'Copy failed: select the report and copy it manually.';
+          els.copyReport.textContent = _t('tools.env-var-manager.js.r4_0', 'Copy failed: select the report and copy it manually.');
         }
       });
     </script>

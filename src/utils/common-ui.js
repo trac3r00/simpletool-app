@@ -745,6 +745,9 @@ export function getStylesheetLinks() {
       .material-symbols-rounded[data-icon]::before { content: attr(data-icon); }
       /* i18n overflow protection for longer translations (de, fr, pt) */
       [data-i18n], [data-i18n-html] { overflow-wrap: break-word; word-break: break-word; }
+      /* Table cells keep whole words and scroll in their wrapper; break-word here
+         collapsed headers to one letter per line on phones. */
+      th, td, th[data-i18n], td[data-i18n] { overflow-wrap: normal; word-break: normal; }
       .btn, [role="menuitem"] { overflow: hidden; text-overflow: ellipsis; }
       .language-dropdown { scrollbar-width: thin; }
       .language-dropdown::-webkit-scrollbar { width: 6px; }
@@ -931,7 +934,7 @@ function getLocalProofHTML(pagePath) {
       </ul>
       <details class="mt-2" data-local-proof-details hidden>
         <summary class="cursor-pointer text-xs text-muted-foreground">Show requests</summary>
-        <ol class="mt-1 text-xs font-mono break-all text-muted-foreground list-decimal pl-5" data-local-proof-list></ol>
+        <ol class="mt-1 text-xs font-mono text-muted-foreground list-decimal pl-5" data-local-proof-list></ol>
       </details>
     </div>
   </section>

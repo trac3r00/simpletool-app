@@ -153,7 +153,7 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
                 spellcheck="false"
               ></textarea>
               <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                <span class="text-xs text-surface-400 bg-surface-100 dark:bg-surface-800 px-2 py-1 rounded" data-i18n="tools.markdown-editor.ui.desc10">Markdown</span>
+                <span class="text-xs text-surface-600 dark:text-surface-300 bg-surface-100 dark:bg-surface-800 px-2 py-1 rounded" data-i18n="tools.markdown-editor.ui.desc10">Markdown</span>
               </div>
             </div>
 
@@ -170,7 +170,7 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
                 class="flex-grow w-full p-6 overflow-y-auto prose dark:prose-invert max-w-none prose-sm sm:prose-base prose-pre:bg-surface-100 dark:prose-pre:bg-surface-950 prose-pre:border prose-pre:border-surface-200 dark:prose-pre:border-surface-800"
               ></div>
               <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                <span class="text-xs text-surface-400 bg-surface-100 dark:bg-surface-800 px-2 py-1 rounded" data-i18n="tools.markdown-editor.ui.desc7">Preview</span>
+                <span class="text-xs text-surface-600 dark:text-surface-300 bg-surface-100 dark:bg-surface-800 px-2 py-1 rounded" data-i18n="tools.markdown-editor.ui.desc7">Preview</span>
               </div>
             </div>
           </div>
@@ -559,7 +559,7 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
               const detail = document.createElement('pre');
               detail.className = 'mermaid-error-detail text-xs whitespace-pre-wrap text-error-700 dark:text-error-200';
               detail.setAttribute('role', 'alert');
-              detail.textContent = 'Mermaid: ' + String((e && (e.message || e.str)) || e).split('\\n').slice(0, 4).join('\\n');
+              detail.textContent = (_t('tools.markdown-editor.js.r4_0', 'Mermaid:') + ' ') + String((e && (e.message || e.str)) || e).split('\\n').slice(0, 4).join('\\n');
               target.appendChild(detail);
             }
           }
@@ -599,7 +599,7 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
 
             const lineLabel = document.createElement('span');
             lineLabel.className = 'shrink-0 w-14 py-0.5 text-xs font-mono text-muted-foreground';
-            lineLabel.textContent = 'Line ' + f.line;
+            lineLabel.textContent = (_t('tools.markdown-editor.js.r4_1', 'Line') + ' ') + f.line;
 
             const body = document.createElement('span');
             body.className = 'min-w-0';
@@ -621,7 +621,7 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
           if (!items.length) {
             const li = document.createElement('li');
             li.className = 'px-4 py-3 text-sm text-muted-foreground';
-            li.textContent = 'No findings. The text follows the ' + LINT_LABELS[format] + ' format rules this linter checks.';
+            li.textContent = (_t('tools.markdown-editor.js.r4_2', 'No findings. The text follows the') + ' ') + LINT_LABELS[format] + ' format rules this linter checks.';
             items.push(li);
           }
           lintList.replaceChildren(...items);
@@ -925,7 +925,7 @@ function renderMarkdownEditorPage(lang = DEFAULT_LANGUAGE) {
           // 'noopener' makes window.open() return null, which left Print writing nothing.
           const w = window.open('', '_blank');
           if (!w) {
-            preview.insertAdjacentHTML('afterbegin', '<p role="alert" class="text-sm text-error-700 dark:text-error-200">Your browser blocked the print window. Allow pop-ups for this site, or use Download .html.</p>');
+            preview.insertAdjacentHTML('afterbegin', '<p role="alert" class="text-sm text-error-700 dark:text-error-200">' + _t('tools.markdown-editor.js.r4_3', 'Your browser blocked the print window. Allow pop-ups for this site, or use Download .html.') + '</p>');
             return;
           }
           w.opener = null;

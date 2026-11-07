@@ -82,7 +82,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
 
         <!-- Tab Navigation -->
         <div class="mb-8">
-          <div class="tabs-list flex bg-surface-100 dark:bg-surface-800 p-1 rounded-xl border border-surface-200 dark:border-surface-700 w-fit max-w-full overflow-x-auto" role="tablist">
+          <div class="tabs-list flex bg-surface-100 dark:bg-surface-800 p-1 rounded-xl border border-surface-200 dark:border-surface-700 w-fit max-w-full" role="tablist">
             <button id="tab-encode" class="tab-trigger tab-btn active" role="tab" aria-controls="panel-encode" aria-selected="true" data-tooltip="Encode and decode text between formats" data-i18n-tooltip="tools.encoding-workbench.ui.tip0">
               <span data-i18n="tools.encoding-workbench.ui.tab0">🔄 Encode / Decode</span>
             </button>
@@ -293,7 +293,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
             <textarea
               id="identify-input"
               rows="4"
-              placeholder="Paste a hash or encoded string…"
+              placeholder="Paste a hash or encoded string…" data-i18n-placeholder="tools.encoding-workbench.ui.r4_0"
               data-i18n-placeholder="tools.encoding-workbench.ui.identifyPlaceholder"
               class="input-mono w-full resize-none"
             ></textarea>
@@ -442,11 +442,11 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
         text-transform: uppercase;
         letter-spacing: 0.05em;
       }
-      .badge-high { background: #dcfce7; color: #16a34a; }
+      .badge-high { background: #dcfce7; color: #15803d; }
       .dark .badge-high { background: rgba(22,163,74,0.15); color: #4ade80; }
-      .badge-medium { background: #fef3c7; color: #d97706; }
+      .badge-medium { background: #fef3c7; color: #b45309; }
       .dark .badge-medium { background: rgba(217,119,6,0.15); color: #fbbf24; }
-      .badge-low { background: #fee2e2; color: #dc2626; }
+      .badge-low { background: #fee2e2; color: #b91c1c; }
       .dark .badge-low { background: rgba(220,38,38,0.15); color: #f87171; }
     </style>
     <script>
@@ -783,7 +783,7 @@ function renderEncodingWorkbenchPage(lang = DEFAULT_LANGUAGE) {
             var rounds = parseInt(document.getElementById('bcrypt-rounds').value, 10);
             var byteLength = new TextEncoder().encode(text).length;
             if (byteLength > 72) {
-              lengthWarning.textContent = 'bcrypt only reads the first 72 bytes of its input. This input is ' + byteLength + ' bytes (UTF-8), so everything after byte 72 has no effect on the hash.';
+              lengthWarning.textContent = (_t('tools.encoding-workbench.js.r4_0', 'bcrypt only reads the first 72 bytes of its input. This input is') + ' ') + byteLength + ' bytes (UTF-8), so everything after byte 72 has no effect on the hash.';
               lengthWarning.classList.remove('hidden');
             }
             var bcryptLib = (typeof window.dcodeIO !== 'undefined' && window.dcodeIO.bcrypt) ? window.dcodeIO.bcrypt : (typeof window.bcrypt !== 'undefined' ? window.bcrypt : null);

@@ -125,17 +125,17 @@ function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
         <section id="results-pane" class="hidden space-y-6">
 
           <div class="card p-6">
-            <h2 class="text-lg font-bold text-surface-900 dark:text-surface-100">Warnings</h2>
+            <h2 class="text-lg font-bold text-surface-900 dark:text-surface-100" data-i18n="tools.certificate-decoder.ui.r4_1">Warnings</h2>
             <div id="warnings-list" class="mt-4 text-sm text-surface-700 dark:text-surface-300"></div>
           </div>
 
           <div class="card p-6">
-            <h2 class="text-lg font-bold text-surface-900 dark:text-surface-100">Certificate Chain</h2>
-            <p class="mt-1 text-sm text-surface-600 dark:text-surface-400">Checks order and signatures between the certificates you pasted only. Trust stores and revocation are not checked.</p>
+            <h2 class="text-lg font-bold text-surface-900 dark:text-surface-100" data-i18n="tools.certificate-decoder.ui.r4_2">Certificate Chain</h2>
+            <p class="mt-1 text-sm text-surface-600 dark:text-surface-400" data-i18n="tools.certificate-decoder.ui.r4_3">Checks order and signatures between the certificates you pasted only. Trust stores and revocation are not checked.</p>
             <p id="chain-summary" class="mt-4 text-sm font-semibold"></p>
             <ol id="chain-list" class="mt-4 space-y-3 text-sm text-surface-700 dark:text-surface-300"></ol>
             <div id="cert-select-wrap" class="hidden mt-4 max-w-md">
-              <label for="cert-select" class="label">Show details for</label>
+              <label for="cert-select" class="label" data-i18n="tools.certificate-decoder.ui.r4_0">Show details for</label>
               <select id="cert-select" class="input"></select>
             </div>
           </div>
@@ -219,7 +219,7 @@ function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
             <tr><td><code>Serial Number</code></td><td>Unique certificate identifier</td></tr>
             <tr><td><code>Not Before / After</code></td><td>Validity period</td></tr>
             <tr><td><code>Subject Alt Names</code></td><td>Additional domains / IPs</td></tr>
-            <tr><td><code>Key Usage</code></td><td>Allowed operations</td></tr>
+            <tr><td><code>Key Usage</code></td><td data-i18n="tools.certificate-decoder.ui.r4_4">Allowed operations</td></tr>
           </table>`,
         },
         {
@@ -229,7 +229,7 @@ function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
             <tr><th data-i18n="tools.certificate-decoder.ui.th6">Type</th><th data-i18n="tools.certificate-decoder.ui.th7">Validation</th><th data-i18n="tools.certificate-decoder.ui.th8">Use Case</th></tr>
             <tr><td><code>DV</code> (Domain)</td><td>Quick / automated</td><td>Basic HTTPS</td></tr>
             <tr><td><code>OV</code> (Organization)</td><td>Business verified</td><td>Company sites</td></tr>
-            <tr><td><code>EV</code> (Extended)</td><td>Strict verification</td><td>Financial / legal</td></tr>
+            <tr><td><code>EV</code> (Extended)</td><td>Strict verification</td><td data-i18n="tools.certificate-decoder.ui.r4_5">Financial / legal</td></tr>
           </table>`,
         },
       ])}
@@ -242,7 +242,7 @@ function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
             title: "What are X.509 Certificates?",
             content: `
             <p>X.509 is a standard format for public key certificates, which are digital documents that securely bind a public key to an identity (such as a website, organization, or individual). These certificates are the foundation of the Public Key Infrastructure (PKI) used to secure the internet via HTTPS, as well as for signing emails and software.</p>
-            <p>An X.509 certificate contains the public key, the identity of the certificate holder, and the digital signature of the Certificate Authority (CA) that issued the certificate, proving its authenticity.</p>
+            <p data-i18n="tools.certificate-decoder.ui.r4_6">An X.509 certificate contains the public key, the identity of the certificate holder, and the digital signature of the Certificate Authority (CA) that issued the certificate, proving its authenticity.</p>
           `,
           },
           {
@@ -253,7 +253,7 @@ function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
               <li><strong>Parse:</strong> Click "Parse Certificate" to extract and analyze the data.</li>
               <li><strong>Review Summary:</strong> Check the top cards for the Common Name (CN), Issuer, and validity dates.</li>
               <li><strong>Inspect Details:</strong> Expand the sections below to see the full Subject, Issuer, SANs, and technical extensions.</li>
-              <li><strong>Check Status:</strong> Look at the status badge to see if the certificate is currently valid or expired.</li>
+              <li><strong data-i18n="tools.certificate-decoder.ui.r4_7">Check Status:</strong> Look at the status badge to see if the certificate is currently valid or expired.</li>
             </ol>
           `,
           },
@@ -264,7 +264,7 @@ function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
               <li><strong>SSL/TLS Troubleshooting:</strong> Diagnosing why a website is showing a "Not Secure" warning by checking for expiration or hostname mismatches.</li>
               <li><strong>Security Auditing:</strong> Verifying that a certificate was issued by a trusted CA and uses strong signature algorithms (like SHA-256).</li>
               <li><strong>Development:</strong> Inspecting self-signed certificates or CSRs (Certificate Signing Requests) during local development.</li>
-              <li><strong>Infrastructure Management:</strong> Checking the Subject Alternative Names (SANs) to ensure all required subdomains are covered by a single certificate.</li>
+              <li><strong data-i18n="tools.certificate-decoder.ui.r4_8">Infrastructure Management:</strong> Checking the Subject Alternative Names (SANs) to ensure all required subdomains are covered by a single certificate.</li>
             </ul>
           `,
           },
@@ -274,7 +274,7 @@ function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
             <ul>
               <li><strong>Check the SANs:</strong> Modern browsers rely on the Subject Alternative Name (SAN) extension rather than the Common Name (CN) for hostname verification. Always ensure your domain is listed in the SANs.</li>
               <li><strong>Verify the Chain:</strong> If a certificate is valid but still untrusted, it may be missing intermediate certificates. Check the "Issuer" to identify which intermediate CA you need to include on your server.</li>
-              <li><strong>Fingerprints for Pinning:</strong> Use the SHA-256 Fingerprint provided by this tool if you need to implement certificate pinning in mobile applications or high-security APIs.</li>
+              <li><strong data-i18n="tools.certificate-decoder.ui.r4_9">Fingerprints for Pinning:</strong> Use the SHA-256 Fingerprint provided by this tool if you need to implement certificate pinning in mobile applications or high-security APIs.</li>
             </ul>
           `,
           },
@@ -405,7 +405,7 @@ function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
           hideError();
           renderWarnings(parsedCerts);
           renderChain(parsedCerts).catch((err) => {
-            chainSummary.textContent = 'Signature check failed: ' + String((err && err.message) || err);
+            chainSummary.textContent = (_t('tools.certificate-decoder.js.r4_0', 'Signature check failed:') + ' ') + String((err && err.message) || err);
           });
           renderCertificate(parsedCerts[0].cert);
         }
@@ -438,7 +438,7 @@ function renderCertificateDecoderPage(lang = DEFAULT_LANGUAGE) {
         async function renderChain(entries) {
           const run = ++chainRun;
           const order = checkChainOrder(entries.map((entry) => entry.fields));
-          chainSummary.textContent = 'Checking signatures...';
+          chainSummary.textContent = _t('tools.certificate-decoder.js.r4_1', 'Checking signatures...');
           chainList.innerHTML = '';
           const [signed, selfVerified] = await Promise.all([
             Promise.all(entries.map((entry, i) => i + 1 < entries.length ? checkSignature(entries[i + 1].cert, entry.cert) : null)),

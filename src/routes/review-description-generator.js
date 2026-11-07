@@ -324,11 +324,11 @@ export function renderReviewDescriptionGeneratorSection(
           var original = copyBtn.querySelector('span:last-child');
           if (original) {
             var prev = original.textContent;
-            original.textContent = 'Copied!';
+            original.textContent = _t('tools.review-description-generator.js.r4_0', 'Copied!');
             setTimeout(function() { original.textContent = prev; }, 1500);
           }
         }, function() {
-          document.getElementById('copy-status').textContent = 'Copy failed: the browser blocked clipboard access. Select the text and copy it manually.';
+          document.getElementById('copy-status').textContent = _t('tools.review-description-generator.js.r4_1', 'Copy failed: the browser blocked clipboard access. Select the text and copy it manually.');
         });
       }
 

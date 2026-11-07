@@ -174,7 +174,7 @@ function renderTokenCounterPage(lang = DEFAULT_LANGUAGE) {
 
               <div class="mt-4">
                 <label for="context-window" class="label" data-i18n="tools.token-counter.ui.r3_1">Context window (tokens)</label>
-                <input id="context-window" type="number" min="1" step="1" class="input font-mono" placeholder="Enter the model's context window" />
+                <input id="context-window" type="number" min="1" step="1" class="input font-mono" placeholder="Enter the model's context window" data-i18n-placeholder="tools.token-counter.ui.r4_0" />
                 <div class="mt-3 h-2 rounded-full bg-surface-200 dark:bg-surface-800 overflow-hidden" aria-hidden="true">
                   <div id="context-bar" class="h-2 bg-primary-500 transition-all"></div>
                 </div>
@@ -571,7 +571,7 @@ function renderTokenCounterPage(lang = DEFAULT_LANGUAGE) {
         const usage = r.count === null ? null : contextUsage(r.count + outTokens, els.ctx.value);
         if (!usage) {
           els.ctxBar.style.width = '0%';
-          els.ctxUsage.textContent = r.count === null ? 'Waiting for the tokenizer...' : 'Enter a context window to see usage.';
+          els.ctxUsage.textContent = r.count === null ? 'Waiting for the tokenizer...' : _t('tools.token-counter.ui.r3_6', 'Enter a context window to see usage.');
         } else {
           els.ctxBar.style.width = usage.barPercent + '%';
           els.ctxBar.className = 'h-2 transition-all ' + (usage.over ? 'bg-red-500' : 'bg-primary-500');
@@ -704,7 +704,7 @@ function renderTokenCounterPage(lang = DEFAULT_LANGUAGE) {
         try {
           await navigator.clipboard.writeText(lines.join('\n'));
         } catch (e) {
-          els.copyStatus.textContent = 'Copy failed: the browser blocked clipboard access.';
+          els.copyStatus.textContent = _t('tools.token-counter.js.r4_0', 'Copy failed: the browser blocked clipboard access.');
           return;
         }
         const old = els.copy.innerHTML;
