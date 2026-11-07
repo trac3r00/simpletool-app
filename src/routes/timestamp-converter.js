@@ -79,7 +79,7 @@ function renderTimestampConverterPage(lang = DEFAULT_LANGUAGE) {
         <!-- Current Time -->
         <div class="mb-8 p-6 bg-gradient-to-r from-primary-50 to-surface-50 dark:from-primary-900/20 dark:to-surface-900/20 border-2 border-primary-200 dark:border-primary-800 rounded-xl text-center">
           <div class="text-sm font-semibold text-primary-900 dark:text-primary-300 mb-2 uppercase tracking-wide" data-i18n="tools.timestamp-converter.ui.stat13">Current Time</div>
-          <div id="current-unix" class="text-4xl font-mono font-bold text-primary-600 dark:text-primary-400 mb-2">0</div>
+          <div id="current-unix" class="text-3xl sm:text-4xl whitespace-nowrap font-mono font-bold text-primary-600 dark:text-primary-400 mb-2">0</div>
           <div id="current-human" class="text-lg text-surface-700 dark:text-surface-300"></div>
           <button data-i18n-html="tools.timestamp-converter.ui.r6_0" id="copy-current" class="mt-4 btn btn-secondary text-sm">
             <span class="material-symbols-rounded text-sm" aria-hidden="true" data-icon="content_copy"></span> Copy Timestamp

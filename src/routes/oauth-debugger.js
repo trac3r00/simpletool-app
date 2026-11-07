@@ -111,7 +111,9 @@ function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
                    than reflowed, so below tablet width it becomes an explicit,
                    keyboard-reachable scroll region (tabindex + role="region" +
                    aria-label) with an edge fade signalling more content is
-                   off-screen, instead of silently clipping later steps. -->
+                   off-screen, instead of silently clipping later steps. Step and
+                   connector columns are flex-shrink-0 so the region scrolls
+                   rather than squeezing them into letter stacks. -->
               <div class="relative">
                 <div
                   class="overflow-x-auto rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
@@ -120,7 +122,7 @@ function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
                   aria-label="Authorization flow diagram, scroll horizontally to see all steps"
                   data-i18n-aria="tools.oauth-debugger.ui.r64_10"
                 >
-                  <div class="flex items-start gap-0 min-w-[600px] text-xs">
+                  <div class="flex w-max items-start gap-0 text-xs">
                     ${flowStep("1", "Client", "Build authorization URL with code_challenge", "bg-primary-100 dark:bg-primary-900/30 border-primary-300 dark:border-primary-700 text-primary-800 dark:text-primary-200", "r64_0", "r64_1")}
                     ${flowArrow("GET /authorize?...")}
                     ${flowStep("2", "Auth Server", "Authenticate user, display consent screen", "bg-surface-100 dark:bg-surface-800 border-surface-300 dark:border-surface-600 text-surface-700 dark:text-surface-300", "r64_2", "r64_3")}
@@ -450,7 +452,7 @@ function renderOAuthDebuggerPage(lang = DEFAULT_LANGUAGE) {
 
 function flowStep(num, actor, desc, colorClasses, actorKey, descKey) {
   return `
-    <div class="flex flex-col items-center gap-1 w-36">
+    <div class="flex flex-col items-center gap-1 w-36 flex-shrink-0">
       <div class="w-8 h-8 rounded-full bg-primary-600 dark:bg-primary-500 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">${num}</div>
       <div class="border rounded-lg p-3 w-full text-center ${colorClasses}">
         <div class="font-semibold text-xs mb-1" data-i18n="tools.oauth-debugger.ui.${actorKey}">${actor}</div>
@@ -460,10 +462,20 @@ function flowStep(num, actor, desc, colorClasses, actorKey, descKey) {
   `;
 }
 
+// Connector column between two steps. The label wraps between words inside a
+// fixed 5.5rem (88px) column: that is the footprint the old 80px nowrap label
+// plus px-1 already took, so the row stays 1072px wide and keeps fitting the
+// 1100px desktop group without a scrollbar, while 88px still holds the longest
+// unbreakable run ("+ code_verifier", ~81px at text-xs in Geist) on one line.
+// flex-shrink-0 matters: the global overflow-wrap/word-break rules collapse a
+// wrapping label's min-content, so a shrinkable column would be squeezed to a
+// few px inside the scroll region on phones. The label reserves two text-xs
+// lines (min-h-8) and bottom-aligns, so one-line and two-line labels put the
+// arrow at the same height.
 function flowArrow(label, labelKey) {
   return `
-    <div class="flex flex-col items-center justify-center gap-1 px-1 pt-8">
-      <div class="text-xs text-surface-500 dark:text-surface-400 whitespace-nowrap text-center max-w-[80px] leading-snug"${labelKey ? ` data-i18n="tools.oauth-debugger.ui.${labelKey}"` : ""}>${label}</div>
+    <div class="flex w-[5.5rem] flex-shrink-0 flex-col items-center gap-1 pt-8">
+      <div class="flex min-h-8 w-full items-end justify-center text-center text-xs text-surface-500 dark:text-surface-400"${labelKey ? ` data-i18n="tools.oauth-debugger.ui.${labelKey}"` : ""}>${label}</div>
       <div class="text-surface-500 dark:text-surface-400 text-base">→</div>
     </div>
   `;
