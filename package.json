@@ -1,6 +1,6 @@
 {
   "name": "simpletool-app-unified",
-  "version": "2.4.6",
+  "version": "2.5.0",
   "description": "Unified SimpleTool App - All tools in one Cloudflare Worker deployment",
   "type": "module",
   "scripts": {
