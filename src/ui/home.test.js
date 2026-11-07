@@ -45,7 +45,9 @@ describe("renderHomePage", () => {
     expect(html).not.toContain("🔄 Formatters");
     // The section heading draws its own icon; a locale emoji doubled it.
     for (const lang of ["ko", "ja", "es", "zh-CN", "zh-TW", "fr", "de", "pt", "vi"]) {
-      expect(t("home.cat.formatters", lang)).toMatch(/^[\p{L}\p{N}]/u);
+      for (const cat of ["formatters", "security", "network", "generators", "game", "utils"]) {
+        expect(t(`home.cat.${cat}`, lang)).toMatch(/^[\p{L}\p{N}]/u);
+      }
     }
     expect(html.indexOf('id="tools-categories-container"')).toBeLessThan(
       html.indexOf('data-i18n="home.editorialTitle"'),
