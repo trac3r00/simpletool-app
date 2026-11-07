@@ -745,6 +745,9 @@ export function getStylesheetLinks() {
       .material-symbols-rounded[data-icon]::before { content: attr(data-icon); }
       /* i18n overflow protection for longer translations (de, fr, pt) */
       [data-i18n], [data-i18n-html] { overflow-wrap: break-word; word-break: break-word; }
+      /* Korean otherwise breaks between any two syllables ("실행/됩니다"); keep words
+         whole. body's overflow-wrap:anywhere still wraps unbroken tokens. */
+      html:lang(ko) body, html:lang(ko) [data-i18n], html:lang(ko) [data-i18n-html] { word-break: keep-all; }
       /* Table cells keep whole words and scroll in their wrapper; break-word here
          collapsed headers to one letter per line on phones. */
       th, td, th[data-i18n], td[data-i18n] { overflow-wrap: normal; word-break: normal; }

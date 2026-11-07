@@ -905,7 +905,9 @@
 
 /* Utilities */
 .glass {
-  @apply bg-white/80 dark:bg-surface-900/80 backdrop-blur-md border-b border-surface-200 dark:border-surface-800;
+  /* 95%: at 80% a large heading scrolling under the sticky bar still read
+     through the blur as a doubled logo. */
+  @apply bg-white/95 dark:bg-surface-900/95 backdrop-blur-md border-b border-surface-200 dark:border-surface-800;
 }
 
 /* Brand gradient (violet → cyan) — the signature accent of the Modern Utility
