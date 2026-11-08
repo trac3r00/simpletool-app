@@ -59,8 +59,19 @@ function scanRoutes() {
     for (const m of src.matchAll(ELEMENT)) {
       const key = m[2];
       const text = norm(m[3]);
-      if (!text || text.includes("${") || key.includes("'") || key.includes("+")) continue;
+      if (key.includes("'") || key.includes("+")) continue;
       const id = `${file} ${key}`;
+      // Server-rendered text such as ${t("tools.x.ui.k", lang)}: the key it
+      // renders must be the key _patchDOM swaps in on a language change.
+      const rendered = m[3].trim().match(/^\$\{\s*(?:t|tr|_t|ui|tx)\(\s*["'`]([^"'`]+)["'`]/);
+      if (rendered) {
+        const inner = rendered[1];
+        if (key !== inner && !key.endsWith(`.${inner}`)) {
+          problems.push({ id, detail: `renders ${inner} but patches ${key}` });
+        }
+        continue;
+      }
+      if (!text || text.includes("${")) continue;
       const val = t(key, "en");
       if (val === key || val === "") {
         problems.push({ id, detail: `MISSING-KEY src="${text}"` });
