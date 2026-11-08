@@ -52,9 +52,9 @@ export function renderProtocolHeadersSection(lang = DEFAULT_LANGUAGE) {
               <button class="tab-trigger protocol-tab active" data-protocol="ethernet" data-i18n="tools.protocol-headers.ui.button0">Ethernet II</button>
               <button class="tab-trigger protocol-tab" data-protocol="ipv4" data-i18n="tools.protocol-headers.ui.button1">IPv4</button>
               <button class="tab-trigger protocol-tab" data-protocol="ipv6" data-i18n="tools.protocol-headers.ui.button2">IPv6</button>
-              <button class="tab-trigger protocol-tab" data-protocol="tcp" data-i18n="tools.protocol-headers.ui.button3">TCP</button>
-              <button class="tab-trigger protocol-tab" data-protocol="udp" data-i18n="tools.protocol-headers.ui.button4">UDP</button>
-              <button class="tab-trigger protocol-tab" data-protocol="icmp" data-i18n="tools.protocol-headers.ui.button5">ICMP</button>
+              <button class="tab-trigger protocol-tab" data-protocol="tcp">TCP</button>
+              <button class="tab-trigger protocol-tab" data-protocol="udp">UDP</button>
+              <button class="tab-trigger protocol-tab" data-protocol="icmp">ICMP</button>
               <button class="tab-trigger protocol-tab col-span-2" data-protocol="arp" data-i18n="tools.protocol-headers.ui.button6">ARP (IPv4)</button>
             </div>
           </div>

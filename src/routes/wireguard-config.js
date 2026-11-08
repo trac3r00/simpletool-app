@@ -158,7 +158,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
               <span data-i18n="tools.wireguard-config.ui.heading1">Key Pair Generator</span>
             </h2>
             <button id="generate-keys-btn" class="btn btn-primary">
-              <span data-i18n="tools.wireguard-config.ui.button0">Generate Key Pair</span>
+              <span>Generate Key Pair</span>
             </button>
           </div>
           
@@ -168,8 +168,8 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
               <div class="flex items-center justify-between mb-2">
                 <label for="private-key" class="text-xs font-semibold text-surface-600 dark:text-surface-400 uppercase" data-i18n="tools.wireguard-config.ui.label0">Private Key</label>
                 <div class="flex gap-2">
-                  <button id="toggle-private-key" class="btn btn-ghost btn-xs" data-i18n="tools.wireguard-config.ui.button1">Show</button>
-                  <button id="copy-private-key" class="btn btn-secondary btn-xs" data-i18n="tools.wireguard-config.ui.button2">Copy</button>
+                  <button id="toggle-private-key" class="btn btn-ghost btn-xs" data-i18n="tools.wireguard-config.js.text1">Show</button>
+                  <button id="copy-private-key" class="btn btn-secondary btn-xs" data-i18n="tools.wireguard-config.ui.button1">Copy</button>
                 </div>
               </div>
               <input type="password" id="private-key" readonly 
@@ -182,7 +182,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
             <div>
               <div class="flex items-center justify-between mb-2">
                 <label for="public-key" class="text-xs font-semibold text-surface-600 dark:text-surface-400 uppercase" data-i18n="tools.wireguard-config.ui.label1">Public Key</label>
-                <button id="copy-public-key" class="btn btn-secondary btn-xs" data-i18n="tools.wireguard-config.ui.button2">Copy</button>
+                <button id="copy-public-key" class="btn btn-secondary btn-xs" data-i18n="tools.wireguard-config.ui.button1">Copy</button>
               </div>
               <input type="text" id="public-key" readonly 
                 class="input-mono w-full"
@@ -232,7 +232,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
                     <input type="text" id="iface-address" class="input font-mono text-sm" placeholder="10.0.0.2/24" data-i18n-placeholder="tools.wireguard-config.ui.placeholder3">
                   </div>
                   <div>
-                    <label for="iface-listen-port" class="label" data-i18n="tools.wireguard-config.ui.label5">ListenPort</label>
+                    <label for="iface-listen-port" class="label" data-i18n="tools.wireguard-config.ui.label9">ListenPort</label>
                     <input type="number" id="iface-listen-port" class="input font-mono text-sm" placeholder="51820" min="1" max="65535" data-i18n-placeholder="tools.wireguard-config.ui.placeholder4">
                   </div>
                 </div>
@@ -240,14 +240,14 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
                 <div class="grid grid-cols-2 gap-4">
                   <div>
                     <label for="iface-dns" class="label">
-                      <span data-i18n="tools.wireguard-config.ui.label6">DNS</span>
+                      <span>DNS</span>
                       ${infoHint("Optional. Comma-separated DNS servers.", undefined, { i18nKey: "tools.wireguard-config.ui.r63_2", ariaI18nKey: "tools.wireguard-config.ui.r63_2" })}
                     </label>
                     <input type="text" id="iface-dns" class="input font-mono text-sm" placeholder="1.1.1.1, 8.8.8.8" data-i18n-placeholder="tools.wireguard-config.ui.placeholder5">
                   </div>
                   <div>
                     <label for="iface-mtu" class="label">
-                      <span data-i18n="tools.wireguard-config.ui.label7">MTU</span>
+                      <span>MTU</span>
                       ${infoHint("Default: 1420 for IPv4, 1400 for IPv6", undefined, { i18nKey: "tools.wireguard-config.ui.r63_3", ariaI18nKey: "tools.wireguard-config.ui.r63_3" })}
                     </label>
                     <input type="number" id="iface-mtu" class="input font-mono text-sm" placeholder="1420" min="576" max="9000" data-i18n-placeholder="tools.wireguard-config.ui.placeholder6">
@@ -256,7 +256,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
 
                 <div>
                   <label for="iface-post-up" class="label">
-                    <span data-i18n="tools.wireguard-config.ui.label8">PostUp</span>
+                    <span>PostUp</span>
                     ${infoHint("Command to run after interface is brought up.", undefined, { i18nKey: "tools.wireguard-config.ui.r63_4", ariaI18nKey: "tools.wireguard-config.ui.r63_4" })}
                   </label>
                   <input type="text" id="iface-post-up" class="input font-mono text-sm" placeholder="iptables -A FORWARD -i %i -j ACCEPT..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder7">
@@ -264,7 +264,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
 
                 <div>
                   <label for="iface-post-down" class="label">
-                    <span data-i18n="tools.wireguard-config.ui.label9">PostDown</span>
+                    <span>PostDown</span>
                     ${infoHint("Command to run after interface is brought down.", undefined, { i18nKey: "tools.wireguard-config.ui.r63_5", ariaI18nKey: "tools.wireguard-config.ui.r63_5" })}
                   </label>
                   <input type="text" id="iface-post-down" class="input font-mono text-sm" placeholder="iptables -D FORWARD -i %i -j ACCEPT..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder8">
@@ -283,7 +283,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                 </svg>
-                <span data-i18n="tools.wireguard-config.ui.button3">Add Peer</span>
+                <span>Add Peer</span>
               </span>
             </button>
 
@@ -296,7 +296,7 @@ function renderWireguardConfigPage(lang = DEFAULT_LANGUAGE) {
               <textarea id="config-parser-input" rows="6" class="input font-mono text-sm resize-vertical"
                 placeholder="[Interface]\nPrivateKey = ...\nAddress = ..." data-i18n-placeholder="tools.wireguard-config.ui.placeholder9"
                 aria-label="WireGuard config to parse" data-i18n-aria="tools.wireguard-config.ui.r63_9"></textarea>
-              <button id="parse-config-btn" class="btn btn-primary w-full mt-3" data-i18n="tools.wireguard-config.ui.button4">Parse Configuration</button>
+              <button id="parse-config-btn" class="btn btn-primary w-full mt-3" data-i18n="tools.wireguard-config.ui.button2">Parse Configuration</button>
             </div>
           </div>
 

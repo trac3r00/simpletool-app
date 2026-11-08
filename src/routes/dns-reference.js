@@ -156,11 +156,11 @@ export function renderDnsReferenceSection(lang = DEFAULT_LANGUAGE) {
               <p class="text-xs text-surface-500 dark:text-surface-400 mt-1" data-i18n="tools.dns-reference.ui.r3_0">DKIM/SPF/DMARC use TXT records at specific subdomains.</p>
             </div>
             <div>
-              <label for="cmd-domain" class="label" data-i18n="tools.dns-reference.ui.label1">Domain</label>
+              <label for="cmd-domain" class="label" data-i18n="tools.dns-reference.ui.label2">Domain</label>
               <input type="text" id="cmd-domain" class="input w-full" placeholder="example.com" data-i18n-placeholder="tools.dns-reference.ui.placeholder1">
             </div>
             <div>
-              <label for="cmd-server" class="label" data-i18n="tools.dns-reference.ui.label2">DNS Server (optional)</label>
+              <label for="cmd-server" class="label" data-i18n="tools.dns-reference.ui.label3">DNS Server (optional)</label>
               <input type="text" id="cmd-server" class="input w-full" placeholder="8.8.8.8" data-i18n-placeholder="tools.dns-reference.ui.placeholder2">
             </div>
           </div>
@@ -169,14 +169,14 @@ export function renderDnsReferenceSection(lang = DEFAULT_LANGUAGE) {
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <div>
               <div class="flex items-center justify-between mb-2">
-                <label class="text-sm font-medium text-surface-700 dark:text-surface-300" data-i18n="tools.dns-reference.ui.label3">dig Command</label>
+                <label class="text-sm font-medium text-surface-700 dark:text-surface-300" data-i18n="tools.dns-reference.ui.label4">dig Command</label>
                 <button id="copy-dig" class="btn btn-ghost btn-xs" data-i18n="tools.dns-reference.ui.button0">Copy</button>
               </div>
               <pre class="bg-surface-900 text-surface-50 p-3 rounded-lg text-xs font-mono overflow-x-auto" tabindex="0" aria-label="dig command" data-i18n-aria="tools.dns-reference.ui.r61_1"><code id="dig-output">dig example.com A</code></pre>
             </div>
             <div>
               <div class="flex items-center justify-between mb-2">
-                <label class="text-sm font-medium text-surface-700 dark:text-surface-300" data-i18n="tools.dns-reference.ui.label4">nslookup Command</label>
+                <label class="text-sm font-medium text-surface-700 dark:text-surface-300" data-i18n="tools.dns-reference.ui.label5">nslookup Command</label>
                 <button id="copy-nslookup" class="btn btn-ghost btn-xs" data-i18n="tools.dns-reference.ui.button1">Copy</button>
               </div>
               <pre class="bg-surface-900 text-surface-50 p-3 rounded-lg text-xs font-mono overflow-x-auto" tabindex="0" aria-label="nslookup command" data-i18n-aria="tools.dns-reference.ui.r61_2"><code id="nslookup-output">nslookup -type=A example.com</code></pre>

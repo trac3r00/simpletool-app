@@ -74,7 +74,7 @@ function renderUnitConverterPage(lang = DEFAULT_LANGUAGE) {
               </select>
             </div>
             <div>
-              <label for="from-value" class="sr-only"><span data-i18n="tools.unit-converter.ui.label0">Input value</span></label>
+              <label for="from-value" class="sr-only"><span>Input value</span></label>
               <input data-i18n-aria="tools.unit-converter.ui.r6_1" type="number" id="from-value" aria-label="Value to convert" step="any" placeholder="0" data-tooltip="Enter the value to convert" data-i18n-tooltip="tools.unit-converter.ui.r64_0" class="input-mono text-lg" />
             </div>
           </div>
@@ -95,7 +95,7 @@ function renderUnitConverterPage(lang = DEFAULT_LANGUAGE) {
               </select>
             </div>
             <div>
-              <label for="to-value" class="sr-only"><span data-i18n="tools.unit-converter.ui.label1">Converted value</span></label>
+              <label for="to-value" class="sr-only"><span data-i18n="tools.unit-converter.ui.r6_3">Converted value</span></label>
               <input data-i18n-aria="tools.unit-converter.ui.r6_3" type="number" id="to-value" aria-label="Converted value" step="any" placeholder="0" readonly class="input-mono w-full" />
               <span id="to-value-live" role="status" class="sr-only"></span>
             </div>

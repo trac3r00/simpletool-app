@@ -80,7 +80,7 @@ function renderHtpasswdPage(lang = DEFAULT_LANGUAGE) {
         <div class="tool-group min-w-0 p-6 space-y-5">
           <div class="space-y-2">
             <label for="username-input" class="text-sm font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide"><span data-i18n="tools.htpasswd-generator.ui.label7">Username</span></label>
-            <input id="username-input" type="text" data-tooltip="Username for the htpasswd entry" data-i18n-tooltip="tools.htpasswd-generator.ui.r63_48" class="input w-full" placeholder="deploy" data-i18n-placeholder="tools.htpasswd-generator.ui.placeholder11" autocomplete="off" />
+            <input id="username-input" type="text" data-tooltip="Username for the htpasswd entry" data-i18n-tooltip="tools.htpasswd-generator.ui.r63_48" class="input w-full" placeholder="deploy" autocomplete="off" />
           </div>
 
           <div class="space-y-2">

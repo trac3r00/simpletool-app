@@ -275,12 +275,17 @@ export function getKeyboardShortcutsScript() {
   // Add visual indicator for shortcut availability
   // Keyboard shortcuts mean nothing on a touch screen, where this button only
   // covers page content (it sat on top of /pipe's "Add step" at 390px).
+  // The matchMedia guard misses narrow NON-touch viewports (a desktop or
+  // WebKit window at 390px has hover + a fine pointer), so the class list also
+  // hides it below the sm breakpoint: .hidden is a utility and overrides
+  // .btn-fab's component-layer inline-flex; sm:flex restores it at >= 640px
+  // (a fixed element is blockified, so flex renders the same as inline-flex).
   const touchOnly = window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches;
   const indicator = document.createElement('button');
   indicator.type = 'button';
   var __t = function(k, f) { return window._t ? window._t(k, f) : f; };
   indicator.setAttribute('aria-label', __t('shell.keyboardShortcuts', 'Keyboard shortcuts'));
-  indicator.className = 'btn-fab fixed bottom-4 left-4 z-40';
+  indicator.className = 'btn-fab fixed bottom-4 left-4 z-40 hidden sm:flex';
   indicator.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>';
   indicator.title = __t('shell.keyboardShortcutsHint', 'Press {key}+/ for keyboard shortcuts').replace('{key}', modKeyName);
   indicator.addEventListener('click', showHelpModal);

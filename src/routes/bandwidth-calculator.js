@@ -91,10 +91,10 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
             <span class="text-sm font-medium text-surface-700 dark:text-surface-300 shrink-0" data-i18n="tools.bandwidth-calculator.ui.label0">Unit System:</span>
             <div class="tabs-list max-w-full flex-wrap h-auto">
               <button id="unit-decimal" type="button" aria-pressed="true" class="unit-toggle tab-trigger active" data-unit="decimal">
-                <span data-i18n="tools.bandwidth-calculator.ui.button0">Decimal (MB = 1000 KB)</span>
+                <span>Decimal (MB = 1000 KB)</span>
               </button>
               <button id="unit-binary" type="button" aria-pressed="false" class="unit-toggle tab-trigger" data-unit="binary">
-                <span data-i18n="tools.bandwidth-calculator.ui.button1">Binary (MiB = 1024 KiB)</span>
+                <span>Binary (MiB = 1024 KiB)</span>
               </button>
             </div>
           </div>
@@ -164,14 +164,14 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
               <div>
                 <label class="label" data-i18n="tools.bandwidth-calculator.ui.label7">Quick Presets</label>
                 <div class="flex flex-wrap gap-2">
-                  <button class="preset-btn btn btn-ghost btn-xs" data-preset="size" data-value="1073741824" data-unit="B" data-i18n="tools.bandwidth-calculator.ui.button2">1 GB</button>
-                  <button class="preset-btn btn btn-ghost btn-xs" data-preset="size" data-value="5046586573" data-unit="B" data-i18n="tools.bandwidth-calculator.ui.button3">DVD (4.7GB)</button>
-                  <button class="preset-btn btn btn-ghost btn-xs" data-preset="size" data-value="26843545600" data-unit="B" data-i18n="tools.bandwidth-calculator.ui.button4">Blu-ray (25GB)</button>
-                  <button class="preset-btn btn btn-ghost btn-xs" data-preset="size" data-value="53687091200" data-unit="B" data-i18n="tools.bandwidth-calculator.ui.button5">Game (50GB)</button>
+                  <button class="preset-btn btn btn-ghost btn-xs" data-preset="size" data-value="1073741824" data-unit="B" data-i18n="tools.bandwidth-calculator.ui.button0">1 GB</button>
+                  <button class="preset-btn btn btn-ghost btn-xs" data-preset="size" data-value="5046586573" data-unit="B" data-i18n="tools.bandwidth-calculator.ui.button1">DVD (4.7GB)</button>
+                  <button class="preset-btn btn btn-ghost btn-xs" data-preset="size" data-value="26843545600" data-unit="B" data-i18n="tools.bandwidth-calculator.ui.button2">Blu-ray (25GB)</button>
+                  <button class="preset-btn btn btn-ghost btn-xs" data-preset="size" data-value="53687091200" data-unit="B" data-i18n="tools.bandwidth-calculator.ui.button3">Game (50GB)</button>
                 </div>
                 <div class="flex flex-wrap gap-2 mt-2">
-                  <button class="preset-btn btn btn-ghost btn-xs" data-preset="bw" data-value="10000000" data-unit="bps" data-i18n="tools.bandwidth-calculator.ui.button6">10 Mbps</button>
-                  <button class="preset-btn btn btn-ghost btn-xs" data-preset="bw" data-value="100000000" data-unit="bps" data-i18n="tools.bandwidth-calculator.ui.button7">100 Mbps</button>
+                  <button class="preset-btn btn btn-ghost btn-xs" data-preset="bw" data-value="10000000" data-unit="bps" data-i18n="tools.bandwidth-calculator.ui.button4">10 Mbps</button>
+                  <button class="preset-btn btn btn-ghost btn-xs" data-preset="bw" data-value="100000000" data-unit="bps" data-i18n="tools.bandwidth-calculator.ui.button5">100 Mbps</button>
                   <button class="preset-btn btn btn-ghost btn-xs" data-preset="bw" data-value="1000000000" data-unit="bps" data-i18n="tools.bandwidth-calculator.ui.button8">1 Gbps</button>
                   <button class="preset-btn btn btn-ghost btn-xs" data-preset="bw" data-value="10000000000" data-unit="bps" data-i18n="tools.bandwidth-calculator.ui.button9">10 Gbps</button>
                   <button class="preset-btn btn btn-ghost btn-xs" data-preset="bw" data-value="20000000" data-unit="bps" data-i18n="tools.bandwidth-calculator.ui.r3_0">Typical 4G · 20 Mbps</button>
@@ -223,7 +223,7 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
               </div>
 
               <div>
-                <label class="label" data-i18n="tools.bandwidth-calculator.ui.label9">Target Transfer Time</label>
+                <label class="label" data-i18n="tools.bandwidth-calculator.ui.label11">Target Transfer Time</label>
                 <div class="grid grid-cols-3 gap-2">
                   <div>
                     <input type="number" id="bw-hours" min="0" placeholder="0" class="input w-full" data-i18n-placeholder="tools.bandwidth-calculator.ui.placeholder3">
@@ -270,7 +270,7 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
               <h2 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.bandwidth-calculator.ui.heading4">Calculate Data Capacity</h2>
               
               <div>
-                <label class="label" data-i18n="tools.bandwidth-calculator.ui.label10">Bandwidth</label>
+                <label class="label" data-i18n="tools.bandwidth-calculator.ui.label9">Bandwidth</label>
                 <div class="flex gap-2">
                   <input type="number" id="cap-bandwidth" value="100" min="0" step="any" placeholder="100" class="input flex-1" data-i18n-placeholder="tools.bandwidth-calculator.ui.placeholder6">
                   <select id="cap-bandwidth-unit" class="input w-28" aria-label="Data capacity bandwidth unit" data-i18n-aria="tools.bandwidth-calculator.ui.r61_3">
@@ -283,7 +283,7 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
               </div>
 
               <div>
-                <label class="label" data-i18n="tools.bandwidth-calculator.ui.label11">Time Duration</label>
+                <label class="label" data-i18n="tools.bandwidth-calculator.ui.label12">Time Duration</label>
                 <div class="grid grid-cols-3 gap-2">
                   <div>
                     <input type="number" id="cap-hours" min="0" placeholder="0" class="input w-full" data-i18n-placeholder="tools.bandwidth-calculator.ui.placeholder7">
@@ -330,7 +330,7 @@ function renderBandwidthCalculatorPage(lang = DEFAULT_LANGUAGE) {
               <h2 class="text-lg font-semibold text-surface-900 dark:text-white" data-i18n="tools.bandwidth-calculator.ui.heading6">TCP Bandwidth-Delay Product</h2>
               
               <div>
-                <label class="label" data-i18n="tools.bandwidth-calculator.ui.label12">Bandwidth</label>
+                <label class="label" data-i18n="tools.bandwidth-calculator.ui.label6">Bandwidth</label>
                 <div class="flex gap-2">
                   <input type="number" id="tcp-bandwidth" value="1" min="0" step="any" placeholder="1" class="input flex-1" data-i18n-placeholder="tools.bandwidth-calculator.ui.placeholder10">
                   <select id="tcp-bandwidth-unit" class="input w-28" aria-label="TCP bandwidth unit" data-i18n-aria="tools.bandwidth-calculator.ui.r61_4">
