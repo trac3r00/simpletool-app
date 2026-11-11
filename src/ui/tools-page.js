@@ -205,7 +205,7 @@ export function renderToolsPage({
               section.classList.remove('hidden');
               delete section.dataset.searchHidden;
             }
-            const countEl = section.querySelector('.category-count');
+            const countEl = section.querySelector('.category-count, [id$="-count"]');
             if (countEl) {
               countEl.textContent = String(section.querySelectorAll('[data-tool-id]').length);
             }
@@ -213,7 +213,7 @@ export function renderToolsPage({
           }
           const visibleInSection = section.querySelectorAll('[data-tool-id]:not(.hidden)').length;
           const countEl = section.querySelector('.category-count, [id$="-count"]');
-          if (countEl && section.classList.contains('category-section')) {
+          if (countEl) {
             countEl.textContent = String(visibleInSection);
           }
           if (visibleInSection === 0) {
