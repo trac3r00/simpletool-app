@@ -565,6 +565,12 @@ async function handleRequest(request, env, ctx) {
 
     // Home page
     if (path === "/" || path === "/index.html") {
+      // Search deep links predate the /tools catalog; keep them working.
+      if (url.searchParams.has("q")) {
+        const redirectUrl = new URL(request.url);
+        redirectUrl.pathname = "/tools";
+        return Response.redirect(redirectUrl.href, 301);
+      }
       return renderHomePage({
         isDev,
         lang: resolveRequestLanguage(request, url),

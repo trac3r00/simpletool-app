@@ -21,8 +21,16 @@ function fetchWorker(urlString, init = {}, env = makeEnv()) {
   return worker.fetch(new Request(urlString, init), env, ctx);
 }
 
+describe("landing / catalog split", () => {
+  it("redirects legacy /?q= search links to the /tools catalog", async () => {
+    const res = await fetchWorker("https://simpletool.app/?q=json&lang=ko");
+    expect(res.status).toBe(301);
+    expect(res.headers.get("Location")).toBe("https://simpletool.app/tools?q=json&lang=ko");
+  });
+});
+
 describe("HEAD mirrors GET (audit M1)", () => {
-  const paths = ["/", "/terms", "/json-formatter", "/blog", "/faq", "/health"];
+  const paths = ["/", "/tools", "/terms", "/json-formatter", "/blog", "/faq", "/health"];
 
   for (const path of paths) {
     it(`HEAD ${path} returns the GET status with no body`, async () => {

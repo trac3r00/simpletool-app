@@ -121,6 +121,45 @@ export function renderToolsPage({
   };
 
   const scripts = `
+  <!-- Populate favorites/recent first so a ?q= deep link filters them too. -->
+  <script>
+    (function() {
+      var RECENT_KEY = 'simpletool-recent';
+      var FAV_KEY = 'simpletool-favorites';
+      var allTools = ${JSON.stringify(tools.map((item) => ({ id: item.id, name: item.name, path: withLanguageQuery(item.path, currentLang), symbol: toolSymbol(item.id), description: item.description, badge: item.badge || "", keywords: item.keywords || "" })))};
+      var toolMap = {};
+      allTools.forEach(function(t) { toolMap[t.id] = t; });
+
+      function readLS(key) {
+        try { var v = localStorage.getItem(key); return v ? JSON.parse(v) : []; } catch(e) { return []; }
+      }
+
+      function escAttr(s) {
+        return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      }
+
+      // Mirrors renderToolCard() on the server so restored rows match the grid.
+      function renderCard(tool) {
+        var badge = tool.badge ? '<span class="home-badge">' + tool.badge + '</span>' : '';
+        var dataAttrs = 'data-tool-id="' + escAttr(tool.id) + '" data-tool-name="' + escAttr(tool.name) + '" data-tool-desc="' + escAttr(tool.description) + '" data-tool-tags="' + escAttr(tool.keywords || '') + '"';
+        return '<a href="' + tool.path + '" ' + dataAttrs + ' class="tool-card tool-card-link home-tool-card group">' +
+          '<span class="home-tool-icon"><span class="material-symbols-rounded text-[20px]" aria-hidden="true" data-icon="' + tool.symbol + '"></span></span>' +
+          '<div class="min-w-0"><div class="flex items-center gap-2"><h3 class="tool-name home-tool-name">' + tool.name + '</h3>' + badge + '</div>' +
+          '<p class="tool-desc home-tool-desc">' + tool.description + '</p></div></a>';
+      }
+
+      function populate(sectionId, gridId, countId, ids) {
+        var tools = ids.map(function(id) { return toolMap[id]; }).filter(Boolean);
+        if (tools.length === 0) return;
+        document.getElementById(sectionId).classList.remove('hidden');
+        document.getElementById(countId).textContent = tools.length;
+        document.getElementById(gridId).innerHTML = tools.map(renderCard).join('');
+      }
+
+      populate('favorites-section', 'favorites-grid', 'favorites-count', readLS(FAV_KEY));
+      populate('recent-section', 'recent-grid', 'recent-count', readLS(RECENT_KEY));
+    })();
+  </script>
   <script>
     (function() {
       const heroSearch = document.getElementById('tool-search');
@@ -245,44 +284,6 @@ export function renderToolsPage({
           }
         }
       }, true);
-    })();
-  </script>
-  <script>
-    (function() {
-      var RECENT_KEY = 'simpletool-recent';
-      var FAV_KEY = 'simpletool-favorites';
-      var allTools = ${JSON.stringify(tools.map((item) => ({ id: item.id, name: item.name, path: withLanguageQuery(item.path, currentLang), symbol: toolSymbol(item.id), description: item.description, badge: item.badge || "", keywords: item.keywords || "" })))};
-      var toolMap = {};
-      allTools.forEach(function(t) { toolMap[t.id] = t; });
-
-      function readLS(key) {
-        try { var v = localStorage.getItem(key); return v ? JSON.parse(v) : []; } catch(e) { return []; }
-      }
-
-      function escAttr(s) {
-        return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-      }
-
-      // Mirrors renderToolCard() on the server so restored rows match the grid.
-      function renderCard(tool) {
-        var badge = tool.badge ? '<span class="home-badge">' + tool.badge + '</span>' : '';
-        var dataAttrs = 'data-tool-id="' + escAttr(tool.id) + '" data-tool-name="' + escAttr(tool.name) + '" data-tool-desc="' + escAttr(tool.description) + '" data-tool-tags="' + escAttr(tool.keywords || '') + '"';
-        return '<a href="' + tool.path + '" ' + dataAttrs + ' class="tool-card tool-card-link home-tool-card group">' +
-          '<span class="home-tool-icon"><span class="material-symbols-rounded text-[20px]" aria-hidden="true" data-icon="' + tool.symbol + '"></span></span>' +
-          '<div class="min-w-0"><div class="flex items-center gap-2"><h3 class="tool-name home-tool-name">' + tool.name + '</h3>' + badge + '</div>' +
-          '<p class="tool-desc home-tool-desc">' + tool.description + '</p></div></a>';
-      }
-
-      function populate(sectionId, gridId, countId, ids) {
-        var tools = ids.map(function(id) { return toolMap[id]; }).filter(Boolean);
-        if (tools.length === 0) return;
-        document.getElementById(sectionId).classList.remove('hidden');
-        document.getElementById(countId).textContent = tools.length;
-        document.getElementById(gridId).innerHTML = tools.map(renderCard).join('');
-      }
-
-      populate('favorites-section', 'favorites-grid', 'favorites-count', readLS(FAV_KEY));
-      populate('recent-section', 'recent-grid', 'recent-count', readLS(RECENT_KEY));
     })();
   </script>`;
 

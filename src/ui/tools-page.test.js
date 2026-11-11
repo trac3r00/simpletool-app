@@ -35,7 +35,7 @@ describe("renderToolsPage", () => {
     expect(html).not.toContain('rel="prefetch" as="font"');
     expect(html).not.toContain("🔄 Formatters");
     // The section heading draws its own icon; a locale emoji doubled it.
-    for (const lang of ["ko", "ja", "es", "zh-CN", "zh-TW", "fr", "de", "pt", "vi"]) {
+    for (const lang of ["en", "ko", "ja", "es", "zh-CN", "zh-TW", "fr", "de", "pt", "vi"]) {
       for (const cat of ["formatters", "security", "network", "generators", "game", "utils"]) {
         expect(t(`home.cat.${cat}`, lang)).toMatch(/^[\p{L}\p{N}]/u);
       }

@@ -266,7 +266,7 @@ export function getNavigationHTML(options = {}) {
             <ul class="site-nav hidden lg:flex">
               ${SITE_NAV_LINKS.map(
                 ([href, key]) =>
-                  `<li><a href="${withLanguageQuery(href, currentLang)}" data-i18n="${key}"${currentPath === href ? ' aria-current="page"' : ""}>${t(key, currentLang)}</a></li>`,
+                  `<li><a href="${withLanguageQuery(href, currentLang)}" data-i18n="${key}"${currentPath === href || (href !== "/" && currentPath.startsWith(`${href}/`)) ? ' aria-current="page"' : ""}>${t(key, currentLang)}</a></li>`,
               ).join("")}
             </ul>
           </div>

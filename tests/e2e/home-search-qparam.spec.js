@@ -119,4 +119,20 @@ test.describe("Catalog search query parameter", () => {
       .count();
     expect(visibleCount).toBe(0);
   });
+
+  test("landing search submits to /tools and keeps the query", async ({ page }) => {
+    await page.goto("/");
+    await page.locator("#tool-search").fill("json");
+    await page.locator('form[role="search"] button[type="submit"]').click();
+    await expect(page).toHaveURL(/\/tools\?q=json$/);
+    await expect(page.locator("#tool-search")).toHaveValue("json");
+    await expect(page.locator('[data-tool-id="json-formatter"]').first()).toBeVisible();
+    expect(await page.locator("[data-tool-id].hidden").count()).toBeGreaterThan(0);
+  });
+
+  test("legacy /?q= links land on the filtered catalog", async ({ page }) => {
+    await page.goto("/?q=json");
+    await expect(page).toHaveURL(/\/tools\?q=json$/);
+    await expect(page.locator("#tool-search")).toHaveValue("json");
+  });
 });

@@ -28,6 +28,7 @@ describe("renderHomePage (landing)", () => {
     expect(html).not.toContain('id="tools-categories-container"');
     expect(html).not.toContain('id="home-editorial"');
     expect(html).not.toContain('id="nav-search-btn"');
+    expect(html).toContain('<button type="submit" class="btn-primary h-12 px-5 text-base">');
 
     const jsonCard = html.slice(
       html.indexOf('data-tool-id="json-formatter"'),
@@ -52,6 +53,9 @@ describe("renderHomePage (landing)", () => {
     expect(html).toContain(`<title>${t("home.meta.title", "ko")}</title>`);
     expect(html).toContain(
       '<link rel="canonical" href="https://simpletool.app/?lang=ko">',
+    );
+    expect(html).toContain(
+      '<link rel="alternate" hreflang="en" href="https://simpletool.app/">',
     );
     expect(html).toContain('<input type="hidden" name="lang" value="ko">');
     expect(html).toContain(`>${t("home.ctaBrowse", "ko")}<`);

@@ -1568,7 +1568,7 @@ export default {
       "title": "All tools",
       "subtitle": "Search the catalog or browse it by category. Your favorites and recently used tools appear first.",
       "meta": {
-        "title": "All tools — SimpleTool",
+        "title": "All tools",
         "description": "Every SimpleTool developer tool in one place: JSON, JWT, regex, cron, passwords, SSH keys, curl, CIDR and more, grouped by category."
       }
     }
@@ -3141,7 +3141,7 @@ export default {
       "title": "모든 도구",
       "subtitle": "카탈로그를 검색하거나 카테고리별로 둘러보세요. 즐겨찾기와 최근 사용한 도구가 먼저 표시됩니다.",
       "meta": {
-        "title": "모든 도구 — SimpleTool",
+        "title": "모든 도구",
         "description": "SimpleTool의 모든 개발자 도구를 한곳에서: JSON, JWT, 정규식, cron, 비밀번호, SSH 키, curl, CIDR 등을 카테고리별로 모았습니다."
       }
     }
@@ -4714,7 +4714,7 @@ export default {
       "title": "すべてのツール",
       "subtitle": "カタログを検索するか、カテゴリ別に探してください。お気に入りと最近使ったツールが先に表示されます。",
       "meta": {
-        "title": "すべてのツール — SimpleTool",
+        "title": "すべてのツール",
         "description": "SimpleTool の開発者ツールをひとまとめに。JSON、JWT、正規表現、cron、パスワード、SSH 鍵、curl、CIDR などをカテゴリ別に掲載。"
       }
     }
@@ -6287,7 +6287,7 @@ export default {
       "title": "Todas las herramientas",
       "subtitle": "Busca en el catálogo o explóralo por categoría. Tus favoritos y las herramientas usadas recientemente aparecen primero.",
       "meta": {
-        "title": "Todas las herramientas — SimpleTool",
+        "title": "Todas las herramientas",
         "description": "Todas las herramientas de SimpleTool en un solo lugar: JSON, JWT, regex, cron, contraseñas, claves SSH, curl, CIDR y más, agrupadas por categoría."
       }
     }
@@ -7860,7 +7860,7 @@ export default {
       "title": "全部工具",
       "subtitle": "搜索目录或按类别浏览。收藏和最近使用的工具会显示在最前面。",
       "meta": {
-        "title": "全部工具 — SimpleTool",
+        "title": "全部工具",
         "description": "SimpleTool 全部开发者工具集中在此：JSON、JWT、正则、cron、密码、SSH 密钥、curl、CIDR 等，按类别分组。"
       }
     }
@@ -9433,7 +9433,7 @@ export default {
       "title": "所有工具",
       "subtitle": "搜尋目錄或依類別瀏覽。收藏與最近使用的工具會顯示在最前面。",
       "meta": {
-        "title": "所有工具 — SimpleTool",
+        "title": "所有工具",
         "description": "SimpleTool 所有開發者工具集中於此：JSON、JWT、正規表示式、cron、密碼、SSH 金鑰、curl、CIDR 等，依類別分組。"
       }
     }
@@ -11006,7 +11006,7 @@ export default {
       "title": "Tous les outils",
       "subtitle": "Cherchez dans le catalogue ou parcourez-le par catégorie. Vos favoris et vos outils récents apparaissent en premier.",
       "meta": {
-        "title": "Tous les outils — SimpleTool",
+        "title": "Tous les outils",
         "description": "Tous les outils développeur de SimpleTool au même endroit : JSON, JWT, regex, cron, mots de passe, clés SSH, curl, CIDR et plus, classés par catégorie."
       }
     }
@@ -12579,7 +12579,7 @@ export default {
       "title": "Alle Tools",
       "subtitle": "Durchsuchen Sie den Katalog oder stöbern Sie nach Kategorie. Favoriten und zuletzt genutzte Tools stehen oben.",
       "meta": {
-        "title": "Alle Tools — SimpleTool",
+        "title": "Alle Tools",
         "description": "Alle SimpleTool-Entwicklertools an einem Ort: JSON, JWT, Regex, Cron, Passwörter, SSH-Schlüssel, curl, CIDR und mehr, nach Kategorie sortiert."
       }
     }
@@ -14152,7 +14152,7 @@ export default {
       "title": "Todas as ferramentas",
       "subtitle": "Pesquise no catálogo ou navegue por categoria. Seus favoritos e as ferramentas usadas recentemente aparecem primeiro.",
       "meta": {
-        "title": "Todas as ferramentas — SimpleTool",
+        "title": "Todas as ferramentas",
         "description": "Todas as ferramentas do SimpleTool em um só lugar: JSON, JWT, regex, cron, senhas, chaves SSH, curl, CIDR e mais, agrupadas por categoria."
       }
     }
@@ -15725,7 +15725,7 @@ export default {
       "title": "Tất cả công cụ",
       "subtitle": "Tìm trong danh mục hoặc duyệt theo nhóm. Mục yêu thích và công cụ dùng gần đây hiện ở đầu.",
       "meta": {
-        "title": "Tất cả công cụ — SimpleTool",
+        "title": "Tất cả công cụ",
         "description": "Mọi công cụ lập trình của SimpleTool ở một nơi: JSON, JWT, regex, cron, mật khẩu, khóa SSH, curl, CIDR và hơn thế, xếp theo nhóm."
       }
     }

@@ -276,16 +276,16 @@
   "vi": "Tìm trong danh mục hoặc duyệt theo nhóm. Mục yêu thích và công cụ dùng gần đây hiện ở đầu."
  },
  "catalog.meta.title": {
-  "en": "All tools — SimpleTool",
-  "ko": "모든 도구 — SimpleTool",
-  "ja": "すべてのツール — SimpleTool",
-  "es": "Todas las herramientas — SimpleTool",
-  "zh-CN": "全部工具 — SimpleTool",
-  "zh-TW": "所有工具 — SimpleTool",
-  "fr": "Tous les outils — SimpleTool",
-  "de": "Alle Tools — SimpleTool",
-  "pt": "Todas as ferramentas — SimpleTool",
-  "vi": "Tất cả công cụ — SimpleTool"
+  "en": "All tools",
+  "ko": "모든 도구",
+  "ja": "すべてのツール",
+  "es": "Todas las herramientas",
+  "zh-CN": "全部工具",
+  "zh-TW": "所有工具",
+  "fr": "Tous les outils",
+  "de": "Alle Tools",
+  "pt": "Todas as ferramentas",
+  "vi": "Tất cả công cụ"
  },
  "catalog.meta.description": {
   "en": "Every SimpleTool developer tool in one place: JSON, JWT, regex, cron, passwords, SSH keys, curl, CIDR and more, grouped by category.",

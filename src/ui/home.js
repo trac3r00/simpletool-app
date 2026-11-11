@@ -77,10 +77,10 @@ export function renderHomePage({
           </div>
           ${langField}
         </div>
-        <a href="${toolsHref}" class="btn-primary h-12 px-5 text-base">
+        <button type="submit" class="btn-primary h-12 px-5 text-base">
           <span data-i18n="home.ctaBrowse">${t("home.ctaBrowse", currentLang)}</span>
           <span class="material-symbols-rounded text-[18px]" aria-hidden="true" data-icon="arrow_forward"></span>
-        </a>
+        </button>
       </form>
 
       <ul class="mt-5 flex flex-wrap gap-y-1 text-sm text-muted-foreground">
