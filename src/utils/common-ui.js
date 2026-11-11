@@ -932,7 +932,7 @@ function getToolBreadcrumbHTML(pagePath, lang) {
   const category = CATEGORIES[tool.category]
     ? `<li><a href="${homeHref}#category-${tool.category}" data-i18n="home.cat.${tool.category}">${t(`home.cat.${tool.category}`, lang).replace(/^[\p{Extended_Pictographic}\p{Emoji_Presentation}\uFE0F\u200D]+\s*/u, "")}</a></li>`
     : "";
-  return `<nav class="tool-breadcrumb" aria-label="Breadcrumb">
+  return `<nav class="tool-breadcrumb" aria-label="${t("shell.breadcrumb", lang)}" data-i18n-aria="shell.breadcrumb">
       <ol>
         <li><a href="${homeHref}" data-i18n="nav.home">${t("nav.home", lang)}</a></li>
         ${category}
