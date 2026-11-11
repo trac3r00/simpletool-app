@@ -1540,15 +1540,37 @@ export default {
       "keyboardShortcutsHint": "Press {key}+/ for keyboard shortcuts",
       "trustTipWebApis": "Runs entirely in your browser using Web APIs — your data is processed locally and not sent to our servers.",
       "trustTipLocal": "All processing happens in your browser — your data is not sent to our servers.",
-      "breadcrumb": "Breadcrumb"
+      "breadcrumb": "Breadcrumb",
+      "navHome": "Home",
+      "navTools": "Tools"
     },
     "home": {
       "trustClient": "Runs in the tab",
       "trustAccount": "No account",
       "trustCount": "47 tools",
       "trustLangs": "10 languages",
-      "flagshipsNav": "Flagship tools",
-      "noResultsHint": "Try a different search term."
+      "noResultsHint": "Try a different search term.",
+      "ctaBrowse": "Browse all tools",
+      "popularTitle": "Popular tools",
+      "viewAll": "View all",
+      "whyTitle": "Why SimpleTool",
+      "why1Title": "Runs in this tab",
+      "why1Body": "Tool input is processed by your browser. The Worker serves the pages; it does not receive what you paste into a tool.",
+      "why2Title": "No account",
+      "why2Body": "Every tool is free to open and use. There is nothing to sign up for.",
+      "why3Title": "One consistent layout",
+      "why3Body": "Every tool shares the same page shell, in ten languages and in light and dark themes.",
+      "categoriesTitle": "Browse by category",
+      "finalTitle": "Find the tool you need",
+      "finalBody": "Open the catalog, search by name or task, and get back to work."
+    },
+    "catalog": {
+      "title": "All tools",
+      "subtitle": "Search the catalog or browse it by category. Your favorites and recently used tools appear first.",
+      "meta": {
+        "title": "All tools — SimpleTool",
+        "description": "Every SimpleTool developer tool in one place: JSON, JWT, regex, cron, passwords, SSH keys, curl, CIDR and more, grouped by category."
+      }
     }
   },
   "ko": {
@@ -3091,15 +3113,37 @@ export default {
       "keyboardShortcutsHint": "{key}+/를 누르면 키보드 단축키를 볼 수 있습니다",
       "trustTipWebApis": "Web API로 브라우저 안에서만 실행됩니다. 데이터는 기기에서 처리되며 서버로 보내지 않습니다.",
       "trustTipLocal": "모든 처리는 브라우저에서 이루어지며, 데이터는 서버로 보내지 않습니다.",
-      "breadcrumb": "이동 경로"
+      "breadcrumb": "이동 경로",
+      "navHome": "홈",
+      "navTools": "도구"
     },
     "home": {
       "trustClient": "탭 안에서 실행",
       "trustAccount": "계정 불필요",
       "trustCount": "도구 47개",
       "trustLangs": "10개 언어",
-      "flagshipsNav": "대표 도구",
-      "noResultsHint": "다른 검색어로 시도해 보세요."
+      "noResultsHint": "다른 검색어로 시도해 보세요.",
+      "ctaBrowse": "모든 도구 보기",
+      "popularTitle": "인기 도구",
+      "viewAll": "전체 보기",
+      "whyTitle": "왜 SimpleTool인가",
+      "why1Title": "이 탭에서 실행",
+      "why1Body": "도구 입력은 브라우저에서 처리됩니다. Worker는 페이지만 제공하며, 도구에 붙여 넣은 내용은 받지 않습니다.",
+      "why2Title": "계정 불필요",
+      "why2Body": "모든 도구는 무료로 바로 열어 쓸 수 있습니다. 가입할 것이 없습니다.",
+      "why3Title": "하나의 일관된 화면",
+      "why3Body": "모든 도구가 같은 화면 구성을 쓰며, 10개 언어와 라이트·다크 테마를 지원합니다.",
+      "categoriesTitle": "카테고리별로 보기",
+      "finalTitle": "필요한 도구를 찾아보세요",
+      "finalBody": "카탈로그를 열고 이름이나 작업으로 검색한 뒤 바로 작업으로 돌아가세요."
+    },
+    "catalog": {
+      "title": "모든 도구",
+      "subtitle": "카탈로그를 검색하거나 카테고리별로 둘러보세요. 즐겨찾기와 최근 사용한 도구가 먼저 표시됩니다.",
+      "meta": {
+        "title": "모든 도구 — SimpleTool",
+        "description": "SimpleTool의 모든 개발자 도구를 한곳에서: JSON, JWT, 정규식, cron, 비밀번호, SSH 키, curl, CIDR 등을 카테고리별로 모았습니다."
+      }
     }
   },
   "ja": {
@@ -4642,15 +4686,37 @@ export default {
       "keyboardShortcutsHint": "{key}+/ でキーボードショートカットを表示",
       "trustTipWebApis": "Web APIを使ってブラウザ内だけで動作します。データはローカルで処理され、サーバーには送信されません。",
       "trustTipLocal": "すべての処理はブラウザ内で行われ、データはサーバーに送信されません。",
-      "breadcrumb": "パンくずリスト"
+      "breadcrumb": "パンくずリスト",
+      "navHome": "ホーム",
+      "navTools": "ツール"
     },
     "home": {
       "trustClient": "タブ内で動作",
       "trustAccount": "アカウント不要",
       "trustCount": "47のツール",
       "trustLangs": "10言語",
-      "flagshipsNav": "主力ツール",
-      "noResultsHint": "別のキーワードで検索してみてください。"
+      "noResultsHint": "別のキーワードで検索してみてください。",
+      "ctaBrowse": "すべてのツールを見る",
+      "popularTitle": "人気のツール",
+      "viewAll": "すべて表示",
+      "whyTitle": "SimpleTool を選ぶ理由",
+      "why1Title": "このタブで動作",
+      "why1Body": "ツールへの入力はブラウザで処理されます。Worker はページを配信するだけで、ツールに貼り付けた内容は受け取りません。",
+      "why2Title": "アカウント不要",
+      "why2Body": "すべてのツールは無料ですぐに使えます。登録は不要です。",
+      "why3Title": "統一されたレイアウト",
+      "why3Body": "すべてのツールが同じページ構成を共有し、10 言語とライト・ダークテーマに対応します。",
+      "categoriesTitle": "カテゴリから探す",
+      "finalTitle": "必要なツールを見つけましょう",
+      "finalBody": "カタログを開き、名前や作業内容で検索して、すぐ作業に戻りましょう。"
+    },
+    "catalog": {
+      "title": "すべてのツール",
+      "subtitle": "カタログを検索するか、カテゴリ別に探してください。お気に入りと最近使ったツールが先に表示されます。",
+      "meta": {
+        "title": "すべてのツール — SimpleTool",
+        "description": "SimpleTool の開発者ツールをひとまとめに。JSON、JWT、正規表現、cron、パスワード、SSH 鍵、curl、CIDR などをカテゴリ別に掲載。"
+      }
     }
   },
   "es": {
@@ -6193,15 +6259,37 @@ export default {
       "keyboardShortcutsHint": "Pulsa {key}+/ para ver los atajos de teclado",
       "trustTipWebApis": "Se ejecuta por completo en tu navegador con Web APIs: tus datos se procesan localmente y no se envían a nuestros servidores.",
       "trustTipLocal": "Todo el procesamiento ocurre en tu navegador: tus datos no se envían a nuestros servidores.",
-      "breadcrumb": "Ruta de navegación"
+      "breadcrumb": "Ruta de navegación",
+      "navHome": "Inicio",
+      "navTools": "Herramientas"
     },
     "home": {
       "trustClient": "Se ejecuta en la pestaña",
       "trustAccount": "Sin cuenta",
       "trustCount": "47 herramientas",
       "trustLangs": "10 idiomas",
-      "flagshipsNav": "Herramientas destacadas",
-      "noResultsHint": "Prueba con otro término de búsqueda."
+      "noResultsHint": "Prueba con otro término de búsqueda.",
+      "ctaBrowse": "Ver todas las herramientas",
+      "popularTitle": "Herramientas populares",
+      "viewAll": "Ver todas",
+      "whyTitle": "Por qué SimpleTool",
+      "why1Title": "Funciona en esta pestaña",
+      "why1Body": "Tu navegador procesa lo que introduces. El Worker sirve las páginas y no recibe lo que pegas en una herramienta.",
+      "why2Title": "Sin cuenta",
+      "why2Body": "Todas las herramientas son gratis y se abren al instante. No hay que registrarse.",
+      "why3Title": "Un diseño coherente",
+      "why3Body": "Todas las herramientas comparten la misma estructura, en diez idiomas y con tema claro y oscuro.",
+      "categoriesTitle": "Explorar por categoría",
+      "finalTitle": "Encuentra la herramienta que necesitas",
+      "finalBody": "Abre el catálogo, busca por nombre o tarea y vuelve al trabajo."
+    },
+    "catalog": {
+      "title": "Todas las herramientas",
+      "subtitle": "Busca en el catálogo o explóralo por categoría. Tus favoritos y las herramientas usadas recientemente aparecen primero.",
+      "meta": {
+        "title": "Todas las herramientas — SimpleTool",
+        "description": "Todas las herramientas de SimpleTool en un solo lugar: JSON, JWT, regex, cron, contraseñas, claves SSH, curl, CIDR y más, agrupadas por categoría."
+      }
     }
   },
   "zh-CN": {
@@ -7744,15 +7832,37 @@ export default {
       "keyboardShortcutsHint": "按 {key}+/ 查看键盘快捷键",
       "trustTipWebApis": "完全使用 Web API 在你的浏览器中运行——数据在本地处理,不会发送到我们的服务器。",
       "trustTipLocal": "所有处理都在你的浏览器中完成——数据不会发送到我们的服务器。",
-      "breadcrumb": "面包屑导航"
+      "breadcrumb": "面包屑导航",
+      "navHome": "首页",
+      "navTools": "工具"
     },
     "home": {
       "trustClient": "在标签页中运行",
       "trustAccount": "无需账号",
       "trustCount": "47 款工具",
       "trustLangs": "10 种语言",
-      "flagshipsNav": "主力工具",
-      "noResultsHint": "试试其他搜索词。"
+      "noResultsHint": "试试其他搜索词。",
+      "ctaBrowse": "浏览全部工具",
+      "popularTitle": "热门工具",
+      "viewAll": "查看全部",
+      "whyTitle": "为什么选择 SimpleTool",
+      "why1Title": "在本标签页运行",
+      "why1Body": "工具输入由你的浏览器处理。Worker 只提供页面，不会接收你粘贴到工具中的内容。",
+      "why2Title": "无需账户",
+      "why2Body": "所有工具免费，打开即用，无需注册。",
+      "why3Title": "统一的界面",
+      "why3Body": "所有工具共用同一页面结构，支持十种语言以及浅色和深色主题。",
+      "categoriesTitle": "按类别浏览",
+      "finalTitle": "找到你需要的工具",
+      "finalBody": "打开目录，按名称或任务搜索，然后继续工作。"
+    },
+    "catalog": {
+      "title": "全部工具",
+      "subtitle": "搜索目录或按类别浏览。收藏和最近使用的工具会显示在最前面。",
+      "meta": {
+        "title": "全部工具 — SimpleTool",
+        "description": "SimpleTool 全部开发者工具集中在此：JSON、JWT、正则、cron、密码、SSH 密钥、curl、CIDR 等，按类别分组。"
+      }
     }
   },
   "zh-TW": {
@@ -9295,15 +9405,37 @@ export default {
       "keyboardShortcutsHint": "按 {key}+/ 查看鍵盤快速鍵",
       "trustTipWebApis": "完全使用 Web API 在你的瀏覽器中執行——資料在本機處理,不會傳送到我們的伺服器。",
       "trustTipLocal": "所有處理都在你的瀏覽器中完成——資料不會傳送到我們的伺服器。",
-      "breadcrumb": "麵包屑導覽"
+      "breadcrumb": "麵包屑導覽",
+      "navHome": "首頁",
+      "navTools": "工具"
     },
     "home": {
       "trustClient": "在分頁中執行",
       "trustAccount": "無需帳號",
       "trustCount": "47 款工具",
       "trustLangs": "10 種語言",
-      "flagshipsNav": "主力工具",
-      "noResultsHint": "試試其他搜尋詞。"
+      "noResultsHint": "試試其他搜尋詞。",
+      "ctaBrowse": "瀏覽所有工具",
+      "popularTitle": "熱門工具",
+      "viewAll": "查看全部",
+      "whyTitle": "為什麼選擇 SimpleTool",
+      "why1Title": "在此分頁執行",
+      "why1Body": "工具輸入由你的瀏覽器處理。Worker 只提供頁面，不會接收你貼到工具中的內容。",
+      "why2Title": "無需帳號",
+      "why2Body": "所有工具免費，打開即用，無需註冊。",
+      "why3Title": "一致的介面",
+      "why3Body": "所有工具共用同一頁面結構，支援十種語言以及淺色與深色主題。",
+      "categoriesTitle": "依類別瀏覽",
+      "finalTitle": "找到你需要的工具",
+      "finalBody": "打開目錄，依名稱或任務搜尋，然後繼續工作。"
+    },
+    "catalog": {
+      "title": "所有工具",
+      "subtitle": "搜尋目錄或依類別瀏覽。收藏與最近使用的工具會顯示在最前面。",
+      "meta": {
+        "title": "所有工具 — SimpleTool",
+        "description": "SimpleTool 所有開發者工具集中於此：JSON、JWT、正規表示式、cron、密碼、SSH 金鑰、curl、CIDR 等，依類別分組。"
+      }
     }
   },
   "fr": {
@@ -10846,15 +10978,37 @@ export default {
       "keyboardShortcutsHint": "Appuyez sur {key}+/ pour voir les raccourcis clavier",
       "trustTipWebApis": "Fonctionne entièrement dans votre navigateur grâce aux API Web : vos données sont traitées localement et ne sont pas envoyées à nos serveurs.",
       "trustTipLocal": "Tout le traitement a lieu dans votre navigateur : vos données ne sont pas envoyées à nos serveurs.",
-      "breadcrumb": "Fil d’Ariane"
+      "breadcrumb": "Fil d’Ariane",
+      "navHome": "Accueil",
+      "navTools": "Outils"
     },
     "home": {
       "trustClient": "Fonctionne dans l'onglet",
       "trustAccount": "Sans compte",
       "trustCount": "47 outils",
       "trustLangs": "10 langues",
-      "flagshipsNav": "Outils phares",
-      "noResultsHint": "Essayez un autre terme de recherche."
+      "noResultsHint": "Essayez un autre terme de recherche.",
+      "ctaBrowse": "Voir tous les outils",
+      "popularTitle": "Outils populaires",
+      "viewAll": "Tout voir",
+      "whyTitle": "Pourquoi SimpleTool",
+      "why1Title": "Fonctionne dans cet onglet",
+      "why1Body": "Votre navigateur traite ce que vous saisissez. Le Worker sert les pages et ne reçoit pas ce que vous collez dans un outil.",
+      "why2Title": "Sans compte",
+      "why2Body": "Tous les outils sont gratuits et s'ouvrent tout de suite. Aucune inscription.",
+      "why3Title": "Une mise en page cohérente",
+      "why3Body": "Tous les outils partagent la même structure, en dix langues et en thème clair ou sombre.",
+      "categoriesTitle": "Parcourir par catégorie",
+      "finalTitle": "Trouvez l'outil qu'il vous faut",
+      "finalBody": "Ouvrez le catalogue, cherchez par nom ou par tâche, et reprenez votre travail."
+    },
+    "catalog": {
+      "title": "Tous les outils",
+      "subtitle": "Cherchez dans le catalogue ou parcourez-le par catégorie. Vos favoris et vos outils récents apparaissent en premier.",
+      "meta": {
+        "title": "Tous les outils — SimpleTool",
+        "description": "Tous les outils développeur de SimpleTool au même endroit : JSON, JWT, regex, cron, mots de passe, clés SSH, curl, CIDR et plus, classés par catégorie."
+      }
     }
   },
   "de": {
@@ -12397,15 +12551,37 @@ export default {
       "keyboardShortcutsHint": "Drücken Sie {key}+/ für Tastenkürzel",
       "trustTipWebApis": "Läuft vollständig in Ihrem Browser mit Web-APIs – Ihre Daten werden lokal verarbeitet und nicht an unsere Server gesendet.",
       "trustTipLocal": "Die gesamte Verarbeitung findet in Ihrem Browser statt – Ihre Daten werden nicht an unsere Server gesendet.",
-      "breadcrumb": "Brotkrumennavigation"
+      "breadcrumb": "Brotkrumennavigation",
+      "navHome": "Start",
+      "navTools": "Tools"
     },
     "home": {
       "trustClient": "Läuft im Tab",
       "trustAccount": "Kein Konto",
       "trustCount": "47 Tools",
       "trustLangs": "10 Sprachen",
-      "flagshipsNav": "Kernwerkzeuge",
-      "noResultsHint": "Versuchen Sie einen anderen Suchbegriff."
+      "noResultsHint": "Versuchen Sie einen anderen Suchbegriff.",
+      "ctaBrowse": "Alle Tools ansehen",
+      "popularTitle": "Beliebte Tools",
+      "viewAll": "Alle ansehen",
+      "whyTitle": "Warum SimpleTool",
+      "why1Title": "Läuft in diesem Tab",
+      "why1Body": "Eingaben verarbeitet Ihr Browser. Der Worker liefert nur die Seiten aus und erhält nicht, was Sie in ein Tool einfügen.",
+      "why2Title": "Kein Konto",
+      "why2Body": "Alle Tools sind kostenlos und sofort nutzbar. Keine Registrierung.",
+      "why3Title": "Ein einheitliches Layout",
+      "why3Body": "Alle Tools teilen denselben Seitenaufbau, in zehn Sprachen und mit hellem und dunklem Design.",
+      "categoriesTitle": "Nach Kategorie stöbern",
+      "finalTitle": "Finden Sie das passende Tool",
+      "finalBody": "Öffnen Sie den Katalog, suchen Sie nach Name oder Aufgabe und arbeiten Sie weiter."
+    },
+    "catalog": {
+      "title": "Alle Tools",
+      "subtitle": "Durchsuchen Sie den Katalog oder stöbern Sie nach Kategorie. Favoriten und zuletzt genutzte Tools stehen oben.",
+      "meta": {
+        "title": "Alle Tools — SimpleTool",
+        "description": "Alle SimpleTool-Entwicklertools an einem Ort: JSON, JWT, Regex, Cron, Passwörter, SSH-Schlüssel, curl, CIDR und mehr, nach Kategorie sortiert."
+      }
     }
   },
   "pt": {
@@ -13948,15 +14124,37 @@ export default {
       "keyboardShortcutsHint": "Pressione {key}+/ para ver os atalhos de teclado",
       "trustTipWebApis": "Roda inteiramente no seu navegador usando Web APIs — seus dados são processados localmente e não são enviados aos nossos servidores.",
       "trustTipLocal": "Todo o processamento acontece no seu navegador — seus dados não são enviados aos nossos servidores.",
-      "breadcrumb": "Trilha de navegação"
+      "breadcrumb": "Trilha de navegação",
+      "navHome": "Início",
+      "navTools": "Ferramentas"
     },
     "home": {
       "trustClient": "Roda na aba",
       "trustAccount": "Sem conta",
       "trustCount": "47 ferramentas",
       "trustLangs": "10 idiomas",
-      "flagshipsNav": "Ferramentas principais",
-      "noResultsHint": "Tente outro termo de busca."
+      "noResultsHint": "Tente outro termo de busca.",
+      "ctaBrowse": "Ver todas as ferramentas",
+      "popularTitle": "Ferramentas populares",
+      "viewAll": "Ver todas",
+      "whyTitle": "Por que o SimpleTool",
+      "why1Title": "Roda nesta aba",
+      "why1Body": "As entradas são processadas pelo seu navegador. O Worker entrega as páginas e não recebe o que você cola numa ferramenta.",
+      "why2Title": "Sem conta",
+      "why2Body": "Todas as ferramentas são gratuitas e abrem na hora. Não há cadastro.",
+      "why3Title": "Um layout consistente",
+      "why3Body": "Todas as ferramentas compartilham a mesma estrutura, em dez idiomas e nos temas claro e escuro.",
+      "categoriesTitle": "Navegar por categoria",
+      "finalTitle": "Encontre a ferramenta de que precisa",
+      "finalBody": "Abra o catálogo, pesquise por nome ou tarefa e volte ao trabalho."
+    },
+    "catalog": {
+      "title": "Todas as ferramentas",
+      "subtitle": "Pesquise no catálogo ou navegue por categoria. Seus favoritos e as ferramentas usadas recentemente aparecem primeiro.",
+      "meta": {
+        "title": "Todas as ferramentas — SimpleTool",
+        "description": "Todas as ferramentas do SimpleTool em um só lugar: JSON, JWT, regex, cron, senhas, chaves SSH, curl, CIDR e mais, agrupadas por categoria."
+      }
     }
   },
   "vi": {
@@ -15499,15 +15697,37 @@ export default {
       "keyboardShortcutsHint": "Nhấn {key}+/ để xem phím tắt",
       "trustTipWebApis": "Chạy hoàn toàn trong trình duyệt bằng Web API — dữ liệu được xử lý cục bộ và không gửi tới máy chủ của chúng tôi.",
       "trustTipLocal": "Mọi xử lý diễn ra trong trình duyệt — dữ liệu không được gửi tới máy chủ của chúng tôi.",
-      "breadcrumb": "Đường dẫn điều hướng"
+      "breadcrumb": "Đường dẫn điều hướng",
+      "navHome": "Trang chủ",
+      "navTools": "Công cụ"
     },
     "home": {
       "trustClient": "Chạy ngay trong tab",
       "trustAccount": "Không cần tài khoản",
       "trustCount": "47 công cụ",
       "trustLangs": "10 ngôn ngữ",
-      "flagshipsNav": "Công cụ chủ lực",
-      "noResultsHint": "Hãy thử từ khóa khác."
+      "noResultsHint": "Hãy thử từ khóa khác.",
+      "ctaBrowse": "Xem tất cả công cụ",
+      "popularTitle": "Công cụ phổ biến",
+      "viewAll": "Xem tất cả",
+      "whyTitle": "Vì sao chọn SimpleTool",
+      "why1Title": "Chạy ngay trong tab",
+      "why1Body": "Trình duyệt của bạn xử lý dữ liệu nhập. Worker chỉ phục vụ trang và không nhận nội dung bạn dán vào công cụ.",
+      "why2Title": "Không cần tài khoản",
+      "why2Body": "Mọi công cụ đều miễn phí và dùng ngay. Không cần đăng ký.",
+      "why3Title": "Bố cục thống nhất",
+      "why3Body": "Mọi công cụ dùng chung một bố cục, có mười ngôn ngữ và giao diện sáng lẫn tối.",
+      "categoriesTitle": "Duyệt theo nhóm",
+      "finalTitle": "Tìm công cụ bạn cần",
+      "finalBody": "Mở danh mục, tìm theo tên hoặc tác vụ rồi quay lại công việc."
+    },
+    "catalog": {
+      "title": "Tất cả công cụ",
+      "subtitle": "Tìm trong danh mục hoặc duyệt theo nhóm. Mục yêu thích và công cụ dùng gần đây hiện ở đầu.",
+      "meta": {
+        "title": "Tất cả công cụ — SimpleTool",
+        "description": "Mọi công cụ lập trình của SimpleTool ở một nơi: JSON, JWT, regex, cron, mật khẩu, khóa SSH, curl, CIDR và hơn thế, xếp theo nhóm."
+      }
     }
   }
 };

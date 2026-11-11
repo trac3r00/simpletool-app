@@ -110,8 +110,8 @@ test.describe("Page sweep 2026-05-11 regressions", () => {
     await expect(page.locator("#history-body")).toContainText("admin");
   });
 
-  test("home search: json query filters cards correctly", async ({ page }) => {
-    await page.goto("/");
+  test("catalog search: json query filters cards correctly", async ({ page }) => {
+    await page.goto("/tools");
     const search = page.locator("#tool-search");
     await expect(search).toBeVisible();
 
@@ -139,10 +139,10 @@ test.describe("Page sweep 2026-05-11 regressions", () => {
     await expect(jsonCard).toBeVisible();
   });
 
-  test("home search: empty state shows when no tools match", async ({
+  test("catalog search: empty state shows when no tools match", async ({
     page,
   }) => {
-    await page.goto("/");
+    await page.goto("/tools");
     const search = page.locator("#tool-search");
     await search.fill("xyznomatch12345");
     await page.waitForTimeout(300);

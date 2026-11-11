@@ -403,6 +403,15 @@
     @apply whitespace-nowrap rounded-md px-2.5 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground;
   }
 
+  .site-nav a[aria-current="page"] {
+    @apply bg-accent text-foreground;
+  }
+
+  /* Inline "view all" style link beside a landing-page section heading. */
+  .home-text-link {
+    @apply inline-flex items-center gap-1 whitespace-nowrap rounded-sm text-sm font-medium text-primary-700 transition-colors hover:text-primary-800 dark:text-primary-300 dark:hover:text-primary-200;
+  }
+
   /* Home / Category / Tool wayfinding injected by createPageTemplate. */
   .tool-page-shell:has(> .tool-breadcrumb) {
     @apply pt-5 sm:pt-6 lg:pt-8;

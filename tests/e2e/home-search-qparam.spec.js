@@ -1,13 +1,13 @@
 import { test, expect } from "@playwright/test";
 
 async function openHome(page, query) {
-  const url = query != null ? `/?q=${encodeURIComponent(query)}` : "/";
+  const url = query != null ? `/tools?q=${encodeURIComponent(query)}` : "/tools";
   await page.goto(url);
   await expect(page.locator("main")).toBeVisible();
 }
 
-test.describe("Home search query parameter", () => {
-  test("/?q=json prefills search, filters cards, and has no console errors", async ({
+test.describe("Catalog search query parameter", () => {
+  test("/tools?q=json prefills search, filters cards, and has no console errors", async ({
     page,
   }) => {
     const pageErrors = [];
@@ -84,7 +84,7 @@ test.describe("Home search query parameter", () => {
     expect(consoleErrors).toEqual([]);
   });
 
-  test("/ shows full grid with empty search box", async ({ page }) => {
+  test("/tools shows full grid with empty search box", async ({ page }) => {
     await openHome(page, null);
 
     const search = page.locator("#tool-search");
@@ -99,7 +99,7 @@ test.describe("Home search query parameter", () => {
     expect(visibleCount).toBeGreaterThan(0);
   });
 
-  test("/?q=zz-no-tool-match shows empty state with query text", async ({
+  test("/tools?q=zz-no-tool-match shows empty state with query text", async ({
     page,
   }) => {
     await openHome(page, "zz-no-tool-match");

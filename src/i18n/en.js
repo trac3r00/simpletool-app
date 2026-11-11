@@ -44,7 +44,6 @@ export default {
     trustAccount: "No account",
     trustCount: "47 tools",
     trustLangs: "10 languages",
-    flagshipsNav: "Flagship tools",
     favorites: "Favorites",
     recentlyUsed: "Recently Used",
     searchResultsLabel: "Search Results",

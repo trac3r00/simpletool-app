@@ -78,12 +78,12 @@ describe("HEAD mirrors GET (audit M1)", () => {
   });
 
   it("HEAD on a redirecting path keeps the redirect", async () => {
-    const res = await fetchWorker("https://simpletool.app/tools", {
+    const res = await fetchWorker("https://simpletool.app/tools/json-formatter", {
       method: "HEAD",
     });
 
     expect(res.status).toBe(301);
-    expect(res.headers.get("Location")).toBe("https://simpletool.app/");
+    expect(res.headers.get("Location")).toBe("https://simpletool.app/json-formatter");
   });
 
   it("HEAD keeps the security headers a GET would carry", async () => {
@@ -137,12 +137,12 @@ describe("unsupported methods on page routes (audit M2)", () => {
   });
 
   it("POST to a legacy path keeps its 301 redirect", async () => {
-    const res = await fetchWorker("https://simpletool.app/tools", {
+    const res = await fetchWorker("https://simpletool.app/tools/json-formatter", {
       method: "POST",
     });
 
     expect(res.status).toBe(301);
-    expect(res.headers.get("Location")).toBe("https://simpletool.app/");
+    expect(res.headers.get("Location")).toBe("https://simpletool.app/json-formatter");
   });
 });
 
