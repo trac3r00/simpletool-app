@@ -104,5 +104,10 @@ describe("renderHomePage", () => {
     expect(html).toContain(
       '<link rel="alternate" hreflang="en" href="https://simpletool.app/">',
     );
+    // Top-bar site links keep the visitor's language.
+    const siteNav = html.slice(html.indexOf('class="site-nav'), html.indexOf("</ul>", html.indexOf('class="site-nav')));
+    for (const page of ["about", "blog", "faq"]) {
+      expect(siteNav).toContain(`href="/${page}?lang=ko" data-i18n="footer.${page}">${t(`footer.${page}`, "ko")}<`);
+    }
   });
 });
