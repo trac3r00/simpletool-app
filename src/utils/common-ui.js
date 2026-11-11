@@ -224,11 +224,20 @@ export function getThemeToggleButton(options = {}) {
 /**
  * Get common navigation HTML
  */
+const SITE_NAV_LINKS = [
+  ["/", "shell.navHome"],
+  ["/tools", "shell.navTools"],
+  ["/about", "footer.about"],
+  ["/blog", "footer.blog"],
+  ["/faq", "footer.faq"],
+];
+
 export function getNavigationHTML(options = {}) {
   const {
     maxWidth = "max-w-7xl",
     lang = DEFAULT_LANGUAGE,
     hideDesktopSearch = false,
+    currentPath = "",
   } = options;
   const currentLang = normalizeLanguage(lang);
   const homeHref = withLanguageQuery("/", currentLang);
@@ -246,7 +255,7 @@ export function getNavigationHTML(options = {}) {
                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
                 </svg>
               </div>
-              <span class="font-semibold text-sm tracking-tight">SimpleTool</span>
+              <span class="whitespace-nowrap font-semibold text-sm tracking-tight">SimpleTool</span>
             </a>
             
             <!-- Separator -->
@@ -255,22 +264,23 @@ export function getNavigationHTML(options = {}) {
             <!-- Site pages, from lg up so localized labels never squeeze the
                  search/language/theme controls. Smaller screens use the footer. -->
             <ul class="site-nav hidden lg:flex">
-              <li><a href="${withLanguageQuery("/about", currentLang)}" data-i18n="footer.about">${t("footer.about", currentLang)}</a></li>
-              <li><a href="${withLanguageQuery("/blog", currentLang)}" data-i18n="footer.blog">${t("footer.blog", currentLang)}</a></li>
-              <li><a href="${withLanguageQuery("/faq", currentLang)}" data-i18n="footer.faq">${t("footer.faq", currentLang)}</a></li>
+              ${SITE_NAV_LINKS.map(
+                ([href, key]) =>
+                  `<li><a href="${withLanguageQuery(href, currentLang)}" data-i18n="${key}"${currentPath === href || (href !== "/" && currentPath.startsWith(`${href}/`)) ? ' aria-current="page"' : ""}>${t(key, currentLang)}</a></li>`,
+              ).join("")}
             </ul>
           </div>
 
            <div class="flex items-center gap-2">
              <!-- Mobile search button (icon only) -->
-             <button type="button" id="mobile-search-btn" class="btn-ghost btn-icon md:hidden" aria-label="${t("nav.searchTools", currentLang)}" data-i18n-aria="nav.searchTools">
+             <button type="button" id="mobile-search-btn" class="btn-ghost btn-icon xl:hidden" aria-label="${t("nav.searchTools", currentLang)}" data-i18n-aria="nav.searchTools">
                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
              </button>
              ${
                hideDesktopSearch
                  ? ""
                  : `<!-- Desktop search input (readonly, triggers modal on click/focus) -->
-             <div class="hidden md:flex items-center mr-2 relative">
+             <div class="hidden xl:flex items-center mr-2 relative">
                  <svg class="absolute left-3 w-3.5 h-3.5 text-surface-500 dark:text-surface-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                  <input type="text" readonly id="nav-search-btn" placeholder="${t("nav.search", currentLang)}" data-i18n-placeholder="nav.search" class="input-search w-48 lg:w-64" aria-label="${t("nav.searchTools", currentLang)}" data-i18n-aria="nav.searchTools" />
              </div>`
@@ -810,7 +820,7 @@ export function getFooterHTML(options = {}) {
              <ul class="space-y-2 flex-1">
                ${toolsHTML}
                <li class="pt-2 border-t border-surface-200 dark:border-surface-800">
-                 <a href="${withLanguageQuery("/", currentLang)}" class="text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors" data-i18n="footer.viewAll">${t("footer.viewAll", currentLang)}</a>
+                 <a href="${withLanguageQuery("/tools", currentLang)}" class="text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors" data-i18n="footer.viewAll">${t("footer.viewAll", currentLang)}</a>
                </li>
              </ul>
            </div>
@@ -894,7 +904,7 @@ function renderJsonLd(schema, pagePath, title, pageUrl, description, lang) {
   if (category) {
     crumbs.push({
       name: category.title,
-      item: `${homeUrl}#category-${tool.category}`,
+      item: `${siteUrl}${withLanguageQuery("/tools", lang)}#category-${tool.category}`,
     });
   }
   crumbs.push({ name: title, item: pageUrl });
@@ -938,7 +948,7 @@ function getToolBreadcrumbHTML(pagePath, lang) {
   const localizedName = t(nameKey, lang);
   const name = localizedName === nameKey ? tool.name : localizedName;
   const category = CATEGORIES[tool.category]
-    ? `<li><a href="${homeHref}#category-${tool.category}" data-i18n="home.cat.${tool.category}">${t(`home.cat.${tool.category}`, lang).replace(/^[\p{Extended_Pictographic}\p{Emoji_Presentation}\uFE0F\u200D]+\s*/u, "")}</a></li>`
+    ? `<li><a href="${withLanguageQuery("/tools", lang)}#category-${tool.category}" data-i18n="home.cat.${tool.category}">${t(`home.cat.${tool.category}`, lang).replace(/^[\p{Extended_Pictographic}\p{Emoji_Presentation}\uFE0F\u200D]+\s*/u, "")}</a></li>`
     : "";
   return `<nav class="tool-breadcrumb" aria-label="${t("shell.breadcrumb", lang)}" data-i18n-aria="shell.breadcrumb">
       <ol>
@@ -1084,7 +1094,8 @@ export function createPageTemplate(options) {
   <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary-600 focus:text-white focus:rounded" data-i18n="shell.skipToContent">Skip to main content</a>
   ${getNavigationHTML({
     lang: currentLang,
-    hideDesktopSearch: pagePath === "/",
+    hideDesktopSearch: pagePath === "/" || pagePath === "/tools",
+    currentPath: pagePath,
   })}
   <div class="flex-grow" role="presentation">
     <div class="flex">

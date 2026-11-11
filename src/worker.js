@@ -4,6 +4,7 @@
  */
 
 import { renderHomePage } from "./ui/home.js";
+import { renderToolsPage } from "./ui/tools-page.js";
 import * as Sentry from "@sentry/cloudflare";
 import { handlersById } from "./routes/_handlers.js";
 import { handlePipeRoutes } from "./routes/pipe.js";
@@ -123,6 +124,7 @@ function buildSitemapXml(origin, tools) {
     }
   }
 
+  paths.add("/tools");
   paths.add("/blog");
   paths.add("/faq");
 
@@ -155,7 +157,7 @@ function buildSitemapXml(origin, tools) {
     .sort()
     .map((path) => {
       const loc = `${base}${path === "/" ? "/" : path}`;
-      const isHome = path === "/";
+      const isHome = path === "/" || path === "/tools";
       const isLegal = legalPaths.has(path);
       const isContent = contentPaths.has(path) || path.startsWith("/blog/");
       const priority = isHome
@@ -563,6 +565,12 @@ async function handleRequest(request, env, ctx) {
 
     // Home page
     if (path === "/" || path === "/index.html") {
+      // Search deep links predate the /tools catalog; keep them working.
+      if (url.searchParams.has("q")) {
+        const redirectUrl = new URL(request.url);
+        redirectUrl.pathname = "/tools";
+        return Response.redirect(redirectUrl.href, 301);
+      }
       return renderHomePage({
         isDev,
         lang: resolveRequestLanguage(request, url),
@@ -575,12 +583,15 @@ async function handleRequest(request, env, ctx) {
     const legacyRedirect = tryLegacyRedirect(url);
     if (legacyRedirect) return legacyRedirect;
 
-    // Legacy routing compatibility: older docs/links used the /tools/<tool-id> prefix.
-    if (path === "/tools") {
-      const redirectUrl = new URL(request.url);
-      redirectUrl.pathname = "/";
-      return Response.redirect(redirectUrl.href, 301);
+    // Full tool catalog (the landing page at / links here).
+    if (path === "/tools" || path === "/tools/") {
+      return renderToolsPage({
+        isDev,
+        lang: resolveRequestLanguage(request, url),
+      });
     }
+
+    // Legacy routing compatibility: older docs/links used the /tools/<tool-id> prefix.
 
     if (path.startsWith("/tools/")) {
       const redirectUrl = new URL(request.url);

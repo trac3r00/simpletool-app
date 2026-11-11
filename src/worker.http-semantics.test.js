@@ -21,8 +21,16 @@ function fetchWorker(urlString, init = {}, env = makeEnv()) {
   return worker.fetch(new Request(urlString, init), env, ctx);
 }
 
+describe("landing / catalog split", () => {
+  it("redirects legacy /?q= search links to the /tools catalog", async () => {
+    const res = await fetchWorker("https://simpletool.app/?q=json&lang=ko");
+    expect(res.status).toBe(301);
+    expect(res.headers.get("Location")).toBe("https://simpletool.app/tools?q=json&lang=ko");
+  });
+});
+
 describe("HEAD mirrors GET (audit M1)", () => {
-  const paths = ["/", "/terms", "/json-formatter", "/blog", "/faq", "/health"];
+  const paths = ["/", "/tools", "/terms", "/json-formatter", "/blog", "/faq", "/health"];
 
   for (const path of paths) {
     it(`HEAD ${path} returns the GET status with no body`, async () => {
@@ -78,12 +86,12 @@ describe("HEAD mirrors GET (audit M1)", () => {
   });
 
   it("HEAD on a redirecting path keeps the redirect", async () => {
-    const res = await fetchWorker("https://simpletool.app/tools", {
+    const res = await fetchWorker("https://simpletool.app/tools/json-formatter", {
       method: "HEAD",
     });
 
     expect(res.status).toBe(301);
-    expect(res.headers.get("Location")).toBe("https://simpletool.app/");
+    expect(res.headers.get("Location")).toBe("https://simpletool.app/json-formatter");
   });
 
   it("HEAD keeps the security headers a GET would carry", async () => {
@@ -137,12 +145,12 @@ describe("unsupported methods on page routes (audit M2)", () => {
   });
 
   it("POST to a legacy path keeps its 301 redirect", async () => {
-    const res = await fetchWorker("https://simpletool.app/tools", {
+    const res = await fetchWorker("https://simpletool.app/tools/json-formatter", {
       method: "POST",
     });
 
     expect(res.status).toBe(301);
-    expect(res.headers.get("Location")).toBe("https://simpletool.app/");
+    expect(res.headers.get("Location")).toBe("https://simpletool.app/json-formatter");
   });
 });
 
