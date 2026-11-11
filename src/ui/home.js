@@ -61,35 +61,34 @@ export function renderHomePage({
 
   const content = `
   <!-- Hero Section -->
-  <!-- Hero band keeps a bespoke surface pair on purpose: no semantic token is
-       white+surface-950. bg-card would lift the dark band off the page and
-       bg-background would flatten the light one into it. -->
-  <header class="border-b border-surface-200 bg-white dark:bg-surface-950 pt-12 pb-10 dark:border-surface-800 hexagon-pattern sm:pt-16 sm:pb-12">
+  <!-- Hero sits on the page background: the soft violet/cyan wash is the only
+       separation from the catalog, no band or divider. -->
+  <header class="hexagon-pattern pt-12 pb-2 sm:pt-16">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <h1 class="text-balance text-4xl font-bold tracking-tight text-surface-900 dark:text-surface-50 sm:text-5xl" data-i18n="home.heroTitle">
+      <h1 class="text-balance text-4xl font-bold tracking-tight text-foreground sm:text-5xl" data-i18n="home.heroTitle">
         ${t("home.heroTitle", currentLang)}
       </h1>
-      <p class="mt-4 max-w-2xl text-lg leading-relaxed text-surface-600 dark:text-surface-400">
+      <p class="mt-3 max-w-2xl text-lg leading-relaxed text-muted-foreground">
         <span data-i18n="home.heroLine1">${t("home.heroLine1", currentLang)}</span>
-        <span class="mt-2 block text-sm text-surface-500 dark:text-surface-400" data-i18n="home.heroLine2">${t("home.heroLine2", currentLang)}</span>
+        <span class="mt-1 block text-sm" data-i18n="home.heroLine2">${t("home.heroLine2", currentLang)}</span>
       </p>
 
-      <div class="relative mt-8 max-w-xl group">
+      <div class="relative mt-7 max-w-xl group">
         <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-          <span class="material-symbols-rounded text-[20px] text-surface-400 group-focus-within:text-primary-500" aria-hidden="true" data-icon="search"></span>
+          <span class="material-symbols-rounded text-[20px] text-muted-foreground group-focus-within:text-primary" aria-hidden="true" data-icon="search"></span>
         </div>
          <input type="text"
                 id="tool-search"
-                class="input w-full py-3 pl-11 pr-4 text-base"
+                class="input w-full rounded-lg bg-card py-3 pl-11 pr-16 text-base shadow-sm"
                 placeholder="${t("nav.searchTools", currentLang)}"
                 data-i18n-placeholder="nav.searchTools"
                 aria-label="${t("nav.searchTools", currentLang)}">
-        <div class="absolute inset-y-0 right-0 flex items-center pr-4">
-          <span class="hidden rounded border border-border px-1.5 py-0.5 text-xs text-muted-foreground sm:block">⌘K</span>
+        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+          <kbd class="hidden rounded-md border border-border bg-muted px-1.5 py-0.5 font-sans text-xs text-muted-foreground sm:block">⌘K</kbd>
         </div>
       </div>
 
-      <ul class="mt-6 flex flex-wrap gap-y-1 text-sm text-surface-500 dark:text-surface-400">
+      <ul class="mt-4 flex flex-wrap gap-y-1 text-sm text-muted-foreground">
         <li class="whitespace-nowrap"><span data-i18n="home.trustClient">${t("home.trustClient", currentLang)}</span><span class="mx-2 text-muted-foreground" aria-hidden="true">·</span></li>
         <li class="whitespace-nowrap"><span data-i18n="home.trustAccount">${t("home.trustAccount", currentLang)}</span><span class="mx-2 text-muted-foreground" aria-hidden="true">·</span></li>
         <li class="whitespace-nowrap"><span data-i18n="home.trustCount">${t("home.trustCount", currentLang)}</span><span class="mx-2 text-muted-foreground" aria-hidden="true">·</span></li>
@@ -97,11 +96,12 @@ export function renderHomePage({
       </ul>
 
       <nav class="mt-6" aria-label="${t("home.flagshipsNav", currentLang)}" data-i18n-aria="home.flagshipsNav">
-        <ul class="flex flex-wrap gap-2">
+        <!-- One swipeable row on phones; wraps from sm up. -->
+        <ul class="scrollbar-none -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
           ${flagships
             .map(
               (tool) =>
-                `<li><a class="inline-flex items-center rounded-md border border-border bg-card px-2.5 py-1 text-sm text-foreground hover:border-primary/50 hover:text-primary" href="${withLanguageQuery(tool.path, currentLang)}">${tool.name}</a></li>`,
+                `<li class="shrink-0"><a class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-md border border-border bg-card px-2.5 py-1 text-sm font-medium text-foreground shadow-sm transition-colors hover:border-primary/50 hover:text-primary" href="${withLanguageQuery(tool.path, currentLang)}"><span class="material-symbols-rounded text-[16px] text-primary" aria-hidden="true" data-icon="${toolSymbol(tool.id)}"></span>${tool.name}</a></li>`,
             )
             .join("")}
         </ul>
@@ -110,25 +110,25 @@ export function renderHomePage({
   </header>
 
   <!-- Tools Grid -->
-  <main class="mx-auto flex max-w-7xl flex-grow flex-col px-4 py-12 sm:px-6 lg:px-8">
+  <main class="mx-auto flex max-w-7xl flex-grow flex-col gap-12 px-4 py-10 sm:px-6 lg:px-8">
     <!-- Favorites Section (populated client-side from localStorage) -->
-    <div id="favorites-section" class="hidden space-y-6">
-      <div class="flex items-center gap-3">
-        <span class="material-symbols-rounded text-warning-700 dark:text-warning-300" aria-hidden="true" data-icon="star"></span>
-        <h2 class="text-sm font-semibold text-surface-900 dark:text-surface-100 uppercase tracking-wide" data-i18n="home.favorites">${t("home.favorites", currentLang)}</h2>
-        <span id="favorites-count" class="text-xs font-medium text-surface-500 bg-surface-100 dark:bg-surface-800 dark:text-surface-400 px-2 py-0.5 rounded-full">0</span>
+    <div id="favorites-section" class="hidden space-y-4">
+      <div class="home-section-heading">
+        <span class="material-symbols-rounded text-[18px] text-warning-700 dark:text-warning-300" aria-hidden="true" data-icon="star"></span>
+        <h2 data-i18n="home.favorites">${t("home.favorites", currentLang)}</h2>
+        <span id="favorites-count" class="home-count">0</span>
       </div>
-      <div id="favorites-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+      <div id="favorites-grid" class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3"></div>
     </div>
 
     <!-- Recently Used Section (populated client-side from localStorage) -->
-    <div id="recent-section" class="hidden space-y-6">
-      <div class="flex items-center gap-3">
-        <span class="material-symbols-rounded text-primary-600 dark:text-primary-400" aria-hidden="true" data-icon="history"></span>
-        <h2 class="text-sm font-semibold text-surface-900 dark:text-surface-100 uppercase tracking-wide" data-i18n="home.recentlyUsed">${t("home.recentlyUsed", currentLang)}</h2>
-        <span id="recent-count" class="text-xs font-medium text-surface-500 bg-surface-100 dark:bg-surface-800 dark:text-surface-400 px-2 py-0.5 rounded-full">0</span>
+    <div id="recent-section" class="hidden space-y-4">
+      <div class="home-section-heading">
+        <span class="material-symbols-rounded text-[18px] text-muted-foreground" aria-hidden="true" data-icon="history"></span>
+        <h2 data-i18n="home.recentlyUsed">${t("home.recentlyUsed", currentLang)}</h2>
+        <span id="recent-count" class="home-count">0</span>
       </div>
-      <div id="recent-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+      <div id="recent-grid" class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3"></div>
     </div>
 
     <div id="search-results-container" class="hidden space-y-8">
@@ -137,12 +137,12 @@ export function renderHomePage({
         <span id="search-results-label" data-i18n="home.searchResultsLabel">${t("home.searchResultsLabel", currentLang)}</span>
         <span id="search-results-count" class="text-xs font-medium text-surface-500 bg-surface-100 dark:bg-surface-800 dark:text-surface-400 px-2 py-0.5 rounded-full"></span>
       </h2>
-      <div id="search-results-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div id="search-results-grid" class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
         <!-- Search results injected here -->
       </div>
     </div>
 
-    <div id="tools-categories-container" class="space-y-16">
+    <div id="tools-categories-container" class="space-y-12">
       ${renderCategories(categories, currentLang)}
     </div>
 
@@ -156,7 +156,7 @@ export function renderHomePage({
     </div>
 
     <div id="home-below-catalog">
-    <section id="home-editorial" class="max-w-3xl space-y-5 border-t border-surface-200 dark:border-surface-800 pt-12" aria-labelledby="home-editorial-title">
+    <section id="home-editorial" class="max-w-3xl space-y-5 border-t border-border pt-12" aria-labelledby="home-editorial-title">
       <h2 id="home-editorial-title" class="text-lg font-semibold text-surface-900 dark:text-surface-50" data-i18n="home.editorialTitle">${t("home.editorialTitle", currentLang)}</h2>
       <p class="text-sm leading-relaxed text-surface-600 dark:text-surface-400" data-i18n="home.editorialP1">${t("home.editorialP1", currentLang)}</p>
       <p class="text-sm leading-relaxed text-surface-600 dark:text-surface-400" data-i18n="home.editorialP2">${t("home.editorialP2", currentLang)}</p>
@@ -357,13 +357,14 @@ export function renderHomePage({
         return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
       }
 
+      // Mirrors renderToolCard() on the server so restored rows match the grid.
       function renderCard(tool) {
-        var badge = tool.badge ? '<span class="px-2 py-0.5 text-xs font-semibold bg-primary-100 text-primary-700 dark:bg-primary-900/40 dark:text-primary-400 rounded-full">' + tool.badge + '</span>' : '';
+        var badge = tool.badge ? '<span class="home-badge">' + tool.badge + '</span>' : '';
         var dataAttrs = 'data-tool-id="' + escAttr(tool.id) + '" data-tool-name="' + escAttr(tool.name) + '" data-tool-desc="' + escAttr(tool.description) + '" data-tool-tags="' + escAttr(tool.keywords || '') + '"';
-        return '<a href="' + tool.path + '" ' + dataAttrs + ' class="tool-card tool-card-link group flex flex-col p-4">' +
-          '<div class="flex items-start justify-between mb-3"><div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-muted"><span class="material-symbols-rounded text-[20px] text-primary" aria-hidden="true" data-icon="' + tool.symbol + '"></span></div>' + badge + '</div>' +
-          '<h3 class="tool-name mb-1 font-semibold text-surface-900 transition-colors group-hover:text-primary dark:text-surface-50">' + tool.name + '</h3>' +
-          '<p class="tool-desc text-sm leading-relaxed text-surface-500 line-clamp-3 dark:text-surface-400">' + tool.description + '</p></a>';
+        return '<a href="' + tool.path + '" ' + dataAttrs + ' class="tool-card tool-card-link home-tool-card group">' +
+          '<span class="home-tool-icon"><span class="material-symbols-rounded text-[20px]" aria-hidden="true" data-icon="' + tool.symbol + '"></span></span>' +
+          '<div class="min-w-0"><div class="flex items-center gap-2"><h3 class="tool-name home-tool-name">' + tool.name + '</h3>' + badge + '</div>' +
+          '<p class="tool-desc home-tool-desc">' + tool.description + '</p></div></a>';
       }
 
       function populate(sectionId, gridId, countId, ids) {
@@ -400,14 +401,12 @@ function renderCategories(categories, lang = DEFAULT_LANGUAGE) {
     .map(
       ([key, section]) => `
     <section class="category-section scroll-mt-20" id="category-${key}">
-      <div class="flex items-center gap-3 mb-6">
-        <span class="material-symbols-rounded text-primary" aria-hidden="true" data-icon="${categoryIcon(key)}"></span>
-        <h2 class="text-sm font-semibold text-surface-900 dark:text-surface-100 uppercase tracking-wide" data-i18n="home.cat.${key}">
-          ${stripLeadingEmoji(t("home.cat." + key, lang))}
-        </h2>
-        <span class="category-count text-xs font-medium text-surface-600 bg-surface-100 dark:bg-surface-800 dark:text-surface-400 px-2 py-0.5 rounded-full">${section.tools.length}</span>
+      <div class="home-section-heading mb-4">
+        <span class="material-symbols-rounded text-[18px] text-primary" aria-hidden="true" data-icon="${categoryIcon(key)}"></span>
+        <h2 data-i18n="home.cat.${key}">${stripLeadingEmoji(t("home.cat." + key, lang))}</h2>
+        <span class="category-count home-count">${section.tools.length}</span>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
         ${section.tools.map((tool) => renderToolCard(tool, lang)).join("")}
       </div>
     </section>
@@ -430,23 +429,21 @@ function renderToolCard(tool, lang = DEFAULT_LANGUAGE) {
     .join(" ");
   return `
     <a href="${withLanguageQuery(tool.path, lang)}"
-       class="tool-card tool-card-link group flex flex-col p-4"
+       class="tool-card tool-card-link home-tool-card group"
        data-tool-id="${escapeAttr(tool.id)}"
        data-tool-name="${escapeAttr(tool.name)}"
        data-tool-desc="${escapeAttr(tool.description)}"
        data-tool-tags="${escapeAttr(tags)}">
-      <div class="flex items-start justify-between mb-3">
-        <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-muted">
-          <span class="material-symbols-rounded text-[20px] text-primary" aria-hidden="true" data-icon="${toolSymbol(tool.id)}"></span>
+      <span class="home-tool-icon">
+        <span class="material-symbols-rounded text-[20px]" aria-hidden="true" data-icon="${toolSymbol(tool.id)}"></span>
+      </span>
+      <div class="min-w-0">
+        <div class="flex items-center gap-2">
+          <h3 class="tool-name home-tool-name">${tool.name}</h3>
+          ${tool.badge ? `<span class="home-badge">${tool.badge}</span>` : ""}
         </div>
-        ${tool.badge ? `<span class="rounded-full bg-primary-100 px-2 py-0.5 text-xs font-semibold text-primary-700 dark:bg-primary-900/40 dark:text-primary-400">${tool.badge}</span>` : ""}
+        <p class="tool-desc home-tool-desc">${tool.description}</p>
       </div>
-      <h3 class="tool-name mb-1 font-semibold text-surface-900 transition-colors group-hover:text-primary dark:text-surface-50">
-        ${tool.name}
-      </h3>
-      <p class="tool-desc text-sm text-surface-500 dark:text-surface-400 leading-relaxed line-clamp-3">
-        ${tool.description}
-      </p>
     </a>
   `;
 }

@@ -418,5 +418,17 @@
   "de": "Über uns, Datenschutz und Nutzungsbedingungen erklären die Anzeigen-Positivliste und die Edge-Logs. Sicherheitsmeldungen bitte an security@simpletool.app.",
   "pt": "Sobre, Privacidade e Termos explicam a lista de páginas com anúncios e os logs de borda. Relatos de segurança vão para security@simpletool.app.",
   "vi": "Các trang Giới thiệu, Quyền riêng tư và Điều khoản giải thích danh sách trang có quảng cáo và log tại edge. Báo cáo bảo mật gửi tới security@simpletool.app."
+ },
+ "shell.breadcrumb": {
+  "en": "Breadcrumb",
+  "ko": "이동 경로",
+  "ja": "パンくずリスト",
+  "es": "Ruta de navegación",
+  "zh-CN": "面包屑导航",
+  "zh-TW": "麵包屑導覽",
+  "fr": "Fil d’Ariane",
+  "de": "Brotkrumennavigation",
+  "pt": "Trilha de navegação",
+  "vi": "Đường dẫn điều hướng"
  }
 }

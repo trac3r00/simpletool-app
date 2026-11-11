@@ -29,13 +29,7 @@ const FORM_CONTROL =
  * budget rather than deleted: if a future edit reintroduces `bg-white
  * dark:bg-surface-900` anywhere, this fails with the file and count.
  */
-const FORM_CONTROL_BUDGET = {
-  // The home hero deliberately keeps a bespoke white+surface-950 pair: no
-  // semantic token matches it, `bg-card` would lift the dark band off the
-  // page and `bg-background` would flatten the light one into it. Documented
-  // inline in home.js. Everything else must use a semantic token.
-  "home.js": 1,
-};
+const FORM_CONTROL_BUDGET = {};
 
 function sourceFiles() {
   const files = [];

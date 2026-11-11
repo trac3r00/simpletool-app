@@ -1539,7 +1539,8 @@ export default {
       "keyboardShortcuts": "Keyboard shortcuts",
       "keyboardShortcutsHint": "Press {key}+/ for keyboard shortcuts",
       "trustTipWebApis": "Runs entirely in your browser using Web APIs — your data is processed locally and not sent to our servers.",
-      "trustTipLocal": "All processing happens in your browser — your data is not sent to our servers."
+      "trustTipLocal": "All processing happens in your browser — your data is not sent to our servers.",
+      "breadcrumb": "Breadcrumb"
     },
     "home": {
       "trustClient": "Runs in the tab",
@@ -3105,7 +3106,8 @@ export default {
       "keyboardShortcuts": "키보드 단축키",
       "keyboardShortcutsHint": "{key}+/를 누르면 키보드 단축키를 볼 수 있습니다",
       "trustTipWebApis": "Web API로 브라우저 안에서만 실행됩니다. 데이터는 기기에서 처리되며 서버로 보내지 않습니다.",
-      "trustTipLocal": "모든 처리는 브라우저에서 이루어지며, 데이터는 서버로 보내지 않습니다."
+      "trustTipLocal": "모든 처리는 브라우저에서 이루어지며, 데이터는 서버로 보내지 않습니다.",
+      "breadcrumb": "이동 경로"
     },
     "home": {
       "trustClient": "탭 안에서 실행",
@@ -4671,7 +4673,8 @@ export default {
       "keyboardShortcuts": "キーボードショートカット",
       "keyboardShortcutsHint": "{key}+/ でキーボードショートカットを表示",
       "trustTipWebApis": "Web APIを使ってブラウザ内だけで動作します。データはローカルで処理され、サーバーには送信されません。",
-      "trustTipLocal": "すべての処理はブラウザ内で行われ、データはサーバーに送信されません。"
+      "trustTipLocal": "すべての処理はブラウザ内で行われ、データはサーバーに送信されません。",
+      "breadcrumb": "パンくずリスト"
     },
     "home": {
       "trustClient": "タブ内で動作",
@@ -6237,7 +6240,8 @@ export default {
       "keyboardShortcuts": "Atajos de teclado",
       "keyboardShortcutsHint": "Pulsa {key}+/ para ver los atajos de teclado",
       "trustTipWebApis": "Se ejecuta por completo en tu navegador con Web APIs: tus datos se procesan localmente y no se envían a nuestros servidores.",
-      "trustTipLocal": "Todo el procesamiento ocurre en tu navegador: tus datos no se envían a nuestros servidores."
+      "trustTipLocal": "Todo el procesamiento ocurre en tu navegador: tus datos no se envían a nuestros servidores.",
+      "breadcrumb": "Ruta de navegación"
     },
     "home": {
       "trustClient": "Se ejecuta en la pestaña",
@@ -7803,7 +7807,8 @@ export default {
       "keyboardShortcuts": "键盘快捷键",
       "keyboardShortcutsHint": "按 {key}+/ 查看键盘快捷键",
       "trustTipWebApis": "完全使用 Web API 在你的浏览器中运行——数据在本地处理,不会发送到我们的服务器。",
-      "trustTipLocal": "所有处理都在你的浏览器中完成——数据不会发送到我们的服务器。"
+      "trustTipLocal": "所有处理都在你的浏览器中完成——数据不会发送到我们的服务器。",
+      "breadcrumb": "面包屑导航"
     },
     "home": {
       "trustClient": "在标签页中运行",
@@ -9369,7 +9374,8 @@ export default {
       "keyboardShortcuts": "鍵盤快速鍵",
       "keyboardShortcutsHint": "按 {key}+/ 查看鍵盤快速鍵",
       "trustTipWebApis": "完全使用 Web API 在你的瀏覽器中執行——資料在本機處理,不會傳送到我們的伺服器。",
-      "trustTipLocal": "所有處理都在你的瀏覽器中完成——資料不會傳送到我們的伺服器。"
+      "trustTipLocal": "所有處理都在你的瀏覽器中完成——資料不會傳送到我們的伺服器。",
+      "breadcrumb": "麵包屑導覽"
     },
     "home": {
       "trustClient": "在分頁中執行",
@@ -10935,7 +10941,8 @@ export default {
       "keyboardShortcuts": "Raccourcis clavier",
       "keyboardShortcutsHint": "Appuyez sur {key}+/ pour voir les raccourcis clavier",
       "trustTipWebApis": "Fonctionne entièrement dans votre navigateur grâce aux API Web : vos données sont traitées localement et ne sont pas envoyées à nos serveurs.",
-      "trustTipLocal": "Tout le traitement a lieu dans votre navigateur : vos données ne sont pas envoyées à nos serveurs."
+      "trustTipLocal": "Tout le traitement a lieu dans votre navigateur : vos données ne sont pas envoyées à nos serveurs.",
+      "breadcrumb": "Fil d’Ariane"
     },
     "home": {
       "trustClient": "Fonctionne dans l'onglet",
@@ -12501,7 +12508,8 @@ export default {
       "keyboardShortcuts": "Tastenkürzel",
       "keyboardShortcutsHint": "Drücken Sie {key}+/ für Tastenkürzel",
       "trustTipWebApis": "Läuft vollständig in Ihrem Browser mit Web-APIs – Ihre Daten werden lokal verarbeitet und nicht an unsere Server gesendet.",
-      "trustTipLocal": "Die gesamte Verarbeitung findet in Ihrem Browser statt – Ihre Daten werden nicht an unsere Server gesendet."
+      "trustTipLocal": "Die gesamte Verarbeitung findet in Ihrem Browser statt – Ihre Daten werden nicht an unsere Server gesendet.",
+      "breadcrumb": "Brotkrumennavigation"
     },
     "home": {
       "trustClient": "Läuft im Tab",
@@ -14067,7 +14075,8 @@ export default {
       "keyboardShortcuts": "Atalhos de teclado",
       "keyboardShortcutsHint": "Pressione {key}+/ para ver os atalhos de teclado",
       "trustTipWebApis": "Roda inteiramente no seu navegador usando Web APIs — seus dados são processados localmente e não são enviados aos nossos servidores.",
-      "trustTipLocal": "Todo o processamento acontece no seu navegador — seus dados não são enviados aos nossos servidores."
+      "trustTipLocal": "Todo o processamento acontece no seu navegador — seus dados não são enviados aos nossos servidores.",
+      "breadcrumb": "Trilha de navegação"
     },
     "home": {
       "trustClient": "Roda na aba",
@@ -15633,7 +15642,8 @@ export default {
       "keyboardShortcuts": "Phím tắt",
       "keyboardShortcutsHint": "Nhấn {key}+/ để xem phím tắt",
       "trustTipWebApis": "Chạy hoàn toàn trong trình duyệt bằng Web API — dữ liệu được xử lý cục bộ và không gửi tới máy chủ của chúng tôi.",
-      "trustTipLocal": "Mọi xử lý diễn ra trong trình duyệt — dữ liệu không được gửi tới máy chủ của chúng tôi."
+      "trustTipLocal": "Mọi xử lý diễn ra trong trình duyệt — dữ liệu không được gửi tới máy chủ của chúng tôi.",
+      "breadcrumb": "Đường dẫn điều hướng"
     },
     "home": {
       "trustClient": "Chạy ngay trong tab",
