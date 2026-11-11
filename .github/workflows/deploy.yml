@@ -200,14 +200,15 @@ jobs:
           sleep 10
           # --retry alone skips connection resets (curl exit 56), which the
           # edge returns right after a deploy; --retry-all-errors covers them.
+          # --retry-max-time caps each URL's total retry window at 40s.
           # /health is the JSON health endpoint (src/worker.js)
-          curl --fail --silent --show-error --max-time 10 --retry 5 --retry-delay 3 --retry-all-errors \
+          curl --fail --silent --show-error --max-time 10 --retry 5 --retry-delay 3 --retry-all-errors --retry-max-time 40 \
             https://simpletool.app/health
           # Home page (HTML)
-          curl --fail --silent --show-error --max-time 10 --retry 5 --retry-delay 3 --retry-all-errors \
+          curl --fail --silent --show-error --max-time 10 --retry 5 --retry-delay 3 --retry-all-errors --retry-max-time 40 \
             -o /dev/null https://simpletool.app/
           # One representative tool page (HTML)
-          curl --fail --silent --show-error --max-time 10 --retry 5 --retry-delay 3 --retry-all-errors \
+          curl --fail --silent --show-error --max-time 10 --retry 5 --retry-delay 3 --retry-all-errors --retry-max-time 40 \
             -o /dev/null https://simpletool.app/json-formatter
 
       - name: Notify Discord
