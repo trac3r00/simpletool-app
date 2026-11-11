@@ -28,6 +28,8 @@ import {
   shouldRateLimit,
   sweepRateLimiter,
   isLikelySharedIP,
+  isRateLimitExemptPath,
+  isVerifiedBot,
   RATE_LIMIT_MAX_REQUESTS,
   RATE_LIMIT_MAX_REQUESTS_SHARED_IP,
   RATE_LIMIT_WINDOW_MS,
@@ -304,7 +306,7 @@ async function handleRequest(request, env, ctx) {
     globalThis.rateLimiterSweepCounter = 0;
   }
 
-  if (!isDev) {
+  if (!isDev && !isRateLimitExemptPath(path) && !isVerifiedBot(request)) {
     const effectiveLimit = isLikelySharedIP(request)
       ? RATE_LIMIT_MAX_REQUESTS_SHARED_IP
       : RATE_LIMIT_MAX_REQUESTS;
@@ -392,6 +394,18 @@ async function handleRequest(request, env, ctx) {
         (env?.ENVIRONMENT || "").toLowerCase() === "production";
       const robotsTxt = isProduction
         ? [
+            "User-agent: Mediapartners-Google",
+            "Allow: /",
+            "",
+            "User-agent: Google-Display-Ads-Bot",
+            "Allow: /",
+            "",
+            "User-agent: AdsBot-Google",
+            "Allow: /",
+            "",
+            "User-agent: Google-adstxt",
+            "Allow: /",
+            "",
             "User-agent: *",
             "Allow: /",
             `Sitemap: ${url.origin}/sitemap.xml`,
