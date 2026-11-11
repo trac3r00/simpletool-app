@@ -918,6 +918,30 @@ function renderJsonLd(schema, pagePath, title, pageUrl, description, lang) {
 }
 
 /**
+ * Visible counterpart of the BreadcrumbList JSON-LD above: Home / Category /
+ * Tool. Injected as the first child of the route's `.tool-page-shell` so every
+ * registered tool gets the same wayfinding without editing 50 route files.
+ */
+function getToolBreadcrumbHTML(pagePath, lang) {
+  const tool = findRegisteredTool(pagePath);
+  if (!tool) return "";
+  const homeHref = withLanguageQuery("/", lang);
+  const nameKey = `tools.${tool.id}.name`;
+  const localizedName = t(nameKey, lang);
+  const name = localizedName === nameKey ? tool.name : localizedName;
+  const category = CATEGORIES[tool.category]
+    ? `<li><a href="${homeHref}#category-${tool.category}" data-i18n="home.cat.${tool.category}">${t(`home.cat.${tool.category}`, lang).replace(/^[\p{Extended_Pictographic}\p{Emoji_Presentation}\uFE0F\u200D]+\s*/u, "")}</a></li>`
+    : "";
+  return `<nav class="tool-breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="${homeHref}" data-i18n="nav.home">${t("nav.home", lang)}</a></li>
+        ${category}
+        <li><span aria-current="page" data-i18n="${nameKey}">${name}</span></li>
+      </ol>
+    </nav>`;
+}
+
+/**
  * Report P1-8 "verifiable local": a live, honest count of every network
  * request the page makes after it finished loading, listed by URL so the
  * visitor can check it against DevTools instead of trusting a slogan.
@@ -1057,7 +1081,14 @@ export function createPageTemplate(options) {
   <div class="flex-grow" role="presentation">
     <div class="flex">
       <div id="main-content" tabindex="-1" class="flex-1 min-w-0 overflow-x-hidden">
-        ${content}
+        ${
+          isToolPage
+            ? content.replace(
+                /<main class="tool-page-shell[^"]*"[^>]*>/,
+                (open) => open + getToolBreadcrumbHTML(pagePath, currentLang),
+              )
+            : content
+        }
         ${isToolPage ? getLocalProofHTML(pagePath) : ""}
       </div>
     </div>

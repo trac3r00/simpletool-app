@@ -28,8 +28,9 @@ describe("handleMarkdownEditorRoutes", () => {
 
     // Verify HTML structure
     expect(text).toContain("<!DOCTYPE html>");
-    expect(text).toContain(
-      '<main class="tool-page-shell min-h-[calc(100vh-4rem)] flex flex-col">\n      <div class="tool-page-panel tool-page-panel--fill">',
+    // The shared breadcrumb is the shell's first child; the fill panel follows it.
+    expect(text).toMatch(
+      /<main class="tool-page-shell min-h-\[calc\(100vh-4rem\)\] flex flex-col"><nav class="tool-breadcrumb"[\s\S]*?<\/nav>\s*<div class="tool-page-panel tool-page-panel--fill">/,
     );
 
     // Verify split pane IDs
