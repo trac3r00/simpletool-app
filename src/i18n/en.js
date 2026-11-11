@@ -50,35 +50,6 @@ export default {
     searchResultsLabel: "Search Results",
     noResults: "No tools found matching your search.",
     noResultsHint: "Try a different search term.",
-    editorialTitle: "What runs in the tab",
-    editorialP1:
-      "JSON.parse, Web Crypto, and the other browser APIs do the work. The Worker that serves the HTML does not receive the payload you paste into a tool.",
-    editorialP2:
-      "Several formatter sites store pastes and expose them through predictable share URLs. In November 2025, researchers showed years of saved JSON and code from those services included cloud keys, JWTs, and internal configs. A formatter that never uploads the document has no Recent Links page to scrape.",
-    editorialP3:
-      "Ads, when they appear, are labeled and non-personalized. They stay off password, SSH, Token Studio, WireGuard, certificate, secret-scanner, encoding, and pipe pages.",
-    flagshipsTitle: "Eight tools people bookmark",
-    flagshipJson:
-      "Pretty-print, minify, and validate RFC 8259 JSON with line-level errors. No stored document, no share URL.",
-    flagshipJwt:
-      "Inspect JWT header and payload locally, generate keys, and simulate JWKS. The browser, extensions, and clipboard still see what you paste.",
-    flagshipRegex:
-      "Railroad diagrams and live matches so you can explain a pattern before you ship it.",
-    flagshipCron:
-      "Edit a five-field crontab and see the next run times in plain language.",
-    flagshipPassword:
-      "Draws from crypto.getRandomValues. Prefer a password manager for storage.",
-    flagshipSsh:
-      "Defaults to Ed25519, with ECDSA P-256 and RSA for older appliances. Private keys stay in the tab.",
-    flagshipCurl:
-      "Parse a curl command into method, URL, headers, and body, or build one from the form.",
-    flagshipCidr:
-      "Expand IPv4 and IPv6 CIDR into network, broadcast, host range, and reverse DNS labels.",
-    howToTitle: "How to use it",
-    howToP1:
-      "Open a tool, paste or type, copy the result. Language and theme stay in localStorage on this device. Homepage search filters the catalog; ?q= deep-links that filter.",
-    howToP2:
-      "About, Privacy, and Terms cover the ads allow-list and edge logs. Security reports go to security@simpletool.app.",
     meta: {
       title: "SimpleTool — Developer tools in the browser",
       description: "Client-side developer tools: JSON formatter, JWT inspector, regex tester, cron builder, password generator, SSH/certs, curl studio, and CIDR calculator.",

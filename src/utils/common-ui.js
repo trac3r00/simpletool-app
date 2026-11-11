@@ -251,6 +251,14 @@ export function getNavigationHTML(options = {}) {
             
             <!-- Separator -->
             <div class="h-4 w-px bg-surface-200 dark:bg-surface-700 hidden sm:block"></div>
+
+            <!-- Site pages, from lg up so localized labels never squeeze the
+                 search/language/theme controls. Smaller screens use the footer. -->
+            <ul class="site-nav hidden lg:flex">
+              <li><a href="${withLanguageQuery("/about", currentLang)}" data-i18n="footer.about">${t("footer.about", currentLang)}</a></li>
+              <li><a href="${withLanguageQuery("/blog", currentLang)}" data-i18n="footer.blog">${t("footer.blog", currentLang)}</a></li>
+              <li><a href="${withLanguageQuery("/faq", currentLang)}" data-i18n="footer.faq">${t("footer.faq", currentLang)}</a></li>
+            </ul>
           </div>
 
            <div class="flex items-center gap-2">

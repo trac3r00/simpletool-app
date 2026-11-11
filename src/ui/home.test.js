@@ -32,8 +32,12 @@ describe("renderHomePage", () => {
     expect(countOccurrences(html, "data-i18n-bootstrap")).toBe(1);
     expect(countOccurrences(html, "data-bundled-stylesheet")).toBe(1);
     expect(countOccurrences(html, "serviceWorker.register")).toBe(1);
-    expect(html).toContain('data-i18n="home.editorialTitle"');
-    expect(html).toContain('data-i18n="home.flagshipJson"');
+    // The editorial block was removed; site pages are linked from the top bar.
+    expect(html).not.toContain('id="home-editorial"');
+    const siteNav = html.slice(html.indexOf('class="site-nav'), html.indexOf("</ul>", html.indexOf('class="site-nav')));
+    for (const page of ["about", "blog", "faq"]) {
+      expect(siteNav).toContain(`href="/${page}" data-i18n="footer.${page}"`);
+    }
     expect(html).toContain("JSON.parse");
     expect(html).toContain("Developer tools that stay in the browser");
     expect(html).toContain('data-i18n="home.trustClient"');
@@ -50,7 +54,7 @@ describe("renderHomePage", () => {
       }
     }
     expect(html.indexOf('id="tools-categories-container"')).toBeLessThan(
-      html.indexOf('data-i18n="home.editorialTitle"'),
+      html.indexOf('id="home-below-catalog"'),
     );
     expect(html.indexOf('id="tool-search"')).toBeLessThan(
       html.indexOf('id="tools-categories-container"'),
@@ -100,5 +104,10 @@ describe("renderHomePage", () => {
     expect(html).toContain(
       '<link rel="alternate" hreflang="en" href="https://simpletool.app/">',
     );
+    // Top-bar site links keep the visitor's language.
+    const siteNav = html.slice(html.indexOf('class="site-nav'), html.indexOf("</ul>", html.indexOf('class="site-nav')));
+    for (const page of ["about", "blog", "faq"]) {
+      expect(siteNav).toContain(`href="/${page}?lang=ko" data-i18n="footer.${page}">${t(`footer.${page}`, "ko")}<`);
+    }
   });
 });

@@ -96,7 +96,7 @@
   }
 
   /* Reading measure for prose blocks (DESIGN.md: 65-75 characters). */
-  :where(.content-page-panel, #home-editorial, article) :where(p, li),
+  :where(.content-page-panel, article) :where(p, li),
   :where(.card) > p {
     max-width: 54ch;
   }
@@ -392,6 +392,15 @@
      gradient top rule is the only line between title and workspace. */
   .tool-page-shell .tool-header {
     @apply mb-6 border-b-0 pb-0 sm:mb-8;
+  }
+
+  /* Top-bar links to the site pages (About / Blog / FAQ). */
+  .site-nav {
+    @apply items-center gap-1;
+  }
+
+  .site-nav a {
+    @apply whitespace-nowrap rounded-md px-2.5 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground;
   }
 
   /* Home / Category / Tool wayfinding injected by createPageTemplate. */

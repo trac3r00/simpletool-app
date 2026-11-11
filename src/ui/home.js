@@ -25,17 +25,6 @@ const FLAGSHIP_IDS = [
   "cidr-calculator",
 ];
 
-const FLAGSHIP_BLURBS = {
-  "json-formatter": "flagshipJson",
-  "token-studio": "flagshipJwt",
-  "regex-visualizer": "flagshipRegex",
-  "cron-builder": "flagshipCron",
-  "password-generator": "flagshipPassword",
-  "ssh-key-generator": "flagshipSsh",
-  "curl-studio": "flagshipCurl",
-  "cidr-calculator": "flagshipCidr",
-};
-
 function stripLeadingEmoji(value) {
   return String(value).replace(
     /^[\p{Extended_Pictographic}\p{Emoji_Presentation}\uFE0F\u200D]+\s*/u,
@@ -156,25 +145,6 @@ export function renderHomePage({
     </div>
 
     <div id="home-below-catalog">
-    <section id="home-editorial" class="max-w-3xl space-y-5 border-t border-border pt-12" aria-labelledby="home-editorial-title">
-      <h2 id="home-editorial-title" class="text-lg font-semibold text-surface-900 dark:text-surface-50" data-i18n="home.editorialTitle">${t("home.editorialTitle", currentLang)}</h2>
-      <p class="text-sm leading-relaxed text-surface-600 dark:text-surface-400" data-i18n="home.editorialP1">${t("home.editorialP1", currentLang)}</p>
-      <p class="text-sm leading-relaxed text-surface-600 dark:text-surface-400" data-i18n="home.editorialP2">${t("home.editorialP2", currentLang)}</p>
-      <p class="text-sm leading-relaxed text-surface-600 dark:text-surface-400" data-i18n="home.editorialP3">${t("home.editorialP3", currentLang)}</p>
-      <h2 class="text-lg font-semibold text-surface-900 dark:text-surface-50 pt-2" data-i18n="home.flagshipsTitle">${t("home.flagshipsTitle", currentLang)}</h2>
-      <dl class="grid gap-4 sm:grid-cols-2 text-sm text-surface-600 dark:text-surface-400">
-        ${flagships
-          .map((tool) => {
-            const blurbKey = FLAGSHIP_BLURBS[tool.id];
-            if (!blurbKey) return "";
-            return `<div><dt class="font-medium text-surface-900 dark:text-surface-100"><a class="hover:text-primary" href="${withLanguageQuery(tool.path, currentLang)}">${tool.name}</a></dt><dd class="mt-1" data-i18n="home.${blurbKey}">${t("home." + blurbKey, currentLang)}</dd></div>`;
-          })
-          .join("")}
-      </dl>
-      <h2 class="text-lg font-semibold text-surface-900 dark:text-surface-50 pt-2" data-i18n="home.howToTitle">${t("home.howToTitle", currentLang)}</h2>
-      <p class="text-sm leading-relaxed text-surface-600 dark:text-surface-400" data-i18n="home.howToP1">${t("home.howToP1", currentLang)}</p>
-      <p class="text-sm leading-relaxed text-surface-600 dark:text-surface-400" data-i18n="home.howToP2">${t("home.howToP2", currentLang)}</p>
-    </section>
 
     ${getAdSlotHTML("home", {
       path: "/",
